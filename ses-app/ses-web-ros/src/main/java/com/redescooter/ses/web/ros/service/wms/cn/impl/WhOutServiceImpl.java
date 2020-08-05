@@ -917,6 +917,7 @@ public class WhOutServiceImpl implements WhOutService {
 
                 for (OpeStockProdProduct scooter : stockProdProductList) {
                     if (scooter.getId().equals(scooter.getBindOrderId())) {
+                        scooter.setAvailableQty(0);
                         scooter.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                         scooter.setOutStockTime(new Date());
                         scooter.setOutStockBillId(opeStockBill.getId());
@@ -959,14 +960,34 @@ public class WhOutServiceImpl implements WhOutService {
                         .updatedTime(new Date())
                         .build();
 
+
+                int count = item.getTotalCount();
                 for (OpeStockPurchas part : stockPurchasList) {
                     if (item.getId().equals(part.getBindOrderId())) {
-                        part.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
-                        part.setOutPrincipalId(enter.getUserId());
-                        part.setOutStockTime(new Date());
-                        part.setOutStockBillId(opeStockBill.getId());
-                        part.setUpdatedBy(enter.getUserId());
-                        part.setUpdatedTime(new Date());
+
+                        if (count >= part.getAvailableQty()) {
+                            count -= part.getAvailableQty();
+
+                            part.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                            part.setOutPrincipalId(enter.getUserId());
+                            part.setOutStockTime(new Date());
+                            part.setOutStockBillId(opeStockBill.getId());
+                            part.setUpdatedBy(enter.getUserId());
+                            part.setUpdatedTime(new Date());
+                            part.setAvailableQty(0);
+                            if (count == 0) {
+                                break;
+                            }
+                        }
+                        if (count < part.getAvailableQty()) {
+                            part.setAvailableQty(part.getAvailableQty()-count);
+                            part.setUpdatedBy(enter.getUserId());
+                            part.setUpdatedTime(new Date());
+                        }
+
+                        if (count == 0) {
+                            break;
+                        }
                     }
                     break;
                 }

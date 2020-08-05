@@ -60,19 +60,9 @@
 
   <sql id="where_outWhProductList">
     WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==4 or typeItem==5">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
+    stock.dr=0
     <if test="enter.stockType!=''and enter.stockType!=null">
-      and orb.product_type=#{enter.stockType}
+      and stock.materiel_product_type=#{enter.stockType}
     </if>
     <if test="enter.keyword!=''and enter.keyword!=null">
       and (
@@ -81,29 +71,12 @@
       part.product_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
   </sql>
   <sql id="where_outWhPartList">
     WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==1 or typeItem==2 or typeItem==3">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
+    stock.dr=0
     <if test="enter.stockType!=''and enter.stockType!=null">
-      and orb.product_type=#{enter.stockType}
+      and stock.product_type=#{enter.stockType}
     </if>
     <if test="enter.keyword!=''and enter.keyword!=null">
       and (
@@ -112,13 +85,6 @@
       part.parts_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
   </sql>
   <sql id="where_wmsStoredStock">
     WHERE
@@ -751,138 +717,69 @@ FROM
   </select>
 
   <select id="wmsOutWhStockCount" resultType="int">
-    select count(*) from(
-    SELECT
-    orb.part_product_id AS id,
-    orb.product_type AS productType,
-    part.cn_name AS cnName,
-    part.en_name AS enName,
-    part.product_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
-    sheet.sales_price as price
-    FROM
-    ope_outwh_order_b orb
-    LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and  outwhOrder.dr=0
-    LEFT JOIN ope_parts_product part ON orb.part_product_id = part.id and  part.dr=0
-    LEFT JOIN ope_regional_price_sheet  sheet ON sheet.parts_product_id = part.id and  sheet.dr=0
+    select sum(outWh.total) from(
+    select count(*) as total
+    from ope_fr_stock stock
+    inner JOIN ope_parts_product part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type = 4
+    LEFT JOIN ope_regional_price_sheet sheet
+    ON sheet.parts_product_id = part.id and sheet.dr = 0 and sheet.currency_unit = #{amountType}
     <include refid="where_outWhProductList"/>
     UNION
-    SELECT
-    orb.part_product_id AS id,
-    orb.product_type AS productType,
-    part.cn_name AS cnName,
-    part.en_name AS enName,
-    part.parts_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
-    sheet.price as price
-    FROM
-    ope_outwh_order_b orb
-    LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and outwhOrder.dr=0
-    LEFT JOIN ope_parts part ON orb.part_product_id = part.id and part.dr=0
-    LEFT JOIN ope_price_sheet  sheet ON sheet.parts_id = part.id and sheet.dr=0
+    select count(*) as total
+    from ope_fr_stock stock
+    inner JOIN ope_parts part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
+    LEFT JOIN ope_price_sheet sheet on sheet.parts_id = part.id and sheet.dr = 0
     <include refid="where_outWhPartList"/>
     )outWh
   </select>
 
   <select id="wmsOutWhStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
-SELECT
-	orb.part_product_id AS id,
-	orb.product_type AS productType,
-	part.cn_name AS cnName,
-	part.en_name AS enName,
-	part.product_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
-	sheet.sales_price as price
-FROM
-	ope_outwh_order_b orb
-	LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and  outwhOrder.dr=0
-	LEFT JOIN ope_parts_product part ON orb.part_product_id = part.id and  part.dr=0
-	LEFT JOIN ope_regional_price_sheet  sheet ON sheet.parts_product_id = part.id and  sheet.dr=0
-<include refid="where_outWhProductList"/>
-UNION
-SELECT
-	orb.part_product_id AS id,
-	orb.product_type AS productType,
-	part.cn_name AS cnName,
-	part.en_name AS enName,
-	part.parts_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
- sheet.price as price
-FROM
-	ope_outwh_order_b orb
-	LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and outwhOrder.dr=0
-	LEFT JOIN ope_parts part ON orb.part_product_id = part.id and part.dr=0
-	LEFT JOIN ope_price_sheet  sheet ON sheet.parts_id = part.id and sheet.dr=0
-<include refid="where_outWhPartList"/>
+    select stock.id                    as id,
+    stock.materiel_product_id   AS partId,
+    stock.materiel_product_type AS productType,
+    part.cn_name                AS cnName,
+    part.en_name                AS enName,
+    part.product_number         AS productNumber,
+    stock.available_total       AS intTotal,
+    sheet.sales_price           as price
+    from ope_fr_stock stock
+    inner JOIN ope_parts_product part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type = 4
+    LEFT JOIN ope_regional_price_sheet sheet
+    ON sheet.parts_product_id = part.id and sheet.dr = 0 and sheet.currency_unit = #{amountType}
+    <include refid="where_outWhProductList"/>
+    UNION
+    select stock.id                    as id,
+    stock.materiel_product_id   AS partId,
+    stock.materiel_product_type AS productType,
+    part.cn_name                AS cnName,
+    part.en_name                AS enName,
+    part.product_number         AS productNumber,
+    stock.available_total       AS intTotal,
+    sheet.price           as price
+    from ope_fr_stock stock
+    inner JOIN ope_parts_product part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
+    LEFT JOIN ope_price_sheet sheet on sheet.parts_id=part.id and  sheet.dr = 0
+    <include refid="where_outWhPartList"/>
     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="wmsOutWhStockCountByType" resultType="int">
-    select count(*) from(
-    SELECT
-    orb.part_product_id AS id,
-    orb.product_type AS productType,
-    part.cn_name AS cnName,
-    part.en_name AS enName,
-    part.product_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
-    sheet.sales_price as price
-    FROM
-    ope_outwh_order_b orb
-    LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and  outwhOrder.dr=0
-    LEFT JOIN ope_parts_product part ON orb.part_product_id = part.id and  part.dr=0
-    LEFT JOIN ope_regional_price_sheet  sheet ON sheet.parts_product_id = part.id and  sheet.dr=0
-    WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==4 or typeItem==5">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
+    select sum(outWh.total) from(
+    select count(*) as total
+    from ope_fr_stock stock
+    inner JOIN ope_parts_product part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type = 4
+    LEFT JOIN ope_regional_price_sheet sheet
+    ON sheet.parts_product_id = part.id and sheet.dr = 0 and sheet.currency_unit = #{amountType}
     UNION
-    SELECT
-    orb.part_product_id AS id,
-    orb.product_type AS productType,
-    part.cn_name AS cnName,
-    part.en_name AS enName,
-    part.parts_number AS productNumber,
-    sum( orb.total_count ) AS intTotal,
-    sheet.price as price
-    FROM
-    ope_outwh_order_b orb
-    LEFT JOIN ope_outwh_order outwhOrder ON orb.outwh_order_id = outwhOrder.id and outwhOrder.dr=0
-    LEFT JOIN ope_parts part ON orb.part_product_id = part.id and part.dr=0
-    LEFT JOIN ope_price_sheet  sheet ON sheet.parts_id = part.id and sheet.dr=0
-    WHERE
-    orb.dr=0
-    and outwhOrder.`status`=#{status}
-    AND orb.product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==1 or typeItem==2 or typeItem==3">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
-    GROUP BY
-    id,
-    productType,
-    cnName,
-    enName,
-    productNumber,
-    price
+    select count(*) as total
+    from ope_fr_stock stock
+    inner JOIN ope_parts part
+    ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
+    LEFT JOIN ope_price_sheet sheet on sheet.parts_id = part.id and sheet.dr = 0
     )outWh
   </select>
 

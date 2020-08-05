@@ -300,7 +300,6 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     public GeneralResult save(SavePrepareMaterialEnter enter) {
         //备料部件集合
         List<SavePrepareMaterialPartListEnter> savePrepareMaterialListEnterList = new ArrayList<>();
-        //部件基本数据
         Map<Long, List<SavePartBasicDateEnter>> savePartBasicDateMap = Maps.newHashMap();
 
         //对入参参数进行解析
@@ -429,23 +428,25 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
-            opeStockProdPartListIdClassTrue.forEach(item -> {
+            for (OpeStockPurchas item : opeStockProdPartListIdClassTrue) {
                 if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
 
                 //修改数据
-                queryStockBillDtoList.forEach(stockStill -> {
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
                         item.setOutStockBillId(stockStill.getStockBillId());
                         item.setOutPrincipalId(enter.getUserId());
                         item.setOutStockTime(new Date());
                         item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                        item.setAvailableQty(0);
                         item.setUpdatedBy(enter.getUserId());
                         item.setUpdatedTime(new Date());
+                        break;
                     }
-                });
-            });
+                }
+            }
             opeStockPurchasService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
@@ -467,33 +468,36 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
                 //修改数据
-                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+                int partQty = stockProdPartIdMap.get(item.getPartId());
 
                 for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
+                        if (partQty == 0) {
+                            break;
+                        }
 
                         if (partQty >= item.getInWhQty()) {
                             partQty -= item.getInWhQty();
-                            item.setInWhQty(0);
+                            item.setAvailableQty(0);
                             item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                             item.setOutStockBillId(stockStill.getStockBillId());
                             item.setOutPrincipalId(enter.getUserId());
                             item.setOutStockTime(new Date());
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            item.setInWhQty(item.getInWhQty() - partQty);
-                            item.setOutStockBillId(stockStill.getStockBillId());
-                            item.setOutPrincipalId(enter.getUserId());
-                            item.setOutStockTime(new Date());
+                            partQty=0;
+                            item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
-                        }
-
-                        if (partQty == 0) {
-                            break;
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -643,23 +647,25 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
-            opeStockProdPartListIdClassTrue.forEach(item -> {
+            for (OpeStockProdPart item : opeStockProdPartListIdClassTrue) {
                 if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
 
                 //修改数据
-                queryStockBillDtoList.forEach(stockStill -> {
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
                         item.setOutStockBillId(stockStill.getStockBillId());
                         item.setOutPrincipalId(enter.getUserId());
+                        item.setAvailableQty(0);
                         item.setOutStockTime(new Date());
                         item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                         item.setUpdatedBy(enter.getUserId());
                         item.setUpdatedTime(new Date());
+                        break;
                     }
-                });
-            });
+                }
+            }
             opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
@@ -680,33 +686,37 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
                 //修改数据
-                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+                int partQty = stockProdPartIdMap.get(item.getPartId());
 
                 for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
 
+                        if (partQty == 0) {
+                            break;
+                        }
+
                         if (partQty >= item.getInWhQty()) {
                             partQty -= item.getInWhQty();
-                            item.setInWhQty(0);
+                            item.setAvailableQty(0);
                             item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                             item.setOutStockBillId(stockStill.getStockBillId());
                             item.setOutPrincipalId(enter.getUserId());
                             item.setOutStockTime(new Date());
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            item.setInWhQty(item.getInWhQty() - partQty);
-                            item.setOutStockBillId(stockStill.getStockBillId());
-                            item.setOutPrincipalId(enter.getUserId());
-                            item.setOutStockTime(new Date());
+                            partQty=0;
+                            item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
-                        }
-
-                        if (partQty == 0) {
-                            break;
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
                     }
                 }

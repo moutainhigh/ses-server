@@ -66,14 +66,14 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsOutWhStockCount(@Param("enter") WmsStockEnter enter,@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsOutWhStockCount(@Param("enter") WmsStockEnter enter,@Param("amountType")  String amountType);
   /**
    * 返回仓储出库列表count
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsOutWhStockList(@Param("enter") WmsStockEnter enter,@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  List<WmsStockAvailableResult> wmsOutWhStockList(@Param("enter") WmsStockEnter enter,@Param("amountType")  String amountType);
 
 
 

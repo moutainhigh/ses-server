@@ -441,6 +441,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .materielProductName(opeParts.getCnName())
                     .materielProductId(opeAllocateB.getPartId())
                     .materielProductType(BomCommonTypeEnums.getValueByCode(opeParts.getPartsType()))//产品物料类型
+                    .waitStoredTotal(0)
+                    .waitProductTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
@@ -657,6 +659,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .availableTotal(1)
                     .lockTotal(0)
                     .wornTotal(0)
+                    .waitProductTotal(0)
+                    .waitStoredTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
