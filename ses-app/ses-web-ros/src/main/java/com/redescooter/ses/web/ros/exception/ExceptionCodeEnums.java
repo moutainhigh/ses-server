@@ -333,20 +333,17 @@ public enum ExceptionCodeEnums {
 
     EAMIL_CODE_TIME_OUT(10157, "请先获取验证码或验证码已过期"),
 
-    WH_OUT_ORDER_NOT_EXIST(10158,"出库单不存在"),
+    WH_OUT_ORDER_NOT_EXIST(10158, "出库单不存在"),
 
-    PRODUCT_PART_IS_EMPTY(10159,"产品部件不存在"),
+    PRODUCT_PART_IS_EMPTY(10159, "产品部件不存在"),
 
-    CONSIGN_TYPE_NOT_EXIST(10160,"物流方式不存在"),
+    CONSIGN_TYPE_NOT_EXIST(10160, "物流方式不存在"),
 
-    NO_LOAN(10161,"委托方式为空"),
+    NO_LOAN(10161, "委托方式为空"),
 
-    NO_PERM(10162,"没有该接口的权限"),
+    NO_PERM(10162, "没有该接口的权限"),
 
-    NO_MATERIAL_FOR_OUT_ORDER(10163,"该订单暂无备料");
-
-
-    ;
+    NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料");;
 
 
     private int code;

@@ -376,6 +376,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     }
     map.put("name", enter.getFullName());
     map.put("model", enter.getModel());
+    map.put("price",enter.getPrice());
     //保存邮箱任务
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());

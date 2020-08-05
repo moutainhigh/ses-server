@@ -39,6 +39,10 @@ public class DateUtil {
      */
     public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     /**
+     * 缺省的日期显示格式： HH:mm:ss
+     */
+    public static final String DEFAULT_TIME_FORMAT="HH:mm:ss";
+    /**
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss:sss
      */
     public static final String YMDHMSS = "yyyy-MM-dd HH:mm:ss:sss";
@@ -877,7 +881,6 @@ public class DateUtil {
         return new Date(timeStamp);
     }
 
-
     // 数字月份转为英文的月份
     public static String numMonToEngMon(String month) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
@@ -885,10 +888,5 @@ public class DateUtil {
         sdf = new SimpleDateFormat("MMMMM", Locale.US);
         month = sdf.format(date);
         return month;
-    }
-
-
-    public static void main(String[] args) throws ParseException {
-        System.out.println(numMonToEngMon("07"));
     }
 }

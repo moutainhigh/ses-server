@@ -39,4 +39,7 @@ public class BaseMailTaskEnter extends GeneralEnter {
     @ApiModelProperty(value = "产品型号")
     private String model;
 
+    @ApiModelProperty(value = "剩余支付金额")
+    private String price;
+
 }

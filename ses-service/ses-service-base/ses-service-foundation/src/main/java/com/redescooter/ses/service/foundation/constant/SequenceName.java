@@ -9,6 +9,8 @@ public interface SequenceName {
 
     String PLA_TENANT="PLA_TENANT";
 
+    String PLA_CITY="PLA_CITY";
+
     String PLA_TENANT_NODE = "PLA_TENANT_NODE";
 
     String PLA_TENANT_CONFIG="PLA_TENANT_CONFIG";
