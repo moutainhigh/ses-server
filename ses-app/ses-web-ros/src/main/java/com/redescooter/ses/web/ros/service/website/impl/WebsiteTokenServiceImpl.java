@@ -13,6 +13,9 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -84,6 +87,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Value("${Request.privateKey}")
     private String privatekey;
 
+    @Reference
+    private CityBaseService cityBaseService;
+
     /**
      * 登录
      *
@@ -109,7 +115,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1,SysUserSourceEnum.WEBSITE.getValue()).last("limit 1"));
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).last(
+                        "limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -159,6 +166,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 
@@ -197,9 +205,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         enter.setPassword(decryptPassword);
         //密码长度校验
-        checkString(enter.getPassword(),2,20);
+        checkString(enter.getPassword(), 8, 64);
         //邮箱长度校验
-        checkString(enter.getEmail(),2,50);
+        checkString(enter.getEmail(), 2, 50);
 
         int salt = RandomUtils.nextInt(10000, 99999);
 
@@ -208,32 +216,43 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //创建账户
         OpeSysUser opeSysUser = buildOpeSysUser(decryptEamil, decryptPassword, salt);
         opeSysUserService.save(opeSysUser);
+
+        //邮件发送
+        BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+        baseMailTaskEnter.setName(enter.getFirstName() + " " + enter.getLastName());
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
+        baseMailTaskEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+        baseMailTaskEnter.setEmail(enter.getEmail());
+        baseMailTaskEnter.setRequestId(enter.getRequestId());
+        baseMailTaskEnter.setUserId(opeSysUser.getId());
+        mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
     private OpeSysUser buildOpeSysUser(String decryptEamil, String decryptPassword, int salt) {
         return OpeSysUser.builder()
-                    .id(idAppService.getId(SequenceName.OPE_SYS_USER))
-                    .dr(0)
-                    .deptId(0L)
-                    .orgStaffId(0L)
-                    .appId(AppIDEnums.SES_ROS.getValue())
-                    .systemId(AppIDEnums.SES_ROS.getSystemId())
-                    .password(DigestUtils.md5Hex(decryptPassword + salt))
-                    .salt(String.valueOf(salt))
-                    .status(SysUserStatusEnum.NORMAL.getCode())
-                    .loginName(decryptEamil)
-                    .lastLoginToken(null)
-                    .lastLoginIp(null)
-                    .lastLoginTime(null)
-                    .activationTime(new Date())
-                    .expireDate(null)
-                    .createdBy(0L)
-                    .createdTime(new Date())
-                    .updatedBy(0L)
-                    .updatedTime(new Date())
-                    .def1(SysUserSourceEnum.WEBSITE.getValue())
-                    .build();
+                .id(idAppService.getId(SequenceName.OPE_SYS_USER))
+                .dr(0)
+                .deptId(0L)
+                .orgStaffId(0L)
+                .appId(AppIDEnums.SES_ROS.getValue())
+                .systemId(AppIDEnums.SES_ROS.getSystemId())
+                .password(DigestUtils.md5Hex(decryptPassword + salt))
+                .salt(String.valueOf(salt))
+                .status(SysUserStatusEnum.NORMAL.getCode())
+                .loginName(decryptEamil)
+                .lastLoginToken(null)
+                .lastLoginIp(null)
+                .lastLoginTime(null)
+                .activationTime(new Date())
+                .expireDate(null)
+                .createdBy(0L)
+                .createdTime(new Date())
+                .updatedBy(0L)
+                .updatedTime(new Date())
+                .def1(SysUserSourceEnum.WEBSITE.getValue())
+                .build();
     }
 
     /**
@@ -271,7 +290,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             baseSendMailEnter.setMail(decryptMail);
 
             //邮箱长度校验
-            checkString(baseSendMailEnter.getMail(),2,50);
+            checkString(baseSendMailEnter.getMail(), 2, 50);
         }
         //先判断邮箱是否存在、
         QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
@@ -368,9 +387,9 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setConfirmPassword(confirmDecrypt);
 
             //密码长度校验
-            checkString(enter.getNewPassword(),2,18);
+            checkString(enter.getNewPassword(), 8, 64);
             //密码长度校验
-            checkString(enter.getConfirmPassword(),2,18);
+            checkString(enter.getConfirmPassword(), 8, 64);
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmPassword())) {
@@ -425,11 +444,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             enter.setConfirmPassword(confirmDecrypt);
             enter.setOldPassword(oldPsd);
             //密码长度校验
-            checkString(enter.getOldPassword(),2,18);
+            checkString(enter.getOldPassword(), 8, 64);
             //密码长度校验
-            checkString(enter.getNewPassword(),2,18);
+            checkString(enter.getNewPassword(), 8, 64);
             //密码长度校验
-            checkString(enter.getConfirmPassword(),2,18);
+            checkString(enter.getConfirmPassword(), 8, 64);
         }
 
         //比较两个密码是否一致
@@ -463,26 +482,28 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
-        if(enter == null){
-            throw  new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (enter == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 登录的时候  是把这些东西放在缓存里  直接获取
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
+        OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
                 CustomerSourceEnum.WEBSITE.getValue()));
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        if(StringUtils.isNotEmpty(enter.getAddress())){
+        if (StringUtils.isNotEmpty(enter.getAddress())) {
             customer.setAddress(enter.getAddress());
         }
         customer.setDef1(enter.getCustomerCountry());
-        customer.setAddress(enter.getAddress());
+        customer.setDef2(enter.getCity());
         customer.setDistrust(Long.valueOf(enter.getDistrict()));
-        if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
+        customer.setCountry(enter.getCountryId());
+        customer.setAddress(enter.getAddress());
+        if (!StringUtils.isAllBlank(enter.getLat(), enter.getLng(), enter.getPlaceId())) {
             customer.setLatitude(new BigDecimal(enter.getLat()));
             customer.setLongitude(new BigDecimal(enter.getLng()));
             customer.setPlaceId(enter.getPlaceId());
@@ -503,8 +524,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setLastName(customer.getCustomerLastName());
                 inquiry.setFullName(customer.getCustomerFullName());
 //                inquiry.setTelephone(customer.getTelephone());
+                inquiry.setCountry(enter.getCountryId());
                 inquiry.setAddress(customer.getAddress());
-                inquiry.setDistrict(Long.valueOf(enter.getDistrict()));
+                inquiry.setDef1(enter.getCustomerCountry());
+                inquiry.setDef2(enter.getDistrict());
+                inquiry.setDef3(enter.getCity());
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
@@ -526,23 +550,26 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         saveCustomer.setAssignationScooterQty(0);
         saveCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         saveCustomer.setStatus(CustomerStatusEnum.PREDESTINATE_CUSTOMER.getValue());
-        saveCustomer.setUpdatedBy(saveCustomer.getId());
+        saveCustomer.setUpdatedBy(0L);
         saveCustomer.setUpdatedTime(new Date());
-        saveCustomer.setCreatedBy(saveCustomer.getId());
+        saveCustomer.setCreatedBy(0L);
         saveCustomer.setCreatedTime(new Date());
         saveCustomer.setAccountFlag("0");
         saveCustomer.setAddress(enter.getAddress());
 
-        if (!StringUtils.isAllBlank(enter.getLat(),enter.getLng(),enter.getPlaceId())){
+        if (!StringUtils.isAllBlank(enter.getLat(), enter.getLng(), enter.getPlaceId())) {
             saveCustomer.setLatitude(new BigDecimal(enter.getLat()));
             saveCustomer.setLongitude(new BigDecimal(enter.getLng()));
             saveCustomer.setPlaceId(enter.getPlaceId());
         }
         saveCustomer.setDistrust(Long.valueOf(enter.getDistrict()));
         saveCustomer.setDef1(enter.getCustomerCountry());
+        //客户表之前def1字段存的是国家  现在def2字段存城市
+        saveCustomer.setDef2(enter.getCity());
+        saveCustomer.setDef3(enter.getDistrict());
+        saveCustomer.setCountry(enter.getCountryId());
         return saveCustomer;
     }
-
 
 
     private void checkString(String str, int min, int max) {
@@ -552,5 +579,21 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (str.length() < min || str.length() > max) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+    }
+
+
+    @Override
+    public List<CountryCityResult> countryAndCity() {
+        return cityBaseService.countryAndCity();
+    }
+
+    @Override
+    public List<CityPostResult> cityPostCode(String cityName) {
+        return cityBaseService.cityPostCode(cityName);
+    }
+
+    @Override
+    public List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter) {
+        return cityBaseService.countryCityPostCode(cityNameEnter);
     }
 }

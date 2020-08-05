@@ -39,6 +39,7 @@ import com.redescooter.ses.web.ros.service.base.OpeDistrustLeadService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
@@ -59,6 +60,7 @@ import redis.clients.jedis.JedisCluster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -80,10 +82,13 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Autowired
     private InquiryServiceMapper inquiryServiceMapper;
+
     @Autowired
     private OpeDistrustLeadService opeDistrustLeadService;
-  @Autowired
-  private OpeSysUserProfileService opeSysUserProfileService;
+
+    @Autowired
+    private OpeSysUserProfileService opeSysUserProfileService;
+
     @Autowired
     private OpeCustomerService opeCustomerService;
 
@@ -104,6 +109,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Value("${excel.folder}")
     private String excelFolder;
+
+    @Autowired
+    private MondayService mondayService;
 
     @Autowired
     private OssConfig ossConfig;
@@ -190,12 +198,14 @@ public class InquiryServiceImpl implements InquiryService {
         }*/
         opeCustomerInquiry.setSource("1");
         opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
-      try {
-        //通知区域负责人
-        sendDistrustleadEmail(enter);
-      }catch (Exception e){
+        try {
+            //通知区域负责人
+            sendDistrustleadEmail(enter);
+        } catch (Exception e) {
 
-      }
+        }
+        //Monday 同步数据
+        mondayService.websiteContantUs(opeCustomerInquiry);
         return new GeneralResult(enter.getRequestId());
     }
   //发送区域负责人
@@ -230,9 +240,7 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
         opeCustomerInquiry.setCustomerId(0L);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomerInquiry.setCountry(null);
         opeCustomerInquiry.setCity(null);
-        opeCustomerInquiry.setDistrict(null);
         opeCustomerInquiry.setCustomerSource("");
         opeCustomerInquiry.setSalesId(0L);
         opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
@@ -259,7 +267,13 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomerInquiry.setUpdatedBy(0L);
         opeCustomerInquiry.setCreatedTime(new Date());
         opeCustomerInquiry.setUpdatedTime(new Date());
-        opeCustomerInquiry.setDef2(enter.getDistrust());
+
+        //def1 国家 def2 城市 distrust区域
+        opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+        opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrust()));
+        opeCustomerInquiry.setDef2(enter.getCity());
+        opeCustomerInquiry.setDef3(enter.getDistrust());
+        opeCustomerInquiry.setCountry(enter.getCountryId());
         return opeCustomerInquiry;
     }
 
@@ -282,20 +296,21 @@ public class InquiryServiceImpl implements InquiryService {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryResult> inquiryResultList = inquiryServiceMapper.inquiryList(enter);
-        inquiryResultList.forEach(item -> {
-            String city = null;
-            String distrust = null;
-            if (item.getCityId() != null && item.getCityId() != 0) {
-                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
-            }
-            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
-                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
-            }
-            item.setCityName(city);
-            item.setDistrustName(distrust);
-        });
+//        inquiryResultList.forEach(item -> {
+//            String city = null;
+//            String distrust = null;
+//            if (item.getCityId() != null && item.getCityId() != 0) {
+//                city = cityBaseService.queryCityDeatliById(new IdEnter(item.getCityId())).getName();
+//            }
+//            if (item.getDistrustId() != null && item.getDistrustId() != 0) {
+//                distrust = cityBaseService.queryCityDeatliById(new IdEnter(item.getDistrustId())).getName();
+//            }
+//            item.setCityName(city);
+//            item.setDistrustName(distrust);
+//        });
         return PageResult.create(enter, count, inquiryResultList);
     }
+
     /**
      * @param enter
      * @desc: 询价单详情
@@ -312,16 +327,16 @@ public class InquiryServiceImpl implements InquiryService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 
-        String city = null;
-        String distrust = null;
-        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
-            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
-        }
-        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
-            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
-        }
-        inquiryResult.setCityName(city);
-        inquiryResult.setDistrustName(distrust);
+//        String city = null;
+//        String distrust = null;
+//        if (inquiryResult.getCityId() != null && inquiryResult.getCityId() != 0) {
+//            city = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getCityId())).getName();
+//        }
+//        if (inquiryResult.getDistrustId() != null && inquiryResult.getDistrustId() != 0) {
+//            distrust = cityBaseService.queryCityDeatliById(new IdEnter(inquiryResult.getDistrustId())).getName();
+//        }
+//        inquiryResult.setCityName(city);
+//        inquiryResult.setDistrustName(distrust);
 
         if (StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue()) || StringUtils.equals(inquiryResult.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
             //验证是否可以再次发生邮件
@@ -493,11 +508,11 @@ public class InquiryServiceImpl implements InquiryService {
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
-            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE"};
+            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE","CITY NAME","CREATE TIME"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
-                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
-                log.info("路劲是这个！！！！！！！！！！！！！！！"+excelFolder);
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+                log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
@@ -508,15 +523,15 @@ public class InquiryServiceImpl implements InquiryService {
                 OSSClient ossClient = null;
                 ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
                         ossConfig.getSecretAccesskey(), conf);
-                String fileName = System.currentTimeMillis()+".xlsx";
+                String fileName = System.currentTimeMillis() + ".xlsx";
                 ossClient.putObject(ossConfig.getDefaultBucketName(), fileName,
                         multipartFile.getInputStream());
                 String bucket = ossConfig.getDefaultBucketName();
                 excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
-                if(file.exists()){
+                if (file.exists()) {
                     file.delete();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -524,16 +539,16 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
 
-   private Map<String, Object> toMap(InquiryResult opeCustomerInquiry){
-       Map<String, Object> map = new LinkedHashMap<>();
-       map.put("NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName())?"--":opeCustomerInquiry.getCustomerFirstName());
-       map.put("SURNAME NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName())?"--":opeCustomerInquiry.getCustomerLastName());
-       map.put("EMAIL",Strings.isNullOrEmpty(opeCustomerInquiry.getEmail())?"--":opeCustomerInquiry.getEmail());
-       map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33-"+opeCustomerInquiry.getTelephone());
-       map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef2())?"--":opeCustomerInquiry.getDef2());
-       map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
-       return map;
-   }
+    private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName()) ? "--" : opeCustomerInquiry.getCustomerFirstName());
+        map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
+        map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
+        map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDef2()) ? "--" : opeCustomerInquiry.getDef2());
+        map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
+        return map;
+    }
 
 
     private OpeCustomer buildOpeCustomerSingle(IdEnter enter, OpeCustomerInquiry opeCustomerInquiry) {

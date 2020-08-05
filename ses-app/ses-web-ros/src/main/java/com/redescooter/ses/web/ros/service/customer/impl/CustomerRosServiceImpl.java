@@ -167,7 +167,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setCreatedTime(new Date());
         saveVo.setUpdatedBy(enter.getUserId());
         saveVo.setUpdatedTime(new Date());
-
+        saveVo.setDef2(enter.getCityName());
+        saveVo.setDef3(enter.getDistrustName());
         opeCustomerMapper.insert(saveVo);
         return new GeneralResult(enter.getRequestId());
     }
@@ -229,12 +230,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         OpeCustomer update = new OpeCustomer();
         BeanUtils.copyProperties(enter, update);
+        update.setDef2(enter.getCityName());
+        update.setDef3(enter.getDistrustName());
         update.setTenantId(tenantId);
         update.setMemo(enter.getRemark());
         update.setUpdatedBy(enter.getUserId());
         update.setUpdatedTime(new Date());
-        update.setCustomerFullName(new StringBuilder().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
-        update.setContactFullName(new StringBuilder().append(enter.getContactFirstName()).append(" ").append(enter.getContactLastName()).toString());
+        update.setCustomerFullName(enter.getCustomerFirstName() + " " + enter.getCustomerLastName());
+        update.setContactFullName(enter.getContactFirstName() + " " + enter.getContactLastName());
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());
@@ -314,6 +317,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
+        result.setCityName(opeCustomer.getDef2());
+        result.setDistrustName(opeCustomer.getDef3());
         result.setRemark(opeCustomer.getMemo());
         if (opeCustomer.getCustomerSource().equals(CustomerSourceEnum.WEBSITE.getValue())) {
             if (opeCustomer.getId().equals(opeCustomer.getUpdatedBy())) {
@@ -416,16 +421,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         List<DetailsCustomerResult> detailsCustomerList = customerServiceMapper.customerList(page);
 
-        detailsCustomerList.forEach(customer -> {
-            if (customer.getCity() != null) {
-                customer.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getCity()).build()).getName());
-            }
-
-            if (customer.getDistrust() != null) {
-                customer.setDistrustName(cityBaseService
-                        .queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
-            }
-        });
+//        detailsCustomerList.forEach(customer -> {
+//            if (customer.getCity() != null) {
+//                customer.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(customer.getCity()).build()).getName());
+//            }
+//
+//            if (customer.getDistrust() != null) {
+//                customer.setDistrustName(cityBaseService
+//                        .queryCityDeatliById(IdEnter.builder().id(customer.getDistrust()).build()).getName());
+//            }
+//        });
 
         return PageResult.create(page, totalRows, detailsCustomerList);
     }
@@ -914,7 +919,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (enter.getId() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
-        if (enter.getCity() == null) {
+        if (enter.getCityName() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CITY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CITY_CANNOT_EMPTY.getMessage());
         }
         if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {

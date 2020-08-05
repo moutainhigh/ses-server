@@ -31,7 +31,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;

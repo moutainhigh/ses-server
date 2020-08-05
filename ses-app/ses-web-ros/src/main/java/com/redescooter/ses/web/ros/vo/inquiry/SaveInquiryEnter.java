@@ -34,6 +34,16 @@ public class SaveInquiryEnter extends GeneralEnter {
 //    @MaximumLength(value = "50", code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "长度过长")
     private String email;
 
+    @ApiModelProperty(value = "国家")
+    private String customerCountry;
+
+    @ApiModelProperty(value = "国家Id")
+    private Long countryId;
+
+    @ApiModelProperty(value = "城市")
+    private String city;
+
+    @ApiModelProperty(value = "区域")
     private String distrust;
 
     @ApiModelProperty(value = "客户名字")

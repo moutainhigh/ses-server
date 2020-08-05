@@ -44,7 +44,9 @@
        opc.created_by                 as createdBy,
        opc.created_time               as createdTime,
        opc.updated_by                 as updatedBy,
-       opc.updated_time               as updatedTime
+       opc.updated_time               as updatedTime,
+       opc.def2                       as cityName,
+       opc.def3                       as distrustName
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
@@ -125,10 +127,10 @@
         <if test="status != null and status != ''">
             and opc.status =#{status}
         </if>
-        <if test="oneCityiD != null">
-            and opc.city =#{oneCityiD}
-            <if test="twoCityiD != null">
-                and opc.distrust =#{twoCityiD}
+        <if test="cityName != null and cityName != ''">
+            and opc.def2 =#{cityName}
+            <if test="distrustName != null and distrustName != ''">
+                and opc.def3 =#{distrustName}
             </if>
         </if>
         <if test="customerType != null and customerType != ''">
@@ -171,10 +173,10 @@
         <if test="status != null and status != ''">
             and opc.status =#{status}
         </if>
-        <if test="oneCityiD != null">
-            and opc.city =#{oneCityiD}
-            <if test="twoCityiD != null">
-                and opc.distrust =#{twoCityiD}
+        <if test="cityName != null and cityName != ''">
+            and opc.def2 =#{cityName}
+            <if test="distrustName != null and distrustName != ''">
+                and opc.def3 =#{distrustName}
             </if>
         </if>
         <if test="customerType != null and customerType != ''">

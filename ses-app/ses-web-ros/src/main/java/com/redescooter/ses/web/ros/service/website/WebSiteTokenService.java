@@ -1,10 +1,14 @@
 package com.redescooter.ses.web.ros.service.website;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
+
+import java.util.List;
 
 /**
  * @ClassName:WebSiteService
@@ -87,5 +91,13 @@ public interface WebSiteTokenService {
      **/
     GeneralResult editCustomer(WebEditCustomerEnter enter);
 
+
+    List<CountryCityResult> countryAndCity();
+
+
+    List<CityPostResult> cityPostCode(String cityName);
+
+
+    List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter);
 
 }

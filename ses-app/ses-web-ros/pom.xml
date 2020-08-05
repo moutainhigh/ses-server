@@ -15,7 +15,6 @@
 
     <dependencies>
 
-
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-app-common</artifactId>

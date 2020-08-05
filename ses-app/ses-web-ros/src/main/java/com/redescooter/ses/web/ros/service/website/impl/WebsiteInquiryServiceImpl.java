@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +89,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
+
+    @Autowired
+    private MondayService mondayService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -245,6 +249,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //主订单保存
         opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
+
+        //Monday 同步数据
+        mondayService.websiteBookOrder(opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
@@ -268,7 +275,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //订单校验客户订单校验 一个客户只允许存在一个订单
         List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
-        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+                .gt(OpeCustomerInquiry::getId, customerInquiry.getId())
         );
         if (CollectionUtils.isNotEmpty(customerInquiryList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
@@ -383,21 +390,32 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
 
-        if (StringUtils.isNotEmpty(enter.getDistrict())){
-            opeCustomerInquiry.setDef2(enter.getDistrict());
-        }else {
-            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
-        }
-        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
-            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        }else {
+//        if (StringUtils.isNotEmpty(enter.getDistrict())){
+//            opeCustomerInquiry.setDef2(enter.getDistrict());
+//        }else {
+//            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
+//            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+//        }else {
+//            opeCustomerInquiry.setDef1(opeCustomer.getDef1());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getAddress())){
+//            opeCustomerInquiry.setAddress(enter.getAddress());
+//        }else{
+//            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+//        }
+        //def1 国家 def2 城市 distrust区域
+        if (StringUtils.isNotEmpty(opeCustomer.getDef1())) {
             opeCustomerInquiry.setDef1(opeCustomer.getDef1());
         }
-        if (StringUtils.isNotEmpty(enter.getAddress())){
-            opeCustomerInquiry.setAddress(enter.getAddress());
-        }else{
-            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+        if (StringUtils.isNotEmpty(opeCustomer.getDef2())) {
+            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
         }
+        if (opeCustomer.getDistrust() != null) {
+            opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
+        }
+        opeCustomerInquiry.setDef3(opeCustomer.getDef3());
 
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
@@ -595,7 +613,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .lastName(opeCustomer.getCustomerLastName())
                 .address(opeCustomer.getAddress())
                 .customerCountry(opeCustomer.getDef1())
-                .district(opeCustomer.getDistrust()==null ? null:opeCustomer.getDistrust().toString())
+                .district(String.valueOf(opeCustomer.getDistrust()))
+                .city(opeCustomer.getDef2())
+                .countryId(opeCustomer.getCountry())
                 .build();
     }
 

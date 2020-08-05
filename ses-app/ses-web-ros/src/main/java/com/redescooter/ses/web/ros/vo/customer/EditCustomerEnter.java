@@ -37,10 +37,10 @@ public class EditCustomerEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrust;
+    @ApiModelProperty(value = "区域邮编")
+    private String distrustName;
 
     @ApiModelProperty(value = "邮箱")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")

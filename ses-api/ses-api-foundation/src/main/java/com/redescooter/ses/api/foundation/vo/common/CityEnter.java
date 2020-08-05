@@ -46,4 +46,7 @@ public class CityEnter extends GeneralEnter {
     @ApiModelProperty(value = "维度")
     private BigDecimal latitude;
 
+    @ApiModelProperty(value = "冗余字段：邮政编码")
+    private String def1;
+
 }
