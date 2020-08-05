@@ -3,15 +3,14 @@ package com.redescooter.ses.web.ros.controller;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
-import com.redescooter.ses.web.ros.vo.customer.ContactUsEnter;
-import com.redescooter.ses.web.ros.vo.customer.ContactUsListEnter;
-import com.redescooter.ses.web.ros.vo.customer.ContactUsListResult;
-import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassNameContactUsController
@@ -26,26 +25,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/contactUs")
 public class ContactUsController {
 
-    @Autowired
-    private ContactUsService contactUsService;
+  @Autowired
+  private ContactUsService contactUsService;
 
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "联系我们列表")
-    public Response<PageResult<ContactUsListResult>> list(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
-        return new Response<>(contactUsService.list(enter));
-    }
+  @PostMapping(value = "/list")
+  @ApiOperation(value = "联系我们列表")
+  public Response<PageResult<ContactUsListResult>> list(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
+    return new Response<>(contactUsService.list(enter));
+  }
 
-    @PostMapping(value = "/detail")
-    @ApiOperation(value = "联系我们详情接口")
-    public Response detail(@ModelAttribute @ApiParam("请求参数")ContactUsEnter enter) {
-        return new Response<>();
-    }
+  @PostMapping(value = "/detail")
+  @ApiOperation(value = "联系我们详情接口")
+  public Response<List<ContactUsDetailResult>> detail(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
+    return new Response<>(contactUsService.detail(enter));
+  }
 
 
-    @PostMapping(value = "/trace")
-    @ApiOperation(value = "联系我们历史记录")
-    public Response trace(@ModelAttribute @ApiParam("请求参数")ContactUsEnter enter) {
-        return new Response();
-    }
+  @PostMapping(value = "/trace")
+  @ApiOperation(value = "联系我们历史记录")
+  public Response<List<ContactUsHistoryResult>> trace(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
+    return new Response(contactUsService.trace(enter));
+  }
 
 }

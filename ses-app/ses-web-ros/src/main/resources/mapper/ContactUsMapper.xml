@@ -1,6 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.website.ContactUsMapper">
+  <sql id="contactUsResult">
+    where
+    us.dr=0
+    <if test="enter.cityName!='' and enter.cityName!=null ">
+      and us.city_name=#{enter.cityName}
+    </if>
+    <if test="enter.districtName!='' and enter.districtName!=null ">
+      and us.district_name=#{enter.districtName}
+    </if>
+    <if test="enter.keyWord!='' and enter.keyWord!=null ">
+      and (
+      us.full_name like concat ("%",#{enter.keyWord},"%") or
+      us.email like concat ("%",#{enter.keyWord},"%")
+      )
+    </if>
+    <if test="enter.createEndDateTime != null and  enter.createStartDateTime != null">
+      and part.updated_time between #{enter.createStartDateTime} and #{enter.createEndDateTime}
+    </if>
+  </sql>
+  <sql id="contactUsDetail">
+  where
+    us.dr=0
+  and us.contact_us_id=#{enter.id}
+</sql>
+  <select id="list" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsListResult">
+    select us.id AS id,
+    us.email as email,
+    us.first_name as firstName,
+    us.last_name as lastName,
+    us.full_name as fullName,
+    us.telephone as telephone,
+    us.country_name as countryName,
+    us.city_name AS cityName,
+    us.district_name as districtName,
+    us.address as address,
+    us.frequency as frequency
+    from ope_contact_us us
+    <include refid="contactUsResult"></include>
+    ORDER BY us.created_time
+    limit #{enter.startRow},#{enter.pageSize}
+  </select>
 
+  <select id="detailList" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsDetailResult">
+    select
+    us.contact_us_id as id,
+    us.created_time as createTime,
+    us.remark as remark
+    from ope_contact_us_trace us
+    <include refid="contactUsDetail"></include>
+    ORDER BY us.created_time
+  </select>
+  <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryResult">
+    select us.id AS id,
+    us.email as email,
+    us.first_name as firstName,
+    us.last_name as lastName,
+    us.full_name as fullName,
+    us.telephone as telephone,
+    us.country_name as countryName,
+    us.city_name AS cityName,
+    us.district_name as districtName,
+    us.address as address,
+    trace.remark as remark
+    from ope_contact_us_trace us
+    LEFT JOIN
+    ope_contact_us trace on us.contact_us_id=trace.id
+    <include refid="contactUsDetail"></include>
+    ORDER BY us.created_time
+  </select>
+  <select id="totalRows" resultType="int">
+    select count(*)
+    from ope_contact_us us
+    <include refid="contactUsResult"></include>
+  </select>
 
 </mapper>
