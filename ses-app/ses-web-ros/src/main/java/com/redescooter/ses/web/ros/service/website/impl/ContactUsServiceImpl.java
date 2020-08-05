@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
+import com.redescooter.ses.web.ros.dm.OpeContactUsEntity;
 import com.redescooter.ses.web.ros.service.base.OpeContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.vo.customer.*;
@@ -55,6 +57,9 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Override
     public void websiteContactUs(SaveInquiryEnter enter) {
+        // 先看这个邮箱是否已存在
+        QueryWrapper<OpeContactUsEntity> qw = new QueryWrapper<>();
+        qw.eq(OpeContactUsEntity.COL_EMAIL,enter.getEmail());
 
     }
 }
