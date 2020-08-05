@@ -40,7 +40,7 @@
     us.frequency as frequency
     from ope_contact_us us
     <include refid="contactUsResult"></include>
-    ORDER BY us.created_time
+    ORDER BY us.created_time desc
     limit #{enter.startRow},#{enter.pageSize}
   </select>
 
@@ -51,7 +51,7 @@
     us.remark as remark
     from ope_contact_us_trace us
     <include refid="contactUsDetail"></include>
-    ORDER BY us.created_time
+    ORDER BY us.created_time desc
   </select>
   <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryResult">
     select us.id AS id,
@@ -70,7 +70,7 @@
     LEFT JOIN
     ope_contact_us trace on us.contact_us_id=trace.id
     <include refid="contactUsDetail"></include>
-    ORDER BY us.created_time
+    ORDER BY us.created_time desc
   </select>
   <select id="totalRows" resultType="int">
     select count(*)

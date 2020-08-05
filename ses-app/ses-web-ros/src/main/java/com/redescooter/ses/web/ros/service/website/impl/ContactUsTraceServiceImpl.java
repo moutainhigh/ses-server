@@ -43,6 +43,7 @@ public class ContactUsTraceServiceImpl implements ContactUsTraceService {
         opeContactUsTraceEntity.setContactUsId(contactUsEntity.getId());
         opeContactUsTraceEntity.setFirstName(contactUsEntity.getFirstName());
         opeContactUsTraceEntity.setLastName(contactUsEntity.getLastName());
+        opeContactUsTraceEntity.setEmail(contactUsEntity.getEmail());
         opeContactUsTraceEntity.setFullName(contactUsEntity.getFullName());
         opeContactUsTraceEntity.setTelephone(contactUsEntity.getTelephone());
         opeContactUsTraceEntity.setCountryName(contactUsEntity.getCountryName());
