@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsEnter;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsListEnter;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsListResult;
 import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
@@ -36,15 +37,15 @@ public class ContactUsController {
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "联系我们详情接口")
-    public Response detail() {
+    public Response detail(@ModelAttribute @ApiParam("请求参数")ContactUsEnter enter) {
         return new Response<>();
     }
 
 
     @PostMapping(value = "/trace")
     @ApiOperation(value = "联系我们历史记录")
-    public Response trace() {
-        return new Response<>();
+    public Response trace(@ModelAttribute @ApiParam("请求参数")ContactUsEnter enter) {
+        return new Response();
     }
 
 }
