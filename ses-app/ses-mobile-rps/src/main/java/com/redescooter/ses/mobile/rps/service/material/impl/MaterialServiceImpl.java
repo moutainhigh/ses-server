@@ -860,19 +860,6 @@ public class MaterialServiceImpl implements MaterialService {
                 .build();
     }
 
-    private void stockToBeStoredFillingPoint(int qty, OpeParts parts) {
-        //查询 库存
-        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
-                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
-        if (opeStock == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
-        }
-        opeStock.setWaitProductTotal(opeStock.getWaitProductTotal() - qty);
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() + qty);
-        opeStock.setUpdatedTime(new Date());
-        opeStockService.updateById(opeStock);
-    }
-
     /**
      * 检查部品是否一已经通过校验
      *
@@ -987,15 +974,21 @@ public class MaterialServiceImpl implements MaterialService {
                     .updatedTime(new Date())
                     .build();
             if (qcResult) {
+                int count=0;
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(1);
                     opePurchasBQc.setPassCount(1);
+                    count+=1;
                 } else {
                     opePurchasBQc.setPassCount(initLaveWaitQcQty);
                     opePurchasBQc.setTotalQualityInspected(initLaveWaitQcQty);
+                    count+=initLaveWaitQcQty;
                 }
                 opePurchasBQc.setFailCount(0);
                 opePurchasBQc.setStatus(QcStatusEnums.PASS.getValue());
+
+                //带生产库存埋点
+                stockToBeStoredFillingPoint(count,opeParts);
             } else {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(1);
@@ -1009,14 +1002,20 @@ public class MaterialServiceImpl implements MaterialService {
             }
         } else {
             if (qcResult) {
+                int count=0;
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
                     opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + 1);
+                    count+=1;
                 } else {
                     opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + initLaveWaitQcQty);
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + initLaveWaitQcQty);
+                    count+=initLaveWaitQcQty;
                 }
                 opePurchasBQc.setFailCount(opePurchasBQc.getFailCount());
+
+                //带生产库存埋点
+                stockToBeStoredFillingPoint(count,opeParts);
             } else {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
@@ -1030,6 +1029,24 @@ public class MaterialServiceImpl implements MaterialService {
             opePurchasBQc.setStatus(QcStatusEnums.FAIL.getValue());
         }
         return opePurchasBQc;
+    }
+
+    /**
+     * 待入库 锚点
+     * @param qty
+     * @param parts
+     */
+    private void stockToBeStoredFillingPoint(int qty, OpeParts parts) {
+        //查询 库存
+        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
+                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
+        if (opeStock == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+        }
+        opeStock.setWaitProductTotal(opeStock.getWaitProductTotal() - qty);
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() + qty);
+        opeStock.setUpdatedTime(new Date());
+        opeStockService.updateById(opeStock);
     }
 
     private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo, Long lotTraceId) {
