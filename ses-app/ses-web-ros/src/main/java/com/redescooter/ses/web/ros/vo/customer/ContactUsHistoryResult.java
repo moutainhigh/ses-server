@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 /**
  * @ClassNameContactUshistoryResult
  * @Description
@@ -55,4 +57,7 @@ public class ContactUsHistoryResult extends GeneralResult {
 
   @ApiModelProperty(value = "备注")
   private String remark;
+
+  @ApiModelProperty(value = "创建开始时间")
+  private Date createTime;
 }

@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 /**
  * @ClassNameContactUsListResult
  * @Description
@@ -87,5 +89,7 @@ public class ContactUsListResult extends GeneralResult {
     @ApiModelProperty(value="联系次数")
     private Integer frequency;
 
+    @ApiModelProperty(value = "创建开始时间")
+    private Date createTime;
 
 }

@@ -17,7 +17,7 @@
       )
     </if>
     <if test="enter.createEndDateTime != null and  enter.createStartDateTime != null">
-      and part.updated_time between #{enter.createStartDateTime} and #{enter.createEndDateTime}
+      and us.created_time between #{enter.createStartDateTime} and #{enter.createEndDateTime}
     </if>
   </sql>
   <sql id="contactUsDetail">
@@ -31,6 +31,7 @@
     us.first_name as firstName,
     us.last_name as lastName,
     us.full_name as fullName,
+    us.created_time as createTime,
     us.telephone as telephone,
     us.country_name as countryName,
     us.city_name AS cityName,
@@ -60,6 +61,7 @@
     us.full_name as fullName,
     us.telephone as telephone,
     us.country_name as countryName,
+    us.created_time as createTime,
     us.city_name AS cityName,
     us.district_name as districtName,
     us.address as address,
