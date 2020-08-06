@@ -2,7 +2,10 @@ package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
+import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
+import com.redescooter.ses.api.common.enums.wms.WhInTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
@@ -45,11 +48,11 @@ public class WmsWhInServiceImpl implements WmsWhInService {
   public Map<String, Integer> countByType(GeneralEnter enter) {
     Map<String, Integer> map = new HashMap<>();
     //已入库数据统计
-    int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter);
-    map.put(String.valueOf(PushTypeEnums.TAG.getValue()),wmsInWhCount);
+    int wmsInWhCount = wmsServiceMapper.wmsInWhCountByType(enter,AllocateOrderStatusEnums.INPRODUCTIONWH.getValue(), AssemblyStatusEnums.ASSEMBLING.getValue());
+    map.put(String.valueOf(WhInTypeEnums.TODO.getValue()),wmsInWhCount);
     //待入库数据统计
-    int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter);
-    map.put(String.valueOf(PushTypeEnums.TAG_AND.getValue()),stockPendingCount);
+    int stockPendingCount = wmsServiceMapper.stockPendingCountByType(enter,AllocateOrderStatusEnums.ALLOCATE.getValue(), AssemblyStatusEnums.QC_PASSED.getValue());
+    map.put(String.valueOf(WhInTypeEnums.HISTORY.getValue()),stockPendingCount);
     return map;
   }
 
@@ -68,15 +71,15 @@ public class WmsWhInServiceImpl implements WmsWhInService {
       List<WmsInWhResult> wmsInWhResult = new ArrayList<WmsInWhResult>();
 
       //已入库列表
-      if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.TODO.getValue())) {
-          totalRows = wmsServiceMapper.wmsInWhCount(enter);
-          wmsInWhResult= wmsServiceMapper.wmsInWhList(enter);
+      if (StringUtils.equals(enter.getClassType(), WhInTypeEnums.TODO.getValue())) {
+          totalRows = wmsServiceMapper.wmsInWhCount(enter,AllocateOrderStatusEnums.INPRODUCTIONWH.getValue(), AssemblyStatusEnums.ASSEMBLING.getValue());
+          wmsInWhResult= wmsServiceMapper.wmsInWhList(enter,AllocateOrderStatusEnums.INPRODUCTIONWH.getValue(), AssemblyStatusEnums.ASSEMBLING.getValue());
       }
 
       //待入库列表
-      if (StringUtils.equals(enter.getClassType(), ProductionTypeEnums.HISTORY.getValue())){
-         totalRows = wmsServiceMapper.stockPendingCount(enter);
-         wmsInWhResult= wmsServiceMapper.stockPendingList(enter);
+      if (StringUtils.equals(enter.getClassType(), WhInTypeEnums.HISTORY.getValue())){
+         totalRows = wmsServiceMapper.stockPendingCount(enter,AllocateOrderStatusEnums.ALLOCATE.getValue(), AssemblyStatusEnums.QC_PASSED.getValue());
+         wmsInWhResult= wmsServiceMapper.stockPendingList(enter,AllocateOrderStatusEnums.ALLOCATE.getValue(), AssemblyStatusEnums.QC_PASSED.getValue());
       }
       if (totalRows == 0) {
         return PageResult.createZeroRowResult(enter);
