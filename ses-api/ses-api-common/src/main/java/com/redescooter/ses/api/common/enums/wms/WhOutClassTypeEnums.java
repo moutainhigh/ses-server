@@ -1,10 +1,6 @@
 package com.redescooter.ses.api.common.enums.wms;
 
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum WhOutTypeEnums {
+public enum WhOutClassTypeEnums {
     TODO("TODO", "待办事项", "1"),
     HISTORY("HISTORY", "历史", "2");
 
@@ -29,7 +25,7 @@ public enum WhOutTypeEnums {
     private String value;
 
     public static String checkCode(String value) {
-        for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
+        for (WhOutClassTypeEnums item : WhOutClassTypeEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item.getValue();
             }
@@ -37,8 +33,8 @@ public enum WhOutTypeEnums {
         return null;
     }
 
-    public static WhOutTypeEnums getEnumByValue(String value) {
-        for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
+    public static WhOutClassTypeEnums getEnumByValue(String value) {
+        for (WhOutClassTypeEnums item : WhOutClassTypeEnums.values()) {
             if (item.getValue().equals(value)) {
                 return item;
             }

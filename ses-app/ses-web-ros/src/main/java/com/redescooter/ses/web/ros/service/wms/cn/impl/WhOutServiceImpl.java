@@ -15,7 +15,7 @@ import com.redescooter.ses.api.common.enums.wms.ConsignTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutEventEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutStatusBEnums;
 import com.redescooter.ses.api.common.enums.wms.WhOutStatusEnums;
-import com.redescooter.ses.api.common.enums.wms.WhOutTypeEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutClassTypeEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
@@ -148,7 +148,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public PageResult<WhOutOrderListResult> whOrderList(WhOutOrderListEnter enter) {
         List<String> statusList = new ArrayList<>();
-        if (StringUtils.equals(enter.getClassType(), WhOutTypeEnums.TODO.getValue())) {
+        if (StringUtils.equals(enter.getClassType(), WhOutClassTypeEnums.TODO.getValue())) {
             statusList.add(WhOutStatusEnums.PENDING.getValue());
             statusList.add(WhOutStatusEnums.PREPARE_MATERIAL.getValue());
             statusList.add(WhOutStatusEnums.OUT_WH.getValue());
@@ -612,7 +612,7 @@ public class WhOutServiceImpl implements WhOutService {
             });
 
         }
-        for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
+        for (WhOutClassTypeEnums item : WhOutClassTypeEnums.values()) {
             if (!resultMap.containsKey(item.getValue())) {
                 resultMap.put(item.getValue(), 0);
             }

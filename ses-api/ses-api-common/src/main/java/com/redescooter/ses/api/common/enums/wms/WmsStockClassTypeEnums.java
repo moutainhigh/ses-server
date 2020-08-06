@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum WmsStockTypeEnums {
+public enum WmsStockClassTypeEnums {
   AVAILABLE_ONE("AVAILABLE_ZERO","显示库存",1),
 
   TOBEPREDICTED_TWO("TOBEPREDICTED_ONE","待生产",2),

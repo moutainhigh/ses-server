@@ -18,7 +18,7 @@ public enum WhInTypeEnums {
   private String value;
 
   public static String checkCode(String value) {
-    for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
+    for (WhOutClassTypeEnums item : WhOutClassTypeEnums.values()) {
       if (item.getValue().equals(value)) {
         return item.getValue();
       }
@@ -26,8 +26,8 @@ public enum WhInTypeEnums {
     return null;
   }
 
-  public static WhOutTypeEnums getEnumByValue(String value) {
-    for (WhOutTypeEnums item : WhOutTypeEnums.values()) {
+  public static WhInTypeEnums getEnumByValue(String value) {
+    for (WhInTypeEnums item : WhInTypeEnums.values()) {
       if (item.getValue().equals(value)) {
         return item;
       }
