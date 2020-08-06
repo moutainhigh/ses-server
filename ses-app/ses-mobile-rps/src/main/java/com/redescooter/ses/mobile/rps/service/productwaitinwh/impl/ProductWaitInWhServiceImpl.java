@@ -370,6 +370,9 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //查询对应的调拨备料记录
         QueryWrapper<OpeAllocateBTrace> opeAllocateBTraceQueryWrapper = new QueryWrapper<>();
         opeAllocateBTraceQueryWrapper.eq(OpeAllocateBTrace.COL_ALLOCATE_B_ID, opeAllocateB.getId());
+        if (!StringUtils.isEmpty(enter.getProductSerialNum())){
+            opeAllocateBTraceQueryWrapper.eq(OpeAllocateBTrace.COL_SERIAL_NUM,enter.getProductSerialNum());
+        }
         OpeAllocateBTrace opeAllocateBTrace = opeAllocateBTraceService.getOne(opeAllocateBTraceQueryWrapper);
 
         //调拨备料记录为空
