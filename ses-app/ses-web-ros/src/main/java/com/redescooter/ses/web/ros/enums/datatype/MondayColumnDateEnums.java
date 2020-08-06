@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.enums;
+package com.redescooter.ses.web.ros.enums.datatype;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum MondayColumnDateEnums {
-
+    /**
+     * {
+     *   "date": "2019-06-03",
+     *   "time": "13:25:00"
+     * }
+     */
     DATE("date","日期"),
 
     TIME("time","时间");

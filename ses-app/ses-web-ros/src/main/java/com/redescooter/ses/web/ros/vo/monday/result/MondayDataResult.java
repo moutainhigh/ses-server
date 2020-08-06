@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.monday;
+package com.redescooter.ses.web.ros.vo.monday.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class MondayDataResult{
+public class MondayDataResult {
 
     //板子列表
     private List<MondayBoardResult> boards;
@@ -30,4 +30,19 @@ public class MondayDataResult{
 
     //创建成功后返回
     private MondayCreateResult create_item;
+
+    //创建 列后的返回值
+    private MondayColumnResult create_column;
+
+    // 创建板子后的返回值
+    private MondayBoardResult create_board;
+
+    // 创建分组后的返回值
+    private MondayGroupResult create_group;
+
+    //创建板子后返回板子id
+    private String id;
+
+    //创建板子后返回板子title
+    private String title;
 }

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.monday;
+package com.redescooter.ses.web.ros.vo.monday.result;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.Data;
@@ -13,6 +13,17 @@ import lombok.Data;
 @Data
 public class MondayGeneralResult extends GeneralResult {
 
-    private String data;
+    //存放正常执行后的数据
+    private MondayDataResult data;
+
+    //存放错误信息
+    private MondayErrorResult errors;
+
+    private String error_message;
+
+    private int status_code;
+
+
+    //是指那个账户执行的账户Id
     private long account_id;
 }

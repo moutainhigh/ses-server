@@ -731,6 +731,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         enter.setToUserId(0L);
         enter.setUserId(0L);
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
+
+        //数据同步Monday
+        mondayService.websiteSubscriptionEmail(email);
     }
 
     /**
