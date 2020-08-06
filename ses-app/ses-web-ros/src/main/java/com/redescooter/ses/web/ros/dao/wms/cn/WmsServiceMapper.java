@@ -83,14 +83,14 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsInWhCountByType(@Param("enter") GeneralEnter enter);
+  int wmsInWhCountByType(@Param("enter") GeneralEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
   /**
    * 返回已入库列表count
    *
    * @param enter
    * @return
    */
-  int stockPendingCountByType(@Param("enter") GeneralEnter enter);
+  int stockPendingCountByType(@Param("enter") GeneralEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
 
 
   /**
@@ -99,7 +99,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsInWhCount(@Param("enter") WmsWhInEnter enter);
+  int wmsInWhCount(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
 
   /**
    * 已入库列表
@@ -107,7 +107,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsInWhResult> wmsInWhList(@Param("enter") WmsWhInEnter enter);
+  List<WmsInWhResult> wmsInWhList(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
 
 
   /**
@@ -116,7 +116,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int stockPendingCount(@Param("enter") WmsWhInEnter enter);
+  int stockPendingCount(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
 
   /**
    * 待入库列表
@@ -124,7 +124,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter);
+  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
 
 
   /**
