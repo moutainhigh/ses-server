@@ -84,6 +84,7 @@ public class MondayServiceImpl implements MondayService {
     @PostConstruct
     @Override
     public void initializationMondaytemplate() {
+        log.info("-----------------------------初始化Monday模板------------------------------------------");
         // 初始化预订单模板
         for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
             bookOrderMap.put(item.getTitle(), item.getId());
@@ -99,7 +100,7 @@ public class MondayServiceImpl implements MondayService {
             subscribeEmailMap.put(item.getTitle(), item.getId());
         }
         checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName());
-
+        log.info("-----------------------------初始化Monday模板结束------------------------------------------");
     }
 
     @Transactional
