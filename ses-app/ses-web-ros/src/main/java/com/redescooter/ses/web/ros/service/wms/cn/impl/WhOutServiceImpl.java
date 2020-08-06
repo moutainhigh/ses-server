@@ -360,7 +360,8 @@ public class WhOutServiceImpl implements WhOutService {
         orderBList.forEach(item -> {
             opeStocks.forEach(stock -> {
                 if (item.getStockId().equals(stock.getId())) {
-                    stock.setLockTotal(item.getTotalCount());
+                    stock.setLockTotal(stock.getLockTotal()-item.getTotalCount());
+                    stock.setOutTotal(stock.getOutTotal()+item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     stock.setUpdatedBy(enter.getUserId());
                 }
@@ -916,7 +917,7 @@ public class WhOutServiceImpl implements WhOutService {
                         .build();
 
                 for (OpeStockProdProduct scooter : stockProdProductList) {
-                    if (scooter.getId().equals(scooter.getBindOrderId())) {
+                    if (item.getId().equals(scooter.getBindOrderId())) {
                         scooter.setAvailableQty(0);
                         scooter.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                         scooter.setOutStockTime(new Date());
@@ -1145,6 +1146,7 @@ public class WhOutServiceImpl implements WhOutService {
                             });
                         }
                         opeStockBillList.add(opeFrStockBill);
+                        opeFrStockList.add(stock);
                         break;
                     }
                 }
