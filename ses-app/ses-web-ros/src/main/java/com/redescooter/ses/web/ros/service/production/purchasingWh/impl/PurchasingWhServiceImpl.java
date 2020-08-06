@@ -340,40 +340,81 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
-
+        for (Map.Entry<Long, List<OpePartsProductB>> longListEntry : productPartMap.entrySet()) {
+        }
         flag1:
-        for (Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
+        for(Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
             Long key = entry.getKey();
             List<OpePartsProductB> value = entry.getValue();
-            int maxTotal = 0;
+            Integer maxTotal = 0;
+            int total = 0;
             if (productIds.contains(key)) {
 
-                int canAss = 0;
                 flag2:
                 for (OpePartsProductB item : value) {
 
                     flag3:
                     for (OpeStock stock : stockList) {
-                        if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
+                        if (item.getPartsId().equals(stock.getMaterielProductId())) {
 
-                            int partTotal = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            //计算可以组装的车辆最大值
-                            if (canAss > partTotal || canAss == 0) {
-                                canAss = partTotal;
+                            int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
+                            if (maxTotal == 0) {
+                                total++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss < maxTotal) {
+                                total++;
+                                maxTotal = canAss;
+                                continue flag2;
+                            }
+                            if (canAss > 0) {
+                                total++;
+                                continue flag2;
                             }
                         }
                     }
-//                    //计算可以组装的车辆最大值
-//                    if (canAss > 0) {
-//                        maxTotal += canAss;
-//                        continue flag2;
-//                    }
                 }
             }
-            if (maxTotal > 0) {
+            if (total == value.size()) {
                 canAssembledMap.put(key, maxTotal);
             }
         }
+
+
+//        flag1:
+//        for (Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
+//            Long key = entry.getKey();
+//            List<OpePartsProductB> value = entry.getValue();
+//            int maxTotal = 0;
+//            if (productIds.contains(key)) {
+//
+//                int canAss = 0;
+//                flag2:
+//                for (OpePartsProductB item : value) {
+//
+//                    flag3:
+//                    for (OpeStock stock : stockList) {
+//                        if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
+//
+//                            int partTotal = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
+//                            //计算可以组装的车辆最大值
+//                            if (canAss > partTotal || canAss == 0) {
+//                                canAss = partTotal;
+//                            }
+//                        }
+//                    }
+////                    //计算可以组装的车辆最大值
+////                    if (canAss > 0) {
+////                        maxTotal += canAss;
+////                        continue flag2;
+////                    }
+//                }
+//            }
+//            if (maxTotal > 0) {
+//                canAssembledMap.put(key, maxTotal);
+//            }
+//        }
 
         if (canAssembledMap.isEmpty()) {
             return result;

@@ -41,14 +41,10 @@ public class WhOutOrderListEnter extends PageEnter {
     private String consignType;
 
     @ApiModelProperty(value = "创建开始时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String createStartTime;
+    private String createStartDateTime;
 
     @ApiModelProperty(value = "创建结束时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private String createEndTime;
+    private String createEndDateTime;
 
     @ApiModelProperty(value = "关键字搜索")
     private String keyword;

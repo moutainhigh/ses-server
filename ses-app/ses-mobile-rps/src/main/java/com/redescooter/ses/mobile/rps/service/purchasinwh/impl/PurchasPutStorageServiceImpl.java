@@ -447,9 +447,17 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param parts
      */
     private void freedStockToBeStored(OpeParts parts, int qty) {
+        //查询仓库
+        OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
+        if (opeWhse == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
         //查询 库存
-        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
-                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
+        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>()
+                .eq(OpeStock::getMaterielProductId, parts.getId())
+                .eq(OpeStock::getMaterielProductType, BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
+                .eq(OpeStock::getWhseId,opeWhse.getId()));
         if (opeStock == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
         }

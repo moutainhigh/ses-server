@@ -102,8 +102,8 @@
         <if test="enter.consignType != null and enter.consignType != ''">
             and outOrder.consign_type=#{enter.consignType}
         </if>
-        <if test="enter.createStartTime != null and enter.createStartTime != '' and  enter.createEndTime != null and enter.createEndTime != ''">
-            and (outOrder.created_time between #{enter.createStartTime} and #{enter.createEndTime})
+        <if test="enter.createStartDateTime != null and enter.createStartDateTime != '' and  enter.createEndDateTime != null and enter.createEndDateTime != ''">
+            and (outOrder.created_time between #{enter.createStartDateTime} and #{enter.createEndDateTime})
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
