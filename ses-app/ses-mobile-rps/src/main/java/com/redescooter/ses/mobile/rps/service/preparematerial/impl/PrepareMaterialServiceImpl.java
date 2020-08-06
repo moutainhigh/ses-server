@@ -456,7 +456,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockPurchas> opeStockProdPartListIdClassFalse =
                     opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                             .in(OpeStockPurchas::getPartId, stockProdPartIdMap.keySet())
-                            .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
                             .orderByAsc(OpeStockPurchas::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
@@ -491,7 +491,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            partQty=0;
+                            partQty = 0;
                             item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
@@ -514,19 +514,20 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         //子表数据更新
         for (OpeAllocateB opeAllocateB : opeAllocateBList) {
             int partQty = 0;
+
             //便利部件基本数据
             for (SavePartBasicDateEnter partMap : enter.getSavePartBasicDateMap().get(opeAllocateB.getId())) {
                 if (opeAllocateB.getPartId().equals(partMap.getPartId())) {
                     //设置备料记录
                     opeAllocateBTraceList.add(buildOpeAllocateBTrace(enter.getUserId(), batchNo, opeAllocateB, partMap));
                 }
-                //部件数量校验
-                if (!opeAllocateB.getPreparationWaitQty().equals(partMap.getQty())) {
-                    throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
-                }
-
                 partQty += partMap.getQty();
                 totalPart += partMap.getQty();
+            }
+
+            //部件数量校验
+            if (!opeAllocateB.getPreparationWaitQty().equals(partQty)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
             }
             //待备料数量减掉
             opeAllocateB.setPreparationWaitQty(opeAllocateB.getPreparationWaitQty() - partQty);
@@ -674,7 +675,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
                     opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
                             .in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet())
-                            .eq(OpeStockProdPart::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
                             .orderByAsc(OpeStockProdPart::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
@@ -710,7 +711,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            partQty=0;
+                            partQty = 0;
                             item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());

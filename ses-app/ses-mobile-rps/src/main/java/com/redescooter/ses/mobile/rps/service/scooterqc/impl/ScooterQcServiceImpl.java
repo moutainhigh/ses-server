@@ -212,15 +212,12 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         // 返回的结果集
         List<ScooterQcItemOptionEnter> qcItemOptionEnterList = null;
         try {
-            qcItemOptionEnterList =
-                    JSON.parseArray(enter.getScooterQcItemOptionEnter(), ScooterQcItemOptionEnter.class);
+            qcItemOptionEnterList =JSON.parseArray(enter.getScooterQcItemOptionEnter(), ScooterQcItemOptionEnter.class);
         } catch (Exception e) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),
-                    ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
         if (CollectionUtils.isEmpty(qcItemOptionEnterList)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),
-                    ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
         // 组装单子单
         QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
@@ -229,8 +226,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
         // 抛组装子单为空异常
         if (StringUtils.isEmpty(opeAssemblyBOrder)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getCode(),
-                    ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getCode(), ExceptionCodeEnums.OPE_B_ORDER_IS_EMPTY.getMessage());
         }
 
         // 获取组装单
@@ -240,26 +236,21 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
         // 抛组装单为空异常
         if (StringUtils.isEmpty(opeAssemblyOrder)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(),
-                    ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
 
         //主订单状态判断
-        if (!org.apache.commons.lang3.StringUtils.equals(opeAssemblyOrder.getStatus(),
-                AssemblyStatusEnums.QC.getValue())) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),
-                    ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        if (!org.apache.commons.lang3.StringUtils.equals(opeAssemblyOrder.getStatus(),AssemblyStatusEnums.QC.getValue())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         //质检数量判断
         if (opeAssemblyBOrder.getLaveWaitQcQty() == 0) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),
-                    ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
         }
 
         // 待质检总数异常
         if ((opeAssemblyBOrder.getLaveWaitQcQty() - 1 < 0)) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),
-                    ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
         }
 
         // 质检记录集合
@@ -281,30 +272,23 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         for (ScooterQcItemOptionEnter scooterQcItemOptionEnter : qcItemOptionEnterList) {
             // 获取质检模板
             QueryWrapper<OpeProductQcTemplate> opeProductQcTemplateQueryWrapper = new QueryWrapper<>();
-            opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID,
-                    opeAssemblyBOrder.getProductId());
-            OpeProductQcTemplate opeProductQcTemplate =
-                    opeProductQcTemplateService.getOne(opeProductQcTemplateQueryWrapper);
+            opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID,opeAssemblyBOrder.getProductId());
+            OpeProductQcTemplate opeProductQcTemplate =opeProductQcTemplateService.getOne(opeProductQcTemplateQueryWrapper);
 
             // 判断详细质检信息是否为空
             if (StringUtils.isEmpty(opeProductQcTemplate)) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
-                        ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
+                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
             }
 
             // 查询质检模板结果项
             QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
-            opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_ID,
-                    scooterQcItemOptionEnter.getQcResultId());
-            opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID,
-                    opeProductQcTemplate.getId());
-            OpeProductQcTemplateB opeProductQcTemplateB =
-                    opeProductQcTemplateBService.getOne(opeProductQcTemplateBQueryWrapper);
+            opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_ID,scooterQcItemOptionEnter.getQcResultId());
+            opeProductQcTemplateBQueryWrapper.eq(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID,opeProductQcTemplate.getId());
+            OpeProductQcTemplateB opeProductQcTemplateB =opeProductQcTemplateBService.getOne(opeProductQcTemplateBQueryWrapper);
 
             // 判断详细质检信息是否为空
             if (StringUtils.isEmpty(opeProductQcTemplateB)) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),
-                        ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
+                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
             }
 
             if (!opeProductQcTemplateB.getPassFlag()) {
@@ -335,10 +319,8 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         opeAssemblyLotTraceQueryWrapper.eq(OpeAssemblyLotTrace.COL_BATCH_NO, batchNum);
         opeAssemblyLotTrace = opeAssemblyLotTraceService.getOne(opeAssemblyLotTraceQueryWrapper);
         if (!StringUtils.isEmpty(opeAssemblyLotTrace)) {
-            opeAssemblyLotTrace.setPassCount(
-                    qcOptionFlag ? opeAssemblyLotTrace.getPassCount() + 1 : opeAssemblyLotTrace.getPassCount());
-            opeAssemblyLotTrace.setFailCount(
-                    qcOptionFlag ? opeAssemblyLotTrace.getFailCount() : opeAssemblyLotTrace.getFailCount() + 1);
+            opeAssemblyLotTrace.setPassCount(qcOptionFlag ? opeAssemblyLotTrace.getPassCount() + 1 : opeAssemblyLotTrace.getPassCount());
+            opeAssemblyLotTrace.setFailCount(qcOptionFlag ? opeAssemblyLotTrace.getFailCount() : opeAssemblyLotTrace.getFailCount() + 1);
             opeAssemblyLotTrace.setTotalQualityInspected(opeAssemblyLotTrace.getTotalQualityInspected() + 1);
             opeAssemblyLotTrace.setUpdatedBy(enter.getUserId());
             opeAssemblyLotTrace.setUpdatedTime(new Date());
@@ -394,8 +376,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                     .build();
         } else {
             opeAssemblyBQc.setStatus(qcOptionFlag ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue());
-            opeAssemblyBQc
-                    .setPassCount(qcOptionFlag ? opeAssemblyBQc.getPassCount() + 1 : opeAssemblyBQc.getPassCount());
+            opeAssemblyBQc.setPassCount(qcOptionFlag ? opeAssemblyBQc.getPassCount() + 1 : opeAssemblyBQc.getPassCount());
             opeAssemblyBQc.setTotalQualityInspected(opeAssemblyBQc.getTotalQualityInspected() + 1);
         }
 
@@ -437,8 +418,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
             }
             if (opeAssemblyOrder.getLaveWaitQcTotal() < 0 || opeAssemblyBOrder.getLaveWaitQcQty() < 0) {
                 // 待质检总数错误
-                throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),
-                        ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
+                throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
             }
 
             // 判断组装单和子单节点是否发生改变
@@ -464,8 +444,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 opeAssemblyBOrder.setStatus(AssemblyStatusEnums.QC.getValue());
             }
         } else {
-            throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),
-                    ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getCode(),ExceptionCodeEnums.WAIT_QC_NUM_ERROR.getMessage());
         }
 
         // 保存每个质检项的质检Trace集合
@@ -482,7 +461,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
         // 返回结果集
-        return ScooterQcResidueNumResult.builder().laveQcTotal(opeAssemblyOrder.getLaveWaitQcTotal()).result(orderFlag ? Boolean.TRUE : Boolean.FALSE).build();
+        return ScooterQcResidueNumResult.builder().laveQcTotal(opeAssemblyOrder.getLaveWaitQcTotal()).result(qcOptionFlag ? Boolean.TRUE : Boolean.FALSE).build();
     }
 
     /**

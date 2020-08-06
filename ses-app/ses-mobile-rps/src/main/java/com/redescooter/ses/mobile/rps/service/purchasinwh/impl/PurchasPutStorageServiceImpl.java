@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.PartsIdClassEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
@@ -131,11 +132,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
         if (partsData.getIdClass() != true) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
-
         }
 
         //生成入库单、库存数据更新
-        OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB);
+        OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB, partsData);
 
         //入库单 保存
         opeStockBillService.save(opeStockBill);
@@ -147,7 +147,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         OpeWhse opeWhsegetid = opeWhseService.getOne(opeWhse);
         if (opeWhsegetid == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
-
         }
 
         //校验批次号
@@ -157,34 +156,13 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .eq(OpePurchasBQcItem::getSerialNum, enter.getSerialNum())
                 .eq(OpePurchasBQcItem::getDr, 0)
         );
+
         if (opePurchasBQcItem == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
         }
 
         //入库条目数据增加
-        OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
-                .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
-                .dr(0)
-                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
-                .stockId(opeStockBill.getStockId())
-                .partId(partsData.getId())
-                .lot(opePurchasBQcItem.getBatchNo())
-                .partNumber(partsData.getPartsNumber())
-                .principalId(enter.getUserId())
-                .serialNumber(opePurchasBQcItem.getSerialNum())
-                .inStockTime(new Date())
-                .revision(0)
-                .createdBy(enter.getUserId())
-                .createdTime(new Date())
-                .updatedBy(enter.getUserId())
-                .updatedTime(new Date())
-                .inStockBillId(opeStockBill.getId())
-                .outPrincipalId(0L)
-                .outStockBillId(0L)
-                .outStockTime(null)
-                .availableQty(1)
-                .inWhQty(1)
-                .build();
+        OpeStockPurchas opeStockPurchas = buildOpeStockPurchas(enter.getUserId(), 1, partsData, opeStockBill, opePurchasBQcItem.getBatchNo(), enter.getSerialNum());
         //增加仓库数据
         opeStockPurchasService.save(opeStockPurchas);
         if (opePurchasB.getInWaitWhQty() != null && opePurchas.getInWaitWhTotal() != null) {
@@ -220,7 +198,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
 
         //释放待入库库存
-        freedStockToBeStored(partsData,1);
+        freedStockToBeStored(partsData, 1);
 
         return HaveIdPartsResult.builder()
                 .id(opePurchasB.getId())
@@ -229,23 +207,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 ;
     }
 
-    /**
-     * 待入库 锚点
-     *
-     * @param qty
-     * @param parts
-     */
-    private void freedStockToBeStored(OpeParts parts, int qty) {
-        //查询 库存
-        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
-                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
-        if (opeStock == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
-        }
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - qty);
-        opeStock.setUpdatedTime(new Date());
-        opeStockService.updateById(opeStock);
-    }
 
     /**
      * 无Id 入库
@@ -275,7 +236,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
 
         //生成入库单、库存数据更新
-        OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB);
+        OpeStockBill opeStockBill = saveStockBill(enter.getUserId(), opePurchasB, partsData);
 
         //入库单 保存
         opeStockBillService.save(opeStockBill);
@@ -300,28 +261,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         //入库条目数据增加
-        OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
-                .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
-                .dr(0)
-                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
-                .stockId(opeStockBill.getStockId())
-                .partId(partsData.getId())
-                .lot(opePurchasBQcItem.getBatchNo())
-                .partNumber(partsData.getPartsNumber())
-                .principalId(enter.getUserId())
-                .inStockTime(new Date())
-                .revision(0)
-                .createdBy(enter.getUserId())
-                .createdTime(new Date())
-                .updatedBy(enter.getUserId())
-                .updatedTime(new Date())
-                .inStockBillId(opeStockBill.getId())
-                .outPrincipalId(0L)
-                .outStockBillId(0L)
-                .outStockTime(null)
-                .inWhQty(opePurchasB.getInWaitWhQty())
-                .availableQty(opePurchasB.getInWaitWhQty())
-                .build();
+        OpeStockPurchas opeStockPurchas = buildOpeStockPurchas(enter.getUserId(), opePurchasB.getInWaitWhQty(), partsData, opeStockBill, opePurchasBQcItem.getBatchNo(), null);
         //增加仓库数据
         opeStockPurchasService.save(opeStockPurchas);
 
@@ -358,12 +298,39 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         }
 
         //释放待入库库存
-        freedStockToBeStored(partsData,enter.getInWaitWhQty());
+        freedStockToBeStored(partsData, enter.getInWaitWhQty());
 
         return NotIdPartsSucceedResult.builder()
                 .id(opePurchasB.getId())
                 .inWaitWhQty(opePurchasB.getInWaitWhQty())
                 .build();
+    }
+
+    private OpeStockPurchas buildOpeStockPurchas(Long userId, int inwhCount, OpeParts partsData, OpeStockBill opeStockBill, String bathcNo, String serialNum) {
+        OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
+                .dr(0)
+                .status(StockProductPartStatusEnums.AVAILABLE.getValue())
+                .stockId(opeStockBill.getStockId())
+                .partId(partsData.getId())
+                .lot(bathcNo)
+                .partNumber(partsData.getPartsNumber())
+                .principalId(userId)
+                .inStockTime(new Date())
+                .serialNumber(partsData.getIdClass() ? serialNum : null)
+                .revision(0)
+                .createdBy(userId)
+                .createdTime(new Date())
+                .updatedBy(userId)
+                .updatedTime(new Date())
+                .inStockBillId(opeStockBill.getId())
+                .outPrincipalId(0L)
+                .outStockBillId(0L)
+                .outStockTime(null)
+                .inWhQty(inwhCount)
+                .availableQty(inwhCount)
+                .build();
+        return opeStockPurchas;
     }
 
     /**
@@ -394,9 +361,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return notIdPartsResult;
     }
 
-    private OpeStockBill saveStockBill(Long userId, OpePurchasB opePurchasB) {
-        OpeParts parts = opePartsService.getById(opePurchasB.getPartId());
-
+    private OpeStockBill saveStockBill(Long userId, OpePurchasB opePurchasB, OpeParts parts) {
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
@@ -415,8 +380,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         if (opeStock != null) {
             if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
                 //有库存 库存累计
-                opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
-                opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
+                opeStock.setAvailableTotal(parts.getIdClass() ? opeStock.getAvailableTotal() + 1 : opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
+                opeStock.setIntTotal(parts.getIdClass() ? opeStock.getIntTotal() + 1 : opeStock.getIntTotal() + opePurchasB.getTotalCount());
                 opeStock.setUpdatedBy(userId);
                 opeStock.setUpdatedTime(new Date());
             }
@@ -430,8 +395,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .userId(0L)
                     .tenantId(0L)
                     .whseId(opeWhse.getId())
-                    .intTotal(opePurchasB.getTotalCount())
-                    .availableTotal(opePurchasB.getTotalCount())
+                    .intTotal(parts.getIdClass() ? 1 : opePurchasB.getTotalCount())
+                    .availableTotal(parts.getIdClass() ? 1 : opePurchasB.getTotalCount())
                     .outTotal(0)
                     .wornTotal(0)
                     .lockTotal(0)
@@ -450,10 +415,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         //库存更新
         opeStockService.saveOrUpdate(opeStock);
         //入库单 生成
-        return buildOpeStockBill(userId, opePurchasB, opeStock.getId());
+        return buildOpeStockBill(userId, opePurchasB, opeStock.getId(), parts);
     }
 
-    private OpeStockBill buildOpeStockBill(Long userId, OpePurchasB item, Long stockId) {
+    private OpeStockBill buildOpeStockBill(Long userId, OpePurchasB item, Long stockId, OpeParts parts) {
         return OpeStockBill.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)
@@ -463,7 +428,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
                 .sourceId(item.getPurchasId())
-                .total(item.getTotalCount())
+                .total(parts.getIdClass() ? 1 : item.getTotalCount())
                 .sourceType(SourceTypeEnums.PURCHAS.getValue())
                 .principalId(userId)
                 .operatineTime(new Date())
@@ -475,86 +440,21 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .build();
     }
 
-    private void saveStockBillSingle(HaveIdEnter enter, OpeStock saveStock, OpeStockBill saveOpeStockBill, OpePurchasB opePurchasB) {
-
-        OpeParts parts = opePartsService.getById(opePurchasB.getPartId());
-
-        //查询采购仓库
-        QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
-        opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
-        OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+    /**
+     * 待入库 锚点
+     *
+     * @param qty
+     * @param parts
+     */
+    private void freedStockToBeStored(OpeParts parts, int qty) {
+        //查询 库存
+        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getMaterielProductId, parts.getId()).eq(OpeStock::getMaterielProductType,
+                BomCommonTypeEnums.getValueByCode(parts.getPartsType())));
+        if (opeStock == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
         }
-
-        QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
-        opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
-        opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_ID, opePurchasB.getPartId());
-        OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
-
-
-        Boolean stockExist = Boolean.FALSE;
-        if (opeStock != null) {
-            if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
-                stockExist = Boolean.TRUE;
-                //有库存 库存累计
-                opeStock.setAvailableTotal(opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
-                opeStock.setIntTotal(opeStock.getIntTotal() + opePurchasB.getTotalCount());
-                opeStock.setUpdatedBy(enter.getUserId());
-                opeStock.setUpdatedTime(new Date());
-                BeanUtils.copyProperties(opeStock, saveStock);
-                //入库单 生成
-                BeanUtils.copyProperties(buildOpeStockBill(enter.getUserId(), opePurchasB, opeStock.getId()), saveOpeStockBill);
-            }
-        }
-
-        if (!stockExist) {
-            //无库存
-            OpeStock stock = OpeStock.builder()
-                    .id(idAppService.getId(SequenceName.OPE_STOCK))
-                    .dr(0)
-                    .userId(0L)
-                    .tenantId(0L)
-                    .whseId(opeWhse.getId())
-                    .intTotal(opePurchasB.getTotalCount())
-                    .availableTotal(opePurchasB.getTotalCount())
-                    .outTotal(0)
-                    .wornTotal(0)
-                    .materielProductId(opePurchasB.getPartId())
-                    .materielProductName(parts.getCnName())
-                    .materielProductType(BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
-                    .revision(0)
-                    .updatedBy(enter.getUserId())
-                    .updatedTime(new Date())
-                    .createdBy(enter.getUserId())
-                    .createdTime(new Date())
-                    .build();
-        }
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - qty);
+        opeStock.setUpdatedTime(new Date());
+        opeStockService.updateById(opeStock);
     }
-
-//    private OpeStockBill buildOpeStockBill(Long userId, OpePurchasB item, Long stockId) {
-//        return OpeStockBill.builder()
-//                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
-//                .dr(0)
-//                .tenantId(0L)
-//                .userId(userId)
-//                .stockId(stockId)
-//                .direction(InOutWhEnums.IN.getValue())
-//                .status(StockBillStatusEnums.NORMAL.getValue())
-//                .sourceId(item.getPurchasId())
-//                .total(item.getTotalCount())
-//                .sourceType(SourceTypeEnums.PURCHAS.getValue())
-//                .principalId(userId)
-//                .operatineTime(new Date())
-//                .revision(0)
-//                .createdBy(userId)
-//                .createdTime(new Date())
-//                .updatedBy(userId)
-//                .updatedTime(new Date())
-//                .build();
-//    }
-
-
 }
