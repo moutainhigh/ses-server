@@ -101,7 +101,7 @@ public class AssemblyServiceImpl implements AssemblyService {
             throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
 
-        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId,opeAssemblyOrder.getId()).ne(OpeAssemblyBOrder::getWaitAssemblyQty,
+        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId, opeAssemblyOrder.getId()).ne(OpeAssemblyBOrder::getWaitAssemblyQty,
                 0));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -198,19 +198,14 @@ public class AssemblyServiceImpl implements AssemblyService {
                 updateOpeAssemblyBStatus = Boolean.FALSE;
             }
         }
+        OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(opeAssemblyBOrder.getAssemblyId());
+        if (opeAssemblyOrder == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
+        }
 
         //主表信息更新
         if (updateOpeAssemblyBStatus) {
-            OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(opeAssemblyBOrder.getAssemblyId());
-            if (opeAssemblyOrder == null) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
-            }
             opeAssemblyOrder.setStatus(AssemblyStatusEnums.QC.getValue());
-            opeAssemblyOrder.setWaitAssemblyTotal(0);
-            opeAssemblyOrder.setUpdatedBy(enter.getUserId());
-            opeAssemblyOrder.setUpdatedTime(new Date());
-            opeAssemblyOrderService.updateById(opeAssemblyOrder);
-
             //日志记录
             SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
             BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -221,6 +216,12 @@ public class AssemblyServiceImpl implements AssemblyService {
             this.saveNode(saveNodeEnter);
         }
 
+        //未完全组装完成组装数量减少
+        opeAssemblyOrder.setWaitAssemblyTotal(opeAssemblyOrder.getWaitAssemblyTotal() - 1);
+        opeAssemblyOrder.setUpdatedBy(enter.getUserId());
+        opeAssemblyOrder.setUpdatedTime(new Date());
+        opeAssemblyOrderService.updateById(opeAssemblyOrder);
+
 
         //整车组装记录
         OpeProductAssembly opeProductAssembly = OpeProductAssembly.builder()
@@ -229,7 +230,6 @@ public class AssemblyServiceImpl implements AssemblyService {
                 .productId(opeAssemblyBOrder.getProductId())
                 .assemblyBId(opeAssemblyBOrder.getId())
                 .assemblyId(opeAssemblyBOrder.getAssemblyId())
-//                .productSerialNum(productSerialN)
                 .productName(partsProduct.getCnName())
                 .productSerialNum(RandomUtil.BASE_CHAR)
                 .productType(partsProduct.getProductType().toString())
@@ -269,7 +269,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         });
 
         //子订单数据更新
-        opeAssemblyBOrder.setCompleteQty(1);
+        opeAssemblyBOrder.setCompleteQty(opeAssemblyBOrder.getCompleteQty()+1);
         opeAssemblyBOrder.setUpdatedBy(enter.getUserId());
         opeAssemblyBOrder.setUpdatedTime(new Date());
         opeAssemblyBOrderService.updateById(opeAssemblyBOrder);

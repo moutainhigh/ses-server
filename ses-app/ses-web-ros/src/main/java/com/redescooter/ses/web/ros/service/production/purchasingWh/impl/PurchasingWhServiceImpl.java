@@ -246,9 +246,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
 
 
-        Integer num = purchasingWhServiceMapper.outWhCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()),Lists.newArrayList(allocateWhse.get(0).getId()));
+        Integer num = purchasingWhServiceMapper.outWhCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()), Lists.newArrayList(allocateWhse.get(0).getId()));
 
-        List<OutWhResult> results = purchasingWhServiceMapper.outWhList(enter, Lists.newArrayList(assemblyWhse.get(0).getId()),Lists.newArrayList(allocateWhse.get(0).getId()));
+        List<OutWhResult> results = purchasingWhServiceMapper.outWhList(enter, Lists.newArrayList(assemblyWhse.get(0).getId()), Lists.newArrayList(allocateWhse.get(0).getId()));
 
 //        //组装仓库 数据
 //        int countAssembly = purchasingWhServiceMapper.outWhListAssemblyCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()));
@@ -345,10 +345,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         for (Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
             Long key = entry.getKey();
             List<OpePartsProductB> value = entry.getValue();
-            Integer maxTotal = 0;
-            int partTotal = 0;
+            int maxTotal = 0;
             if (productIds.contains(key)) {
 
+                int canAss = 0;
                 flag2:
                 for (OpePartsProductB item : value) {
 
@@ -356,14 +356,18 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                     for (OpeStock stock : stockList) {
                         if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
 
-                            int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
+                            int partTotal = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
                             //计算可以组装的车辆最大值
-                            if (canAss > 0) {
-                                maxTotal += canAss;
-                                continue flag2;
+                            if (canAss > partTotal || canAss == 0) {
+                                canAss = partTotal;
                             }
                         }
                     }
+//                    //计算可以组装的车辆最大值
+//                    if (canAss > 0) {
+//                        maxTotal += canAss;
+//                        continue flag2;
+//                    }
                 }
             }
             if (maxTotal > 0) {
