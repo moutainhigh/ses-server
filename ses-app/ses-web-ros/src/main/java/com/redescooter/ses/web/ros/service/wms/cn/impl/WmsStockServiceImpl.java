@@ -121,8 +121,8 @@ public class WmsStockServiceImpl implements WmsStockService {
         }
         //待入库库存数据列表
         if (StringUtils.equals(enter.getClassType(), String.valueOf(WmsStockClassTypeEnums.TOBESTORED_THREE.getValue()))) {
-            totalRows = wmsServiceMapper.wmsStoredStockCount(enter, whselist, productType, CurrencyUnitEnums.FR.getValue());
-            stockResult = wmsServiceMapper.wmsStoredStockList(enter, whselist, productType, CurrencyUnitEnums.FR.getValue());
+            totalRows = wmsServiceMapper.wmsStoredStockCount(enter, purchasWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
+            stockResult = wmsServiceMapper.wmsStoredStockList(enter, purchasWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
         }
         //已出库库存数据列表
         if (StringUtils.equals(enter.getClassType(), String.valueOf(WmsStockClassTypeEnums.OUTWH_FOUR.getValue()))) {

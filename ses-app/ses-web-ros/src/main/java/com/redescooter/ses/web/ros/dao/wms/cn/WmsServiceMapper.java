@@ -22,14 +22,15 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter,@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter, @Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+
   /**
    * 仓储可用列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter,@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter, @Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
   /**
    * 返回仓储待生产列表count
@@ -37,28 +38,33 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsBePredictedStockCount(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsBePredictedStockCount(@Param("enter") WmsStockEnter enter, @Param("whseid") long whseid, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+
   /**
    * 仓储待生产列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsBePredictedStockList(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  List<WmsStockAvailableResult> wmsBePredictedStockList(@Param("enter") WmsStockEnter enter, @Param("whseid") long whseid, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+
   /**
    * 返回仓储待入库列表count
    *
    * @param enter
    * @return
    */
-  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("whseList")List<OpeWhse> whseList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("allocatewhId") Long allocatewhId,@Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList,
+                          @Param(
+          "amountType") String amountType);
+
   /**
    * 仓储待入库列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("whseList")List<OpeWhse> whseList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("allocatewhId") Long allocatewhId,@Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
   /**
    * 返回仓储出库列表count
@@ -66,31 +72,15 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsOutWhStockCount(@Param("enter") WmsStockEnter enter,@Param("amountType")  String amountType);
+  int wmsOutWhStockCount(@Param("enter") WmsStockEnter enter, @Param("amountType") String amountType);
+
   /**
    * 返回仓储出库列表count
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsOutWhStockList(@Param("enter") WmsStockEnter enter,@Param("amountType")  String amountType);
-
-
-
-  /**
-   * 返回已入库列表count
-   *
-   * @param enter
-   * @return
-   */
-  int wmsInWhCountByType(@Param("enter") GeneralEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
-  /**
-   * 返回已入库列表count
-   *
-   * @param enter
-   * @return
-   */
-  int stockPendingCountByType(@Param("enter") GeneralEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
+  List<WmsStockAvailableResult> wmsOutWhStockList(@Param("enter") WmsStockEnter enter, @Param("amountType") String amountType);
 
 
   /**
@@ -99,7 +89,24 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsInWhCount(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
+  int wmsInWhCountByType(@Param("enter") GeneralEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
+
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int stockPendingCountByType(@Param("enter") GeneralEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
+
+
+  /**
+   * 返回已入库列表count
+   *
+   * @param enter
+   * @return
+   */
+  int wmsInWhCount(@Param("enter") WmsWhInEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
 
   /**
    * 已入库列表
@@ -107,7 +114,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsInWhResult> wmsInWhList(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
+  List<WmsInWhResult> wmsInWhList(@Param("enter") WmsWhInEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
 
 
   /**
@@ -116,7 +123,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int stockPendingCount(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
+  int stockPendingCount(@Param("enter") WmsWhInEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
 
   /**
    * 待入库列表
@@ -124,7 +131,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter,@Param("inWhStatus") String inWhStatus,@Param("assemblingStatus") String assemblingStatus);
+  List<WmsInWhResult> stockPendingList(@Param("enter") WmsWhInEnter enter, @Param("inWhStatus") String inWhStatus, @Param("assemblingStatus") String assemblingStatus);
 
 
   /**
@@ -159,13 +166,14 @@ public interface WmsServiceMapper {
    * @return
    */
   List<WmsProductListResult> productList(@Param("enter") WmsWhInDetailsEnter enter);
+
   /**
    * 可用库存count
    *
    * @param
    * @return
    */
-  int usableStockCountByType(@Param("whseidList") List<OpeWhse> whseidList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int usableStockCountByType(@Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
   /**
    * 返回仓储待入库列表count
@@ -173,7 +181,7 @@ public interface WmsServiceMapper {
    * @param
    * @return
    */
-  int wmsStoredStockCountByType(@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsStoredStockCountByType(@Param("whseid") long whseid, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
   /**
    * 返回仓储待生产列表count
@@ -181,8 +189,7 @@ public interface WmsServiceMapper {
    * @param
    * @return
    */
-  int wmsBePredictedStockCountByType(@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
-
+  int wmsBePredictedStockCountByType(@Param("whseid") long whseid, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
 
   /**
@@ -191,7 +198,7 @@ public interface WmsServiceMapper {
    * @param
    * @return
    */
-  int wmsOutWhStockCountByType(@Param("status") String status,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsOutWhStockCountByType(@Param("status") String status, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
 }
 

@@ -421,7 +421,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
         //查询仓库中是否有该产品，有就数量叠加，没有就新增
-        if (!StringUtils.isEmpty(opeStock)) {
+        if (opeStock != null) {
             //入库总数+
             opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             //剩余库存数+
@@ -536,8 +536,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //保存生产成品库的数据
         opeStockProdPartService.save(opeStockProdPart);
 
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - 1);
-        opeStockService.save(opeStock);
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - enter.getInWhNum());
+        opeStockService.saveOrUpdate(opeStock);
 
         //返回成功结果集
         return ProductWaitInWhInfoResult.builder()
@@ -572,7 +572,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_QC_RESULT, QcStatusEnums.PASS.getValue());
         opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_SERIAL_NUM, enter.getProductSerialNum());
         OpeAssemblyQcItem opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
-        if (StringUtils.isEmpty(opeAssemblyQcItem)) {
+        if (opeAssemblyQcItem == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_INFO_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_INFO_IS_EMPTY.getMessage());
         }
 
@@ -760,7 +760,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
         //释放待入库数据
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - enter.getInWhNum());
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - 1);
         //库存更新
         opeStockService.saveOrUpdate(opeStock);
 
