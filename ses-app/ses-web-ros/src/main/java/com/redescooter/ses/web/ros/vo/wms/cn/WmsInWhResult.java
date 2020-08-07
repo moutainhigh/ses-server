@@ -57,5 +57,8 @@ public class WmsInWhResult extends GeneralResult {
     @ApiModelProperty(value = "Tale类型")
     private String classType;
 
+    @ApiModelProperty(value = "单据类型")
+    private String orderType;
+
 
 }

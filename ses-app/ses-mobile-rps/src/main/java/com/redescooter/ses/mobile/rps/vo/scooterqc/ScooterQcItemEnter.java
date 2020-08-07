@@ -1,6 +1,8 @@
 package com.redescooter.ses.mobile.rps.vo.scooterqc;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -15,10 +17,12 @@ import io.swagger.annotations.*;
 public class ScooterQcItemEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "组装单子单id")//调整
+    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY,message = "Id为空")
     private Long id;
 
 
     @ApiModelProperty(value = "序列号")
+    @NotNull(code = ValidationExceptionCode.SERIAL_NUM,message = "产品序列号为空")
     private String productSerialNum;
 
     @ApiModelProperty(value = "质检信息项集合 格式：[\n" +

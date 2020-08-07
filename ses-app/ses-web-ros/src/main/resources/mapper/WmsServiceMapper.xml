@@ -272,9 +272,7 @@
     ope_sys_user_profile pro
     ON allocate.consignee_id = pro.id
     and pro.dr = 0
-
         <include refid="where_inHw_allocate"/>
-
     UNION
     SELECT
     count(*) AS count
@@ -297,7 +295,8 @@
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     '2' as documentType,
-    allocate.updated_time as inWhTime
+    allocate.updated_time as inWhTime,
+    '2' as orderType
     FROM
     ope_allocate allocate
     JOIN
@@ -316,18 +315,16 @@
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     '3' as documentType,
-    ord.updated_time as inWhTime
+    ord.updated_time as inWhTime,
+        '3' as orderType
     FROM
     ope_assembly_order ord
     JOIN
     ope_sys_user_profile pro
     ON ord.consignee_id = pro.id
     and pro.dr = 0
-
         <include refid="where_inHw_assembly"/>
-
     limit #{enter.startRow},#{enter.pageSize}
-
     </select>
     <sql id="where_stockPending_allocate">
         WHERE
