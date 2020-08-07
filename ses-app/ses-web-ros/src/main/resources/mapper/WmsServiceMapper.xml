@@ -494,7 +494,7 @@
       AND ord.`status` = #{assemblingStatus}
 	) aa
   </select>
-  <select                id="stockPendingCountByType" resultType="int">
+  <select id="stockPendingCountByType" resultType="int">
   SELECT
 	sum( aa.count )
 FROM
