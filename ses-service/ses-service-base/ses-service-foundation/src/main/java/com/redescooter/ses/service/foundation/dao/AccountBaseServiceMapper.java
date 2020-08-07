@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import org.apache.ibatis.annotations.Param;
@@ -16,11 +17,7 @@ import java.util.List;
  */
 public interface AccountBaseServiceMapper {
 
-    int queryAccountListCount(QueryAccountListEnter enter);
-
-    List<QueryAccountResult> queryAccountList(QueryAccountListEnter enter);
-
-    List<CountByStatusResult> accountCountStatus();
+  List<CountByStatusResult> accountCountStatus();
 
     /**
      * ros客户账户列表 状态分组
@@ -28,7 +25,7 @@ public interface AccountBaseServiceMapper {
      * @param accountType
      * @return
      */
-    List<CountByStatusResult> customerAccountCountByStatus(List<Integer> accountType);
+    List<CountByStatusResult> customerAccountCountByStatus(@Param("enter")QueryAccountCountStatusEnter enter,@Param("accountType") List<Integer> accountType);
 
     /**
      * 查询客户账户列表统计

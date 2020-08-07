@@ -29,6 +29,7 @@ import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
@@ -233,28 +234,6 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         wrapper.eq(PlaUser.COL_DR, 0);
 
         return userMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    /**
-     * 查询已创建 的账户
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public int countTenantAccount(QueryAccountListEnter enter) {
-        return accountBaseServiceMapper.queryAccountListCount(enter);
-    }
-
-    /**
-     * 查询 已创建的 账户记录
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public List<QueryAccountResult> tenantAccountRecords(QueryAccountListEnter enter) {
-        return accountBaseServiceMapper.queryAccountList(enter);
     }
 
     /**
@@ -916,9 +895,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @return
      */
     @Override
-    public Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter) {
+    public Map<String, Integer> customerAccountCountByStatus(QueryAccountCountStatusEnter enter) {
         // 只统计 个人端、企业端账户
-        List<CountByStatusResult> countByStatusList = accountBaseServiceMapper.customerAccountCountByStatus(customerTypeList());
+        List<CountByStatusResult> countByStatusList = accountBaseServiceMapper.customerAccountCountByStatus(enter,customerTypeList());
 
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusList) {

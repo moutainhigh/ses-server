@@ -12,6 +12,7 @@ import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
@@ -597,7 +598,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return PageResult.createZeroRowResult(enter);
         }
 
-//        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
         List<QueryAccountResult> queryAccountListResult = accountBaseService.customerAccountList(queryAccountListEnter);
 
         List<AccountListResult> resultList = new ArrayList<>();
@@ -624,7 +624,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        return accountBaseService.customerAccountCountByStatus(enter);
+      AccountListEnter accountListEnter = new AccountListEnter();
+      // 查询内容
+      List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(accountListEnter);
+      List<String> emailList = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(accountList)) {
+        accountList.forEach(item -> {
+          emailList.add(item.getEmail());
+        });
+      }
+      QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
+      queryAccountCountStatusEnter.setEmailList(emailList);
+      return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
     }
 
     /**
