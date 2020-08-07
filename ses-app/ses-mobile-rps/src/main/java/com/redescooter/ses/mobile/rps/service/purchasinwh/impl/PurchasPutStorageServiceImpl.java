@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.enums.bom.PartsIdClassEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
@@ -197,9 +196,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
 
-        //释放待入库库存
-        freedStockToBeStored(partsData, 1);
-
         return HaveIdPartsResult.builder()
                 .id(opePurchasB.getId())
                 .inWaitWhQty(opePurchasB.getInWaitWhQty())
@@ -296,9 +292,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             saveNodeEnter.setMemo(null);
             receiptTraceService.savePurchasingNode(saveNodeEnter);
         }
-
-        //释放待入库库存
-        freedStockToBeStored(partsData, enter.getInWaitWhQty());
 
         return NotIdPartsSucceedResult.builder()
                 .id(opePurchasB.getId())
@@ -440,29 +433,30 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .build();
     }
 
-    /**
-     * 待入库 锚点
-     *
-     * @param qty
-     * @param parts
-     */
-    private void freedStockToBeStored(OpeParts parts, int qty) {
-        //查询仓库
-        OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
-        if (opeWhse == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
-        }
+//    /**
+//     * 待生产 锚点
+//     *
+//     * @param qty
+//     * @param parts
+//     */
+//    private void freedWaitProduct(OpeParts parts, int qty) {
+//        //查询仓库
+//        OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
+//        if (opeWhse == null) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+//        }
+//
+//        //查询 库存
+//        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>()
+//                .eq(OpeStock::getMaterielProductId, parts.getId())
+//                .eq(OpeStock::getMaterielProductType, BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
+//                .eq(OpeStock::getWhseId,opeWhse.getId()));
+//        if (opeStock == null) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+//        }
+//        opeStock.setWaitProductTotal(opeStock.getWaitProductTotal() - qty);
+//        opeStock.setUpdatedTime(new Date());
+//        opeStockService.updateById(opeStock);
+//    }
 
-        //查询 库存
-        OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>()
-                .eq(OpeStock::getMaterielProductId, parts.getId())
-                .eq(OpeStock::getMaterielProductType, BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
-                .eq(OpeStock::getWhseId,opeWhse.getId()));
-        if (opeStock == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
-        }
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - qty);
-        opeStock.setUpdatedTime(new Date());
-        opeStockService.updateById(opeStock);
-    }
 }

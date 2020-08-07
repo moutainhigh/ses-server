@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -988,7 +987,7 @@ public class MaterialServiceImpl implements MaterialService {
                 opePurchasBQc.setStatus(QcStatusEnums.PASS.getValue());
 
                 //带生产库存埋点
-                stockToBeStoredFillingPoint(count, opeParts);
+                freeProduct(count, opeParts);
             } else {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(1);
@@ -1015,7 +1014,7 @@ public class MaterialServiceImpl implements MaterialService {
                 opePurchasBQc.setFailCount(opePurchasBQc.getFailCount());
 
                 //带生产库存埋点
-                stockToBeStoredFillingPoint(count, opeParts);
+                freeProduct(count, opeParts);
             } else {
                 if (opeParts.getIdClass()) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
@@ -1032,12 +1031,12 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     /**
-     * 待入库 锚点
+     * 待生产 锚点释放
      *
      * @param qty
      * @param parts
      */
-    private void stockToBeStoredFillingPoint(int qty, OpeParts parts) {
+    private void freeProduct(int qty, OpeParts parts) {
         //查询仓库
         OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
         if (opeWhse == null) {
@@ -1053,7 +1052,6 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
         }
         opeStock.setWaitProductTotal(opeStock.getWaitProductTotal() - qty);
-        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() + qty);
         opeStock.setUpdatedTime(new Date());
         opeStockService.updateById(opeStock);
     }

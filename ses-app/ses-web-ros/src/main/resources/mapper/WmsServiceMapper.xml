@@ -86,20 +86,22 @@
       )
     </if>
   </sql>
-  <sql id="where_wmsStoredStock">
+  <sql id="where_wmsAllocateStoredStock">
     WHERE
     stock.dr=0
-    AND stock.wait_stored_total>0
-    AND stock.whse_id = #{whseid}
+    AND stock.wait_stored_total >  0
+    AND stock.whse_id in
+    <foreach collection="whseList" open="(" item="item" separator="," close=")">
+      <if test="item.type == 1">
+        #{item}
+      </if>
+    </foreach>
     AND stock.materiel_product_type in
     <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==4 or typeItem==5">
-          #{typeItem}
-        </when>
-      </choose>
+      <if test="typeItem == 4">
+        #{typeItem}
+      </if>
     </foreach>
-    AND sheet.currency_unit = #{amountType}
     <if test="enter.stockType!=''and enter.stockType!=null">
       and stock.materiel_product_type=#{enter.stockType}
     </if>
@@ -108,6 +110,34 @@
       product.cn_name like concat ("%",#{enter.keyword},"%") or
       product.en_name like concat ("%",#{enter.keyword},"%") or
       product.product_number like concat ("%",#{enter.keyword},"%")
+      )
+    </if>
+
+  </sql>
+  <sql id="where_wmsAssemblyStoredStock">
+    WHERE
+    stock.dr=0
+    AND stock.wait_stored_total >  0
+    AND stock.whse_id in
+    <foreach collection="whseList" open="(" item="item" separator="," close=")">
+      <if test="item.type == 1">
+        #{item}
+      </if>
+    </foreach>
+    AND stock.materiel_product_type in
+    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+      <if test="typeItem == 4">
+        #{typeItem}
+      </if>
+    </foreach>
+    <if test="enter.stockType!=''and enter.stockType!=null">
+      and stock.materiel_product_type=#{enter.stockType}
+    </if>
+    <if test="enter.keyword!=''and enter.keyword!=null">
+      and (
+      part.cn_name like concat ("%",#{enter.keyword},"%") or
+      part.en_name like concat ("%",#{enter.keyword},"%") or
+      part.parts_number like concat ("%",#{enter.keyword},"%")
       )
     </if>
 
@@ -617,40 +647,46 @@ FROM
     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="wmsStoredStockCount" resultType="int">
-    SELECT
-    count(*)
-    FROM
-    ope_stock stock
-    JOIN
-    ope_parts_product product
-    ON stock.materiel_product_id = product.id
-    and product.dr = 0
-    JOIN
-    ope_regional_price_sheet sheet
-    ON product.id = sheet.parts_product_id
-    and sheet.dr = 0
-    <include refid="where_wmsStoredStock"/>
+    select sum(storedStock.total) from (
+    SELECT count(*) as total
+    FROM ope_stock stock
+    inner JOIN ope_parts_product product ON stock.materiel_product_id = product.id and product.dr = 0
+    inner JOIN ope_regional_price_sheet sheet
+    ON product.id = sheet.parts_product_id and sheet.dr = 0 AND sheet.currency_unit = #{amountType}
+    <include refid="where_wmsAllocateStoredStock"/>
+    union
+    SELECT count(*) as total
+    FROM ope_stock stock
+    inner JOIN ope_parts part ON stock.materiel_product_id = part.id and part.dr = 0
+    inner JOIN ope_price_sheet sheet ON part.id = sheet.parts_id and sheet.dr = 0
+    <include refid="where_wmsAssemblyStoredStock"/>
+    ) storedStock
   </select>
   <select id="wmsStoredStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
-    SELECT
-    stock.id as id,
-    product.cn_name as cnName,
-    product.en_name as enName,
-    product.product_number as productNumber,
-    stock.wait_stored_total as intTotal,
-    stock.materiel_product_type as productType,
-    sheet.sales_price as price
-    FROM
-    ope_stock stock
-    JOIN
-    ope_parts_product product
-    ON stock.materiel_product_id = product.id
-    and product.dr = 0
-    JOIN
-    ope_regional_price_sheet sheet
-    ON product.id = sheet.parts_product_id
-    and sheet.dr = 0
-    <include refid="where_wmsStoredStock"/>
+    SELECT stock.id                                    as id,
+    product.cn_name                             as cnName,
+    product.en_name                             as enName,
+    product.product_number                      as productNumber,
+    stock.wait_stored_total                     as intTotal,
+    stock.materiel_product_type                 as productType,
+    sheet.sales_price * stock.wait_stored_total as price
+    FROM ope_stock stock
+    inner JOIN ope_parts_product product ON stock.materiel_product_id = product.id and product.dr = 0
+    inner JOIN ope_regional_price_sheet sheet
+    ON product.id = sheet.parts_product_id and sheet.dr = 0 AND sheet.currency_unit = #{amountType}
+    <include refid="where_wmsAllocateStoredStock"/>
+    union
+    SELECT stock.id                              as id,
+    part.cn_name                          as cnName,
+    part.en_name                          as enName,
+    part.parts_number                     as productNumber,
+    stock.wait_stored_total               as intTotal,
+    stock.materiel_product_type           as productType,
+    sheet.price * stock.wait_stored_total as price
+    FROM ope_stock stock
+    inner JOIN ope_parts part ON stock.materiel_product_id = part.id and part.dr = 0
+    inner JOIN ope_price_sheet sheet ON part.id = sheet.parts_id and sheet.dr = 0
+    <include refid="where_wmsAssemblyStoredStock"/>
     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="wmsStoredStockCountByType" resultType="int">
