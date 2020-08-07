@@ -426,7 +426,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             //剩余库存数+
             opeStock.setAvailableTotal(opeParts.getIdClass() ? (opeStock.getAvailableTotal() + 1) : (opeStock.getAvailableTotal() + enter.getInWhNum()));
-            opeStockService.updateById(opeStock);
         } else {
             //新建库存
             opeStock = OpeStock.builder()
@@ -451,8 +450,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .updatedBy(enter.getUserId())
                     .createdBy(enter.getUserId())
                     .build();
-            //更新库存
-            opeStockService.save(opeStock);
         }
 
         //判断调拨单的状态是否改变，记录调拨单状态变更
@@ -538,6 +535,9 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         opeStockBillService.save(opeStockBill);
         //保存生产成品库的数据
         opeStockProdPartService.save(opeStockProdPart);
+
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - 1);
+        opeStockService.save(opeStock);
 
         //返回成功结果集
         return ProductWaitInWhInfoResult.builder()
@@ -635,8 +635,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             opeStock.setIntTotal(opeStock.getIntTotal() + 1);
             //剩余库存数+1
             opeStock.setAvailableTotal(opeStock.getAvailableTotal() + 1);
-            opeStockService.updateById(opeStock);
         } else {
+            //更新库存
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
@@ -659,8 +659,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .updatedBy(enter.getUserId())
                     .createdBy(enter.getUserId())
                     .build();
-            //更新库存
-            opeStockService.save(opeStock);
+
         }
 
         //更新一条生产入库信息
@@ -760,6 +759,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //保存组装单状态
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
+        //释放待入库数据
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - enter.getInWhNum());
+        //库存更新
+        opeStockService.saveOrUpdate(opeStock);
+
         //返回入库成功结果集
         return ProductWaitInWhInfoResult.builder()
                 .residueNum(opeAssemblyBOrder.getInWaitWhQty())
@@ -769,4 +773,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .proTime(opeAssemblyOrder.getCreatedTime())
                 .build();
     }
+
+
 }

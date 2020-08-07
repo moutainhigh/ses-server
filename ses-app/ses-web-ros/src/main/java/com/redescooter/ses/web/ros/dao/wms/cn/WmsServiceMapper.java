@@ -51,14 +51,14 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("whseList")List<OpeWhse> whseList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
   /**
    * 仓储待入库列表
    *
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("whseid") long whseid,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
+  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("whseList")List<OpeWhse> whseList,@Param("commonTypeList")List<String> commonTypeList,@Param("amountType")  String amountType);
 
   /**
    * 返回仓储出库列表count
