@@ -1015,7 +1015,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(customer.getEmail())) {
             count++;
         }
-        if (customer.getCity() != null && customer.getCity() != 0) {
+        //def2=城市
+        if (StringUtils.isNotEmpty(customer.getDef2())) {
             count++;
         }
         if (StringUtils.isNotEmpty(customer.getAddress())) {
