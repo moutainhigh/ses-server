@@ -1,20 +1,15 @@
 package com.redescooter.ses.web.ros.service.wms.cn.impl;
 
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
-import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.WhInTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
 import com.redescooter.ses.web.ros.service.wms.cn.WmsWhInService;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInDetailsEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsWhInEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +106,11 @@ public class WmsWhInServiceImpl implements WmsWhInService {
     @Override
     public List<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getDocumentType())) {
-            return wmsServiceMapper.partList(enter);
+          List<WmsProductListResult> partList = wmsServiceMapper.partList(enter);
+            partList.forEach(item ->{
+                item.setProductType(BomCommonTypeEnums.getValueByCode(item.getProductType());
+              });
+            return partList;
         } else {
             return wmsServiceMapper.productList(enter);
         }
