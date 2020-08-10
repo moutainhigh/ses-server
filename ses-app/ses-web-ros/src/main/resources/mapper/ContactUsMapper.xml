@@ -65,7 +65,7 @@
     us.city_name AS cityName,
     us.district_name as districtName,
     us.address as address,
-    trace.remark as remark
+    us.remark as remark
     from ope_contact_us_trace us
     LEFT JOIN
     ope_contact_us trace on us.contact_us_id=trace.id
