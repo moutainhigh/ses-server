@@ -864,6 +864,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
     /**
      * 待入库埋点
+     *
      * @param opeAllocateBList
      */
     private void toBeStoredFillingPoint(List<OpeAllocateB> opeAllocateBList) {
@@ -875,45 +876,50 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
         List<Long> partIds = opeAllocateBList.stream().map(OpeAllocateB::getPartId).collect(Collectors.toList());
 
-        List<OpeParts> partsList = opePartsService.list(new LambdaQueryWrapper<OpeParts>().in(OpeParts::getId,partIds));
+        List<OpeParts> partsList = opePartsService.list(new LambdaQueryWrapper<OpeParts>().in(OpeParts::getId, partIds));
         if (CollectionUtils.isEmpty(partsList) || partsList.size() != opeAllocateBList.size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
         //查询是否能存在库存
-        List<OpeStock> opeStockList = opeStockService.list(new LambdaQueryWrapper<OpeStock>().eq(OpeStock::getWhseId, whse.getId())
+        List<OpeStock> opeStockList = opeStockService.list(new LambdaQueryWrapper<OpeStock>()
+                .eq(OpeStock::getWhseId, whse.getId())
                 .in(OpeStock::getMaterielProductId, partIds));
 
-        List<OpeStock> saveOpeStockList=new ArrayList<>();
+        List<OpeStock> saveOpeStockList = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(opeStockList)) {
-            OpeParts parts = null;
             for (OpeAllocateB item : opeAllocateBList) {
-                parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
                 //创建库存
                 saveOpeStockList.add(buildStock(whse, parts, item));
             }
-        }
-        if (CollectionUtils.isNotEmpty(opeStockList)) {
-            OpeStock opeStock = null;
-            for (OpeAllocateB item : opeAllocateBList) {
-                opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId())).findFirst().orElse(null);
-                //更新库存
-                opeStock.setWaitStoredTotal(item.getTotal()+opeStock.getWaitStoredTotal());
-                opeStock.setUpdatedTime(new Date());
+        } else {
 
-                saveOpeStockList.add(opeStock);
+            for (OpeAllocateB item : opeAllocateBList) {
+                OpeStock opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId())).findFirst().orElse(null);
+                if (opeStock != null) {
+                    //更新库存
+                    opeStock.setWaitStoredTotal(item.getTotal() + opeStock.getWaitStoredTotal());
+                    opeStock.setUpdatedTime(new Date());
+                    saveOpeStockList.add(opeStock);
+                }else {
+                    OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                    //创建库存
+                    saveOpeStockList.add(buildStock(whse, parts, item));
+                }
             }
         }
 
         //更新库存
-        if (CollectionUtils.isNotEmpty(saveOpeStockList)){
+        if (CollectionUtils.isNotEmpty(saveOpeStockList)) {
             opeStockService.saveOrUpdateBatch(saveOpeStockList);
         }
     }
 
     /**
      * 构建 stock 对象
+     *
      * @param whse
      * @param parts
      * @param item

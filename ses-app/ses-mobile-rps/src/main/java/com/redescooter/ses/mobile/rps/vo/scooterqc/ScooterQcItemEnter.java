@@ -22,7 +22,7 @@ public class ScooterQcItemEnter extends GeneralEnter {
 
 
     @ApiModelProperty(value = "序列号")
-    @NotNull(code = ValidationExceptionCode.SERIAL_NUM,message = "产品序列号为空")
+    //@NotNull(code = ValidationExceptionCode.SERIAL_NUM,message = "产品序列号为空")
     private String productSerialNum;
 
     @ApiModelProperty(value = "质检信息项集合 格式：[\n" +

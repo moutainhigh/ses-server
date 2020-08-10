@@ -1648,19 +1648,18 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .in(OpeStock::getMaterielProductType,
                         BomCommonTypeEnums.ACCESSORY.getValue(),
                         BomCommonTypeEnums.PARTS.getValue(),
-                        BomCommonTypeEnums.BATTERY.getValue()));
+                        BomCommonTypeEnums.BATTERY.getValue())
+                .eq(OpeStock::getWhseId, whse.getId()));
 
         List<OpeStock> saveOpeStockList = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(opeStockList)) {
-            OpeParts parts = null;
             for (OpePurchasB item : purchasBList) {
-                parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
                 //创建库存
                 saveOpeStockList.add(buildStock(whse, parts, item));
             }
-        }
-        if (CollectionUtils.isNotEmpty(opeStockList)) {
+        }else {
             OpeStock opeStock = null;
             for (OpePurchasB item : purchasBList) {
                 opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId())).findFirst().orElse(null);
@@ -1668,6 +1667,9 @@ public class PurchasingServiceImpl implements PurchasingService {
                     //更新库存
                     opeStock.setWaitProductTotal(item.getInWaitWhQty() + opeStock.getWaitProductTotal());
                     saveOpeStockList.add(opeStock);
+                }else {
+                    OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                    saveOpeStockList.add(buildStock(whse, parts, item));
                 }
             }
         }

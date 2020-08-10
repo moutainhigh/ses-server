@@ -333,6 +333,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(partIds));
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
+        opeStockQueryWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL,0);
         List<OpeStock> stockList = opeStockService.list(opeStockQueryWrapper);
         if (CollectionUtils.isEmpty(stockList)) {
             return result;
@@ -340,8 +341,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
-        for (Map.Entry<Long, List<OpePartsProductB>> longListEntry : productPartMap.entrySet()) {
-        }
+
         flag1:
         for(Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
             Long key = entry.getKey();
@@ -358,19 +358,19 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                         if (item.getPartsId().equals(stock.getMaterielProductId())) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            if (maxTotal == 0) {
+                             if (maxTotal == 0) {
                                 total++;
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss < maxTotal) {
+                            if (canAss <= maxTotal) {
                                 total++;
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss > 0) {
+                            if (canAss == 0) {
                                 total++;
-                                continue flag2;
+                                break flag2;
                             }
                         }
                     }
@@ -380,41 +380,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 canAssembledMap.put(key, maxTotal);
             }
         }
-
-
-//        flag1:
-//        for (Map.Entry<Long, List<OpePartsProductB>> entry : productPartMap.entrySet()) {
-//            Long key = entry.getKey();
-//            List<OpePartsProductB> value = entry.getValue();
-//            int maxTotal = 0;
-//            if (productIds.contains(key)) {
-//
-//                int canAss = 0;
-//                flag2:
-//                for (OpePartsProductB item : value) {
-//
-//                    flag3:
-//                    for (OpeStock stock : stockList) {
-//                        if (item.getPartsId().equals(stock.getMaterielProductId()) && (item.getPartsQty() != null && item.getPartsQty() > 0)) {
-//
-//                            int partTotal = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-//                            //计算可以组装的车辆最大值
-//                            if (canAss > partTotal || canAss == 0) {
-//                                canAss = partTotal;
-//                            }
-//                        }
-//                    }
-////                    //计算可以组装的车辆最大值
-////                    if (canAss > 0) {
-////                        maxTotal += canAss;
-////                        continue flag2;
-////                    }
-//                }
-//            }
-//            if (maxTotal > 0) {
-//                canAssembledMap.put(key, maxTotal);
-//            }
-//        }
 
         if (canAssembledMap.isEmpty()) {
             return result;

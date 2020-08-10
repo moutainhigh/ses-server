@@ -5,10 +5,7 @@
         WHERE
         stock.dr = 0
         AND stock.available_total > 0
-        AND stock.whse_id IN
-        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
-            #{whseItem.id}
-        </foreach>
+        AND stock.whse_id =#{assemblyWhId}
         AND stock.materiel_product_type in
         <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
             <choose>
@@ -33,10 +30,7 @@
         WHERE
         stock.dr = 0
         AND stock.available_total > 0
-        AND stock.whse_id IN
-        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
-            #{whseItem.id}
-        </foreach>
+        AND stock.whse_id = #{purchasWhId}
         AND stock.materiel_product_type in
         <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
             <choose>
@@ -185,9 +179,7 @@
             )
         </if>
     </sql>
-    <select
-            id="wmsUsableStockCount" resultType="int">
-
+    <select id="wmsUsableStockCount" resultType="int">
     SELECT
     sum(aa.count) from (
     select
@@ -563,10 +555,7 @@ FROM
     WHERE
     stock.dr = 0
     AND stock.available_total > 0
-    AND stock.whse_id IN
-    <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
-      #{whseItem.id}
-    </foreach>
+    AND stock.whse_id = #{assemblyWhId}
     AND stock.materiel_product_type in
     <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
       <choose>
@@ -588,10 +577,7 @@ FROM
     WHERE
     stock.dr = 0
     AND stock.available_total > 0
-    AND stock.whse_id IN
-        <foreach collection="whseidList" item="whseItem" separator="," open="(" close=")">
-            #{whseItem.id}
-        </foreach>
+    AND stock.whse_id=#{purchasWhId}
     AND stock.materiel_product_type in
     <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
       <choose>
@@ -685,31 +671,36 @@ FROM
     limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="wmsStoredStockCountByType" resultType="int">
-    SELECT
-    count(*)
-    FROM
-    ope_stock stock
-    JOIN
-    ope_parts_product product
-    ON stock.materiel_product_id = product.id
-    and product.dr = 0
-    JOIN
-    ope_regional_price_sheet sheet
-    ON product.id = sheet.parts_product_id
-    and sheet.dr = 0
-    WHERE
-    stock.dr=0
-    AND stock.wait_stored_total>0
-    AND stock.whse_id = #{whseid}
-    AND stock.materiel_product_type in
-    <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
-      <choose>
-        <when test="typeItem==4 or typeItem==5">
-          #{typeItem}
-        </when>
-      </choose>
-    </foreach>
-    AND sheet.currency_unit = #{amountType}
+      select sum(storedStock.total) from (
+      SELECT count(*) as total
+      FROM ope_stock stock
+      inner JOIN ope_parts_product product ON stock.materiel_product_id = product.id and product.dr = 0
+      inner JOIN ope_regional_price_sheet sheet
+      ON product.id = sheet.parts_product_id and sheet.dr = 0 AND sheet.currency_unit = #{amountType}
+      WHERE
+      stock.dr=0
+      AND stock.wait_stored_total > 0
+      AND stock.whse_id =#{assemblyWhId}
+      AND stock.materiel_product_type in
+      <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+          <if test="typeItem == 4">
+              #{typeItem}
+          </if>
+      </foreach>      union
+      SELECT count(*) as total
+      FROM ope_stock stock
+      inner JOIN ope_parts part ON stock.materiel_product_id = part.id and part.dr = 0
+      inner JOIN ope_price_sheet sheet ON part.id = sheet.parts_id and sheet.dr = 0
+      WHERE
+      stock.dr=0
+      AND stock.wait_stored_total > 0
+      AND stock.whse_id =#{allocatewhId}
+      AND stock.materiel_product_type in
+      <foreach item="typeItem" collection="commonTypeList" separator="," open="(" close=")">
+          <if test="typeItem != 4">
+              #{typeItem}
+          </if>
+      </foreach>      ) storedStock
   </select>
   <select id="wmsBePredictedStockCountByType" resultType="int">
     SELECT

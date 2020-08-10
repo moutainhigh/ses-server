@@ -311,14 +311,13 @@ public class AssemblyServiceImpl implements AssemblyService {
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss < maxTotal) {
+                            if (canAss <= maxTotal) {
                                 total++;
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss > 0) {
-                                total++;
-                                continue flag2;
+                            if (canAss == 0) {
+                                break flag2;
                             }
                         }
                     }
