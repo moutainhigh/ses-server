@@ -496,6 +496,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         EditCustomerEnter checkCustomer = new EditCustomerEnter();
         BeanUtils.copyProperties(customer, checkCustomer);
+        checkCustomer.setCityName(customer.getDef2());
         checkCustomer(checkCustomer);
 
         if (customer == null) {
