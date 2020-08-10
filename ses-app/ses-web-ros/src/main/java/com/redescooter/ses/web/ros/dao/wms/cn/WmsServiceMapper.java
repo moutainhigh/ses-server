@@ -22,7 +22,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter, @Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+  int wmsUsableStockCount(@Param("enter") WmsStockEnter enter, @Param("purchasWhId") Long purchasWhId, @Param("assemblyWhId") Long assemblyId, @Param("commonTypeList") List<String> commonTypeList,@Param("amountType") String amountType);
 
   /**
    * 仓储可用列表
@@ -30,7 +30,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter, @Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+  List<WmsStockAvailableResult> wmsUsableStockList(@Param("enter") WmsStockEnter enter, @Param("purchasWhId") Long purchasWhId, @Param("assemblyWhId") Long assemblyId, @Param("commonTypeList") List<String> commonTypeList,@Param("amountType") String amountType);
 
   /**
    * 返回仓储待生产列表count
@@ -54,9 +54,8 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter,@Param("allocatewhId") Long allocatewhId,@Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList,
-                          @Param(
-          "amountType") String amountType);
+  int wmsStoredStockCount(@Param("enter") WmsStockEnter enter, @Param("allocatewhId") Long allocatewhId, @Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList,
+                          @Param("amountType") String amountType);
 
   /**
    * 仓储待入库列表
@@ -64,7 +63,7 @@ public interface WmsServiceMapper {
    * @param enter
    * @return
    */
-  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter,@Param("allocatewhId") Long allocatewhId,@Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+  List<WmsStockAvailableResult> wmsStoredStockList(@Param("enter") WmsStockEnter enter, @Param("allocatewhId") Long allocatewhId, @Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
 
   /**
    * 返回仓储出库列表count
@@ -173,7 +172,8 @@ public interface WmsServiceMapper {
    * @param
    * @return
    */
-  int usableStockCountByType(@Param("whseidList") List<OpeWhse> whseidList, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+  int usableStockCountByType( @Param("purchasWhId") Long purchasWhId, @Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList,
+                              @Param("amountType") String amountType);
 
   /**
    * 返回仓储待入库列表count
@@ -181,7 +181,8 @@ public interface WmsServiceMapper {
    * @param
    * @return
    */
-  int wmsStoredStockCountByType(@Param("whseid") long whseid, @Param("commonTypeList") List<String> commonTypeList, @Param("amountType") String amountType);
+  int wmsStoredStockCountByType(@Param("enter") GeneralEnter enter, @Param("allocatewhId") Long allocatewhId, @Param("assemblyWhId") Long assemblyWhId, @Param("commonTypeList") List<String> commonTypeList,
+                                @Param("amountType") String amountType);
 
   /**
    * 返回仓储待生产列表count

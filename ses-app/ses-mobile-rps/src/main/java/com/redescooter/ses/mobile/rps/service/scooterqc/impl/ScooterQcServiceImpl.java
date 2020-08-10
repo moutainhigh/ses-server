@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -147,7 +148,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                     opeAssemblyBOrderService.list(opeAssemblyBOrderQueryWrapper);
             if (!CollectionUtils.isEmpty(opeAssemblyBOrderList)) {
                 for (OpeAssemblyBOrder opeAssemblyBOrder : opeAssemblyBOrderList) {
-                    scooterQcPartResultList.add(scooterQcPartResult = ScooterQcPartResult.builder()
+                    scooterQcPartResultList.add(ScooterQcPartResult.builder()
                             .assemblyBId(opeAssemblyBOrder.getId()).productId(opeAssemblyBOrder.getProductId())
                             .productNum(opeAssemblyBOrder.getLaveWaitQcQty())
                             .productStr(opeAssemblyBOrder.getProductNumber()).productName(opeAssemblyBOrder.getEnName())
@@ -232,10 +233,11 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         }
 
         //校验组装记录
-        OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(new LambdaQueryWrapper<OpeProductAssembly>().eq(OpeProductAssembly::getProductSerialNum, enter.getProductSerialNum()));
-        if (opeProductAssembly == null) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getMessage());
-        }
+//        OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getOne(new LambdaQueryWrapper<OpeProductAssembly>().eq(OpeProductAssembly::getProductSerialNum, enter.getProductSerialNum
+//        ()));
+//        if (opeProductAssembly == null) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getMessage());
+//        }
 
         // 组装单子单
         QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
@@ -282,6 +284,27 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(opeAssemblyOrder.getId());
         String batchNum = bussinessNumberService.assemblyBatchNo(idEnter);
+
+
+        //todo bill暂时未添加 序列号字段 暂时用这种方式处理
+        String serialNum = null;
+
+        //查询当前订单的组装记录
+        List<OpeProductAssembly> opeProductAssemblyList = opeProductAssemblyService.list(new LambdaQueryWrapper<OpeProductAssembly>().eq(OpeProductAssembly::getAssemblyBId, enter.getId()));
+        if (CollectionUtils.isEmpty(opeProductAssemblyList)) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_ASSEMBLY_TRACE_IS_NOT_EXIST.getMessage());
+        }
+        //查询已经质检的车辆记录
+        List<OpeAssemblyQcItem> opeAssemblyQcItemList = opeAssemblyQcItemService.list(new LambdaQueryWrapper<OpeAssemblyQcItem>().eq(OpeAssemblyQcItem::getAssemblyBId, enter.getId()));
+        List<String> assemblySerialNum = opeProductAssemblyList.stream().map(OpeProductAssembly::getProductSerialNum).collect(Collectors.toList());
+        List<String> assemblyQcSerialNum = opeAssemblyQcItemList.stream().map(OpeAssemblyQcItem::getSerialNum).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(opeProductAssemblyList)) {
+            for (String item : assemblyQcSerialNum) {
+                assemblySerialNum.remove(item);
+            }
+        }
+        serialNum = assemblySerialNum.get(0);
+
 
         for (ScooterQcItemOptionEnter scooterQcItemOptionEnter : qcItemOptionEnterList) {
             // 获取质检模板
@@ -398,7 +421,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
         OpeAssemblyQcItem opeAssemblyQcItem = OpeAssemblyQcItem.builder()
                 .id(idAppService.getId(SequenceName.OPE_ASSEMBLY_QC_ITEM))
                 .dr(0)
-                .serialNum(enter.getProductSerialNum())
+                .serialNum(serialNum)
                 .assemblyBId(opeAssemblyBOrder.getId())
                 .assemblyId(opeAssemblyOrder.getId())
                 .updatedBy(enter.getUserId())
@@ -525,10 +548,9 @@ public class ScooterQcServiceImpl implements ScooterQcService {
 
         if (opeStock == null) {
             opeStock = buildStock(whse, opePartsProduct, 1);
-        }
-        if (opeStock != null) {
+        }else {
             //更新库存
-            opeStock.setWaitStoredTotal(opeStock.getWaitProductTotal() + 1);
+            opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() + 1);
             opeStock.setUpdatedTime(new Date());
         }
         //更新库存
@@ -555,8 +577,8 @@ public class ScooterQcServiceImpl implements ScooterQcService {
                 .outTotal(0)
                 .wornTotal(0)
                 .lockTotal(0)
-                .waitProductTotal(qty)
-                .waitStoredTotal(0)
+                .waitProductTotal(0)
+                .waitStoredTotal(qty)
                 .materielProductId(product.getId())
                 .materielProductName(product.getProductNumber())
                 .materielProductType(BomCommonTypeEnums.SCOOTER.getValue())

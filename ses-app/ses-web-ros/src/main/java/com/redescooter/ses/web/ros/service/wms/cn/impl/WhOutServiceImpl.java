@@ -691,18 +691,23 @@ public class WhOutServiceImpl implements WhOutService {
 
         //库存总表锁定库存
         outwhOrderBList.forEach(item -> {
+            Boolean stockExist=Boolean.FALSE;
             for (OpeStock stock : opeStocks) {
-                //库存不足
-                if (stock.getAvailableTotal() < item.getTotalCount()) {
-                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
-                }
                 //库存锁定
                 if (item.getStockId().equals(stock.getId())) {
+                    //库存不足
+                    if (stock.getAvailableTotal() < item.getTotalCount()) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+                    }
+                    stockExist=Boolean.TRUE;
                     stock.setLockTotal(stock.getLockTotal() + item.getTotalCount());
                     stock.setAvailableTotal(stock.getAvailableTotal() - item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     break;
                 }
+            }
+            if (!stockExist){
+                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
             }
         });
 

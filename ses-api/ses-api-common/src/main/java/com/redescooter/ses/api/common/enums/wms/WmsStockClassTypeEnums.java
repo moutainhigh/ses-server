@@ -8,19 +8,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum WmsStockClassTypeEnums {
-  AVAILABLE_ONE("AVAILABLE_ZERO","显示库存",1),
+  AVAILABLE_ONE("AVAILABLE_ZERO","显示库存","1"),
 
-  TOBEPREDICTED_TWO("TOBEPREDICTED_ONE","待生产",2),
+  TOBEPREDICTED_TWO("TOBEPREDICTED_ONE","待生产","2"),
 
-  TOBESTORED_THREE("TOBESTORED_TWO","待入库",3),
+  TOBESTORED_THREE("TOBESTORED_TWO","待入库","3"),
 
-  OUTWH_FOUR("OUTWH_THREE","已出库",4)
+  OUTWH_FOUR("OUTWH_THREE","已出库","4")
   ;
 
   private String code;
 
   private String message;
 
-  private int value;
+  private String value;
 
 }
