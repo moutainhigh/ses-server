@@ -108,7 +108,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getDocumentType())) {
           List<WmsProductListResult> partList = wmsServiceMapper.partList(enter);
             partList.forEach(item ->{
-                item.setProductType(BomCommonTypeEnums.getValueByCode(item.getProductType());
+                item.setProductType(BomCommonTypeEnums.getValueByCode(item.getProductType()));
               });
             return partList;
         } else {
