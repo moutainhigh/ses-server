@@ -46,28 +46,19 @@
         </if>
     </sql>
 
-    <sql id="whOrder_List">
-            where outOrder.dr = 0
-          and (
-                outOrder.order_no like concat('%', '#{keyword}', '%') or
-                outOrder.tracking_num like concat('%', '#{keyword}', '%') or
-                outOrder.consign_company like concat('%', '#{keyword}', '%')
-            )
-    </sql>
-
     <sql id="detailProductPartList_scooter">
      where orderB.dr=0
                 and orderB.outwh_order_id=#{id}
                 and orderB.product_type = 4
                 <if test="productType != null and productType != ''">
-                    and orderB.product_type #{productType}
+                    and orderB.product_type= #{productType}
                 </if>
                 <if test="keyword != null and keyword != ''">
                     and (
-                    product.en_name  like concat('%', '#{keyword}', '%') or
-                    product.fr_name  like concat('%', '#{keyword}', '%') or
-                    product.cn_name  like concat('%', '#{keyword}', '%') or
-                    product.product_number like concat('%', '#{keyword}', '%')
+                    product.en_name  like concat('%', #{keyword}, '%') or
+                    product.fr_name  like concat('%', #{keyword}, '%') or
+                    product.cn_name  like concat('%', #{keyword}, '%') or
+                    product.product_number like concat('%', #{keyword}, '%')
                     )
                 </if>
     </sql>
@@ -80,10 +71,10 @@
                 </if>
                 <if test="keyword != null and keyword != ''">
                     and (
-                    parts.en_name  like concat('%', '#{keyword}', '%') or
-                    parts.fr_name  like concat('%', '#{keyword}', '%') or
-                    parts.cn_name  like concat('%', '#{keyword}', '%') or
-                    parts.parts_number like concat('%', '#{keyword}', '%')
+                    parts.en_name like concat('%', #{keyword}, '%') or
+                    parts.fr_name like concat('%', #{keyword}, '%') or
+                    parts.cn_name like concat('%', #{keyword}, '%') or
+                    parts.parts_number like concat('%', #{keyword}, '%')
                     )
                 </if>
     </sql>

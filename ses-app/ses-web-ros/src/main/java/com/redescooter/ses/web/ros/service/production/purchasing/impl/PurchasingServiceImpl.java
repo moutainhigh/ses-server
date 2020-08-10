@@ -1624,7 +1624,8 @@ public class PurchasingServiceImpl implements PurchasingService {
     }
 
     /**
-     *  待生产 库存埋点
+     * 待生产 库存埋点
+     *
      * @param purchasBList
      */
     private void stockToBeProduced(List<OpePurchasB> purchasBList) {
@@ -1649,7 +1650,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                         BomCommonTypeEnums.PARTS.getValue(),
                         BomCommonTypeEnums.BATTERY.getValue()));
 
-        List<OpeStock> saveOpeStockList=new ArrayList<>();
+        List<OpeStock> saveOpeStockList = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(opeStockList)) {
             OpeParts parts = null;
@@ -1663,22 +1664,23 @@ public class PurchasingServiceImpl implements PurchasingService {
             OpeStock opeStock = null;
             for (OpePurchasB item : purchasBList) {
                 opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId())).findFirst().orElse(null);
-                //更新库存
-                opeStock.setWaitProductTotal(item.getInWaitWhQty()+opeStock.getWaitProductTotal());
-                opeStock.setUpdatedTime(new Date());
-
-                saveOpeStockList.add(opeStock);
+                if (opeStock != null) {
+                    //更新库存
+                    opeStock.setWaitProductTotal(item.getInWaitWhQty() + opeStock.getWaitProductTotal());
+                    saveOpeStockList.add(opeStock);
+                }
             }
         }
 
         //更新库存
-        if (CollectionUtils.isNotEmpty(saveOpeStockList)){
+        if (CollectionUtils.isNotEmpty(saveOpeStockList)) {
             opeStockService.saveOrUpdateBatch(saveOpeStockList);
         }
     }
 
     /**
      * 构建 stock 对象
+     *
      * @param whse
      * @param parts
      * @param item

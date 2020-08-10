@@ -96,14 +96,14 @@ public class WmsStockServiceImpl implements WmsStockService {
         for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
             productType.add(item.getValue());
         }
-        List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
+        List<OpeWhse> whselist = opewhseservice.list(new QueryWrapper<OpeWhse>().in(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
         if (CollectionUtils.isEmpty(whselist)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
-        OpeWhse purchasWh = whselist.stream().filter(item -> StringUtils.equals(item.getType(), WhseTypeEnums.PURCHAS.getValue())).findFirst().orElse(null);
+        OpeWhse allocateWh = whselist.stream().filter(item -> StringUtils.equals(item.getType(), WhseTypeEnums.ALLOCATE.getValue())).findFirst().orElse(null);
         OpeWhse assemblyWh = whselist.stream().filter(item -> StringUtils.equals(item.getType(), WhseTypeEnums.ASSEMBLY.getValue())).findFirst().orElse(null);
 
-        if (purchasWh == null || assemblyWh == null) {
+        if (allocateWh == null || assemblyWh == null) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
@@ -116,13 +116,13 @@ public class WmsStockServiceImpl implements WmsStockService {
         }
         //待生产库存数据列表
         if (StringUtils.equals(enter.getClassType(), String.valueOf(WmsStockClassTypeEnums.TOBEPREDICTED_TWO.getValue()))) {
-            totalRows = wmsServiceMapper.wmsBePredictedStockCount(enter, purchasWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
-            stockResult = wmsServiceMapper.wmsBePredictedStockList(enter, purchasWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
+            totalRows = wmsServiceMapper.wmsBePredictedStockCount(enter, allocateWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
+            stockResult = wmsServiceMapper.wmsBePredictedStockList(enter, allocateWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
         }
         //待入库库存数据列表
         if (StringUtils.equals(enter.getClassType(), String.valueOf(WmsStockClassTypeEnums.TOBESTORED_THREE.getValue()))) {
-            totalRows = wmsServiceMapper.wmsStoredStockCount(enter, purchasWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
-            stockResult = wmsServiceMapper.wmsStoredStockList(enter, purchasWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
+            totalRows = wmsServiceMapper.wmsStoredStockCount(enter, allocateWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
+            stockResult = wmsServiceMapper.wmsStoredStockList(enter, allocateWh.getId(),assemblyWh.getId(), productType, CurrencyUnitEnums.FR.getValue());
         }
         //已出库库存数据列表
         if (StringUtils.equals(enter.getClassType(), String.valueOf(WmsStockClassTypeEnums.OUTWH_FOUR.getValue()))) {
