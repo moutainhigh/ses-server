@@ -289,6 +289,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
+        
+        //剔除掉可用库存为0的库存数据
+        opeStockList.removeIf(item->item.getAvailableTotal()==0);
 
         flag1:
         for (Map.Entry<Long, List<OpePartsProductB>> entry : productMap.entrySet()) {
@@ -307,17 +310,14 @@ public class AssemblyServiceImpl implements AssemblyService {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
                             if (maxTotal == 0) {
-                                total++;
                                 maxTotal = canAss;
-                                continue flag2;
                             }
-                            if (canAss <= maxTotal) {
-                                total++;
+                            if (canAss < maxTotal) {
                                 maxTotal = canAss;
-                                continue flag2;
                             }
-                            if (canAss == 0) {
-                                break flag2;
+                            if (canAss!=0){
+                                total++;
+                                continue flag2;
                             }
                         }
                     }
