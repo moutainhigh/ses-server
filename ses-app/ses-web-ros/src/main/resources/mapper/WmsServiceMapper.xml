@@ -387,8 +387,7 @@
     pro.last_name as consigneelastName,
     '3' as documentType,
     ord.created_time as inWhTime,
-    '3' as orderType，
-      #{enter.classType} as  classType
+    '3' as orderType
     FROM
     ope_assembly_order ord
     JOIN
