@@ -240,12 +240,19 @@
     <include refid="detailProductPartList_scooter"/>
     union
         select orderB.id          as id,
-               parts.parts_number as productN,
-               parts.parts_type   as type,
-               parts.en_name      as enName,
-               parts.fr_name      as frName,
-               parts.cn_name      as cnName,
-               orderB.total_count as qty
+        parts.parts_number as productN,
+        (
+        case parts.parts_type
+        when 'Parts' then 1
+        when 'Accessory' then 2
+        when 'Battery' then 3
+        end
+        )
+        as type,
+        parts.en_name      as enName,
+        parts.fr_name      as frName,
+        parts.cn_name      as cnName,
+        orderB.total_count as qty
         from ope_outwh_order_b orderB
                  left join ope_parts parts on parts.id = orderB.part_product_id and orderB.product_type != 4 and parts.dr=0
     <include refid="detailProductPartList_parts"/>
