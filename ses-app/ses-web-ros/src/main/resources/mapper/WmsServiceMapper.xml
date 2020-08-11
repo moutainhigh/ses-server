@@ -380,8 +380,8 @@
     SELECT
     ord.id as id,
     ord.assembly_number as allocateNumber,
-    ord.total_qty-ord.in_wait_wh_total as qty,
-    ord.total_qty as sumTotal,
+    ord.wait_assembly_total-ord.in_wait_wh_total as qty,
+    ord.wait_assembly_total as sumTotal,
     pro.id as consigneeId,
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
