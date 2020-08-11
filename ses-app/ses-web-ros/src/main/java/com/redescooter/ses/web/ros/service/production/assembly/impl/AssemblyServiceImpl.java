@@ -316,8 +316,8 @@ public class AssemblyServiceImpl implements AssemblyService {
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss == 0) {
-                                break flag2;
+                            if (canAss > 0) {
+                                continue flag2;
                             }
                         }
                     }

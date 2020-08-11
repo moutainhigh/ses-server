@@ -293,7 +293,7 @@
     pro.last_name as consigneelastName,
     '3' as documentType,
     ord.updated_time as inWhTime,
-        '3' as orderType
+    '3' as orderType
     FROM
     ope_assembly_order ord
     JOIN

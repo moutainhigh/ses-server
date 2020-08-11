@@ -47,6 +47,7 @@ public class WmsWhInController{
   public Response<PageResult<WmsInWhResult>> wmsInWhResultList(@ModelAttribute @ApiParam("请求参数") WmsWhInEnter enter) {
     return new Response<>(wmswhinservice.list(enter));
   }
+  
   @PostMapping(value = "/detail")
   @ApiOperation(value = "详情", response = WmsInWhDetailsResult.class)
   public Response<WmsInWhDetailsResult> wmsInWhInfoDetails(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
