@@ -367,7 +367,8 @@
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     '2' as documentType,
-    allocate.created_time as inWhTime
+    allocate.created_time as inWhTime,
+      '3' as orderType
     FROM
     ope_allocate allocate
     JOIN
@@ -385,7 +386,9 @@
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     '3' as documentType,
-    ord.created_time as inWhTime
+    ord.created_time as inWhTime,
+    '3' as orderType，
+      #{enter.classType} as
     FROM
     ope_assembly_order ord
     JOIN
