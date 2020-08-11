@@ -97,6 +97,10 @@ public enum ExceptionCodeEnums {
     NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10042,"新旧密码不能一致"),
 
    VERSION_IS_NOT_EXIST(10043, "版本不存在"),
+
+  VERSION_TYPE_IS_EMPTY(10044,"版本类型为空"),
+
+  VERSION_CODE_IS_EMPTY(10045, "版本编号为空"),
   ;
 
     private int code;

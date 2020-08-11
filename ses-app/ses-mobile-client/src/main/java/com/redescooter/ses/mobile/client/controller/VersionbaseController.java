@@ -32,7 +32,6 @@ public class VersionbaseController {
 
   @ApiOperation(value = "获取仪表平板最新版本")
   @PostMapping(value = "/getCarInstrumentVersion")
-  @IgnoreLoginCheck
   public Response<VersionTypeResult> getcNewVersionData(@ModelAttribute VersionTypeEnter enter) {
     return new Response(versionBaseService.getVersionData(enter));
   }
