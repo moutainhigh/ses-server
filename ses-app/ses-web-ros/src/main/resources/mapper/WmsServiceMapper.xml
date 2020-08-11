@@ -380,8 +380,8 @@
     SELECT
     ord.id as id,
     ord.assembly_number as allocateNumber,
-    ord.wait_assembly_total-ord.in_wait_wh_total as qty,
-    ord.wait_assembly_total as sumTotal,
+    ord.total_qty-ord.in_wait_wh_total as qty,
+    ord.total_qty as sumTotal,
     pro.id as consigneeId,
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
@@ -469,7 +469,7 @@
     product.en_name AS enName,
     product.product_number AS productNumber,
     product.product_type AS productType,
-    ord.assembly_qty-ord.wait_assembly_qty AS qty,
+    ord.assembly_qty-ord.in_wait_wh_qty AS qty,
     ord.assembly_qty AS sumTotal,
     '1' as classType
     FROM
