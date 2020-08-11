@@ -25,14 +25,14 @@ public class VersionTypeEnter extends GeneralEnter {
    * 1.rps  2.singlechip
    */
   @ApiModelProperty(value = "1.rps  2.singlechip")
-  @NotNull(code = ValidationExceptionCode.VERSION_TYPE,message = "版本类型为空")
+  @NotNull(code = ValidationExceptionCode.VERSION_TYPE_IS_EMPTY,message = "版本类型为空")
   private Integer type;
 
   /**
    * 应用code
    */
   @ApiModelProperty(value = "应用code")
-  @NotNull(code = ValidationExceptionCode.VERSION_CODE,message = "版本编码为空")
+  @NotNull(code = ValidationExceptionCode.VERSION_CODE_IS_EMPTY,message = "版本编码为空")
   private String code;
 
 }
