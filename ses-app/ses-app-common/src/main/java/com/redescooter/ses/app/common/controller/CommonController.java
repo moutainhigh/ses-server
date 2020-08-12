@@ -2,6 +2,7 @@ package com.redescooter.ses.app.common.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.VerificationCodeEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.app.common.service.CommonService;
 import io.swagger.annotations.Api;
@@ -26,10 +27,11 @@ import org.springframework.web.bind.annotation.*;
 public class CommonController {
   @Reference
   private CommonService commonService;
+
   @IgnoreLoginCheck
   @PostMapping(value = "/verificationCode")
   @ApiOperation(value = "验证码校验", response = CityResult.class)
-  public Response<Boolean> queryCityByParameterPage(@ModelAttribute @ApiParam("请求参数") String requestId,String code) {
-    return new Response<>(commonService.checkVerificationCode(requestId,code));
+  public Response<Boolean> queryCityByParameterPage(@ModelAttribute @ApiParam("请求参数") VerificationCodeEnter enter) {
+    return new Response<>(commonService.checkVerificationCode(enter));
   }
 }

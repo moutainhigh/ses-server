@@ -1,5 +1,7 @@
 package com.redescooter.ses.app.common.service;
 
+import com.redescooter.ses.api.common.vo.base.VerificationCodeEnter;
+
 /**
  * @ClassNameverificationCodeService
  * @Description
@@ -8,5 +10,5 @@ package com.redescooter.ses.app.common.service;
  * @Version V1.0
  **/
 public interface CommonService {
-  Boolean checkVerificationCode(String requestId,String code);
+  Boolean checkVerificationCode(VerificationCodeEnter enter);
 }

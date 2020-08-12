@@ -1,9 +1,11 @@
 package com.redescooter.ses.app.common.service.impl;
 
-import com.redescooter.ses.api.common.exception.BaseException;
+import com.redescooter.ses.api.common.vo.base.VerificationCodeEnter;
 import com.redescooter.ses.app.common.service.CommonService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.Map;
@@ -15,15 +17,16 @@ import java.util.Map;
  * @Date2020/8/12 10:11
  * @Version V1.0
  **/
+@Service
 public class CommonServiceImpl implements CommonService {
   @Autowired
   private JedisCluster jedisCluster;
   @Override
-  public Boolean checkVerificationCode(String requestId,String code) {
-    Map<String, String> map = jedisCluster.hgetAll(requestId);
-    if (map == null) {
-      throw new BaseException(BaseException.DEFAULE_ERRORCODE, "upload file failure.");
+  public Boolean checkVerificationCode( VerificationCodeEnter enter) {
+    Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
+    if (CollectionUtils.isEmpty(map)) {
+      return Boolean.FALSE;
     }
-    return StringUtils.equals(map.get("verificationCode"),code)? Boolean.TRUE : Boolean.FALSE;
+    return StringUtils.equals(map.get("verificationCode"),enter.getCode())? Boolean.TRUE : Boolean.FALSE;
   }
 }
