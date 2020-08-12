@@ -14,6 +14,7 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
+import com.redescooter.ses.app.common.service.CommonService;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.TokenService;
@@ -42,7 +43,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
-
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -99,8 +99,7 @@ public class TokenServiceImpl implements TokenService {
         enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         enter.setCode(SesStringUtils.stringTrim(enter.getCode()));
-
-
+        //todo
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
             throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
