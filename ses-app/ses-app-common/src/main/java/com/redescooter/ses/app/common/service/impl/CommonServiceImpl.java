@@ -1,5 +1,6 @@
 package com.redescooter.ses.app.common.service.impl;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.VerificationCodeEnter;
 import com.redescooter.ses.app.common.service.CommonService;
 import org.apache.commons.lang3.StringUtils;
@@ -22,11 +23,11 @@ public class CommonServiceImpl implements CommonService {
   @Autowired
   private JedisCluster jedisCluster;
   @Override
-  public Boolean checkVerificationCode( VerificationCodeEnter enter) {
+  public BooleanResult checkVerificationCode(VerificationCodeEnter enter) {
     Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
     if (CollectionUtils.isEmpty(map)) {
-      return Boolean.FALSE;
+      return BooleanResult.builder().success(Boolean.FALSE).build();
     }
-    return StringUtils.equals(map.get("verificationCode"),enter.getCode())? Boolean.TRUE : Boolean.FALSE;
+    return BooleanResult.builder().success(StringUtils.equals(map.get("verificationCode"),enter.getCode())? Boolean.TRUE : Boolean.FALSE).build();
   }
 }
