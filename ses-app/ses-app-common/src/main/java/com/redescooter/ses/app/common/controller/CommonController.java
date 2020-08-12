@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.*;
  * @Version V1.0
  **/
 @Slf4j
-@Api(tags = {"验证码校验"})
+@Api(tags = {"通用接口"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/code", method = RequestMethod.POST)
+@RequestMapping(value = "/base", method = RequestMethod.POST)
 public class CommonController {
   @Reference
   private CommonService commonService;
