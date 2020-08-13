@@ -46,7 +46,7 @@
 
   <select id="detailList" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsDetailResult">
     select
-    us.contact_us_id as id,
+    us.id as id,
     us.created_time as createTime,
     us.remark as remark,
     us.messageType as messageType
