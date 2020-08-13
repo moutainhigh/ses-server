@@ -163,12 +163,15 @@ public class InquiryServiceImpl implements InquiryService {
         // 查询已存在的email 暂时注释掉 邮箱过滤
         //List<String> emailList = inquiryServiceMapper.usingEmailList();
 
-        //查询 该邮箱 是否为正式客户 是的话 直接返回
-        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().in(OpeCustomer::getStatus, CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue(),
-                CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue()).eq(OpeCustomer::getEmail,
-                enter.getEmail()));
-        if (opeCustomer != null) {
-            return new GeneralResult(enter.getRequestId());
+        //是否允许正式客户在联系我们中留言 默认为false  前端控制
+        if (!enter.getWhetherConstantUs()) {
+            //查询 该邮箱 是否为正式客户 是的话 直接返回
+            OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().in(OpeCustomer::getStatus, CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue(),
+                    CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue()).eq(OpeCustomer::getEmail,
+                    enter.getEmail()));
+            if (opeCustomer != null) {
+                return new GeneralResult(enter.getRequestId());
+            }
         }
 
 //        //查询客户是否有询价单 存在的话数量累计
@@ -475,11 +478,11 @@ public class InquiryServiceImpl implements InquiryService {
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
-            String[] headers = {"NAME","SURNAME","EMAIL","TELEPHONE","CODE POSTAL","VOTER MESSAGE","CITY NAME","CREATE TIME"};
+            String[] headers = {"NAME", "SURNAME", "EMAIL", "TELEPHONE", "CODE POSTAL", "VOTER MESSAGE", "CITY NAME", "CREATE TIME"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
-                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName,excelFolder);
-                log.info("路劲是这个！！！！！！！！！！！！！！！"+excelFolder);
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+                log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
@@ -490,15 +493,15 @@ public class InquiryServiceImpl implements InquiryService {
                 OSSClient ossClient = null;
                 ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
                         ossConfig.getSecretAccesskey(), conf);
-                String fileName = System.currentTimeMillis()+".xlsx";
+                String fileName = System.currentTimeMillis() + ".xlsx";
                 ossClient.putObject(ossConfig.getDefaultBucketName(), fileName,
                         multipartFile.getInputStream());
                 String bucket = ossConfig.getDefaultBucketName();
                 excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
-                if(file.exists()){
+                if (file.exists()) {
                     file.delete();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -506,18 +509,18 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
 
-   private Map<String, Object> toMap(InquiryResult opeCustomerInquiry){
-       Map<String, Object> map = new LinkedHashMap<>();
-       map.put("NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName())?"--":opeCustomerInquiry.getCustomerFirstName());
-       map.put("SURNAME NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName())?"--":opeCustomerInquiry.getCustomerLastName());
-       map.put("EMAIL",Strings.isNullOrEmpty(opeCustomerInquiry.getEmail())?"--":opeCustomerInquiry.getEmail());
-       map.put("TELEPHONE",Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone())?"--":"+33-"+opeCustomerInquiry.getTelephone());
-       map.put("CODE POSTAL",Strings.isNullOrEmpty(opeCustomerInquiry.getDef2())?"--":opeCustomerInquiry.getDef2());
-       map.put("VOTER MESSAGE",Strings.isNullOrEmpty(opeCustomerInquiry.getRemark())?"--":opeCustomerInquiry.getRemark());
-       map.put("CITY NAME",Strings.isNullOrEmpty(opeCustomerInquiry.getDef3())?"--":opeCustomerInquiry.getDef3());
-       map.put("CREATE TIME",opeCustomerInquiry.getAcceptanceTime()==null?"--":DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
-       return map;
-   }
+    private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName()) ? "--" : opeCustomerInquiry.getCustomerFirstName());
+        map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
+        map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
+        map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDef2()) ? "--" : opeCustomerInquiry.getDef2());
+        map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
+        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getDef3()) ? "--" : opeCustomerInquiry.getDef3());
+        map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
+        return map;
+    }
 
 
     private OpeCustomer buildOpeCustomerSingle(IdEnter enter, OpeCustomerInquiry opeCustomerInquiry) {

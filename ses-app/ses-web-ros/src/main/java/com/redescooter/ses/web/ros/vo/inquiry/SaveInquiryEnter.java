@@ -72,4 +72,7 @@ public class SaveInquiryEnter extends GeneralEnter {
 
     @ApiModelProperty("地址")
     private String address;
+
+    @ApiModelProperty("是否允许正式客户在联系我们中留言")
+    private Boolean whetherConstantUs = Boolean.FALSE;
 }
