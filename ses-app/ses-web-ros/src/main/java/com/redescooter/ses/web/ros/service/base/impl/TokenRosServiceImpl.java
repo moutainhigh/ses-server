@@ -205,16 +205,14 @@ public class TokenRosServiceImpl implements TokenRosService {
         org.springframework.beans.BeanUtils.copyProperties(enter, sendCodeMobileUserTaskEnter);
     
         sendCodeMobileUserTaskEnter.setCode(code);
-        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
-    
+        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.ROS_LOGIN_BY_CODE.getEvent());
     
         sendCodeMobileUserTaskEnter.setToMail(enter.getLoginName());
-        sendCodeMobileUserTaskEnter.setToUserId(new Long("0"));
+        sendCodeMobileUserTaskEnter.setToUserId(sysUser.getId());
         sendCodeMobileUserTaskEnter.setUserRequestId(enter.getRequestId());
-        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
-        sendCodeMobileUserTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
-        sendCodeMobileUserTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
-        mailMultiTaskService.addSetPasswordMobileUserTask(sendCodeMobileUserTaskEnter);
+        sendCodeMobileUserTaskEnter.setMailAppId(enter.getAppId());
+        sendCodeMobileUserTaskEnter.setMailSystemId(enter.getAppId());
+        mailMultiTaskService.addMultiMailTask(sendCodeMobileUserTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
 

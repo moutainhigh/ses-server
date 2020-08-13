@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.annotation.MethodLock;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
@@ -164,6 +165,8 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
+    @MethodLock
+    @Transactional
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
 
