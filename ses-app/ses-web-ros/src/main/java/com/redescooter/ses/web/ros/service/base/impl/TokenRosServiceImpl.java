@@ -202,16 +202,18 @@ public class TokenRosServiceImpl implements TokenRosService {
         jedisCluster.expire(key, EMAIL_LOGIN_CODE_TIME);
         // TODO 给用户发邮件  邮件里面是验证码  登陆的时候验证邮箱和验证码  (等待邮件模板)
         SendCodeMobileUserTaskEnter sendCodeMobileUserTaskEnter = new SendCodeMobileUserTaskEnter();
-        org.springframework.beans.BeanUtils.copyProperties(enter, sendCodeMobileUserTaskEnter);
-    
         sendCodeMobileUserTaskEnter.setCode(code);
         sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.ROS_LOGIN_BY_CODE.getEvent());
-    
+        sendCodeMobileUserTaskEnter.setAppId(sysUser.getAppId());
+        sendCodeMobileUserTaskEnter.setSystemId(sysUser.getSystemId());
         sendCodeMobileUserTaskEnter.setToMail(enter.getLoginName());
-        sendCodeMobileUserTaskEnter.setToUserId(sysUser.getId());
         sendCodeMobileUserTaskEnter.setUserRequestId(enter.getRequestId());
-        sendCodeMobileUserTaskEnter.setMailAppId(enter.getAppId());
-        sendCodeMobileUserTaskEnter.setMailSystemId(enter.getAppId());
+        sendCodeMobileUserTaskEnter.setMailAppId(sysUser.getAppId());
+        sendCodeMobileUserTaskEnter.setMailSystemId(sysUser.getSystemId());
+        sendCodeMobileUserTaskEnter.setName(sysUser.getLoginName().split("@")[0]);
+        sendCodeMobileUserTaskEnter.setUserId(sysUser.getId());
+        sendCodeMobileUserTaskEnter.setRequestId(enter.getRequestId());
+        sendCodeMobileUserTaskEnter.setEmail(enter.getLoginName());
         mailMultiTaskService.addMultiMailTask(sendCodeMobileUserTaskEnter);
         return new GeneralResult(enter.getRequestId());
     }
