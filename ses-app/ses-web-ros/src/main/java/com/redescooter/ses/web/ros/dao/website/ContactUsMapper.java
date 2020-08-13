@@ -19,6 +19,4 @@ public interface ContactUsMapper {
 
 List<ContactUsDetailResult> detailList(@Param("enter") ContactUsEnter enter);
 
-List<ContactUsHistoryResult> historyList(@Param("enter") ContactUsEnter enter);
-
 }
