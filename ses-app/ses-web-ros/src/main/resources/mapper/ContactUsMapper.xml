@@ -49,7 +49,7 @@
     us.id as id,
     us.created_time as createTime,
     us.remark as remark,
-    us.messageType as messageType
+    us.message_type as messageType
     from ope_contact_us_trace us
     <include refid="contactUsDetail"></include>
     ORDER BY us.created_time
