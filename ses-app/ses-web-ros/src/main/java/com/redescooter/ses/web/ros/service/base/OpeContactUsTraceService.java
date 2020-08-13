@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeContactUsTraceService extends IService<OpeContactUsTrace>{
+public interface OpeContactUsTraceService extends IService<OpeContactUsTrace> {
 
 
     int updateBatch(List<OpeContactUsTrace> list);
@@ -18,3 +18,8 @@ public interface OpeContactUsTraceService extends IService<OpeContactUsTrace>{
     int insertOrUpdateSelective(OpeContactUsTrace record);
 
 }
+
+
+
+
+

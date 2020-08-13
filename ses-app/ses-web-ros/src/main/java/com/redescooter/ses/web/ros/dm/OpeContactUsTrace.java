@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_contact_us_trace")
 public class OpeContactUsTrace implements Serializable {
+    public static final String COL_MESSAGETYPE = "messageType";
+    public static final String COL_LEAVEWORDID = "leaveWordId";
     /**
      * 主键
      */
@@ -112,9 +114,16 @@ public class OpeContactUsTrace implements Serializable {
     /**
      * 消息类型：1.留言 2回复
      */
-    @TableField(value = "messageType")
+    @TableField(value = "message_type")
     @ApiModelProperty(value = "消息类型：1.留言 2回复")
-    private String messagetype;
+    private String messageType;
+
+    /**
+     * 留言id
+     */
+    @TableField(value = "leave_word_id")
+    @ApiModelProperty(value = "留言id")
+    private Long leaveWordId;
 
     /**
      * 创建人
@@ -207,7 +216,9 @@ public class OpeContactUsTrace implements Serializable {
 
     public static final String COL_REMARK = "remark";
 
-    public static final String COL_MESSAGETYPE = "messageType";
+    public static final String COL_MESSAGE_TYPE = "message_type";
+
+    public static final String COL_LEAVE_WORD_ID = "leave_word_id";
 
     public static final String COL_CREATED_BY = "created_by";
 

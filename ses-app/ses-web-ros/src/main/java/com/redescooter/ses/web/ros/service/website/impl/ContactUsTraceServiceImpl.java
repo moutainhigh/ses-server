@@ -52,7 +52,7 @@ public class ContactUsTraceServiceImpl implements ContactUsTraceService {
         opeContactUsTraceEntity.setDistrictName(contactUsEntity.getDistrictName());
         opeContactUsTraceEntity.setAddress(contactUsEntity.getAddress());
         opeContactUsTraceEntity.setRemark(contactUsEntity.getRemark());
-        opeContactUsTraceEntity.setMessagetype(ContantUsMessageType.LEAVE_MESSAGE.getValue());
+        opeContactUsTraceEntity.setMessageType(ContantUsMessageType.LEAVE_MESSAGE.getValue());
         opeContactUsTraceService.saveOrUpdate(opeContactUsTraceEntity);
     }
 }

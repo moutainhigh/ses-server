@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassNameContactUshistoryResult
@@ -55,12 +56,13 @@ public class ContactUsHistoryResult extends GeneralResult {
   @ApiModelProperty(value="地址")
   private String address;
 
-  @ApiModelProperty(value = "备注")
+  @ApiModelProperty(value = "留言")
   private String remark;
 
-  @ApiModelProperty(value = "创建开始时间")
-  private Date createTime;
+  @ApiModelProperty(value = "回复集合")
+  private List<ContactUsHistoryReplyResult> replyList;
 
-  @ApiModelProperty(value = "留言回复类型:1.留言 2.回复")
-  private String messageType;
+  @ApiModelProperty(value = "留言创建开始时间")
+  private Date createdTime;
+
 }

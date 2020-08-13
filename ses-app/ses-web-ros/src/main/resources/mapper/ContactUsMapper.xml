@@ -52,7 +52,7 @@
     us.messageType as messageType
     from ope_contact_us_trace us
     <include refid="contactUsDetail"></include>
-    ORDER BY us.created_time desc
+    ORDER BY us.created_time
   </select>
   <select id="historyList" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryResult">
     select us.id AS id,
@@ -67,12 +67,13 @@
     us.district_name as districtName,
     us.address as address,
     us.remark as remark,
-    us.messageType as messageType
+    us.message_type as messageType,
+    us.leave_word_id as leaveWordId
     from ope_contact_us_trace us
     LEFT JOIN
     ope_contact_us trace on us.contact_us_id=trace.id
     <include refid="contactUsDetail"></include>
-    ORDER BY us.created_time desc
+    ORDER BY us.created_time
   </select>
   <select id="totalRows" resultType="int">
     select count(*)
