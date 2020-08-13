@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.wms.cn;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -20,7 +21,7 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class WmsWhInDetailsEnter extends GeneralEnter {
+public class WmsWhInDetailsEnter extends PageEnter {
   @ApiModelProperty(value = "id",required = true)
   @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
   private  long id;

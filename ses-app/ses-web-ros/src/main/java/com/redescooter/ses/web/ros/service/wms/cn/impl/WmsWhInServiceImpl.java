@@ -104,15 +104,17 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      * @return
      */
     @Override
-    public List<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
+    public PageResult<WmsProductListResult> productList(WmsWhInDetailsEnter enter) {
+        List<WmsProductListResult> partList=new ArrayList<>();
         if (SourceTypeEnums.ALLOCATE.getValue().equals(enter.getDocumentType())) {
-          List<WmsProductListResult> partList = wmsServiceMapper.partList(enter);
+          partList = wmsServiceMapper.partList(enter);
             partList.forEach(item ->{
                 item.setProductType(BomCommonTypeEnums.getValueByCode(item.getProductType()));
               });
-            return partList;
+            return PageResult.create(enter,partList.size(),partList);
         } else {
-            return wmsServiceMapper.productList(enter);
+             partList = wmsServiceMapper.productList(enter);
+            return PageResult.create(enter,partList.size(),partList);
         }
     }
 }

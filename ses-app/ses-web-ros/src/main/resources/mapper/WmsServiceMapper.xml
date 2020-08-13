@@ -440,27 +440,20 @@
     ord.id = #{enter.id} and ord.dr = 0
   </select>
   <select id="partList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
-    SELECT
-    allocate.id as id,
-    parts.cn_name AS cnName,
-    parts.en_name AS enName,
-    parts.parts_number AS productNumber,
-    parts.parts_type AS productType,
-    allocate.total-allocate.pending_storage_qty AS qty,
-    allocate.total AS sumTotal,
-    '1' as classType
-    FROM
-    ope_allocate_b allocate
-    JOIN
-    ope_parts parts
-    ON allocate.part_id = parts.id
-    and parts.dr = 0
+      SELECT allocate.id                                   as id,
+      parts.cn_name                                 AS cnName,
+      parts.en_name                                 AS enName,
+      parts.parts_number                            AS productNumber,
+      parts.parts_type                              AS productType,
+      allocate.total - allocate.pending_storage_qty AS qty,
+      allocate.total                                AS sumTotal,
+      '1'                                           as classType
+      FROM ope_allocate_b allocate
+      inner JOIN ope_parts parts ON allocate.part_id = parts.id and parts.dr = 0
     WHERE
-    allocate.allocate_id = #{enter.id} and allocate.dr = 0
-    GROUP BY
-    id,
-    cnName,
-    enName
+    allocate.allocate_id = #{enter.id}
+    and allocate.dr = 0
+    limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="productList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsProductListResult">
     SELECT
@@ -473,17 +466,11 @@
     ord.assembly_qty AS sumTotal,
     '1' as classType
     FROM
-    ope_assembly_b_order ord
-    JOIN
-    ope_parts_product product
-    ON ord.product_id = product.id
-    and product.dr = 0
+    ope_assembly_b_order ord inner JOIN ope_parts_product product ON ord.product_id = product.id and product.dr = 0
     WHERE
-    ord.assembly_id = #{enter.id} and ord.dr = 0
-    GROUP BY
-    id,
-    cnName,
-    enName
+    ord.assembly_id = #{enter.id}
+    and ord.dr = 0
+    limit #{enter.startRow},#{enter.pageSize}
   </select>
   <select id="wmsInWhCountByType" resultType="int">
     SELECT
