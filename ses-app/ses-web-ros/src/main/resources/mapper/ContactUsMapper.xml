@@ -48,7 +48,8 @@
     select
     us.contact_us_id as id,
     us.created_time as createTime,
-    us.remark as remark
+    us.remark as remark,
+    us.messageType as messageType
     from ope_contact_us_trace us
     <include refid="contactUsDetail"></include>
     ORDER BY us.created_time desc
@@ -65,7 +66,8 @@
     us.city_name AS cityName,
     us.district_name as districtName,
     us.address as address,
-    us.remark as remark
+    us.remark as remark,
+    us.messageType as messageType
     from ope_contact_us_trace us
     LEFT JOIN
     ope_contact_us trace on us.contact_us_id=trace.id

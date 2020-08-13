@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
@@ -40,11 +41,16 @@ public class ContactUsController {
     return new Response<>(contactUsService.detail(enter));
   }
 
-
   @PostMapping(value = "/trace")
   @ApiOperation(value = "联系我们历史记录")
   public Response<List<ContactUsHistoryResult>> trace(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
-    return new Response(contactUsService.trace(enter));
+    return new Response<>(contactUsService.trace(enter));
+  }
+
+  @PostMapping(value = "/reply")
+  @ApiOperation(value = "联系我们留言回复")
+  public Response<GeneralResult> reply(@ModelAttribute @ApiParam("请求参数") ContactUsMessageEnter enter) {
+    return new Response<>(contactUsService.message(enter));
   }
 
 }

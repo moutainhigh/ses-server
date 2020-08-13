@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.website;
 
-import com.redescooter.ses.web.ros.dm.OpeContactUsEntity;
+import com.redescooter.ses.web.ros.dm.OpeContactUs;
 
 /**
  * @ClassNameContactUsTraceService
@@ -18,6 +18,6 @@ public interface ContactUsTraceService {
      * @Param
      * @return
      **/
-     void createContactUsTrace(OpeContactUsEntity contactUsEntity);
+     void createContactUsTrace(OpeContactUs contactUsEntity);
 
 }

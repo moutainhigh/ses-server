@@ -1,10 +1,11 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.ContactUsTraceMapper;
-import com.redescooter.ses.web.ros.dm.OpeContactUsEntity;
-import com.redescooter.ses.web.ros.dm.OpeContactUsTraceEntity;
+import com.redescooter.ses.web.ros.dm.OpeContactUs;
+import com.redescooter.ses.web.ros.dm.OpeContactUsTrace;
 import com.redescooter.ses.web.ros.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import org.apache.dubbo.config.annotation.Reference;
@@ -33,8 +34,8 @@ public class ContactUsTraceServiceImpl implements ContactUsTraceService {
     private IdAppService idAppService;
 
     @Override
-    public void createContactUsTrace(OpeContactUsEntity contactUsEntity) {
-        OpeContactUsTraceEntity opeContactUsTraceEntity = new OpeContactUsTraceEntity();
+    public void createContactUsTrace(OpeContactUs contactUsEntity) {
+        OpeContactUsTrace opeContactUsTraceEntity = new OpeContactUsTrace();
         opeContactUsTraceEntity.setId(idAppService.getId(SequenceName.OPE_CONTACT_US_TRACE));
         opeContactUsTraceEntity.setCreatedBy(0L);
         opeContactUsTraceEntity.setCreatedTime(new Date());
@@ -51,6 +52,7 @@ public class ContactUsTraceServiceImpl implements ContactUsTraceService {
         opeContactUsTraceEntity.setDistrictName(contactUsEntity.getDistrictName());
         opeContactUsTraceEntity.setAddress(contactUsEntity.getAddress());
         opeContactUsTraceEntity.setRemark(contactUsEntity.getRemark());
+        opeContactUsTraceEntity.setMessagetype(ContantUsMessageType.LEAVE_MESSAGE.getValue());
         opeContactUsTraceService.saveOrUpdate(opeContactUsTraceEntity);
     }
 }

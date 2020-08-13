@@ -60,4 +60,7 @@ public class ContactUsHistoryResult extends GeneralResult {
 
   @ApiModelProperty(value = "创建开始时间")
   private Date createTime;
+
+  @ApiModelProperty(value = "留言回复类型:1.留言 2.回复")
+  private String messageType;
 }

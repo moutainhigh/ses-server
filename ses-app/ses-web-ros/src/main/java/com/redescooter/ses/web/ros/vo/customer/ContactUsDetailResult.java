@@ -27,4 +27,7 @@ public class ContactUsDetailResult extends GeneralResult {
 
   @ApiModelProperty(value = "备注")
   private String remark;
+
+  @ApiModelProperty(value = "留言回复类型:1.留言 2.回复")
+  private String messageType;
 }

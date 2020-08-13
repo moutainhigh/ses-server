@@ -12,6 +12,7 @@ import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.RenewalWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 import com.redescooter.ses.api.proxy.service.IMailService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailConfigMapper;
@@ -574,6 +575,29 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     return new GeneralResult();
   }
 
+  /**
+   * ros联系我们回复消息邮件任务
+   * subscriptionsubscriptionsubscriptionsubscription     * @return
+   *
+   * @param enter
+   */
+  @Override
+  public GeneralResult contactUsReplyMessageEmail(MailContactUsMessageEnter enter) {
+    PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+    Map<String, String> map = getreplyMessageMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail(),enter.getMessage());
+
+    PlaMailTask mailTask = new PlaMailTask();
+    mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+    mailTask.setSubject(mailtemplate.getSubject());
+    mailTask.setParameter(JSON.toJSONString(map));
+    mailTask.setContent(mailtemplate.getContent());
+
+    mailTask = saveTask(mailTask, enter);
+    pullResdis(mailTask, mailtemplate.getExpire());
+
+    return new GeneralResult(enter.getRequestId());
+  }
+
 
   /**
      * 执行所有任务
@@ -629,6 +653,24 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return map;
     }
 
+
+  private Map<String, String> getreplyMessageMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email,String message) {
+
+    List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
+    Map<String, String> map = new HashMap();
+    if (configList != null && configList.size() > 0) {
+      map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
+    }
+    //默认必须有的参数
+    map.put("requestId", requestId);
+    map.put("name", name);
+    map.put("userId", String.valueOf(userId));
+    map.put("email", email);
+    map.put("systemId", systemId);
+    map.put("appId", appId);
+    map.put("message",message);
+    return map;
+  }
   private Map<String, String> getEmployeeParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email,String password) {
 
     List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
