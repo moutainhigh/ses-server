@@ -1,174 +1,182 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
-    * 官网联系我们历史记录
-    */
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeContactUsTraceEntity")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeContactUsTrace")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_contact_us_trace")
-public class OpeContactUsTraceEntity implements Serializable {
+public class OpeContactUsTrace implements Serializable {
     /**
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /**
      * 删除标志
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="删除标志")
+    @ApiModelProperty(value = "删除标志")
+    @TableLogic
     private Integer dr;
 
     /**
      * 联系我们id
      */
     @TableField(value = "contact_us_id")
-    @ApiModelProperty(value="联系我们id")
+    @ApiModelProperty(value = "联系我们id")
     private Long contactUsId;
 
     /**
      * 客户邮箱
      */
     @TableField(value = "email")
-    @ApiModelProperty(value="客户邮箱")
+    @ApiModelProperty(value = "客户邮箱")
     private String email;
 
     /**
      * 名
      */
     @TableField(value = "first_name")
-    @ApiModelProperty(value="名")
+    @ApiModelProperty(value = "名")
     private String firstName;
 
     /**
      * 姓
      */
     @TableField(value = "last_name")
-    @ApiModelProperty(value="姓")
+    @ApiModelProperty(value = "姓")
     private String lastName;
 
     /**
      * 全名
      */
     @TableField(value = "full_name")
-    @ApiModelProperty(value="全名")
+    @ApiModelProperty(value = "全名")
     private String fullName;
 
     /**
      * 电话
      */
     @TableField(value = "telephone")
-    @ApiModelProperty(value="电话")
+    @ApiModelProperty(value = "电话")
     private String telephone;
 
     /**
      * 国家名称
      */
     @TableField(value = "country_name")
-    @ApiModelProperty(value="国家名称")
+    @ApiModelProperty(value = "国家名称")
     private String countryName;
 
     /**
      * 城市名称
      */
     @TableField(value = "city_name")
-    @ApiModelProperty(value="城市名称")
+    @ApiModelProperty(value = "城市名称")
     private String cityName;
 
     /**
      * 区域编码
      */
     @TableField(value = "district_name")
-    @ApiModelProperty(value="区域编码")
+    @ApiModelProperty(value = "区域编码")
     private String districtName;
 
     /**
      * 地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="地址")
+    @ApiModelProperty(value = "地址")
     private String address;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
+
+    /**
+     * 消息类型：1.留言 2回复
+     */
+    @TableField(value = "messageType")
+    @ApiModelProperty(value = "消息类型：1.留言 2回复")
+    private String messagetype;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -199,6 +207,8 @@ public class OpeContactUsTraceEntity implements Serializable {
 
     public static final String COL_REMARK = "remark";
 
+    public static final String COL_MESSAGETYPE = "messageType";
+
     public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -216,4 +226,8 @@ public class OpeContactUsTraceEntity implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static OpeContactUsTraceBuilder builder() {
+        return new OpeContactUsTraceBuilder();
+    }
 }
