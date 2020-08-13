@@ -11,7 +11,7 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.RenewalWarnWebTaskEnter;
-import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.proxy.service.IMailService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailConfigMapper;
@@ -112,7 +112,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
      * @return
      */
     @Override
-    public GeneralResult addSetPasswordMobileUserTask(SetPasswordMobileUserTaskEnter enter) {
+    public GeneralResult addSetPasswordMobileUserTask(SendCodeMobileUserTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
         Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
 

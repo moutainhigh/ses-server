@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,8 +16,8 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
-import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -99,7 +98,6 @@ public class TokenRosServiceImpl implements TokenRosService {
 
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
-        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
@@ -191,7 +189,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
 
     @Override
-    public void emailLoginSendCode(EmailLoginEnter enter) {
+    public GeneralResult emailLoginSendCode(LoginEnter enter) {
         // 先验证码输入的邮箱是否在系统中注册过
         OpeSysUser sysUser = getOpeSysUser(enter);
         // 生成随机的验证码  然后放在缓存里  再发给用户
@@ -203,11 +201,26 @@ public class TokenRosServiceImpl implements TokenRosService {
         // 缓存时间暂定位5分钟
         jedisCluster.expire(key, EMAIL_LOGIN_CODE_TIME);
         // TODO 给用户发邮件  邮件里面是验证码  登陆的时候验证邮箱和验证码  (等待邮件模板)
+        SendCodeMobileUserTaskEnter sendCodeMobileUserTaskEnter = new SendCodeMobileUserTaskEnter();
+        org.springframework.beans.BeanUtils.copyProperties(enter, sendCodeMobileUserTaskEnter);
+    
+        sendCodeMobileUserTaskEnter.setCode(code);
+        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
+    
+    
+        sendCodeMobileUserTaskEnter.setToMail(enter.getLoginName());
+        sendCodeMobileUserTaskEnter.setToUserId(new Long("0"));
+        sendCodeMobileUserTaskEnter.setUserRequestId(enter.getRequestId());
+        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
+        sendCodeMobileUserTaskEnter.setMailAppId(AppIDEnums.SAAS_APP.getValue());
+        sendCodeMobileUserTaskEnter.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
+        mailMultiTaskService.addSetPasswordMobileUserTask(sendCodeMobileUserTaskEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 
 
     @Override
-    public TokenResult emailLogin(EmailLoginEnter enter) {
+    public TokenResult emailLogin(LoginEnter enter) {
         if(Strings.isNullOrEmpty(enter.getCode())){
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
@@ -227,13 +240,13 @@ public class TokenRosServiceImpl implements TokenRosService {
         jedisCluster.del(key);
         // 登陆还是按照原来的登陆逻辑
         OpeSysUser sysUser = getOpeSysUser(enter);
-        LoginEnter loginEnter = new LoginEnter();
-        BeanUtil.copyProperties(enter,loginEnter);
-        TokenResult result =  getTokenResult(loginEnter, sysUser);
+//        LoginEnter loginEnter = new LoginEnter();
+//        BeanUtil.copyProperties(enter,loginEnter);
+        TokenResult result =  getTokenResult(enter, sysUser);
         return result;
     }
 
-    private OpeSysUser getOpeSysUser(EmailLoginEnter enter) {
+    private OpeSysUser getOpeSysUser(LoginEnter enter) {
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(OpeSysUser.COL_DR, 0);
@@ -244,7 +257,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
         if (sysUser == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.EAMIL_NOT_REGISTER.getCode(), ExceptionCodeEnums.EAMIL_NOT_REGISTER.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         return sysUser;
     }
@@ -284,6 +297,10 @@ public class TokenRosServiceImpl implements TokenRosService {
      */
     private String checkPassWord(LoginEnter enter) {
         //密码解密 无法解密时 就是提示密码错误
+        if (StringUtils.isBlank(enter.getPassword())){
+            throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+        }
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
         String decryptPassword = "";
         try {
             decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);

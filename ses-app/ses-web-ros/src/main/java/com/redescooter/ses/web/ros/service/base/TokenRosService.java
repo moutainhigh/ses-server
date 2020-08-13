@@ -30,7 +30,7 @@ public interface TokenRosService {
      * @Param [enter]
      * @return
      **/
-    void emailLoginSendCode(EmailLoginEnter enter);
+    GeneralResult emailLoginSendCode(LoginEnter enter);
 
     /**
      * @Author Aleks
@@ -39,7 +39,7 @@ public interface TokenRosService {
      * @Param [enter]
      * @return
      **/
-    TokenResult emailLogin(EmailLoginEnter enter);
+    TokenResult emailLogin(LoginEnter enter);
 
     /**
      * 获取密钥

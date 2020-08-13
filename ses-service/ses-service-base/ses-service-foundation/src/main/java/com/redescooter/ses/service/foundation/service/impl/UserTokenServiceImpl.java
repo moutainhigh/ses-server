@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
-import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.*;
@@ -808,9 +808,9 @@ public class UserTokenServiceImpl implements UserTokenService {
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
 
         if (count == 0) {
-            baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_PASSWORD.getEvent());
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_PASSWORD.getEvent());
         } else {
-            baseMailTaskEnter.setEvent(MailTemplateEventEnum.WEB_ACTIVATE.getEvent());
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
         }
 
         if (enter.getMail().indexOf("@") == (-1)) {

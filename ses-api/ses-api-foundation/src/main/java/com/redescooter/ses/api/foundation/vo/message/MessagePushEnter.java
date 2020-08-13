@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.foundation.vo.message;
 
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
-import com.redescooter.ses.api.common.enums.jiguang.PushTypeEnum;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.Builder;
 import lombok.Data;
@@ -31,10 +31,10 @@ public class MessagePushEnter extends GeneralEnter {
     private String[] userIds;
 
     //设备类型  当前支持 Android, iOS, Windows Phone 三个平台的推送.
-    private String type = PlatformTypeEnum.ANDROID.getCode();
+    private String type = PlatformTypeEnums.ANDROID.getCode();
 
     //推送目标，默认根据设备唯一标识进行推送
-    private String pushAimsType = PushTypeEnum.REGISTRATION_ID.getCode();
+    private String pushAimsType = PushTypeEnums.REGISTRATION_ID.getCode();
 
     //订单创建人，用户PC端推送时获取推送人相关信息
     private Long createUser;

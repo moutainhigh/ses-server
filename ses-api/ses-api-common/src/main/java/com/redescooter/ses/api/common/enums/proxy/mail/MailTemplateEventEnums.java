@@ -33,8 +33,7 @@ public enum MailTemplateEventEnums {
     ROS_CREATE_EMPLOYEE("ROS员工账户开通", 15, "Ros_open_employee_account", "ROS_OPEN_EMPLOYEE_ACCOUNT"),
     ROS_FORGET_PSD_SEND_MAIL("ROS忘记密码发送邮件", 16, "ros_forget_psd_send_mail", "ROS_FORGET_PSD_SEND_MAIL"),
     WEBSITE_SIGN_UP("WEBSITE_SIGN_UP",17,"website_sign_up","WEBSITE_SIGN_UP"),
-    ROS_DISTRUST_LEAD_SEND_MAIL("ROS区域负责人发送邮箱", 18, "ros_distrust_lead_send_mail", "ROS_DISTRUST_LEAD_SEND_MAIL"),
-
+    ROS_CONTACTUS_REPLY_MESSAGE("ROS联系我们回复消息", 19, "ros_contactus_reply_message", "ROS_CONTACTUS_REPLY_MESSAGE"),
   ;
     private String mome;
 

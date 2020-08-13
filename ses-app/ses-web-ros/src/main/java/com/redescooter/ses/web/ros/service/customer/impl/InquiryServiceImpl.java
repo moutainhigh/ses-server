@@ -172,9 +172,9 @@ public class InquiryServiceImpl implements InquiryService {
         //List<String> emailList = inquiryServiceMapper.usingEmailList();
 
         //查询 该邮箱 是否为正式客户 是的话 直接返回
-        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().in(OpeCustomer::getStatus, CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue(),
-                CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue()).eq(OpeCustomer::getEmail,
-                enter.getEmail()));
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>()
+                .in(OpeCustomer::getStatus, CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue(), CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())
+                .eq(OpeCustomer::getEmail,enter.getEmail()));
         if (opeCustomer != null) {
             return new GeneralResult(enter.getRequestId());
         }
@@ -211,7 +211,7 @@ public class InquiryServiceImpl implements InquiryService {
   //发送区域负责人
     public  void  sendDistrustleadEmail(SaveInquiryEnter enter){
       BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
-      mailTask.setEvent(MailTemplateEventEnums.ROS_DISTRUST_LEAD_SEND_MAIL.getEvent());
+//      mailTask.setEvent(MailTemplateEventEnums.ROS_DISTRUST_LEAD_SEND_MAIL.getEvent());
       mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
       mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
       mailTask.setRequestId(enter.getRequestId());
