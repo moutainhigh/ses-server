@@ -47,7 +47,22 @@ public class TokenController {
     public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(userTokenService.sendEmail(enter));
     }
-
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "验证码登录", response = LoginResult.class)
+    @PostMapping(value = "/loginByCode")
+    public Response<LoginResult> loginByCode(@ModelAttribute LoginEnter enter) {
+        return new Response<>(userTokenService.loginByCode(enter));
+    }
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "验证码登录发送邮件", response = GeneralResult.class)
+    @PostMapping(value = "/loginSendCode")
+    public Response<GeneralResult> loginSendCode(@ModelAttribute LoginEnter enter) {
+        return new Response<>(userTokenService.loginSendCode(enter));
+    }
+    
+    
     @IgnoreLoginCheck
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
     @PostMapping(value = "/forgotPassword")

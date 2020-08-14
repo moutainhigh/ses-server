@@ -56,7 +56,7 @@ public class WmsWhInController{
 
   @PostMapping(value = "/detailProductList")
   @ApiOperation(value = "入库部件/产品信息详情", response = WmsProductListResult.class)
-  public Response<List<WmsProductListResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
+  public Response<PageResult<WmsProductListResult>> whInStockPendingList(@ModelAttribute @ApiParam("请求参数") WmsWhInDetailsEnter enter) {
     return new Response<>(wmswhinservice.productList(enter));
   }
 }

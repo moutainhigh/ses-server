@@ -45,5 +45,5 @@ public interface WmsWhInService{
    * 查询入库产品/部件详情对象
    * @return
    */
-  List<WmsProductListResult> productList(WmsWhInDetailsEnter enter);
+  PageResult<WmsProductListResult> productList(WmsWhInDetailsEnter enter);
 }

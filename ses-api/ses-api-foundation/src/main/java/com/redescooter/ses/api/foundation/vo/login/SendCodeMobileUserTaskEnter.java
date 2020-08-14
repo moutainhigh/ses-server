@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class SetPasswordMobileUserTaskEnter extends BaseMailTaskEnter {
+public class SendCodeMobileUserTaskEnter extends BaseMailTaskEnter {
     @ApiModelProperty(value = "验证码")
     private String code;
 }

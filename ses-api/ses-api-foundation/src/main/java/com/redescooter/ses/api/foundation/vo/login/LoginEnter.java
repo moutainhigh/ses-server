@@ -33,7 +33,6 @@ public class LoginEnter extends GeneralEnter {
     private String loginName;
 
     @ApiModelProperty(value = "密码")
-    @NotNull(code = ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String password;
 
     @ApiModelProperty(value = "验证码")
