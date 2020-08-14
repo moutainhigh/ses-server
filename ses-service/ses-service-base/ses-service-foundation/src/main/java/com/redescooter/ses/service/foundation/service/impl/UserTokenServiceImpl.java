@@ -3,6 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
@@ -183,7 +184,39 @@ public class UserTokenServiceImpl implements UserTokenService {
         jedisCluster.del(token);
         return new GeneralResult(enter.getRequestId());
     }
-
+    
+    /**
+     * 验证码登录发送邮件
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult loginSendCode(LoginEnter enter) {
+//        if(Strings.isNullOrEmpty(enter.getCode())){
+//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
+//        }
+//        String key = EMAIL_LOGIN_CODE + enter.getLoginName();
+//        if(!jedisCluster.exists(key)){
+//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
+//        }
+//        Map<String, String> map = jedisCluster.hgetAll(key);
+//        String code = map.get("code");
+//        if(Strings.isNullOrEmpty(code)){
+//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
+//        }
+//        if(!code.equals(enter.getCode())){
+//            throw new FoundationException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
+//        }
+//        // 到这里 邮箱登陆的校验就差不多算是通过了 清除缓存 再下面就是登陆的逻辑
+//        jedisCluster.del(key);
+//        // 登陆还是按照原来的登陆逻辑
+//        OpeSysUser sysUser = getOpeSysUser(enter);
+////        LoginEnter loginEnter = new LoginEnter();
+////        BeanUtil.copyProperties(enter,loginEnter);
+        return null;
+    }
+    
     /**
      * 登陆token检查
      *

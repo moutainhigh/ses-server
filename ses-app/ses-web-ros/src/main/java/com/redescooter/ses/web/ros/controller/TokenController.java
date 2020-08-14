@@ -54,7 +54,6 @@ public class TokenController {
         return new Response<>(tokenRosService.emailLoginSendCode(enter));
     }
 
-
     @IgnoreLoginCheck
     @ApiOperation(value = "邮箱加验证码登录", response = TokenResult.class)
     @PostMapping(value = "/emailLogin")

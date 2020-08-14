@@ -6,6 +6,7 @@ import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
@@ -47,7 +48,22 @@ public class TokenController {
     public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(userTokenService.sendEmail(enter));
     }
-
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "登录接口", response = LoginResult.class)
+    @PostMapping(value = "/loginByCode")
+    public Response<LoginResult> loginByCode(@ModelAttribute LoginEnter enter) {
+        return new Response<>(userTokenService.login(enter));
+    }
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "验证码登录发送邮件", response = GeneralResult.class)
+    @PostMapping(value = "/loginSendCode")
+    public Response<GeneralResult> loginSendCode(@ModelAttribute LoginEnter enter) {
+        return new Response<>(userTokenService.loginSendCode(enter));
+    }
+    
+    
     @IgnoreLoginCheck
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
     @PostMapping(value = "/forgotPassword")
