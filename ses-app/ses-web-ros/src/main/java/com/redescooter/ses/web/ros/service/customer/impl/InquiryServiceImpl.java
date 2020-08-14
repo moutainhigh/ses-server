@@ -567,7 +567,6 @@ public class InquiryServiceImpl implements InquiryService {
     
     
     private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
-    private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName()) ? "--" : opeCustomerInquiry.getCustomerFirstName());
         map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());

@@ -220,9 +220,8 @@ public interface ValidationExceptionCode {
     int TRACKING_NUM_ILLEGAL = 10129;
     //价格输入非法
     int PRICE_ILLEGAL=10130;
-//    int COUNTRY_CITY_ILLEGAL=10122;
-//    //消息为空
-//    int MESSAGE_IS_EMPTY=10123;
-//    //消息为空
-//    int MESSAGE_IS_ILLEGAL=10124;
+    //消息为空
+    int MESSAGE_IS_EMPTY=10131;
+    //消息为空
+    int MESSAGE_IS_ILLEGAL=10132;
 }
