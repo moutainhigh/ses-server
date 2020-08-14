@@ -40,6 +40,7 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -198,7 +199,17 @@ public class InquiryServiceImpl implements InquiryService {
         contactUsService.websiteContactUs(enter);
     
         //Monday 同步数据
-//        mondayService.websiteContantUs(opeCustomerInquiry);
+        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        mondayGeneralEnter.setFirstName(enter.getFirstName());
+        mondayGeneralEnter.setLastName(enter.getLastName());
+        mondayGeneralEnter.setTelephone(enter.getTelephone());
+        mondayGeneralEnter.setCreatedTime(new Date());
+        mondayGeneralEnter.setUpdatedTime(new Date());
+        mondayGeneralEnter.setEmail(enter.getEmail());
+        mondayGeneralEnter.setCity(enter.getCity());
+        mondayGeneralEnter.setDistant(enter.getDistrust());
+        mondayGeneralEnter.setRemarks(enter.getRemark());
+        mondayService.websiteContantUs(mondayGeneralEnter);
         return new GeneralResult(enter.getRequestId());
     }
 

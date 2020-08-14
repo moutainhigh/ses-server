@@ -23,6 +23,8 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
@@ -105,7 +107,7 @@ public class MondayServiceImpl implements MondayService {
 
     @Transactional
     @Override
-    public MondayCreateResult websiteContantUs(OpeCustomerInquiry enter) {
+    public MondayCreateResult websiteContantUs(MondayGeneralEnter enter) {
 
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getContactUsBoardName());
@@ -133,7 +135,7 @@ public class MondayServiceImpl implements MondayService {
      */
     @Transactional
     @Override
-    public MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter) {
+    public MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter) {
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getOrderFormBoardName());
 
@@ -365,7 +367,7 @@ public class MondayServiceImpl implements MondayService {
      * @param enter
      * @return
      */
-    private String buildContantUsSingle(OpeCustomerInquiry enter) {
+    private String buildContantUsSingle(MondayGeneralEnter<MondayBookOrderEnter> enter) {
 
         // 电话集合
         Map<String, String> phoneMap = new HashMap<>();
@@ -396,8 +398,14 @@ public class MondayServiceImpl implements MondayService {
                 CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.EMAIL.getTitle()), enter.getEmail());
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), null);
-        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDef2());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getCity());
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
+    
+        if (enter.getT() instanceof MondayBookOrderEnter){
+            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), enter.getT().getQty());
+            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()), enter.getT().getProducModeltName());
+        }
+        
         // 转json 并转义
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
         log.info("----------------------" + columnValues + "-------------------------");
@@ -411,7 +419,7 @@ public class MondayServiceImpl implements MondayService {
      * @param enter
      * @return
      */
-    private String buildBookOrderSingle(OpeCustomerInquiry enter) {
+    /*private String buildBookOrderSingle(MondayBookOrderEnter enter) {
 
         // 查询产品信息
         OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getProductId());
@@ -461,7 +469,7 @@ public class MondayServiceImpl implements MondayService {
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
         log.info("----------------------" + columnValues + "-------------------------");
         return columnValues;
-    }
+    }*/
 
     /**
      * 订阅邮件 模板参数封装
