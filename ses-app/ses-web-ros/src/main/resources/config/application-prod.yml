@@ -94,5 +94,5 @@ monday:
   #模板Id
   templeteId: 581923336
 
-ConstantUsEmail:
+constant-us-email:
     salePrincipal: valentin@redescooter.fr,etienne@redescooter.fr

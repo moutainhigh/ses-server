@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "ConstantUsEmail", ignoreUnknownFields = true)
+@ConfigurationProperties(prefix = "constant-us-email", ignoreUnknownFields = true)
 public class ConstantUsEmailConfig {
     
     private String salePrincipal;

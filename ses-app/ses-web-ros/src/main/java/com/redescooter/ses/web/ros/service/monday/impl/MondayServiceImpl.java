@@ -150,7 +150,7 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayParameterName.CREATE_ITEM_NAME,
                         new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
                 .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
-
+        
         // 数据插入
         return mutationData(gql).getData().getCreate_item();
     }
@@ -373,8 +373,7 @@ public class MondayServiceImpl implements MondayService {
         Map<String, String> phoneMap = new HashMap<>();
         if (StringUtils.isNotEmpty(enter.getTelephone())) {
             phoneMap.put(MondayColumnPhoneEnums.phone.getPhoneTel(),
-                    org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null
-                            : enter.getTelephone());
+                    org.springframework.util.StringUtils.isEmpty(enter.getTelephone()) == true ? null: enter.getTelephone());
             phoneMap.put(MondayColumnPhoneEnums.phone.getCountryShortName(),
                     MondayCountryShortNameEnums.FRANCE.getValue());
         }
@@ -402,7 +401,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
     
         if (enter.getT() instanceof MondayBookOrderEnter){
-            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), enter.getT().getQty());
+            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), String.valueOf(enter.getT().getQty()));
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()), enter.getT().getProducModeltName());
         }
         

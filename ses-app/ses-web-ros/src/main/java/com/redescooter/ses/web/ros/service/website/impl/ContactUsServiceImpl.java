@@ -63,7 +63,7 @@ public class ContactUsServiceImpl implements ContactUsService {
     @Autowired
     private ContactUsTraceService contactUsTraceService;
 
-    @Autowired
+    @Reference
     private MailMultiTaskService mailMultiTaskService;
     
     @Autowired
