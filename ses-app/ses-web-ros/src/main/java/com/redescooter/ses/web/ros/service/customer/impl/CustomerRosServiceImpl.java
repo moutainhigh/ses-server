@@ -50,6 +50,7 @@ import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:CustomerImpl
@@ -570,8 +571,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
       if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
         return PageResult.createZeroRowResult(enter);
       }
-        //TODO ROS1.0.0 账户列表去除个人端账户查询
-//        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -580,16 +579,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(enter);
         List<String> emailList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(accountList)) {
-            accountList.forEach(item -> {
-                emailList.add(item.getEmail());
-            });
+            emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
         }
-
-//        // 查询时间
-//        QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
-//        queryAccountListEnter.setInputTenantId(tenantIdList);
-//        BeanUtils.copyProperties(enter, queryAccountListEnter);
-//        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
 
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
         BeanUtils.copyProperties(enter, queryAccountListEnter);
@@ -616,7 +607,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         return PageResult.create(enter, customerAccountCount, resultList);
     }
-    
+
     /**
      * 状态统计
      *
@@ -625,18 +616,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        AccountListEnter accountListEnter = new AccountListEnter();
         // 查询内容
-        List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(accountListEnter);
-        List<String> emailList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(accountList)) {
-            accountList.forEach(item -> {
-                emailList.add(item.getEmail());
-            });
-        }
-        QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
-        queryAccountCountStatusEnter.setEmailList(emailList);
-        return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
+      List<AccountListResult> accountList = customerServiceMapper.queryAccountRecordEamil(enter);
+      List<String> emailList = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(accountList)) {
+          emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
+      }
+      QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
+      queryAccountCountStatusEnter.setEmailList(emailList);
+      return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
     }
 
     /**
