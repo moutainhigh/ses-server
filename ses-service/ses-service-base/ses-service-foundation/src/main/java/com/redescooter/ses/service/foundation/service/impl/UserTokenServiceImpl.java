@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -20,6 +23,7 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
@@ -193,28 +197,42 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public GeneralResult loginSendCode(LoginEnter enter) {
-//        if(Strings.isNullOrEmpty(enter.getCode())){
-//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
-//        }
-//        String key = EMAIL_LOGIN_CODE + enter.getLoginName();
-//        if(!jedisCluster.exists(key)){
-//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
-//        }
-//        Map<String, String> map = jedisCluster.hgetAll(key);
-//        String code = map.get("code");
-//        if(Strings.isNullOrEmpty(code)){
-//            throw new FoundationException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
-//        }
-//        if(!code.equals(enter.getCode())){
-//            throw new FoundationException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
-//        }
-//        // 到这里 邮箱登陆的校验就差不多算是通过了 清除缓存 再下面就是登陆的逻辑
-//        jedisCluster.del(key);
-//        // 登陆还是按照原来的登陆逻辑
-//        OpeSysUser sysUser = getOpeSysUser(enter);
-////        LoginEnter loginEnter = new LoginEnter();
-////        BeanUtil.copyProperties(enter,loginEnter);
-        return null;
+
+        // 先验证码输入的邮箱是否在系统中注册过 目前仅支持SAAS PC登录
+        QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getLoginName());
+        wrapper.eq(PlaUser.COL_DR, 0);
+        wrapper.eq(PlaUser.COL_APP_ID, enter.getAppId());
+        wrapper.eq(PlaUser.COL_SYSTEM_ID, enter.getSystemId());
+        wrapper.in(PlaUser.COL_USER_TYPE, AccountTypeEnums.WEB_EXPRESS.getAccountType(),AccountTypeEnums.WEB_RESTAURANT.getAccountType());
+        List<PlaUser> plaUserList = plaUserMapper.selectList(wrapper);
+        //用户名验证，及根据用户名未查到改用户，则该用户不存在
+        if (CollectionUtils.isEmpty(plaUserList)) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }        // 生成随机的验证码  然后放在缓存里  再发给用户
+        String code = String.valueOf((int) ((Math.random()*9+1)*100000));
+        String key = JedisConstant.LOGIN_BY_CODE + enter.getLoginName();
+        Map<String,String> map = new HashMap<>();
+        map.put("verificationCode",code);
+        jedisCluster.hmset(key, map);
+        // 缓存时间暂定位5分钟
+        jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
+        // TODO 给用户发邮件  邮件里面是验证码  登陆的时候验证邮箱和验证码  (等待邮件模板)
+        SendCodeMobileUserTaskEnter sendCodeMobileUserTaskEnter = new SendCodeMobileUserTaskEnter();
+        sendCodeMobileUserTaskEnter.setCode(code);
+        sendCodeMobileUserTaskEnter.setEvent(MailTemplateEventEnums.SAAS_LOGIN_BY_CODE.getEvent());
+        sendCodeMobileUserTaskEnter.setAppId(enter.getAppId());
+        sendCodeMobileUserTaskEnter.setSystemId(enter.getSystemId());
+        sendCodeMobileUserTaskEnter.setToMail(enter.getLoginName());
+        sendCodeMobileUserTaskEnter.setUserRequestId(enter.getRequestId());
+        sendCodeMobileUserTaskEnter.setMailAppId(enter.getAppId());
+        sendCodeMobileUserTaskEnter.setMailSystemId(enter.getSystemId());
+        sendCodeMobileUserTaskEnter.setName(enter.getLoginName().split("@")[0]);
+        sendCodeMobileUserTaskEnter.setUserId(plaUserList.get(0).getId());
+        sendCodeMobileUserTaskEnter.setRequestId(enter.getRequestId());
+        sendCodeMobileUserTaskEnter.setEmail(enter.getLoginName());
+        mailMultiTaskService.addMultiMailTask(sendCodeMobileUserTaskEnter);
+        return new GeneralResult(enter.getRequestId());
     }
     
     /**
