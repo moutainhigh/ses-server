@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.vo.customer;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,10 +19,10 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ContactUsHistoryReplyResult extends GeneralResult {
-
+    @ApiModelProperty(value = "回复id")
     private Long id;
-
+    @ApiModelProperty(value = "回复信息")
     private String reply;
-
+    @ApiModelProperty(value = "回复创建时间")
     private Date replyCreatedTime;
 }
