@@ -87,7 +87,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         List<OpeContactUsTrace> opeContactUsTraceList = opeContactUsTraceService.list(
                 new QueryWrapper<OpeContactUsTrace>()
                         .eq(OpeContactUsTrace.COL_CONTACT_US_ID, enter.getId())
-                        .orderByAsc(OpeContactUsTrace.COL_CREATED_TIME));
+                        .orderByDesc(OpeContactUsTrace.COL_CREATED_TIME));
 
         Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();
 
