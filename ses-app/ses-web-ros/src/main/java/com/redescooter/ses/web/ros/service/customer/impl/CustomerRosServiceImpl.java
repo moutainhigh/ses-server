@@ -616,7 +616,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         return PageResult.create(enter, customerAccountCount, resultList);
     }
-
+    
     /**
      * 状态统计
      *
@@ -625,18 +625,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-      AccountListEnter accountListEnter = new AccountListEnter();
-      // 查询内容
-      List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(accountListEnter);
-      List<String> emailList = new ArrayList<>();
-      if (!CollectionUtils.isEmpty(accountList)) {
-        accountList.forEach(item -> {
-          emailList.add(item.getEmail());
-        });
-      }
-      QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
-      queryAccountCountStatusEnter.setEmailList(emailList);
-      return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
+        AccountListEnter accountListEnter = new AccountListEnter();
+        // 查询内容
+        List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(accountListEnter);
+        List<String> emailList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(accountList)) {
+            accountList.forEach(item -> {
+                emailList.add(item.getEmail());
+            });
+        }
+        QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
+        queryAccountCountStatusEnter.setEmailList(emailList);
+        return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
     }
 
     /**
