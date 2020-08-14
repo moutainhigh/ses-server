@@ -47,6 +47,14 @@ public interface UserTokenService {
     GeneralResult loginSendCode(LoginEnter enter);
     
     /**
+     * 验证码登录
+     *
+     * @param enter
+     * @return
+     */
+    LoginResult loginByCode(LoginEnter enter);
+    
+    /**
      * 登陆token检查
      *
      * @param enter

@@ -101,7 +101,7 @@ public class TokenServiceImpl implements TokenService {
         if (map == null) {
             throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(map.get("verificationCode"), enter.getCode())) {
+        if (!StringUtils.equals(map.get("code"), enter.getCode())) {
             throw new SesMobileClientException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
         if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {

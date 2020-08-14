@@ -49,10 +49,10 @@ public class TokenController {
     }
     
     @IgnoreLoginCheck
-    @ApiOperation(value = "登录接口", response = LoginResult.class)
+    @ApiOperation(value = "验证码登录", response = LoginResult.class)
     @PostMapping(value = "/loginByCode")
     public Response<LoginResult> loginByCode(@ModelAttribute LoginEnter enter) {
-        return new Response<>(userTokenService.login(enter));
+        return new Response<>(userTokenService.loginByCode(enter));
     }
     
     @IgnoreLoginCheck

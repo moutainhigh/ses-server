@@ -104,6 +104,10 @@ public enum ExceptionCodeEnums {
     
     DATA_EXCEPTION(10046, "参数数据异常或格式错误"),
     
+    CODE_IS_EMPTY(10047,"验证码为空"),
+    
+    CODE_IS_WRONG(10048,"验证码错误"),
+    
     ;
     
     private int code;
