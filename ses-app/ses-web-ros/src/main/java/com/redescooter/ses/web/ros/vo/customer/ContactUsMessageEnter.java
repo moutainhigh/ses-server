@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
@@ -27,5 +29,6 @@ public class ContactUsMessageEnter extends GeneralEnter {
 
   @ApiModelProperty("消息")
   @NotNull(code = ValidationExceptionCode.MESSAGE_IS_EMPTY, message = "消息不能为空")
+  @MaximumLength(value = "2000",code = ValidationExceptionCode.MESSAGE_IS_ILLEGAL,message = "消息非法")
   private String message;
 }
