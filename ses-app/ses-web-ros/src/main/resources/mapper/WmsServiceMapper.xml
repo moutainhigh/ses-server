@@ -368,7 +368,7 @@
     pro.last_name as consigneelastName,
     '2' as documentType,
     allocate.created_time as inWhTime,
-      '3' as orderType
+      '2' as orderType
     FROM
     ope_allocate allocate
     JOIN
