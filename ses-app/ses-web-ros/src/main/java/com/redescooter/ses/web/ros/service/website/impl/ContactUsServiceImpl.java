@@ -5,12 +5,15 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.config.ConstantUsEmailConfig;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
 import com.redescooter.ses.web.ros.dm.OpeContactUs;
@@ -62,6 +65,9 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Autowired
     private MailMultiTaskService mailMultiTaskService;
+    
+    @Autowired
+    private ConstantUsEmailConfig constantUsEmailConfig;
 
     @Override
     public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
@@ -171,9 +177,31 @@ public class ContactUsServiceImpl implements ContactUsService {
         contactUsEntity = createContactUsEntity(enter, contactUsEntity);
         // 再处理联系我们的历史记录
         contactUsTraceService.createContactUsTrace(contactUsEntity);
+        
+        //发送邮件
+        constantUsSendEmail(enter);
     }
-
-
+    
+    private void constantUsSendEmail(SaveInquiryEnter enter) {
+        constantUsEmailConfig.getSalePrincipalList().forEach(item->{
+            BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
+            baseMailTaskEnter.setEvent(MailTemplateEventEnums.CONSTANT_US_NOTICE.getEvent());
+            baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getAppId());
+            baseMailTaskEnter.setSystemId(AppIDEnums.SES_ROS.getSystemId());
+            baseMailTaskEnter.setToMail(item);
+            baseMailTaskEnter.setUserRequestId(enter.getRequestId());
+            baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getAppId());
+            baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
+            baseMailTaskEnter.setName(enter.getEmail().split("@")[0]);
+            baseMailTaskEnter.setUserId(0L);
+            baseMailTaskEnter.setRequestId(enter.getRequestId());
+            baseMailTaskEnter.setEmail(item);
+            mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
+        });
+    
+    }
+    
+    
     public OpeContactUs createContactUsEntity(SaveInquiryEnter enter, OpeContactUs opeContactUs) {
         if (opeContactUs != null) {
             // 说明这个邮箱已经存在

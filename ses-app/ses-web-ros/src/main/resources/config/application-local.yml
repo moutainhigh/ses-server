@@ -241,3 +241,6 @@ monday:
   workspaceId: 132750
   #模板Id
   templeteId: 581923336
+
+ConstantUsEmail:
+    salePrincipal: alex@redescooter.com

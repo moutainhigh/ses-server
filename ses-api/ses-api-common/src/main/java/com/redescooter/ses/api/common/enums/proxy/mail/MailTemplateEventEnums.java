@@ -37,6 +37,7 @@ public enum MailTemplateEventEnums {
     ROS_CONTACTUS_REPLY_MESSAGE("ROS联系我们回复消息", 19, "ros_contactus_reply_message", "ROS_CONTACTUS_REPLY_MESSAGE"),
     ROS_LOGIN_BY_CODE("ROS发送验证码登录", 20, "ros_login_by_code", "ROS_LOGIN_BY_CODE"),
     SAAS_LOGIN_BY_CODE("SAAS发送验证码登录", 21, "saas_login_by_code", "SAAS_LOGIN_BY_CODE"),
+    CONSTANT_US_NOTICE("联系我们邮件通知", 22, "constant_us_notice", "CONSTANT_US_NOTICE"),
     ;
     private String mome;
 
