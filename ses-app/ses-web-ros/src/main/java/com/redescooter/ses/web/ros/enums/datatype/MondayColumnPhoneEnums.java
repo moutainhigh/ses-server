@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.enums;
+package com.redescooter.ses.web.ros.enums.datatype;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum MondayColumnPhoneEnums {
-
+    /**
+     * {
+     *   "phone": "11231234567",
+     *   "countryShortName": "US"
+     * }
+     */
     phone("phone","countryShortName");
 
     private String phoneTel;

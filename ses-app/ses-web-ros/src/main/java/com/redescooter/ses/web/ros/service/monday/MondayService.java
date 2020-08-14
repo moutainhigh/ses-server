@@ -1,14 +1,16 @@
 package com.redescooter.ses.web.ros.service.monday;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.vo.monday.MondayBoardResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayColumnResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayCreateResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayGroupResult;
-import com.redescooter.ses.web.ros.vo.monday.MondayMutationDataEnter;
-import com.redescooter.ses.web.ros.vo.monday.MondayTagResult;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGeneralResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGroupResult;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayTagResult;
 
 import java.util.List;
 
@@ -22,7 +24,13 @@ import java.util.List;
 public interface MondayService {
 
     /**
+     * 初始化单据模板
+     */
+    void initializationMondaytemplate();
+
+    /**
      * 官网联系我们
+     *
      * @param enter
      * @return
      */
@@ -30,10 +38,19 @@ public interface MondayService {
 
     /**
      * 官网预订单
+     *
      * @param enter
      * @return
      */
     MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter);
+
+    /**
+     * 官网订阅邮件
+     *
+     * @param email
+     * @return
+     */
+    MondayCreateResult websiteSubscriptionEmail(String email);
 
 
     /**
@@ -66,10 +83,41 @@ public interface MondayService {
     List<MondayColumnResult> queryColumnResult(String boardId);
 
     /**
-     * 数据保存
+     * 插入板子
      *
      * @param enter
      * @return
      */
-    MondayCreateResult mutationData(MondayMutationDataEnter enter);
+    MondayCreateResult mutationBoard(MondayMutationBoardEnter enter);
+
+    /**
+     * 插入分组
+     *
+     * @param enter
+     * @return
+     */
+    MondayCreateResult mutationGroup(MondayMutationGroupEnter enter);
+
+    /**
+     * 创建列
+     *
+     * @param enter
+     * @return
+     */
+    List<MondayColumnResult> multipleColumn(List<MondayMutationColumnEnter> enter);
+
+    /**
+     * 创建一个钩子
+     *
+     * @param enter
+     */
+    void multipleWebhook(MultipleWebhookEnter enter);
+
+    /**
+     * 执行gql 语句
+     *
+     * @param enter
+     * @return
+     */
+    MondayGeneralResult mutationData(String enter);
 }

@@ -11,7 +11,8 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.RenewalWarnWebTaskEnter;
-import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 import com.redescooter.ses.api.proxy.service.IMailService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailConfigMapper;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MailMultiTaskServiceImpl implements MailMultiTaskService {
-    
+
     @Autowired
     private PlaMailConfigMapper mailConfigMapper;
     @Autowired
@@ -57,7 +58,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     private JedisCluster jedisCluster;
     @Reference
     private IMailService iMailService;
-    
+
     /**
      * Mobile激活邮件任务
      *
@@ -66,23 +67,22 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
      */
     @Override
     public GeneralResult addActivateMobileUserTask(BaseMailTaskEnter enter) {
-        
+
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * Web激活邮件任务
      *
@@ -92,21 +92,20 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addActivateWebUserTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * Mobile设置密码邮件任务
      *
@@ -116,9 +115,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addSetPasswordMobileUserTask(SendCodeMobileUserTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         String key = "code";
         if (!map.containsKey(key)) {
             map.put(key, enter.getCode());
@@ -127,20 +125,20 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
                 map.put(key, enter.getCode());
             }
         }
-        
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
-        
+
     }
-    
+
     /**
      * Web设置密码邮件任务
      *
@@ -150,21 +148,20 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addSetPasswordWebUserTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * Mobile权限开通邮件任务
      *
@@ -174,21 +171,20 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addPermissionWarnMobileTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * WEB冻结通知邮件任务
      *
@@ -198,9 +194,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addFreezeWarnWebTask(FreezeWarnWebTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         String key = "freezeDate";
         if (!map.containsKey(key)) {
             map.put(key, String.valueOf(enter.getFreezeDate()));
@@ -209,19 +204,19 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
                 map.put(key, String.valueOf(enter.getFreezeDate()));
             }
         }
-        
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * WEB续约通知邮件任务
      *
@@ -231,9 +226,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addRenewalWarnWebTask(RenewalWarnWebTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         String key = "renewalDate";
         if (!map.containsKey(key)) {
             map.put(key, String.valueOf(enter.getRenewalDate()));
@@ -242,19 +236,19 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
                 map.put(key, String.valueOf(enter.getRenewalDate()));
             }
         }
-        
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * WEB解冻通知邮件任务
      *
@@ -264,9 +258,8 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addNnfreezeWarnWebTask(NnfreezeWarnWebTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         String key1 = "unfreezeStatDate";
         if (!map.containsKey(key1)) {
             map.put(key1, String.valueOf(enter.getUnfreezeStatDate()));
@@ -283,19 +276,19 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
                 map.put(key2, String.valueOf(enter.getUnfreezeEndDate()));
             }
         }
-        
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * WEB过期通知邮件任务
      *
@@ -305,22 +298,21 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addExpiredWarnWebTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
-    
+
+
     /**
      * 客户询价单尾款支付
      *
@@ -330,44 +322,41 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addCustomerInquiryPayDepositTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
-    
-    /**
-     * 客户询价单尾款支付
-     *
-     * @param enter 尾款
-     * @return
-     */
+
+
+  /**
+   * 客户询价单尾款支付
+   * @param enter 尾款
+   * @return
+   */
     @Override
-    public GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter) {
-        
-        PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(),
-                enter.getToMail());
-        
+    public GeneralResult addCustomerInquiryPayLastParagraphTask(BaseMailTaskEnter enter){
+
+      PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
     
@@ -425,13 +414,13 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         //触发该邮件的发送
         runTaskById(mailTask.getId());
         return null;
     }
-    
+
     /**
      * 多系统多维度添加邮件任务
      *
@@ -452,15 +441,15 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
             log.info("=========================================");
             return new GeneralResult();
         }
-        
+
         String systemId = map.get("systemId");
         String appId = map.get("appId");
         String requestId = map.get("requestId");
         String email = map.get("email");
         Long userId = enter.getUserId();
         String name = map.get("name");
-        
-        PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
+
+      PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
         Map<String, String> mapParameter = getParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
         map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
         PlaMailTask mailTask = new PlaMailTask();
@@ -479,116 +468,138 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setUpdatedTime(new Date());
         mailTaskMapper.insert(mailTask);
         pullResdis(mailTask, mailtemplate.getExpire());
-        
+
         return new GeneralResult();
     }
-    
-    /**
-     * subscriptionsubscriptionsubscriptionsubscription     * @return
-     * ros重置密码
-     *
-     * @param enter
-     */
-    @Override
-    public GeneralResult sendForgetPasswordEmaillTask(BaseMailTaskEnter enter) {
-        Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
-        if (!map.containsKey("event") ||
-                !map.containsKey("requestId") ||
-                !map.containsKey("systemId") ||
-                !map.containsKey("appId") ||
-                !map.containsKey("name") ||
-                !map.containsKey("userId") ||
-                !map.containsKey("email")) {
-            log.info("=========================================");
-            log.info("=========任务添加失败，必须参数缺失==========");
-            log.info("=========================================");
-            return new GeneralResult();
-        }
-        
-        String systemId = map.get("systemId");
-        String appId = map.get("appId");
-        String requestId = map.get("requestId");
-        String email = map.get("email");
-        Long userId = enter.getUserId();
-        String name = map.get("name");
-        
-        PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
-        Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
-        map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
-        PlaMailTask mailTask = new PlaMailTask();
-        mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
-        mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
-        mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
-        mailTask.setSystemId(systemId);
-        mailTask.setAppId(appId);
-        mailTask.setRequestId(requestId);
-        mailTask.setReceiveMail(map.get("email"));
-        mailTask.setToUserId(userId);
-        mailTask.setSubject(mailtemplate.getSubject());
-        mailTask.setParameter(JSON.toJSONString(map));
-        mailTask.setContent(getContent(map, mailtemplate));
-        mailTask.setCreatedTime(new Date());
-        mailTask.setUpdatedTime(new Date());
-        mailTaskMapper.insert(mailTask);
-        pullResdis(mailTask, mailtemplate.getExpire());
-        
-        return new GeneralResult();
+
+  /**
+   *
+   * subscriptionsubscriptionsubscriptionsubscription     * @return
+   *ros重置密码
+   * @param enter
+   */
+  @Override
+  public GeneralResult sendForgetPasswordEmaillTask(BaseMailTaskEnter enter) {
+      Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
+      if (!map.containsKey("event") ||
+              !map.containsKey("requestId") ||
+              !map.containsKey("systemId") ||
+              !map.containsKey("appId") ||
+              !map.containsKey("name") ||
+              !map.containsKey("userId") ||
+              !map.containsKey("email")) {
+          log.info("=========================================");
+          log.info("=========任务添加失败，必须参数缺失==========");
+          log.info("=========================================");
+          return new GeneralResult();
+      }
+
+      String systemId = map.get("systemId");
+      String appId = map.get("appId");
+      String requestId = map.get("requestId");
+      String email = map.get("email");
+      Long userId = enter.getUserId();
+      String name = map.get("name");
+
+      PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
+      Map<String, String> mapParameter = getForgetPasswordMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email);
+      map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
+      PlaMailTask mailTask = new PlaMailTask();
+      mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
+      mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
+      mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+      mailTask.setSystemId(systemId);
+      mailTask.setAppId(appId);
+      mailTask.setRequestId(requestId);
+      mailTask.setReceiveMail(map.get("email"));
+      mailTask.setToUserId(userId);
+      mailTask.setSubject(mailtemplate.getSubject());
+      mailTask.setParameter(JSON.toJSONString(map));
+      mailTask.setContent(getContent(map, mailtemplate));
+      mailTask.setCreatedTime(new Date());
+      mailTask.setUpdatedTime(new Date());
+      mailTaskMapper.insert(mailTask);
+      pullResdis(mailTask, mailtemplate.getExpire());
+
+      return new GeneralResult();
+  }
+
+  /**
+   * subscriptionsubscriptionsubscriptionsubscription     * @return
+   *添加创建人员邮件任务
+   * @param enter
+   */
+  @Override
+  public GeneralResult addCreateEmployeeMailTask(BaseMailTaskEnter enter) {
+    Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
+    if (!map.containsKey("event") ||
+      !map.containsKey("requestId") ||
+      !map.containsKey("systemId") ||
+      !map.containsKey("appId") ||
+      !map.containsKey("name") ||
+      !map.containsKey("userId") ||
+      !map.containsKey("email")) {
+      log.info("=========================================");
+      log.info("=========任务添加失败，必须参数缺失==========");
+      log.info("=========================================");
+      return new GeneralResult();
     }
-    
-    /**
-     * subscriptionsubscriptionsubscriptionsubscription     * @return
-     * 添加创建人员邮件任务
-     *
-     * @param enter
-     */
-    @Override
-    public GeneralResult addCreateEmployeeMailTask(BaseMailTaskEnter enter) {
-        Map<String, String> map = JSON.parseObject(JSON.toJSONString(enter), Map.class);
-        if (!map.containsKey("event") ||
-                !map.containsKey("requestId") ||
-                !map.containsKey("systemId") ||
-                !map.containsKey("appId") ||
-                !map.containsKey("name") ||
-                !map.containsKey("userId") ||
-                !map.containsKey("email")) {
-            log.info("=========================================");
-            log.info("=========任务添加失败，必须参数缺失==========");
-            log.info("=========================================");
-            return new GeneralResult();
-        }
-        
-        String systemId = map.get("systemId");
-        String appId = map.get("appId");
-        String requestId = map.get("requestId");
-        String email = map.get("email");
-        Long userId = enter.getUserId();
-        String name = map.get("name");
-        
-        PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
-        Map<String, String> mapParameter = getEmployeeParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email, Constant.DEFAULT_PASSWORD);
-        map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
-        PlaMailTask mailTask = new PlaMailTask();
-        mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
-        mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
-        mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
-        mailTask.setSystemId(systemId);
-        mailTask.setAppId(appId);
-        mailTask.setRequestId(requestId);
-        mailTask.setReceiveMail(map.get("email"));
-        mailTask.setToUserId(userId);
-        mailTask.setSubject(mailtemplate.getSubject());
-        mailTask.setParameter(JSON.toJSONString(map));
-        mailTask.setContent(getContent(map, mailtemplate));
-        mailTask.setCreatedTime(new Date());
-        mailTask.setUpdatedTime(new Date());
-        mailTaskMapper.insert(mailTask);
-        pullResdis(mailTask, mailtemplate.getExpire());
-        
-        return new GeneralResult();
-    }
-    
-    
-    /**
+
+    String systemId = map.get("systemId");
+    String appId = map.get("appId");
+    String requestId = map.get("requestId");
+    String email = map.get("email");
+    Long userId = enter.getUserId();
+    String name = map.get("name");
+
+    PlaMailTemplate mailtemplate = getTemplateByEvent(map.get("event"));
+    Map<String, String> mapParameter = getEmployeeParameterMap(mailtemplate.getMailTemplateNo(), systemId, appId, requestId, name, userId, email,Constant.DEFAULT_PASSWORD);
+    map.putAll(mapParameter == null ? new HashMap<>() : mapParameter);
+    PlaMailTask mailTask = new PlaMailTask();
+    mailTask.setId(idSerService.getId(SequenceName.PLA_MAIL_TASK));
+    mailTask.setStatus(MailTaskStatusEnums.PENDING.getCode());
+    mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+    mailTask.setSystemId(systemId);
+    mailTask.setAppId(appId);
+    mailTask.setRequestId(requestId);
+    mailTask.setReceiveMail(map.get("email"));
+    mailTask.setToUserId(userId);
+    mailTask.setSubject(mailtemplate.getSubject());
+    mailTask.setParameter(JSON.toJSONString(map));
+    mailTask.setContent(getContent(map, mailtemplate));
+    mailTask.setCreatedTime(new Date());
+    mailTask.setUpdatedTime(new Date());
+    mailTaskMapper.insert(mailTask);
+    pullResdis(mailTask, mailtemplate.getExpire());
+
+    return new GeneralResult();
+  }
+
+  /**
+   * ros联系我们回复消息邮件任务
+   * subscriptionsubscriptionsubscriptionsubscription     * @return
+   *
+   * @param enter
+   */
+  @Override
+  public GeneralResult contactUsReplyMessageEmail(MailContactUsMessageEnter enter) {
+    PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
+    Map<String, String> map = getreplyMessageMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail(),enter.getMessage());
+
+    PlaMailTask mailTask = new PlaMailTask();
+    mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
+    mailTask.setSubject(mailtemplate.getSubject());
+    mailTask.setParameter(JSON.toJSONString(map));
+    mailTask.setContent(mailtemplate.getContent());
+
+    mailTask = saveTask(mailTask, enter);
+    pullResdis(mailTask, mailtemplate.getExpire());
+
+    return new GeneralResult(enter.getRequestId());
+  }
+
+
+  /**
      * 执行所有任务
      *
      * @return
@@ -598,7 +609,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         QueryWrapper<PlaMailTask> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailTask.COL_STATUS, MailTaskStatusEnums.PENDING.getCode());
         List<PlaMailTask> mailTasks = mailTaskMapper.selectList(wrapper);
-        
+
         //轮训发送，提高稳定性
         for (PlaMailTask mailTask : mailTasks) {
             Map<String, String> map = JSON.parseObject(mailTask.getParameter(), Map.class);
@@ -610,12 +621,12 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         }
         return new GeneralResult();
     }
-    
+
     @Override
     public void runTaskById(long id) {
-        
+
         PlaMailTask mailTask = mailTaskMapper.selectById(id);
-        
+
         Optional.ofNullable(mailTask).ifPresent(email -> {
             Map<String, String> map = JSON.parseObject(email.getParameter(), Map.class);
             iMailService.sendHtmlMail(email.getReceiveMail(), email.getSubject(), getContent(map, getTemplateByNo(email.getMailTemplateNo())));
@@ -624,9 +635,9 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
             mailTaskMapper.updateById(email);
         });
     }
-    
+
     private Map<String, String> getParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email) {
-        
+
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
         if (configList != null && configList.size() > 0) {
@@ -682,13 +693,13 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         wrapper.eq(PlaMailTemplate.COL_EVENT, event);
         return mailTemplateMapper.selectOne(wrapper);
     }
-    
+
     private PlaMailTemplate getTemplateByNo(Integer templateNo) {
         QueryWrapper<PlaMailTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailTemplate.COL_MAIL_TEMPLATE_NO, templateNo);
         return mailTemplateMapper.selectOne(wrapper);
     }
-    
+
     private List<PlaMailConfig> getTemplateById(Integer mailTemplateNo, String systemId, String appId) {
         QueryWrapper<PlaMailConfig> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, mailTemplateNo);
@@ -712,12 +723,12 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         stringTemplateResolver.setCacheable(true);
         stringTemplateResolver.setTemplateMode(TemplateMode.HTML);
         springTemplateEngine.setTemplateResolver(stringTemplateResolver);
-        
+
         Context context = new Context();
         context.setVariables(map);
         return springTemplateEngine.process(mailTemplate.getContent(), context);
     }
-    
+
     /**
      * 保存邮件任务
      */
@@ -736,7 +747,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTaskMapper.insert(mailTask);
         return mailTask;
     }
-    
     /**
      * 验证数据到缓存中
      *
@@ -754,6 +764,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         jedisCluster.expire(key, seconds);
         //触发该邮件的发送
         runTaskById(mailTask.getId());
-        
+
     }
 }

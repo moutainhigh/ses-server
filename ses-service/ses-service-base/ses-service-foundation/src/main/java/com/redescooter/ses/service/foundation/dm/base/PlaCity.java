@@ -172,6 +172,8 @@ public class PlaCity implements Serializable {
 
     public static final String COL_STATUS = "status";
 
+    public static final String COL_POST_CODE = "post_code";
+
     public static final String COL_TIME_ZONE = "time_zone";
 
     public static final String COL_LANGUAGE = "language";

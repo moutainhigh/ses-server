@@ -116,4 +116,8 @@ public interface SequenceName {
     String OPE_FR_STOCK_BILL="OPE_FR_STOCK_BILL";
 
     String OPE_FR_STOCK_PRODUCT="OPE_FR_STOCK_PRODUCT";
+
+    String OPE_CONTACT_US = "OPE_CONTACT_US";
+
+    String OPE_CONTACT_US_TRACE = "OPE_CONTACT_US_TRACE";
 }

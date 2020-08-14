@@ -7,9 +7,9 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.110:22181
+    address: zookeeper://192.168.2.200:42181
 #  metadata-report:
-#    address:  zookeeper://localhost:62181
+#    address:  zookeeper://192.168.2.110:62181
 
 #jasypt:
 #  encryptor:
@@ -26,7 +26,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.110/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
 
@@ -44,12 +44,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.110:7000
-        - 192.168.2.110:7001
-        - 192.168.2.110:7002
-        - 192.168.2.110:7003
-        - 192.168.2.110:7004
-        - 192.168.2.110:7005
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -223,7 +223,7 @@ sendinblue:
 
 monday:
   url: https://api.monday.com/v2
-  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjY1MzI4MDAyLCJ1aWQiOjE1MjgzNDY1LCJpYWQiOiIyMDIwLTA4LTAzVDAyOjE1OjE5LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSJ9.gDYS6Ng8Ih_W88_fLvVf_bkuTO0F9P4mt5uGs_PBMOA
   paramQuery: query
   paramVariables: variables
   httpMethod: POST
@@ -234,3 +234,10 @@ monday:
   #联系我们
   contactUsBoardName: (RFQ) Relation client RED Série E
   contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: RED Abonnements par e-mail
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 132750
+  #模板Id
+  templeteId: 581923336

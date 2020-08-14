@@ -227,17 +227,24 @@ excel:
 sendinblue:
   listIds: 119
 
-#monday:
-#  url: https://api.monday.com/v2
-#  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
-#  paramQuery: query
-#  paramVariables: variables
-#  httpMethod: POST
-#  MediaType: application/x-www-form-urlencoded
-#  #预订单业务
-#  orderFormBoardName: Préco clients RED Série E
-#  orderFormGroupName: Backlog
-#  #联系我们
-#  contactUsBoardName: (RFQ) Relation client RED Série E
-#  contactUsGroupName: Backlog
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjY1MzI4MDAyLCJ1aWQiOjE1MjgzNDY1LCJpYWQiOiIyMDIwLTA4LTAzVDAyOjE1OjE5LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSJ9.gDYS6Ng8Ih_W88_fLvVf_bkuTO0F9P4mt5uGs_PBMOA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: Préco clients RED Série E
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: (RFQ) Relation client RED Série E
+  contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: RED Abonnements par e-mail
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 132750
+  #模板Id
+  templeteId: 581923336
 

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.monday;
+package com.redescooter.ses.web.ros.vo.monday.enter;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,5 @@
-package com.redescooter.ses.web.ros.vo.monday;
+package com.redescooter.ses.web.ros.vo.monday.result;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

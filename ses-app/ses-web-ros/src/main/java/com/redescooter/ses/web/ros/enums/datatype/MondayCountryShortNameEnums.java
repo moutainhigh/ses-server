@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.enums;
+package com.redescooter.ses.web.ros.enums.datatype;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
