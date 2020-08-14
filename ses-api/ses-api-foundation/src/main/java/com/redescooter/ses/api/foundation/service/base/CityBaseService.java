@@ -85,4 +85,12 @@ public interface CityBaseService {
 
     List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter);
 
+    /**
+     * @Author Aleks
+     * @Description  通过城市名称和区域邮编 查找区域的id（数据库对于同城市下的同区域邮编，已经去重,确保同一个城市下面没有重复的区域邮编）
+     * @Date  2020/8/5 14:27
+     * @Param
+     * @return
+     **/
+     Long getDistrictId(String cityName,String districtPost);
 }

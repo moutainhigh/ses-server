@@ -204,4 +204,8 @@ public interface ValidationExceptionCode {
     int LNG_ILLEGAL = 10121;
     //国家非法
     int COUNTRY_CITY_ILLEGAL=10122;
+    //消息为空
+    int MESSAGE_IS_EMPTY=10123;
+    //消息为空
+    int MESSAGE_IS_ILLEGAL=10124;
 }
