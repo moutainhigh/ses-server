@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.web.ros.vo.customer.*;
 
@@ -24,6 +26,8 @@ public interface CustomerServiceMapper {
     int customerAccountCount(AccountListEnter enter);
 
     List<AccountListResult> queryAccountRecord(AccountListEnter enter);
+
+    List<AccountListResult> queryAccountRecordEamil(GeneralEnter enter);
 
     List<ScooterCustomerResult> scooterCustomerResult(PageEnter enter);
 
