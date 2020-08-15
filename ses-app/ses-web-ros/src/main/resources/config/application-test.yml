@@ -226,5 +226,6 @@ monday:
   #模板Id
   templeteId: 581923336
 
-ConstantUsEmail:
-    salePrincipal: support@redelectric.fr
+constant-us-email:
+  sale-principal:
+    - support@redelectric.fr
