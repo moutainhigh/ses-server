@@ -396,11 +396,12 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.TEL.getTitle()),
                 CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.EMAIL.getTitle()), enter.getEmail());
-        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), null);
-        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getCity());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), enter.getCity());
+        columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDistant());
         columnValue.put(contantUsMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
-        
+    
         if (enter.getT() instanceof MondayBookOrderEnter) {
+            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getTitle()), String.valueOf(enter.getT().getQty()));
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), String.valueOf(enter.getT().getQty()));
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()), enter.getT().getProducModeltName());
         }
