@@ -96,7 +96,8 @@ public class ContactUsServiceImpl implements ContactUsService {
         List<OpeContactUsTrace> opeContactUsTraceList = opeContactUsTraceService.list(
                 new QueryWrapper<OpeContactUsTrace>()
                         .eq(OpeContactUsTrace.COL_CONTACT_US_ID, enter.getId())
-                        .orderByDesc(OpeContactUsTrace.COL_CREATED_TIME));
+                        .orderByAsc(OpeContactUsTrace.COL_CREATED_TIME));
+
         //获取拼接的历史留言数据以及历史回复数据
         Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = getTraceParameter(opeContactUsTraceList);
         //将留言回复数据转换为list
