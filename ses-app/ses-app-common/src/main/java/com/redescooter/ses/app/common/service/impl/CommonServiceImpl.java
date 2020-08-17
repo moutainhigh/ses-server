@@ -28,6 +28,6 @@ public class CommonServiceImpl implements CommonService {
     if (CollectionUtils.isEmpty(map)) {
       return BooleanResult.builder().success(Boolean.FALSE).build();
     }
-    return BooleanResult.builder().success(StringUtils.equals(map.get("verificationCode"),enter.getCode())? Boolean.TRUE : Boolean.FALSE).build();
+    return BooleanResult.builder().success(StringUtils.equals(map.get("code"),enter.getCode())? Boolean.TRUE : Boolean.FALSE).build();
   }
 }

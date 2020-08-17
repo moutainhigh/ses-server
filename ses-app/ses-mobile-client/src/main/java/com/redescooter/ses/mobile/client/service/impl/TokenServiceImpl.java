@@ -40,6 +40,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
+    
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
