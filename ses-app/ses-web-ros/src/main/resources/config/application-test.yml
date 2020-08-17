@@ -227,4 +227,6 @@ monday:
   templeteId: 581923336
 
 constant-us-email:
-    salePrincipal: support@redelectric.fr
+  sale-principal:
+    - etienne@redescooter.fr
+    - jerry@redescooter.com

@@ -243,4 +243,6 @@ monday:
   templeteId: 581923336
 
 constant-us-email:
-    salePrincipal: alex@redescooter.com
+  sale-principal:
+    - alex@redescooter.com
+    - 123@qq.com

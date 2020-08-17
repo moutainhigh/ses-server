@@ -95,4 +95,6 @@ monday:
   templeteId: 581923336
 
 constant-us-email:
-    salePrincipal: valentin@redescooter.fr,etienne@redescooter.fr
+  sale-principal:
+    - valentin@redescooter.fr
+    - etienne@redescooter.fr

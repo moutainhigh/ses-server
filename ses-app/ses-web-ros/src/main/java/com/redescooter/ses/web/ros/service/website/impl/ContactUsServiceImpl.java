@@ -10,7 +10,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.config.ConstantUsEmailConfig;
@@ -183,7 +182,7 @@ public class ContactUsServiceImpl implements ContactUsService {
     }
     
     private void constantUsSendEmail(SaveInquiryEnter enter) {
-        constantUsEmailConfig.getSalePrincipalList().forEach(item->{
+        constantUsEmailConfig.getSalePrincipal().forEach(item -> {
             BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.CONSTANT_US_NOTICE.getEvent());
             baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getAppId());
