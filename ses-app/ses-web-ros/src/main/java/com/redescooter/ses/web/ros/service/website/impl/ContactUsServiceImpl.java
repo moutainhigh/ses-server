@@ -68,7 +68,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-    
+
     @Autowired
     private ConstantUsEmailConfig constantUsEmailConfig;
 
@@ -101,7 +101,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = getTraceParameter(opeContactUsTraceList);
         //将留言回复数据转换为list
         List<ContactUsHistoryResult> result = new ArrayList<>();
-        resultMap.keySet().forEach(item->{
+        resultMap.keySet().forEach(item -> {
             item.setReplyList(resultMap.get(item));
             result.add(item);
         });
@@ -145,8 +145,6 @@ public class ContactUsServiceImpl implements ContactUsService {
     }
 
 
-
-
     @Override
     @Transactional
     public void websiteContactUs(SaveInquiryEnter enter) {
@@ -158,11 +156,11 @@ public class ContactUsServiceImpl implements ContactUsService {
         contactUsEntity = createContactUsEntity(enter, contactUsEntity);
         // 再处理联系我们的历史记录
         contactUsTraceService.createContactUsTrace(contactUsEntity);
-        
+
         //发送邮件
         constantUsSendEmail(enter);
     }
-    
+
     private void constantUsSendEmail(SaveInquiryEnter enter) {
         constantUsEmailConfig.getSalePrincipal().forEach(item -> {
             BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
@@ -179,10 +177,10 @@ public class ContactUsServiceImpl implements ContactUsService {
             baseMailTaskEnter.setEmail(item);
             mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
         });
-    
+
     }
-    
-    
+
+
     public OpeContactUs createContactUsEntity(SaveInquiryEnter enter, OpeContactUs opeContactUs) {
         if (opeContactUs != null) {
             // 说明这个邮箱已经存在
@@ -210,7 +208,8 @@ public class ContactUsServiceImpl implements ContactUsService {
         opeContactUsService.saveOrUpdate(opeContactUs);
         return opeContactUs;
     }
-    private  Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> getTraceParameter(List<OpeContactUsTrace> opeContactUsTraceList) {
+
+    private Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> getTraceParameter(List<OpeContactUsTrace> opeContactUsTraceList) {
         Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();
 
         opeContactUsTraceList.forEach(item -> {
@@ -237,6 +236,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         });
         return resultMap;
     }
+
     private void replyMessageEmail(OpeContactUsTrace trace, ContactUsMessageEnter contactUsMessageEnter) {
         MailContactUsMessageEnter enter = new MailContactUsMessageEnter();
         enter.setMessage(trace.getRemark());
