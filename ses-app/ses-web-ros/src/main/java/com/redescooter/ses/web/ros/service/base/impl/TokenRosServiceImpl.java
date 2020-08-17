@@ -383,6 +383,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         emailUser.eq(OpeSysUser.COL_LOGIN_NAME, getUser.getEmail());
         emailUser.eq(OpeSysUser.COL_APP_ID, getUser.getAppId());
         emailUser.eq(OpeSysUser.COL_SYSTEM_ID, getUser.getSystemId());
+        emailUser.eq(OpeSysUser.COL_ID, getUser.getUserId());
         emailUser.last("limit 1");
         OpeSysUser opeSysUser = opeSysUserService.getOne(emailUser);
         if (opeSysUser == null) {
@@ -448,7 +449,7 @@ public class TokenRosServiceImpl implements TokenRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
             }
-
+            getUser.setUserId(Long.parseLong(StringUtils.isBlank(hash.get("userId")) ? "0" : hash.get("userId")) == 0 ? null : Long.parseLong(hash.get("userId")));
             getUser.setEmail(StringUtils.isBlank(hash.get("email")) ? null : hash.get("email"));
             getUser.setAppId(StringUtils.isBlank(hash.get("appId")) ? null : hash.get("appId"));
             getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
@@ -578,12 +579,13 @@ public class TokenRosServiceImpl implements TokenRosService {
       BaseMailTaskEnter enter = new BaseMailTaskEnter();
       enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
       enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
-      enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
-      enter.setAppId(AppIDEnums.SES_ROS.getValue());
-      enter.setEmail(baseSendMailEnter.getMail());
+      enter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+      enter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+      enter.setToMail(baseSendMailEnter.getMail());
       enter.setRequestId(baseSendMailEnter.getRequestId());
-      enter.setUserId(opeSysUser.getId());
-      mailMultiTaskService.sendForgetPasswordEmaillTask(enter);
+      enter.setUserRequestId(baseSendMailEnter.getRequestId());
+      enter.setToUserId(opeSysUser.getId());
+      mailMultiTaskService.addSetPasswordWebUserTask(enter);
       return new GeneralResult(baseSendMailEnter.getRequestId());
   }
 

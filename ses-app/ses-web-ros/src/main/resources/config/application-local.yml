@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://192.168.2.200:22181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.110:62181
 
@@ -216,7 +216,7 @@ stripe:
   receipt_email: etienne@redescooter.fr
 
 excel:
-  folder: /root/java_service/local/projectExcel
+  folder: C:\\Users\\admin\\Desktop
 
 sendinblue:
   listIds: 119
