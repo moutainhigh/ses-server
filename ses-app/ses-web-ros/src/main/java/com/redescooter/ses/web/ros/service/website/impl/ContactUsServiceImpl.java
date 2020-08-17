@@ -25,6 +25,7 @@ import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -64,7 +68,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-    
+
     @Autowired
     private ConstantUsEmailConfig constantUsEmailConfig;
 
@@ -93,42 +97,32 @@ public class ContactUsServiceImpl implements ContactUsService {
                 new QueryWrapper<OpeContactUsTrace>()
                         .eq(OpeContactUsTrace.COL_CONTACT_US_ID, enter.getId())
                         .orderByDesc(OpeContactUsTrace.COL_CREATED_TIME));
-
-        Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();
-
-        opeContactUsTraceList.forEach(item -> {
-            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.LEAVE_MESSAGE.getValue())) {
-                ContactUsHistoryResult contactUsHistoryResult = new ContactUsHistoryResult();
-                BeanUtils.copyProperties(item, contactUsHistoryResult);
-                resultMap.put(contactUsHistoryResult, new ArrayList<>());
-            }
-            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.REPLY.getValue())) {
-                resultMap.keySet().forEach(reply -> {
-                    if (item.getLeaveWordId().equals(reply.getId()) && StringUtils.isNotEmpty(reply.getRemark())) {
-                        List<ContactUsHistoryReplyResult> contactUsHistoryReplyResultList = resultMap.get(reply);
-
-                        ContactUsHistoryReplyResult contactUsHistoryReplyResult = new ContactUsHistoryReplyResult();
-                        contactUsHistoryReplyResult.setId(item.getId());
-                        contactUsHistoryReplyResult.setReply(item.getRemark());
-                        contactUsHistoryReplyResult.setReplyCreatedTime(item.getCreatedTime());
-                        contactUsHistoryReplyResultList.add(contactUsHistoryReplyResult);
-                        resultMap.put(reply, contactUsHistoryReplyResultList);
-                    }
-                });
-
-            }
-        });
-
+        //获取拼接的历史留言数据以及历史回复数据
+        Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = getTraceParameter(opeContactUsTraceList);
+        //将留言回复数据转换为list
         List<ContactUsHistoryResult> result = new ArrayList<>();
-
-        resultMap.keySet().forEach(item->{
+        resultMap.keySet().forEach(item -> {
             item.setReplyList(resultMap.get(item));
             result.add(item);
         });
-
+        //list时间降序
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (result.size() > 1) {
+            //list 集合倒叙排序
+            result.sort((a1, a2) -> {
+                try {
+                    return df.parse(sdf.format(a2.getCreatedTime())).compareTo(df.parse(sdf.format(a1.getCreatedTime())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 1;
+            });
+        }
 
         return result;
     }
+
 
     @Override
     public GeneralResult message(ContactUsMessageEnter enter) {
@@ -151,20 +145,6 @@ public class ContactUsServiceImpl implements ContactUsService {
     }
 
 
-    private void replyMessageEmail(OpeContactUsTrace trace, ContactUsMessageEnter contactUsMessageEnter) {
-        MailContactUsMessageEnter enter = new MailContactUsMessageEnter();
-        enter.setMessage(trace.getRemark());
-        enter.setName(trace.getFirstName() + " " + trace.getLastName());
-        enter.setEvent(MailTemplateEventEnums.ROS_CONTACTUS_REPLY_MESSAGE.getEvent());
-        enter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
-        enter.setMailAppId(AppIDEnums.SES_ROS.getValue());
-        enter.setToMail(trace.getEmail());
-        enter.setUserRequestId(contactUsMessageEnter.getRequestId());
-        enter.setToUserId(contactUsMessageEnter.getUserId());
-        mailMultiTaskService.contactUsReplyMessageEmail(enter);
-    }
-
-
     @Override
     @Transactional
     public void websiteContactUs(SaveInquiryEnter enter) {
@@ -176,11 +156,11 @@ public class ContactUsServiceImpl implements ContactUsService {
         contactUsEntity = createContactUsEntity(enter, contactUsEntity);
         // 再处理联系我们的历史记录
         contactUsTraceService.createContactUsTrace(contactUsEntity);
-        
+
         //发送邮件
         constantUsSendEmail(enter);
     }
-    
+
     private void constantUsSendEmail(SaveInquiryEnter enter) {
         constantUsEmailConfig.getSalePrincipal().forEach(item -> {
             BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
@@ -197,10 +177,10 @@ public class ContactUsServiceImpl implements ContactUsService {
             baseMailTaskEnter.setEmail(item);
             mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
         });
-    
+
     }
-    
-    
+
+
     public OpeContactUs createContactUsEntity(SaveInquiryEnter enter, OpeContactUs opeContactUs) {
         if (opeContactUs != null) {
             // 说明这个邮箱已经存在
@@ -227,6 +207,47 @@ public class ContactUsServiceImpl implements ContactUsService {
         opeContactUs.setUpdatedTime(new Date());
         opeContactUsService.saveOrUpdate(opeContactUs);
         return opeContactUs;
+    }
+
+    private Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> getTraceParameter(List<OpeContactUsTrace> opeContactUsTraceList) {
+        Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();
+
+        opeContactUsTraceList.forEach(item -> {
+            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.LEAVE_MESSAGE.getValue())) {
+                ContactUsHistoryResult contactUsHistoryResult = new ContactUsHistoryResult();
+                BeanUtils.copyProperties(item, contactUsHistoryResult);
+                resultMap.put(contactUsHistoryResult, new ArrayList<>());
+            }
+            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.REPLY.getValue())) {
+                resultMap.keySet().forEach(reply -> {
+                    if (item.getLeaveWordId().equals(reply.getId()) && StringUtils.isNotEmpty(reply.getRemark())) {
+                        List<ContactUsHistoryReplyResult> contactUsHistoryReplyResultList = resultMap.get(reply);
+
+                        ContactUsHistoryReplyResult contactUsHistoryReplyResult = new ContactUsHistoryReplyResult();
+                        contactUsHistoryReplyResult.setId(item.getId());
+                        contactUsHistoryReplyResult.setReply(item.getRemark());
+                        contactUsHistoryReplyResult.setReplyCreatedTime(item.getCreatedTime());
+                        contactUsHistoryReplyResultList.add(contactUsHistoryReplyResult);
+                        resultMap.put(reply, contactUsHistoryReplyResultList);
+                    }
+                });
+
+            }
+        });
+        return resultMap;
+    }
+
+    private void replyMessageEmail(OpeContactUsTrace trace, ContactUsMessageEnter contactUsMessageEnter) {
+        MailContactUsMessageEnter enter = new MailContactUsMessageEnter();
+        enter.setMessage(trace.getRemark());
+        enter.setName(trace.getFirstName() + " " + trace.getLastName());
+        enter.setEvent(MailTemplateEventEnums.ROS_CONTACTUS_REPLY_MESSAGE.getEvent());
+        enter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        enter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        enter.setToMail(trace.getEmail());
+        enter.setUserRequestId(contactUsMessageEnter.getRequestId());
+        enter.setToUserId(contactUsMessageEnter.getUserId());
+        mailMultiTaskService.contactUsReplyMessageEmail(enter);
     }
 
 }
