@@ -652,7 +652,10 @@ public class PurchasingServiceImpl implements PurchasingService {
                         }
                     }
                     scooter.setPrice(totalPrice);
-                    scooter.setPruchasingItemResultList(scooterPartList);
+                    if (enter.getProductType().equals(BomCommonTypeEnums.SCOOTER.getValue())){
+                        scooter.setPruchasingItemResultList(scooterPartList);
+                    }
+
                 }
             }
         }
