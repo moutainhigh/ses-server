@@ -188,11 +188,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
 
         //用户校验
-        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, decryptEamil);
-        opeCustomerQueryWrapper.last("limit 1");
-        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
-        if (opeCustomer != null) {
+        OpeSysUser sysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, decryptEamil).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()));
+        if (sysUser != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //密码校验
