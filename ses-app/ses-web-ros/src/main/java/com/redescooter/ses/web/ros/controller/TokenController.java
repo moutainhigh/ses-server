@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
@@ -45,6 +46,21 @@ public class TokenController {
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
         return new Response<>(tokenRosService.login(enter));
     }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录给用户发邮件（邮件里面是验证码）", response = GeneralResult.class)
+    @PostMapping(value = "/emailLoginSendCode")
+    public Response<GeneralResult> emailLoginSendCode(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRosService.emailLoginSendCode(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录", response = TokenResult.class)
+    @PostMapping(value = "/emailLogin")
+    public Response<TokenResult> emailLogin(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRosService.emailLogin(enter));
+    }
+
 
     @ApiOperation(value = "登出", response = GeneralResult.class)
     @PostMapping(value = "/logout")

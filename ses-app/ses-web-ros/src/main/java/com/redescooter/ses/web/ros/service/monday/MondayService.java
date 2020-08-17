@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.monday;
 
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
@@ -34,7 +36,7 @@ public interface MondayService {
      * @param enter
      * @return
      */
-    MondayCreateResult websiteContantUs(OpeCustomerInquiry enter);
+    MondayCreateResult websiteContantUs(MondayGeneralEnter enter);
 
     /**
      * 官网预订单
@@ -42,7 +44,7 @@ public interface MondayService {
      * @param enter
      * @return
      */
-    MondayCreateResult websiteBookOrder(OpeCustomerInquiry enter);
+    MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter);
 
     /**
      * 官网订阅邮件

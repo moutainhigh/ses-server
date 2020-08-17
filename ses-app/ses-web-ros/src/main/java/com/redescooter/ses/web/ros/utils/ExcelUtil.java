@@ -97,6 +97,13 @@ public class ExcelUtil {
                 i++;
             }
         }
+        // 设置单元格的宽度自适应
+        for (int k = 0; k < dataList.size(); k++) {
+            sheet.autoSizeColumn(k);
+        }
+        // 处理中文不能自动调整列宽的问题
+        setSizeColumn(sheet, dataList.size());
+
         OutputStream out = null;
         String tmpPath = "";
         try {
@@ -123,6 +130,30 @@ public class ExcelUtil {
             }
         }
         return tmpPath;
+    }
+
+
+    private static void setSizeColumn(XSSFSheet sheet, int size) {
+        for (int columnNum = 0; columnNum < size; columnNum++) {
+            int columnWidth = sheet.getColumnWidth(columnNum) / 256;
+            for (int rowNum = 0; rowNum < sheet.getLastRowNum(); rowNum++) {
+                XSSFRow currentRow;
+                //当前行未被使用过
+                if (sheet.getRow(rowNum) == null) {
+                    currentRow = sheet.createRow(rowNum);
+                } else {
+                    currentRow = sheet.getRow(rowNum);
+                }
+                if (currentRow.getCell(columnNum) != null) {
+                    XSSFCell currentCell = currentRow.getCell(columnNum);
+                        int length = currentCell.getStringCellValue().getBytes().length;
+                        if (columnWidth < length) {
+                            columnWidth = length;
+                    }
+                }
+            }
+            sheet.setColumnWidth(columnNum, columnWidth * 256);
+        }
     }
 
 

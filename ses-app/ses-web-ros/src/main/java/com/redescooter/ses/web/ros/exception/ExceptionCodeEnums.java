@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -322,8 +323,27 @@ public enum ExceptionCodeEnums {
 
     TOP_DEPT_IS_NOT_EXIST(10152, "顶级部门不存在"),
 
+    LOGIN_PSD_ERROER_NEED_CODE(10153, "密码错误"),
 
-    ;
+    LOGIN_PSD_ERROER_NUM_MANY(10154, "密码错误次数过多，请一分钟之后再登陆"),
+
+    CODE_NOT_EMPTY(10155, "验证码不能为空"),
+
+    EAMIL_NOT_REGISTER(10156, "当前邮箱还未注册，请先注册"),
+
+    EAMIL_CODE_TIME_OUT(10157, "请先获取验证码或验证码已过期"),
+
+    WH_OUT_ORDER_NOT_EXIST(10158, "出库单不存在"),
+
+    PRODUCT_PART_IS_EMPTY(10159, "产品部件不存在"),
+
+    CONSIGN_TYPE_NOT_EXIST(10160, "物流方式不存在"),
+
+    NO_LOAN(10161, "委托方式为空"),
+
+    NO_PERM(10162, "没有该接口的权限"),
+
+    NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料");;
 
 
     private int code;

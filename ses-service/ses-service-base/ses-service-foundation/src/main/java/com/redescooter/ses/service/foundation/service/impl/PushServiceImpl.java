@@ -3,9 +3,9 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.jiguang.PushJgResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
@@ -121,7 +121,7 @@ public class PushServiceImpl implements PushService {
                 PushProxyEnter pushProxyEnter = new PushProxyEnter();
                 BeanUtils.copyProperties(enter, pushProxyEnter);
                 //设置推送平台,添加没有平台类型时，设置暂无平台
-                pushProxyEnter.setType(jpushUserResult.getPlatformType() == null ? PlatformTypeEnum.NONE.getValue() : jpushUserResult.getPlatformType());
+                pushProxyEnter.setType(jpushUserResult.getPlatformType() == null ? PlatformTypeEnums.NONE.getValue() : jpushUserResult.getPlatformType());
                 pushProxyEnter.setAppId(enter.getAppId());
                 pushProxyEnter.setSystemId(enter.getSystemId());
                 // 剔除无效registed

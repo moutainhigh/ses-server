@@ -31,13 +31,14 @@ public class VersionbaseController {
   private VersionBaseService versionBaseService;
 
   @ApiOperation(value = "获取仪表平板最新版本")
-  @PostMapping(value = "/getCarInstrumentVersion")
   @IgnoreLoginCheck
+  @PostMapping(value = "/getCarInstrumentVersion")
   public Response<VersionTypeResult> getcNewVersionData(@ModelAttribute VersionTypeEnter enter) {
     return new Response(versionBaseService.getVersionData(enter));
   }
 
   @ApiOperation(value = "获取APP最新版本")
+  @IgnoreLoginCheck
   @PostMapping(value = "/newAppVersion")
   public Response<VersionTypeResult> getAppNewVersionData(@ModelAttribute VersionTypeEnter enter) {
     return new Response(versionBaseService.getVersionData(enter));
@@ -45,6 +46,7 @@ public class VersionbaseController {
 
 
   @ApiOperation(value = "文件上传,上传完之后，需要在APP版本号的表里插入一条数据")
+  @IgnoreLoginCheck
   @RequestMapping(value = "/fileUpload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public Response fileUpload(@ApiParam("文件") @RequestParam("file")MultipartFile file,@ApiParam("fileMsg") String fileMsg) {
     versionBaseService.fileUpload(file,fileMsg);

@@ -295,4 +295,104 @@
         and stock.available_total > 0
         and  stock.whse_id=#{whseId}
     </select>
+
+    <select id="outWhCount" resultType="java.lang.Integer">
+        select  count(*) from
+        (
+            select stock.id as id,
+            product.product_number as partN,
+            stock.materiel_product_type as type,
+            product.en_name as enName,
+            product.cn_name as cnName,
+            stock.available_total as qty
+            from ope_stock stock
+            inner join ope_parts_product product
+            on stock.materiel_product_id = product.id and product.dr=0
+            <include refid="where_assemblyIds"/>
+            union
+            (select stock.id as id,
+            parts.parts_number as partN,
+            parts.parts_type as type,
+            parts.en_name as enName,
+            parts.cn_name as cnName,
+            stock.available_total as qty
+            from ope_stock stock
+            inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+            <include refid="where_allocateIds"/>
+            order by stock.updated_time desc)
+        ) aa
+
+    </select>
+
+    <select id="outWhList" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
+       select stock.id as id,
+        product.product_number as partN,
+        stock.materiel_product_type as type,
+        product.en_name as enName,
+        product.cn_name as cnName,
+        stock.available_total as qty
+        from ope_stock stock
+        inner join ope_parts_product product
+        on stock.materiel_product_id = product.id and product.dr=0
+        <include refid="where_assemblyIds"/>
+        union
+        (select stock.id              as id,
+        parts.parts_number            as partN,
+        (case parts.parts_type
+        when 'Parts' then 1
+        when 'Accessory' then 2
+        when 'Battery' then 3
+        end)                  as type,
+        parts.en_name         as enName,
+        parts.cn_name         as cnName,
+        stock.available_total as qty
+        from ope_stock stock
+        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        <include refid="where_allocateIds"/>
+        order by stock.updated_time desc)
+        limit #{param1.startRow},#{param1.pageSize}
+    </select>
+
+
+    <sql id="where_assemblyIds">
+        where stock.dr=0
+        and stock.available_total > 0
+        <if test="assemblyIds != null and assemblyIds.size() != 0">
+            and stock.whse_id in
+            <foreach collection="assemblyIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="param1.type != null and param1.type != ''">
+            and product.product_type =#{param1.type}
+        </if>
+        <if test="param1.keyword != null and param1.keyword != ''">
+            and (
+            product.product_number like concat ("%",#{param1.keyword},"%") or
+            product.en_name like concat ("%",#{param1.keyword},"%") or
+            product.cn_name like concat ("%",#{param1.keyword},"%")
+            )
+        </if>
+    </sql>
+
+    <sql id="where_allocateIds">
+        where stock.dr=0
+        and stock.available_total > 0
+        <if test="allocateIds != null and allocateIds.size() != 0">
+            and stock.whse_id in
+            <foreach collection="allocateIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="param1.type != null and param1.type != ''">
+            and parts.parts_type =#{param1.type}
+        </if>
+        <if test="param1.keyword != null and param1.keyword != ''">
+            and (
+            parts.parts_number like concat ("%",#{param1.keyword},"%") or
+            parts.en_name like concat ("%",#{param1.keyword},"%") or
+            parts.cn_name like concat ("%",#{param1.keyword},"%")
+            )
+        </if>
+    </sql>
 </mapper>

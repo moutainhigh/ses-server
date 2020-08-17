@@ -4,8 +4,10 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -78,6 +80,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
 //        wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
         wrapper.eq(OpeSysUser.COL_APP_ID, 4);
         wrapper.eq(OpeSysUser.COL_SYSTEM_ID, "REDE_SES");
+        wrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
 
         OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在

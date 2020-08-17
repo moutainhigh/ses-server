@@ -20,3 +20,4 @@ public interface OpeStockProdPartService extends IService<OpeStockProdPart> {
     int updateBatchSelective(List<OpeStockProdPart> list);
 }
 
+

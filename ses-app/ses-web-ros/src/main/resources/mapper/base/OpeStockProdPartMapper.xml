@@ -13,11 +13,12 @@
     <result column="part_id" jdbcType="BIGINT" property="partId" />
     <result column="lot" jdbcType="VARCHAR" property="lot" />
     <result column="in_stock_bill_id" jdbcType="BIGINT" property="inStockBillId" />
-    <result column="out_stock_bill_id" jdbcType="INTEGER" property="outStockBillId" />
+    <result column="out_stock_bill_id" jdbcType="BIGINT" property="outStockBillId" />
     <result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
     <result column="parts_number" jdbcType="VARCHAR" property="partsNumber" />
     <result column="principal_id" jdbcType="BIGINT" property="principalId" />
     <result column="in__wh_qty" jdbcType="INTEGER" property="inWhQty" />
+    <result column="available_qty" jdbcType="INTEGER" property="availableQty" />
     <result column="in_stock_time" jdbcType="TIMESTAMP" property="inStockTime" />
     <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime" />
     <result column="out_principal_id" jdbcType="BIGINT" property="outPrincipalId" />
@@ -35,9 +36,9 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, user_id, `status`, tenant_id, stock_id, part_id, lot, in_stock_bill_id, out_stock_bill_id, 
-    serial_number, parts_number, principal_id, in__wh_qty, in_stock_time, out_stock_time, 
-    out_principal_id, revision, created_by, created_time, updated_by, updated_time, def1, 
-    def2, def3, def5, def6
+    serial_number, parts_number, principal_id, in__wh_qty, available_qty, in_stock_time, 
+    out_stock_time, out_principal_id, revision, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -85,7 +86,7 @@
       </trim>
       <trim prefix="out_stock_bill_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.outStockBillId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outStockBillId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="serial_number = case" suffix="end,">
@@ -106,6 +107,11 @@
       <trim prefix="in__wh_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.inWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="available_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.availableQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="in_stock_time = case" suffix="end,">
@@ -183,40 +189,41 @@
     <!--@mbg.generated-->
     insert into ope_stock_prod_part
     (id, dr, user_id, `status`, tenant_id, stock_id, part_id, lot, in_stock_bill_id, 
-      out_stock_bill_id, serial_number, parts_number, principal_id, in__wh_qty, in_stock_time, 
-      out_stock_time, out_principal_id, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+      out_stock_bill_id, serial_number, parts_number, principal_id, in__wh_qty, available_qty, 
+      in_stock_time, out_stock_time, out_principal_id, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.userId,jdbcType=BIGINT}, 
         #{item.status,jdbcType=VARCHAR}, #{item.tenantId,jdbcType=BIGINT}, #{item.stockId,jdbcType=BIGINT}, 
         #{item.partId,jdbcType=BIGINT}, #{item.lot,jdbcType=VARCHAR}, #{item.inStockBillId,jdbcType=BIGINT}, 
-        #{item.outStockBillId,jdbcType=INTEGER}, #{item.serialNumber,jdbcType=VARCHAR}, 
+        #{item.outStockBillId,jdbcType=BIGINT}, #{item.serialNumber,jdbcType=VARCHAR}, 
         #{item.partsNumber,jdbcType=VARCHAR}, #{item.principalId,jdbcType=BIGINT}, #{item.inWhQty,jdbcType=INTEGER}, 
-        #{item.inStockTime,jdbcType=TIMESTAMP}, #{item.outStockTime,jdbcType=TIMESTAMP}, 
-        #{item.outPrincipalId,jdbcType=BIGINT}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.availableQty,jdbcType=INTEGER}, #{item.inStockTime,jdbcType=TIMESTAMP}, 
+        #{item.outStockTime,jdbcType=TIMESTAMP}, #{item.outPrincipalId,jdbcType=BIGINT}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeStockProdPart">
     <!--@mbg.generated-->
     insert into ope_stock_prod_part
     (id, dr, user_id, `status`, tenant_id, stock_id, part_id, lot, in_stock_bill_id, 
-      out_stock_bill_id, serial_number, parts_number, principal_id, in__wh_qty, in_stock_time, 
-      out_stock_time, out_principal_id, revision, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def5, def6)
+      out_stock_bill_id, serial_number, parts_number, principal_id, in__wh_qty, available_qty, 
+      in_stock_time, out_stock_time, out_principal_id, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{userId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
       #{tenantId,jdbcType=BIGINT}, #{stockId,jdbcType=BIGINT}, #{partId,jdbcType=BIGINT}, 
-      #{lot,jdbcType=VARCHAR}, #{inStockBillId,jdbcType=BIGINT}, #{outStockBillId,jdbcType=INTEGER}, 
+      #{lot,jdbcType=VARCHAR}, #{inStockBillId,jdbcType=BIGINT}, #{outStockBillId,jdbcType=BIGINT}, 
       #{serialNumber,jdbcType=VARCHAR}, #{partsNumber,jdbcType=VARCHAR}, #{principalId,jdbcType=BIGINT}, 
-      #{inWhQty,jdbcType=INTEGER}, #{inStockTime,jdbcType=TIMESTAMP}, #{outStockTime,jdbcType=TIMESTAMP}, 
-      #{outPrincipalId,jdbcType=BIGINT}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
+      #{inWhQty,jdbcType=INTEGER}, #{availableQty,jdbcType=INTEGER}, #{inStockTime,jdbcType=TIMESTAMP}, 
+      #{outStockTime,jdbcType=TIMESTAMP}, #{outPrincipalId,jdbcType=BIGINT}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -227,11 +234,12 @@
     part_id = #{partId,jdbcType=BIGINT}, 
     lot = #{lot,jdbcType=VARCHAR}, 
     in_stock_bill_id = #{inStockBillId,jdbcType=BIGINT}, 
-    out_stock_bill_id = #{outStockBillId,jdbcType=INTEGER}, 
+    out_stock_bill_id = #{outStockBillId,jdbcType=BIGINT}, 
     serial_number = #{serialNumber,jdbcType=VARCHAR}, 
     parts_number = #{partsNumber,jdbcType=VARCHAR}, 
     principal_id = #{principalId,jdbcType=BIGINT}, 
     in__wh_qty = #{inWhQty,jdbcType=INTEGER}, 
+    available_qty = #{availableQty,jdbcType=INTEGER}, 
     in_stock_time = #{inStockTime,jdbcType=TIMESTAMP}, 
     out_stock_time = #{outStockTime,jdbcType=TIMESTAMP}, 
     out_principal_id = #{outPrincipalId,jdbcType=BIGINT}, 
@@ -291,6 +299,9 @@
       </if>
       <if test="inWhQty != null">
         in__wh_qty,
+      </if>
+      <if test="availableQty != null">
+        available_qty,
       </if>
       <if test="inStockTime != null">
         in_stock_time,
@@ -362,7 +373,7 @@
         #{inStockBillId,jdbcType=BIGINT},
       </if>
       <if test="outStockBillId != null">
-        #{outStockBillId,jdbcType=INTEGER},
+        #{outStockBillId,jdbcType=BIGINT},
       </if>
       <if test="serialNumber != null">
         #{serialNumber,jdbcType=VARCHAR},
@@ -375,6 +386,9 @@
       </if>
       <if test="inWhQty != null">
         #{inWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="availableQty != null">
+        #{availableQty,jdbcType=INTEGER},
       </if>
       <if test="inStockTime != null">
         #{inStockTime,jdbcType=TIMESTAMP},
@@ -446,7 +460,7 @@
         in_stock_bill_id = #{inStockBillId,jdbcType=BIGINT},
       </if>
       <if test="outStockBillId != null">
-        out_stock_bill_id = #{outStockBillId,jdbcType=INTEGER},
+        out_stock_bill_id = #{outStockBillId,jdbcType=BIGINT},
       </if>
       <if test="serialNumber != null">
         serial_number = #{serialNumber,jdbcType=VARCHAR},
@@ -459,6 +473,9 @@
       </if>
       <if test="inWhQty != null">
         in__wh_qty = #{inWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="availableQty != null">
+        available_qty = #{availableQty,jdbcType=INTEGER},
       </if>
       <if test="inStockTime != null">
         in_stock_time = #{inStockTime,jdbcType=TIMESTAMP},

@@ -2,8 +2,8 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 
 import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
-import com.redescooter.ses.api.common.enums.jiguang.PushTypeEnum;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.JpushUserService;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
@@ -43,13 +43,13 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
         BeanUtils.copyProperties(enter, jpushUserEnter);
         //由于是做登录操作，故设置值为0
         jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_IN.getValue());
-        if (enter.getClientType().equals(PlatformTypeEnum.ANDROID.getCode())) {
-            jpushUserEnter.setPlatformType(PlatformTypeEnum.ANDROID.getValue());
+        if (enter.getClientType().equals(PlatformTypeEnums.ANDROID.getCode())) {
+            jpushUserEnter.setPlatformType(PlatformTypeEnums.ANDROID.getValue());
         }
-        if (enter.getClientType().equals(PlatformTypeEnum.IOS.getCode())) {
-            jpushUserEnter.setPlatformType(PlatformTypeEnum.IOS.getValue());
+        if (enter.getClientType().equals(PlatformTypeEnums.IOS.getCode())) {
+            jpushUserEnter.setPlatformType(PlatformTypeEnums.IOS.getValue());
         }
-        jpushUserEnter.setAudienceType(PushTypeEnum.REGISTRATION_ID.getCode());
+        jpushUserEnter.setAudienceType(PushTypeEnums.REGISTRATION_ID.getCode());
 
         jpushUserService.save(jpushUserEnter);
 

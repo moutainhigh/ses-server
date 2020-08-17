@@ -9,9 +9,9 @@ import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -339,7 +339,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.CANCEL.getValue())
@@ -563,7 +563,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(corDelivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.PENDING.getValue())

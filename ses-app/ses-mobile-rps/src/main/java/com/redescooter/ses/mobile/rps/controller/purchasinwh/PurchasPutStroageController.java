@@ -36,7 +36,7 @@ public class PurchasPutStroageController{
 
     @PostMapping(value = "/haveSucceed")
     @ApiOperation(value = "有ID入库成功接口", response = HaveIdPartsResult.class)
-    public Response<HaveIdPartsResult> HaveIDPartsResult(@ModelAttribute @ApiParam("请求参数") HaveIdEnter enter) {
+    public Response<HaveIdPartsResult> HaveIdPartsResult(@ModelAttribute @ApiParam("请求参数") HaveIdEnter enter) {
         return new Response<>(purchasPutStroageService.haveIdPartsResult(enter));
     }
 

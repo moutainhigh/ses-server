@@ -8,9 +8,9 @@ import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryResultEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -269,7 +269,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.PC.getValue())
+                .pushType(PlatformTypeEnums.PC.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.DELIVERING.getValue())
@@ -330,7 +330,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.PC.getValue())
+                .pushType(PlatformTypeEnums.PC.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())
@@ -397,7 +397,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.PC.getValue())
+                .pushType(PlatformTypeEnums.PC.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(delivery.getStatus())

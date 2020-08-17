@@ -29,9 +29,11 @@ public interface ValidationExceptionCode {
     int REGISTRATIONID_EMPTY = 10009;
     // I18 配置为空
     int I18NCONFIG_ID_NOTZERO = 10010;
-    // 版本类型为空
-    int VERSION_TYPE = 10011;
-    // 版本编号为空
-    int VERSION_CODE = 10012;
+    
+    //客户端类型为空
+    int CLIENT_TYPE_IS_EMPTY = 10011;
+    
+    //客户端代码为空
+    int CLIENT_CODE_IS_EMPTY=10012;
 
 }

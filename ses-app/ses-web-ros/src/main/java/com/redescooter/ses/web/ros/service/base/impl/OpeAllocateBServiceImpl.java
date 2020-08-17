@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.List;
 import com.redescooter.ses.web.ros.dao.base.OpeAllocateBMapper;
 import com.redescooter.ses.web.ros.dm.OpeAllocateB;
 import com.redescooter.ses.web.ros.service.base.OpeAllocateBService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OpeAllocateBServiceImpl extends ServiceImpl<OpeAllocateBMapper, OpeAllocateB> implements OpeAllocateBService {

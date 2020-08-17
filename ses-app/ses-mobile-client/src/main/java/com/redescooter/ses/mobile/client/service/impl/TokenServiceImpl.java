@@ -1,7 +1,6 @@
 package com.redescooter.ses.mobile.client.service.impl;
 
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.enums.mail.MailTemplateEventEnum;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -11,9 +10,8 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
-import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.TokenService;
@@ -42,7 +40,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
-
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -70,7 +67,7 @@ public class TokenServiceImpl implements TokenService {
         }
         //2. 加入邮箱任务
         String code = String.valueOf(RandomUtils.nextInt(1000, 9999));
-        SetPasswordMobileUserTaskEnter baseMailTask = new SetPasswordMobileUserTaskEnter();
+        SendCodeMobileUserTaskEnter baseMailTask = new SendCodeMobileUserTaskEnter();
 
         BeanUtils.copyProperties(enter, baseMailTask);
         baseMailTask.setCode(code);
@@ -84,7 +81,7 @@ public class TokenServiceImpl implements TokenService {
         baseMailTask.setToMail(enter.getMail());
         baseMailTask.setToUserId(new Long("0"));
         baseMailTask.setUserRequestId(enter.getRequestId());
-        baseMailTask.setEvent(MailTemplateEventEnum.MOBILE_PASSWORD.getEvent());
+        baseMailTask.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
         baseMailTask.setMailAppId(AppIDEnums.SAAS_APP.getValue());
         baseMailTask.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         mailMultiTaskService.addSetPasswordMobileUserTask(baseMailTask);
@@ -99,13 +96,12 @@ public class TokenServiceImpl implements TokenService {
         enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));
         enter.setCode(SesStringUtils.stringTrim(enter.getCode()));
-
-
+        //todo
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
         if (map == null) {
             throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(map.get("verificationCode"), enter.getCode())) {
+        if (!StringUtils.equals(map.get("code"), enter.getCode())) {
             throw new SesMobileClientException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
         if (!StringUtils.equals(enter.getConfirmPassword(), enter.getNewPassword())) {

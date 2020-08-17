@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.bom.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -64,6 +65,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.hssf.record.PageBreakRecord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -152,8 +154,8 @@ public class BomRosServiceImpl implements BomRosService {
     @Transactional
     @Override
     public GeneralResult saveScooter(SaveScooterEnter saveScooterEnter) {
-      //SaveScooterEnter参数值去空格
-      SaveScooterEnter enter = SesStringUtils.objStringTrim(saveScooterEnter);
+        //SaveScooterEnter参数值去空格
+        SaveScooterEnter enter = SesStringUtils.objStringTrim(saveScooterEnter);
         // json 转换
         List<ProdoctPartListEnter> partList = getProdoctPartListEnters(enter);
         // 数据重复性过滤
@@ -255,15 +257,23 @@ public class BomRosServiceImpl implements BomRosService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if(CollectionUtils.isNotEmpty(partList)){
+        if (CollectionUtils.isNotEmpty(partList)) {
             List<Long> ids = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
-            List<OpePartsProductB> productBs = (List<OpePartsProductB>) opePartsProductBService.listByIds(ids);
-            if(CollectionUtils.isNotEmpty(productBs)){
-                for (OpePartsProductB productB : productBs) {
-                    ProdoctPartListEnter  partListEnter = new ProdoctPartListEnter();
-                    partListEnter.setId(productB.getId());
-                    partListEnter.setQty(productB.getPartsQty()==null?1:productB.getPartsQty());
-                    partList.add(partListEnter);
+            List<OpePartsProduct> productBs = opePartsProductService.list(new LambdaQueryWrapper<OpePartsProduct>().in(OpePartsProduct::getDef1, ids));
+            if (CollectionUtils.isEmpty(productBs)) {
+                throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+            }
+            //部件校验
+            for (ProdoctPartListEnter part : partList) {
+                Boolean exist = Boolean.FALSE;
+                for (OpePartsProduct item : productBs) {
+                    if (Long.valueOf(item.getDef1()).equals(part.getId())) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
                 }
             }
         }
@@ -281,7 +291,7 @@ public class BomRosServiceImpl implements BomRosService {
                 opePartsProductB.setCreatedBy(enter.getUserId());
                 opePartsProductB.setCreatedTime(new Date());
                 opePartsProductList.add(opePartsProductB);
-                partAllQty += (item.getQty()==null?0:item.getQty());
+                partAllQty += (item.getQty() == null ? 0 : item.getQty());
             }
         }
         return partAllQty;
@@ -1341,7 +1351,6 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
 
-
             // 结果集排序校验（原因：会引发 RPS 模板数据展示问题）
             int sequence = 0;
             for (QcResultEnter item : value) {
@@ -1349,12 +1358,10 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
                 }
                 if (item.getUploadPictureFalg() == null || item.getUploadPictureFalg().equals("")) {
-                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(),
-                            ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(),ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
                 }
                 if (item.getResultSequence() == 0 || item.getResultSequence() == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
-                            ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
 
                 //结果集校验  排序校验
@@ -1364,6 +1371,7 @@ public class BomRosServiceImpl implements BomRosService {
                     if (!item.getResultSequence().equals(sequence + 1)) {
                         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                     }
+                    sequence = item.getResultSequence();
                 }
             }
         });

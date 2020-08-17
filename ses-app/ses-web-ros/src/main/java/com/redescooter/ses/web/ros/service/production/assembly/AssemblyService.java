@@ -196,7 +196,7 @@ public interface AssemblyService {
      * @param enter
      * @return
      */
-    GeneralResult export(IdEnter enter);
+    void export(IdEnter enter);
 
     /**
      * 设置支付信息

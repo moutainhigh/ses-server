@@ -14,43 +14,27 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
-import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import com.redescooter.ses.web.ros.vo.sys.employee.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -96,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private SysDeptService sysDeptService;
 
-    @Autowired
+    @Reference
     private MailMultiTaskService mailMultiTaskService;
 
     @Reference

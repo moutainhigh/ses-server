@@ -2,6 +2,7 @@ package com.redescooter.ses.api.foundation.vo.login;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +18,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "账户选择列表", description = "账户选择列表")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class AccountsDto extends GeneralEnter {
+public class AccountsDto extends GeneralResult {
 
     @ApiModelProperty(value = "userId")
     private Long userId;

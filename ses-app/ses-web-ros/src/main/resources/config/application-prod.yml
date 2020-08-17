@@ -93,3 +93,8 @@ monday:
   workspaceId: 21182
   #模板Id
   templeteId: 581923336
+
+constant-us-email:
+  sale-principal:
+    - valentin@redescooter.fr
+    - etienne@redescooter.fr

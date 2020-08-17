@@ -30,6 +30,8 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -249,12 +251,37 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //主订单保存
         opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
-
-        //Monday 同步数据
-        mondayService.websiteBookOrder(opeCustomerInquiry);
+    
+        //发送数据到Monday
+        mondayData(product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
-
+    
+    /**
+     * 发送数据到Monday
+     * @param productModel
+     * @param opeCustomerInquiry
+     */
+    private void mondayData(String productModel, OpeCustomerInquiry opeCustomerInquiry) {
+        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
+        mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
+        mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
+        mondayGeneralEnter.setCreatedTime(new Date());
+        mondayGeneralEnter.setUpdatedTime(new Date());
+        mondayGeneralEnter.setEmail(opeCustomerInquiry.getEmail());
+        mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
+        mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
+        mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+        MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
+        mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
+        mondayBookOrderEnter.setQty(1);
+        mondayGeneralEnter.setT(mondayBookOrderEnter);
+        
+        //Monday 同步数据
+        mondayService.websiteBookOrder(mondayGeneralEnter);
+    }
+    
     /**
      * 修改 预订单
      *
@@ -554,6 +581,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         checkCustomer(opeCustomer);
         opeCustomer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         opeCustomer.setUpdatedTime(new Date());
+        //todo 客户信息暂未更新
         return new GeneralResult();
     }
 

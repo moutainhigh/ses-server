@@ -1,21 +1,28 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 库存总表
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeStock")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock")
-public class OpeStock {
+public class OpeStock implements Serializable {
     /**
      * 主键
      */
@@ -25,7 +32,6 @@ public class OpeStock {
 
     @TableField(value = "dr")
     @ApiModelProperty(value = "")
-    @TableLogic
     private Integer dr;
 
     @TableField(value = "user_id")
@@ -70,6 +76,27 @@ public class OpeStock {
     @TableField(value = "worn_total")
     @ApiModelProperty(value = "破损总数")
     private Integer wornTotal;
+
+    /**
+     * 锁定库存
+     */
+    @TableField(value = "lock_total")
+    @ApiModelProperty(value = "锁定库存")
+    private Integer lockTotal;
+
+    /**
+     * 待生产
+     */
+    @TableField(value = "wait_product_total")
+    @ApiModelProperty(value = "待生产")
+    private Integer waitProductTotal;
+
+    /**
+     * 待入库
+     */
+    @TableField(value = "wait_stored_total")
+    @ApiModelProperty(value = "待入库")
+    private Integer waitStoredTotal;
 
     /**
      * 所属物料产品Id
@@ -162,6 +189,8 @@ public class OpeStock {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -179,6 +208,12 @@ public class OpeStock {
     public static final String COL_AVAILABLE_TOTAL = "available_total";
 
     public static final String COL_WORN_TOTAL = "worn_total";
+
+    public static final String COL_LOCK_TOTAL = "lock_total";
+
+    public static final String COL_WAIT_PRODUCT_TOTAL = "wait_product_total";
+
+    public static final String COL_WAIT_STORED_TOTAL = "wait_stored_total";
 
     public static final String COL_MATERIEL_PRODUCT_ID = "materiel_product_id";
 
@@ -205,8 +240,4 @@ public class OpeStock {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeStockBuilder builder() {
-        return new OpeStockBuilder();
-    }
 }

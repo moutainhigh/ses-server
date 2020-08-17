@@ -12,6 +12,7 @@ import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
@@ -49,6 +50,7 @@ import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:CustomerImpl
@@ -495,6 +497,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         EditCustomerEnter checkCustomer = new EditCustomerEnter();
         BeanUtils.copyProperties(customer, checkCustomer);
+        checkCustomer.setCityName(customer.getDef2());
         checkCustomer(checkCustomer);
 
         if (customer == null) {
@@ -568,8 +571,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
       if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
         return PageResult.createZeroRowResult(enter);
       }
-        //TODO ROS1.0.0 账户列表去除个人端账户查询
-//        enter.setCustomerType(CustomerTypeEnum.ENTERPRISE.getValue());
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -578,16 +579,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         List<AccountListResult> accountList = customerServiceMapper.queryAccountRecord(enter);
         List<String> emailList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(accountList)) {
-            accountList.forEach(item -> {
-                emailList.add(item.getEmail());
-            });
+            emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
         }
-
-//        // 查询时间
-//        QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
-//        queryAccountListEnter.setInputTenantId(tenantIdList);
-//        BeanUtils.copyProperties(enter, queryAccountListEnter);
-//        int countTenantAccount = accountBaseService.countTenantAccount(queryAccountListEnter);
 
         QueryAccountListEnter queryAccountListEnter = new QueryAccountListEnter();
         BeanUtils.copyProperties(enter, queryAccountListEnter);
@@ -597,7 +590,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return PageResult.createZeroRowResult(enter);
         }
 
-//        List<QueryAccountListResult> tenantAccountRecords = accountBaseService.tenantAccountRecords(queryAccountListEnter);
         List<QueryAccountResult> queryAccountListResult = accountBaseService.customerAccountList(queryAccountListEnter);
 
         List<AccountListResult> resultList = new ArrayList<>();
@@ -624,7 +616,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
-        return accountBaseService.customerAccountCountByStatus(enter);
+        // 查询内容
+      List<AccountListResult> accountList = customerServiceMapper.queryAccountRecordEamil(enter);
+      List<String> emailList = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(accountList)) {
+          emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
+      }
+      QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
+      queryAccountCountStatusEnter.setEmailList(emailList);
+      return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
     }
 
     /**
@@ -1003,7 +1003,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(customer.getEmail())) {
             count++;
         }
-        if (customer.getCity() != null && customer.getCity() != 0) {
+        //def2=城市
+        if (StringUtils.isNotEmpty(customer.getDef2())) {
             count++;
         }
         if (StringUtils.isNotEmpty(customer.getAddress())) {

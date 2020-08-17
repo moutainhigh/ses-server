@@ -8,10 +8,10 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -347,7 +347,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                     .belongId(enter.getUserId())
                     .appId(AppIDEnums.SAAS_APP.getAppId())
                     .systemId(AppIDEnums.SAAS_APP.getSystemId())
-                    .pushType(PlatformTypeEnum.ANDROID.getValue())
+                    .pushType(PlatformTypeEnums.ANDROID.getValue())
                     .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
                     .mesageType(MesageTypeEnum.SITE.getValue())
                     .build();
@@ -363,7 +363,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                     .belongId(corExpressDelivery.getCreateBy())
                     .appId(AppIDEnums.SAAS_WEB.getAppId())
                     .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                    .pushType(PlatformTypeEnum.PC.getValue())
+                    .pushType(PlatformTypeEnums.PC.getValue())
                     .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
                     .mesageType(MesageTypeEnum.NONE.getValue())
                     .build();
@@ -380,7 +380,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                         .belongId(corExpressDelivery.getCreateBy())
                         .appId(AppIDEnums.SAAS_WEB.getAppId())
                         .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                        .pushType(PlatformTypeEnum.PC.getValue())
+                        .pushType(PlatformTypeEnums.PC.getValue())
                         .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
                         .mesageType(MesageTypeEnum.NONE.getValue())
                         .build();
@@ -504,7 +504,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                 .belongId(enter.getUserId())
                 .appId(enter.getAppId())
                 .systemId(enter.getSystemId())
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .appId(AppIDEnums.SAAS_APP.getAppId())
                 .systemId(AppIDEnums.SAAS_APP.getSystemId())
                 .messagePriority(MessagePriorityEnums.NONE_REMIND.getValue())
@@ -521,7 +521,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                 .belongId(corExpressDelivery.getCreateBy())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                .pushType(PlatformTypeEnum.PC.getValue())
+                .pushType(PlatformTypeEnums.PC.getValue())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
                 .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
@@ -538,7 +538,7 @@ public class EdOrderServiceImpl implements EdOrderService {
                     .belongId(corExpressDelivery.getCreateBy())
                     .appId(AppIDEnums.SAAS_WEB.getAppId())
                     .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                    .pushType(PlatformTypeEnum.PC.getValue())
+                    .pushType(PlatformTypeEnums.PC.getValue())
                     .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
                     .mesageType(MesageTypeEnum.NONE.getValue())
                     .build();

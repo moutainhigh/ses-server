@@ -13,7 +13,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import java.util.List;
 
 public interface UserTokenService {
-
+    
     /**
      * 用户登录
      *
@@ -21,7 +21,7 @@ public interface UserTokenService {
      * @return
      */
     LoginResult login(LoginEnter enter);
-
+    
     /**
      * 确认登录
      *
@@ -29,7 +29,7 @@ public interface UserTokenService {
      * @return
      */
     LoginResult loginConfirm(LoginConfirmEnter enter);
-
+    
     /**
      * 用户注销
      *
@@ -37,7 +37,23 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult logout(GeneralEnter enter);
-
+    
+    /**
+     * 验证码登录发送邮件
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult loginSendCode(LoginEnter enter);
+    
+    /**
+     * 验证码登录
+     *
+     * @param enter
+     * @return
+     */
+    LoginResult loginByCode(LoginEnter enter);
+    
     /**
      * 登陆token检查
      *
@@ -45,7 +61,7 @@ public interface UserTokenService {
      * @return
      */
     UserToken checkToken(GeneralEnter enter);
-
+    
     /**
      * 验证验证码
      *
@@ -53,7 +69,7 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult validateCode(ValidateCodeEnter<AccountsDto> enter);
-
+    
     /**
      * 实际登录逻辑
      *
@@ -62,7 +78,7 @@ public interface UserTokenService {
      * @return
      */
     LoginResult signIn(AccountsDto user, LoginEnter enter);
-
+    
     /**
      * 默认PC端验证用户，不支持账号通用， 一个邮箱只能开设一种类型的用户
      *
@@ -70,7 +86,7 @@ public interface UserTokenService {
      * @return
      */
     AccountsDto checkDefaultUser(LoginEnter enter);
-
+    
     /**
      * APP用户验证，2B/2C账号通用
      *
@@ -78,14 +94,14 @@ public interface UserTokenService {
      * @return
      */
     List<AccountsDto> checkAppUser(LoginEnter enter);
-
+    
     /**
      * 权限校验
      *
      * @param dto
      */
     void chectPermission(AccountsDto dto);
-
+    
     /**
      * 设置token
      *
@@ -94,7 +110,7 @@ public interface UserTokenService {
      * @return
      */
     UserToken setToken(LoginEnter enter, AccountsDto userDto);
-
+    
     /**
      * 设置密码
      *
@@ -102,7 +118,7 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult setPassword(SetPasswordEnter enter);
-
+    
     /**
      * 系统内部设置密码
      *
@@ -110,7 +126,7 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult chanagePassword(ChanagePasswordEnter enter);
-
+    
     /**
      * 邮件发送
      *
@@ -118,14 +134,15 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult sendEmail(BaseSendMailEnter enter);
-
+    
     /**
-     *  App 系统内 手机号类型验证 用户密码
+     * App 系统内 手机号类型验证 用户密码
+     *
      * @param enter
      * @return
      */
     GeneralResult verifyAccount(VerifyAccountEnter enter);
-
+    
     /**
      * 根据租户id锁定所有账户
      *
@@ -133,7 +150,7 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult lockBySaaSAccount(List<Long> list);
-
+    
     /**
      * 解锁SaaS账户
      *
@@ -141,15 +158,15 @@ public interface UserTokenService {
      * @return
      */
     GeneralResult UnlockBySaaSAccount(List<Long> list);
-
-
+    
+    
     /**
      * 员工离职 账户禁用、token 清除
      *
      * @return
      */
     GeneralResult accountDisabled(GeneralEnter enter);
-
+    
     /**
      * 获取APP用户信息
      *
@@ -157,5 +174,5 @@ public interface UserTokenService {
      * @return
      */
     List<UserToken> getAppUser(GetUserEnter enter);
-
+    
 }

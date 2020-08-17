@@ -119,7 +119,7 @@ public interface ValidationExceptionCode {
     // 职位名称为空
     int ROLE_NAME_IS_EMPTY = 10079;
     // 收货人为空
-    int CONSIGNEE_ID__IS_EMPTY = 10080;
+    int CONSIGNEE_ID_IS_EMPTY = 10080;
     // 工厂Id为空
     int FACTORY_ID_EMPTY = 10081;
     // 部品为空
@@ -203,9 +203,25 @@ public interface ValidationExceptionCode {
     //经度非法
     int LNG_ILLEGAL = 10121;
     //国家非法
-    int COUNTRY_CITY_ILLEGAL=10122;
+    int COUNTRY_CITY_ILLEGAL = 10122;
+    //目标仓库为空
+    int GOGAL_WH_IS_EMPTY = 10123;
+    //物流方式为空
+    int CONSIGN_TYPE_IS_EMPTY = 10124;
+    //产品部件为空
+    int PRODUCT_LIST_IS_EMPTY = 10125;
+    //物流公司为空
+    int CONSIGN_COMPANY_NAME_IS_EMPTY = 10126;
+    //物流单号为空
+    int TRACKING_NUM_IS_EMPTY = 10127;
+    //物流公司名称非法
+    int CONSIGN_COMPANY_NAME_ILLEGAL = 10128;
+    //物流单号非法
+    int TRACKING_NUM_ILLEGAL = 10129;
+    //价格输入非法
+    int PRICE_ILLEGAL=10130;
     //消息为空
-    int MESSAGE_IS_EMPTY=10123;
+    int MESSAGE_IS_EMPTY=10131;
     //消息为空
-    int MESSAGE_IS_ILLEGAL=10124;
+    int MESSAGE_IS_ILLEGAL=10132;
 }

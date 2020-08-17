@@ -40,6 +40,7 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -173,78 +174,22 @@ public class InquiryServiceImpl implements InquiryService {
                 return new GeneralResult(enter.getRequestId());
             }
         }
-
-//        //查询客户是否有询价单 存在的话数量累计
-//        List<OpeCustomerInquiry> customerInquiryList =
-//                opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>().eq(OpeCustomerInquiry::getEmail, enter.getEmail()).ne(OpeCustomerInquiry::getStatus,
-//                        InquiryStatusEnums.DECLINE.getValue()));
-//
-//        OpeCustomerInquiry opeCustomerInquiry = null;
-//        if (CollectionUtils.isEmpty(customerInquiryList)) {
-//            opeCustomerInquiry = buildOpeCustomerInquiry(enter);
-//        } else {
-//            opeCustomerInquiry = customerInquiryList.get(0);
-//            opeCustomerInquiry.setScooterQuantity(opeCustomerInquiry.getScooterQuantity() + 1);
-//        }
-//
-//       /* CityResult cityResult = cityBaseService.queryCityDetailByName(enter.getDistrust());
-//        if (cityResult == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DISTRUST_IS_NOT_EXIST.getMessage());
-//        }*/
-//        opeCustomerInquiry.setSource("1");
-//        opeCustomerInquiryService.saveOrUpdate(opeCustomerInquiry);
-//
-//        //Monday 同步数据
-//        mondayService.websiteContantUs(opeCustomerInquiry);
-
         // 官网联系我们
         contactUsService.websiteContactUs(enter);
+    
+        //Monday 同步数据
+        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        mondayGeneralEnter.setFirstName(enter.getFirstName());
+        mondayGeneralEnter.setLastName(enter.getLastName());
+        mondayGeneralEnter.setTelephone(enter.getTelephone());
+        mondayGeneralEnter.setCreatedTime(new Date());
+        mondayGeneralEnter.setUpdatedTime(new Date());
+        mondayGeneralEnter.setEmail(enter.getEmail());
+        mondayGeneralEnter.setCity(enter.getCity());
+        mondayGeneralEnter.setDistant(enter.getDistrust());
+        mondayGeneralEnter.setRemarks(enter.getRemark());
+        mondayService.websiteContantUs(mondayGeneralEnter);
         return new GeneralResult(enter.getRequestId());
-    }
-
-    private OpeCustomerInquiry buildOpeCustomerInquiry(SaveInquiryEnter enter) {
-
-        OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
-        opeCustomerInquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
-        opeCustomerInquiry.setDr(0);
-        opeCustomerInquiry.setOrderNo(RandomUtil.simpleUUID());
-        opeCustomerInquiry.setCustomerId(0L);
-        opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-        opeCustomerInquiry.setCity(null);
-        opeCustomerInquiry.setCustomerSource("");
-        opeCustomerInquiry.setSalesId(0L);
-        opeCustomerInquiry.setSource(InquirySourceEnums.INQUIRY.getValue());
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPROCESSED.getValue());
-
-        //默认为个人餐厅
-//        opeCustomerInquiry.setIndustry(CustomerIndustryEnums.RESTAURANT.getValue());
-//        opeCustomerInquiry.setCustomerType(CustomerTypeEnum.PERSONAL.getValue());
-
-        opeCustomerInquiry.setCompanyName(null);
-        opeCustomerInquiry.setFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
-        opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(enter.getLastName()));
-        opeCustomerInquiry.setFullName(new StringBuilder(SesStringUtils.upperCaseString(enter.getFirstName())).append(" ").append(SesStringUtils.upperCaseString(enter.getLastName())).toString());
-        opeCustomerInquiry.setScooterQuantity(1);
-        opeCustomerInquiry.setContactFirst(null);
-        opeCustomerInquiry.setContactLast(null);
-        opeCustomerInquiry.setContantFullName(null);
-        opeCustomerInquiry.setCountryCode(enter.getCountryCode());
-        opeCustomerInquiry.setTelephone(enter.getTelephone());
-        opeCustomerInquiry.setEmail(enter.getEmail());
-        opeCustomerInquiry.setAddress("");
-        opeCustomerInquiry.setRemarks(enter.getRemark());
-        opeCustomerInquiry.setCreatedBy(0L);
-        opeCustomerInquiry.setUpdatedBy(0L);
-        opeCustomerInquiry.setCreatedTime(new Date());
-        opeCustomerInquiry.setUpdatedTime(new Date());
-
-        //def1 国家 def2 城市 distrust区域
-        opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        opeCustomerInquiry.setDistrict(Long.valueOf(enter.getDistrust()));
-        opeCustomerInquiry.setDef2(enter.getCity());
-        opeCustomerInquiry.setDef3(enter.getDistrust());
-        opeCustomerInquiry.setCountry(enter.getCountryId());
-        return opeCustomerInquiry;
     }
 
     /**

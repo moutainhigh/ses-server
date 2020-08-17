@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyEventEnums;
@@ -231,7 +231,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         if (!org.apache.commons.lang3.StringUtils.equals(opeAllocate.getStatus(), AllocateOrderStatusEnums.ALLOCATE.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
-        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId, enter.getId()).gt(OpeAllocateB::getPendingStorageQty,0));
+        int count = opeAllocateBService.count(new LambdaQueryWrapper<OpeAllocateB>().eq(OpeAllocateB::getAllocateId, enter.getId()).gt(OpeAllocateB::getPendingStorageQty, 0));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -370,6 +370,9 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //查询对应的调拨备料记录
         QueryWrapper<OpeAllocateBTrace> opeAllocateBTraceQueryWrapper = new QueryWrapper<>();
         opeAllocateBTraceQueryWrapper.eq(OpeAllocateBTrace.COL_ALLOCATE_B_ID, opeAllocateB.getId());
+        if (!StringUtils.isEmpty(enter.getProductSerialNum())) {
+            opeAllocateBTraceQueryWrapper.eq(OpeAllocateBTrace.COL_SERIAL_NUM, enter.getProductSerialNum());
+        }
         OpeAllocateBTrace opeAllocateBTrace = opeAllocateBTraceService.getOne(opeAllocateBTraceQueryWrapper);
 
         //调拨备料记录为空
@@ -418,12 +421,11 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         OpeStock opeStock = opeStockService.getOne(opeStockQueryWrapper);
 
         //查询仓库中是否有该产品，有就数量叠加，没有就新增
-        if (!StringUtils.isEmpty(opeStock)) {
+        if (opeStock != null) {
             //入库总数+
             opeStock.setIntTotal(opeParts.getIdClass() ? (opeStock.getIntTotal() + 1) : (opeStock.getIntTotal() + enter.getInWhNum()));
             //剩余库存数+
             opeStock.setAvailableTotal(opeParts.getIdClass() ? (opeStock.getAvailableTotal() + 1) : (opeStock.getAvailableTotal() + enter.getInWhNum()));
-            opeStockService.updateById(opeStock);
         } else {
             //新建库存
             opeStock = OpeStock.builder()
@@ -433,20 +435,21 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .outTotal(0)
                     .wornTotal(0)
                     .availableTotal(opeParts.getIdClass() ? 1 : enter.getInWhNum())
+                    .lockTotal(0)
                     .whseId(opeWhse.getId())
                     .revision(0)
                     .userId(enter.getUserId())
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeParts.getCnName())
                     .materielProductId(opeAllocateB.getPartId())
-                    .materielProductType(opeParts.getPartsType())//产品物料类型
+                    .materielProductType(BomCommonTypeEnums.getValueByCode(opeParts.getPartsType()))//产品物料类型
+                    .waitStoredTotal(0)
+                    .waitProductTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
                     .createdBy(enter.getUserId())
                     .build();
-            //更新库存
-            opeStockService.save(opeStock);
         }
 
         //判断调拨单的状态是否改变，记录调拨单状态变更
@@ -510,6 +513,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .serialNumber(opeParts.getIdClass() == true ? opeStockPurchas.getSerialNumber() : null) //序列号
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
+                .availableQty(opeParts.getIdClass() ? 1 : enter.getInWhNum())
                 .outStockBillId(0L)
                 .outStockTime(null)
                 .outPrincipalId(0L)
@@ -531,6 +535,9 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         opeStockBillService.save(opeStockBill);
         //保存生产成品库的数据
         opeStockProdPartService.save(opeStockProdPart);
+
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - enter.getInWhNum());
+        opeStockService.saveOrUpdate(opeStock);
 
         //返回成功结果集
         return ProductWaitInWhInfoResult.builder()
@@ -560,23 +567,13 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             throw new SesMobileRpsException(ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getCode(), ExceptionCodeEnums.SERIAL_NUMBER_IS_WRONG.getMessage());
         }
 
-        //查询对应的质检记录
-        QueryWrapper<OpeAssemblyBQc> opeAssemblyBQcQueryWrapper = new QueryWrapper<>();
-        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_ASSEMBLY_B_ID, enter.getId());
-        opeAssemblyBQcQueryWrapper.eq(OpeAssemblyBQc.COL_STATUS, QcStatusEnums.PASS.getValue());
-        OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getOne(opeAssemblyBQcQueryWrapper);
-
-        //抛质检记录为空异常
-        OpeAssemblyQcItem opeAssemblyQcItem = null;
-        if (StringUtils.isEmpty(opeAssemblyBQc)) {
+        //通过校验是否已经已经过质检
+        QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
+        opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_QC_RESULT, QcStatusEnums.PASS.getValue());
+        opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_SERIAL_NUM, enter.getProductSerialNum());
+        OpeAssemblyQcItem opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
+        if (opeAssemblyQcItem == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_INFO_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_INFO_IS_EMPTY.getMessage());
-        } else {
-            //通过质检项查询质检结果id
-            QueryWrapper<OpeAssemblyQcItem> opeAssemblyQcItemQueryWrapper = new QueryWrapper<>();
-            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_ID, enter.getId());
-            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_ASSEMBLY_B_QC_ID, opeAssemblyBQc.getId());
-            opeAssemblyQcItemQueryWrapper.eq(OpeAssemblyQcItem.COL_QC_RESULT,QcStatusEnums.PASS.getValue());
-            opeAssemblyQcItem = opeAssemblyQcItemService.getOne(opeAssemblyQcItemQueryWrapper);
         }
 
         //获取组装单子单
@@ -638,8 +635,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
             opeStock.setIntTotal(opeStock.getIntTotal() + 1);
             //剩余库存数+1
             opeStock.setAvailableTotal(opeStock.getAvailableTotal() + 1);
-            opeStockService.updateById(opeStock);
         } else {
+            //更新库存
             opeStock = OpeStock.builder()
                     .id(idAppService.getId(SequenceName.OPE_STOCK))
                     .dr(0)
@@ -651,16 +648,18 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                     .tenantId(enter.getTenantId())
                     .materielProductName(opeAssemblyBOrder.getEnName())
                     .materielProductId(opeAssemblyBOrder.getProductId())
-                    .materielProductType(BomCommonTypeEnums.SCOOTER.getCode())  //类型是整车
+                    .materielProductType(BomCommonTypeEnums.SCOOTER.getValue())  //类型是整车
                     .availableTotal(1)
+                    .lockTotal(0)
                     .wornTotal(0)
+                    .waitProductTotal(0)
+                    .waitStoredTotal(0)
                     .updatedTime(new Date())
                     .createdTime(new Date())
                     .updatedBy(enter.getUserId())
                     .createdBy(enter.getUserId())
                     .build();
-            //更新库存
-            opeStockService.save(opeStock);
+
         }
 
         //更新一条生产入库信息
@@ -726,11 +725,12 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .status(StockProductPartStatusEnums.AVAILABLE.getValue())
                 .stockId(opeStock.getId())
                 .productId(opeAssemblyBOrder.getProductId())
-                .lot(opeAssemblyBQc.getBatchNo())
+                .lot(opeAssemblyQcItem.getBatchNo())
                 .serialNumber(opeProductAssembly.getProductSerialNum()) //序列号
                 .productNumber(opeAssemblyBOrder.getProductNumber())
                 .inStockBillId(opeStockBill.getId())
                 .principalId(enter.getUserId())
+                .availableQty(1)
                 .outPrincipalId(0L)
                 .outStockBillId(0L)
                 .outStockTime(null)
@@ -759,13 +759,20 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
         //保存组装单状态
         opeAssemblyOrderService.updateById(opeAssemblyOrder);
 
+        //释放待入库数据
+        opeStock.setWaitStoredTotal(opeStock.getWaitStoredTotal() - 1);
+        //库存更新
+        opeStockService.saveOrUpdate(opeStock);
+
         //返回入库成功结果集
         return ProductWaitInWhInfoResult.builder()
                 .residueNum(opeAssemblyBOrder.getInWaitWhQty())
                 .partName(opeAssemblyBOrder.getEnName())
                 .productNum(opePartsProduct.getProductNumber())  //车辆编码
-                .serialNum(opeAssemblyQcItem.getSerialNum())  //序列号
+                .serialNum(enter.getProductSerialNum())  //序列号
                 .proTime(opeAssemblyOrder.getCreatedTime())
                 .build();
     }
+
+
 }
