@@ -102,7 +102,7 @@ public class SaveSaleOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "银行卡名称")
     @NotNull(code = ValidationExceptionCode.BANKCARD_NAME_IS_EMPTY, message = "银行卡上姓名为空")
     @MinimumLength(value = "2",code = ValidationExceptionCode.BANKCARDNAME_IS_NOT_ILLEGAL,message = "银行卡上姓名不合法")
-    @MaximumLength(value = "20",code = ValidationExceptionCode.BANKCARDNAME_IS_NOT_ILLEGAL,message = "银行卡上姓名不合法")
+    @MaximumLength(value = "40",code = ValidationExceptionCode.BANKCARDNAME_IS_NOT_ILLEGAL,message = "银行卡上姓名不合法")
     private String bankCardName;
 
     @ApiModelProperty(value = "卡号")

@@ -169,19 +169,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
-//
-//        //电话解密
-//        String decrypt = null;
-//        try {
-//            decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-//        } catch (Exception e) {
-//            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-//        }
-//        if (decrypt.length() != 10) {
-//            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-//        }
-//        enter.setPhone(decrypt);
-
 
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
