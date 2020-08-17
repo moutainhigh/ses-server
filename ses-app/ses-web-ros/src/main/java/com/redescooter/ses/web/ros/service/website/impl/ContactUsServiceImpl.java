@@ -158,9 +158,9 @@ public class ContactUsServiceImpl implements ContactUsService {
         contactUsTraceService.createContactUsTrace(contactUsEntity);
 
         //发送邮件
-        constantUsSendEmail(enter);
+        //constantUsSendEmail(enter);
     }
-
+    
     private void constantUsSendEmail(SaveInquiryEnter enter) {
         constantUsEmailConfig.getSalePrincipal().forEach(item -> {
             BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
