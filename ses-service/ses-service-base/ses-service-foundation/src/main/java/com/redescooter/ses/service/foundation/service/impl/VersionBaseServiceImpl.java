@@ -44,18 +44,10 @@ public class VersionBaseServiceImpl implements VersionBaseService {
 
   @Override
   public VersionTypeResult getVersionData(VersionTypeEnter versionTypeEnter) {
-    if (versionTypeEnter.getType() ==null){
-      throw new FoundationException(ExceptionCodeEnums.VERSION_TYPE_IS_EMPTY.getCode(),
-        ExceptionCodeEnums.VERSION_TYPE_IS_EMPTY.getMessage());
-    }
-    if (StringUtils.isEmpty(versionTypeEnter.getCode())){
-      throw new FoundationException(ExceptionCodeEnums.VERSION_CODE_IS_EMPTY.getCode(),
-        ExceptionCodeEnums.VERSION_CODE_IS_EMPTY.getMessage());
-    }
     VersionTypeResult ersionTypeResult = new VersionTypeResult();
     QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
-    queryWrapper.gt(PlaAppVersion.COL_CODE, versionTypeEnter.getCode());
+    queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
     queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
     queryWrapper.last("limit 1");
     PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);

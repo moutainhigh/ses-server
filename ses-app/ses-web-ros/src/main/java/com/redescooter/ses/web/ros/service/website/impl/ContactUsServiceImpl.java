@@ -25,7 +25,6 @@ import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
