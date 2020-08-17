@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -126,6 +129,20 @@ public class ContactUsServiceImpl implements ContactUsService {
             result.add(item);
         });
 
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        if (result.size() > 1) {
+            //list 集合倒叙排序
+            result.sort((a1, a2) -> {
+                try {
+                    return df.parse(sdf.format(a2.getCreatedTime())).compareTo(df.parse(sdf.format(a1.getCreatedTime())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 1;
+            });
+        }
 
         return result;
     }
