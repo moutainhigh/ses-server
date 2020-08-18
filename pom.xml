@@ -44,7 +44,7 @@
         <spark.version>2.9.1</spark.version>
         <okhttp.version>3.3.0</okhttp.version>
         <!--        发票相关-->
-        <sellsy.version>1.1.0-RELEASE</sellsy.version>
+        <sellsy.version>1.2.0-RELEASE</sellsy.version>
 
 
        <swagger.version>2.8.0</swagger.version>
