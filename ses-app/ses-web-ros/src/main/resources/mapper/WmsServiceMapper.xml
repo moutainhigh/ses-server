@@ -516,7 +516,7 @@ FROM
 	WHERE
     allocate.dr = 0
 		AND allocate.`status` = #{inWhStatus}
-     UNION
+    UNION ALL
 	SELECT
 		count(*) AS count
     FROM
