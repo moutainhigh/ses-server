@@ -448,7 +448,7 @@ public class InquiryServiceImpl implements InquiryService {
                     file.delete();
                 }
             } catch (Exception e) {
-
+                log.info("这里出问题了！！！");
             }
         }
         return new GeneralResult(excelPath);
