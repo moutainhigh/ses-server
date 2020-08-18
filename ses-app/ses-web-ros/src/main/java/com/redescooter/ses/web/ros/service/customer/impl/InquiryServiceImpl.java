@@ -417,6 +417,7 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
         List<InquiryResult> list = inquiryServiceMapper.exportInquiry(enter);
+        log.info("总共的数据量："+list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryResult inquiry : list) {
