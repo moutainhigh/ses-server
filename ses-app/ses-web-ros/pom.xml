@@ -24,6 +24,11 @@
             <artifactId>ses-starter-stripe</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-sellsy</artifactId>
+        </dependency>
+
         <!-- jasypt加密组件: https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
         <dependency>
             <groupId>com.github.ulisesbocchio</groupId>

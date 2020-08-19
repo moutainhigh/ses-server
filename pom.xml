@@ -118,6 +118,11 @@
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-sellsy</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-db</artifactId>
                 <version>${ses.version}</version>
             </dependency>
