@@ -129,6 +129,6 @@ public class EditCustomerEnter extends GeneralEnter {
     private String contractAnnex;
 
     @ApiModelProperty(value = "备注")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+//    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 }
