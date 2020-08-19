@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
-import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -22,9 +21,12 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
-import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.api.hub.common.UserProfileService;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailEnter;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileResult;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
@@ -49,6 +51,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Mr.lijiating
@@ -85,7 +88,9 @@ public class UserTokenServiceImpl implements UserTokenService {
     
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-    
+
+    @Reference
+    private UserProfileService userProfileService;
     /**
      * 用户登录
      *
@@ -119,13 +124,13 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
-            if (checkAppUser.size() == 1) {
-                return signIn(checkDefaultUser(enter), enter);
-            } else {
-                checkAppUser.forEach(appUser -> {
-                    appUser.setStatus(null);
-                    appUser.setLastLoginToken(null);
-                });
+                if (checkAppUser.size() == 1) {
+                    return signIn(checkDefaultUser(enter), enter);
+                } else {
+                    checkAppUser.forEach(appUser -> {
+                        appUser.setStatus(null);
+                        appUser.setLastLoginToken(null);
+                    });
                 LoginResult result = new LoginResult();
                 result.setAccountSelectionList(checkAppUser);
                 result.setRequestId(enter.getRequestId());
@@ -535,11 +540,30 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (resultMultiple.size() == 1) {
             AccountsDto accountsDto = checkDefaultUser(enter);
             resultOne.add(accountsDto);
-            return resultOne;
-        } else if (resultMultiple.size() == 0) {
+        } else if (CollectionUtils.isEmpty(resultMultiple)) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        return resultMultiple;
+        resultOne.addAll(resultMultiple);
+        //获取租户集合
+        List<PlaTenant> tenantList = plaTenantMapper.selectList(new QueryWrapper<PlaTenant>().in(PlaTenant.COL_ID, resultOne.stream().map(AccountsDto::getTenantId).collect(Collectors.toList())));
+        //获取租户邮件集合
+        List<String> emailList = tenantList.stream().map(PlaTenant::getEmail).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(emailList)){
+            return resultOne;
+        }
+
+        QueryUserProfileByEmailEnter queryUserProfileByEmailEnter = new QueryUserProfileByEmailEnter();
+        queryUserProfileByEmailEnter.setEmail(emailList);
+        //获取用户信息集合
+        List<QueryUserProfileByEmailResult> userPictureList = userProfileService.getUserPicture(queryUserProfileByEmailEnter);
+        resultOne.forEach(item ->{
+            userPictureList.forEach(user ->{
+                if (item.getTenantId().equals(user.getTenantId())){
+                    item.setPicture(user.getPicture());
+                }
+            });
+        });
+        return resultOne;
     }
     
     /**
