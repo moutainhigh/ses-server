@@ -45,7 +45,7 @@
             </foreach>
         </if>
         <if test="enter.startActivationTime != null and enter.startActivationTime != '' and enter.endActivationTime != null and enter.endActivationTime != ''">
-            and user.activation_time between #{enter.startActivationTime} and #{enter.endActivationTime}
+            and user.effective_time between #{enter.startActivationTime} and #{enter.endActivationTime}
         </if>
         <if test="enter.startExpirationTime != null and enter.startExpirationTime != '' and enter.endExpirationTime != null and enter.endExpirationTime != ''">
             and user.expire_time between #{enter.startExpirationTime} and #{enter.endExpirationTime}
@@ -74,7 +74,7 @@
             </foreach>
         </if>
         <if test="enter.startActivationTime != null and enter.startActivationTime != '' and enter.endActivationTime != null and enter.endActivationTime != ''">
-            and user.activation_time between #{enter.startActivationTime} and #{enter.endActivationTime}
+            and user.effective_time between #{enter.startActivationTime} and #{enter.endActivationTime}
         </if>
         <if test="enter.startExpirationTime != null and enter.startExpirationTime != '' and enter.endExpirationTime != null and enter.endExpirationTime != ''">
             and user.expire_time between #{enter.startExpirationTime} and #{enter.endExpirationTime}
