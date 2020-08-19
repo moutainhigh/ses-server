@@ -102,7 +102,7 @@ public class ExcelUtil {
             sheet.autoSizeColumn(k);
         }
         // 处理中文不能自动调整列宽的问题
-        setSizeColumn(sheet, dataList.size());
+//        setSizeColumn(sheet, dataList.size());
 
         OutputStream out = null;
         String tmpPath = "";
