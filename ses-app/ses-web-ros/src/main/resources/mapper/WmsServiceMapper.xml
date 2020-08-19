@@ -408,7 +408,7 @@
     pro.email as email,
     pro.tel_number as phone,
     pro.country_code as telCountryCode,
-    '2' as classType
+    enter.classType as classType
     FROM
     ope_allocate allocate
     JOIN
@@ -429,7 +429,7 @@
     pro.email as email,
     pro.tel_number as phone,
     pro.country_code as telCountryCode,
-    '2' as classType
+    enter.classType as classType
     FROM
     ope_assembly_order ord
     JOIN
@@ -447,7 +447,7 @@
       parts.parts_type                              AS productType,
       allocate.total - allocate.pending_storage_qty AS qty,
       allocate.total                                AS sumTotal,
-      '1'                                           as classType
+      enter.classType                                           as classType
       FROM ope_allocate_b allocate
       inner JOIN ope_parts parts ON allocate.part_id = parts.id and parts.dr = 0
     WHERE
@@ -464,7 +464,7 @@
     product.product_type AS productType,
     ord.assembly_qty-ord.in_wait_wh_qty AS qty,
     ord.assembly_qty AS sumTotal,
-    '1' as classType
+    enter.classType as classType
     FROM
     ope_assembly_b_order ord inner JOIN ope_parts_product product ON ord.product_id = product.id and product.dr = 0
     WHERE

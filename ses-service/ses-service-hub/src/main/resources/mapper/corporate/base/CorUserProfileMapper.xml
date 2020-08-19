@@ -671,4 +671,19 @@
       </if>
     </trim>
   </insert>
+  <select id="QueryUserProfileByEmail"
+          resultType="com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult">
+    SELECT
+        tenant_id as tenantId,
+        picture as picture
+    FROM
+        cor_user_profile
+    WHERE
+        dr=0
+    AND email_1 IN
+    <foreach item="emailList" collection="email" separator="," open="(" close=")">
+          #{emailList}
+    </foreach>
+  </select>
+
 </mapper>

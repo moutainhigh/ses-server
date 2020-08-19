@@ -1,8 +1,7 @@
 package com.redescooter.ses.api.hub.common;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
-import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
+import com.redescooter.ses.api.hub.vo.*;
 
 import java.util.List;
 
@@ -57,5 +56,11 @@ public interface UserProfileService {
      * @return
      */
     GeneralResult editUserProfile2C(EditUserProfileEnter enter);
+    /**
+     * 获取用户信息cor
+     * @param enter
+     * @return
+     */
+    List<QueryUserProfileByEmailResult> getUserPicture(QueryUserProfileByEmailEnter enter);
 
 }
