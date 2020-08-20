@@ -189,6 +189,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         EditCustomerEnter enter = SesStringUtils.objStringTrim(editCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
+        //已存在客户 不可重复添加
+        QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
+        Integer count = opeCustomerMapper.selectCount(queryWrapper);
+
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -478,7 +487,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
         update.setStatus(CustomerStatusEnum.TRASH_CUSTOMER.getValue());
-        update.setMemo(enter.getReason());
+        update.setDescription(enter.getReason());
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());

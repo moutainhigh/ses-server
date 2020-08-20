@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:MobileServiceImpl
@@ -96,24 +98,24 @@ public class EdScooterServiceImpl implements EdScooterService {
             return PageResult.createZeroRowResult(enter);
         }
         List<EdScooterResult> resultList = edScooterServiceMapper.list(enter);
-        List<Long> scooterIdList = new ArrayList<>();
-        resultList.forEach(item -> {
-            scooterIdList.add(item.getId());
-        });
-        List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
-        if (CollectionUtils.isNotEmpty(results)) {
-            resultList.forEach(item -> {
-                results.forEach(scooterResult -> {
-                    if (item.getId() != null && item.getId().equals(scooterResult.getId())) {
-                        item.setDriverId(scooterResult.getDriverId());
-                        item.setDriverFirstName(scooterResult.getDriverFirstName());
-                        item.setDriverLastName(scooterResult.getDriverLastName());
-                    }
-                });
-            });
-        }
+//        List<Long> scooterIdList = new ArrayList<>();
+//        resultList.forEach(item -> {
+//            scooterIdList.add(item.getId());
+//        });
+//        List<EdScooterResult> results = edScooterServiceMapper.driverUserProfile(scooterIdList);
+//        if (CollectionUtils.isNotEmpty(results)) {
+//            resultList.forEach(item -> {
+//                results.forEach(scooterResult -> {
+//                    if (item.getId() != null && item.getId().equals(scooterResult.getId())) {
+//                        item.setDriverId(scooterResult.getDriverId());
+//                        item.setDriverFirstName(scooterResult.getDriverFirstName());
+//                        item.setDriverLastName(scooterResult.getDriverLastName());
+//                    }
+//                });
+//            });
+//        }
 
-        List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(scooterIdList);
+        List<BaseScooterResult> scooterResultList = scooterService.scooterInfor(resultList.stream().map(EdScooterResult::getId).collect(Collectors.toList()));
         scooterResultList.forEach(item -> {
 
             Optional.ofNullable(item).ifPresent(it -> {
