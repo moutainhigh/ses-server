@@ -88,9 +88,10 @@ public class UserTokenServiceImpl implements UserTokenService {
     
     @Reference
     private MailMultiTaskService mailMultiTaskService;
-
+    
     @Reference
     private UserProfileService userProfileService;
+    
     /**
      * 用户登录
      *
@@ -124,13 +125,13 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
-                if (checkAppUser.size() == 1) {
-                    return signIn(checkDefaultUser(enter), enter);
-                } else {
-                    checkAppUser.forEach(appUser -> {
-                        appUser.setStatus(null);
-                        appUser.setLastLoginToken(null);
-                    });
+            if (checkAppUser.size() == 1) {
+                return signIn(checkDefaultUser(enter), enter);
+            } else {
+                checkAppUser.forEach(appUser -> {
+                    appUser.setStatus(null);
+                    appUser.setLastLoginToken(null);
+                });
                 LoginResult result = new LoginResult();
                 result.setAccountSelectionList(checkAppUser);
                 result.setRequestId(enter.getRequestId());
@@ -522,7 +523,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             return accountsDto;
         } else {
             // 判断账号是否取消
-            throw new FoundationException(ExceptionCodeEnums.ACCESS_DENIED.getCode(),ExceptionCodeEnums.ACCESS_DENIED.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.ACCESS_DENIED.getCode(), ExceptionCodeEnums.ACCESS_DENIED.getMessage());
         }
     }
     
@@ -540,25 +541,28 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (resultMultiple.size() == 1) {
             AccountsDto accountsDto = checkDefaultUser(enter);
             resultOne.add(accountsDto);
-        } else if (CollectionUtils.isEmpty(resultMultiple)) {
+        }
+        if (resultMultiple.size() > 1) {
+            resultOne.addAll(resultMultiple);
+        }
+        if (CollectionUtils.isEmpty(resultMultiple)) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        resultOne.addAll(resultMultiple);
         //获取租户集合
         List<PlaTenant> tenantList = plaTenantMapper.selectList(new QueryWrapper<PlaTenant>().in(PlaTenant.COL_ID, resultOne.stream().map(AccountsDto::getTenantId).collect(Collectors.toList())));
         //获取租户邮件集合
         List<String> emailList = tenantList.stream().map(PlaTenant::getEmail).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(emailList)){
+        if (CollectionUtils.isEmpty(emailList)) {
             return resultOne;
         }
-
+        
         QueryUserProfileByEmailEnter queryUserProfileByEmailEnter = new QueryUserProfileByEmailEnter();
         queryUserProfileByEmailEnter.setEmail(emailList);
         //获取用户信息集合
         List<QueryUserProfileByEmailResult> userPictureList = userProfileService.getUserPicture(queryUserProfileByEmailEnter);
-        resultOne.forEach(item ->{
-            userPictureList.forEach(user ->{
-                if (item.getTenantId().equals(user.getTenantId())){
+        resultOne.forEach(item -> {
+            userPictureList.forEach(user -> {
+                if (item.getTenantId().equals(user.getTenantId())) {
                     item.setPicture(user.getPicture());
                 }
             });
