@@ -224,4 +224,8 @@ public interface ValidationExceptionCode {
     int MESSAGE_IS_EMPTY=10131;
     //消息为空
     int MESSAGE_IS_ILLEGAL=10132;
+    // sellsy 方法是空
+    int SELLSY_METHOD_IS_EMPTY=10133;
+    //sellsy 方法类型是空
+    int SELLSY_METHOD_TYPE_IS_EMPTY=10143;
 }

@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,11 +29,13 @@ public class SellsyExecutionEnter extends GeneralEnter {
     
     
     @ApiModelProperty(value = "sellsy 方法")
+    @NotNull(code = ValidationExceptionCode.SELLSY_METHOD_IS_EMPTY,message = "Sellsy method is empty.")
     public String method;
     
     @ApiModelProperty(value = "参数")
     private Object params;
     
     @ApiModelProperty(value = "sellsy 方法类型")
+    @NotNull(code = ValidationExceptionCode.SELLSY_METHOD_TYPE_IS_EMPTY,message = "Sellsy method type is empty.")
     private String SellsyMethodType;
 }

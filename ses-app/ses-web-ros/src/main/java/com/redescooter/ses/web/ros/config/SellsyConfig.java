@@ -19,13 +19,13 @@ import org.springframework.context.annotation.Configuration;
 public class SellsyConfig {
     
     //消费者——指您将开发的应用程序
-    private static String consumerToken;
+    private  String consumerToken;
     //
-    private static String consumerSecret;
+    private  String consumerSecret;
     
     //指用户识别 OAuth 所需的唯一标识符
-    private static String userToken;
+    private  String userToken;
     
     //Secret-指允许通过 OAuth 进行安全交换的秘密密钥
-    private static String userSecret;
+    private  String userSecret;
 }
