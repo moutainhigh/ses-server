@@ -53,4 +53,11 @@ public class ContactUsController {
     return new Response<>(contactUsService.message(enter));
   }
 
+
+  @PostMapping(value = "/export")
+  @ApiOperation(value = "联系我们导出")
+  public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
+    return new Response(contactUsService.export(enter));
+  }
+
 }
