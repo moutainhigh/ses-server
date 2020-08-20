@@ -478,7 +478,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
         update.setStatus(CustomerStatusEnum.TRASH_CUSTOMER.getValue());
-        update.setMemo(enter.getReason());
+        update.setDescription(enter.getReason());
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());

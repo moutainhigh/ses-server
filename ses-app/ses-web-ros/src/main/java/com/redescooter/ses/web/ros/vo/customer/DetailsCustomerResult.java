@@ -183,5 +183,6 @@ public class DetailsCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-
+    @ApiModelProperty(value = "删除说明")
+    private String description;
 }
