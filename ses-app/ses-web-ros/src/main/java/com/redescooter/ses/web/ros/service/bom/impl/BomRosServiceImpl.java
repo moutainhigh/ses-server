@@ -1240,8 +1240,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param partQcTemplateList
      */
     private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
-                                     Map<QcItemTemplateEnter,
-                                             List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
+                                     Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
 
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
             Integer count = 0;
