@@ -53,7 +53,7 @@
         <where>
             and opp.dr=0
             and opp.sn_class=2
-            and opp.product_type not in ('2','3','4')
+            and opp.product_type in ('1','5')
             and opp.after_sales_flag= true
             and opp.user_id=#{userId}
             <if test="type != null and type != ''">

@@ -192,6 +192,10 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         if (sysUser != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
+        //校验客户邮箱
+        if (opeCustomerService.count(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,enter.getEmail()))>0){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
         //密码校验
         String decryptPassword = null;
         try {

@@ -61,4 +61,22 @@
     <include refid="contactUsResult"></include>
   </select>
 
+
+  <select id="export" resultType="com.redescooter.ses.web.ros.vo.customer.ContactUsListResult">
+    select us.id AS id,
+    us.email as email,
+    us.first_name as firstName,
+    us.last_name as lastName,
+    us.full_name as fullName,
+    us.created_time as createTime,
+    us.telephone as telephone,
+    us.country_name as countryName,
+    us.city_name AS cityName,
+    us.district_name as districtName,
+    us.address as address,
+    us.frequency as frequency
+    from ope_contact_us us
+    <include refid="contactUsResult"></include>
+    ORDER BY us.created_time desc
+  </select>
 </mapper>

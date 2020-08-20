@@ -608,7 +608,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .cnName(enter.getProductCnName())
                 .frName(enter.getProductFrName())
                 .enName(enter.getProductEnName())
-                .productionCycle(BomCommonTypeEnums.COMBINATION.getCode())
+                .productCode(BomCommonTypeEnums.COMBINATION.getCode())
                 .productType(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))
                 .note(null)
                 .afterSalesFlag(Boolean.TRUE)
