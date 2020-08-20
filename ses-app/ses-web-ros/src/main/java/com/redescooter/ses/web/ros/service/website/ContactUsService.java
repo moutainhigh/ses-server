@@ -61,4 +61,13 @@ public interface ContactUsService {
    * @return
    **/
   void websiteContactUs(SaveInquiryEnter enter);
+
+    /**
+     * @return
+     * @Author Aleks
+     * @Description  联系我们导出
+     * @Date 2020/8/18 11:27
+     * @Param [enter]
+     **/
+    GeneralResult export(ContactUsListEnter enter);
 }

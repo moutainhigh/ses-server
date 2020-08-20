@@ -247,6 +247,9 @@ public class TokenRosServiceImpl implements TokenRosService {
     }
 
     private OpeSysUser getOpeSysUser(LoginEnter enter) {
+        if(enter.getLoginName().length() > 50 || enter.getLoginName().length() < 2){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+        }
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(OpeSysUser.COL_DR, 0);
