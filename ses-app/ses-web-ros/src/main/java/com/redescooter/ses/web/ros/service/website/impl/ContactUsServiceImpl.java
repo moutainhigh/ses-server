@@ -47,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -223,6 +224,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(list)){
             for (ContactUsListResult contactUsListResult : list) {
+                contactUsListResult.setCreateTime(DateUtil.dateAddHour(contactUsListResult.getCreateTime(),8));
                 dataMap.add(toMap(contactUsListResult));
             }
             String sheetName = "Contact Us";

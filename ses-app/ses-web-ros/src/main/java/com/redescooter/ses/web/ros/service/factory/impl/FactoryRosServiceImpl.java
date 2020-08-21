@@ -205,7 +205,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20){
         throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
       }
-      if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 30 || !enter.getContactEmail().contains("@")){
+      if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")){
         throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
       }
       if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20){

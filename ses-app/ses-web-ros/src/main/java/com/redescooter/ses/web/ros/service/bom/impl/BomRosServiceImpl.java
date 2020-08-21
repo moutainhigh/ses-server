@@ -90,40 +90,40 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class BomRosServiceImpl implements BomRosService {
-
+    
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
-
+    
     @Reference
     private IdAppService idAppService;
-
+    
     @Autowired
     private OpePartsProductService opePartsProductService;
-
+    
     @Autowired
     private OpePartsProductBService opePartsProductBService;
-
+    
     @Autowired
     private OpePartsService opePartsService;
-
+    
     @Autowired
     private OpePartDraftQcTemplateService opePartDraftQcTemplateService;
-
+    
     @Autowired
     private OpePartDraftQcTemplateBService opePartDraftQcTemplateBService;
-
+    
     @Autowired
     private OpeProductQcTemplateService opeProductQcTemplateService;
-
+    
     @Autowired
     private OpeProductQcTemplateBService opeProductQcTemplateBService;
-
+    
     @Autowired
     private OpePartsDraftService opePartsDraftService;
-
+    
     @Autowired
     private OpePartsProductMapper opePartsProductMapper;
-
+    
     /**
      * @param enter
      * @desc: 车辆列表
@@ -141,7 +141,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return PageResult.create(enter, count, bomRosServiceMapper.scooterList(enter));
     }
-
+    
     /**
      * @param saveScooterEnter
      * @desc: 保存整车
@@ -168,7 +168,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         List<OpePartsProductB> opePartsProductList = new ArrayList<>();
         int partAllQty = 0;
-
+        
         OpePartsProduct opePartsProduct = OpePartsProduct.builder()
                 .dr(0)
                 .tenantId(0L)
@@ -186,7 +186,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .afterSalesFlag(Boolean.TRUE)
                 .revision(0)
                 .build();
-
+        
         if (enter.getId() == null || enter.getId() == 0) {
             // 校验部品既有价格又有供应商的 部品
             List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
@@ -221,7 +221,7 @@ public class BomRosServiceImpl implements BomRosService {
             }
             // 进行 产品条目数据过滤
             checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.UPDATE.getValue(), partList, null);
-
+            
             //删除产品子表数据
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
@@ -233,23 +233,23 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setSumPartsQty(partAllQty);
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
-
+        
         if (CollectionUtils.isNotEmpty(opePartsProductList)) {
             opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
         }
-
+        
         if (CollectionUtils.isEmpty(partList)) {
             //部件 删除
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
         }
-
+        
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
     }
-
-
+    
+    
     private List<ProdoctPartListEnter> getProdoctPartListEnters(SaveScooterEnter enter) {
         List<ProdoctPartListEnter> partList = new ArrayList<>();
         try {
@@ -279,12 +279,12 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return partList;
     }
-
-
+    
+    
     private int handlePartB(SaveScooterEnter enter, List<ProdoctPartListEnter> partList, List<OpePartsProductB> opePartsProductList, int partAllQty, Long productId) {
         if (CollectionUtils.isNotEmpty(partList)) {
             for (ProdoctPartListEnter item : partList) {
-
+                
                 OpePartsProductB opePartsProductB = buildOpePartsProductBSingle(enter.getUserId(), productId, item);
                 opePartsProductB.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B));
                 opePartsProductB.setPartsId(item.getId());
@@ -296,7 +296,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return partAllQty;
     }
-
+    
     /**
      * @param enter
      * @desc: sec 区域查询
@@ -310,8 +310,8 @@ public class BomRosServiceImpl implements BomRosService {
     public List<SecResult> secList(GeneralEnter enter) {
         return bomRosServiceMapper.secList(enter);
     }
-
-
+    
+    
     /**
      * @param enter
      * @desc: 整车详情
@@ -338,11 +338,11 @@ public class BomRosServiceImpl implements BomRosService {
             double sum = partList.stream().mapToDouble(QueryPartListResult::getQty).sum();
             scooterDetailResult.setQtySum(sum);
             scooterDetailResult.setPartList(partList);
-
+            
         }
         return scooterDetailResult;
     }
-
+    
     /**
      * @param enter
      * @desc: 删除整车的配件
@@ -355,7 +355,7 @@ public class BomRosServiceImpl implements BomRosService {
     @Transactional
     @Override
     public GeneralResult deleteScooterPart(DeletePartEnter enter) {
-
+        
         if (CollectionUtils.isEmpty(enter.getIds())) {
             return new GeneralResult(enter.getRequestId());
         }
@@ -370,7 +370,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         // 进行 产品条目数据过滤
         checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.DELETE.getValue(), null, enter.getIds());
-
+        
         //数据删除
         opePartsProductBService.removeByIds(enter.getIds());
         scooter.setSumPartsQty(scooter.getSumPartsQty() - enter.getIds().size());
@@ -379,7 +379,7 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProductService.updateById(scooter);
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * @param enter
      * @desc: 删除整车
@@ -401,7 +401,7 @@ public class BomRosServiceImpl implements BomRosService {
         if (!SesStringUtils.equals(scooter.getProductType().toString(), BomCommonTypeEnums.SCOOTER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-
+        
         // 配件删除
         if (scooter.getSumPartsQty() != 0) {
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
@@ -409,12 +409,12 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, 0);
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
         }
-
+        
         // 整车删除
         opePartsProductService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * @param enter
      * @desc: 组合列表
@@ -432,7 +432,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return PageResult.create(enter, count, bomRosServiceMapper.combinationList(enter));
     }
-
+    
     /**
      * @param enter
      * @desc: 列表部件列表
@@ -455,7 +455,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return bomRosServiceMapper.productDeatilPartList(enter);
     }
-
+    
     /**
      * @param enter
      * @desc: 组合详情
@@ -485,7 +485,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return combinationDetailResult;
     }
-
+    
     /**
      * @param enter
      * @desc: 删除组合里的部件
@@ -511,7 +511,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         // 进行 产品条目数据过滤
         checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.DELETE.getValue(), null, enter.getIds());
-
+        
         //数据删除
         opePartsProductBService.removeByIds(enter.getIds());
         combinationPart.setSumPartsQty(combinationPart.getSumPartsQty() - enter.getIds().size());
@@ -520,7 +520,7 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProductService.updateById(combinationPart);
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * @param enter
      * @desc: 删除组合
@@ -541,7 +541,7 @@ public class BomRosServiceImpl implements BomRosService {
         if (!SesStringUtils.equals(combination.getProductType().toString(), BomCommonTypeEnums.COMBINATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-
+        
         // 配件删除
         if (combination.getSumPartsQty() != 0) {
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
@@ -549,12 +549,12 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, 0);
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
         }
-
+        
         // 整车删除
         opePartsProductService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * @param enter
      * @desc: 保存组合
@@ -567,7 +567,7 @@ public class BomRosServiceImpl implements BomRosService {
     @Transactional
     @Override
     public GeneralResult saveCombination(SaveCombinationEnter enter) {
-
+        
         // json 转换
         List<ProdoctPartListEnter> partList = null;
         try {
@@ -583,21 +583,21 @@ public class BomRosServiceImpl implements BomRosService {
         if (partIds.size() != partList.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-
+        
         // 配件过滤
         List<Long> partIdList = new ArrayList<>();
         partList.forEach(item -> {
             partIdList.add(item.getId());
         });
         Collection<OpeParts> opePartList = opePartsService.listByIds(partIdList);
-
+        
         if (CollectionUtils.isEmpty(opePartList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
-
+        
         int partAllQty = 0;
         List<OpePartsProductB> opePartsProductList = new ArrayList<>();
-
+        
         OpePartsProduct opePartsProduct = OpePartsProduct.builder()
                 .dr(0)
                 .tenantId(0L)
@@ -614,7 +614,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .afterSalesFlag(Boolean.TRUE)
                 .revision(0)
                 .build();
-
+        
         if (enter.getId() == null || enter.getId() == 0) {
             //todo  校验部品既有价格又有供应商的 部品
             List<Long> partsIdList = partList.stream().map(ProdoctPartListEnter::getId).collect(Collectors.toList());
@@ -628,7 +628,7 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
             }
             Long ProductId = idAppService.getId(SequenceName.OPE_PARTS_PRODUCT);
-
+            
             //子表都保存
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
@@ -637,7 +637,7 @@ public class BomRosServiceImpl implements BomRosService {
                     opePartsProductB.setPartsId(item.getId());
                     opePartsProductB.setCreatedBy(enter.getUserId());
                     opePartsProductB.setCreatedTime(new Date());
-
+                    
                     opePartsProductList.add(opePartsProductB);
                     partAllQty += item.getQty();
                 }
@@ -658,15 +658,15 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
                 }
             }
-
+            
             // 进行 产品条目数据过滤
             checkProductEntry(enter.getId(), enter.getUserId(), PartsEventEnums.UPDATE.getValue(), partList, null);
-
+            
             //删除产品子表数据
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
-
+            
             // 子表修改
             if (CollectionUtils.isNotEmpty(partList)) {
                 for (ProdoctPartListEnter item : partList) {
@@ -683,7 +683,7 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsProduct.setSumPartsQty(partAllQty);
         opePartsProduct.setUpdatedBy(enter.getUserId());
         opePartsProduct.setUpdatedTime(new Date());
-
+        
         if (CollectionUtils.isEmpty(partList)) {
             //部件 删除
             QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
@@ -694,12 +694,12 @@ public class BomRosServiceImpl implements BomRosService {
             // 子表数据保存
             opePartsProductBService.saveOrUpdateBatch(opePartsProductList);
         }
-
+        
         // 主表数据保存
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * 质检模板保存
      *
@@ -711,9 +711,9 @@ public class BomRosServiceImpl implements BomRosService {
     public GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
         List<OpePartDraftQcTemplate> saveOpePartDraftQcTemplateList = new ArrayList<>();
-
+        
         List<OpePartDraftQcTemplateB> saveOpePartDraftQcTemplateBList = new ArrayList<>();
-
+        
         //数据解析集合
         List<QcItemTemplateEnter> qcItemTemplateEnterList = null;
         Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap = Maps.newHashMap();
@@ -729,14 +729,14 @@ public class BomRosServiceImpl implements BomRosService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-
+        
         OpePartsDraft opePartsDraft = checkParameterEnter(enter, qcResultEnterMap);
-
+        
         //查询是否存在质检项 若存在删除所有质检项
         List<OpePartDraftQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
         //形成质检项
         buildPartQcTemplate(enter, saveOpePartDraftQcTemplateList, saveOpePartDraftQcTemplateBList, qcResultEnterMap, partQcTemplateList);
-
+        
         //质检模板数据保存
         if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateList)) {
             opePartDraftQcTemplateService.saveOrUpdateBatch(saveOpePartDraftQcTemplateList);
@@ -748,10 +748,10 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsDraftService.updateById(opePartsDraft);
         //质检项结果集数据保存
         opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
-
+        
         return new GeneralResult(enter.getRequestId());
     }
-
+    
     /**
      * 质检模板详情
      *
@@ -760,15 +760,15 @@ public class BomRosServiceImpl implements BomRosService {
      */
     @Override
     public List<QcTemplateDetailResult> partsQcTemplateDetail(IdEnter enter) {
-
+        
         List<QcTemplateDetailResult> result = Lists.newArrayList();
         //部品验证
-
+        
         OpePartsDraft opePartsDraft = opePartsDraftService.getById(enter.getId());
         if (opePartsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
-
+        
         //查询质检项
         QueryWrapper<OpePartDraftQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
@@ -780,7 +780,7 @@ public class BomRosServiceImpl implements BomRosService {
         partQcTemplateList.forEach(item -> {
             templateIds.add(item.getId());
         });
-
+        
         //查询质检项结果
         QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, templateIds);
@@ -821,7 +821,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return result;
     }
-
+    
     /**
      * 产品质检模板保存
      *
@@ -833,9 +833,9 @@ public class BomRosServiceImpl implements BomRosService {
     public GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
         List<OpeProductQcTemplate> saveOpeProductQcTemplateList = new ArrayList<>();
-
+        
         List<OpeProductQcTemplateB> saveOpeProductQcTemplateBList = new ArrayList<>();
-
+        
         //数据解析集合
         List<QcItemTemplateEnter> qcItemTemplateEnterList = null;
         Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap = Maps.newHashMap();
@@ -854,10 +854,10 @@ public class BomRosServiceImpl implements BomRosService {
         if (qcResultEnterMap.containsKey(null) || qcResultEnterMap.containsValue(null)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-
+        
         //质检结果排序校验
         int sequence = 0;
-
+        
         //入参校验
         for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
             QcItemTemplateEnter key = entry.getKey();
@@ -866,7 +866,7 @@ public class BomRosServiceImpl implements BomRosService {
             if (StringUtils.isBlank(key.getQcItemName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
-
+            
             for (QcResultEnter item : value) {
                 if (StringUtils.isBlank(item.getResult())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
@@ -879,7 +879,7 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
                             ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
-
+                
                 //结果集 排序校验
                 if (sequence == 0) {
                     sequence = item.getResultSequence();
@@ -890,7 +890,7 @@ public class BomRosServiceImpl implements BomRosService {
                 }
             }
         }
-
+        
         //商品验证
         OpePartsProduct opePartsProduct = opePartsProductService.getById(enter.getId());
         if (opePartsProduct == null) {
@@ -902,7 +902,7 @@ public class BomRosServiceImpl implements BomRosService {
         //质检模板数据保存
         if (CollectionUtils.isNotEmpty(saveOpeProductQcTemplateList)) {
             opeProductQcTemplateService.saveOrUpdateBatch(saveOpeProductQcTemplateList);
-
+            
         }
         //质检项结果集数据保存
         if (CollectionUtils.isNotEmpty(saveOpeProductQcTemplateBList)) {
@@ -910,8 +910,8 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return new GeneralResult(enter.getRequestId());
     }
-
-
+    
+    
     /**
      * @param enter
      * @return
@@ -919,16 +919,16 @@ public class BomRosServiceImpl implements BomRosService {
     @Override
     public PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter) {
         int count = bomRosServiceMapper.saveProductPartListCount(enter);
-
+        
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-
+        
         List<DetailsPartsResult> list = bomRosServiceMapper.saveProductPartList(enter);
-
+        
         return PageResult.create(enter, count, list);
     }
-
+    
     /**
      * 产品质检模板详情
      *
@@ -943,7 +943,7 @@ public class BomRosServiceImpl implements BomRosService {
         if (opePartsProduct == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-
+        
         //查询质检项
         QueryWrapper<OpeProductQcTemplate> opeProductQcTemplateQueryWrapper = new QueryWrapper<>();
         opeProductQcTemplateQueryWrapper.eq(OpeProductQcTemplate.COL_PRODUCT_ID, enter.getId());
@@ -955,12 +955,12 @@ public class BomRosServiceImpl implements BomRosService {
         productQcTemplateList.forEach(item -> {
             templateIds.add(item.getId());
         });
-
+        
         //查询质检项结果
         QueryWrapper<OpeProductQcTemplateB> opeProductQcTemplateBQueryWrapper = new QueryWrapper<>();
         opeProductQcTemplateBQueryWrapper.in(OpeProductQcTemplateB.COL_PRODUCT_QC_TEMPLATE_ID, templateIds);
         List<OpeProductQcTemplateB> productQcTemplateBList = opeProductQcTemplateBService.list(opeProductQcTemplateBQueryWrapper);
-
+        
         if (CollectionUtils.isEmpty(productQcTemplateBList)) {
             productQcTemplateList.forEach(item -> {
                 result.add(
@@ -997,7 +997,7 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return result;
     }
-
+    
     /**
      * 产品质检模板封装
      *
@@ -1016,8 +1016,8 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(), ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
-
-
+        
+        
         if (CollectionUtils.isNotEmpty(opeProductQcTemplateList)) {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
@@ -1044,13 +1044,13 @@ public class BomRosServiceImpl implements BomRosService {
                     }
                 });
             });
-
+            
         } else {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
                 saveOpeProductQcTemplateList.add(
                         buildProductQcTemplate(enter, templateId, key.getQcItemName(), null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-
+                
                 );
                 value.forEach(item -> {
                     saveOpeProductQcTemplateBList.add(
@@ -1060,7 +1060,7 @@ public class BomRosServiceImpl implements BomRosService {
             });
         }
     }
-
+    
     private OpeProductQcTemplateB buildProductQcTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {
         return OpeProductQcTemplateB.builder()
                 .id(idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE_B))
@@ -1077,7 +1077,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
-
+    
     private OpeProductQcTemplate buildProductQcTemplate(SaveQcTemplateEnter enter, Long templateId, String qcItemName, String importExcelBatchNo, String sourceType) {
         return OpeProductQcTemplate.builder()
                 .id(templateId)
@@ -1093,7 +1093,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
-
+    
     /**
      * 删除产品质检项
      *
@@ -1125,8 +1125,8 @@ public class BomRosServiceImpl implements BomRosService {
         }
         return opeProductQcTemplateList;
     }
-
-
+    
+    
     private OpePartsProductB buildOpePartsProductBSingle(Long userId, Long ProductId, ProdoctPartListEnter item) {
         return OpePartsProductB.builder()
                 .dr(0)
@@ -1142,7 +1142,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
-
+    
     /**
      * @desc: 产品条目验证
      * @param: productId event partList ids
@@ -1151,7 +1151,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @Version: Ros 1.2
      */
     private void checkProductEntry(Long productId, Long userId, String event, List<ProdoctPartListEnter> partList, List<Long> ids) {
-
+        
         // 删除数据时验证
         if (SesStringUtils.equals(event, PartsEventEnums.DELETE.getValue())) {
             // 查询整车配件
@@ -1180,7 +1180,7 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsQueryWrapper.eq(OpeParts.COL_DR, 0);
             opePartsQueryWrapper.eq(OpeParts.COL_USER_ID, userId);
             List<OpeParts> opePartsList = opePartsService.list(opePartsQueryWrapper);
-
+            
             List<Long> opePartsIdList = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(opePartsList)) {
                 opePartsList.forEach(item -> {
@@ -1197,7 +1197,7 @@ public class BomRosServiceImpl implements BomRosService {
             });
         }
     }
-
+    
     /**
      * 部件质检项删除
      *
@@ -1209,27 +1209,17 @@ public class BomRosServiceImpl implements BomRosService {
         opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
         List<OpePartDraftQcTemplate> partQcTemplateList = opePartDraftQcTemplateService.list(opePartQcTemplateQueryWrapper);
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
-            Set<Long> partQcTemplateIds = Sets.newHashSet();
-            partQcTemplateList.forEach(item -> {
-                partQcTemplateIds.add(item.getId());
-            });
-
-            //查询质检结果项
-//            QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-//            opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
-//            List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-//            if (CollectionUtils.isNotEmpty(templateBList)) {
-//                opePartDraftQcTemplateBService.removeByIds(templateBList.stream().map(OpePartDraftQcTemplateB::getId).collect(Collectors.toList()));
-//            }
+            Set<Long> partQcTemplateIds = partQcTemplateList.stream().map(OpePartDraftQcTemplate::getId).collect(Collectors.toSet());
+            
             QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
             opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, new ArrayList<>(partQcTemplateIds));
             opePartDraftQcTemplateBService.remove(opePartQcTemplateBQueryWrapper);
-
+            
             opePartDraftQcTemplateService.removeByIds(partQcTemplateIds);
         }
         return partQcTemplateList;
     }
-
+    
     /**
      * 封装QC质检项模板
      *
@@ -1241,7 +1231,7 @@ public class BomRosServiceImpl implements BomRosService {
      */
     private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
                                      Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
-
+        
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
             Integer count = 0;
             for (QcResultEnter qcResultEnter : qcResultEnterMap.get(qcItemTemplateEnter)) {
@@ -1253,37 +1243,21 @@ public class BomRosServiceImpl implements BomRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(), ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
-
+        
         if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
             for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
-                QcItemTemplateEnter key = entry.getKey();
-                List<QcResultEnter> value = entry.getValue();
                 Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
-                if (key.getId() == null || key.getId() == 0) {
-                    saveOpePartQcTemplateList.add(
-                            buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                saveOpePartQcTemplateList.add(
+                        buildOpePartTemplate(enter, entry.getKey().getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+                );
+                entry.getValue().forEach(item -> {
+                    saveOpePartQcTemplateBList.add(
+                            buildPartTemplateB(enter, templateId, item)
                     );
-                    value.forEach(item -> {
-                        saveOpePartQcTemplateBList.add(
-                                buildPartTemplateB(enter, templateId, item)
-                        );
-                    });
-                    break;
-                }
-                partQcTemplateList.forEach(template -> {
-                    if (template.getId().equals(key.getId())) {
-                        saveOpePartQcTemplateList.add(
-                                buildOpePartTemplate(enter, key.getQcItemName(), templateId, template.getImportExcelBatchNo(), template.getSourceType())
-                        );
-
-                        value.forEach(item -> {
-                            saveOpePartQcTemplateBList.add(buildPartTemplateB(enter, templateId, item));
-                        });
-                    }
                 });
             }
-
-        } else {
+            
+        } /*else {
             qcResultEnterMap.forEach((key, value) -> {
                 Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
                 saveOpePartQcTemplateList.add(
@@ -1296,9 +1270,9 @@ public class BomRosServiceImpl implements BomRosService {
                     );
                 });
             });
-        }
+        }*/
     }
-
+    
     private OpePartDraftQcTemplateB buildPartTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {
         return OpePartDraftQcTemplateB.builder()
                 .id(idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE_B))
@@ -1315,7 +1289,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
-
+    
     private OpePartDraftQcTemplate buildOpePartTemplate(SaveQcTemplateEnter enter, String qcItemName, Long templateId, String importExcelBatchNo, String sourceType) {
         return OpePartDraftQcTemplate.builder()
                 .id(templateId)
@@ -1331,7 +1305,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .updatedTime(new Date())
                 .build();
     }
-
+    
     /**
      * QC 质检模板入参校验
      *
@@ -1342,14 +1316,14 @@ public class BomRosServiceImpl implements BomRosService {
         if (qcResultEnterMap.containsKey(null) || qcResultEnterMap.containsValue(null)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-
+        
         //入参校验
         qcResultEnterMap.forEach((key, value) -> {
             //质检项校验
             if (StringUtils.isBlank(key.getQcItemName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
-
+            
             // 结果集排序校验（原因：会引发 RPS 模板数据展示问题）
             int sequence = 0;
             for (QcResultEnter item : value) {
@@ -1357,12 +1331,12 @@ public class BomRosServiceImpl implements BomRosService {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
                 }
                 if (item.getUploadPictureFalg() == null || item.getUploadPictureFalg().equals("")) {
-                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(),ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
                 }
                 if (item.getResultSequence() == 0 || item.getResultSequence() == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
-
+                
                 //结果集校验  排序校验
                 if (sequence == 0) {
                     sequence = item.getResultSequence();
@@ -1374,9 +1348,9 @@ public class BomRosServiceImpl implements BomRosService {
                 }
             }
         });
-
+        
         //部品验证
-
+        
         OpePartsDraft opePartsDraft = opePartsDraftService.getById(enter.getId());
         if (opePartsDraft == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
