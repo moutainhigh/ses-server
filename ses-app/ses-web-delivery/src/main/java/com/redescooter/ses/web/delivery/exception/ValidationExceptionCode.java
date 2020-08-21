@@ -25,6 +25,8 @@ public interface ValidationExceptionCode {
     int EMAIL_IS_EMPTY = 10007;
     // id 为空
     int ID_IS_EMPTY = 10008;
+    
+    
 
     //10030 之后业务异常
 
