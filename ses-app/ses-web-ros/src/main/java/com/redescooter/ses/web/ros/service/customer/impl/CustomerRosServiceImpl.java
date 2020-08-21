@@ -351,12 +351,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         result.setRequestId(enter.getRequestId());
-        if (opeCustomer.getCity() != null) {
-            result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
-            if (opeCustomer.getDistrust() != null) {
-                result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
-            }
-        }
+//        if (opeCustomer.getCity() != null) {
+//            result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
+//            if (opeCustomer.getDistrust() != null) {
+//                result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
+//            }
+//        }
 
         Integer accountType = AccountTypeUtils.getAccountType(opeCustomer.getCustomerType(), opeCustomer.getIndustryType());
         BooleanResult booleanResult = accountBaseService.checkOpenAccount(CheckOpenAccountEnter.builder().accountType(accountType).email(opeCustomer.getEmail()).build());
