@@ -377,18 +377,6 @@ public class UserTokenServiceImpl implements UserTokenService {
         // Redis设置token
         UserToken userToken = setToken(enter, user);
         
-        //查询用户
-        PlaUser plaUser = userMapper.selectById(enter.getUserId());
-        if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-        }
-        
-        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(new LambdaQueryWrapper<PlaUserPassword>().eq(PlaUserPassword::getLoginName, enter.getLoginName()));
-        if (plaUserPassword == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
-        }
-        
-        
         // 数据库同步登陆信息
         PlaUser updateUser = new PlaUser();
         updateUser.setId(user.getUserId());
