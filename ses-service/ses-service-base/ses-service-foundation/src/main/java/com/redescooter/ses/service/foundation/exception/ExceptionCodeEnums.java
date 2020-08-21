@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -107,6 +108,10 @@ public enum ExceptionCodeEnums {
     CODE_IS_EMPTY(10047,"验证码为空"),
     
     CODE_IS_WRONG(10048,"验证码错误"),
+    
+    LOGIN_PSD_ERROER_NUM_MANY(10049,"登录失败次数过多"),
+    
+    LOGIN_PSD_ERROER_NEED_CODE(10050,"登陆失败需要验证码"),
     
     ;
     
