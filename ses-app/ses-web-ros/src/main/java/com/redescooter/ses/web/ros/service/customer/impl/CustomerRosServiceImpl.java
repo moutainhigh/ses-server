@@ -192,7 +192,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //已存在客户 不可重复添加
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
-        queryWrapper.ne(OpeCustomer.COL_ID,editCustomerEnter.getId());
+        queryWrapper.ne(OpeCustomer.COL_ID,enter.getId());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);
 
         if (count > 0) {
