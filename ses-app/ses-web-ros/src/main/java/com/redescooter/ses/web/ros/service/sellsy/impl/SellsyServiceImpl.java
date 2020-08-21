@@ -10,6 +10,7 @@ import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
 import lombok.extern.log4j.Log4j;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,6 +27,7 @@ import java.util.HashMap;
  * @create: 2020/08/18 19:44
  */
 @Log4j
+@Service
 public class SellsyServiceImpl implements SellsyService {
     
     @Autowired

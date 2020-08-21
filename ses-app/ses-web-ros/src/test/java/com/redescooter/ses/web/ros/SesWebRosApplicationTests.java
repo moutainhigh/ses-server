@@ -1,17 +1,14 @@
 package com.redescooter.ses.web.ros;
 
+import com.redescooter.ses.api.common.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.tool.utils.DateUtil;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
-import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
@@ -23,14 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Log4j
 public class SesWebRosApplicationTests {
 
     @Before
@@ -176,13 +171,15 @@ public class SesWebRosApplicationTests {
 
 
     @Autowired
-    private MondayService mondayService;
-
-    @Autowired
-    private OpeCustomerInquiryService opeCustomerInquiryService;
+    private SellsyService sellsyService;
 
     @Test
     public void sendRequestByRestTemplateGet() {
-
+        SellsyExecutionEnter sellsyExecutionEnter=new SellsyExecutionEnter();
+        sellsyExecutionEnter.setMethod("Infos.getInfos");
+        sellsyExecutionEnter.setParams(new ArrayList<>());
+        sellsyExecutionEnter.setSellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue());
+        
+        sellsyService.sellsyExecution(sellsyExecutionEnter);
     }
 }
