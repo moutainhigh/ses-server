@@ -167,6 +167,7 @@
                outOrder.created_time    as createdTime
         from ope_outwh_order outOrder
         <include refid="whOrderList_condition"/>
+        order by outOrder.created_time desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailResult">

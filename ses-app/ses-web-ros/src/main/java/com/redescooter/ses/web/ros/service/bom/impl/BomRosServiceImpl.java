@@ -747,7 +747,9 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsDraft.setUpdatedTime(new Date());
         opePartsDraftService.updateById(opePartsDraft);
         //质检项结果集数据保存
-        opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
+        if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateBList)){
+            opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
+        }
         
         return new GeneralResult(enter.getRequestId());
     }

@@ -63,26 +63,24 @@
         a.recipient_city as recipientCity,
         a.recipient_address as recipientAddress,
         IF(a.recipient_longitude = '0.0000000000', null, a.recipient_longitude) as recipientLongitude,
-        IF(a.recipient_latitude = '0.0000000000', null, a.recipient_latitude) as recipientLatitude,
-        a.sender_address as senderAddress,
-        IF(a.sender_latitude = '0.0000000000', null, a.sender_latitude) as senderLatitude,
-        IF(a.sender_longitude = '0.0000000000', null, a.sender_longitude) as senderLongitude,
-        a.created_time as createdTime,
-        a.delivered_time as deliveredTime,
-        e.first_name as driverFirstName,
-        e.last_name as driverLastName,
-        scooter.license_plate as licensePlate
+        IF(a.recipient_latitude = '0.0000000000', null, a.recipient_latitude)   as recipientLatitude,
+        a.sender_address                                                        as senderAddress,
+        IF(a.sender_latitude = '0.0000000000', null, a.sender_latitude)         as senderLatitude,
+        IF(a.sender_longitude = '0.0000000000', null, a.sender_longitude)       as senderLongitude,
+        a.created_time                                                          as createdTime,
+        a.delivered_time                                                        as deliveredTime,
+        e.first_name                                                            as driverFirstName,
+        e.last_name                                                             as driverLastName,
+        scooter.license_plate                                                   as licensePlate
         from cor_express_order a
-        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0 and b.status != 4
         left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
         left join cor_driver d on c.driver_id = d.id and d.dr = 0
         left join cor_express_order_trace trace
-        on a.id = trace.express_order_id and trace.status =4 and trace.dr = 0
+        on a.id = trace.express_order_id and trace.status = 4 and trace.dr = 0
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
-
         <include refid="where_ExpressOrder_List"/>
-
         order by a.created_time desc
         limit #{startRow},#{pageSize}
 
