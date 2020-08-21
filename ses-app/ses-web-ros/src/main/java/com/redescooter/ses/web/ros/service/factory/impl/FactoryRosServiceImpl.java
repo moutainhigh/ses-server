@@ -22,6 +22,7 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
+import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -74,8 +75,8 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
         checkSaveFactoryParameter(enter);
         //邮箱校验
-        BooleanResult booleanResult = checkMail(enter.getContactEmail());
-        if (!booleanResult.isSuccess()){
+        Boolean booleanResult = checkMail(enter.getContactEmail());
+        if (!booleanResult){
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
       //员工名称首位大写
@@ -119,14 +120,13 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    public BooleanResult checkMail(String mail) {
+    public Boolean checkMail(String mail) {
 
         QueryWrapper<OpeFactory> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeFactory.COL_CONTACT_EMAIL, mail);
         wrapper.eq(OpeFactory.COL_DR, 0);
-
-        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
-        return new BooleanResult(mailBoolean);
+        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) == 1 ? Boolean.FALSE  : Boolean.TRUE;
+        return mailBoolean;
     }
 
     @Transactional
@@ -135,8 +135,8 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
       checkSaveFactoryParameter(enter);
-        BooleanResult booleanResult = checkMail(enter.getContactEmail());
-        if (!booleanResult.isSuccess()){
+        Boolean mailBoolean = checkMail(enter.getContactEmail());
+        if (!mailBoolean){
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //员工名称首位大写
