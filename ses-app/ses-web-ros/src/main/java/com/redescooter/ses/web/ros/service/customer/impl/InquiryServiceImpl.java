@@ -421,6 +421,7 @@ public class InquiryServiceImpl implements InquiryService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryResult inquiry : list) {
+                inquiry.setAcceptanceTime(DateUtil.dateAddHour(inquiry.getAcceptanceTime(),8));
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
@@ -464,7 +465,7 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDef2()) ? "--" : opeCustomerInquiry.getDef2());
         map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
         map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getDef3()) ? "--" : opeCustomerInquiry.getDef3());
-        map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
+        map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getAcceptanceTime(),""));
         return map;
     }
 

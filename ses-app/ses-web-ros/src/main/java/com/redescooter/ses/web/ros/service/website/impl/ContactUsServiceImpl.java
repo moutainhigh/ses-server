@@ -224,7 +224,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(list)){
             for (ContactUsListResult contactUsListResult : list) {
-                contactUsListResult.setCreateTime(dateAddHour(contactUsListResult.getCreateTime(),8));
+                contactUsListResult.setCreateTime(DateUtil.dateAddHour(contactUsListResult.getCreateTime(),8));
                 dataMap.add(toMap(contactUsListResult));
             }
             String sheetName = "Contact Us";
@@ -258,22 +258,6 @@ public class ContactUsServiceImpl implements ContactUsService {
             log.info("没有找到数据！！！！！！！！！！");
         }
         return new GeneralResult(excelPath);
-    }
-
-    public  Date dateAddHour(Date date, int hour){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (date == null) {
-            return new Date();
-        }
-        System.out.println("front:" + format.format(date)); //显示输入的日期
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.HOUR, hour);// 24小时制
-        date = cal.getTime();
-        System.out.println("after:" + format.format(date));  //显示更新后的日期
-        cal = null;
-        return date;
-
     }
 
 
