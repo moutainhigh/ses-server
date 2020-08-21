@@ -205,6 +205,7 @@
     </select>
 
     <select id="wmsUsableStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
+        select * from (
         SELECT
         stock.id AS id,
         product.cn_name AS cnName,
@@ -212,6 +213,7 @@
         product.product_number AS productNumber,
         stock.available_total AS intTotal,
         stock.materiel_product_type AS productType,
+        stock.created_time          as createdTime,
         sheet.sales_price AS price
         FROM
         ope_stock stock
@@ -228,6 +230,7 @@
         parts.parts_number AS productNumber,
         stock.available_total AS intTotal,
         stock.materiel_product_type AS productType,
+        stock.created_time          as createdTime,
         sheet.price AS price
         FROM
         ope_stock stock
@@ -236,10 +239,10 @@
         JOIN ope_price_sheet sheet ON parts.id = sheet.parts_id
         AND sheet.dr = 0
         <include refid="where_wmsPartsList"/>
+        )aa
+        order by aa.createdTime desc
         limit #{enter.startRow},#{enter.pageSize}
-
     </select>
-
 
     <select id="wmsInWhCount" resultType="int">
 
@@ -301,6 +304,7 @@
         ON ord.consignee_id = pro.id
         and pro.dr = 0
         <include refid="where_inHw_assembly"/>
+        order by inWhTime desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <sql id="where_stockPending_allocate">
@@ -614,6 +618,7 @@ FROM
         ON parts.id = sheet.parts_id
         and sheet.dr = 0
         <include refid="where_wmsBePredictedStock"/>
+        order by stock.created_time desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="wmsStoredStockCount" resultType="int">
@@ -633,12 +638,14 @@ FROM
         ) storedStock
     </select>
     <select id="wmsStoredStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
+        select * from (
         SELECT stock.id as id,
         product.cn_name as cnName,
         product.en_name as enName,
         product.product_number as productNumber,
         stock.wait_stored_total as intTotal,
         stock.materiel_product_type as productType,
+        stock.created_time                          as createdTime,
         sheet.sales_price * stock.wait_stored_total as price
         FROM ope_stock stock
         inner JOIN ope_parts_product product ON stock.materiel_product_id = product.id and product.dr = 0
@@ -652,11 +659,14 @@ FROM
         part.parts_number as productNumber,
         stock.wait_stored_total as intTotal,
         stock.materiel_product_type as productType,
+        stock.created_time                          as createdTime,
         sheet.price * stock.wait_stored_total as price
         FROM ope_stock stock
         inner JOIN ope_parts part ON stock.materiel_product_id = part.id and part.dr = 0
         inner JOIN ope_price_sheet sheet ON part.id = sheet.parts_id and sheet.dr = 0
         <include refid="where_wmsAllocateStoredStock"/>
+        )aa
+        order by aa.createdTime desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="wmsStoredStockCountByType" resultType="int">
@@ -743,6 +753,7 @@ FROM
     </select>
 
     <select id="wmsOutWhStockList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult">
+        select * from (
         select stock.id as id,
         stock.materiel_product_id AS partId,
         stock.materiel_product_type AS productType,
@@ -750,6 +761,7 @@ FROM
         part.en_name AS enName,
         part.product_number AS productNumber,
         stock.available_total AS intTotal,
+        stock.created_time                          as createdTime,
         sheet.sales_price as price
         from ope_fr_stock stock
         inner JOIN ope_parts_product part
@@ -765,12 +777,15 @@ FROM
         part.en_name AS enName,
         part.product_number AS productNumber,
         stock.available_total AS intTotal,
+        stock.created_time                          as createdTime,
         sheet.price as price
         from ope_fr_stock stock
         inner JOIN ope_parts_product part
         ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
         LEFT JOIN ope_price_sheet sheet on sheet.parts_id=part.id and sheet.dr = 0
         <include refid="where_outWhPartList"/>
+        )aa
+        order by aa.createdTime desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="wmsOutWhStockCountByType" resultType="int">
