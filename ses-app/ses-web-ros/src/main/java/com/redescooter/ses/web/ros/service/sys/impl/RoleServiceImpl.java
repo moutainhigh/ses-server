@@ -172,7 +172,7 @@ public class RoleServiceImpl implements RoleService {
     public DeptAuthorityDetailsResult roleAuthDetails(String type, IdEnter enter) {
         DeptAuthorityDetailsResult result = new DeptAuthorityDetailsResult();
         result.setMenuResult(this.roleMenuById(type, enter));
-        result.setSalesAreaResult(this.roleSalesAreaById(type, enter));
+//        result.setSalesAreaResult(this.roleSalesAreaById(type, enter));
         result.setRequestId(enter.getRequestId());
         return result;
     }
