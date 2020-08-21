@@ -2,13 +2,11 @@ package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
-import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
-import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +29,10 @@ public class TokenController {
 
     @Autowired
     private TokenRosService tokenRosService;
-
+    
+    @Autowired
+    private SellsyService sellsyService;
+    
     @IgnoreLoginCheck
     @ApiOperation(value = "获取密钥", response = GetAccountKeyResult.class)
     @PostMapping(value = "/getAccountKey")
@@ -99,5 +100,13 @@ public class TokenController {
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
       return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
     }
-
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "12321", response = BooleanResult.class)
+    @PostMapping(value = "/1234")
+    public Response<GeneralResult> test(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        sellsyService.test();
+        return new Response<>();
+    }
+    
 }

@@ -19,6 +19,9 @@ public interface SellsyService {
      */
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter);
     
+    
+    public void test();
+    
 
     
 }

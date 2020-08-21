@@ -1,23 +1,16 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
-import com.alibaba.fastjson.JSON;
+import com.redescooter.ses.api.common.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-import com.sellsy.coreConnector.SellsyApiException;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
-import lombok.extern.log4j.Log4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-import sun.rmi.runtime.Log;
-
-import java.util.HashMap;
-
 
 /**
  * @ClassName:SellsyServiceImpl
@@ -26,7 +19,6 @@ import java.util.HashMap;
  * @Version：1.3
  * @create: 2020/08/18 19:44
  */
-@Log4j
 @Service
 public class SellsyServiceImpl implements SellsyService {
     
@@ -56,7 +48,7 @@ public class SellsyServiceImpl implements SellsyService {
 //                设置数据库插入
 //                }
             }*/
-            log.info("-------------------调用出现问题，请及时处理--------------------");
+            System.out.println("-------------------调用出现问题，请及时处理--------------------");
         }
         
     
@@ -65,5 +57,13 @@ public class SellsyServiceImpl implements SellsyService {
         
         return new SellsyGeneralResult();
     }
-   
+    
+    @Override
+    public void test() {
+        SellsyExecutionEnter sellsyExecutionEnter=new SellsyExecutionEnter();
+        sellsyExecutionEnter.setMethod("Client.getList");
+        sellsyExecutionEnter.setParams(null);
+        sellsyExecutionEnter.setSellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue());
+        sellsyExecution(sellsyExecutionEnter);
+    }
 }
