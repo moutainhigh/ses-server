@@ -462,9 +462,9 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
         map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
         map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDef2()) ? "--" : opeCustomerInquiry.getDef2());
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
         map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
-        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getDef3()) ? "--" : opeCustomerInquiry.getDef3());
+        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
         map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getAcceptanceTime(),""));
         return map;
     }
