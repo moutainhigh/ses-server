@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -75,17 +76,6 @@ public class TokenRosServiceImpl implements TokenRosService {
     @Value("${Request.privateKey}")
     private  String privateKey;
 
-    // 登陆的时候 密码输错了，在这个路劲记录输错的次数
-    String LOGIN_PSD_ERROR_NUM = "login:psd:error:num:";
-
-    int LOGIN_LOCK_TIME = 60;
-
-    // 邮箱验证码登陆模式  验证码的存放位置
-    String EMAIL_LOGIN_CODE = "email:login:code:";
-
-    Integer EMAIL_LOGIN_CODE_TIME = 300;
-
-
     /**
      * 用户登录
      *
@@ -122,7 +112,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         String decryptPassword = checkPassWord(enter);
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + sysUser.getSalt());
-        String psdErrorKey = LOGIN_PSD_ERROR_NUM + sysUser.getId();
+        String psdErrorKey = JedisConstant.LOGIN_PSD_ERROR_NUM + sysUser.getId();
         if(jedisCluster.exists(psdErrorKey)){
             Map<String, String> data = jedisCluster.hgetAll(psdErrorKey);
             String oldNum = data.get("num");
@@ -194,12 +184,12 @@ public class TokenRosServiceImpl implements TokenRosService {
         OpeSysUser sysUser = getOpeSysUser(enter);
         // 生成随机的验证码  然后放在缓存里  再发给用户
         String code = String.valueOf((int) ((Math.random()*9+1)*100000));
-        String key = EMAIL_LOGIN_CODE + enter.getLoginName();
+        String key = JedisConstant.EMAIL_LOGIN_CODE + enter.getLoginName();
         Map<String,String> map = new HashMap<>();
         map.put("code",code);
         jedisCluster.hmset(key, map);
         // 缓存时间暂定位5分钟
-        jedisCluster.expire(key, EMAIL_LOGIN_CODE_TIME);
+        jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_5.getSeconds()).intValue());
         // TODO 给用户发邮件  邮件里面是验证码  登陆的时候验证邮箱和验证码  (等待邮件模板)
         SendCodeMobileUserTaskEnter sendCodeMobileUserTaskEnter = new SendCodeMobileUserTaskEnter();
         sendCodeMobileUserTaskEnter.setCode(code);
@@ -224,7 +214,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         if(Strings.isNullOrEmpty(enter.getCode())){
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
-        String key = EMAIL_LOGIN_CODE + enter.getLoginName();
+        String key = JedisConstant.EMAIL_LOGIN_CODE + enter.getLoginName();
         if(!jedisCluster.exists(key)){
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
@@ -281,7 +271,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             if(num == 5){
                 map.put("num",num.toString());
                 jedisCluster.hmset(key, map);
-                jedisCluster.expire(key, LOGIN_LOCK_TIME);
+                jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
                 return num;
             }
         }

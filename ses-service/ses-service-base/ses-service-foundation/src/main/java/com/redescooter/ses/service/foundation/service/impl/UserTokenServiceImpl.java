@@ -1,12 +1,15 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
@@ -26,7 +29,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailEnter;
 import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult;
-import com.redescooter.ses.api.hub.vo.QueryUserProfileResult;
+import com.redescooter.ses.service.foundation.config.LoginExtremeExperienceConfig;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
@@ -85,6 +88,9 @@ public class UserTokenServiceImpl implements UserTokenService {
     
     @Autowired
     private PlaTenantMapper plaTenantMapper;
+    
+    @Autowired
+    private LoginExtremeExperienceConfig loginExtremeExperienceConfig;
     
     @Reference
     private MailMultiTaskService mailMultiTaskService;
@@ -466,10 +472,17 @@ public class UserTokenServiceImpl implements UserTokenService {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
                         ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
-            String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
-            if (!userPassword.getPassword().equals(password)) {
-                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+    
+            if (StringUtils.equals(ClientTypeEnums.PC.getValue(),enter.getClientType())){
+                //密码极验
+                extremeExperience(enter, accountsDto, userPassword);
+            }else{
+                String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
+                if (!userPassword.getPassword().equals(password)) {
+                    throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+                }
             }
+            
         } else {
             // 验证码登录逻辑 todo 待测试
             ValidateCodeEnter<AccountsDto> validateCodeEnter = new ValidateCodeEnter<>();
@@ -524,6 +537,34 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else {
             // 判断账号是否取消
             throw new FoundationException(ExceptionCodeEnums.ACCESS_DENIED.getCode(), ExceptionCodeEnums.ACCESS_DENIED.getMessage());
+        }
+    }
+    
+    private void extremeExperience(LoginEnter enter, AccountsDto accountsDto, PlaUserPassword userPassword) {
+        String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
+        String psdErrorKey = JedisConstant.LOGIN_PSD_ERROR_NUM + accountsDto.getUserId();
+        if (jedisCluster.exists(psdErrorKey)) {
+            Map<String, String> data = jedisCluster.hgetAll(psdErrorKey);
+            String oldNum = data.get("num");
+            if (Integer.parseInt(oldNum) >= 5) {
+                throw new FoundationException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getMessage());
+            }
+        }
+        if (!password.equals(userPassword.getPassword())) {
+            //连续输错3次密码，出现图片验证码，连续输错5次账号冻结1分钟
+            Integer errorNum = passWordMistaken(psdErrorKey);
+            if (errorNum < 3) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            } else if (errorNum == 3 || errorNum == 4) {
+                throw new FoundationException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NEED_CODE.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NEED_CODE.getMessage());
+            } else {
+                throw new FoundationException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getMessage());
+            }
+        }
+    
+        //密码校验通过之后，看看之前有没有输错过，有的话，从缓存清除
+        if (jedisCluster.exists(psdErrorKey)) {
+            jedisCluster.del(psdErrorKey);
         }
     }
     
@@ -971,5 +1012,29 @@ public class UserTokenServiceImpl implements UserTokenService {
             log.error("checkToken IllegalAccessException sessionMap:" + map, e);
         }
         return userToken;
+    }
+    
+    public Integer passWordMistaken(String key){
+        Integer num = 1;
+        Map<String,String> map = new HashMap<>();
+        // 先判断该用户有没有输错过密码
+        if(jedisCluster.exists(key)){
+            //缓存中能找到，说明已经输错过密码了
+            Map<String, String> data = jedisCluster.hgetAll(key);
+            String oldNum = data.get("num");
+            if(Integer.parseInt(oldNum) >= 5){
+                return Integer.parseInt(oldNum);
+            }
+            num = Integer.parseInt(oldNum) + 1;
+            if(num == 5){
+                map.put("num",num.toString());
+                jedisCluster.hmset(key, map);
+                jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
+                return num;
+            }
+        }
+        map.put("num",num.toString());
+        jedisCluster.hmset(key, map);
+        return num;
     }
 }

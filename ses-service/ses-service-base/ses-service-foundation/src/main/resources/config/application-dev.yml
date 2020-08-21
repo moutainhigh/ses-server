@@ -29,3 +29,7 @@ spring:                                                                         
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+saas-login-extreme-experience:
+    web: true
+    app-android: false
+    app-ios: false
