@@ -605,14 +605,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         List<AccountListResult> resultList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(queryAccountListResult)) {
             queryAccountListResult.forEach(account -> {
-                accountList.forEach(item -> {
+                for (AccountListResult item : accountList) {
                     if (StringUtils.equals(account.getEmail(), item.getEmail())) {
                         item.setStatus(account.getStatus());
                         item.setActivationTime(account.getActivationTime());
                         item.setExpirationTime(account.getExpirationTime());
                         resultList.add(item);
+                        break;
                     }
-                });
+                }
             });
         }
         return PageResult.create(enter, customerAccountCount, resultList);
