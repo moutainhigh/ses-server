@@ -733,9 +733,9 @@ public class BomRosServiceImpl implements BomRosService {
         OpePartsDraft opePartsDraft = checkParameterEnter(enter, qcResultEnterMap);
         
         //查询是否存在质检项 若存在删除所有质检项
-        List<OpePartDraftQcTemplate> partQcTemplateList = deleteOpePartQcTemplates(enter);
+        deleteOpePartQcTemplates(enter);
         //形成质检项
-        buildPartQcTemplate(enter, saveOpePartDraftQcTemplateList, saveOpePartDraftQcTemplateBList, qcResultEnterMap, partQcTemplateList);
+        buildPartQcTemplate(enter, saveOpePartDraftQcTemplateList, saveOpePartDraftQcTemplateBList, qcResultEnterMap);
         
         //质检模板数据保存
         if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateList)) {
@@ -747,7 +747,9 @@ public class BomRosServiceImpl implements BomRosService {
         opePartsDraft.setUpdatedTime(new Date());
         opePartsDraftService.updateById(opePartsDraft);
         //质检项结果集数据保存
-        opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
+        if (CollectionUtils.isNotEmpty(saveOpePartDraftQcTemplateBList)) {
+            opePartDraftQcTemplateBService.saveOrUpdateBatch(saveOpePartDraftQcTemplateBList);
+        }
         
         return new GeneralResult(enter.getRequestId());
     }
@@ -1227,10 +1229,9 @@ public class BomRosServiceImpl implements BomRosService {
      * @param saveOpePartQcTemplateList
      * @param saveOpePartQcTemplateBList
      * @param qcResultEnterMap
-     * @param partQcTemplateList
      */
     private void buildPartQcTemplate(SaveQcTemplateEnter enter, List<OpePartDraftQcTemplate> saveOpePartQcTemplateList, List<OpePartDraftQcTemplateB> saveOpePartQcTemplateBList,
-                                     Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap, List<OpePartDraftQcTemplate> partQcTemplateList) {
+                                     Map<QcItemTemplateEnter, List<QcResultEnter>> qcResultEnterMap) {
         
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
             Integer count = 0;
@@ -1244,33 +1245,26 @@ public class BomRosServiceImpl implements BomRosService {
             }
         }
         
-        if (CollectionUtils.isNotEmpty(partQcTemplateList)) {
-            for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
-                Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
-                saveOpePartQcTemplateList.add(
-                        buildOpePartTemplate(enter, entry.getKey().getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-                );
-                entry.getValue().forEach(item -> {
-                    saveOpePartQcTemplateBList.add(
-                            buildPartTemplateB(enter, templateId, item)
-                    );
-                });
-            }
-            
-        } /*else {
-            qcResultEnterMap.forEach((key, value) -> {
-                Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
-                saveOpePartQcTemplateList.add(
-                        buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-
-                );
-                value.forEach(item -> {
-                    saveOpePartQcTemplateBList.add(
-                            buildPartTemplateB(enter, templateId, item)
-                    );
-                });
+        for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
+            Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
+            saveOpePartQcTemplateList.add(buildOpePartTemplate(enter, entry.getKey().getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue()));
+            entry.getValue().forEach(item -> {
+                saveOpePartQcTemplateBList.add(buildPartTemplateB(enter, templateId, item));
             });
-        }*/
+        }
+        
+        qcResultEnterMap.forEach((key, value) -> {
+            Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
+            saveOpePartQcTemplateList.add(
+                    buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+            
+            );
+            value.forEach(item -> {
+                saveOpePartQcTemplateBList.add(
+                        buildPartTemplateB(enter, templateId, item)
+                );
+            });
+        });
     }
     
     private OpePartDraftQcTemplateB buildPartTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {
