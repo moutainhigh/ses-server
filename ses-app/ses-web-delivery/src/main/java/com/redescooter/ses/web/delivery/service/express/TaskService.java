@@ -64,7 +64,7 @@ public interface TaskService {
      * @param enter
      * @return
      */
-    List<DriverListResult> driverList(GeneralEnter enter);
+    List<DriverListResult> driverList(TaskDriverLsitEnter enter);
 
     /**
      * 未分配小定单列表
