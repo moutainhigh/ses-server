@@ -13,4 +13,8 @@ public interface SellsyConstant {
     
     String result="result";
     
+    String status="status";
+    
+    String id="id";
+    
 }

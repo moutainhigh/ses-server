@@ -2,7 +2,10 @@ package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+
+import java.util.List;
 
 /**
  * @ClassName:SellsyService
@@ -26,6 +29,12 @@ public interface SellsyService {
      *
      * @param enter
      */
-    public void queryClientList(GeneralEnter enter);
+    public List<SellsyClientResult> queryClientList(GeneralEnter enter);
+    
+    /**
+     * 客户创建
+     * @param enter
+     */
+    public void createClient(CreateClientEnter enter);
     
 }

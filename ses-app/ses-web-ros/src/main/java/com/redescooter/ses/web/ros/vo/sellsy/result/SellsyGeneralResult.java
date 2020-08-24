@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sellsy.result;
 
+import com.sellsy.apientities.SellsyResponseInfo;
+import com.sellsy.coreConnector.SellsyApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,5 +35,8 @@ public class SellsyGeneralResult {
     private String status;
     
     @ApiModelProperty(value = "返回值")
-    private Object result;
+    private List<SellsyApiResponse> result;
+    
+    @ApiModelProperty(value = "分页信息")
+    private SellsyResponseInfo sellsyResponseInfo;
 }

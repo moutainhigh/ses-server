@@ -7,11 +7,14 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 功能描述:
@@ -102,11 +105,10 @@ public class TokenController {
     }
     
     @IgnoreLoginCheck
-    @ApiOperation(value = "12321", response = BooleanResult.class)
+    @ApiOperation(value = "12321", response = SellsyClientResult.class)
     @PostMapping(value = "/1234")
-    public Response<GeneralResult> test(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        sellsyService.queryClientList(enter);
-        return new Response<>();
+    public Response<List<SellsyClientResult>> test(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(sellsyService.queryClientList(enter));
     }
     
 }

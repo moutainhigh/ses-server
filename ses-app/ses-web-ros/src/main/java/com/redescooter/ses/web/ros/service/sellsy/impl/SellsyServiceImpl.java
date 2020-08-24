@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
@@ -7,11 +8,13 @@ import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.sellsy.apientities.SellsyResponseInfo;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.apache.dubbo.config.annotation.Service;
@@ -45,26 +48,33 @@ public class SellsyServiceImpl implements SellsyService {
     @Transactional
     @Override
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter) {
+        
+        log.info("---------------------调用方法{}---------------------",enter.getMethod());
+        log.info("-----------------------------方法参数{}---------------",enter.getParams());
         //连接器 请求头配置
-        SellsySpringRestExecutor sellsySpringRestExecutor = new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(), sellsyConfig.getUserToken(), sellsyConfig.getUserSecret());
+        SellsySpringRestExecutor sellsySpringRestExecutor = new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(), sellsyConfig.getUserToken(),
+                sellsyConfig.getUserSecret());
         
         //配置 请求参数
         SellsyApiRequest request = new SellsyApiRequest(enter.getMethod(), enter.getParams());
         
-        SellsyApiResponse result = null;
-        SellsyResponseInfo infos = null;
+        SellsyGeneralResult sellsyGeneralResult = new SellsyGeneralResult();
         
+        SellsyApiResponse result = null;
         try {
             //执行请求
             result = sellsySpringRestExecutor.process(request);
-            infos = result.getInfos();
-    
-    
-            log.info("-------------result{}--------------------",result.getResponseAttribute(SellsyConstant.result));
+            
+            //返回值赋值 sellsyGeneralResult
+            sellsyGeneralResult.setResult(result.extractResponseList());
+            sellsyGeneralResult.setSellsyResponseInfo(result.getInfos());
+            sellsyGeneralResult.setStatus(result.getResponseAttribute(SellsyConstant.status));
+            
+            log.info("-------------result结果返回值{}--------------------", result.getAttributeValueAsResponse(SellsyConstant.result));
         } catch (Exception e) {
             System.out.println("--------------调用出现问题-----------------");
         }
-        return new SellsyGeneralResult();
+        return sellsyGeneralResult;
     }
     
     /**
@@ -72,15 +82,18 @@ public class SellsyServiceImpl implements SellsyService {
      *
      * @param enter
      */
+    @SneakyThrows
     @Override
-    public void queryClientList(GeneralEnter enter) {
-    
+    public List<SellsyClientResult> queryClientList(GeneralEnter enter) {
+        
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
                 .method(SellsyMethodConstant.Client_List)
                 .params(new ArrayList<>())
                 .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
                 .build();
+        
+        SellsyGeneralResult sellsyGeneralResult = sellsyExecution(sellsyExecutionEnter);
     
-        sellsyExecution(sellsyExecutionEnter);
+        return JSON.parseArray(sellsyGeneralResult.getResult().toString(), SellsyClientResult.class);
     }
 }
