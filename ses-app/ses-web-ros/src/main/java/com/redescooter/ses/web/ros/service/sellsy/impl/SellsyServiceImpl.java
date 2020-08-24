@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import com.redescooter.ses.api.common.enums.sellsy.SellsyMethodTypeEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
+import com.redescooter.ses.web.ros.constant.SellsyConstant;
+import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -57,10 +60,27 @@ public class SellsyServiceImpl implements SellsyService {
             infos = result.getInfos();
     
     
-            log.info("-------------result{}--------------------",result.getResponseAttribute("result"));
+            log.info("-------------result{}--------------------",result.getResponseAttribute(SellsyConstant.result));
         } catch (Exception e) {
             System.out.println("--------------调用出现问题-----------------");
         }
         return new SellsyGeneralResult();
+    }
+    
+    /**
+     * 查询客户列表
+     *
+     * @param enter
+     */
+    @Override
+    public void queryClientList(GeneralEnter enter) {
+    
+        SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
+                .method(SellsyMethodConstant.Client_List)
+                .params(new ArrayList<>())
+                .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                .build();
+    
+        sellsyExecution(sellsyExecutionEnter);
     }
 }
