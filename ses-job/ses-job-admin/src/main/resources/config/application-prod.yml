@@ -12,6 +12,10 @@ jasypt:
       suffix: )            # 加密后缀
     ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 
+server:
+  servlet:
+    context-path: /
+
 ### xxl-job, datasource
 spring:
   datasource:

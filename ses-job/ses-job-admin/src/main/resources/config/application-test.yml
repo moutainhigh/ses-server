@@ -5,6 +5,10 @@ log:
     max-size: 128MB
     max-history: 180
 
+server:
+  servlet:
+    context-path: /
+
 ### xxl-job, datasource
 spring:
   datasource:
