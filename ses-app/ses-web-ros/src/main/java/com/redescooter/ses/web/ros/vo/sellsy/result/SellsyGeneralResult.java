@@ -26,9 +26,6 @@ import org.apache.poi.ss.formula.functions.T;
 @Builder
 public class SellsyGeneralResult {
     
-    @ApiModelProperty(value = "相应内容")
-    private String response;
-    
     @ApiModelProperty(value = "错误")
     private String error;
     

@@ -34,4 +34,20 @@ public interface SellsyMethodConstant {
     String Client_addContact="Client.addContact";
     
     String Client_UpdateAddress="Client.updateAddress";
+    
+    String Client_UpdateContact="Client.updateContact";
+    
+    String Client_DeleteAddress="Client.deleteAddress";
+    
+    String Client_DeleteContact="Client.deleteContact";
+    
+    String Client_UpdateContactPicture="Client.updateContactPicture";
+    
+    String Client_UpdatePrefs="Client.updatePrefs";
+    
+    String Client_UpdateThirdPicture="Client.updateThirdPicture";
+    
+    String Client_UpdateSharingGroups="Client.updateSharingGroups";
+    
+    String Client_GetMargin="Client.getMargin";
 }

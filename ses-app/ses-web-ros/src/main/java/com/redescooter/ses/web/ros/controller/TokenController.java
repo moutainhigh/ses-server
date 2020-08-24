@@ -105,7 +105,7 @@ public class TokenController {
     @ApiOperation(value = "12321", response = BooleanResult.class)
     @PostMapping(value = "/1234")
     public Response<GeneralResult> test(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        sellsyService.test();
+        //sellsyService.test();
         return new Response<>();
     }
     

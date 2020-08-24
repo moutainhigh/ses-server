@@ -35,29 +35,32 @@ public class SellsyServiceImpl implements SellsyService {
     
     /**
      * sellsy 具体执行器
+     *
      * @param enter
      * @return
      */
     @Transactional
     @Override
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter) {
-        SellsySpringRestExecutor underTest = new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(), sellsyConfig.getUserToken(), sellsyConfig.getUserSecret());
+        //连接器 请求头配置
+        SellsySpringRestExecutor sellsySpringRestExecutor = new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(), sellsyConfig.getUserToken(), sellsyConfig.getUserSecret());
+        
+        //配置 请求参数
         SellsyApiRequest request = new SellsyApiRequest(enter.getMethod(), enter.getParams());
-        SellsyApiResponse result=null;
+        
+        SellsyApiResponse result = null;
+        SellsyResponseInfo infos = null;
+        
         try {
-            result = underTest.process(request);
-        }catch (Exception e){
+            //执行请求
+            result = sellsySpringRestExecutor.process(request);
+            infos = result.getInfos();
+    
+    
+            log.info("-------------result{}--------------------",result.getResponseAttribute("result"));
+        } catch (Exception e) {
             System.out.println("--------------调用出现问题-----------------");
         }
         return new SellsyGeneralResult();
-    }
-    
-    @Override
-    public void test() {
-        SellsyExecutionEnter sellsyExecutionEnter=new SellsyExecutionEnter();
-        sellsyExecutionEnter.setMethod("Document.getList");
-        sellsyExecutionEnter.setParams("");
-        SellsyGeneralResult sellsyGeneralResult = sellsyExecution(sellsyExecutionEnter);
-        System.out.println(sellsyGeneralResult);
     }
 }

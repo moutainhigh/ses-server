@@ -18,10 +18,6 @@ public interface SellsyService {
      * @return
      */
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter);
-    
-    
-    public void test();
-    
 
     
 }
