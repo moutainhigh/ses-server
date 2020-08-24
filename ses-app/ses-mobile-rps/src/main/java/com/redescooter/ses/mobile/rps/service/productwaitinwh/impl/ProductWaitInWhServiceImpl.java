@@ -140,7 +140,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                                     .id(opeAssemblyOrder.getId())
                                     .waitInWHNum(opeAssemblyOrder.getInWaitWhTotal())
                                     .waitInWHStr(opeAssemblyOrder.getAssemblyNumber())
-                                    .inWHTListTime(opeAssemblyOrder.getUpdatedTime())
+                                    .inWHTListTime(opeAssemblyOrder.getCreatedTime())
                                     .sourceType(SourceTypeEnums.ASSEMBLY.getValue())//单据类型
                                     .build());
                 }
