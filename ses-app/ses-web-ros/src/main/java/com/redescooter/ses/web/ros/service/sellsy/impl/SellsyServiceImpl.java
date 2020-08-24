@@ -7,6 +7,7 @@ import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -95,5 +96,15 @@ public class SellsyServiceImpl implements SellsyService {
         SellsyGeneralResult sellsyGeneralResult = sellsyExecution(sellsyExecutionEnter);
     
         return JSON.parseArray(sellsyGeneralResult.getResult().toString(), SellsyClientResult.class);
+    }
+    
+    /**
+     * 客户创建
+     *
+     * @param enter
+     */
+    @Override
+    public void createClient(SellsyCreateClientEnter enter) {
+    
     }
 }
