@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.vo.monday.enter;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.enums.datatype.WebhookEventType;
+import com.redescooter.ses.web.ros.enums.monday.datatype.WebhookEventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

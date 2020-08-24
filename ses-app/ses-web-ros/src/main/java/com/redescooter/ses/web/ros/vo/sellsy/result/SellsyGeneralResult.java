@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 import io.swagger.annotations.*;
+import org.apache.poi.ss.formula.functions.T;
 
 /**
  * @ClassName:SellsyGeneralResult
@@ -33,4 +34,7 @@ public class SellsyGeneralResult {
     
     @ApiModelProperty(value = "是否调用成功 success 或者失败")
     private String status;
+    
+    @ApiModelProperty(value = "返回值")
+    private Object result;
 }

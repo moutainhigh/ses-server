@@ -23,8 +23,8 @@ public enum SellsyMethodTypeEnums {
     
     private String code;
     
-    private String value;
-    
     private String message;
+    
+    private String value;
     
 }

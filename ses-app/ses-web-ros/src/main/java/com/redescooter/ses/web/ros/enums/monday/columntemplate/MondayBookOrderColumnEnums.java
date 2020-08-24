@@ -1,9 +1,8 @@
-package com.redescooter.ses.web.ros.enums.columntemplate;
+package com.redescooter.ses.web.ros.enums.monday.columntemplate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
