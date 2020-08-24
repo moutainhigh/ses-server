@@ -362,6 +362,7 @@
         <include refid="where_stockPending_assembly"/>)aa
     </select>
     <select id="stockPendingList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhResult">
+       select * from (
         SELECT
         allocate.id as id,
         allocate.allocate_num as allocateNumber,
@@ -399,6 +400,8 @@
         ON ord.consignee_id = pro.id
         and pro.dr = 0
         <include refid="where_stockPending_assembly"/>
+        ) aa
+        order by aa.inWhTime desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="allocateDetails" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsInWhDetailsResult">
