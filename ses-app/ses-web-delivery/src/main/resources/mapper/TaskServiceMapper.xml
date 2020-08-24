@@ -151,6 +151,12 @@
         where driver.tenant_id = #{tenantId}
         and driver.status = 1
         and driver.dr = 0
+       <if test="keyword != null and keyword != ''">
+           and (
+           profile.first_name like concat('%',#{keyword},'%') or
+           profile.LAST_NAME like concat('%',#{keyword},'%')
+           )
+       </if>
         group by id,driverFirstName,driverLastName,avatar
     </select>
     <select id="orderListCount" resultType="int">
