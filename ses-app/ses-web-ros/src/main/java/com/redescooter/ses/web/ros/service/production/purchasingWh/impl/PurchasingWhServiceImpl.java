@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.production.purchasingWh.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
@@ -152,39 +153,61 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             return PageResult.createZeroRowResult(enter);
         }
         List<AvailableListResult> availableList = purchasingWhServiceMapper.availableList(enter, opeWhse.getId());
-        
+
         if (CollectionUtils.isNotEmpty(availableList)) {
             // 查询质检批次号
             List<OpeStockPurchas> opeStockPurchasList = opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                     .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
-                    .in(OpeStockPurchas::getPartId, availableList.stream().map(AvailableListResult::getId).collect(Collectors.toList())));
-            
+                    // 原来是partId 经确认改为stockId
+                    .in(OpeStockPurchas::getStockId, availableList.stream().map(AvailableListResult::getStockId).collect(Collectors.toList())));
+
             //批次号集合
             Map<Long, List<AvailableListBatchNResult>> batchNMap = new HashMap<>();
-            opeStockPurchasList.forEach(item -> {
-                //已存在 该部件
-                if (batchNMap.containsKey(item.getPartId())) {
-                    //判断是否存在批次号
-                    for (AvailableListBatchNResult batch : batchNMap.get(item.getPartId())) {
-                        //存在批次号 数量累加
-                        if (StringUtils.equals(batch.getBatchN(), item.getLot())) {
-                            batch.setQty(batch.getQty() + 1);
+
+            //往集合里放入数据
+            for (OpeStockPurchas item : opeStockPurchasList) {
+                if (batchNMap.containsKey(item.getStockId())) {
+
+                    //若批次号存在 维护数量、若不存在 新增一个批次号
+                    List<AvailableListBatchNResult> availableListBatchNList = batchNMap.get(item.getStockId());
+
+                    Boolean existBatchN = Boolean.FALSE;
+
+                    for (AvailableListBatchNResult batchN : availableListBatchNList) {
+                        if (StringUtils.equals(item.getLot(), batchN.getBatchN())) {
+                            existBatchN = Boolean.TRUE;
+                            batchN.setQty(batchN.getQty() + 1);
                             break;
                         }
                     }
-                } else {
-                    batchNMap.put(item.getPartId(), Lists.newArrayList(AvailableListBatchNResult.builder()
-                            .id(item.getPartId())
+                    //已存在批次号 更新map 集合 不存在 生成新的对象
+                    if (!existBatchN) {
+                        //否则 在map的value集合中放入新数据
+                        availableListBatchNList.add(AvailableListBatchNResult.builder()
+                                .id(item.getStockId())
+                                .qty(item.getInWhQty())
+                                .batchN(item.getLot())
+                                .build());
+                    }
+                    batchNMap.put(item.getStockId(), availableListBatchNList);
+                }
+
+                //map中不存在这个部件 就在map放入新数据
+                if (!batchNMap.containsKey(item.getStockId())) {
+                    List<AvailableListBatchNResult> availableListBatchNList = new ArrayList<>();
+                    availableListBatchNList.add(AvailableListBatchNResult.builder()
+                            .id(item.getStockId())
                             .qty(item.getInWhQty())
                             .batchN(item.getLot())
-                            .build()));
+                            .build());
+                    batchNMap.put(item.getStockId(), availableListBatchNList);
                 }
-            });
-            
+            };
+            log.info("返回的批次号："+batchNMap.toString());
             //封装数据返回
             availableList.forEach(item -> {
-                if (batchNMap.containsKey(item.getId())) {
-                    item.setBatchNList(batchNMap.get(item.getId()));
+                if (batchNMap.containsKey(item.getStockId())) {
+                    item.setBatchNList(batchNMap.get(item.getStockId()));
                 }
                 item.setType(BomCommonTypeEnums.getValueByCode(item.getType()));
             });
