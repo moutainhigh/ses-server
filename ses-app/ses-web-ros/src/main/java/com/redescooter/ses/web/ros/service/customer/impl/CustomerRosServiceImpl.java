@@ -489,7 +489,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         // 校验该客户是否已激活
         if(checkActivat(customer.getEmail())){
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getCode(), ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getMessage());
         }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
