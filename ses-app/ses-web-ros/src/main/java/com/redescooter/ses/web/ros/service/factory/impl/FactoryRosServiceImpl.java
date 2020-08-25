@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.factory.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -75,7 +76,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
         checkSaveFactoryParameter(enter);
         //邮箱校验
-        Boolean booleanResult = checkMail(enter.getContactEmail());
+        Boolean booleanResult = checkMail(enter.getContactEmail(),"");
         if (!booleanResult){
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
@@ -120,12 +121,16 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    public Boolean checkMail(String mail) {
+    public Boolean checkMail(String mail,String idStr) {
 
         QueryWrapper<OpeFactory> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeFactory.COL_CONTACT_EMAIL, mail);
         wrapper.eq(OpeFactory.COL_DR, 0);
-        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) == 1 ? Boolean.FALSE  : Boolean.TRUE;
+        if(!Strings.isNullOrEmpty(idStr)){
+            // 修改的时候,排除当前的这条数据
+            wrapper.ne(OpeFactory.COL_ID, Long.parseLong(idStr));
+        }
+        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) > 0 ? Boolean.FALSE  : Boolean.TRUE;
         return mailBoolean;
     }
 
@@ -135,7 +140,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
       checkSaveFactoryParameter(enter);
-        Boolean mailBoolean = checkMail(enter.getContactEmail());
+        Boolean mailBoolean = checkMail(enter.getContactEmail(),factorySaveEnter.getId().toString());
         if (!mailBoolean){
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
