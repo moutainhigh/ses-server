@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum OrderTypeEnums {
+public enum DocmentTypeEnums {
     
     INVOICE("invoice","发票"),
     ESTIMATE("estimate","报价单"),

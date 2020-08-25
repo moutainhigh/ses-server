@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sellsy.enter;
+package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
 import com.redescooter.ses.web.ros.enums.sellsy.DirectDebitPaymentGatewayEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
@@ -25,9 +25,12 @@ import java.util.List;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyCreateOrderEnter {
-
+public class SellsyCreateDocumentEnter {
+    
     private String doctype;
+    
+    
+    /*private String doctype;
     
     private int parentId;
     
@@ -152,6 +155,58 @@ public class SellsyCreateOrderEnter {
     //Tax rate id (required if hasDoubleVat = Y) 税率 id (如果有双列 = y 需要)
     private int row_tax2id;
     
-//    private
+    //使用或不使用生态税
+    private SellsyBooleanEnums row_useEcoTax;
+
+    //生态税类型
+    private String row_ecoTaxType;
+    
+    //税额
+    private float  row_ecoTax;
+    
+    //数量
+    private int row_quantity;
+    
+    //折扣的金额/百分比。如果是百分比，值应该是0到100之间的整数
+    private float row_discount;
+    
+    //金额，百分比 单位
+    private String row_discountUnit;
+    
+    //库存影响用仓库 帐户默认仓库
+    private int row_whid;
+    
+    //项目序列号。如果您的项目使用序列化库存，以及如果您的文件影响库存，则必须使用序列号
+    private String row_serial;
+    
+    //商品条形码 如果您的产品只使用一个条形码，则默认情况下将使用该条形码，否则将不使用该条形码
+    private String row_barcode;
+    
+    //注释 备注
+    private String row_comment;
+
+    // Title  标题
+    private String row_title;
+
+    //	Settlement ID 结算编号
+//    private int paydate_id;
+    
+    private int paydate_xdays;
+    
+    //月底迟交发票
+    private SellsyBooleanEnums paydate_endmonth;
+    
+    // 结算细节 ，如果结算期选择了系统代码“ scaled” 有账户默认值
+    private String paydate_scaledDetail;
+    
+    //发票必须迟开的日期 Account default value 帐户默认值
+    private Timestamp  paydate_custom;
+    
+    
+     //Setting a payment deadline, mandatory if the document uses multiple deadlines (paydate syscode : deadlines 设置付款截止日期，如果文档使用多个截止日期(付款日期 syscode: 截止日期) ，则必须设置
+     
+    */
+    
+    
 }
 

@@ -35,7 +35,7 @@ public class SellsyGeneralResult {
     private String status;
     
     @ApiModelProperty(value = "返回值")
-    private List<SellsyApiResponse> result;
+    private SellsyApiResponse result;
     
     @ApiModelProperty(value = "分页信息")
     private SellsyResponseInfo sellsyResponseInfo;

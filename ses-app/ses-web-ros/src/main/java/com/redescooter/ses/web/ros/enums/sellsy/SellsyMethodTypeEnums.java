@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.sellsy;
+package com.redescooter.ses.web.ros.enums.sellsy;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

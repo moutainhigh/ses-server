@@ -37,7 +37,7 @@ public class StartEnter extends GeneralEnter {
     private Boolean bluetoothCommunication = Boolean.FALSE;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "经度为u空")
+    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "经度为空")
     private String lat;
 
     @ApiModelProperty(value = "纬度")

@@ -7,6 +7,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,9 +33,6 @@ public class TokenController {
 
     @Autowired
     private TokenRosService tokenRosService;
-    
-    @Autowired
-    private SellsyService sellsyService;
     
     @IgnoreLoginCheck
     @ApiOperation(value = "获取密钥", response = GetAccountKeyResult.class)
@@ -103,12 +101,4 @@ public class TokenController {
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
       return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
     }
-    
-    @IgnoreLoginCheck
-    @ApiOperation(value = "12321", response = SellsyClientResult.class)
-    @PostMapping(value = "/1234")
-    public Response<List<SellsyClientResult>> test(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(sellsyService.queryClientList(enter));
-    }
-    
 }

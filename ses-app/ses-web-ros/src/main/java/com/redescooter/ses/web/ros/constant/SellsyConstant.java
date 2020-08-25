@@ -9,12 +9,7 @@ package com.redescooter.ses.web.ros.constant;
  */
 public interface SellsyConstant {
 
-    String infos="infos";
-    
-    String result="result";
-    
     String status="status";
-    
-    String id="id";
+  
     
 }

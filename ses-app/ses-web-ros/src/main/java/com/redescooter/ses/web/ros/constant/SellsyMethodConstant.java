@@ -50,4 +50,8 @@ public interface SellsyMethodConstant {
     String Client_UpdateSharingGroups="Client.updateSharingGroups";
     
     String Client_GetMargin="Client.getMargin";
+    
+    String Document_GetList="Document.getList";
+    
+    String Document_GetOne="Document.getOne";
 }

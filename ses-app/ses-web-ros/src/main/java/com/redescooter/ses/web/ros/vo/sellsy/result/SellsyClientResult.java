@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sellsy.result;
 
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyClientResult {
+public class SellsyClientResult extends PageResult {
     
     private String thirdid;
     

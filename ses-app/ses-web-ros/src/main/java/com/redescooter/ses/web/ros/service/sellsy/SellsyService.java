@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyCreateClientEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentByIdEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-
-import java.util.List;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
 
 /**
  * @ClassName:SellsyService
@@ -30,12 +35,38 @@ public interface SellsyService {
      *
      * @param enter
      */
-    public List<SellsyClientResult> queryClientList(GeneralEnter enter);
+    public PageResult<SellsyClientResult> queryClientList(PageEnter enter);
+    
+    /**
+     * 客户查询
+     *
+     * @param enter
+     * @return
+     */
+    public SellsyClientResult queryClientById(SellsyQueryClientOneEnter enter);
     
     /**
      * 客户创建
+     *
      * @param enter
      */
-    public void createClient(SellsyCreateClientEnter enter);
+    public SellsyIdResult createClient(SellsyCreateClientEnter enter);
+    
+    /**
+     * 单据列表
+     *
+     * @param enter
+     */
+    public PageResult<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter);
+    
+    /**
+     * 查询指定单据
+     * @param enter
+     */
+    public JSONObject queryDocumentById(SellsyDocumentByIdEnter enter);
+    
+    public  void  createDocument(SellsyDocu){
+    
+    }
     
 }

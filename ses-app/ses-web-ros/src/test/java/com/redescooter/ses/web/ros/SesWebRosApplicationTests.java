@@ -1,12 +1,9 @@
 package com.redescooter.ses.web.ros;
 
-import com.redescooter.ses.api.common.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -167,19 +164,5 @@ public class SesWebRosApplicationTests {
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(str);
         System.out.println(m.matches());
-    }
-
-
-    @Autowired
-    private SellsyService sellsyService;
-
-    @Test
-    public void sendRequestByRestTemplateGet() {
-        SellsyExecutionEnter sellsyExecutionEnter=new SellsyExecutionEnter();
-        sellsyExecutionEnter.setMethod("Infos.getInfos");
-        sellsyExecutionEnter.setParams(new ArrayList<>());
-        sellsyExecutionEnter.setSellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue());
-        
-        sellsyService.sellsyExecution(sellsyExecutionEnter);
     }
 }

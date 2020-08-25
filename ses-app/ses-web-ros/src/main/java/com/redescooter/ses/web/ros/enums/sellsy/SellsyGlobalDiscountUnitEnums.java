@@ -5,22 +5,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:SellsyBooleanEnums
- * @description: SellsyBooleanEnums
+ * @ClassName:SellsyGlobalDiscountUnitEnums
+ * @description: SellsyGlobalDiscountUnitEnums
  * @author: Alex
  * @Version：1.3
- * @create: 2020/08/24 12:02
+ * @create: 2020/08/25 19:20
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum SellsyBooleanEnums {
-
-    Y("YES","Y"),
-    N("NO","N");
+public enum SellsyGlobalDiscountUnitEnums {
     
+    PERCENT("percent","百分比","percent"),
+    AMOUNT("amount","总金额","amount");
     
     private String code;
+    
+    private String message;
     
     private String value;
 }
