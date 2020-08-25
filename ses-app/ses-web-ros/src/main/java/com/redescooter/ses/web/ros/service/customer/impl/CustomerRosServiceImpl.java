@@ -32,9 +32,11 @@ import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.*;
 import com.redescooter.ses.web.ros.vo.customer.*;
@@ -85,6 +87,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private UserBaseService userBaseService;
     @Reference
     private UserProfileService userProfileService;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
 
     /**
@@ -479,6 +484,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        if(customer == null){
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        // 校验该客户是否已激活
+        if(checkActivat(customer.getEmail())){
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
@@ -493,6 +505,28 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    /**
+     * @Author Aleks
+     * @Description  是否激活的校验，跟Jerry确认判断这个邮箱对应的账号是否登录过，登录过则为已激活
+     * @Date  2020/8/25 14:16
+     * @Param [email]
+     * @return
+     **/
+    public boolean checkActivat(String email){
+        boolean flag = false;
+        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUser.COL_LOGIN_NAME,email);
+        qw.isNotNull(OpeSysUser.COL_LAST_LOGIN_TIME);
+        qw.last(" limit 1");
+        OpeSysUser sysUser = opeSysUserService.getOne(qw);
+        if(sysUser != null){
+            flag = true;
+        }
+        return flag;
+    }
+
 
     /**
      * 客户转正

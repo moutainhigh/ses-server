@@ -343,7 +343,9 @@ public enum ExceptionCodeEnums {
 
     NO_PERM(10162, "没有该接口的权限"),
 
-    NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料");;
+    NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料"),
+
+    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除");;
 
 
     private int code;
