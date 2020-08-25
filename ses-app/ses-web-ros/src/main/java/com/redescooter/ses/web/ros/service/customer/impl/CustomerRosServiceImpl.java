@@ -488,7 +488,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         // 校验该客户是否已激活
-        if(checkActivat(customer.getEmail())){
+        if(userBaseService.checkActivat(customer.getEmail())){
             throw new SesWebRosException(ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getCode(), ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getMessage());
         }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
@@ -504,27 +504,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());
-    }
-
-
-    /**
-     * @Author Aleks
-     * @Description  是否激活的校验，跟Jerry确认判断这个邮箱对应的账号是否登录过，登录过则为已激活
-     * @Date  2020/8/25 14:16
-     * @Param [email]
-     * @return
-     **/
-    public boolean checkActivat(String email){
-        boolean flag = false;
-        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
-        qw.eq(OpeSysUser.COL_LOGIN_NAME,email);
-        qw.isNotNull(OpeSysUser.COL_LAST_LOGIN_TIME);
-        qw.last(" limit 1");
-        OpeSysUser sysUser = opeSysUserService.getOne(qw);
-        if(sysUser != null){
-            flag = true;
-        }
-        return flag;
     }
 
 

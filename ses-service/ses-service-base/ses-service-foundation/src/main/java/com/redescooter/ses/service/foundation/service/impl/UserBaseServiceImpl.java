@@ -183,4 +183,27 @@ public class UserBaseServiceImpl implements UserBaseService {
         accountType.add(AccountTypeEnums.APP_PERSONAL.getAccountType());
         return accountType;
     }
+
+
+    /**
+     * @Author Aleks
+     * @Description  跟Jerry确认判断这个邮箱对应的账号是否登录过，登录过则为已激活
+     * @Date  2020/8/25 15:38
+     * @Param [email]
+     * @return
+     **/
+    @Override
+    public boolean checkActivat(String email) {
+        boolean flag = false;
+        QueryWrapper<PlaUser> qw = new QueryWrapper<>();
+        qw.eq(PlaUser.COL_LOGIN_NAME,email);
+        qw.isNotNull(PlaUser.COL_LAST_LOGIN_TIME);
+        qw.last(" limit 1");
+        PlaUser user = userMapper.selectOne(qw);
+        if(user != null){
+            flag = true;
+        }
+        return flag;
+    }
+
 }

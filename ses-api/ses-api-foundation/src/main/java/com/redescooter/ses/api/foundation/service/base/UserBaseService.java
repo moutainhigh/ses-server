@@ -60,4 +60,12 @@ public interface UserBaseService {
      */
     List<QueryAccountNodeDetailResult> accountNodeDetail(QueryAccountNodeEnter enter);
 
+    /**
+     * @Author Aleks
+     * @Description  校验ROS中的客户是否已激活
+     * @Date  2020/8/25 15:33
+     * @Param
+     * @return
+     **/
+    public boolean checkActivat(String email);
 }
