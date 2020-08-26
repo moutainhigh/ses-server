@@ -48,7 +48,7 @@ public class VersionbaseController {
   @IgnoreLoginCheck
   @PostMapping(value = "/newAppVersion_ch")
   public Response<VersionTypeResult> getAppNewVersionChData(@ModelAttribute VersionTypeEnter enter) {
-    return new Response(versionBaseService.getVersionData(enter));
+    return new Response(versionBaseService.getAppNewVersionChData(enter));
   }
   @ApiOperation(value = "文件上传,上传完之后，需要在APP版本号的表里插入一条数据")
   @IgnoreLoginCheck
