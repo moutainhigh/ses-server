@@ -190,4 +190,5 @@ public class SellsyServiceImpl implements SellsyService {
     
         return JSONObject.parseObject(sellsyGeneralResult.getResult().toString());
     }
+    
 }

@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyCreateClientEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.CreateDocumentAttributesEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentByIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
@@ -65,8 +67,10 @@ public interface SellsyService {
      */
     public JSONObject queryDocumentById(SellsyDocumentByIdEnter enter);
     
-    public  void  createDocument(SellsyDocu){
-    
-    }
+    /**
+     * 发票创建
+     * @param enter
+     */
+    public  void  createDocument(SellsyCreateDocumentEnter enter);
     
 }
