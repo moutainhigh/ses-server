@@ -5,7 +5,10 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentByIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyQueryClientOneEnter;
@@ -36,31 +39,45 @@ public class SellsyController {
     @Autowired
     private SellsyService sellsyService;
     
+    @Autowired
+    private SellsyDocumentService documentService;
+    
+    @Autowired
+    private SellsyClientService sellsyClientService;
+    
     @IgnoreLoginCheck
     @ApiOperation(value = "查询指定客户", response = SellsyClientResult.class)
     @PostMapping(value = "/queryClientById")
     public Response<SellsyClientResult> queryClientById(@ModelAttribute @ApiParam("请求参数") SellsyQueryClientOneEnter enter) {
-        return new Response<>(sellsyService.queryClientById(enter));
+        return new Response<>(sellsyClientService.queryClientById(enter));
     }
     
     @IgnoreLoginCheck
     @ApiOperation(value = "查询客户列表", response = SellsyClientResult.class)
     @PostMapping(value = "/queryClientList")
     public Response<PageResult<SellsyClientResult>> queryClientList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
-        return new Response<>(sellsyService.queryClientList(enter));
+        return new Response<>(sellsyClientService.queryClientList(enter));
     }
     
     @IgnoreLoginCheck
     @ApiOperation(value = "单据列表", response = SellsyDocumentListResult.class)
     @PostMapping(value = "/queryDocumentList")
     public Response<PageResult<SellsyDocumentListResult>> queryDocumentList(@ModelAttribute @ApiParam("请求参数") SellsyDocumentListEnter enter) {
-        return new Response<>(sellsyService.queryDocumentList(enter));
+        return new Response<>(documentService.queryDocumentList(enter));
     }
     
     @IgnoreLoginCheck
     @ApiOperation(value = "查询指定单据", response = JSONObject.class)
     @PostMapping(value = "/queryDocumentById")
     public Response<JSONObject> queryDocumentById(@ModelAttribute @ApiParam("请求参数") SellsyDocumentByIdEnter enter) {
-        return new Response<> (sellsyService.queryDocumentById(enter));
+        return new Response<> (documentService.queryDocumentById(enter));
+    }
+    
+    
+    @IgnoreLoginCheck
+    @ApiOperation(value = "发票创建", response = JSONObject.class)
+    @PostMapping(value = "/createDocument")
+    public Response<JSONObject> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyCreateDocumentEnter enter) {
+        return new Response<> (documentService.createDocument(enter));
     }
 }

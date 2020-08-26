@@ -25,33 +25,41 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class CreateDocumentAttributesEnter {
+    
+    //发票类型
     private String doctype;
     
+    //发票发髻Id
     private int parentId;
     
+    //客户Id
     private int thirdid;
     
+    //客户引用
     private String thirdident;
     
+    //发票编号
     private String ident;
     
+    //期望文件时间
     private Timestamp displayedDate;
     
+    //文件到期时间
     private Timestamp  expireDate;
     
     //文档对象主题
-    private String document_subject;
+    private String subject;
     
     //文档注释字段
-    private String document_notes;
+    private String notes;
     
     //文档标签
-    private String document_tags;
+    private String tags;
     
     private SellsyBooleanEnums displayShipAddress;
     
     // 影响文档的给定类别
-    private int rateCategory;
+    private Integer rateCategory;
     
     //期望整体折扣
     private float  globalDiscount;

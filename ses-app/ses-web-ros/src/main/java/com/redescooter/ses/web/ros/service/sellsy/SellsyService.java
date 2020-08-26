@@ -31,46 +31,4 @@ public interface SellsyService {
      * @return
      */
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter);
-    
-    /**
-     * 查询客户列表
-     *
-     * @param enter
-     */
-    public PageResult<SellsyClientResult> queryClientList(PageEnter enter);
-    
-    /**
-     * 客户查询
-     *
-     * @param enter
-     * @return
-     */
-    public SellsyClientResult queryClientById(SellsyQueryClientOneEnter enter);
-    
-    /**
-     * 客户创建
-     *
-     * @param enter
-     */
-    public SellsyIdResult createClient(SellsyCreateClientEnter enter);
-    
-    /**
-     * 单据列表
-     *
-     * @param enter
-     */
-    public PageResult<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter);
-    
-    /**
-     * 查询指定单据
-     * @param enter
-     */
-    public JSONObject queryDocumentById(SellsyDocumentByIdEnter enter);
-    
-    /**
-     * 发票创建
-     * @param enter
-     */
-    public  void  createDocument(SellsyCreateDocumentEnter enter);
-    
 }

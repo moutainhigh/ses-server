@@ -8,10 +8,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @ClassName:SellsyPaydateAttributesEnter
- * @description: SellsyPaydateAttributesEnter
+ * @description: 设置付款期限
  * @author: Alex
  * @Version：1.3
  * @create: 2020/08/26 10:30
@@ -26,31 +27,17 @@ public class SellsyPaydateAttributesEnter {
     private int id;
     
     //期望天数之前通过的发票迟交 有账户默认值
-    private int paydate_xdays;
+    private int xdays;
     
     //月底迟交发票
-    private SellsyBooleanEnums paydate_endmonth;
+    private SellsyBooleanEnums endmonth;
     
     //结算细节 Yes, if the settlement period has selected the syscode 'scaled'	 由账户默认值
-    private Timestamp paydate_scaledDetails;
-
     private Timestamp scaledDetails;
     
-    private timestamp custom;
+    //Date on which the invoice must pass late 发票推迟日期
+    private Timestamp custom;
     
-            'custom'        => {{paydate_custom}}
-            'scaledDetails' => {{paydate_scaledDetails}},
-            'deadlines' => array(
-            array(
-            'date'      => {{date}},
-            'amount'    => {{amount}},
-            ),
-    array(
-                    'date'      => {{date}},
-            'amount'    => {{amount}},
-            ),
-            )
-            ),
-
-    
+    //时间期限
+    private List<SellsyDeadlinesEnter> deadlines;
 }
