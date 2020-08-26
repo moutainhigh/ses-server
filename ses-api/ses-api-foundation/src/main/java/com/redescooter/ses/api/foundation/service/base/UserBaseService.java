@@ -68,4 +68,14 @@ public interface UserBaseService {
      * @return
      **/
     public boolean checkActivat(String email);
+
+
+    /**
+     * @Author Aleks
+     * @Description 获取用户的id
+     * @Date  2020/8/26 15:40
+     * @Param
+     * @return
+     **/
+    Long getUserId(String email,List<Integer> types);
 }

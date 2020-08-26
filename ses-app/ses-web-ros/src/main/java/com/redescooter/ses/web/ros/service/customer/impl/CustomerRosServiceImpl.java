@@ -2,6 +2,8 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.*;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -228,14 +230,20 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             editUserProfileEnter.setEmail(customer.getEmail());
             editUserProfileEnter.setFirstName(enter.getCustomerFirstName());
             editUserProfileEnter.setLastName(enter.getCustomerLastName());
-
+            List<Integer> userTypeList = new ArrayList<>();
             // 已创建的是web 账户
             if (customer.getTenantId() != 0) {
+                // corporate的用户文件表会存在邮箱重复的可能，所以这里需要取到platform的userId，带进去作为条件查询
+                userTypeList.add(AccountTypeEnums.WEB_RESTAURANT.getAccountType().intValue());
+                userTypeList.add(AccountTypeEnums.WEB_EXPRESS.getAccountType().intValue());
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
                 // saas 更新个人信息
                 userProfileService.editUserProfile2B(editUserProfileEnter);
             }
             if (customer.getTenantId() == 0 && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
                 // TOc 更新个人信息
+                userTypeList.add(AccountTypeEnums.APP_PERSONAL.getAccountType().intValue());
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
                 userProfileService.editUserProfile2C(editUserProfileEnter);
             }
         }

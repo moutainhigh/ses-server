@@ -660,11 +660,11 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-        if(Strings.isNullOrEmpty(enter.getProductType())){
+//        if(Strings.isNullOrEmpty(enter.getProductType())){
             //除整车外的所有产品列表
             List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
             scooterProductList.addAll(partProductList);
-        }
+//        }
 
         if (CollectionUtils.isEmpty(scooterProductList)) {
             return new ArrayList<>();

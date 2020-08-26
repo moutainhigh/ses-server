@@ -206,4 +206,18 @@ public class UserBaseServiceImpl implements UserBaseService {
         return flag;
     }
 
+    @Override
+    public Long getUserId(String email, List<Integer> types) {
+        Long userId = 0L;
+        QueryWrapper<PlaUser>  qw = new QueryWrapper<>();
+        qw.eq(PlaUser.COL_LOGIN_NAME,email);
+        qw.in(PlaUser.COL_USER_TYPE,types);
+        qw.last("limit 1");
+        PlaUser user = userMapper.selectOne(qw);
+        if(user != null){
+            userId = user.getId();
+        }
+        return userId;
+    }
+
 }
