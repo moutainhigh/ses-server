@@ -421,7 +421,7 @@ public class InquiryServiceImpl implements InquiryService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryResult inquiry : list) {
-                inquiry.setAcceptanceTime(DateUtil.dateAddHour(inquiry.getAcceptanceTime(),8));
+                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(),8));
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
@@ -462,10 +462,10 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
         map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
         map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
         map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
         map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
-        map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getAcceptanceTime(),""));
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
+        map.put("CREATE TIME", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
         return map;
     }
 

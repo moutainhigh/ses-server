@@ -6,6 +6,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -659,10 +660,11 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-
-        //除整车外的所有产品列表
-        List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
-        scooterProductList.addAll(partProductList);
+        if(Strings.isNullOrEmpty(enter.getProductType())){
+            //除整车外的所有产品列表
+            List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
+            scooterProductList.addAll(partProductList);
+        }
 
         if (CollectionUtils.isEmpty(scooterProductList)) {
             return new ArrayList<>();
