@@ -130,8 +130,6 @@
         inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
         <where>
             and product.dr=0
-            <if test="enter.productType !=null and enter.productType !=''">
-            </if>
             <choose>
                 <when test="enter.productType !=null and enter.productType !=''">
                     and product.product_type =#{enter.productType}
