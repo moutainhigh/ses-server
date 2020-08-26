@@ -1,18 +1,10 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
-import com.redescooter.ses.web.ros.enums.sellsy.DirectDebitPaymentGatewayEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyPayTypeEnums;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import javax.xml.soap.Text;
-import java.sql.Timestamp;
-import java.util.List;
-
 /**
  * @ClassName:SellsyCreateOrderEnter
  * @description: SellsyCreateOrderEnter
@@ -27,7 +19,7 @@ import java.util.List;
 @Builder
 public class SellsyCreateDocumentEnter {
     
-    private String doctype;
+    private CreateDocumentAttributesEnter document;
     
     
     /*private String doctype;
@@ -57,7 +49,7 @@ public class SellsyCreateDocumentEnter {
     private Timestamp serviceDateStop;
     
     //是否再PDF 上显示 联系方式
-    private SellsyBooleanEnums showcontacttonpdf;
+    private SellsyBooleanEnums showContactOnPdf;
 
     //显示 PDF 格式的父文件
     private SellsyBooleanEnums showParentOnPdf;

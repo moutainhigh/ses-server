@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
+import com.redescooter.ses.web.ros.enums.sellsy.DirectDebitPaymentGatewayEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyPayTypeEnums;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @ClassName:CreateDocumentAttributesEnter
@@ -60,21 +63,46 @@ public class CreateDocumentAttributesEnter {
     
     private String  hasTvaLawText;
     
-
-
-            'hasTvaLawText'     => {{hasTvaLawText}},
-            'currency'          => {{currency}},
-            'doclayout'         => {{doclayout}},
-            'doclang'           => {{doclang}},
-            'payMediums'        => {{payMediums}},
-            'docspeakerStaffId'	=> {{docspeakerStaffId}},
-            'useServiceDates'	=> {{useServiceDates}},
-            'serviceDateStart'	=> {{serviceDateStart}},
-            'serviceDateStop'	=> {{serviceDateStop}},
-            'showContactOnPdf'	=> {{showContactOnPdf}},
-            'showParentOnPdf'	=> {{showParentOnPdf}},
-            'conditionDocShow'  => {{conditionDocShow}}
-            'corpAddressId'     => {{corpAddressId}},
-            'enabledPaymentGateways' => {{enabledPaymentGateways}}
-            'directDebitPaymentGateway' => {{directDebitPaymentGateway}}
+    //Current document currency ID 当前文件货币 ID
+    private int currency;
+    
+    //布局Id
+    private int doclayout;
+    
+    //翻译语言
+    private int doclang;
+    
+    //Pay mean(s) array of IDs 支付平均值 id 数组
+    private List<Integer> payMediums;
+    
+    //参考人员
+    private int docspeakerStaffId;
+    
+    //是否使用当前时间
+    private SellsyBooleanEnums useServiceDates;
+    
+    //服务开始时间
+    private Timestamp serviceDateStart;
+    
+    //服务结束时间
+    private Timestamp serviceDateStop;
+    
+    //是否再PDF 上显示 联系方式
+    private SellsyBooleanEnums showContactOnPdf;
+    
+    //显示 PDF 格式的父文件
+    private SellsyBooleanEnums showParentOnPdf;
+    
+    //需方确认及接受条件
+    private SellsyBooleanEnums conditionDocShow;
+    
+    //公司地址
+    private int corpAddressId;
+    
+    //支付方式
+    private SellsyPayTypeEnums enabledPaymentGateways;
+    
+    //是否直接付款
+    private DirectDebitPaymentGatewayEnums directDebitPaymentGateway;
+    
 }

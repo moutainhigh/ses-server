@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 public enum DirectDebitPaymentGatewayEnums {
     
     N("N","不启动"),
-    STRIPE("stripe","条纹"),
-    GOCARDLESS("gocardless","无声的");
+    stripe("stripe","条纹"),
+    gocardless("gocardless","无声的");
     
     private String code;
     
