@@ -70,7 +70,7 @@
         WHERE
         stock.dr=0
         <if test="enter.stockType != ''and enter.stockType != null">
-            and stock.product_type=#{enter.stockType}
+            and stock.materiel_product_type=#{enter.stockType}
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
