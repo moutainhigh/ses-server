@@ -66,20 +66,6 @@
             )
         </if>
     </sql>
-    <sql id="where_outWhProductList">
-        WHERE
-        stock.dr=0
-        <if test="enter.stockType != ''and enter.stockType != null">
-            and stock.materiel_product_type=#{enter.stockType}
-        </if>
-        <if test="enter.keyword != ''and enter.keyword != null">
-            and (
-            part.cn_name like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.parts_number like concat ("%",#{enter.keyword},"%")
-            )
-        </if>
-    </sql>
     <sql id="where_outWhPartList">
         WHERE
         stock.dr=0
@@ -758,13 +744,13 @@ FROM
         ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type = 4
         LEFT JOIN ope_regional_price_sheet sheet
         ON sheet.parts_product_id = part.id and sheet.dr = 0 and sheet.currency_unit = #{amountType}
-        <include refid="where_outWhProductList"/>
+        <include refid="where_outWhPartList"/>
         UNION
-        select count(*) as total
+        select  count(*) as total
         from ope_fr_stock stock
-        inner JOIN ope_parts part
+        inner JOIN ope_parts_product part
         ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
-        LEFT JOIN ope_price_sheet sheet on sheet.parts_id = part.id and sheet.dr = 0
+        LEFT JOIN ope_price_sheet sheet on sheet.parts_id=part.id and sheet.dr = 0
         <include refid="where_outWhPartList"/>
         )outWh
     </select>
@@ -785,7 +771,7 @@ FROM
         ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type = 4
         LEFT JOIN ope_regional_price_sheet sheet
         ON sheet.parts_product_id = part.id and sheet.dr = 0 and sheet.currency_unit = #{amountType}
-        <include refid="where_outWhProductList"/>
+        <include refid="where_outWhPartList"/>
         UNION
         select stock.id as id,
         stock.materiel_product_id AS partId,
@@ -800,7 +786,7 @@ FROM
         inner JOIN ope_parts_product part
         ON stock.materiel_product_id = part.id and part.dr = 0 and stock.materiel_product_type != 4
         LEFT JOIN ope_price_sheet sheet on sheet.parts_id=part.id and sheet.dr = 0
-        <include refid="where_outWhProductList"/>
+        <include refid="where_outWhPartList"/>
         )aa
         order by aa.createdTime desc
         limit #{enter.startRow},#{enter.pageSize}
