@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.web.ros.enums.sellsy.DirectDebitPaymentGatewayEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyPayTypeEnums;
+import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,13 +29,15 @@ import java.util.List;
 public class CreateDocumentAttributesEnter {
     
     //发票类型
+    @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCTYPE_IS_EMPTY,message = "单据为空")
     private String doctype;
     
     //发票发髻Id
     private int parentId;
     
     //客户Id
-    private int thirdid;
+    @NotNull(code = ThirdValidationExceptionCode.SELLSY_CLIENT_ID_IS_EMPTY,message = "客户Id 为空")
+    private String thirdid;
     
     //客户引用
     private String thirdident;

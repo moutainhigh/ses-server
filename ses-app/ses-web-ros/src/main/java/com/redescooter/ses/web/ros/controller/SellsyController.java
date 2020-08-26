@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -75,9 +76,10 @@ public class SellsyController {
     
     
     @IgnoreLoginCheck
-    @ApiOperation(value = "发票创建", response = JSONObject.class)
+    @ApiOperation(value = "发票创建", response = GeneralResult.class)
     @PostMapping(value = "/createDocument")
-    public Response<JSONObject> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyCreateDocumentEnter enter) {
-        return new Response<> (documentService.createDocument(enter));
+    public Response<GeneralResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyCreateDocumentEnter enter) {
+        documentService.createDocument(enter);
+        return new Response<> (new GeneralResult());
     }
 }

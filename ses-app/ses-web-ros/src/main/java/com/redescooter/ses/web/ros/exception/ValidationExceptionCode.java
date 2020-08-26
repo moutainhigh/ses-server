@@ -5,7 +5,7 @@ package com.redescooter.ses.web.ros.exception;
  * @author: Darren
  * @create: 2019/01/17 10:26
  */
-public interface ValidationExceptionCode {
+public interface ValidationExceptionCode{
 
     // ###############################10001~10030公共入参异常#######################################
     //长度过长，长度为2-20字符
@@ -224,8 +224,4 @@ public interface ValidationExceptionCode {
     int MESSAGE_IS_EMPTY=10131;
     //消息为空
     int MESSAGE_IS_ILLEGAL=10132;
-    // sellsy 方法是空
-    int SELLSY_METHOD_IS_EMPTY=10133;
-    //sellsy 方法类型是空
-    int SELLSY_METHOD_TYPE_IS_EMPTY=10143;
 }

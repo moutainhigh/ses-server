@@ -111,7 +111,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()
                 .doctype(DocmentTypeEnums.INVOICE.getCode())
-                .thirdid(25630126)
+                .thirdid("25630126")
                 .thirdident(null)
                 .ident("Alex001")
                 .displayedDate(null)
@@ -172,7 +172,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .build());
         
         //第二行
-        rosMap.put(SellsyDocumentRosTypeEnums.EMPTY.getCode(), SellsyRowEnter.builder()
+        rosMap.put(SellsyDocumentRosTypeEnums.SHIPPING.getCode(), SellsyRowEnter.builder()
                 .row_type(SellsyDocumentRosTypeEnums.EMPTY.getValue())
                 .row_shipping(8189455)
                 .row_name("第二行")
@@ -257,7 +257,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         
         
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
-                .method(SellsyMethodConstant.Document_GetOne)
+                .method(SellsyMethodConstant.Document_Create)
                 .params(enter)
                 .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                 .build();
