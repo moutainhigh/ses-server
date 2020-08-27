@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -13,6 +14,7 @@ import com.redescooter.ses.api.mobile.b.vo.RefuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,7 +54,8 @@ public class DeliveryController {
 
     @ApiOperation(value = "开始订单")
     @RequestMapping(value = "/start")
-    public Response<GeneralResult> start(@ModelAttribute StartEnter enter) {
+    @IgnoreLoginCheck
+    public Response<GeneralResult> start(@ModelAttribute @ApiParam("请求参数")StartEnter enter) {
         return new Response<>(deliveryService.start(enter));
     }
 

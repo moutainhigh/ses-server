@@ -1,8 +1,6 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.annotation.Regexp;
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.b.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -37,11 +35,9 @@ public class StartEnter extends GeneralEnter {
     private Boolean bluetoothCommunication = Boolean.FALSE;
 
     @ApiModelProperty(value = "经度")
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY, message = "经度为u空")
     private String lat;
 
     @ApiModelProperty(value = "纬度")
-    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY, message = "经度为空")
     private String lng;
 
     @ApiModelProperty(value = "距离 单位 米 ")
