@@ -15,6 +15,7 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.SaveAccountNodeEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
@@ -56,6 +57,9 @@ public class UserBaseServiceImpl implements UserBaseService {
 
     @Autowired
     private UserTokenMapper userTokenMapper;
+
+    @Autowired
+    private PlaTenantMapper tenantMapper;
 
     /**
      * 根据邮箱获取用户信息
@@ -229,6 +233,14 @@ public class UserBaseServiceImpl implements UserBaseService {
     public void custDataSynchTenant(SynchTenantEnter synchTenantEnter) {
         // 客户信息修改的时候，名称、地址信息需要同步到租户表
         QueryWrapper<PlaTenant>  qw = new QueryWrapper<>();
+        qw.eq(PlaTenant.COL_EMAIL,synchTenantEnter.getEmail());
+        qw.last("limit 1");
+        PlaTenant tenant = tenantMapper.selectOne(qw);
+        if(tenant != null){
+            tenant.setAddress(synchTenantEnter.getAddress());
+            tenant.setTenantName(synchTenantEnter.getCompanyName());
+            tenantMapper.updateById(tenant);
+        }
     }
 
 }

@@ -1253,18 +1253,18 @@ public class BomRosServiceImpl implements BomRosService {
             });
         }
         
-        qcResultEnterMap.forEach((key, value) -> {
-            Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
-            saveOpePartQcTemplateList.add(
-                    buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
-            
-            );
-            value.forEach(item -> {
-                saveOpePartQcTemplateBList.add(
-                        buildPartTemplateB(enter, templateId, item)
-                );
-            });
-        });
+//        qcResultEnterMap.forEach((key, value) -> {
+//            Long templateId = idAppService.getId(SequenceName.OPE_PART_DRAFT_QC_TEMPLATE);
+//            saveOpePartQcTemplateList.add(
+//                    buildOpePartTemplate(enter, key.getQcItemName(), templateId, null, QcSourceTypeEnums.MANUAL_ENTRY.getValue())
+//
+//            );
+//            value.forEach(item -> {
+//                saveOpePartQcTemplateBList.add(
+//                        buildPartTemplateB(enter, templateId, item)
+//                );
+//            });
+//        });
     }
     
     private OpePartDraftQcTemplateB buildPartTemplateB(SaveQcTemplateEnter enter, Long templateId, QcResultEnter item) {

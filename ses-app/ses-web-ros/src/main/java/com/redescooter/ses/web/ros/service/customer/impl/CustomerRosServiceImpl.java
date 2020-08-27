@@ -17,6 +17,7 @@ import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.tenant.SynchTenantEnter;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
@@ -265,6 +266,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         update.setContactFullName(enter.getContactFirstName() + " " + enter.getContactLastName());
         opeCustomerMapper.updateById(update);
 
+        // 修改客户的时候，数据同步到platform数据库的租户表(这个方法异步执行，不影响现有逻辑)
+        SynchTenantEnter tenantEnter = new SynchTenantEnter();
+        tenantEnter.setEmail(enter.getEmail());
+        tenantEnter.setCompanyName(enter.getCompanyName());
+        tenantEnter.setAddress(enter.getAddress());
+        userBaseService.custDataSynchTenant(tenantEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
