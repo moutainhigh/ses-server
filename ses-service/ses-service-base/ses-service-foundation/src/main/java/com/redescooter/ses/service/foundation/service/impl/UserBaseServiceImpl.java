@@ -8,13 +8,16 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.SynchTenantEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.SaveAccountNodeEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
@@ -25,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -53,6 +57,9 @@ public class UserBaseServiceImpl implements UserBaseService {
 
     @Autowired
     private UserTokenMapper userTokenMapper;
+
+    @Autowired
+    private PlaTenantMapper tenantMapper;
 
     /**
      * 根据邮箱获取用户信息
@@ -218,6 +225,22 @@ public class UserBaseServiceImpl implements UserBaseService {
             userId = user.getId();
         }
         return userId;
+    }
+
+    //这个方法做异步处理
+    @Async
+    @Override
+    public void custDataSynchTenant(SynchTenantEnter synchTenantEnter) {
+        // 客户信息修改的时候，名称、地址信息需要同步到租户表
+        QueryWrapper<PlaTenant>  qw = new QueryWrapper<>();
+        qw.eq(PlaTenant.COL_EMAIL,synchTenantEnter.getEmail());
+        qw.last("limit 1");
+        PlaTenant tenant = tenantMapper.selectOne(qw);
+        if(tenant != null){
+            tenant.setAddress(synchTenantEnter.getAddress());
+            tenant.setTenantName(synchTenantEnter.getCompanyName());
+            tenantMapper.updateById(tenant);
+        }
     }
 
 }
