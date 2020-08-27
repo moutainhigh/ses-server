@@ -45,7 +45,7 @@ public class StartEnter extends GeneralEnter {
     private String lng;
 
     @ApiModelProperty(value = "距离 单位 米 ")
-    //@NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY, message = "距离为空")
-    @Regexp(value= RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGLE,message = "数据非法")
+    @NotNull(code = ValidationExceptionCode.MILEAGE_IS_EMPTY, message = "距离为空")
+    //@Regexp(value= RegexpConstant.number,code = ValidationExceptionCode.DATA_IS_ILLEGLE,message = "数据非法")
     private String mileage;
 }
