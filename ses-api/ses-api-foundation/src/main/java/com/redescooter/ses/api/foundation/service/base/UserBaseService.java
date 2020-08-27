@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.foundation.vo.tenant.SynchTenantEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
@@ -68,4 +69,25 @@ public interface UserBaseService {
      * @return
      **/
     public boolean checkActivat(String email);
+
+
+    /**
+     * @Author Aleks
+     * @Description 获取用户的id
+     * @Date  2020/8/26 15:40
+     * @Param
+     * @return
+     **/
+    Long getUserId(String email,List<Integer> types);
+
+
+    /**
+     * @Author Aleks
+     * @Description  ros 修改客户的时候，数据同步到platform数据库的租户表
+     * @Date  2020/8/26 16:58
+     * @Param
+     * @return
+     **/
+    void custDataSynchTenant(SynchTenantEnter synchTenantEnter);
+
 }

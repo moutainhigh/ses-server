@@ -123,6 +123,8 @@ public class UserProfileServiceImpl implements UserProfileService {
         QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getInputTenantId());
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_EMAIL_1, enter.getEmail());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.last("limit 1");
         CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
         if (corUserProfile != null) {
             corUserProfile.setFirstName(enter.getFirstName());
