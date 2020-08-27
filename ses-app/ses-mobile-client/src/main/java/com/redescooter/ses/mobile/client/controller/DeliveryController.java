@@ -54,7 +54,6 @@ public class DeliveryController {
 
     @ApiOperation(value = "开始订单")
     @RequestMapping(value = "/start")
-    @IgnoreLoginCheck
     public Response<GeneralResult> start(@ModelAttribute @ApiParam("请求参数")StartEnter enter) {
         return new Response<>(deliveryService.start(enter));
     }
