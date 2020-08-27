@@ -15,9 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum SellsyGlobalDiscountUnitEnums {
-    
-    PERCENT("percent","百分比","percent"),
-    AMOUNT("amount","总金额","amount");
+
+    percent("percent", "百分比", "percent"), amount("amount", "总金额", "amount");
     
     private String code;
     

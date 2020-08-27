@@ -1,10 +1,9 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyGlobalDiscountUnitEnums;
+
+import lombok.*;
 
 /**
  * @ClassName:SellsyRowEnter
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SellsyRowEnter {
     
-    //行类型
+    // 行类型 由SellsyDocumentRosTypeEnums给出默认值
     private String row_type;
     
     //行包装
@@ -32,7 +31,7 @@ public class SellsyRowEnter {
     //行金额 行单价 必填 int 或者字符串 “0”
     private String row_unitAmount;
     
-    //税率编号Id 必填
+    // 税率编号Id 必填 默认为20的税率 以提供相关的税率列表
     private Integer row_taxid;
     
     // 税率 id (如果有双列 = y 需要)
@@ -42,27 +41,27 @@ public class SellsyRowEnter {
     private Integer row_qt;
     
     //行选项  Y, N 默认为N
-    private String row_isOption;
+    private SellsyBooleanEnums row_isOption;
     
-    // 行折扣金额 默认0
+    // 行折扣金额 默认0 如果是 百分数 必须是 1-100的整数
     private float row_discount;
     
     //单位 amount, percent
-    private String row_discountUnit;
+    private SellsyGlobalDiscountUnitEnums row_discountUnit;
     
-    // 行账户 暂定为String
+    // 账户Id 暂定为String 暂时未知 需要测试
     private Integer row_accountingCode;
     
-    //发货名称在您的帐户中定义
+    // 发货名称
     private int row_shipping;
     
-    //目录Id
+    // 产品Id
     private int row_linkedid;
     
-    //目录链接
+    // 产品的decli ID
     private int row_declid;
     
-    //行描述
+    // 行备注
     private String row_notes;
     
     //仓库Id
@@ -85,17 +84,4 @@ public class SellsyRowEnter {
     
     //行单位 默认账户单位Id 必填
     private String row_unit;
-/**
- * 0-9 个对象 默认值
- *
- * 1、  row_typ=packaging
- * 2、row_typ=shipping
- * 3、row_type=item
- * 4、 row_type=once
- * 5、row_type=sum
- * 6、row_type=title
- * 7、row_type=comment
- * 8、row_type=break
- * 9、row_type=empty
-  */
 }

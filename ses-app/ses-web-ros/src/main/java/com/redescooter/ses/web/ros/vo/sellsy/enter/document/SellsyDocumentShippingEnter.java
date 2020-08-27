@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyWeightUnitEnums;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -29,17 +26,17 @@ public class SellsyDocumentShippingEnter {
     private float weight;
     
     //重量单位 'g', 'kg
-    private String weightUnit;
+    private SellsyWeightUnitEnums weightUnit;
     
-    //券
+    // 体积
     private float volume;
     
-    //订单号
+    // 物流单号
     private String trackingNumber;
     
-    //查询网页地址
+    // 物流查询网页地址
     private String trackingUrl;
     
-    //预计交货日期
+    // 预计送达时间
     private Timestamp date;
 }

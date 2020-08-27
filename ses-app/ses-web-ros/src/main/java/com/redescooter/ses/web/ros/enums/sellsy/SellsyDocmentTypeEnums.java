@@ -14,14 +14,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum DocmentTypeEnums {
-    
-    INVOICE("invoice","发票"),
-    ESTIMATE("estimate","报价单"),
-    PROFORMA("proforma","形式表"),
-    DELIVERY("delivery","货代配送单"),
-    ORDER("order","订单"),
-    CREDITNOTE("creditnote","资产清单");
+public enum SellsyDocmentTypeEnums {
+
+    invoice("invoice", "发票"), estimate("estimate", "报价单"), proforma("proforma", "形式表"), delivery("delivery", "货代配送单"),
+    order("order", "订单"), creditnote("creditnote", "资产清单");
     
     
     private String code;

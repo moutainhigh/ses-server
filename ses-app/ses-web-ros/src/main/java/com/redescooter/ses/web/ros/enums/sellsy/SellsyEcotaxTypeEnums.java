@@ -5,22 +5,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @ClassName:DirectDebitPaymentGatewayEnums
- * @description: DirectDebitPaymentGatewayEnums
+ * @ClassName:EcotaxTypeEnums
+ * @description: EcotaxTypeEnums
  * @author: Alex
  * @Version：1.3
- * @create: 2020/08/24 13:37
+ * @create: 2020/08/25 17:08
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum DirectDebitPaymentGatewayEnums {
+public enum SellsyEcotaxTypeEnums {
     
-    N("N","不启动"),
-    stripe("stripe","条纹"),
-    gocardless("gocardless","无声的");
+    INC("inc","使用","inc"),
+    EXC("exc","不使用","exc");
     
     private String code;
+    
+    private String message;
     
     private String value;
 }

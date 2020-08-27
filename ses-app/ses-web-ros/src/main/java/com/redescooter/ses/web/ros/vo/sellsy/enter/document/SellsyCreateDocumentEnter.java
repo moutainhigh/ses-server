@@ -1,14 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +25,7 @@ public class SellsyCreateDocumentEnter {
     //付款周期
     private SellsyPaydateAttributesEnter paydate;
     
-    //订单信息
+    // 产品信息
     private SellsyDocumentShippingEnter shipping;
     
     //货币信息

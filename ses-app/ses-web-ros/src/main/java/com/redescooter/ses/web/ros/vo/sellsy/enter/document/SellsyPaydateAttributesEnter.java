@@ -24,12 +24,13 @@ import java.util.List;
 @Builder
 public class SellsyPaydateAttributesEnter {
 
+    // 结算编号
     private int id;
     
-    //期望天数之前通过的发票迟交 有账户默认值
+    // 期望天数之前通过的发票迟交 有账户默认值 期望声称发票前多少天付款
     private int xdays;
     
-    //月底迟交发票
+    // 月底迟交发票 月底交付发票
     private SellsyBooleanEnums endmonth;
     
     //结算细节 Yes, if the settlement period has selected the syscode 'scaled'	 由账户默认值
@@ -38,6 +39,6 @@ public class SellsyPaydateAttributesEnter {
     //Date on which the invoice must pass late 发票推迟日期
     private Timestamp custom;
     
-    //时间期限
+    // 时间期限 设置付款周期 例如分期付款
     private List<SellsyDeadlinesEnter> deadlines;
 }

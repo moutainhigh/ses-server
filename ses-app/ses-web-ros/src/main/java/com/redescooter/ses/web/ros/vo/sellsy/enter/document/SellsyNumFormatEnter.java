@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyCurrencySymbolLocationEnms;
+import lombok.*;
 
 /**
  * @ClassName:SellsyNumFormatEnter
@@ -24,7 +21,7 @@ public class SellsyNumFormatEnter {
     private int currencyid;
     
     // enum('left', 'right', 'both', 'none') 货币符号位置 默认right
-    private String currencypos;
+    private SellsyCurrencySymbolLocationEnms currencypos;
     
     //十进制分隔符(小数点符号) num(',', '.') 默认 。
     private String decimals;
@@ -32,6 +29,6 @@ public class SellsyNumFormatEnter {
     //enum(' ', 'right') 数字组分隔符 默认 	' '
     private String thousands;
 
-    //小数点位置；小数位；小数位数 无默认值
-    private String precision;
+    // 小数点位置；小数位；小数位数 无默认值 主要指保留几位小数
+    private String precision = "2";
 }

@@ -52,10 +52,58 @@ public interface SellsyMethodConstant {
     String Client_GetMargin="Client.getMargin";
     
     
-    
+    // 单据列表
     String Document_GetList="Document.getList";
-    
+
+    // 查询指定单据
     String Document_GetOne="Document.getOne";
-    
+
+    // 单据创建
     String Document_Create="Document.create";
+
+    // 获取货币列表
+    String AccountPrefs_GetCurrencies = "AccountPrefs.getCurrencies";
+
+    // 获取当前公司使用的货币
+    String AccountPrefs_GetCurrency = "AccountPrefs.getCurrency";
+
+    // 地址列表
+    String AccountPrefs_GetAddressList = "AccountPrefs.getAddressList";
+
+    // 查询指定地址
+    String AccountPrefs_GetAddress = "AccountPrefs.getAddress";
+
+    // 账户设置的布局列表
+    String Accountdatas_GetDocLayouts = "Accountdatas.getDocLayouts";
+
+    // 获取支付日期列表
+    String Accountdatas_GetPayDates = "Accountdatas.getPayDates";
+
+    // 关税类型
+    String Accountdatas_GetRateCategories = "Accountdatas.getRateCategories";
+
+    // 查询指定的关税类型
+    String Accountdatas_GetRateCategory = "Accountdatas.getRateCategory";
+
+    // 账户翻译语言，列表
+    String Accountdatas_GetTranslationLanguages = "Accountdatas.getTranslationLanguages";
+
+    // 获取税率列表
+    String Accountdatas_GetTaxes = "Accountdatas.getTaxes";
+
+    // 查询指定税率
+    String Accountdatas_GetTaxe = "Accountdatas.getTaxe";
+
+    // 获取计量单位列表
+    String Accountdatas_GetUnits = "Accountdatas.getUnits";
+
+    // 计量单位
+    String Accountdatas_GetUnit = "Accountdatas.getUnit";
+
+    // 物流供应商
+    String Accountdatas_GetShippingList = "Accountdatas.getShippingList";
+
+    // 查询指定物流供应商
+    String Accountdatas_GetShipping = "Accountdatas_GetShipping";
+
 }

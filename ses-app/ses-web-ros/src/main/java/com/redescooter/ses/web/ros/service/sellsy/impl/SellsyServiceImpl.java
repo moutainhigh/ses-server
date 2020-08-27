@@ -1,19 +1,10 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
-import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyQueryClientOneEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
-import com.sellsy.apientities.SellsyResponseInfo;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
@@ -34,7 +25,7 @@ import java.util.List;
  */
 @Log4j2
 @Service
-public class SellsyServiceImpl implements SellsyService {
+public class SellsyServiceImpl<T> implements SellsyService<T> {
     
     @Autowired
     private SellsyConfig sellsyConfig;
@@ -69,5 +60,29 @@ public class SellsyServiceImpl implements SellsyService {
             System.out.println("--------------调用出现问题-----------------");
         }
         return sellsyGeneralResult;
+    }
+
+    /**
+     * extractResponseList 会抛出异常所以进行统一的格式处理
+     * 
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    @Override
+    public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+        List<T> resultList = new ArrayList<>();
+
+        if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
+            return resultList;
+        }
+
+        try {
+            resultList = (List<T>)JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(),
+                t.getClass());
+        } catch (Exception e) {
+
+        }
+        return resultList;
     }
 }

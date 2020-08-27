@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sellsy.enter;
+package com.redescooter.ses.web.ros.vo.sellsy.enter.client;
 
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
 import lombok.AllArgsConstructor;

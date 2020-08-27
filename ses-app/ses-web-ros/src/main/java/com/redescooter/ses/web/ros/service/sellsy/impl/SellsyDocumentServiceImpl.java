@@ -4,26 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
-import com.redescooter.ses.web.ros.enums.sellsy.DirectDebitPaymentGatewayEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.DocmentTypeEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocumentRosTypeEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyGlobalDiscountUnitEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyPayTypeEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyRowUnitEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.*;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.CreateDocumentAttributesEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentByIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentShippingEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyNumFormatEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyPaydateAttributesEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import com.sellsy.apientities.SellsyResponseInfo;
@@ -32,7 +18,6 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +95,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         
         CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()
-                .doctype(DocmentTypeEnums.INVOICE.getCode())
+            .doctype(SellsyDocmentTypeEnums.invoice)
                 .thirdid("25630126")
                 .thirdident(null)
                 .ident("Alex001")
@@ -122,9 +107,8 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .displayShipAddress(SellsyBooleanEnums.N)
                 .rateCategory(null)
                 .globalDiscount(0)
-                .globalDiscountUnit(SellsyGlobalDiscountUnitEnums.PERCENT.getValue())
-                .hasDoubleVat(SellsyBooleanEnums.N.getValue())
-                .hasTvaLawText(SellsyBooleanEnums.N.getValue())
+            .globalDiscountUnit(SellsyGlobalDiscountUnitEnums.percent).hasDoubleVat(SellsyBooleanEnums.N)
+            .hasTvaLawText(SellsyBooleanEnums.N)
                 .currency(1)
                 .doclayout(93787)
                 .doclang(0)
@@ -138,7 +122,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .conditionDocShow(SellsyBooleanEnums.N)
                 .corpAddressId(86382253)
                 .enabledPaymentGateways(SellsyPayTypeEnums.adyen)
-                .directDebitPaymentGateway(DirectDebitPaymentGatewayEnums.N)
+            .directDebitPaymentGateway(SellsyDirectDebitPaymentGatewayEnums.N)
                 .build();
         
         //Yes, if 'paydate' array exists
@@ -165,9 +149,9 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .row_taxid(3497473)
                 .row_tax2id(null)
                 .row_qt(1)
-                .row_isOption(SellsyBooleanEnums.N.getValue())
+            .row_isOption(SellsyBooleanEnums.N)
                 .row_discount(20)
-                .row_discountUnit(SellsyGlobalDiscountUnitEnums.PERCENT.getValue())
+            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_accountingCode(1051763)
                 .build());
         
@@ -180,9 +164,9 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .row_taxid(3497473)
                 .row_tax2id(null)
                 .row_qt(1)
-                .row_isOption(SellsyBooleanEnums.N.getValue())
+            .row_isOption(SellsyBooleanEnums.N)
                 .row_discount(20)
-                .row_discountUnit(SellsyGlobalDiscountUnitEnums.PERCENT.getValue())
+            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_accountingCode(1051763)
                 .build());
         
@@ -199,10 +183,10 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .row_tax2id(null)
                 .row_qt(1)
                 .row_whid(null)
-                .row_isOption(SellsyBooleanEnums.N.getValue())
+            .row_isOption(SellsyBooleanEnums.N)
                 .row_purchaseAmount("0")
                 .row_discount(20)
-                .row_discountUnit(SellsyGlobalDiscountUnitEnums.PERCENT.getValue())
+            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_serial("0")
                 .row_barcode("123")
                 .row_accountingCode(1051763)
@@ -219,9 +203,9 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .row_taxid(3497473)
                 .row_tax2id(null)
                 .row_qt(1)
-                .row_isOption(SellsyBooleanEnums.N.getValue())
+            .row_isOption(SellsyBooleanEnums.N)
                 .row_discount(20)
-                .row_discountUnit(SellsyGlobalDiscountUnitEnums.PERCENT.getValue())
+            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_accountingCode(1051763)
                 .build());
         

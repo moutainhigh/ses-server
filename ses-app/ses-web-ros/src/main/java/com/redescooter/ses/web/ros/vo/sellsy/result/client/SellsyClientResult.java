@@ -1,6 +1,7 @@
-package com.redescooter.ses.web.ros.vo.sellsy.result;
+package com.redescooter.ses.web.ros.vo.sellsy.result.client;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyAvatarGeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

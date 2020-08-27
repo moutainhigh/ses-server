@@ -17,4 +17,7 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
     
     //单据类型为空
     int SELLSY_DOCTYPE_IS_EMPTY =11003;
+
+    // 文档主题为空
+    int SELLSY_DOCUMENT_OBJECT_IS_EMPTY = 11004;
 }

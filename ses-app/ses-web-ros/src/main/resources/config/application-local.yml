@@ -248,8 +248,9 @@ constant-us-email:
     - 123@qq.com
 
 sellsy:
-    consumer-token: b5f031688a37f258e85aa01d9bc6e400f32bc9ea
-    consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
-    user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
-    user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+  consumer-token: b5f031688a37f258e85aa01d9bc6e400f32bc9ea
+  consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
+  user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
+  user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+  decimal-places: 2 #指保留几位小数
 

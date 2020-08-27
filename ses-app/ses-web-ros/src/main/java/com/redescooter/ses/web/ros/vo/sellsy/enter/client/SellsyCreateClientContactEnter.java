@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.sellsy.enter;
+package com.redescooter.ses.web.ros.vo.sellsy.enter.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
