@@ -416,11 +416,17 @@ public class WhOutServiceImpl implements WhOutService {
         //保存库存条目
         buildProductItem(enter, opeStockBillList, opeFrStockList, opeFrStockProductList);
 
-        opeFrStockBillService.saveOrUpdateBatch(opeStockBillList);
-        //库存累加
-        opeFrStockService.saveOrUpdateBatch(opeFrStockList);
-        //子条目累加
-        opeFrStockProductService.saveOrUpdateBatch(opeFrStockProductList);
+        if (CollectionUtils.isNotEmpty(opeStockBillList)) {
+            opeFrStockBillService.saveOrUpdateBatch(opeStockBillList);
+        }
+        if (CollectionUtils.isNotEmpty(opeFrStockList)) {
+            // 库存累加
+            opeFrStockService.saveOrUpdateBatch(opeFrStockList);
+        }
+        if (CollectionUtils.isNotEmpty(opeFrStockProductList)) {
+            // 子条目累加
+            opeFrStockProductService.saveOrUpdateBatch(opeFrStockProductList);
+        }
 
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.IN_WH.getValue());
@@ -999,7 +1005,9 @@ public class WhOutServiceImpl implements WhOutService {
 
                 opeStockBillList.add(opeStockBill);
             });
-            opeStockPurchasService.updateBatch(stockPurchasList);
+            if (CollectionUtils.isNotEmpty(stockPurchasList)) {
+                opeStockPurchasService.updateBatch(stockPurchasList);
+            }
         }
         //出库单集合
         opeStockBillService.batchInsert(opeStockBillList);
@@ -1096,6 +1104,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 opeFrStockBill.getStockId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
+                    break;
                 }
                 if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
                     opeStockScooterList.forEach(item -> {
@@ -1109,6 +1118,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 opeFrStockBill.getId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
+                    break;
                 }
             }
         }
@@ -1136,6 +1146,7 @@ public class WhOutServiceImpl implements WhOutService {
                                         opeFrStockBill.getStockId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
+                            break;
                         }
                         if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
                             opeStockScooterList.forEach(stockScooter -> {
@@ -1149,10 +1160,10 @@ public class WhOutServiceImpl implements WhOutService {
                                         opeFrStockBill.getId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
+                            break;
                         }
                         opeStockBillList.add(opeFrStockBill);
                         opeFrStockList.add(stock);
-                        break;
                     }
                 }
             }
