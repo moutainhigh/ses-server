@@ -541,7 +541,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         OpeCustomer saveCustomer = new OpeCustomer();
         saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
         saveCustomer.setDr(0);
-        saveCustomer.setTenantId(enter.getTenantId());
+        saveCustomer.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
         saveCustomer.setTimeZone(enter.getTimeZone());
         saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
         saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));

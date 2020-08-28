@@ -749,7 +749,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         product.setSumPartsQty(1);
         product.setModel(p.getPartsNumber());
         product.setPictures(p.getDwg());
-        product.setAfterSalesFlag(StringUtils.equals(p.getSnClass(), BomSnClassEnums.SSC.getValue()) ? true : false);
+        product.setAfterSalesFlag(StringUtils.equals(p.getSnClass(), BomSnClassEnums.SSC.getValue()));
         product.setAddedServicesFlag(false);
         product.setRevision(0);
         product.setCreatedBy(enter.getUserId());
