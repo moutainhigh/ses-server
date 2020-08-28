@@ -23,4 +23,31 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     // 产品类型为空
     int SELLSY_CATALOGUE_TYPE_IS_EMPTY = 11005;
+
+    // 开具发票时间
+    int SELLSY_DOCUMENT_DISPLAYEDDATE_IS_EMPTY = 11006;
+
+    // 发票上填充收货人地址
+    int SELLSY_DOCUMENT_DISPLAYSHIPADDRESS_IS_EMPTY = 11007;
+
+    // 货币单位为空
+    int SELLSY_DOCUMENT_CURRENCY_IS_EMPTY = 11008;
+
+    // 发票布局为空
+    int SELLSY_DOCUMENT_DOCLAYOUT_IS_EMPTY = 11009;
+
+    // 发票语言为空
+    int SELLSY_DOCUMENT_LANG_IS_EMPTY = 11010;
+
+    // 支付方式为空
+    int SELLSY_DOCUMENT_PAY_TYPE_IS_EMPTY = 11011;
+
+    // 公司地址为空
+    int SELLSY_DOCUMENT_COMPANY_ADDRESS_IS_EMPTY = 11012;
+
+    // 产品数量为空
+    int SELLSY_DOCUMENT_PRODUCT_QTY_IS_EMPTY = 11013;
+
+    // 产品重量为空
+    int SELLSY_DOCUMENT_PRODUCT_WIGHT_IS_EMPTY = 11014;
 }

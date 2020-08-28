@@ -57,7 +57,7 @@ public class SellsyClientServiceImpl implements SellsyClientService {
      * @return
      */
     @Override
-    public SellsyClientResult queryClientById(SellsyQueryClientOneEnter enter) {
+    public SellsyClientResult queryClientOne(SellsyQueryClientOneEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
                 .method(SellsyMethodConstant.Client_GetOne)
                 .params(enter)

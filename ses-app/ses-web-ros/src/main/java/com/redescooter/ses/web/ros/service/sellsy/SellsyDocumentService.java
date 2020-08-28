@@ -1,11 +1,12 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentByIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
+
+import java.util.List;
 
 /**
  * @ClassName:DocumentService
@@ -20,13 +21,13 @@ public interface SellsyDocumentService {
      *
      * @param enter
      */
-    public PageResult<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter);
+    public List<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter);
     
     /**
      * 查询指定单据
      * @param enter
      */
-    public JSONObject queryDocumentById(SellsyDocumentByIdEnter enter);
+    public JSONObject queryDocumentOne(SellsyDocumentOneEnter enter);
     
     /**
      * 发票创建

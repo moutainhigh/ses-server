@@ -1,99 +1,139 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
-import com.redescooter.ses.web.ros.enums.sellsy.*;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocmentTypeEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.exception.ThirdExceptionCodeEnums;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
-import com.sellsy.apientities.SellsyResponseInfo;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName:DocumentServiceImpl
  * @description: DocumentServiceImpl
- * @author: Alex
- * @Version：1.3
+ * @author: Alex @Version：1.3
  * @create: 2020/08/26 14:34
  */
 @Log4j2
 @Service
 public class SellsyDocumentServiceImpl implements SellsyDocumentService {
-    
+
     @Autowired
     private SellsyService sellsyService;
-    
+
+    @Autowired
+    private SellsyClientService sellsyClientService;
+
+    @Autowired
+    private SellsyAccountSettingService sellsyAccountSettingService;
+
     /**
      * 单据列表
      *
      * @param enter
      */
     @Override
-    public PageResult<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter) {
-        SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
-                .method(SellsyMethodConstant.Document_GetList)
-                .params(enter)
-                .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .build();
-        
+    public List<SellsyDocumentListResult> queryDocumentList(SellsyDocumentListEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+            SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetList).params(enter)
+                .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
+
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        
-        //返回值赋值 sellsyGeneralResult
-        List<SellsyDocumentListResult> resultList = null;
-        SellsyResponseInfo infos = null;
-        try {
-            resultList = JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), SellsyDocumentListResult.class);
-            infos = sellsyGeneralResult.getResult().getInfos();
-        } catch (Exception e) {
-        
-        }
-        if (infos == null) {
-            return PageResult.createZeroRowResult(enter);
-        }
-        return PageResult.create(enter, infos.getNbtotal(), resultList);
+
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, SellsyDocumentListResult.class);
     }
-    
+
     /**
      * 查询指定单据
      *
      * @param enter
      */
     @Override
-    public JSONObject queryDocumentById(SellsyDocumentByIdEnter enter) {
-        SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
-                .method(SellsyMethodConstant.Document_GetOne)
-                .params(enter)
-                .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
-                .build();
+    public JSONObject queryDocumentOne(SellsyDocumentOneEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+            SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetOne).params(enter)
+                .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue()).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         log.info("-------------result结果返回值{}--------------------", sellsyGeneralResult.getResult().toString());
-        
+
         return JSONObject.parseObject(sellsyGeneralResult.getResult().toString());
     }
-    
+
     /**
      * 发票创建
      *
      * @param enter
      */
     @Transactional
-    @Override
     public void createDocument(SellsyCreateDocumentEnter enter) {
-        
-        CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
+
+        // 校验客户
+        SellsyClientResult sellsyClientResult =
+            sellsyClientService.queryClientOne(new SellsyQueryClientOneEnter(enter.getDocument().getThirdid()));
+        if (sellsyClientResult == null) {
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
+                ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
+        }
+        // 如果传入发票单号 ，则进行校验
+        if (StringUtils.isNotBlank(enter.getDocument().getIdent())) {
+            SellsyDocumentListEnter sellsyDocumentListEnter = SellsyDocumentListEnter.builder()
+                .doctype(SellsyDocmentTypeEnums.invoice.getCode()).ident(enter.getDocument().getIdent()).build();
+            List<SellsyDocumentListResult> sellsyDocumentListResultPageResult =
+                queryDocumentList(sellsyDocumentListEnter);
+            if (CollectionUtils.isNotEmpty(sellsyDocumentListResultPageResult)) {
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_IS_ALREADY_EXIST.getCode(),
+                    ThirdExceptionCodeEnums.SELLSY_DOCUMENT_IS_ALREADY_EXIST.getMessage());
+            }
+        }
+
+        // 查询税率 是税前发票 还是税后发票
+        SellsyRateCategoryResult sellsyRateCategoryResult =
+            sellsyAccountSettingService.queryateCategoryOne(new SellsyIdEnter(enter.getDocument().getRateCategory()));
+        if (sellsyRateCategoryResult == null) {
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMNT_RATECATEGORY_IS_EMPTY.getCode(),
+                ThirdExceptionCodeEnums.SELLSY_DOCUMNT_RATECATEGORY_IS_EMPTY.getMessage());
+        }
+
+        // 货币单位校验
+        SellsyCurrencyResult sellsyCurrencyResult =
+            sellsyAccountSettingService.queryCurrencyOne(new SellsyIdEnter(enter.getDocument().getCurrency()));
+        if (sellsyCurrencyResult == null) {
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_CURRENCY_IS_NOT_EXIST.getCode(),
+                ThirdExceptionCodeEnums.SELLSY_DOCUMENT_CURRENCY_IS_NOT_EXIST.getMessage());
+        }
+
+        // 服务时间 校验
+        if (enter.getDocument().getUseServiceDates().equals(SellsyBooleanEnums.Y)) {
+            if (enter.getDocument().getServiceDateStart() != null || enter.getDocument().getServiceDateStop() != null) {
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_USESERVICEDATES_IS_EMPTY.getCode(),
+                    ThirdExceptionCodeEnums.SELLSY_DOCUMENT_USESERVICEDATES_IS_EMPTY.getMessage());
+            }
+        }
+
+        /*CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()
             .doctype(SellsyDocmentTypeEnums.invoice)
                 .thirdid("25630126")
@@ -245,6 +285,6 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .params(enter)
                 .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                 .build();
-        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);*/
     }
 }

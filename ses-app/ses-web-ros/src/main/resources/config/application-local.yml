@@ -274,4 +274,5 @@ sellsy:
   user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
   user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
   decimal-places: 2 #指保留几位小数
+  rate-category: TTC
 

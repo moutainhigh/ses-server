@@ -28,7 +28,7 @@ public class SellsyClientController {
     @PostMapping(value = "/queryClientById")
     public Response<SellsyClientResult>
         queryClientById(@ModelAttribute @ApiParam("请求参数") SellsyQueryClientOneEnter enter) {
-        return new Response<>(sellsyClientService.queryClientById(enter));
+        return new Response<>(sellsyClientService.queryClientOne(enter));
     }
 
     @IgnoreLoginCheck

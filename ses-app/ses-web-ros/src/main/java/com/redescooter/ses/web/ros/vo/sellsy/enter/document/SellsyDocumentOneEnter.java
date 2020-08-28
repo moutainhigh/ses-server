@@ -21,7 +21,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyDocumentByIdEnter {
+public class SellsyDocumentOneEnter {
     
     @ApiModelProperty(value = "单据类型",required = true)
     private String doctype;

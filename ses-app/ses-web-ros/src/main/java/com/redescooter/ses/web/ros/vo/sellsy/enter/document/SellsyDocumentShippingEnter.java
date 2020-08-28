@@ -20,9 +20,11 @@ import java.sql.Timestamp;
 public class SellsyDocumentShippingEnter {
 
     //包裹数量 默认为0
+    // @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_PRODUCT_QTY_IS_EMPTY,message = "产品数量为空")
     private int nbParcels;
     
     //总重量  默认为0
+    // @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_PRODUCT_WIGHT_IS_EMPTY,message = "产品重量为空")
     private float weight;
     
     //重量单位 'g', 'kg

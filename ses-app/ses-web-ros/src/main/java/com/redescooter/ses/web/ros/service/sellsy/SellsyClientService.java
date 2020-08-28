@@ -27,7 +27,7 @@ public interface SellsyClientService {
      * @param enter
      * @return
      */
-    public SellsyClientResult queryClientById(SellsyQueryClientOneEnter enter);
+    public SellsyClientResult queryClientOne(SellsyQueryClientOneEnter enter);
     
     /**
      * 客户创建
