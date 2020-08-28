@@ -20,4 +20,7 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     // 文档主题为空
     int SELLSY_DOCUMENT_OBJECT_IS_EMPTY = 11004;
+
+    // 产品类型为空
+    int SELLSY_CATALOGUE_TYPE_IS_EMPTY = 11005;
 }

@@ -19,7 +19,7 @@ public interface SellsyAccountSettingService {
      * 
      * @return
      */
-    public SellsyCurrencyResult queryCurrencyOne();
+    public SellsyCurrencyResult queryCurrencyOne(SellsyIdEnter enter);
 
     /**
      * 布局列表
@@ -101,6 +101,6 @@ public interface SellsyAccountSettingService {
     /**
      * 查询指定单位
      */
-    public SellsyUnitResult queryUnitOne();
+    public SellsyUnitResult queryUnitOne(SellsyIdEnter enter);
 
 }

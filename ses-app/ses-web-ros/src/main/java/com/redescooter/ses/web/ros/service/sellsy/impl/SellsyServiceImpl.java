@@ -1,7 +1,11 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
+import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -9,12 +13,14 @@ import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:SellsyServiceImpl
@@ -55,6 +61,7 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
         try {
             //执行请求
             result = sellsySpringRestExecutor.process(request);
+            log.info("----------------返回值{}---------------", result);
             sellsyGeneralResult.setResult(result);
         } catch (Exception e) {
             System.out.println("--------------调用出现问题-----------------");
@@ -70,7 +77,7 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
      * @return
      */
     @Override
-    public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, Class t) {
         List<T> resultList = new ArrayList<>();
 
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
@@ -78,11 +85,79 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
         }
 
         try {
-            resultList = (List<T>)JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(),
-                t.getClass());
+            // 当返回值是多个值是可以解析出来 返回值为单个值 无法解析
+            resultList = JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+        List<T> resultList = new ArrayList<>();
+        if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
+            return resultList;
+        }
+        try {
+            Map<String, T> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+            resultList.addAll(objMap.values());
         } catch (Exception e) {
 
         }
         return resultList;
+    }
+
+    /**
+     * 处理 以下格式数据 { "dateResult":{ "id":{ 目标对象 } }, "default": "3497458" }
+     *
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    @Override
+    public List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+        List<T> resultList = new ArrayList<>();
+        if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
+            return resultList;
+        }
+        try {
+            Map<String, JSONObject> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+            if (CollectionUtil.isEmpty(objMap)) {
+                return resultList;
+            }
+            objMap.keySet().forEach(item -> {
+                if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
+                    Map<String, T> targetMap =
+                        JSONObject.parseObject(objMap.get(item).toJSONString(), new TypeReference<Map<String, T>>() {});
+                    resultList.addAll(targetMap.values());
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+    /**
+     * json 处理单个对象
+     * 
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    @Override
+    public Object jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, Class t) {
+        if (sellsyGeneralResult.getResult() == null) {
+            return null;
+        }
+        Object result = null;
+        try {
+            result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), t);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

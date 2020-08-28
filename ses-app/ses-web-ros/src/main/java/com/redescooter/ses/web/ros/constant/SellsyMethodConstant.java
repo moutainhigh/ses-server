@@ -104,6 +104,16 @@ public interface SellsyMethodConstant {
     String Accountdatas_GetShippingList = "Accountdatas.getShippingList";
 
     // 查询指定物流供应商
-    String Accountdatas_GetShipping = "Accountdatas_GetShipping";
+    String Accountdatas_GetShipping = "Accountdatas.getShipping";
 
+    // 产品列表
+    String Catalogue_GetList = "Catalogue.getList";
+
+    // 产品详情
+    String Catalogue_GetOne = "Catalogue.getOne";
+
+    // 员工列表
+    String Staffs_GetList = "Staffs.getList";
+
+    String Staffs_GetGroups = "Staffs.getGroups";
 }

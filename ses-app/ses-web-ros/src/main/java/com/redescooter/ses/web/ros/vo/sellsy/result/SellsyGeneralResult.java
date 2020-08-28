@@ -2,16 +2,9 @@ package com.redescooter.ses.web.ros.vo.sellsy.result;
 
 import com.sellsy.apientities.SellsyResponseInfo;
 import com.sellsy.coreConnector.SellsyApiResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-import io.swagger.annotations.*;
-import org.apache.poi.ss.formula.functions.T;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:SellsyGeneralResult

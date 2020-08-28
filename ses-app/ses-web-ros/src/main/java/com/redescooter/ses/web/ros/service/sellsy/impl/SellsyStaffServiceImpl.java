@@ -1,13 +1,14 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyStaffService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffGroupResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffResult;
 import lombok.extern.log4j.Log4j2;
 import org.apache.dubbo.config.annotation.Service;
@@ -32,7 +33,7 @@ public class SellsyStaffServiceImpl implements SellsyStaffService {
 
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetRateCategories).params(null).build();
+                .method(SellsyMethodConstant.Staffs_GetList).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -42,17 +43,16 @@ public class SellsyStaffServiceImpl implements SellsyStaffService {
     /**
      * 查询指定员工
      * 
-     * @param enter
      * @return
      */
     @Override
-    public SellsyStaffResult queryStaffOne(SellsyIdEnter enter) {
+    public SellsyStaffGroupResult queryStaffGroups() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetRateCategories).params(null).build();
+                .method(SellsyMethodConstant.Staffs_GetGroups).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyStaffResult.class);
+        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyStaffGroupResult.class);
     }
 }

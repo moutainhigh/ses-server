@@ -10,6 +10,10 @@ package com.redescooter.ses.web.ros.constant;
 public interface SellsyConstant {
 
     String status="status";
+
+    String DEFAULT = "default";
+
+    String NO_PARAMETER = "";
   
     
 }

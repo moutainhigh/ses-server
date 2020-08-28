@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.ros.service.sellsy;
-
-import com.redescooter.ses.api.common.vo.base.PageEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
+
+import java.util.List;
 
 /**
  * @ClassName:SellsyClientService
@@ -18,9 +17,9 @@ public interface SellsyClientService {
     /**
      * 查询客户列表
      *
-     * @param enter
+     *
      */
-    public PageResult<SellsyClientResult> queryClientList(PageEnter enter);
+    public List<SellsyClientResult> queryClientList();
     
     /**
      * 客户查询

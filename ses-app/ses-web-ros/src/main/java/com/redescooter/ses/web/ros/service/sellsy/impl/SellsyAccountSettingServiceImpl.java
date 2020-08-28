@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
-import com.alibaba.fastjson.JSON;
+import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
 
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.AccountPrefs_GetCurrencies).params(null).build();
+                .method(SellsyMethodConstant.AccountPrefs_GetCurrencies).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyCurrencyResult());
@@ -42,16 +43,16 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
      * @return
      */
     @Override
-    public SellsyCurrencyResult queryCurrencyOne() {
+    public SellsyCurrencyResult queryCurrencyOne(SellsyIdEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.AccountPrefs_GetCurrency).params(null).build();
+                .method(SellsyMethodConstant.AccountPrefs_GetCurrency).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
         // 默认只有一种货币单位
 
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyCurrencyResult.class);
+        return (SellsyCurrencyResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyCurrencyResult.class);
     }
 
     /**
@@ -63,10 +64,10 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyLayoutResult> queryDocLayoutList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetDocLayouts).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetDocLayouts).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyLayoutResult());
+        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyLayoutResult());
     }
 
     /**
@@ -78,11 +79,11 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyPayDateResult> queryPayDateList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetPayDates).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetPayDates).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyPayDateResult());
+        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyPayDateResult());
     }
 
     /**
@@ -92,7 +93,8 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyRateCategoryResult> queryRateCategoryList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetRateCategories).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetRateCategories).params(SellsyConstant.NO_PARAMETER)
+                .build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyRateCategoryResult());
@@ -111,7 +113,8 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyRateCategoryResult.class);
+        return (SellsyRateCategoryResult)sellsyService.jsontoJavaObj(sellsyGeneralResult,
+            SellsyRateCategoryResult.class);
     }
 
     /**
@@ -123,7 +126,8 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyTranslationLanguageResult> queryTranslationLanguages() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetTranslationLanguages).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetTranslationLanguages).params(SellsyConstant.NO_PARAMETER)
+                .build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -137,7 +141,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyAddressResult> queryAddressList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.AccountPrefs_GetAddressList).params(null).build();
+                .method(SellsyMethodConstant.AccountPrefs_GetAddressList).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -157,8 +161,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.AccountPrefs_GetAddress).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyAddressResult.class);
+        return (SellsyAddressResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyAddressResult.class);
     }
 
     /**
@@ -170,7 +173,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyTaxeResult> queryTaxeList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetTaxes).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetTaxes).params(new ArrayList<>()).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -189,8 +192,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetTaxe).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyTaxeResult.class);
+        return (SellsyTaxeResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyTaxeResult.class);
     }
 
     /**
@@ -200,7 +202,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyShippingResult> queryShippingList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetShippingList).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetShippingList).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -220,8 +222,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetShipping).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyShippingResult.class);
+        return (SellsyShippingResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyShippingResult.class);
     }
 
     /**
@@ -231,7 +232,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     public List<SellsyUnitResult> queryUnitList() {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetUnits).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetUnits).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -242,13 +243,14 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
      * 查询指定单位
      */
     @Override
-    public SellsyUnitResult queryUnitOne() {
+    public SellsyUnitResult queryUnitOne(SellsyIdEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
             SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetUnit).params(null).build();
+                .method(SellsyMethodConstant.Accountdatas_GetUnit).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-
-        return JSON.parseObject(sellsyGeneralResult.getResult().toString(), SellsyUnitResult.class);
+        return (SellsyUnitResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyUnitResult.class);
     }
+
+
 }

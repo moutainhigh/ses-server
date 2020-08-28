@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffGroupResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffResult;
 
 import java.util.List;
@@ -20,5 +20,5 @@ public interface SellsyStaffService {
      * @param enter
      * @return
      */
-    public SellsyStaffResult queryStaffOne(SellsyIdEnter enter);
+    public SellsyStaffGroupResult queryStaffGroups();
 }

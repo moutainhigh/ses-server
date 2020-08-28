@@ -29,6 +29,32 @@ public interface SellsyService<T> {
      * @param t
      * @return
      */
+    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, Class t);
+
+    /**
+     * 处理 以下格式数据 "dateResult":{ "id":{ 目标对象 } }
+     * 
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
     public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
 
+    /**
+     * 处理 以下格式数据 { "dateResult":{ "id":{ 目标对象 } }, "default": "3497458" }
+     *
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    public List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
+
+    /**
+     * json 处理单个对象
+     * 
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    public Object jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, Class t);
 }
