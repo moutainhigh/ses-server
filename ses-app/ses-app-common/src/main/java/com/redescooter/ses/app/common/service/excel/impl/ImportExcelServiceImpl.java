@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Mr.lijiating
@@ -56,11 +59,14 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
         try {
             excelImportResult = ExcelImportUtil.importExcelMore(fileAppService.download(url), pojoClass, params);
             System.out.println(System.currentTimeMillis() - start);
+            List<T> failList = new ArrayList<>();
             if (excelImportResult.getFailList().size() > 0) {
                 for (T t : excelImportResult.getFailList()) {
-                    if(isAllFieldNull(t)){
-                        excelImportResult.getFailList().remove(t);
+                    if(!isAllFieldNull(t)){
+                        failList.add(t);
                     }
+                    excelImportResult.setFailList(null);
+                    excelImportResult.setFailList(failList);
                 }
                 log.info("解析不合法数据为{}", excelImportResult.getFailList().toString());
                 log.info("本次解析Excel不合法数据共计{}条数据", excelImportResult.getFailList().size());
@@ -88,7 +94,7 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
             //遍历属性
             f.setAccessible(true); // 设置属性是可以访问的(私有的也可以)
             Object val = f.get(obj);// 得到此属性的值
-            if (val != null && !f.getName().equals("errorMsg")  && !f.getName().equals("rowNum")) {//只要有1个属性不为空,那么就不是所有的属性值都为空
+            if (!Objects.isNull(val) && !f.getName().equals("errorMsg")  && !f.getName().equals("rowNum")) {//只要有1个属性不为空,那么就不是所有的属性值都为空
                 flag = false;
                 break;
             }
