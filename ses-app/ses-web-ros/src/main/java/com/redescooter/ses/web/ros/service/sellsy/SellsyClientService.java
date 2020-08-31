@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.service.sellsy;
+
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.QueryClientAddressEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientAddressDetailResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
 
@@ -28,11 +31,18 @@ public interface SellsyClientService {
      * @return
      */
     public SellsyClientResult queryClientOne(SellsyQueryClientOneEnter enter);
-    
+
     /**
      * 客户创建
      *
      * @param enter
      */
     public SellsyIdResult createClient(SellsyCreateClientEnter enter);
+
+
+    /**
+     * 获取客户地址详情
+     * @param enter
+     */
+    public SellsyClientAddressDetailResult queryClientAddress(QueryClientAddressEnter enter);
 }

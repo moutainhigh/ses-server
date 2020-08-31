@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
@@ -44,7 +44,7 @@ public class SellsyDocumentController {
     @IgnoreLoginCheck
     @ApiOperation(value = "发票创建", response = GeneralResult.class)
     @PostMapping(value = "/createDocument")
-    public Response<GeneralResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyCreateDocumentEnter enter) {
+    public Response<GeneralResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
         documentService.createDocument(enter);
         return new Response<>(new GeneralResult());
     }

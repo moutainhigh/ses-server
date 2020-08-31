@@ -50,4 +50,13 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     // 产品重量为空
     int SELLSY_DOCUMENT_PRODUCT_WIGHT_IS_EMPTY = 11014;
+
+    //行类型
+    int ROS_TYPE_IS_EMTPY = 11015;
+
+    //行标题为空
+    int SELLSY_DOCUMENT_ROW_TITLE_IS_EMPTY = 11015;
+
+    //地址Id为空
+    int SELLSY_ADDRESS_ID_EMPTY = 11016;
 }

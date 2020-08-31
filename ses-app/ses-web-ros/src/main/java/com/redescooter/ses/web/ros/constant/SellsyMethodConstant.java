@@ -40,26 +40,30 @@ public interface SellsyMethodConstant {
     String Client_DeleteAddress="Client.deleteAddress";
     
     String Client_DeleteContact="Client.deleteContact";
-    
-    String Client_UpdateContactPicture="Client.updateContactPicture";
-    
-    String Client_UpdatePrefs="Client.updatePrefs";
-    
-    String Client_UpdateThirdPicture="Client.updateThirdPicture";
-    
-    String Client_UpdateSharingGroups="Client.updateSharingGroups";
-    
-    String Client_GetMargin="Client.getMargin";
-    
-    
+
+    String Client_UpdateContactPicture = "Client.updateContactPicture";
+
+    String Client_UpdatePrefs = "Client.updatePrefs";
+
+    String Client_UpdateThirdPicture = "Client.updateThirdPicture";
+
+    String Client_UpdateSharingGroups = "Client.updateSharingGroups";
+
+    String Client_GetMargin = "Client.getMargin";
+
+    /**
+     * 单据查询
+     */
+
     // 单据列表
-    String Document_GetList="Document.getList";
+    String Document_GetList = "Document.getList";
 
     // 查询指定单据
-    String Document_GetOne="Document.getOne";
+    String Document_GetOne = "Document.getOne";
 
     // 单据创建
-    String Document_Create="Document.create";
+    String Document_Create = "Document.create";
+
 
     // 获取货币列表
     String AccountPrefs_GetCurrencies = "AccountPrefs.getCurrencies";
@@ -100,20 +104,57 @@ public interface SellsyMethodConstant {
     // 计量单位
     String Accountdatas_GetUnit = "Accountdatas.getUnit";
 
+    /**
+     * 物流供应商
+     *
+     */
+
     // 物流供应商
     String Accountdatas_GetShippingList = "Accountdatas.getShippingList";
 
     // 查询指定物流供应商
     String Accountdatas_GetShipping = "Accountdatas.getShipping";
 
+
+    //查询打包方式
+    String Accountdatas_GetPackagingList = "Accountdatas.getPackagingList";
+
+    //打包方式详情
+    String Accountdatas_GetPackaging = "Accountdatas.getPackaging";
+
+    //获取公司信息
+    String AccountPrefs_GetCorpInfos = "AccountPrefs.getCorpInfos";
+
+
+    /**
+     * 产品查询
+     */
     // 产品列表
     String Catalogue_GetList = "Catalogue.getList";
 
     // 产品详情
     String Catalogue_GetOne = "Catalogue.getOne";
 
+    /**
+     * 员工查询
+     */
+
     // 员工列表
     String Staffs_GetList = "Staffs.getList";
 
+    // 员工分组
     String Staffs_GetGroups = "Staffs.getGroups";
+
+
+    /**
+     * 地址查询
+     */
+
+    //地址列表
+    String Addresses_GetList = "Addresses.getList";
+
+    //地址详情
+    String Addresses_GetOne = "Addresses.getOne";
+
+
 }

@@ -1,35 +1,26 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocmentTypeEnums;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.exception.ThirdExceptionCodeEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.*;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:DocumentServiceImpl
@@ -63,7 +54,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, SellsyDocumentListResult.class);
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyDocumentListResult());
     }
 
     /**
@@ -87,20 +78,21 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
      *
      * @param enter
      */
+    @Override
     @Transactional
-    public void createDocument(SellsyCreateDocumentEnter enter) {
+    public void createDocument(SellsyClientServiceCreateDocumentEnter enter) {
 
         // 校验客户
-        SellsyClientResult sellsyClientResult =
-            sellsyClientService.queryClientOne(new SellsyQueryClientOneEnter(enter.getDocument().getThirdid()));
+        /*SellsyClientResult sellsyClientResult =
+            sellsyClientService.queryClientOne(new SellsyQueryClientOneEnter(enter.getThirdid()));
         if (sellsyClientResult == null) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
                 ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
         }
         // 如果传入发票单号 ，则进行校验
-        if (StringUtils.isNotBlank(enter.getDocument().getIdent())) {
+        if (StringUtils.isNotBlank(enter.getIdent())) {
             SellsyDocumentListEnter sellsyDocumentListEnter = SellsyDocumentListEnter.builder()
-                .doctype(SellsyDocmentTypeEnums.invoice.getCode()).ident(enter.getDocument().getIdent()).build();
+                .doctype(SellsyDocmentTypeEnums.invoice.getCode()).ident(enter.getIdent()).build();
             List<SellsyDocumentListResult> sellsyDocumentListResultPageResult =
                 queryDocumentList(sellsyDocumentListEnter);
             if (CollectionUtils.isNotEmpty(sellsyDocumentListResultPageResult)) {
@@ -111,7 +103,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         // 查询税率 是税前发票 还是税后发票
         SellsyRateCategoryResult sellsyRateCategoryResult =
-            sellsyAccountSettingService.queryateCategoryOne(new SellsyIdEnter(enter.getDocument().getRateCategory()));
+            sellsyAccountSettingService.queryateCategoryOne(new SellsyIdEnter(enter.getRateCategory()));
         if (sellsyRateCategoryResult == null) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMNT_RATECATEGORY_IS_EMPTY.getCode(),
                 ThirdExceptionCodeEnums.SELLSY_DOCUMNT_RATECATEGORY_IS_EMPTY.getMessage());
@@ -119,172 +111,133 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         // 货币单位校验
         SellsyCurrencyResult sellsyCurrencyResult =
-            sellsyAccountSettingService.queryCurrencyOne(new SellsyIdEnter(enter.getDocument().getCurrency()));
+            sellsyAccountSettingService.queryCurrencyOne(new SellsyIdEnter(enter.getCurrency()));
         if (sellsyCurrencyResult == null) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_CURRENCY_IS_NOT_EXIST.getCode(),
                 ThirdExceptionCodeEnums.SELLSY_DOCUMENT_CURRENCY_IS_NOT_EXIST.getMessage());
         }
 
-        // 服务时间 校验
-        if (enter.getDocument().getUseServiceDates().equals(SellsyBooleanEnums.Y)) {
-            if (enter.getDocument().getServiceDateStart() != null || enter.getDocument().getServiceDateStop() != null) {
-                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_USESERVICEDATES_IS_EMPTY.getCode(),
-                    ThirdExceptionCodeEnums.SELLSY_DOCUMENT_USESERVICEDATES_IS_EMPTY.getMessage());
+        //todo 地址解析
+        if (enter.getThirdaddress()!=null){
+            SellsyClientAddressDetailResult sellsyClientAddressDetailResult = sellsyClientService.queryClientAddress(new QueryClientAddressEnter(enter.getThirdid(), enter.getThirdaddress().getId()));
+            if (sellsyClientAddressDetailResult==null){
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_ADDRESS_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_ADDRESS_IS_NOT_EXIST.getMessage());
             }
         }
 
-        /*CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
+        //布局Id校验
+        List<SellsyLayoutResult> sellsyLayoutResultList = sellsyAccountSettingService.queryDocLayoutList();
+        if (CollectionUtils.isNotEmpty(sellsyLayoutResultList)){
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getMessage());
+        }
+        SellsyLayoutResult sellsyLayoutResult = sellsyLayoutResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(enter.getDoclayout()))).findFirst().orElse(null);
+        if (sellsyLayoutResult==null){
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getMessage());
+        }
+        //语言Id校验
+        List<SellsyTranslationLanguageResult> sellsyTranslationLanguageResultList = sellsyAccountSettingService.queryTranslationLanguages();
+        if (CollectionUtils.isNotEmpty(sellsyTranslationLanguageResultList)){
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getMessage());
+        }
+        SellsyTranslationLanguageResult sellsyTranslationLanguageResult =
+                sellsyTranslationLanguageResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(enter.getDoclang()))).findFirst().orElse(null);
+        if (sellsyTranslationLanguageResult==null){
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getMessage());
+        }*/
+
+        CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()
-            .doctype(SellsyDocmentTypeEnums.invoice)
-                .thirdid("25630126")
-                .thirdident(null)
-                .ident("Alex001")
+                .doctype(SellsyDocmentTypeEnums.invoice)
+                .thirdid(enter.getThirdid())
+                .thirdident(SellsyConstant.NO_PARAMETER)
+                .ident(enter.getIdent())
                 .displayedDate(null)
                 .expireDate(null)
-                .subject("测试发票")
-                .notes("测试")
+                .subject(enter.getSubject())
+                .notes(enter.getNotes())
                 .tags(null)
-                .displayShipAddress(SellsyBooleanEnums.N)
-                .rateCategory(null)
-                .globalDiscount(0)
-            .globalDiscountUnit(SellsyGlobalDiscountUnitEnums.percent).hasDoubleVat(SellsyBooleanEnums.N)
-            .hasTvaLawText(SellsyBooleanEnums.N)
-                .currency(1)
-                .doclayout(93787)
-                .doclang(0)
+                .displayShipAddress(SellsyBooleanEnums.Y)
+                .rateCategory(enter.getRateCategory())
+                .globalDiscount(enter.getGlobalDiscount())
+                .globalDiscountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                .hasDoubleVat(SellsyBooleanEnums.N)
+                .hasTvaLawText(SellsyBooleanEnums.N)
+                .currency(enter.getCurrency())
+                .doclayout(enter.getDoclayout())
+                .doclang(enter.getDoclang())
                 .payMediums(null)
-                .docspeakerStaffId(163567)
+                .docspeakerStaffId(null)
                 .useServiceDates(SellsyBooleanEnums.N)
                 .serviceDateStart(null)
                 .serviceDateStop(null)
                 .showContactOnPdf(SellsyBooleanEnums.Y)
                 .showParentOnPdf(SellsyBooleanEnums.N)
                 .conditionDocShow(SellsyBooleanEnums.N)
-                .corpAddressId(86382253)
-                .enabledPaymentGateways(SellsyPayTypeEnums.adyen)
-            .directDebitPaymentGateway(SellsyDirectDebitPaymentGatewayEnums.N)
+                .corpAddressId(enter.getCorpAddressId())
+//              .enabledPaymentGateways(null)
+//              .directDebitPaymentGateway(SellsyDirectDebitPaymentGatewayEnums.N)
                 .build();
-        
-        //Yes, if 'paydate' array exists
-        SellsyPaydateAttributesEnter sellsyPaydateAttributesEnter = null;
-        
-        //
-        SellsyDocumentShippingEnter sellsyDocumentShippingEnter = null;
-        
-        //AccountPrefs.setNumberFormat 方法可以查出
-        SellsyNumFormatEnter numFormatEnter = null;
-        
-        SellsyIdEnter thirdaddress = new SellsyIdEnter(86382254);
-        
-        SellsyIdEnter shipaddress = new SellsyIdEnter(86382255);
-        
+
+
+        SellsyNumFormatEnter numFormatEnter = new SellsyNumFormatEnter();
+        numFormatEnter.setCurrencyid(enter.getCurrency());
+
+
         Map<String, SellsyRowEnter> rosMap = new HashMap<>();
-        
-        //第一行
-        rosMap.put(SellsyDocumentRosTypeEnums.PACKAGING.getCode(), SellsyRowEnter.builder()
-                .row_type(SellsyDocumentRosTypeEnums.PACKAGING.getValue())
-                .row_packaging(8189454)
-                .row_name("第一行")
-                .row_unitAmount("0")
-                .row_taxid(3497473)
-                .row_tax2id(null)
-                .row_qt(1)
-            .row_isOption(SellsyBooleanEnums.N)
-                .row_discount(20)
-            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                .row_accountingCode(1051763)
-                .build());
-        
-        //第二行
-        rosMap.put(SellsyDocumentRosTypeEnums.SHIPPING.getCode(), SellsyRowEnter.builder()
-                .row_type(SellsyDocumentRosTypeEnums.EMPTY.getValue())
-                .row_shipping(8189455)
-                .row_name("第二行")
-                .row_unitAmount("0")
-                .row_taxid(3497473)
-                .row_tax2id(null)
-                .row_qt(1)
-            .row_isOption(SellsyBooleanEnums.N)
-                .row_discount(20)
-            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                .row_accountingCode(1051763)
-                .build());
-        
         //第三行
         rosMap.put(SellsyDocumentRosTypeEnums.ITEM.getCode(), SellsyRowEnter.builder()
                 .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
-                .row_linkedid(8189454)
+                .row_linkedid(enter.getSellsellEnter().getRow_linkedid())
                 .row_declid(0)
-                .row_name("第三行")
-                .row_notes("测试")
-                .row_unit(SellsyRowUnitEnums.KG.getValue())
-                .row_unitAmount("0")
-                .row_taxid(3497473)
+                .row_name(enter.getSellsellEnter().getRow_name())
+                .row_notes(enter.getSellsellEnter().getRow_notes())
+                .row_unit(enter.getSellsellEnter().getRow_unit())
+                .row_unitAmount(enter.getSellsellEnter().getRow_unitAmount())
+                .row_taxid(enter.getSellsellEnter().getRow_taxid())
                 .row_tax2id(null)
-                .row_qt(1)
+                .row_qt(enter.getSellsellEnter().getRow_qt())
                 .row_whid(null)
-            .row_isOption(SellsyBooleanEnums.N)
-                .row_purchaseAmount("0")
-                .row_discount(20)
-            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                .row_serial("0")
-                .row_barcode("123")
-                .row_accountingCode(1051763)
+                .row_isOption(SellsyBooleanEnums.N)
+                .row_purchaseAmount(enter.getSellsellEnter().getRow_purchaseAmount())
+                .row_discount(enter.getSellsellEnter().getRow_discount())
+                .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                .row_serial(enter.getSellsellEnter().getRow_serial())
+                .row_barcode(null)
+                .row_accountingCode(enter.getSellsellEnter().getRow_accountingCode())
                 .build());
-        
-        
-        //第四行
-        rosMap.put(SellsyDocumentRosTypeEnums.ONCE.getCode(), SellsyRowEnter.builder()
-                .row_type(SellsyDocumentRosTypeEnums.ONCE.getValue())
-                .row_name("第四行")
-                .row_notes("测试")
-                .row_unit(SellsyRowUnitEnums.KG.getValue())
-                .row_unitAmount("0")
-                .row_taxid(3497473)
-                .row_tax2id(null)
-                .row_qt(1)
-            .row_isOption(SellsyBooleanEnums.N)
-                .row_discount(20)
-            .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                .row_accountingCode(1051763)
-                .build());
-        
         //第五行
         rosMap.put(SellsyDocumentRosTypeEnums.SUM.getCode(), SellsyRowEnter.builder().row_type(SellsyDocumentRosTypeEnums.SUM.getValue()).build());
-        
+
         //第六行
         rosMap.put(SellsyDocumentRosTypeEnums.TITLE.getCode(), SellsyRowEnter
                 .builder()
                 .row_type(SellsyDocumentRosTypeEnums.TITLE.getValue())
-                .row_title("发票测试")
+                .row_title(enter.getSellsellEnter().getRow_title())
                 .build());
-        
+
         //第七行
         rosMap.put(SellsyDocumentRosTypeEnums.COMMENT.getCode(), SellsyRowEnter
                 .builder()
                 .row_type(SellsyDocumentRosTypeEnums.COMMENT.getValue())
-                .row_comment("test")
+                .row_comment(enter.getSellsellEnter().getRow_comment())
                 .build());
-        
         //第8行
         rosMap.put(SellsyDocumentRosTypeEnums.BREAK.getCode(), SellsyRowEnter.builder().row_type(SellsyDocumentRosTypeEnums.BREAK.getValue()).build());
-        //第9行
-        rosMap.put(SellsyDocumentRosTypeEnums.EMPTY.getCode(), SellsyRowEnter.builder().row_type(SellsyDocumentRosTypeEnums.EMPTY.getValue()).build());
-        
-        enter.setDocument(createDocumentAttributesEnter);
-        enter.setPaydate(sellsyPaydateAttributesEnter);
-        enter.setShipping(sellsyDocumentShippingEnter);
-        enter.setNum_format(numFormatEnter);
-        enter.setThirdaddress(thirdaddress);
-        enter.setShipaddress(shipaddress);
-        enter.setRow(rosMap);
-        
-        
+
+        SellsyCreateDocumentEnter sellsyCreateDocumentEnter = new SellsyCreateDocumentEnter();
+        sellsyCreateDocumentEnter.setDocument(createDocumentAttributesEnter);
+        sellsyCreateDocumentEnter.setPaydate(null);
+        sellsyCreateDocumentEnter.setShipping(null);
+        sellsyCreateDocumentEnter.setNum_format(numFormatEnter);
+        sellsyCreateDocumentEnter.setThirdaddress(enter.getThirdaddress());
+        sellsyCreateDocumentEnter.setShipaddress(enter.getShipaddress());
+        sellsyCreateDocumentEnter.setRow(rosMap);
+
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
                 .method(SellsyMethodConstant.Document_Create)
-                .params(enter)
+                .params(sellsyCreateDocumentEnter)
                 .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                 .build();
-        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);*/
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
     }
 }

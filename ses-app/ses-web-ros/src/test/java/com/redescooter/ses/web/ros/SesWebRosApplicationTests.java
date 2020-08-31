@@ -3,10 +3,24 @@ package com.redescooter.ses.web.ros;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocmentTypeEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocumentRosTypeEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyGlobalDiscountUnitEnums;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyCatalogueService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
 import org.junit.Before;
@@ -17,12 +31,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Log4j
 public class SesWebRosApplicationTests {
 
     @Before
@@ -164,5 +179,125 @@ public class SesWebRosApplicationTests {
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(str);
         System.out.println(m.matches());
+    }
+
+
+    @Autowired
+    private SellsyDocumentService sellsyDocumentService;
+
+    @Autowired
+    private SellsyAccountSettingService sellsyAccountSettingService;
+
+    @Autowired
+    private SellsyClientService sellsyClientService;
+
+    @Autowired
+    private SellsyCatalogueService sellsyCatalogueService;
+
+    @Test
+    public void createDocument() {
+        //查询发票排版
+        List<SellsyLayoutResult> sellsyLayoutResults = sellsyAccountSettingService.queryDocLayoutList();
+        if (CollectionUtils.isEmpty(sellsyLayoutResults)) {
+            log.info("----------------布局出错------------");
+            throw new RuntimeException();
+        }
+        List<SellsyTranslationLanguageResult> sellsyTranslationLanguageResults = sellsyAccountSettingService.queryTranslationLanguages();
+        if (CollectionUtils.isEmpty(sellsyTranslationLanguageResults)) {
+            log.info("----------------语言出错------------");
+            throw new RuntimeException();
+        }
+
+        List<SellsyCurrencyResult> sellsyCurrencyResults = sellsyAccountSettingService.queryCurrencyList();
+        if (CollectionUtils.isEmpty(sellsyCurrencyResults)) {
+            log.info("----------------货币单位出错------------");
+            throw new RuntimeException();
+        }
+
+        List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList();
+        if (CollectionUtils.isEmpty(sellsyClientResults)) {
+            log.info("----------------客户出错------------");
+            throw new RuntimeException();
+        }
+
+        //查询个人信息
+        SellsyCorpInfoResult sellsyCorpInfoResult = sellsyAccountSettingService.queryCorpInfos();
+        if (sellsyCorpInfoResult == null) {
+            log.info("----------------公司出错------------");
+            throw new RuntimeException();
+        }
+
+        //查询税率
+        List<SellsyRateCategoryResult> sellsyRateCategoryResults = sellsyAccountSettingService.queryRateCategoryList();
+        if (CollectionUtils.isEmpty(sellsyRateCategoryResults)) {
+            log.info("----------------税局出错------------");
+            throw new RuntimeException();
+        }
+        //查询 税率
+        List<SellsyTaxeResult> sellsyTaxeResults = sellsyAccountSettingService.queryTaxeList();
+        if (CollectionUtils.isEmpty(sellsyTaxeResults)) {
+            log.info("----------------税率出错------------");
+            throw new RuntimeException();
+        }
+
+//        List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueEnums.item));
+//        if (CollectionUtils.isEmpty(sellsyCatalogueResultList)){
+//            log.info("----------------产品出错------------");
+//            throw new RuntimeException();
+//        }
+//
+//        Map<String, SellsyCatalogueResult> map = JSON.parseObject(sellsyCatalogueResultList.get(0).toString(), Map.class);
+//
+//        ArrayList<SellsyCatalogueResult> sellsyCatalogueResults = new ArrayList<>(map.values());
+//        SellsyCatalogueResult sellsyCatalogueResult=sellsyCatalogueResults.get(0);
+
+        SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
+                .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
+                .row_name("Batterie lithium 60V24Ah Lenovo")
+                .row_taxid(3497473)
+                .row_tax2id(null)
+                .row_qt(10)
+                .row_isOption(SellsyBooleanEnums.N)
+                .row_unitAmount("960")
+                .row_discount(0)
+                .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                .row_linkedid(8363870)
+                .row_declid(0)
+                .row_notes("1 scooter \\n" +
+                        "+ 2 Batteries RedE - cellules LG 60V/28,8Ah \\n" +
+                        "1,8 kwH - Autonomie 50km réels minimum \\n" +
+                        "11KG - Logiciel BMS communiquant avec le scooter \\n" +
+                        "+ 1 chargeur \\n" +
+                        "Garantie de 2ans pour le scooter et 2ans ou 800 cycles pour \\n" +
+                        "sa batterie sous reserve de présenter le carnet d'entretien du \\n" +
+                        "véhicule rattaché à jour ")
+                .row_whid(null)
+                .row_purchaseAmount("9600")
+                .row_serial(null)
+                .row_barcode(null)
+                .row_title("Invoice notes")
+                .row_comment(null)
+                .row_unit(null)
+                .build();
+
+
+        SellsyClientServiceCreateDocumentEnter sellsyClientServiceCreateDocumentEnter = new SellsyClientServiceCreateDocumentEnter();
+        sellsyClientServiceCreateDocumentEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
+        sellsyClientServiceCreateDocumentEnter.setThirdid(25661416);
+        sellsyClientServiceCreateDocumentEnter.setIdent("BRO00001830");
+        sellsyClientServiceCreateDocumentEnter.setSubject("RedE Group Scooter");
+        sellsyClientServiceCreateDocumentEnter.setNotes(null);
+        sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
+        sellsyClientServiceCreateDocumentEnter.setRateCategory(143036);
+        sellsyClientServiceCreateDocumentEnter.setGlobalDiscount(0);
+        sellsyClientServiceCreateDocumentEnter.setGlobalDiscountUnit(SellsyGlobalDiscountUnitEnums.percent);
+        sellsyClientServiceCreateDocumentEnter.setCurrency(1);
+        sellsyClientServiceCreateDocumentEnter.setDoclayout(95037);
+        sellsyClientServiceCreateDocumentEnter.setDoclang(2353);
+        sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
+        sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
+        //sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(25661416));
+        sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
+        sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
     }
 }

@@ -16,18 +16,18 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class SellsyNumFormatEnter {
-    
+
     //货币Id 无默认值
     private int currencyid;
-    
+
     // enum('left', 'right', 'both', 'none') 货币符号位置 默认right
-    private SellsyCurrencySymbolLocationEnms currencypos;
-    
+    private SellsyCurrencySymbolLocationEnms currencypos = SellsyCurrencySymbolLocationEnms.right;
+
     //十进制分隔符(小数点符号) num(',', '.') 默认 。
-    private String decimals;
-    
+    private String decimals = ",";
+
     //enum(' ', 'right') 数字组分隔符 默认 	' '
-    private String thousands;
+    private String thousands = " ";
 
     // 小数点位置；小数位；小数位数 无默认值 主要指保留几位小数
     private String precision = "2";

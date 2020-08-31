@@ -24,12 +24,12 @@ public interface SellsyService<T> {
 
     /**
      * extractResponseList 会抛出异常所以进行统一的格式处理
-     * 
+     *
      * @param sellsyGeneralResult
      * @param t
      * @return
      */
-    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, Class t);
+    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
      * 处理 以下格式数据 "dateResult":{ "id":{ 目标对象 } }
@@ -47,7 +47,7 @@ public interface SellsyService<T> {
      * @param t
      * @return
      */
-    public List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
+    public List<Object> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
      * json 处理单个对象

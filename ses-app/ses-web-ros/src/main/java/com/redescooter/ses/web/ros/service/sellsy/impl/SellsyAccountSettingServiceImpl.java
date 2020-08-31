@@ -67,7 +67,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetDocLayouts).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyLayoutResult());
+        return (List<SellsyLayoutResult>) sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyLayoutResult());
     }
 
     /**
@@ -83,7 +83,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyPayDateResult());
+        return (List<SellsyPayDateResult>) sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyPayDateResult());
     }
 
     /**
@@ -138,30 +138,30 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
      * 查询地址列表
      */
     @Override
-    public List<SellsyAddressResult> queryAddressList() {
+    public List<SellsyAccountAddressResult> queryAddressList() {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.AccountPrefs_GetAddressList).params(SellsyConstant.NO_PARAMETER).build();
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.AccountPrefs_GetAddressList).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyAddressResult());
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyAccountAddressResult());
     }
 
     /**
      * 查询指定地址
-     * 
+     *
      * @param enter
      * @return
      */
     @Override
-    public SellsyAddressResult queryAddressOne(SellsyIdEnter enter) {
+    public SellsyAccountAddressResult queryAddressOne(SellsyIdEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.AccountPrefs_GetAddress).params(enter).build();
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.AccountPrefs_GetAddress).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyAddressResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyAddressResult.class);
+        return (SellsyAccountAddressResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyAccountAddressResult.class);
     }
 
     /**
@@ -245,12 +245,52 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
     @Override
     public SellsyUnitResult queryUnitOne(SellsyIdEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetUnit).params(enter).build();
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Accountdatas_GetUnit).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyUnitResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyUnitResult.class);
+        return (SellsyUnitResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyUnitResult.class);
     }
 
+    /**
+     * 查询打包方式列表
+     */
+    @Override
+    public List<SellsyPackagingResult> queryPackagingList() {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Accountdatas_GetPackagingList).params(SellsyConstant.NO_PARAMETER).build();
 
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyPackagingResult());
+    }
+
+    /**
+     *打包方式详情
+     * @return
+     */
+    @Override
+    public SellsyPackagingResult queryPackagingOne(SellsyIdEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Accountdatas_GetPackaging).params(enter).build();
+
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+        return (SellsyPackagingResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyPackagingResult.class);
+    }
+
+    /**
+     * 查询公司信息
+     * @return
+     */
+    @Override
+    public SellsyCorpInfoResult queryCorpInfos() {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.AccountPrefs_GetCorpInfos).params(SellsyConstant.NO_PARAMETER).build();
+
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+        return (SellsyCorpInfoResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyCorpInfoResult.class);
+    }
 }

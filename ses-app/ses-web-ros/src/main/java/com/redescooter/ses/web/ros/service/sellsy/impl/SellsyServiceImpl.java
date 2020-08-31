@@ -2,8 +2,6 @@ package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
@@ -64,6 +62,7 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
             log.info("----------------返回值{}---------------", result);
             sellsyGeneralResult.setResult(result);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("--------------调用出现问题-----------------");
         }
         return sellsyGeneralResult;
@@ -71,13 +70,13 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
 
     /**
      * extractResponseList 会抛出异常所以进行统一的格式处理
-     * 
+     *
      * @param sellsyGeneralResult
      * @param t
      * @return
      */
     @Override
-    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, Class t) {
+    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t) {
         List<T> resultList = new ArrayList<>();
 
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
@@ -86,7 +85,10 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
 
         try {
             // 当返回值是多个值是可以解析出来 返回值为单个值 无法解析
-            resultList = JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t);
+            sellsyGeneralResult.getResult().extractResponseList().forEach(item -> {
+                resultList.add((T) JSON.parseObject(item.toString(), t.getClass()));
+            });
+            //resultList = (List<T>) JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t.getClass().getClass());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,21 +118,20 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
      * @return
      */
     @Override
-    public List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
-        List<T> resultList = new ArrayList<>();
+    public List<Object> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+        List<Object> resultList = new ArrayList<>();
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
             return resultList;
         }
         try {
-            Map<String, JSONObject> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+            Map<String, Map<String, T>> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
             if (CollectionUtil.isEmpty(objMap)) {
                 return resultList;
             }
             objMap.keySet().forEach(item -> {
                 if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
-                    Map<String, T> targetMap =
-                        JSONObject.parseObject(objMap.get(item).toJSONString(), new TypeReference<Map<String, T>>() {});
-                    resultList.addAll(targetMap.values());
+                    //Map<String, T> targetMap =JSONObject.parseObject(objMap.get(item), new TypeReference<Map<String, T>>() {});
+                    resultList.addAll(objMap.get(item).values());
                 }
             });
 

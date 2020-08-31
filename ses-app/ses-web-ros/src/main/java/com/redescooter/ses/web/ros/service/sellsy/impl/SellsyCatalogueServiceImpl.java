@@ -26,11 +26,12 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
     @Override
     public List<SellsyCatalogueResult> queryCatalogueList(SellsyCatalogueListEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Catalogue_GetList).params(enter).build();
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Catalogue_GetList).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, SellsyCatalogueResult.class);
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyCatalogueResult());
+
     }
 
     /**

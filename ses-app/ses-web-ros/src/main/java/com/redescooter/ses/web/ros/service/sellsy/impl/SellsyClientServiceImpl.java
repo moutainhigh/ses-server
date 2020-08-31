@@ -5,9 +5,11 @@ import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.QueryClientAddressEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientAddressDetailResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
 import lombok.extern.log4j.Log4j2;
@@ -85,5 +87,21 @@ public class SellsyClientServiceImpl implements SellsyClientService {
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         return null;
     }
-    
+
+    /**
+     * 获取客户地址详情
+     * @param enter
+     */
+    @Override
+    public SellsyClientAddressDetailResult queryClientAddress(QueryClientAddressEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
+                .method(SellsyMethodConstant.Client_AddAddress)
+                .params(enter)
+                .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                .build();
+
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+
+        return (SellsyClientAddressDetailResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyClientAddressDetailResult.class);
+    }
 }

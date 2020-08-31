@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
@@ -28,10 +28,10 @@ public interface SellsyDocumentService {
      * @param enter
      */
     public JSONObject queryDocumentOne(SellsyDocumentOneEnter enter);
-    
+
     /**
      * 发票创建
      * @param enter
      */
-    public void createDocument(SellsyCreateDocumentEnter enter);
+    public void createDocument(SellsyClientServiceCreateDocumentEnter enter);
 }

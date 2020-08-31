@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor // 生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyAddressResult {
+public class SellsyAccountAddressResult {
     private String id;
 
     private String corpid;

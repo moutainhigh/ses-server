@@ -3,15 +3,15 @@ package com.redescooter.ses.web.ros.controller.sellsy;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyStaffService;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffGroupResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.staff.SellsyStaffResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -27,15 +27,14 @@ public class SellsyStaffController {
     @IgnoreLoginCheck
     @ApiOperation(value = "员工列表", response = SellsyStaffResult.class)
     @PostMapping(value = "/queryStaffList")
-    public Response<List<SellsyStaffResult>>
-        queryStaffList(@ModelAttribute @ApiParam("请求参数") SellsyDocumentListEnter enter) {
+    public Response<List<SellsyStaffResult>> queryStaffList() {
         return new Response<>(sellsyStaffService.queryStaffList());
     }
 
     @IgnoreLoginCheck
     @ApiOperation(value = "员工分组", response = SellsyStaffGroupResult.class)
     @PostMapping(value = "/queryStaffGroup")
-    public Response<SellsyStaffGroupResult> queryStaffGroup(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
+    public Response<SellsyStaffGroupResult> queryStaffGroup() {
         return new Response<>(sellsyStaffService.queryStaffGroups());
     }
 }

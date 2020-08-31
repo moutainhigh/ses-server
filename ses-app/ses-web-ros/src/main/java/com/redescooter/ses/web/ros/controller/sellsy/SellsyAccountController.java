@@ -73,16 +73,16 @@ public class SellsyAccountController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "查询地址列表", response = SellsyAddressResult.class)
+    @ApiOperation(value = "查询地址列表", response = SellsyAccountAddressResult.class)
     @PostMapping(value = "/queryAddressList")
-    public Response<List<SellsyAddressResult>> queryAddressList() {
+    public Response<List<SellsyAccountAddressResult>> queryAddressList() {
         return new Response<>(sellsyAccountSettingService.queryAddressList());
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "地址详情", response = SellsyAddressResult.class)
+    @ApiOperation(value = "地址详情", response = SellsyAccountAddressResult.class)
     @PostMapping(value = "/queryAddressOne")
-    public Response<SellsyAddressResult> queryAddressOne(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
+    public Response<SellsyAccountAddressResult> queryAddressOne(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
         return new Response<>(sellsyAccountSettingService.queryAddressOne(enter));
     }
 
@@ -126,6 +126,21 @@ public class SellsyAccountController {
     @PostMapping(value = "/queryUnitOne")
     public Response<SellsyUnitResult> queryUnitOne(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
         return new Response<>(sellsyAccountSettingService.queryUnitOne(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "查询打包方式", response = SellsyPackagingResult.class)
+    @PostMapping(value = "/queryPackagingList")
+    public Response<List<SellsyPackagingResult>> queryPackagingList() {
+        return new Response<>(sellsyAccountSettingService.queryPackagingList());
+    }
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "打包方式详情", response = SellsyPackagingResult.class)
+    @PostMapping(value = "/queryPackagingOne")
+    public Response<SellsyPackagingResult> queryPackagingOne(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
+        return new Response<>(sellsyAccountSettingService.queryPackagingOne(enter));
     }
 
 }

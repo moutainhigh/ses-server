@@ -57,15 +57,15 @@ public interface SellsyAccountSettingService {
     /**
      * 查询地址列表
      */
-    public List<SellsyAddressResult> queryAddressList();
+    public List<SellsyAccountAddressResult> queryAddressList();
 
     /**
      * 查询指定地址
-     * 
+     *
      * @param enter
      * @return
      */
-    public SellsyAddressResult queryAddressOne(SellsyIdEnter enter);
+    public SellsyAccountAddressResult queryAddressOne(SellsyIdEnter enter);
 
     /**
      * 税率列表查询
@@ -103,4 +103,20 @@ public interface SellsyAccountSettingService {
      */
     public SellsyUnitResult queryUnitOne(SellsyIdEnter enter);
 
+    /**
+     * 查询打包方式列表
+     */
+    public List<SellsyPackagingResult> queryPackagingList();
+
+    /**
+     *打包方式详情
+     * @return
+     */
+    public SellsyPackagingResult queryPackagingOne(SellsyIdEnter enter);
+
+    /**
+     * 查询公司信息
+     * @return
+     */
+    public SellsyCorpInfoResult queryCorpInfos();
 }

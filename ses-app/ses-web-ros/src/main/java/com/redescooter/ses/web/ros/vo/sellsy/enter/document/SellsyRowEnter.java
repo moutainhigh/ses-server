@@ -1,8 +1,9 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyGlobalDiscountUnitEnums;
-
+import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
 import lombok.*;
 
 /**
@@ -20,6 +21,7 @@ import lombok.*;
 public class SellsyRowEnter {
     
     // 行类型 由SellsyDocumentRosTypeEnums给出默认值
+    @NotNull(code = ThirdValidationExceptionCode.ROS_TYPE_IS_EMTPY, message = "行类型为空")
     private String row_type;
     
     //行包装
@@ -77,6 +79,7 @@ public class SellsyRowEnter {
     private String row_barcode;
     
     //行标题 必填
+    @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_ROW_TITLE_IS_EMPTY, message = "行标题为空")
     private String row_title;
     
     //备注

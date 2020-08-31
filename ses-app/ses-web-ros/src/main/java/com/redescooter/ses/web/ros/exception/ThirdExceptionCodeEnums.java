@@ -19,6 +19,15 @@ public enum ThirdExceptionCodeEnums {
 
     SELLSY_DOCUMENT_USESERVICEDATES_IS_EMPTY(11004, "服务时间为空"),
 
+    SELLSY_DOCUMRNT_PACKING_ID_IS_EMPTY(11005, "打包Id为空"),
+
+    SELLSY_DOCUMENT_PACKING_IS_NOT_EXIST(11006, "打包方式不存在"),
+
+    SELLSY_LAYOUT_IS_NOT_EXIST(11007, "页面布局不存在"),
+
+    SELLSY_TRANSLATION_LANG_IS_NOT_EXIST(11008, "翻译语言不存在"),
+
+    SELLSY_ADDRESS_IS_NOT_EXIST(11009, "客户地址不存在"),
     ;
 
     private int code;
