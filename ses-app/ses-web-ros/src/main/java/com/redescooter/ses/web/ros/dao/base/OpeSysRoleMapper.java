@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface OpeSysRoleMapper extends BaseMapper<OpeSysRole> {
     int updateBatch(List<OpeSysRole> list);
 
+    int updateBatchSelective(List<OpeSysRole> list);
+
     int batchInsert(@Param("list") List<OpeSysRole> list);
 
     int insertOrUpdate(OpeSysRole record);

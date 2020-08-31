@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeSysStaffService extends IService<OpeSysStaff>{
+public interface OpeSysStaffService extends IService<OpeSysStaff> {
 
 
     int updateBatch(List<OpeSysStaff> list);
@@ -17,4 +17,6 @@ public interface OpeSysStaffService extends IService<OpeSysStaff>{
 
     int insertOrUpdateSelective(OpeSysStaff record);
 
+    int updateBatchSelective(List<OpeSysStaff> list);
 }
+
