@@ -118,7 +118,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
-      List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+      List<DeptTreeReslt> deptTreeReslts = deptServiceMapper.deptList();
       //根据sort排序
       Collections.sort(deptTreeReslts, new Comparator<DeptTreeReslt>() {
         @Override

@@ -21,20 +21,10 @@
     <select id="deptList" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt">
 
             select dept.id
-                 , dept.dr
-                 , dept.p_id
-                 , dept.tenant_id
-                 , dept.principal
-                 , dept.level
                  , dept.name
-                 , dept.code
                  , dept.sort
-                 , count(user.dept_id) as employeeCount
             from ope_sys_dept dept
-                     left join ope_sys_user user on dept.id = user.dept_id and user.dr = 0
             where dept.dr = 0
-            group by dept.id, dept.dr, dept.p_id, dept.tenant_id, dept.principal, dept.level, dept.name, dept.code, dept.sort
-
     </select>
 
     <select id="employeeList" resultType="com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult">

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -59,8 +60,9 @@ public class SysDeptController {
 
     @PostMapping(value = "/tree")
     @ApiOperation(value = "部门树列表", response = GeneralResult.class)
+    @IgnoreLoginCheck
     public Response<List<DeptTreeReslt>> tree(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(deptService.trees(enter));
+            return new Response<>(deptService.trees(enter));
     }
 
     @PostMapping(value = "/deptList")

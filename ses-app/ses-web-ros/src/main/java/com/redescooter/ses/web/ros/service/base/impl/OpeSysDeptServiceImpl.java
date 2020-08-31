@@ -31,5 +31,15 @@ public class OpeSysDeptServiceImpl extends ServiceImpl<OpeSysDeptMapper, OpeSysD
     public int insertOrUpdateSelective(OpeSysDept record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeSysDept> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+
+
+
+
 

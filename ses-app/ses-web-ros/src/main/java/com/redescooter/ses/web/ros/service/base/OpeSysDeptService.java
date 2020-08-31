@@ -17,5 +17,11 @@ public interface OpeSysDeptService extends IService<OpeSysDept> {
 
     int insertOrUpdateSelective(OpeSysDept record);
 
+    int updateBatchSelective(List<OpeSysDept> list);
 }
+
+
+
+
+
 
