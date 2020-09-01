@@ -27,7 +27,7 @@ public class FileAppServiceImpl implements FileAppService {
     private OssConfig ossConfig;
 
     @Override
-    public String uplaod(String bucket, MultipartFile file) {
+    public String uplaod(String bucket,String dirName, MultipartFile file) {
         OSSClient ossClient = null;
         String fileName = null;
         int mb = 0;
@@ -59,6 +59,9 @@ public class FileAppServiceImpl implements FileAppService {
             throw new BaseException(BaseException.DEFAULE_ERRORCODE, "The file size cannot exceed " + mb + "MB");
         } finally {
             ossClient.shutdown();
+        }
+        if (StringUtils.isNotEmpty(dirName)){
+            return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() +"/"+dirName+ "/" + fileName;
         }
         return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
     }

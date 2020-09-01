@@ -3,19 +3,21 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysDept")
+@TableName(value = "ope_sys_dept")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_sys_dept")
-public class OpeSysDept {
+public class OpeSysDept implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "")
     private Long id;
@@ -71,6 +73,13 @@ public class OpeSysDept {
     private String code;
 
     /**
+     * 部门状态 1：正常，2：禁用
+     */
+    @TableField(value = "dept_status")
+    @ApiModelProperty(value = "部门状态 1：正常，2：禁用")
+    private Integer deptStatus;
+
+    /**
      * 描述说明
      */
     @TableField(value = "description")
@@ -112,6 +121,8 @@ public class OpeSysDept {
     @ApiModelProperty(value = "修改时间")
     private Date updatedTime;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -128,6 +139,8 @@ public class OpeSysDept {
 
     public static final String COL_CODE = "code";
 
+    public static final String COL_DEPT_STATUS = "dept_status";
+
     public static final String COL_DESCRIPTION = "description";
 
     public static final String COL_SORT = "sort";
@@ -140,7 +153,5 @@ public class OpeSysDept {
 
     public static final String COL_UPDATED_TIME = "updated_time";
 
-    public static OpeSysDeptBuilder builder() {
-        return new OpeSysDeptBuilder();
-    }
+
 }

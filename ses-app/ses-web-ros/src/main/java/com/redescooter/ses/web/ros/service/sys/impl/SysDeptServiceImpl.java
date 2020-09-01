@@ -23,12 +23,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
-import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -117,8 +112,8 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    public List<DeptTreeReslt> trees(GeneralEnter enter) {
-      List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+    public List<DeptTreeReslt> trees(DeptListEnter enter) {
+      List<DeptTreeReslt> deptTreeReslts = deptServiceMapper.deptList(enter);
       //根据sort排序
       Collections.sort(deptTreeReslts, new Comparator<DeptTreeReslt>() {
         @Override
@@ -130,12 +125,12 @@ public class SysDeptServiceImpl implements SysDeptService {
       return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 
-    /**
+  /*  *//**
      * 部门列表 平行结构
      *
      * @param enter
      * @return
-     */
+     *//*
     @Override
     public List<DeptTreeReslt> deptList(GeneralEnter enter) {
         //查询部门信息
@@ -164,7 +159,7 @@ public class SysDeptServiceImpl implements SysDeptService {
             deptEmployeeCount(list);
         }
         return list;
-    }
+    }*/
 
     public List<DeptTreeReslt> deptEmployeeCount(List<DeptTreeReslt> list) {
         for (DeptTreeReslt treeReslt : list) {
