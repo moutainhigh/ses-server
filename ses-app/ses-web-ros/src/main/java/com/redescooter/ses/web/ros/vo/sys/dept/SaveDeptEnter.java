@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
@@ -47,6 +48,11 @@ public class SaveDeptEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部门编码")
     private String code;
+
+
+    @ApiModelProperty(value = "部门状态 1：正常，2：禁用")
+    @NotNull(code = ValidationExceptionCode.DEPT_STATUS_IS_EMPTY, message = "部门状态为空")
+    private Integer deptStatus;
 
     @ApiModelProperty(value = "排序")
     private Integer sort;
