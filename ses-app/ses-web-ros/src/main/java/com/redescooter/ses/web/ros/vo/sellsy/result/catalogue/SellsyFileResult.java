@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor // 生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyCatalogueImageResult {
-    private SellsyFileResult file;
+public class SellsyFileResult {
+
+    private String public_path;
 }

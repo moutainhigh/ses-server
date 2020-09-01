@@ -30,8 +30,7 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
                         .method(SellsyMethodConstant.Catalogue_GetList).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyCatalogueResult());
-
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyCatalogueResult());
     }
 
     /**

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = {"ROS-Sellsy"})
+@Api(tags = {"ROS-Sellsy发票业务"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sellsy/document")

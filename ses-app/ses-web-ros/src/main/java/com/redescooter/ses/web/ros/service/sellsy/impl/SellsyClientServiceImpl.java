@@ -49,7 +49,7 @@ public class SellsyClientServiceImpl implements SellsyClientService {
                 .build();
         
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyClientResult());
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyClientResult());
     }
     
     /**

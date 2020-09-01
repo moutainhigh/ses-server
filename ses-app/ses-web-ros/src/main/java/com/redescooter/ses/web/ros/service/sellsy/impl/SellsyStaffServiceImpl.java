@@ -37,7 +37,7 @@ public class SellsyStaffServiceImpl implements SellsyStaffService {
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyStaffResult());
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyStaffResult());
     }
 
     /**

@@ -4,16 +4,27 @@ import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.enums.sellsy.*;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.exception.ThirdExceptionCodeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyLayoutResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyTranslationLanguageResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +65,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyDocumentListResult());
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyDocumentListResult());
     }
 
     /**
@@ -83,23 +94,23 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public void createDocument(SellsyClientServiceCreateDocumentEnter enter) {
 
         // 校验客户
-        /*SellsyClientResult sellsyClientResult =
-            sellsyClientService.queryClientOne(new SellsyQueryClientOneEnter(enter.getThirdid()));
+        SellsyClientResult sellsyClientResult =
+                sellsyClientService.queryClientOne(new SellsyQueryClientOneEnter(enter.getThirdid()));
         if (sellsyClientResult == null) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
                 ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
         }
         // 如果传入发票单号 ，则进行校验
-        if (StringUtils.isNotBlank(enter.getIdent())) {
+        /*if (StringUtils.isNotBlank(enter.getIdent())) {
             SellsyDocumentListEnter sellsyDocumentListEnter = SellsyDocumentListEnter.builder()
-                .doctype(SellsyDocmentTypeEnums.invoice.getCode()).ident(enter.getIdent()).build();
+                .doctype(SellsyDocmentTypeEnums.invoice).ident(enter.getIdent()).build();
             List<SellsyDocumentListResult> sellsyDocumentListResultPageResult =
                 queryDocumentList(sellsyDocumentListEnter);
             if (CollectionUtils.isNotEmpty(sellsyDocumentListResultPageResult)) {
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_DOCUMENT_IS_ALREADY_EXIST.getCode(),
                     ThirdExceptionCodeEnums.SELLSY_DOCUMENT_IS_ALREADY_EXIST.getMessage());
             }
-        }
+        }*/
 
         // 查询税率 是税前发票 还是税后发票
         SellsyRateCategoryResult sellsyRateCategoryResult =
@@ -118,12 +129,12 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         }
 
         //todo 地址解析
-        if (enter.getThirdaddress()!=null){
+        /*if (enter.getThirdaddress()!=null){
             SellsyClientAddressDetailResult sellsyClientAddressDetailResult = sellsyClientService.queryClientAddress(new QueryClientAddressEnter(enter.getThirdid(), enter.getThirdaddress().getId()));
             if (sellsyClientAddressDetailResult==null){
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_ADDRESS_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_ADDRESS_IS_NOT_EXIST.getMessage());
             }
-        }
+        }*/
 
         //布局Id校验
         List<SellsyLayoutResult> sellsyLayoutResultList = sellsyAccountSettingService.queryDocLayoutList();
@@ -143,7 +154,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 sellsyTranslationLanguageResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(enter.getDoclang()))).findFirst().orElse(null);
         if (sellsyTranslationLanguageResult==null){
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getMessage());
-        }*/
+        }
 
         CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()

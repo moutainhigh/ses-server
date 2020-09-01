@@ -24,7 +24,7 @@ public class SellsyCatalogueController {
     private SellsyCatalogueService sellsyCatalogueService;
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "费率列表", response = SellsyCatalogueResult.class)
+    @ApiOperation(value = "产品列表", response = SellsyCatalogueResult.class)
     @PostMapping(value = "/queryCatalogueList")
     public Response<List<SellsyCatalogueResult>>
         queryCatalogueList(@ModelAttribute @ApiParam("请求参数") SellsyCatalogueListEnter enter) {
@@ -32,7 +32,7 @@ public class SellsyCatalogueController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "费率详情", response = SellsyCatalogueResult.class)
+    @ApiOperation(value = "产品详情", response = SellsyCatalogueResult.class)
     @PostMapping(value = "/queryCatalogueOne")
     public Response<SellsyCatalogueResult>
         queryCatalogueOne(@ModelAttribute @ApiParam("请求参数") SellsyQueryCatalogueOneEnter enter) {

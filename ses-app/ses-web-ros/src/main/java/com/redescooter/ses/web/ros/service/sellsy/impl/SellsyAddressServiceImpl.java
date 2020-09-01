@@ -30,7 +30,7 @@ public class SellsyAddressServiceImpl implements SellsyAddressService {
                         .method(SellsyMethodConstant.Addresses_GetList).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, SellsyAddressResult.class);
+        return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyAddressResult());
     }
 
     /**

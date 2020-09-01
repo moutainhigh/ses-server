@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.document;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyDocmentTypeEnums;
 import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
 import lombok.*;
 
@@ -23,10 +25,10 @@ public class SellsyDocumentListEnter {
 
     //单据类型
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCTYPE_IS_EMPTY, message = "单据类型为空")
-    private String doctype;
-    
+    private SellsyDocmentTypeEnums doctype;
+
     //在清单中包括付款信息(只有发票) yes or no
-    private String includePayments;
+    private SellsyBooleanEnums includePayments;
     
     //排序 ASC  or DESC
     private String direction;

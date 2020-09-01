@@ -12,8 +12,8 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/08/18 19:38
  */
-public interface SellsyService<T> {
-    
+public interface SellsyService {
+
     /**
      * sellsy 具体执行器
      *
@@ -29,16 +29,16 @@ public interface SellsyService<T> {
      * @param t
      * @return
      */
-    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t);
+    public <T> List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
      * 处理 以下格式数据 "dateResult":{ "id":{ 目标对象 } }
-     * 
+     *
      * @param sellsyGeneralResult
      * @param t
      * @return
      */
-    public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
+    public <T> List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
      * 处理 以下格式数据 { "dateResult":{ "id":{ 目标对象 } }, "default": "3497458" }
@@ -47,7 +47,7 @@ public interface SellsyService<T> {
      * @param t
      * @return
      */
-    public List<Object> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
+    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, Class<T> clazz);
 
     /**
      * json 处理单个对象

@@ -2,7 +2,6 @@ package com.redescooter.ses.app.common.service.impl;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
@@ -27,7 +26,7 @@ public class FileAppServiceImpl implements FileAppService {
     private OssConfig ossConfig;
 
     @Override
-    public String uplaod(String bucket, MultipartFile file) {
+    public String uplaod(String bucket, String dirName, MultipartFile file) {
         OSSClient ossClient = null;
         String fileName = null;
         int mb = 0;
@@ -39,7 +38,11 @@ public class FileAppServiceImpl implements FileAppService {
             String full = file.getOriginalFilename();
             String suffix = full.substring(full.indexOf("."), full.length());
             Random random = new Random();
-            fileName = System.currentTimeMillis() + random.nextInt(10000) + suffix;
+            if (StringUtils.isNotEmpty(dirName)) {
+                fileName = dirName + "/" + System.currentTimeMillis() + random.nextInt(10000) + suffix;
+            } else {
+                fileName = System.currentTimeMillis() + random.nextInt(10000) + suffix;
+            }
             if (StringUtils.isEmpty(bucket)) {
                 bucket = ossConfig.getDefaultBucketName();
             }

@@ -2,8 +2,10 @@ package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
+import com.redescooter.ses.web.ros.enums.sellsy.DefultFiledEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -29,11 +31,11 @@ import java.util.Map;
  */
 @Log4j2
 @Service
-public class SellsyServiceImpl<T> implements SellsyService<T> {
-    
+public class SellsyServiceImpl implements SellsyService {
+
     @Autowired
     private SellsyConfig sellsyConfig;
-    
+
     /**
      * sellsy 具体执行器
      *
@@ -76,36 +78,48 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
      * @return
      */
     @Override
-    public List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t) {
+    public <T> List<T> jsonArrayFormattingByPage(SellsyGeneralResult sellsyGeneralResult, T t) {
         List<T> resultList = new ArrayList<>();
-
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
             return resultList;
         }
-
         try {
-            // 当返回值是多个值是可以解析出来 返回值为单个值 无法解析
-            sellsyGeneralResult.getResult().extractResponseList().forEach(item -> {
-                resultList.add((T) JSON.parseObject(item.toString(), t.getClass()));
-            });
-            //resultList = (List<T>) JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t.getClass().getClass());
+            resultList = (List<T>) JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t.getClass());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return resultList;
     }
 
+    /**
+     * 主要处理 存在默认值的返回值（无返回值 也可以处理） {
+     * 	"8189455_0": {
+     *        }
+     * 	"defaultShippingId": "8189455"
+     * }
+     * @param sellsyGeneralResult
+     * @param t
+     * @param <T>
+     * @return
+     */
     @Override
-    public List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
+    public <T> List<T> jsonArrayFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
         List<T> resultList = new ArrayList<>();
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
             return resultList;
         }
         try {
-            Map<String, T> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
-            resultList.addAll(objMap.values());
-        } catch (Exception e) {
+            Map<String, String> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), new TypeReference<Map<String, String>>() {
+            });
 
+            //移除默认值字段
+            for (DefultFiledEnums item : DefultFiledEnums.values()) {
+                if (objMap.keySet().contains(item.getValue())) {
+                    objMap.remove(item.getValue());
+                }
+            }
+            resultList.addAll((List<T>) JSON.parseArray(objMap.values().toString(), t.getClass()));
+        } catch (Exception e) {
         }
         return resultList;
     }
@@ -118,8 +132,8 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
      * @return
      */
     @Override
-    public List<Object> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
-        List<Object> resultList = new ArrayList<>();
+    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, Class<T> t) {
+        List<T> resultList = new ArrayList<>();
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
             return resultList;
         }
@@ -130,8 +144,9 @@ public class SellsyServiceImpl<T> implements SellsyService<T> {
             }
             objMap.keySet().forEach(item -> {
                 if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
-                    //Map<String, T> targetMap =JSONObject.parseObject(objMap.get(item), new TypeReference<Map<String, T>>() {});
-                    resultList.addAll(objMap.get(item).values());
+
+                    List<T> targetMap = (List<T>) JSON.parseArray(objMap.get(item).values().toString(), t);
+                    resultList.addAll(targetMap);
                 }
             });
 

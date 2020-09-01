@@ -130,7 +130,7 @@ public class SellsyCatalogueResult {
 
     private String promotion;
 
-    private SellsyCataloguePriceResult prices;
+    private List<SellsyCataloguePriceResult> prices;
 
     private String formated_rc_143036;
 
