@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
+import org.apache.ibatis.annotations.Param;
+
 /**
  * @ClassNameStaffServiceMapper
  * @Description
@@ -9,6 +12,6 @@ package com.redescooter.ses.web.ros.dao.sys;
  **/
 public interface StaffServiceMapper {
 
-
+    StaffResult staffDetail(@Param("id") Long id);
 
 }
