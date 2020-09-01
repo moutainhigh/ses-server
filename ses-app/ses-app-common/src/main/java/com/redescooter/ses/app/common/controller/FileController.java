@@ -6,6 +6,7 @@ import com.redescooter.ses.app.common.service.FileAppService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,13 +42,14 @@ public class FileController {
      * @param file
      * @return
      */
-    @RequestMapping(path = {"/upload", "/{bucket}/upload"})
+    @RequestMapping(path = {"/upload", "/{bucket}/dirName/upload"})
     @ApiOperation(value = "基础图片上传", response = String.class)
     public Response<String> uploadFile(HttpServletRequest request,
                                        HttpServletResponse response,
                                        @PathVariable(required = false) String bucket,
+                                       @Param("文件夹名称") String dirName,
                                        MultipartFile file) {
 
-        return new Response(true, fileAppService.uplaod(bucket, file));
+        return new Response(true, fileAppService.uplaod(bucket,dirName, file));
     }
 }

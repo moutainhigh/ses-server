@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public interface FileAppService {
 
-    String uplaod(String bucket, MultipartFile file);
+    String uplaod(String bucket,String dirName, MultipartFile file);
 
     InputStream download(String url);
 }
