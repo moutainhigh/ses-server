@@ -96,9 +96,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            product.cn_name like concat ("%",#{enter.keyword},"%") or
-            product.en_name like concat ("%",#{enter.keyword},"%") or
-            product.product_number like concat ("%",#{enter.keyword},"%")
+            part.cn_name like concat ("%",#{enter.keyword},"%") or
+            part.en_name like concat ("%",#{enter.keyword},"%") or
+            part.parts_number like concat ("%",#{enter.keyword},"%")
             )
         </if>
     </sql>
@@ -118,9 +118,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            part.cn_name like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.parts_number like concat ("%",#{enter.keyword},"%")
+            product.cn_name like concat ("%",#{enter.keyword},"%") or
+            product.en_name like concat ("%",#{enter.keyword},"%") or
+            product.product_number like concat ("%",#{enter.keyword},"%")
             )
         </if>
     </sql>
@@ -648,7 +648,7 @@ FROM
         product.product_number as productNumber,
         stock.wait_stored_total as intTotal,
         stock.materiel_product_type as productType,
-        stock.created_time                          as createdTime,
+        stock.created_time as createdTime,
         sheet.sales_price * stock.wait_stored_total as price
         FROM ope_stock stock
         inner JOIN ope_parts_product product ON stock.materiel_product_id = product.id and product.dr = 0
