@@ -42,12 +42,12 @@ public class FileController {
      * @param file
      * @return
      */
-    @RequestMapping(path = {"/upload", "/{bucket}/dirName/upload"})
+    @RequestMapping(path = {"/upload", "/{bucket}/{dirName}/upload"})
     @ApiOperation(value = "基础图片上传", response = String.class)
     public Response<String> uploadFile(HttpServletRequest request,
                                        HttpServletResponse response,
                                        @PathVariable(required = false) String bucket,
-                                       @Param("文件夹名称") String dirName,
+                                       @PathVariable(required = false) String dirName,
                                        MultipartFile file) {
 
         return new Response(true, fileAppService.uplaod(bucket,dirName, file));
