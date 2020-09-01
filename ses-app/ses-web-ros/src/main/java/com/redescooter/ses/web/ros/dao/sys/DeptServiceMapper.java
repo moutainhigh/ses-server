@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptListEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -31,7 +32,7 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<DeptTreeReslt> deptList();
+    List<DeptTreeReslt> deptList(DeptListEnter enter);
 
     /**
      * 根据部门查询员工信息
