@@ -2,10 +2,9 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 
@@ -78,4 +77,44 @@ public interface RoleService {
      * @return
      */
     List<MenuTreeResult> roleMenuById(String type, IdEnter enter);
+
+
+    /**
+     * 新增角色
+     * @param enter
+     * @return
+     */
+    GeneralResult roleSave(RoleSaveOrEditEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  修改角色
+     * @Date  2020/9/1 13:20
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult roleEdit(RoleSaveOrEditEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  删除角色
+     * @Date  2020/9/1 15:59
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult roleDelete(RoleOpEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  角色详情
+     * @Date  2020/9/1 16:10
+     * @Param [enter]
+     * @return
+     **/
+    RoleDetailResult roleDetail(RoleOpEnter enter);
+
+
+
+    PageResult<RoleListResult> roleList(RoleQueryListEnter enter);
 }

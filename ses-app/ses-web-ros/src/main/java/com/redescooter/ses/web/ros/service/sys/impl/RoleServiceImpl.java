@@ -2,6 +2,8 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -11,36 +13,33 @@ import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
 import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
+import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName RoleServiceImpl
@@ -75,6 +74,9 @@ public class RoleServiceImpl implements RoleService {
     @Reference
     private CityBaseService ctiyBaseService;
 
+    @Autowired
+    private OpeSysStaffMapper opeSysStaffMapper;
+
     @Override
     @Transactional
     public GeneralResult save(RoleEnter enter) {
@@ -98,13 +100,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public GeneralResult edit(RoleEnter roleEnter) {
-      if (roleEnter.getRoleName().length()<2||roleEnter.getRoleName().length()>20){
-        throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
-      }
-      //employeeListEnter参数值去空格
-      RoleEnter enter = SesStringUtils.objStringTrim(roleEnter);
-      String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
-      enter.setRoleName(roleName);
+        if (roleEnter.getRoleName().length() < 2 || roleEnter.getRoleName().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
+        }
+        //employeeListEnter参数值去空格
+        RoleEnter enter = SesStringUtils.objStringTrim(roleEnter);
+        String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
+        enter.setRoleName(roleName);
         OpeSysRole role = this.builderRole(enter.getRoleId(), enter);
         sysRoleService.updateById(role);
         this.updateRoleAouth(enter);
@@ -299,6 +301,164 @@ public class RoleServiceImpl implements RoleService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
+        }
+    }
+
+
+    @Override
+    public GeneralResult roleSave(RoleSaveOrEditEnter enter) {
+        enter = SesStringUtils.objStringTrim(enter);
+        if (enter.getRoleName().length()<2||enter.getRoleName().length()>20){
+            throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
+        }
+        if(!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100){
+            throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
+        }
+        String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
+        enter.setRoleName(roleName);
+        OpeSysRole role = new OpeSysRole();
+        BeanUtils.copyProperties(enter,role);
+        role.setId(idAppService.getId(SequenceName.OPE_SYS_ROLE));
+        role.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
+        role.setRoleCode("R0"+new Random().nextInt(9999));
+        role.setCreatedBy(enter.getUserId());
+        role.setUpdatedBy(enter.getUserId());
+        sysRoleService.save(role);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Override
+    @Transactional
+    public GeneralResult roleEdit(RoleSaveOrEditEnter enter) {
+        enter = SesStringUtils.objStringTrim(enter);
+        if (enter.getRoleName().length() < 2 || enter.getRoleName().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
+        }
+        if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100) {
+            throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
+        }
+        OpeSysRole role = sysRoleService.getById(enter.getId());
+        if (role == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
+        }
+        // 如果角色的状态从正常变为禁用，需要把这个角色下面的员工全部禁用
+        if (role.getRoleStatus() == 1 && enter.getRoleStatus() == 2) {
+            forbiddenStaff(role);
+        }
+        role.setPositionId(enter.getPositionId());
+        role.setRoleName(enter.getRoleName());
+        role.setSort(enter.getSort());
+        role.setRoleStatus(enter.getRoleStatus());
+        role.setRoleDesc(enter.getRoleDesc());
+        role.setUpdatedBy(enter.getUserId());
+        role.setUpdateTime(new Date());
+        sysRoleService.updateById(role);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Override
+    public GeneralResult roleDelete(RoleOpEnter enter) {
+        OpeSysRole role = sysRoleService.getById(enter.getId());
+        if (role == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
+        }
+        // 检验角色下面是否有员工，有员工则不能删除
+        roleDeleCheck(role.getId());
+        sysRoleService.removeById(role.getId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public RoleDetailResult roleDetail(RoleOpEnter enter) {
+        OpeSysRole role = sysRoleService.getById(enter.getId());
+        if (role == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
+        }
+        RoleDetailResult roleDetail = roleServiceMapper.roleDetail(role.getId());
+        // 查找当前角色下的员工数
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_ROLE_ID, role.getId());
+        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        roleDetail.setNum(CollectionUtils.isNotEmpty(staffList)?0:staffList.size());
+        return roleDetail;
+    }
+
+
+    @Override
+    public PageResult<RoleListResult> roleList(RoleQueryListEnter enter) {
+        int totalRows = roleServiceMapper.totalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<RoleListResult> list = roleServiceMapper.roleList(enter);
+        List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
+        // 查询这些角色下的员工数量
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.in(OpeSysStaff.COL_ROLE_ID,roleIds);
+        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        if(CollectionUtils.isNotEmpty(staffList)){
+            // 按角色id分组
+            Map<Long,List<OpeSysStaff>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysStaff::getRoleId));
+            for (RoleListResult result : list) {
+                for (Long roleId : map.keySet()) {
+                    if(Objects.equals(result.getId(),roleId)){
+                        result.setNum(map.get(roleId).size());
+                    }
+                }
+            }
+        }
+        return  PageResult.create(enter, totalRows, list);
+    }
+
+
+    public void roleDeleCheck(Long roleId){
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_ROLE_ID, roleId);
+        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        if(CollectionUtils.isNotEmpty(staffList)){
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_DELETE.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_DELETE.getMessage());
+        }
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  如果员工只有当前的这个一个角色，直接禁用员工，如果员工有多个角色，
+     *               判断别的角色的状态，如果别的角色都是禁用，则员工变禁用，否则员工状态不变
+     * @Date  2020/9/1 14:36
+     * @Param [role]
+     * @return
+     **/
+    public void forbiddenStaff(OpeSysRole role) {
+        // 角色的状态从正常变为禁用，需要校验这个角色下面是否有（正常的）员工，有的话，不能修改
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_ROLE_ID, role.getId());
+        qw.eq(OpeSysStaff.COL_STATUS, 1);
+        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        if(CollectionUtils.isEmpty(staffList)){
+            return;
+        }
+        List<OpeSysStaff> updateList = new ArrayList<>();
+        for (OpeSysStaff staff : staffList) {
+            List<OpeSysRole> stallRoles = roleServiceMapper.staffRoles(staff.getId(),role.getId());
+            if(CollectionUtils.isEmpty(stallRoles)){
+                updateList.add(staff);
+            }else {
+                // 判断是否全部为禁用的
+                Integer num = stallRoles.size();
+                if(num == stallRoles.stream().filter(o->o.getRoleStatus() == 2).collect(Collectors.toList()).size()){
+                    // 全部为禁用的
+                    updateList.add(staff);
+                }
+            }
+        }
+        if(CollectionUtils.isNotEmpty(updateList)){
+            for (OpeSysStaff sysStaff : updateList) {
+                sysStaff.setStatus(2);
+            }
+            opeSysStaffMapper.updateBatch(updateList);
         }
     }
 }
