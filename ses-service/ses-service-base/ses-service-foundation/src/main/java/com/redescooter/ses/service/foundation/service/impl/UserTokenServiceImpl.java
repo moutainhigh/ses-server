@@ -34,10 +34,7 @@ import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
-import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
-import com.redescooter.ses.service.foundation.dm.base.PlaUser;
-import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
-import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
+import com.redescooter.ses.service.foundation.dm.base.*;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -576,6 +573,33 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public List<AccountsDto> checkAppUser(LoginEnter enter) {
+        /**
+         * 账户密码验证
+         */
+        if (enter.getLoginType() == LoginTypeEnum.PASSWORD.getCode()) {
+            if (StringUtils.isEmpty(enter.getPassword())) {
+                throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),
+                        ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
+            }
+            QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
+            wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getLoginName());
+            wrapper.eq(PlaUserPassword.COL_DR, 0);
+            wrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
+            wrapper.last("limit 1");
+            PlaUserPassword userPassword = userPasswordMapper.selectOne(wrapper);
+            if (userPassword == null) {
+                throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(), ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
+            }
+            if (StringUtils.isBlank(userPassword.getPassword())) {
+                throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(),
+                        ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
+            }
+            String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
+            if (!userPassword.getPassword().equals(password)) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+
+        }
         List<AccountsDto> resultMultiple = userTokenMapper.checkAPPUser(enter);
         List<AccountsDto> resultOne = new ArrayList<>();
         
