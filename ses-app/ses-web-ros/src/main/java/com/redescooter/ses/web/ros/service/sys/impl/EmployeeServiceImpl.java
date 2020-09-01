@@ -350,7 +350,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (opeSysStaff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if (!SesStringUtils.equals(opeSysStaff.getStatus(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
+        if (!SesStringUtils.equals(opeSysStaff.getStatus().toString(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 清空token
@@ -382,7 +382,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         OpeSysStaff opeSysStaff = new OpeSysStaff();
         opeSysStaff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         opeSysStaff.setDr(0);
-        opeSysStaff.setStatus(EmployeeStatusEnums.IN_SERVICE.getValue());
+        opeSysStaff.setStatus(Integer.parseInt(EmployeeStatusEnums.IN_SERVICE.getValue()));
         opeSysStaff.setSysUserId(userId);
         opeSysStaff.setCreatedBy(enter.getUserId());
         opeSysStaff.setCreatedTime(new Date());

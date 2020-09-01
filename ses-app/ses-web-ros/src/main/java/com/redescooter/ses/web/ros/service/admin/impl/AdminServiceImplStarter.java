@@ -307,7 +307,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         return OpeSysStaff.builder()
                 .id(idAppService.getId(SequenceName.OPE_SYS_STAFF))
                 .dr(0)
-                .status(EmployeeStatusEnums.IN_SERVICE.getValue())
+                .status(Integer.parseInt(EmployeeStatusEnums.IN_SERVICE.getValue()))
                 .sysUserId(userId)
                 .createdBy(0L)
                 .createdTime(new Date())
