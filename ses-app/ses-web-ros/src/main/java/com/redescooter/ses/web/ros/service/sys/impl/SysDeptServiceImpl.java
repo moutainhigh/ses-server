@@ -349,15 +349,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTypeResult> selectDeptType(GeneralEnter enter) {
-        List<OpeSysDept> list= sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_TENANT_ID, enter.getRequestId()));
-        List<DeptTypeResult> result = new ArrayList<>();
-        DeptTypeResult deptType = new DeptTypeResult();
-        list.forEach(item->{
-            deptType.setName(item.getName());
-            deptType.setId(item.getId());
-            result.add(deptType);
-        });
-        return result;
+        return deptServiceMapper.deptType(enter.getTenantId());
     }
 
     /**
