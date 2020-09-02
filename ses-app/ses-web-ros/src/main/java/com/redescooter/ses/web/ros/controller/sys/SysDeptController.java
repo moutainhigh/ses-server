@@ -50,7 +50,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/saveDept")
-    @ApiOperation(value = "新建部门--reseat", response = GeneralResult.class)
+    @ApiOperation(value = "新建部门", response = GeneralResult.class)
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
