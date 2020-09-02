@@ -131,9 +131,8 @@ public class SysDeptServiceImpl implements SysDeptService {
         enter = SesStringUtils.objStringTrim(enter);
         if (StringUtils.isEmpty(enter.getName())){
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_NAME_IS_EMPTY.getCode(), ExceptionCodeEnums.DEPT_NAME_IS_EMPTY.getMessage());
-
         }
-        if (enter.getPId()==null){
+        if (enter.getPid()==null){
             throw new SesWebRosException(ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getCode(), ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getMessage());
 
         }

@@ -31,7 +31,7 @@ public class AddDeptEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "父级部门id", required = true)
     @NotNull(code = ValidationExceptionCode.PID_IS_EMPTY, message = "父级Id为空")
-    private Long pId;
+    private Long pid;
 
     @ApiModelProperty(value = "负责人", required = true)
     private Long principal;
