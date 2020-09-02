@@ -8,11 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 用户员工表
@@ -20,9 +16,6 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
 @Data
 @TableName(value = "ope_sys_staff")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class OpeSysStaff implements Serializable {
     /**
      * 主键
@@ -37,6 +30,13 @@ public class OpeSysStaff implements Serializable {
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
+
+    /**
+     * 租户id
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "租户id")
+    private Long tenantId;
 
     /**
      * 员工状态 1：正常，2：禁用
@@ -172,6 +172,13 @@ public class OpeSysStaff implements Serializable {
     private String fullName;
 
     /**
+     * 员工编码
+     */
+    @TableField(value = "code")
+    @ApiModelProperty(value = "员工编码")
+    private String code;
+
+    /**
      * 性别 1：男，2：女
      */
     @TableField(value = "gender")
@@ -254,6 +261,8 @@ public class OpeSysStaff implements Serializable {
 
     public static final String COL_DR = "dr";
 
+    public static final String COL_TENANT_ID = "tenant_id";
+
     public static final String COL_STATUS = "status";
 
     public static final String COL_DEPT_ID = "dept_id";
@@ -291,6 +300,8 @@ public class OpeSysStaff implements Serializable {
     public static final String COL_LAST_NAME = "last_name";
 
     public static final String COL_FULL_NAME = "full_name";
+
+    public static final String COL_CODE = "code";
 
     public static final String COL_GENDER = "gender";
 

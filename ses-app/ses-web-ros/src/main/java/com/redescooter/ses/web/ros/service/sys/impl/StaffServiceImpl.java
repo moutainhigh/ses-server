@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
@@ -13,9 +14,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffOpEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaveOrEditEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -58,6 +57,7 @@ public class StaffServiceImpl implements StaffService {
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
         OpeSysStaff staff = new OpeSysStaff();
         BeanUtils.copyProperties(enter,staff);
+        staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
@@ -76,6 +76,7 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter,staff);
+        staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
         opeSysStaffService.updateById(staff);
@@ -86,12 +87,8 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    public GeneralResult staffDelete(StaffOpEnter enter) {
-        OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
-        if(staff == null){
-            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
-        }
-        opeSysStaffService.removeById(enter.getId());
+    public GeneralResult staffDelete(StaffDeleteEnter enter) {
+        opeSysStaffService.removeByIds(enter.getIds());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -103,11 +100,51 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         StaffResult staffDetail = staffServiceMapper.staffDetail(staff.getId());
+        // 查找员工的角色信息
+        StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
+        if(staffRoleResult != null){
+            staffDetail.setRoleIds(staffRoleResult.getRoleId());
+            staffDetail.setRoleNames(staffRoleResult.getRoleName());
+        }
         return staffDetail;
     }
 
+    @Override
+    public PageResult<StaffListResult> staffList(StaffListEnter enter) {
+        int totalRows = staffServiceMapper.totalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<StaffListResult> list = staffServiceMapper.staffList(enter);
+        for (StaffListResult result : list) {
+            StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
+            if(staffRoleResult != null){
+                result.setRoleNames(staffRoleResult.getRoleName());
+            }
+        }
+        return PageResult.create(enter, totalRows, list);
+    }
 
-    public void creatRoleStaff(Long staffId, List<Long> roleIds){
+
+    @Override
+    public List<StaffDataResult> principalData(Long tenantId) {
+        tenantId = tenantId==null?0L:tenantId;
+        return staffServiceMapper.principalData(tenantId);
+    }
+
+
+    @Override
+    public Integer deptStaffCount(Long deptId) {
+        if (deptId == null) {
+            return 0;
+        }
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_DEPT_ID, deptId);
+        return opeSysStaffService.count(qw);
+    }
+
+
+    private void creatRoleStaff(Long staffId, List<Long> roleIds){
          // 先看看当前这个员工有没有role关系，有的话先删除，再插入
         QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysUserRole.COL_USER_ID,staffId);

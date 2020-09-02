@@ -413,6 +413,27 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
+    @Transactional
+    @Override
+    public void disableRole(List<Long> positionIds) {
+        QueryWrapper<OpeSysRole> role = new QueryWrapper<>();
+        role.in(OpeSysRole.COL_POSITION_ID,positionIds);
+        List<OpeSysRole> roles = sysRoleService.list(role);
+        if(CollectionUtils.isNotEmpty(roles)){
+            List<OpeSysRole> update = new ArrayList<>();
+            for (OpeSysRole sysRole : roles) {
+                sysRole.setRoleStatus(2);
+                update.add(sysRole);
+            }
+            sysRoleService.updateBatch(update);
+            // 禁用角色下面的员工
+            for (OpeSysRole opeSysRole : roles) {
+                forbiddenStaff(opeSysRole);
+            }
+        }
+    }
+
+
     public void roleDeleCheck(Long roleId){
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_ROLE_ID, roleId);

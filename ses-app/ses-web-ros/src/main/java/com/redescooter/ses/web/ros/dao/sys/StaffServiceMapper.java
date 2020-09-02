@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @ClassNameStaffServiceMapper
@@ -13,5 +15,14 @@ import org.apache.ibatis.annotations.Param;
 public interface StaffServiceMapper {
 
     StaffResult staffDetail(@Param("id") Long id);
+
+
+    StaffRoleResult staffRoleMsg(@Param("staffId") Long staffId);
+
+    int totalRows(@Param("enter") StaffListEnter enter);
+
+    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter);
+
+    List<StaffDataResult> principalData(@Param("tenantId")Long tenantId);
 
 }

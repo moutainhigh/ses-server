@@ -24,17 +24,20 @@ public class StaffResult extends GeneralResult {
     private Integer status;
 
     @ApiModelProperty(value = "所属部门名称")
-    private Long deptName;
+    private String deptName;
 
     /**
      * 所属岗位id
      */
     @TableField(value = "position_id")
     @ApiModelProperty(value = "所属岗位名称")
-    private Long positionName;
+    private String positionName;
 
     @ApiModelProperty(value = "所属角色名称")
-    private Long roleName;
+    private String roleNames;
+
+    @ApiModelProperty(value = "所属角色id")
+    private String roleIds;
 
     @ApiModelProperty(value = "联系电话")
     private String telephone;
@@ -81,6 +84,9 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "员工全名")
     private String fullName;
 
+    @ApiModelProperty(value = "员工工号")
+    private String code;
+
     @ApiModelProperty(value = "性别 1：男，2：女")
     private Integer gender;
 
@@ -96,10 +102,6 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "更新人")
     private Long updatedName;
 
-    /**
-     * 更新时间
-     */
-    @TableField(value = "updated_time")
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
