@@ -47,8 +47,31 @@ public class SysDeptController {
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
-    @PostMapping(value = "/edit")
+    @PostMapping(value = "/deptDetails")
+    @ApiOperation(value = "部门详情", response = GeneralResult.class)
+    public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(deptService.deptDetailDepts(enter));
+    }
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "部门删除", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(deptService.delete(enter));
+    }
+
+    @PostMapping(value = "/selectEditDept")
+    @ApiOperation(value = "查询部门", response = GeneralResult.class)
+    public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(deptService.selectEditDept(enter));
+    }
+    @PostMapping(value = "/editDept")
     @ApiOperation(value = "部门编辑", response = GeneralResult.class)
+    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
+        return new Response<>(deptService.editDept(enter));
+    }
+
+    @PostMapping(value = "/edit")
+    @ApiOperation(value = "编辑部门", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") EditDeptEnter enter) {
         return new Response<>(deptService.edit(enter));
     }

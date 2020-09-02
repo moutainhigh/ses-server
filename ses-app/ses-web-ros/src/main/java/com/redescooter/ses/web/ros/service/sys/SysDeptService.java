@@ -68,6 +68,21 @@ public interface SysDeptService {
      * @return
      */
     GeneralResult edit(EditDeptEnter enter);
+    /**
+     * 查询编辑部门
+     *
+     * @param enter
+     * @return
+     */
+    SelectDeptResult selectEditDept(IdEnter enter);
+    /**
+     * 部门编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editDept(UpdateDeptEnter enter);
+
 
     /**
      * 部门删除
@@ -84,6 +99,14 @@ public interface SysDeptService {
      * @return
      */
     DeptTreeReslt details(IdEnter enter);
+
+    /**
+     * 部门详情
+     *
+     * @param enter
+     * @return
+     */
+    DeptDetailsResult  deptDetails(IdEnter enter);
 
     /**
      * 获取部门子列表

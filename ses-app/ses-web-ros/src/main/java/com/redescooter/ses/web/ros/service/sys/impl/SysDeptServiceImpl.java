@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
+import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -34,6 +35,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.*;
 import java.util.*;
 
 /**
@@ -115,7 +117,6 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult addSave(AddDeptEnter enter) {
         List<OpeSysDept> saveDeptList = new ArrayList<>();
-
         //SaveDeptEnter参数值去空格
         enter = SesStringUtils.objStringTrim(enter);
         if (StringUtils.isEmpty(enter.getName())){
@@ -127,9 +128,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         }
         OpeSysDept dept = this.addDept(enter);
-        saveDeptList.add(dept);
-        sysDeptService.saveOrUpdateBatch(saveDeptList);
-        sysDeptRelationService.insertDeptRelation(dept);
+        //todo 生成部门编码
+        sysDeptService.save(dept);
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -312,6 +313,42 @@ public class SysDeptServiceImpl implements SysDeptService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 查询编辑部门
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public SelectDeptResult selectEditDept(IdEnter enter) {
+     return deptServiceMapper.selectEditDept(enter.getId());
+    }
+
+    /**
+     * 部门编辑
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult editDept(UpdateDeptEnter enter) {
+        SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
+        OpeSysDept opeSysDept = new OpeSysDept();
+        if (deptResult==null){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+
+        if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
+
+
+        }
+        BeanUtils.copyProperties(enter,opeSysDept);
+        opeSysDept.setUpdatedBy(enter.getUserId());
+        opeSysDept.setUpdatedTime(new Date());
+        opeSysDeptService.insertOrUpdate(opeSysDept);
+        return new GeneralResult(enter.getRequestId());
+    }
+
     @Override
     public GeneralResult delete(IdEnter enter) {
         //不可删除根基部门（公司）
@@ -354,6 +391,25 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         return reslt;
+    }
+
+    /**
+     * 部门详情
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public DeptDetailsResult deptDetails(IdEnter enter) {
+        OpeSysDept byId = sysDeptService.getById(enter.getId());
+        DeptDetailsResult result=new DeptDetailsResult();
+        if (byId==null){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+        List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
+        result.setDeptCount(list.size());
+        BeanUtils.copyProperties(byId, result);
+        return result;
     }
 
     @Override

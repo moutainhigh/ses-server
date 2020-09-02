@@ -120,5 +120,15 @@
             and dept.dept_status =#{deptType}
         </if>
     </select>
+    <select id="selectEditDept" resultType="com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+       and dept.id =#{id}
+    </select>
 
 </mapper>
