@@ -63,35 +63,35 @@ public class SysRoleController {
 
     // 以下为ROS组织架构重构后的代码
     @PostMapping(value = "/roleSave")
-    @ApiOperation(value = "新增角色", response = GeneralResult.class)
+    @ApiOperation(value = "新增角色--reseat", response = GeneralResult.class)
     public Response<GeneralResult> roleSave(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleSave(enter));
     }
 
 
     @PostMapping(value = "/roleEdit")
-    @ApiOperation(value = "修改角色", response = GeneralResult.class)
+    @ApiOperation(value = "修改角色--reseat", response = GeneralResult.class)
     public Response<GeneralResult> roleEdit(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleEdit(enter));
     }
 
 
     @PostMapping(value = "/roleDelete")
-    @ApiOperation(value = "删除角色", response = GeneralResult.class)
+    @ApiOperation(value = "删除角色--reseat", response = GeneralResult.class)
     public Response<GeneralResult> roleDelete(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
         return new Response(roleService.roleDelete(enter));
     }
 
 
     @PostMapping(value = "/roleDetail")
-    @ApiOperation(value = "角色详情", response = GeneralResult.class)
+    @ApiOperation(value = "角色详情--reseat", response = GeneralResult.class)
     public Response<RoleDetailResult> roleDetail(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
         return new Response(roleService.roleDetail(enter));
     }
 
 
     @PostMapping(value = "/roleList")
-    @ApiOperation(value = "角色列表", response = GeneralResult.class)
+    @ApiOperation(value = "角色列表--reseat", response = GeneralResult.class)
     public Response<PageResult<RoleListResult>> roleList(@ModelAttribute @ApiParam("请求参数") RoleQueryListEnter enter) {
         return new Response(roleService.roleList(enter));
     }
