@@ -117,4 +117,14 @@ public interface RoleService {
 
 
     PageResult<RoleListResult> roleList(RoleQueryListEnter enter);
+    
+    
+    /**
+     * @Author Aleks
+     * @Description  根据岗位id 禁用岗位下面的角色
+     * @Date  2020/9/2 14:31
+     * @Param
+     * @return 
+     **/
+    void disableRole(List<Long> positionIds);
 }

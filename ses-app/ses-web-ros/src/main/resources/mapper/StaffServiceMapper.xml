@@ -1,13 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper">
-
     <select id="staffDetail" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffResult">
-        select  *  from
+
+        select
+          s.id,
+          s.status,
+          s.first_name,
+          s.last_name,
+          s.full_name,
+          s.gender,
+          s.code,
+          d.name as deptName,
+          d.position_name as positionName,
+          s.telephone,
+          s.email,
+          s.entry_date,
+          s.country_name,
+          s.address_1,
+          s.address_2,
+          s.birthday,
+          s.certificate_type,
+          s.certificat_picture_1,
+          s.certificat_picture_2,
+          s.created_time,
+          s.updated_time,
+          s1.full_name as createdName,
+          s2.full_name as updatedName
+          from ope_sys_staff s
+          left join ope_sys_dept d on s.dept_id = d.id
+          left join ope_sys_position p on s.position_id = p.id
+          left join ope_sys_staff s1 on s.created_by = s1.id
+          left join ope_sys_staff s2 on s.updated_by = s2.id
+          where s.dr = 0 and d.dr = 0 and p.dr = 0 and s1.dr = 0 and s2.dr = 0
+                s.id = #{id}
+
+    </select>
+
+    <select id="totalRows" resultType="int">
+      select count(*) from ope_sys_staff
+      where dr = 0
+      <include refid="staffListCondition"></include>
+    </select>
+
+    <sql id="staffListCondition">
+      <if test="enter.deptId != null">
+        and dept_id = #{enter.deptId}
+      </if>
+      <if test="enter.positionId != null">
+        and position_id = #{enter.positionId}
+      </if>
+      <if test="enter.roleId != null">
+        and role_id = #{enter.roleId}
+      </if>
+      <if test="enter.status != null">
+        and status = #{enter.status}
+      </if>
+      <if test="enter.keyWord != null and enter.keyWord != ''">
+        and (full_name like concat('%', #{enter.keyWord}, '%')
+        or telephone like concat('%', #{enter.keyWord}, '%')
+        or email like concat('%', #{enter.keyWord}, '%')
+        )
+      </if>
+    </sql>
 
 
+    <select id="staffRoleMsg" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffRoleResult">
+      SELECT
+      GROUP_CONCAT( role_name SEPARATOR ',' ) as roleName,GROUP_CONCAT( id SEPARATOR ',' ) as roleId
+      FROM
+      ope_sys_role
+      WHERE
+      id IN (SELECT role_id FROM ope_sys_user_role where user_id = #{staffId}) and dr = 0
+    </select>
 
+    <select id="staffList" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffListResult">
+        select
+         s.id,
+         s.code,
+         s.first_name,
+         s.last_name,
+         s.full_name,
+         s.telephone,
+         s.email,
+         s.status,
+         s.created_time,
+         d.name as deptName,
+         p.position_name as positionName
+        from ope_sys_staff s
+        left join ope_sys_dept d on s.dept_id = d.id
+        left join ope_sys_position p on s.position_id = p.id
+        where s.dr = 0 and d.dr = 0 and p.dr = 0
+      <include refid="staffListCondition"></include>
+      order by created_time desc
+    </select>
 
+    <select id="principalData" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult">
+        select
+          id as principal,
+          full_name as principalName
+        from ope_sys_staff
+        where dr = 0 and tenant_id = #{tenantId}
     </select>
 
 </mapper>

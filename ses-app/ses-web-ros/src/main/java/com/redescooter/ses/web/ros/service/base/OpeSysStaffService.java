@@ -20,3 +20,5 @@ public interface OpeSysStaffService extends IService<OpeSysStaff> {
     int updateBatchSelective(List<OpeSysStaff> list);
 }
 
+
+
