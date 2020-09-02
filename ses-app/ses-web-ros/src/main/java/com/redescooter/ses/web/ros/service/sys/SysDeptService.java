@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 
 import java.util.List;
@@ -22,6 +23,12 @@ public interface SysDeptService {
      * @return
      */
     GeneralResult save(SaveDeptEnter enter);
+    /**
+     * 部门创建
+     *
+     * @return
+     */
+    GeneralResult addSave(AddDeptEnter enter);
 
     /**
      * 部门树
@@ -29,15 +36,22 @@ public interface SysDeptService {
      * @param enter
      * @return
      */
-    List<DeptTreeReslt> trees(DeptListEnter enter);
+    List<DeptTreeReslt> trees(GeneralEnter enter);
 
-  /*  *//**
+    /**
+     * 部门树
+     *
+     * @param enter
+     * @return
+     */
+    List<DeptTreeListResult> deptTrees(DeptListEnter enter);
+    /**
      * 部门列表 平行结构
      *
      * @param enter
      * @return
-     *//*
-    List<DeptTreeReslt> deptList(GeneralEnter enter);*/
+     */
+    List<DeptTreeReslt> deptList(GeneralEnter enter);
 
     /**
      * 员工列表

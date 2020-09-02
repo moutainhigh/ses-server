@@ -226,4 +226,6 @@ public interface ValidationExceptionCode {
     int MESSAGE_IS_ILLEGAL=10132;
     // 部门为空
     int DEPT_STATUS_IS_EMPTY = 10133;
+    // 部门为空
+    int SORT_ILLEGAL = 10134;
 }

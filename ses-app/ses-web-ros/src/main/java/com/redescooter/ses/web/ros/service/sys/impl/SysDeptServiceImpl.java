@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,14 +107,64 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     /**
+     * 部门创建
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult addSave(AddDeptEnter enter) {
+        List<OpeSysDept> saveDeptList = new ArrayList<>();
+
+        //SaveDeptEnter参数值去空格
+        enter = SesStringUtils.objStringTrim(enter);
+        if (StringUtils.isEmpty(enter.getName())){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_NAME_IS_EMPTY.getCode(), ExceptionCodeEnums.DEPT_NAME_IS_EMPTY.getMessage());
+
+        }
+        if (enter.getPId()==null){
+            throw new SesWebRosException(ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getCode(), ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getMessage());
+
+        }
+        List<OpeSysDept> deptList = sysDeptService.list();
+
+        if (CollectionUtils.isNotEmpty(deptList)) {
+            OpeSysDept sortDept = null;
+            int maxSort = 0;
+            if (sortDept != null && maxSort != 0) {
+                //排序调换
+                sortDept.setSort(maxSort + 1);
+                saveDeptList.add(sortDept);
+            }
+        }
+        OpeSysDept dept = this.addDept(enter);
+        saveDeptList.add(dept);
+        sysDeptService.saveOrUpdateBatch(saveDeptList);
+        sysDeptRelationService.insertDeptRelation(dept);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 部门树
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DeptTreeListResult> deptTrees(DeptListEnter enter) {
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter);
+        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+    /**
      * 树形结构
      *
      * @param enter
      * @return
      */
     @Override
-    public List<DeptTreeReslt> trees(DeptListEnter enter) {
-      List<DeptTreeReslt> deptTreeReslts = deptServiceMapper.deptList(enter);
+    public List<DeptTreeReslt> trees(GeneralEnter enter) {
+      List<DeptTreeReslt> deptTreeReslts = deptList(enter);
       //根据sort排序
       Collections.sort(deptTreeReslts, new Comparator<DeptTreeReslt>() {
         @Override
@@ -124,13 +175,12 @@ public class SysDeptServiceImpl implements SysDeptService {
       Collections.sort(deptTreeReslts, Comparator.comparing(DeptTreeReslt::getSort));
       return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
-
-  /*  *//**
+    /**
      * 部门列表 平行结构
      *
      * @param enter
      * @return
-     *//*
+     */
     @Override
     public List<DeptTreeReslt> deptList(GeneralEnter enter) {
         //查询部门信息
@@ -159,7 +209,7 @@ public class SysDeptServiceImpl implements SysDeptService {
             deptEmployeeCount(list);
         }
         return list;
-    }*/
+    }
 
     public List<DeptTreeReslt> deptEmployeeCount(List<DeptTreeReslt> list) {
         for (DeptTreeReslt treeReslt : list) {
@@ -361,6 +411,23 @@ public class SysDeptServiceImpl implements SysDeptService {
             deptIds.add(enter.getId());
         }
         return deptServiceMapper.principals(deptIds);
+    }
+
+    private OpeSysDept addDept(AddDeptEnter enter) {
+
+        OpeSysDept dept = new OpeSysDept();
+        BeanUtils.copyProperties(enter, dept);
+        if (dept.getPId() == null || dept.getPId() == 0) {
+            dept.setPId(Constant.DEPT_TREE_ROOT_ID);
+        }
+        dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
+        dept.setDr(Constant.DR_FALSE);
+        dept.setCreatedBy(enter.getUserId());
+        dept.setCreatedTime(new Date());
+        dept.setUpdatedBy(enter.getUserId());
+        dept.setUpdatedTime(new Date());
+
+        return dept;
     }
 
     private OpeSysDept buildDept(SaveDeptEnter enter) {

@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptListEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,8 +33,14 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<DeptTreeReslt> deptList(DeptListEnter enter);
+    List<DeptTreeReslt> deptList();
 
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTreeListResult> getDeptList(DeptListEnter enter);
     /**
      * 根据部门查询员工信息
      *

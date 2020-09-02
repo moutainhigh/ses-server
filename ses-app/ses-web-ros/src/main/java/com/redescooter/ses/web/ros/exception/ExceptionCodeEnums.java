@@ -348,9 +348,12 @@ public enum ExceptionCodeEnums {
 
     ROLE_IS_NOT_EXIST(10165, "角色不存在"),
 
-    ROLE_IS_NOT_DELETE(10166, "角色下面存在员工，不能删除");
+    ROLE_IS_NOT_DELETE(10166, "角色下面存在员工，不能删除"),
 
+    DEPT_NAME_IS_EMPTY(10167, "部门名称为空"),
 
+    SUPERIOR_DEPT_IS_EMPTY(10168, "上级部门为空")
+    ;
     private int code;
 
     private String message;

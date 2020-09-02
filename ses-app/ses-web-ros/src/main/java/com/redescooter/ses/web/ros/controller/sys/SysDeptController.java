@@ -41,6 +41,11 @@ public class SysDeptController {
         return new Response<>(deptService.save(enter));
     }
 
+    @PostMapping(value = "/saveDept")
+    @ApiOperation(value = "部门创建", response = GeneralResult.class)
+    public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
+        return new Response<>(deptService.addSave(enter));
+    }
     @PostMapping(value = "/edit")
     @ApiOperation(value = "部门编辑", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") EditDeptEnter enter) {
@@ -55,16 +60,22 @@ public class SysDeptController {
 
     @PostMapping(value = "/tree")
     @ApiOperation(value = "部门树列表", response = GeneralResult.class)
-    @IgnoreLoginCheck
-    public Response<List<DeptTreeReslt>> tree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
-            return new Response<>(deptService.trees(enter));
+    public Response<List<DeptTreeReslt>> tree(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deptService.trees(enter));
     }
-/*
+
+    @PostMapping(value = "/deptTree")
+    @ApiOperation(value = "部门树列表", response = GeneralResult.class)
+    @IgnoreLoginCheck
+    public Response<List<DeptTreeReslt>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
+        return new Response<>(deptService.trees(enter));
+    }
+
     @PostMapping(value = "/deptList")
     @ApiOperation(value = "部门列表（平行结构）", response = GeneralResult.class)
     public Response<List<DeptTreeReslt>> deptList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(deptService.deptList(enter));
-    }*/
+    }
 
     @PostMapping(value = "/employeeList")
     @ApiOperation(value = "员工列表", response = EmployeeProfileResult.class)
