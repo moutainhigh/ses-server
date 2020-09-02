@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -431,6 +432,51 @@ public class RoleServiceImpl implements RoleService {
                 forbiddenStaff(opeSysRole);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public GeneralResult roleMenuEdit(RoleMenuEditEnter enter) {
+        // 先把当前角色已经有的菜单权限全部删除
+        rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
+        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), new HashSet<>(enter.getMenuIds()));
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Override
+    public List<SalesAreaTressResult> roleCity(RoleOpEnter enter) {
+        return null;
+    }
+
+
+    @Override
+    @Transactional
+    public GeneralResult roleCityEdit(RoleCityEditEnter enter) {
+        // 先删除当前角色原先的销售区域
+        rolePermissionService.deleteRoleSalesPermissionsByRoleId(new IdEnter(enter.getRoleId()));
+        // 再绑定新的销售区域
+        rolePermissionService.insertRoleSalesPermissions(enter.getRoleId(), new HashSet<>(enter.getCityIds()));
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Override
+    public List<RoleDataResult> roleData(GeneralEnter enter) {
+        List<RoleDataResult> resultList = new ArrayList<>();
+        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
+        List<OpeSysRole> roles = sysRoleService.list(qw);
+        if(CollectionUtils.isNotEmpty(roles)){
+            for (OpeSysRole role : roles) {
+                RoleDataResult result = new RoleDataResult();
+                result.setRoleId(role.getId());
+                result.setRoleName(role.getRoleName());
+                resultList.add(result);
+            }
+
+        }
+        return resultList;
     }
 
 
