@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -127,4 +128,22 @@ public interface RoleService {
      * @return 
      **/
     void disableRole(List<Long> positionIds);
+
+    /**
+     * @Author Aleks
+     * @Description
+     * @Date  2020/9/2 15:20
+     * @Param
+     * @return
+     **/
+    GeneralResult roleMenuEdit(RoleMenuEditEnter enter);
+
+
+    List<SalesAreaTressResult> roleCity( RoleOpEnter enter);
+
+
+    GeneralResult roleCityEdit( RoleCityEditEnter enter);
+
+
+    List<RoleDataResult> roleData( GeneralEnter enter);
 }

@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
+import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,7 +59,15 @@ public class SysRoleController {
     }
 
 
-    // 以下为ROS组织架构重构后的代码
+    /**
+     * @Author Aleks
+     * @Description  以下为ROS组织架构重构后的代码
+     * @Date  2020/9/1 10:26
+     * @Param
+     * @return
+     **/
+
+
     @PostMapping(value = "/roleSave")
     @ApiOperation(value = "新增角色--reseat", response = GeneralResult.class)
     public Response<GeneralResult> roleSave(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
@@ -97,4 +103,30 @@ public class SysRoleController {
     }
 
 
+    @PostMapping(value = "/roleMenuEdit")
+    @ApiOperation(value = "角色菜单权限修改--reseat", response = GeneralResult.class)
+    public Response<GeneralResult> roleMenu(@ModelAttribute @ApiParam("请求参数") RoleMenuEditEnter enter) {
+        return new Response(roleService.roleMenuEdit(enter));
+    }
+
+
+//    @PostMapping(value = "/roleCity/{type}")
+//    @ApiOperation(value = "角色区域展示--reseat", response = GeneralResult.class)
+//    public Response<List<SalesAreaTressResult>> roleCity(@PathVariable(required = false) String type,@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response(roleService.roleSalesAreaById(type,enter));
+//    }
+//
+//
+//    @PostMapping(value = "/roleCityEdit")
+//    @ApiOperation(value = "角色区域展示--reseat", response = GeneralResult.class)
+//    public Response<GeneralResult> roleCityEdit(@ModelAttribute @ApiParam("请求参数") RoleCityEditEnter enter) {
+//        return new Response(roleService.roleCityEdit(enter));
+//    }
+
+
+    @PostMapping(value = "/roleData")
+    @ApiOperation(value = "角色的下拉数据接口--reseat", response = GeneralResult.class)
+    public Response<List<RoleDataResult>> roleData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response(roleService.roleData(enter));
+    }
 }

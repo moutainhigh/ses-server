@@ -58,6 +58,7 @@ public class StaffServiceImpl implements StaffService {
         OpeSysStaff staff = new OpeSysStaff();
         BeanUtils.copyProperties(enter,staff);
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
+        staff.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
