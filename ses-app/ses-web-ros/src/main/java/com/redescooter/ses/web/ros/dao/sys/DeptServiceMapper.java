@@ -1,10 +1,8 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptListEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import org.apache.ibatis.annotations.Param;
@@ -42,7 +40,12 @@ public interface DeptServiceMapper {
      * @return
      * */
     SelectDeptResult selectEditDept (Long id);
-
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTypeResult> deptType(@Param("tenantId") long tenantId);
 
     /**
      * 获取部门信息
