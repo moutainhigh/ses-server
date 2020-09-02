@@ -50,12 +50,12 @@ public class SysDeptController {
     @PostMapping(value = "/deptDetails")
     @ApiOperation(value = "部门详情", response = GeneralResult.class)
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(deptService.deptDetailDepts(enter));
+        return new Response<>(deptService.deptDetails(enter));
     }
 
     @PostMapping(value = "/delete")
     @ApiOperation(value = "部门删除", response = GeneralResult.class)
-    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> deleteDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.delete(enter));
     }
 
