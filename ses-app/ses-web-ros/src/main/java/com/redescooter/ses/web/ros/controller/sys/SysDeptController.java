@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
@@ -61,6 +58,11 @@ public class SysDeptController {
     @ApiOperation(value = "部门详情", response = GeneralResult.class)
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deptDetails(enter));
+    }
+    @PostMapping(value = "/deleteDeptSelect")
+    @ApiOperation(value = "部门删除校验", response = GeneralResult.class)
+    public Response<BooleanResult> deleteDeptSelect(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(deptService.deleteDeptSelect(enter));
     }
 
     @PostMapping(value = "/deleteDept")

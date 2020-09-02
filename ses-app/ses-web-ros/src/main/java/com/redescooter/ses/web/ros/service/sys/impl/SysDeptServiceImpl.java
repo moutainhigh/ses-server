@@ -6,9 +6,7 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -16,10 +14,12 @@ import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
+import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -56,6 +57,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService sysDeptService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private OpeSysPositionService opeSysPositionService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
     @Autowired
@@ -181,8 +184,13 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public GeneralResult deleteDept(IdEnter enter) {
+        List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
+            if (CollectionUtils.isNotEmpty(list)){
+                throw new SesWebRosException(ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getCode(), ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getMessage());
+            }
 
-        return null;
+        opeSysDeptService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -360,7 +368,15 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
 
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
-            roleService.disableRole(ids);
+            List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, enter.getId()));
+            if (CollectionUtils.isNotEmpty(list)){
+                //岗位禁用
+               list.stream().forEach(opeSysPosition -> opeSysPosition.setPositionStatus(Integer.valueOf(DeptStatusEnums.DEPARTMENT.getValue())));
+                opeSysPositionService.updateBatch(list);
+                //岗位角色员工禁用
+                ids =list.stream().map(OpeSysPosition::getId).collect(Collectors.toList());
+                roleService.disableRole(ids);
+            }
         }
         BeanUtils.copyProperties(enter,opeSysDept);
         opeSysDept.setUpdatedBy(enter.getUserId());
@@ -431,6 +447,24 @@ public class SysDeptServiceImpl implements SysDeptService {
         result.setEmployeeCount(taffService.deptStaffCount(byId.getId()));
         BeanUtils.copyProperties(byId, result);
         return result;
+    }
+
+    /**
+     * 部门删除查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult deleteDeptSelect(IdEnter enter) {
+        List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
+        BooleanResult booleanResult = new BooleanResult();
+        if (CollectionUtils.isNotEmpty(list)){
+            booleanResult.setSuccess(false);
+            }else {
+            booleanResult.setSuccess(true);
+        }
+        return booleanResult;
     }
 
     @Override

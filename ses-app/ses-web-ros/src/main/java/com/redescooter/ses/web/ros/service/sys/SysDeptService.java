@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.service.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -115,6 +115,15 @@ public interface SysDeptService {
      * @return
      */
     DeptDetailsResult  deptDetails(IdEnter enter);
+
+
+    /**
+     * 部门删除查询
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult deleteDeptSelect(IdEnter enter);
 
     /**
      * 获取部门子列表

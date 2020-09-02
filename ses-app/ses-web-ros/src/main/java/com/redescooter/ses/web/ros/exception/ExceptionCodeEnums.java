@@ -352,8 +352,9 @@ public enum ExceptionCodeEnums {
 
     DEPT_NAME_IS_EMPTY(10167, "部门名称为空"),
 
-    SUPERIOR_DEPT_IS_EMPTY(10168, "上级部门为空")
-    ;
+    SUPERIOR_DEPT_IS_EMPTY(10168, "上级部门为空"),
+
+    PLEASE_UNTIE_THE_SUBDEPT(10169, "请解绑子部门");
     private int code;
 
     private String message;
