@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -345,7 +344,11 @@ public enum ExceptionCodeEnums {
 
     NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料"),
 
-    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除");;
+    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除"),
+
+    ROLE_IS_NOT_EXIST(10165, "角色不存在"),
+
+    ROLE_IS_NOT_DELETE(10166, "角色下面存在员工，不能删除");
 
 
     private int code;

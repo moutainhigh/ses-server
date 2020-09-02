@@ -5,13 +5,19 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 系统角色表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRole")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_sys_role")
 public class OpeSysRole implements Serializable {
     /**

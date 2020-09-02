@@ -34,4 +34,65 @@
         group by deptId,
         deptName
     </select>
+
+    <select id="staffRoles" resultType="com.redescooter.ses.web.ros.dm.OpeSysRole">
+        SELECT * from ope_sys_role r
+        LEFT JOIN ope_sys_user_role ur on ur.role_id = r.id
+        where r.dr = 0 and r.id != #{roleId} and ur.user_id  = #{staffId}
+    </select>
+
+    <select id="roleDetail" resultType="com.redescooter.ses.web.ros.vo.sys.role.RoleDetailResult">
+        select
+            r.id,
+            r.role_name,
+            r.role_code,
+            p.position_name,
+            r.sort,
+            r.role_status,
+            r.role_desc,
+            s1.full_name as createdName,
+            r.create_time,
+            s2.full_name as updatedName,
+            r.update_time
+        from
+        ope_sys_role r
+        left join ope_sys_staff s1 on r.created_by = s1.id
+        left join ope_sys_staff s2 on r.updated_by = s2.id
+        left join ope_sys_position p on r.position_id = p.id
+        where r.dr = 0 and s.dr = 0 and r.id = #{roleId}
+    </select>
+
+    <select id="totalRows" resultType="int">
+        select count(*) from ope_sys_role
+        where dr = 0
+        <include refid="roleListCondition"></include>
+    </select>
+
+    <select id="roleList" resultType="com.redescooter.ses.web.ros.vo.sys.role.RoleListResult">
+        select
+          r.id,
+          r.role_code,
+          r.role_name,
+          r.sort,
+          p.position_name,
+          r.role_status,
+          r.create_time
+        from ope_sys_role r
+        left join ope_sys_position p on r.position_id = p.id
+        where r.dr = 0 and p.dr = 0
+        <include refid="roleListCondition"></include>
+        order by r.sort,r.create_time
+    </select>
+
+    <sql id="roleListCondition">
+        <if test="enter.positionId != null and enter.positionId != ''">
+            and position_id = #{enter.positionId}
+        </if>
+        <if test="enter.roleStatus != null">
+            and role_status = #{enter.roleStatus}
+        </if>
+        <if test="enter.keyWord != null and enter.keyWord != ''">
+            and role_name = #{enter.keyWord}
+        </if>
+    </sql>
 </mapper>
