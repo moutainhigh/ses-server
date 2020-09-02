@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +43,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/saveDept")
-    @ApiOperation(value = "部门创建", response = GeneralResult.class)
+    @ApiOperation(value = "新建部门", response = GeneralResult.class)
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
@@ -65,10 +66,10 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/deptTree")
-    @ApiOperation(value = "部门树列表", response = GeneralResult.class)
+    @ApiOperation(value = "部门列表树", response = GeneralResult.class)
     @IgnoreLoginCheck
-    public Response<List<DeptTreeReslt>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
-        return new Response<>(deptService.trees(enter));
+    public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
+        return new Response<>(deptService.deptTrees(enter));
     }
 
     @PostMapping(value = "/deptList")

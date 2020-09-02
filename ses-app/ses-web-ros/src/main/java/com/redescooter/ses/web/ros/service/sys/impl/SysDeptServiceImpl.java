@@ -126,17 +126,6 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getCode(), ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getMessage());
 
         }
-        List<OpeSysDept> deptList = sysDeptService.list();
-
-        if (CollectionUtils.isNotEmpty(deptList)) {
-            OpeSysDept sortDept = null;
-            int maxSort = 0;
-            if (sortDept != null && maxSort != 0) {
-                //排序调换
-                sortDept.setSort(maxSort + 1);
-                saveDeptList.add(sortDept);
-            }
-        }
         OpeSysDept dept = this.addDept(enter);
         saveDeptList.add(dept);
         sysDeptService.saveOrUpdateBatch(saveDeptList);

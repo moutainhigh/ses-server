@@ -19,18 +19,11 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class DeptTreeListResult  extends TreeNode  implements Comparable<DeptTreeReslt> {
-    @ApiModelProperty(value = "id")
-    private Integer id;
-
-
     @ApiModelProperty(value = "部门名称")
     private String name;
 
     @ApiModelProperty(value = "排序")
     private Integer sort;
-
-    @ApiModelProperty(value = "父级id")
-    private String pid;
 
     @ApiModelProperty(value = "部门状态")
     private String deptStatus;
