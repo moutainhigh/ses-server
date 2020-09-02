@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.vo.sys.dept;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @ClassNameDeptListEnter
@@ -14,6 +14,10 @@ import lombok.Data;
  **/
 @ApiModel(value = "部门查询")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(callSuper = true)
 public class DeptListEnter extends GeneralEnter {
     @ApiModelProperty(value = "部门名称", required = true)
     private String keyWrod;

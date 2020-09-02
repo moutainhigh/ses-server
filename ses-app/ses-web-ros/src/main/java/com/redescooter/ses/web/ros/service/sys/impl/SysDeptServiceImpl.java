@@ -29,6 +29,7 @@ import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
+import jdk.nashorn.internal.ir.FunctionNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -342,6 +342,25 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     /**
+     * 部门类型查询
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<DeptTypeResult> selectDeptType(GeneralEnter enter) {
+        List<OpeSysDept> list= sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_TENANT_ID, enter.getRequestId()));
+        List<DeptTypeResult> result = new ArrayList<>();
+        DeptTypeResult deptType = new DeptTypeResult();
+        list.forEach(item->{
+            deptType.setName(item.getName());
+            deptType.setId(item.getId());
+            result.add(deptType);
+        });
+        return result;
+    }
+
+    /**
      * 查询编辑部门
      *
      * @param enter
@@ -443,9 +462,9 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
+        BeanUtils.copyProperties(byId, result);
         result.setDeptCount(list.size());
         result.setEmployeeCount(taffService.deptStaffCount(byId.getId()));
-        BeanUtils.copyProperties(byId, result);
         return result;
     }
 

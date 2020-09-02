@@ -52,9 +52,6 @@ public class DeptDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "创建人")
-    private Integer createdy;
-
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
     private Long createdBy;

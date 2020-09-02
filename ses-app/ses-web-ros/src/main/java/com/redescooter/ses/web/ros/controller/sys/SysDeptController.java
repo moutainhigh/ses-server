@@ -50,7 +50,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/saveDept")
-    @ApiOperation(value = "新建部门", response = GeneralResult.class)
+    @ApiOperation(value = "新建部门--reseat", response = GeneralResult.class)
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
@@ -70,9 +70,14 @@ public class SysDeptController {
     public Response<GeneralResult> deleteDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deleteDept(enter));
     }
+    @PostMapping(value = "/selectDeptType")
+    @ApiOperation(value = "查询部门类型", response = GeneralResult.class)
+    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deptService.selectDeptType(enter));
+    }
 
     @PostMapping(value = "/selectEditDept")
-    @ApiOperation(value = "查询部门", response = GeneralResult.class)
+    @ApiOperation(value = "查询编辑部门", response = GeneralResult.class)
     public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.selectEditDept(enter));
     }

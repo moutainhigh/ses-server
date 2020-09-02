@@ -16,7 +16,7 @@ import lombok.*;
  * @Date2020/9/2 10:35
  * @Version V1.0
  **/
-@ApiModel(value = "部门创建")
+@ApiModel(value = "部门创建111")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

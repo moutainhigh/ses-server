@@ -76,6 +76,13 @@ public interface SysDeptService {
      * @return
      */
     GeneralResult edit(EditDeptEnter enter);
+        /**
+         * 部门类型查询
+         *
+         * @param enter
+         * @return
+         */
+     List<DeptTypeResult>  selectDeptType(GeneralEnter enter);
     /**
      * 查询编辑部门
      *
