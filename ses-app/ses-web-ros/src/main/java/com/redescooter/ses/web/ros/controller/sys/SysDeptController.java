@@ -5,8 +5,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import io.swagger.annotations.Api;
@@ -35,11 +37,19 @@ public class SysDeptController {
 
     @Autowired
     private SysDeptService deptService;
+    @Autowired
+    private StaffService taffService;
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "部门创建", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDeptEnter enter) {
         return new Response<>(deptService.save(enter));
+    }
+
+    @PostMapping(value = "/principal")
+    @ApiOperation(value = "查询负责人", response = GeneralResult.class)
+    public Response<List<StaffDataResult>> principal(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(taffService.principalData(enter.getTenantId()));
     }
 
     @PostMapping(value = "/saveDept")
@@ -53,10 +63,10 @@ public class SysDeptController {
         return new Response<>(deptService.deptDetails(enter));
     }
 
-    @PostMapping(value = "/delete")
+    @PostMapping(value = "/deleteDept")
     @ApiOperation(value = "部门删除", response = GeneralResult.class)
     public Response<GeneralResult> deleteDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(deptService.delete(enter));
+        return new Response<>(deptService.deleteDept(enter));
     }
 
     @PostMapping(value = "/selectEditDept")

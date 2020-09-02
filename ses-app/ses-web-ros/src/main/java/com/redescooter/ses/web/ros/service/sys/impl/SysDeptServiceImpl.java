@@ -21,6 +21,8 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
+import com.redescooter.ses.web.ros.service.sys.RoleService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
@@ -53,6 +55,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private OpeSysDeptService sysDeptService;
     @Autowired
+    private RoleService roleService;
+    @Autowired
     private SysDeptRelationService sysDeptRelationService;
     @Autowired
     private OpeSysRoleDeptService opeSysRoleDeptService;
@@ -63,6 +67,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
     private IdAppService idAppService;
+
+    @Autowired
+    private StaffService taffService;
 
     @Transactional
     @Override
@@ -165,6 +172,19 @@ public class SysDeptServiceImpl implements SysDeptService {
       Collections.sort(deptTreeReslts, Comparator.comparing(DeptTreeReslt::getSort));
       return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
+
+    /**
+     * 部门删除
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult deleteDept(IdEnter enter) {
+
+        return null;
+    }
+
     /**
      * 部门列表 平行结构
      *
@@ -334,13 +354,13 @@ public class SysDeptServiceImpl implements SysDeptService {
     public GeneralResult editDept(UpdateDeptEnter enter) {
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
         OpeSysDept opeSysDept = new OpeSysDept();
+        List<Long> ids = new ArrayList<>();
         if (deptResult==null){
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
 
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
-
-
+            roleService.disableRole(ids);
         }
         BeanUtils.copyProperties(enter,opeSysDept);
         opeSysDept.setUpdatedBy(enter.getUserId());
@@ -408,6 +428,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         result.setDeptCount(list.size());
+        result.setEmployeeCount(taffService.deptStaffCount(byId.getId()));
         BeanUtils.copyProperties(byId, result);
         return result;
     }

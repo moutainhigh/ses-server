@@ -39,6 +39,14 @@ public interface SysDeptService {
     List<DeptTreeReslt> trees(GeneralEnter enter);
 
     /**
+     * 部门删除
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteDept(IdEnter enter);
+
+    /**
      * 部门树
      *
      * @param enter
