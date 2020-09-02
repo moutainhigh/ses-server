@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2020/03/10 15:29
  * @Description:
  */
-@Api(tags = {"岗位管理"})
+@Api(tags = {"角色管理"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sys/role")
