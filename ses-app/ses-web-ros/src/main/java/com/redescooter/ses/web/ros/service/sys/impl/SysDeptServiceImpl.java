@@ -454,15 +454,17 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
-        OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, byId.getPId()));
+        OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, byId.getPId()));
         BeanUtils.copyProperties(byId, result);
-        result.setPName(one.getName());
+        if (one!=null){
+            result.setPName(one.getName());
+        }
         List<OpeSysUserProfile> userProfile = opeSysUserProfileService.list(new QueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile.COL_SYS_USER_ID, byId.getUpdatedBy(), byId.getCreatedBy()));
          userProfile.forEach(item ->{
-           if (item.getId().equals(byId.getCreatedBy())){
+           if (item.getSysUserId().equals(byId.getCreatedBy())){
                result.setCreatedName(item.getFullName());
            }
-           if (item.getId().equals(byId.getUpdatedBy())){
+           if (item.getSysUserId().equals(byId.getUpdatedBy())){
                result.setUpdatedName(item.getFullName());
            }
        });
