@@ -1,17 +1,21 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppSysTypeEnum;
+import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.VersionBaseService;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeEnter;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
+import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaAppVersionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +48,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
     VersionTypeResult ersionTypeResult = new VersionTypeResult();
     QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
-    queryWrapper.gt(PlaAppVersion.COL_CODE, versionTypeEnter.getCode());
+    queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
     queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
     queryWrapper.last("limit 1");
     PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
@@ -79,4 +83,27 @@ public class VersionBaseServiceImpl implements VersionBaseService {
       appVersion.setCreatedBy(0L);
       plaAppVersionService.insertOrUpdate(appVersion);
     }
+
+  /**
+   * 获取南通版本信息
+   *
+   * @param versionTypeEnter
+   * @return
+   * @author joan
+   */
+  @Override
+  public VersionTypeResult getAppNewVersionChData(VersionTypeEnter versionTypeEnter) {
+    VersionTypeResult ersionTypeResult = new VersionTypeResult();
+    QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
+    queryWrapper.eq(PlaAppVersion.COL_DEF1, Constant.CHINA);
+    queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
+    queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
+    queryWrapper.last("limit 1");
+    PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
+    if (one != null) {
+      BeanUtils.copyProperties(one, ersionTypeResult);
+    }
+    return ersionTypeResult;
+  }
 }

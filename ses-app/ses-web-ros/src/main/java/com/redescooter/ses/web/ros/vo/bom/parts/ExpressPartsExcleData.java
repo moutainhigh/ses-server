@@ -72,13 +72,13 @@ public class ExpressPartsExcleData implements Serializable, IExcelModel, IExcelD
      */
     private int rowNum;
 
-    public static final String PARTS_N = "Parts N";
-    public static final String ESC = "ESC";
-    public static final String TYPE = "Type";
-    public static final String SN_CLASS = "SN CLASS";
-    public static final String EN_NAME = "EN Name";
-    public static final String FR_NAME = "Sender_Address_Line";
-    public static final String CN_NAME = "Sender_City_Town";
+//    public static final String PARTS_N = "Parts N";
+//    public static final String ESC = "ESC";
+//    public static final String TYPE = "Type";
+//    public static final String SN_CLASS = "SN CLASS";
+//    public static final String EN_NAME = "EN Name";
+//    public static final String FR_NAME = "Sender_Address_Line";
+//    public static final String CN_NAME = "Sender_City_Town";
 
     /**
      * 获取行号

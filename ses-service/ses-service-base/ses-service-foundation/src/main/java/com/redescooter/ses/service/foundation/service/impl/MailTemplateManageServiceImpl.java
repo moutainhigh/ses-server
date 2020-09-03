@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.mail.MailTemplateStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateOfTermEnter;

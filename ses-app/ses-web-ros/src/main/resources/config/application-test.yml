@@ -204,3 +204,30 @@ excel:
   folder: /root/java_service/test/projectExcel
 sendinblue:
   listIds: 119
+
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: Test Website Order
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: Test Website AboutUs
+  contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: Test Website Email
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 21182
+  #模板Id
+  templeteId: 581923336
+  load-template: false
+
+constant-us-email:
+  sale-principal:
+    - etienne@redescooter.fr
+    - jerry@redescooter.com

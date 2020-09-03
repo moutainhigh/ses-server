@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public interface RegexpConstant {
 
     //特殊字符 正则表达式 表达式取反  ^((?!你的正则表达式).)*
-     String specialCharacters="^((?![`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
+     String specialCharacters="^((?![`~!@#$%^&*()+=|{}':;',\\\\[\\\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]).)*";
 
     //邮箱地址
      String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
@@ -41,6 +41,12 @@ public interface RegexpConstant {
      String twoNumber ="^\\d{2}$";
 
      String number="^[0-9]*$";
+
+     //四种钱的表示形式我们可以接受:"10000.00" 和 "10,000.00", 和没有 "分" 的 "10000" 和 "10,000"
+     String MONEY="^[0-9]+(.[0-9]+)?$";
+
+     //由数字、26个英文大写字母或者下划线组成的字符串
+     String ORDER_NUMBER="^[A-Z0-9-_]+$";
 
      //非负整数
      String positiveNumber="^[1-9]\\d*|0$";

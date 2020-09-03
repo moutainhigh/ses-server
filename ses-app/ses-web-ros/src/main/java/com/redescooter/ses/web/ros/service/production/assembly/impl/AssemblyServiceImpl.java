@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.service.production.assembly.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,7 +17,7 @@ import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.production.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.OpeAssemblyBStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
@@ -28,6 +30,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
@@ -71,29 +74,17 @@ import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
 import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyListEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoItemEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcInfoResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewItemTemplateResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyQcItemViewResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.AssemblyResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceItemResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.ProductAssemblyTraceResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.QcItemViewResult;
-import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
-import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
+import com.redescooter.ses.web.ros.vo.production.assembly.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -158,6 +149,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Reference
     private IdAppService idAppService;
+
+    @Autowired
+    private HttpServletResponse response;
 
     /**
      * 状态统计
@@ -295,6 +289,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
+        
+        //剔除掉可用库存为0的库存数据
+        opeStockList.removeIf(item->item.getAvailableTotal()==0);
 
         flag1:
         for (Map.Entry<Long, List<OpePartsProductB>> entry : productMap.entrySet()) {
@@ -313,16 +310,12 @@ public class AssemblyServiceImpl implements AssemblyService {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
                             if (maxTotal == 0) {
-                                total++;
                                 maxTotal = canAss;
-                                continue flag2;
                             }
                             if (canAss < maxTotal) {
-                                total++;
                                 maxTotal = canAss;
-                                continue flag2;
                             }
-                            if (canAss > 0) {
+                            if (canAss!=0){
                                 total++;
                                 continue flag2;
                             }
@@ -679,9 +672,9 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<AssemblyResult> list(AssemblyListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         //对type 进行拆分 组装statusList
         List<String> statusList = Lists.newArrayList();
         if (StringUtils.equals(enter.getType(), ProductionTypeEnums.TODO.getValue())) {
@@ -818,10 +811,36 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
     @Override
-    public GeneralResult export(IdEnter enter) {
-        return null;
+    public void export(IdEnter enter) {
+        AssemblyResult assemblyResult = assemblyServiceMapper.detail(enter);
+        if(assemblyResult == null){
+            throw new SesWebRosException(0, "");
+        }
+        AssemblyExportResult  assemblyExportResult = new AssemblyExportResult();
+        BeanUtil.copyProperties(assemblyResult,assemblyExportResult);
+        if(assemblyResult.getCreatedTime() != null){
+            assemblyExportResult.setCreatedTime(DateUtil.getYmdhm(assemblyResult.getCreatedTime()));
+        }else {
+            assemblyExportResult.setCreatedTime("--");
+        }
+        if(assemblyResult.getStatementDate() != null){
+            assemblyExportResult.setStatementDate(DateUtil.getYmdhm(assemblyResult.getStatementDate()));
+        }else {
+            assemblyExportResult.setStatementDate("--");
+        }
+        List<AssemblyExportResult> list = new ArrayList<>();
+        list.add(assemblyExportResult);
+        try{
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment;filename="+System.currentTimeMillis()+".xls");
+            ExportParams exportParams = new ExportParams();
+            exportParams.setSheetName("组装单信息");
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, AssemblyExportResult.class, list);
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println("+++++++++++++++++++");
+        }
     }
 
     /**
@@ -888,12 +907,13 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //组装单 质检结果集
         List<AssemblyQcInfoResult> assemblyQcInfoResultList = assemblyServiceMapper.assemblyQcInfoList(enter);
-        if (CollectionUtils.isEmpty(assemblyQcInfoResultList)){
+        if (CollectionUtils.isEmpty(assemblyQcInfoResultList)) {
             return new ArrayList<>();
         }
 
         //查询子集
-        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
+        List<AssemblyQcItemResult> assemblyQcItemResultList = assemblyServiceMapper.assemblyQcInfoItemByIds(enter,
+                assemblyQcInfoResultList.stream().map(AssemblyQcInfoResult::getId).collect(Collectors.toList()));
 
         //封装是否要查询的Boolean 字段
         if (CollectionUtils.isNotEmpty(assemblyQcItemResultList)) {
@@ -1279,6 +1299,20 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询 支付信息
         List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
+        if (CollectionUtils.isNotEmpty(paymentItemList)) {
+            for (PaymentItemDetailResult result : paymentItemList) {
+                if (result.getPlannedPaymentTime() != null) {
+                    String date = DateUtil.getTimeStr(result.getPlannedPaymentTime(), "yyyy-MM-dd");
+                    result.setYear(date.split("-")[0]);
+                    try {
+                        result.setMonth(DateUtil.numMonToEngMon(date.split("-")[1]));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    result.setDay(date.split("-")[2]);
+                }
+            }
+        }
         return PaymentDetailResullt.builder()
                 .id(opeAssemblyOrder.getId())
                 .totalPrice(opeAssemblyOrder.getTotalPrice())
@@ -1371,7 +1405,26 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<ProductAssemblyTraceResult> productAssemblyTrace(IdEnter enter) {
         //组装单校验
         checkAssembly(enter.getId(), null);
-        return assemblyServiceMapper.productAssemblyTrace(enter);
+        List<ProductAssemblyTraceResult> productAssemblyTraceResults = assemblyServiceMapper.productAssemblyTrace(enter);
+        if (CollectionUtils.isNotEmpty(productAssemblyTraceResults)) {
+            //查询组装信息
+            List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList =
+                    assemblyServiceMapper.productAssemblyItemTraceByIds(productAssemblyTraceResults.stream().map(ProductAssemblyTraceResult::getId).collect(Collectors.toList()));
+            //如果说组装记录只有一条 进行数据拼接
+            for (ProductAssemblyTraceResult item : productAssemblyTraceResults) {
+                int count = 0;
+                for (ProductAssemblyTraceItemResult trace : productAssemblyTraceItemResultList) {
+                    if (item.getId().equals(trace.getBorderId())) {
+                        if (count > 1) {
+                            item.setAssemblyFlag(Boolean.TRUE);
+                            continue;
+                        }
+                        item.setAssemblyDate(trace.getAssemblyDate());
+                    }
+                }
+            }
+        }
+        return productAssemblyTraceResults;
     }
 
     /**

@@ -11,7 +11,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            scooter.license_plate like concat('%',#{keyword},'%')
+            scooter.license_plate like concat('%',#{keyword},'%') or
+            profile.FIRST_NAME like concat('%',#{keyword},'%') or
+            profile.LAST_NAME like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
@@ -67,14 +69,23 @@
     </select>
     <select id="listCount" resultType="java.lang.Integer">
         select count(*)
-        from cor_tenant_scooter scooter
+        from   cor_tenant_scooter scooter
+        left join  cor_driver_scooter dscooter on scooter.scooter_id=dscooter.scooter_id and dscooter.dr = 0
+        left join cor_driver driver on driver.id = dscooter.driver_id and driver.dr = 0 and driver.status=1
+        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         <include refid="where_scooter_list"></include>
     </select>
     <select id="list" resultType="com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult">
-        select scooter.scooter_id as id,
-        scooter.status as status,
-        scooter.license_plate as licensePlate
-        from cor_tenant_scooter scooter
+        select scooter.scooter_id    as id,
+        scooter.status        as status,
+        scooter.license_plate as licensePlate,
+        driver.id             as driverId,
+        profile.FIRST_NAME    as driverFirstName,
+        profile.LAST_NAME     as driverLastName
+        from   cor_tenant_scooter scooter
+        left join  cor_driver_scooter dscooter on scooter.scooter_id=dscooter.scooter_id and dscooter.dr = 0
+        left join cor_driver driver on driver.id = dscooter.driver_id and driver.dr = 0 and driver.status=1
+        left join cor_user_profile profile on profile.USER_ID = driver.user_id and profile.dr = 0
         <include refid="where_scooter_list"></include>
         order by scooter.status desc
         limit #{startRow},#{pageSize}

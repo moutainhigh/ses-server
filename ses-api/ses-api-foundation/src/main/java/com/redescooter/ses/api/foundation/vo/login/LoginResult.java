@@ -19,12 +19,12 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class LoginResult extends GeneralResult {
-
+    
     private String token;
-
+    
     private boolean noPassword;
-
+    
     private Integer accountType;
-
-        List<AccountsDto> accountSelectionList;
+    
+    List<AccountsDto> accountSelectionList;
 }

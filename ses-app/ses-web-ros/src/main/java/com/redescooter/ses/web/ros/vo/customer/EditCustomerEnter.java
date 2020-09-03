@@ -37,10 +37,10 @@ public class EditCustomerEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrust;
+    @ApiModelProperty(value = "区域邮编")
+    private String distrustName;
 
     @ApiModelProperty(value = "邮箱")
     @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
@@ -129,6 +129,6 @@ public class EditCustomerEnter extends GeneralEnter {
     private String contractAnnex;
 
     @ApiModelProperty(value = "备注")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+//    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 }

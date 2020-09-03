@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -280,54 +281,75 @@ public enum ExceptionCodeEnums {
 
     CHARACTER_IS_TOO_LONG(10131, "字符过长"),
 
-    CHARACTER_IS_TOO_SHORT(10132,"字符过短"),
+    CHARACTER_IS_TOO_SHORT(10132, "字符过短"),
 
-    CONSTANT_NAME_IS_NOT_ILLEGAL(10133,"联系人名字不合法"),
+    CONSTANT_NAME_IS_NOT_ILLEGAL(10133, "联系人名字不合法"),
 
-    COMPANY_NAME_IS_NOT_ILLEGAL(10134,"公司名称不合法"),
+    COMPANY_NAME_IS_NOT_ILLEGAL(10134, "公司名称不合法"),
 
-    CUSTOMER_NAME_IS_NOT_ILLEGAL(10135,"客户名称不合法"),
+    CUSTOMER_NAME_IS_NOT_ILLEGAL(10135, "客户名称不合法"),
 
-    REMARK_IS_NOT_ILLEGAL(10136,"备注不合法"),
+    REMARK_IS_NOT_ILLEGAL(10136, "备注不合法"),
 
-    INVOICE_NUM_IS_NOT_ILLEGAL(10137,"发票号不合法"),
+    INVOICE_NUM_IS_NOT_ILLEGAL(10137, "发票号不合法"),
 
-    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138,"发票编号不合法"),
+    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138, "发票编号不合法"),
 
-    SCOOTER_QTY_IS_NOT_ILLEGAL(10139,"车辆数量不合法"),
+    SCOOTER_QTY_IS_NOT_ILLEGAL(10139, "车辆数量不合法"),
 
-  EMPLOYEE_NAME_IS_NOT_ILLEGAL(10140, "员工名字不合法"),
+    EMPLOYEE_NAME_IS_NOT_ILLEGAL(10140, "员工名字不合法"),
 
-  TELEPHONE_IS_NOT_ILLEGAL(10141, "手机号码不合法"),
+    TELEPHONE_IS_NOT_ILLEGAL(10141, "手机号码不合法"),
 
-  ADDRESS_IS_NOT_ILLEGAL(10142, "地址不合法"),
+    ADDRESS_IS_NOT_ILLEGAL(10142, "地址不合法"),
 
-  JOB_TITLE_IS_ILLEGAL(10143, "职位名称不合法"),
+    JOB_TITLE_IS_ILLEGAL(10143, "职位名称不合法"),
 
-  FACTORY_NAME_IS_NOT_ILLEGAL(10144, "工厂名称不合法"),
+    FACTORY_NAME_IS_NOT_ILLEGAL(10144, "工厂名称不合法"),
 
-  FACTORY_ADDRESS_IS_NOT_ILLEGAL(10145, "工厂地址不合法"),
+    FACTORY_ADDRESS_IS_NOT_ILLEGAL(10145, "工厂地址不合法"),
 
-  EMAIL_IS_NOT_ILLEGAL(10146, "邮箱不合法"),
+    EMAIL_IS_NOT_ILLEGAL(10146, "邮箱不合法"),
 
-  FACTORY_TAG_IS_NOT_ILLEGAL(10147, "工厂标签不合法"),
+    FACTORY_TAG_IS_NOT_ILLEGAL(10147, "工厂标签不合法"),
 
-  ILLEGAL_BUSINESS_LICENSE_NUMBER(10148, "营业执照编号不合法"),
+    ILLEGAL_BUSINESS_LICENSE_NUMBER(10148, "营业执照编号不合法"),
 
-  SUPPLIER_NAME_IS_NOT_ILLEGAL(10149, "供应商名称不合法"),
+    SUPPLIER_NAME_IS_NOT_ILLEGAL(10149, "供应商名称不合法"),
 
-  SUPPLIER_ADDRESS_IS_NOT_ILLEGAL(10150, "供应商地址不合法"),
+    SUPPLIER_ADDRESS_IS_NOT_ILLEGAL(10150, "供应商地址不合法"),
 
-  SUPPLIER_TAG_IS_NOT_ILLEGAL(10151, "供应商标签不合法"),
+    SUPPLIER_TAG_IS_NOT_ILLEGAL(10151, "供应商标签不合法"),
 
     TOP_DEPT_IS_NOT_EXIST(10152, "顶级部门不存在"),
 
+    LOGIN_PSD_ERROER_NEED_CODE(10153, "密码错误"),
 
-    ;
+    LOGIN_PSD_ERROER_NUM_MANY(10154, "密码错误次数过多，请一分钟之后再登陆"),
+
+    CODE_NOT_EMPTY(10155, "验证码不能为空"),
+
+    EAMIL_NOT_REGISTER(10156, "当前邮箱还未注册，请先注册"),
+
+    EAMIL_CODE_TIME_OUT(10157, "请先获取验证码或验证码已过期"),
+
+    WH_OUT_ORDER_NOT_EXIST(10158, "出库单不存在"),
+
+    PRODUCT_PART_IS_EMPTY(10159, "产品部件不存在"),
+
+    CONSIGN_TYPE_NOT_EXIST(10160, "物流方式不存在"),
+
+    NO_LOAN(10161, "委托方式为空"),
+
+    NO_PERM(10162, "没有该接口的权限"),
+
+    NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料"),
+
+    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除");;
 
 
     private int code;
 
     private String message;
 
-    }
+}

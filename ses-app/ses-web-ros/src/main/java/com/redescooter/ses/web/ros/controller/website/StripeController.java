@@ -2,10 +2,7 @@ package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,6 +50,14 @@ public class StripeController {
     @ResponseBody
     public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
         return new Response<>(stripeService.cancelledPaymentIntent(enter));
+    }
+
+
+    @WebsiteSignIn
+    @PostMapping(value = "/publicSecret")
+    @ApiOperation(value = "获取加密之后的公钥", response = StringResult.class)
+    public Response<PublicSecretResult> publicSecret() {
+        return new Response(stripeService.publicSecret());
     }
 
 }

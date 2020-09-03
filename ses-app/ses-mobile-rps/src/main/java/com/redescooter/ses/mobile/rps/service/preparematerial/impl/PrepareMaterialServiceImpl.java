@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
@@ -24,8 +26,11 @@ import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyPreparation;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
+import com.redescooter.ses.mobile.rps.dm.OpeStock;
 import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
 import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
+import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
@@ -39,6 +44,8 @@ import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockProdPartService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
 import com.redescooter.ses.mobile.rps.service.preparematerial.PrepareMaterialService;
 import com.redescooter.ses.mobile.rps.vo.bo.QueryStockBillDto;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.AllocatePreparationEnter;
@@ -110,6 +117,12 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
 
     @Autowired
     private OpeStockPurchasService opeStockPurchasService;
+
+    @Autowired
+    private OpeWhseService opeWhseService;
+
+    @Autowired
+    private OpeStockService opeStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -300,7 +313,6 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     public GeneralResult save(SavePrepareMaterialEnter enter) {
         //备料部件集合
         List<SavePrepareMaterialPartListEnter> savePrepareMaterialListEnterList = new ArrayList<>();
-        //部件基本数据
         Map<Long, List<SavePartBasicDateEnter>> savePartBasicDateMap = Maps.newHashMap();
 
         //对入参参数进行解析
@@ -429,23 +441,25 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
-            opeStockProdPartListIdClassTrue.forEach(item -> {
+            for (OpeStockPurchas item : opeStockProdPartListIdClassTrue) {
                 if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
 
                 //修改数据
-                queryStockBillDtoList.forEach(stockStill -> {
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
                         item.setOutStockBillId(stockStill.getStockBillId());
                         item.setOutPrincipalId(enter.getUserId());
                         item.setOutStockTime(new Date());
                         item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                        item.setAvailableQty(0);
                         item.setUpdatedBy(enter.getUserId());
                         item.setUpdatedTime(new Date());
+                        break;
                     }
-                });
-            });
+                }
+            }
             opeStockPurchasService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
@@ -455,7 +469,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockPurchas> opeStockProdPartListIdClassFalse =
                     opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>()
                             .in(OpeStockPurchas::getPartId, stockProdPartIdMap.keySet())
-                            .eq(OpeStockPurchas::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .eq(OpeStockPurchas::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
                             .orderByAsc(OpeStockPurchas::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
@@ -467,33 +481,36 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
                 //修改数据
-                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+                int partQty = stockProdPartIdMap.get(item.getPartId());
 
                 for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
+                        if (partQty == 0) {
+                            break;
+                        }
 
                         if (partQty >= item.getInWhQty()) {
                             partQty -= item.getInWhQty();
-                            item.setInWhQty(0);
+                            item.setAvailableQty(0);
                             item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                             item.setOutStockBillId(stockStill.getStockBillId());
                             item.setOutPrincipalId(enter.getUserId());
                             item.setOutStockTime(new Date());
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            item.setInWhQty(item.getInWhQty() - partQty);
-                            item.setOutStockBillId(stockStill.getStockBillId());
-                            item.setOutPrincipalId(enter.getUserId());
-                            item.setOutStockTime(new Date());
+                            partQty = 0;
+                            item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
-                        }
-
-                        if (partQty == 0) {
-                            break;
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -510,19 +527,20 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         //子表数据更新
         for (OpeAllocateB opeAllocateB : opeAllocateBList) {
             int partQty = 0;
+
             //便利部件基本数据
             for (SavePartBasicDateEnter partMap : enter.getSavePartBasicDateMap().get(opeAllocateB.getId())) {
                 if (opeAllocateB.getPartId().equals(partMap.getPartId())) {
                     //设置备料记录
                     opeAllocateBTraceList.add(buildOpeAllocateBTrace(enter.getUserId(), batchNo, opeAllocateB, partMap));
                 }
-                //部件数量校验
-                if (!opeAllocateB.getPreparationWaitQty().equals(partMap.getQty())) {
-                    throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
-                }
-
                 partQty += partMap.getQty();
                 totalPart += partMap.getQty();
+            }
+
+            //部件数量校验
+            if (!opeAllocateB.getPreparationWaitQty().equals(partQty)) {
+                throw new SesMobileRpsException(ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.PREPARE_MATERIAL_QTY_IS_WRONG.getMessage());
             }
             //待备料数量减掉
             opeAllocateB.setPreparationWaitQty(opeAllocateB.getPreparationWaitQty() - partQty);
@@ -560,8 +578,12 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
         opeAllocateBService.updateBatch(opeAllocateBList);
         //备料记录更新
         opeAllocateBTraceService.saveBatch(opeAllocateBTraceList);
+
+        //待入库 锚点
+        toBeStoredFillingPoint(opeAllocateBList);
         return new GeneralResult(enter.getRequestId());
     }
+
 
     /**
      * 组装单备料
@@ -643,23 +665,25 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassTrue)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
-            opeStockProdPartListIdClassTrue.forEach(item -> {
+            for (OpeStockProdPart item : opeStockProdPartListIdClassTrue) {
                 if (!StringUtils.equals(item.getStatus(), StockProductPartStatusEnums.AVAILABLE.getValue())) {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
 
                 //修改数据
-                queryStockBillDtoList.forEach(stockStill -> {
+                for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
                         item.setOutStockBillId(stockStill.getStockBillId());
                         item.setOutPrincipalId(enter.getUserId());
+                        item.setAvailableQty(0);
                         item.setOutStockTime(new Date());
                         item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                         item.setUpdatedBy(enter.getUserId());
                         item.setUpdatedTime(new Date());
+                        break;
                     }
-                });
-            });
+                }
+            }
             opeStockProdPartService.updateBatch(opeStockProdPartListIdClassTrue);
         }
 
@@ -668,7 +692,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
             List<OpeStockProdPart> opeStockProdPartListIdClassFalse =
                     opeStockProdPartService.list(new LambdaQueryWrapper<OpeStockProdPart>()
                             .in(OpeStockProdPart::getPartId, stockProdPartIdMap.keySet())
-                            .eq(OpeStockProdPart::getStatus,StockProductPartStatusEnums.AVAILABLE.getValue())
+                            .eq(OpeStockProdPart::getStatus, StockProductPartStatusEnums.AVAILABLE.getValue())
                             .orderByAsc(OpeStockProdPart::getCreatedTime));
             if (CollectionUtils.isEmpty(opeStockProdPartListIdClassFalse)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
@@ -680,33 +704,37 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getCode(), ExceptionCodeEnums.PART_IS_ALREADY_DAMAGE.getMessage());
                 }
                 //修改数据
-                Integer partQty = stockProdPartIdMap.get(item.getPartId());
+                int partQty = stockProdPartIdMap.get(item.getPartId());
 
                 for (QueryStockBillDto stockStill : queryStockBillDtoList) {
                     if (stockStill.getPartId().equals(item.getPartId())) {
 
+                        if (partQty == 0) {
+                            break;
+                        }
+
                         if (partQty >= item.getInWhQty()) {
                             partQty -= item.getInWhQty();
-                            item.setInWhQty(0);
+                            item.setAvailableQty(0);
                             item.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
                             item.setOutStockBillId(stockStill.getStockBillId());
                             item.setOutPrincipalId(enter.getUserId());
                             item.setOutStockTime(new Date());
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
 
                         if (partQty < item.getInWhQty()) {
-                            item.setInWhQty(item.getInWhQty() - partQty);
-                            item.setOutStockBillId(stockStill.getStockBillId());
-                            item.setOutPrincipalId(enter.getUserId());
-                            item.setOutStockTime(new Date());
+                            partQty = 0;
+                            item.setAvailableQty(item.getInWhQty() - partQty);
                             item.setUpdatedBy(enter.getUserId());
                             item.setUpdatedTime(new Date());
-                        }
-
-                        if (partQty == 0) {
-                            break;
+                            if (partQty == 0) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -832,5 +860,94 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                 .updatedBy(userId)
                 .updatedTime(new Date())
                 .build();
+    }
+
+    /**
+     * 待入库埋点
+     *
+     * @param opeAllocateBList
+     */
+    private void toBeStoredFillingPoint(List<OpeAllocateB> opeAllocateBList) {
+        //查询仓库
+        OpeWhse whse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.ALLOCATE.getValue()));
+        if (whse == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
+        }
+
+        List<Long> partIds = opeAllocateBList.stream().map(OpeAllocateB::getPartId).collect(Collectors.toList());
+
+        List<OpeParts> partsList = opePartsService.list(new LambdaQueryWrapper<OpeParts>().in(OpeParts::getId, partIds));
+        if (CollectionUtils.isEmpty(partsList) || partsList.size() != opeAllocateBList.size()) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        //查询是否能存在库存
+        List<OpeStock> opeStockList = opeStockService.list(new LambdaQueryWrapper<OpeStock>()
+                .eq(OpeStock::getWhseId, whse.getId())
+                .in(OpeStock::getMaterielProductId, partIds));
+
+        List<OpeStock> saveOpeStockList = new ArrayList<>();
+
+        if (CollectionUtils.isEmpty(opeStockList)) {
+            for (OpeAllocateB item : opeAllocateBList) {
+                OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                //创建库存
+                saveOpeStockList.add(buildStock(whse, parts, item));
+            }
+        } else {
+
+            for (OpeAllocateB item : opeAllocateBList) {
+                OpeStock opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId())).findFirst().orElse(null);
+                if (opeStock != null) {
+                    //更新库存
+                    opeStock.setWaitStoredTotal(item.getTotal() + opeStock.getWaitStoredTotal());
+                    opeStock.setUpdatedTime(new Date());
+                    saveOpeStockList.add(opeStock);
+                }else {
+                    OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
+                    //创建库存
+                    saveOpeStockList.add(buildStock(whse, parts, item));
+                }
+            }
+        }
+
+        //更新库存
+        if (CollectionUtils.isNotEmpty(saveOpeStockList)) {
+            opeStockService.saveOrUpdateBatch(saveOpeStockList);
+        }
+    }
+
+    /**
+     * 构建 stock 对象
+     *
+     * @param whse
+     * @param parts
+     * @param item
+     * @return
+     */
+    private OpeStock buildStock(OpeWhse whse, OpeParts parts, OpeAllocateB item) {
+        OpeStock opeStock = OpeStock.builder()
+                .id(idAppService.getId(SequenceName.OPE_STOCK))
+                .dr(0)
+                .userId(0L)
+                .tenantId(0L)
+                .whseId(whse.getId())
+                .intTotal(0)
+                .availableTotal(0)
+                .outTotal(0)
+                .wornTotal(0)
+                .lockTotal(0)
+                .waitProductTotal(0)
+                .waitStoredTotal(item.getTotal())
+                .materielProductId(item.getPartId())
+                .materielProductName(parts.getCnName())
+                .materielProductType(BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
+                .revision(0)
+                .updatedBy(0L)
+                .updatedTime(new Date())
+                .createdBy(0L)
+                .createdTime(new Date())
+                .build();
+        return opeStock;
     }
 }

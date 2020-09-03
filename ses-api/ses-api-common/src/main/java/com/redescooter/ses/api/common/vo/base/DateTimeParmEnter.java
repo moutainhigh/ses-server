@@ -35,6 +35,6 @@ public class DateTimeParmEnter<T> extends GeneralEnter {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date endDateTime;
-
+    @ApiModelProperty(hidden = true)
     private T t;
 }

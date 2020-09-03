@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.base.MapResult;
 import com.redescooter.ses.web.delivery.service.RtDeliveryService;
 import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -67,9 +68,8 @@ public class RtDeliveryController {
 
     @PostMapping(value = "/selectDriver")
     @ApiOperation(value = "司机列表选择", response = SelectDriverResult.class)
-    public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        List<SelectDriverResult> selectDriverResults = rtDeliveryService.selectDriverList(enter);
-        return new Response<>(selectDriverResults);
+    public Response<List<SelectDriverResult>> selectDriver(@ModelAttribute @ApiParam("请求参数") QueryDriverListEnter enter) {
+        return new Response<>(rtDeliveryService.selectDriverList(enter));
     }
 
     @PostMapping(value = "/map")

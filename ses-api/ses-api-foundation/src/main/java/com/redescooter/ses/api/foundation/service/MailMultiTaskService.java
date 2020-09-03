@@ -5,7 +5,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.account.FreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.NnfreezeWarnWebTaskEnter;
 import com.redescooter.ses.api.foundation.vo.account.RenewalWarnWebTaskEnter;
-import com.redescooter.ses.api.foundation.vo.login.SetPasswordMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
+import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 
 /**
  * @author Mr.lijiating
@@ -38,7 +39,7 @@ public interface MailMultiTaskService {
      * @param enter
      * @return
      */
-    GeneralResult addSetPasswordMobileUserTask(SetPasswordMobileUserTaskEnter enter);
+    GeneralResult addSetPasswordMobileUserTask(SendCodeMobileUserTaskEnter enter);
 
     /**
      * Web设置密码邮件任务
@@ -126,6 +127,19 @@ public interface MailMultiTaskService {
     GeneralResult addMultiMailTask(BaseMailTaskEnter enter);
 
     /**
+     *添加创建人员邮件任务
+     subscriptionsubscriptionsubscriptionsubscription     * @return
+     */
+  GeneralResult addCreateEmployeeMailTask(BaseMailTaskEnter enter);
+
+
+  /**
+   *ros联系我们回复消息邮件任务
+   subscriptionsubscriptionsubscriptionsubscription     * @return
+   */
+  GeneralResult contactUsReplyMessageEmail(MailContactUsMessageEnter enter);
+
+  /**
      * 执行所有任务
      *
      * @return

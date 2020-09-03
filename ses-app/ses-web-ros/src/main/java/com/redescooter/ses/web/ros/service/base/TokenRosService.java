@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.service.base;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
-import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 
 /**
  * 功能描述: TOKE服务
@@ -22,6 +22,24 @@ public interface TokenRosService {
      * @return
      */
     TokenResult login(LoginEnter enter);
+
+    /*
+     * @Author Aleks
+     * @Description  邮箱加验证码登录给用户发邮件（邮件里面是验证码）
+     * @Date  2020/7/20 19:23
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult emailLoginSendCode(LoginEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  邮箱加验证码登陆
+     * @Date  2020/7/20 19:13
+     * @Param [enter]
+     * @return
+     **/
+    TokenResult emailLogin(LoginEnter enter);
 
     /**
      * 获取密钥
@@ -79,5 +97,13 @@ public interface TokenRosService {
      * @return
      */
     GeneralResult deleteRosUser(IdEnter enter);
+
+    /**
+     * 发送忘记密码邮箱
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter);
 
 }

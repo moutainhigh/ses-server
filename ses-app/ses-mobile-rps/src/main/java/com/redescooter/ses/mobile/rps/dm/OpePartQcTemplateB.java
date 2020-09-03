@@ -176,8 +176,4 @@ public class OpePartQcTemplateB implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpePartQcTemplateBBuilder builder() {
-        return new OpePartQcTemplateBBuilder();
-    }
 }

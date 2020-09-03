@@ -23,24 +23,19 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,11 +48,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -100,6 +91,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
+
+    @Autowired
+    private MondayService mondayService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
@@ -175,19 +169,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
-//
-//        //电话解密
-//        String decrypt = null;
-//        try {
-//            decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-//        } catch (Exception e) {
-//            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-//        }
-//        if (decrypt.length() != 10) {
-//            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-//        }
-//        enter.setPhone(decrypt);
-
 
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
@@ -257,9 +238,37 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //主订单保存
         opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
+    
+        //发送数据到Monday
+        mondayData(product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
-
+    
+    /**
+     * 发送数据到Monday
+     * @param productModel
+     * @param opeCustomerInquiry
+     */
+    private void mondayData(String productModel, OpeCustomerInquiry opeCustomerInquiry) {
+        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
+        mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
+        mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
+        mondayGeneralEnter.setCreatedTime(new Date());
+        mondayGeneralEnter.setUpdatedTime(new Date());
+        mondayGeneralEnter.setEmail(opeCustomerInquiry.getEmail());
+        mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
+        mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
+        mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+        MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
+        mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
+        mondayBookOrderEnter.setQty(1);
+        mondayGeneralEnter.setT(mondayBookOrderEnter);
+        
+        //Monday 同步数据
+        mondayService.websiteBookOrder(mondayGeneralEnter);
+    }
+    
     /**
      * 修改 预订单
      *
@@ -280,7 +289,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //订单校验客户订单校验 一个客户只允许存在一个订单
         List<OpeCustomerInquiry> customerInquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getEmail, customerInquiry.getEmail())
-        .gt(OpeCustomerInquiry::getId,customerInquiry.getId())
+                .gt(OpeCustomerInquiry::getId, customerInquiry.getId())
         );
         if (CollectionUtils.isNotEmpty(customerInquiryList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
@@ -395,21 +404,32 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //todo 目前暂做个人端 默认车辆数量为一
 //        opeCustomerInquiry.setScooterQuantity(enter.getProductQty());
 
-        if (StringUtils.isNotEmpty(enter.getDistrict())){
-            opeCustomerInquiry.setDef2(enter.getDistrict());
-        }else {
-            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
-        }
-        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
-            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
-        }else {
+//        if (StringUtils.isNotEmpty(enter.getDistrict())){
+//            opeCustomerInquiry.setDef2(enter.getDistrict());
+//        }else {
+//            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getCustomerCountry())){
+//            opeCustomerInquiry.setDef1(enter.getCustomerCountry());
+//        }else {
+//            opeCustomerInquiry.setDef1(opeCustomer.getDef1());
+//        }
+//        if (StringUtils.isNotEmpty(enter.getAddress())){
+//            opeCustomerInquiry.setAddress(enter.getAddress());
+//        }else{
+//            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+//        }
+        //def1 国家 def2 城市 distrust区域
+        if (StringUtils.isNotEmpty(opeCustomer.getDef1())) {
             opeCustomerInquiry.setDef1(opeCustomer.getDef1());
         }
-        if (StringUtils.isNotEmpty(enter.getAddress())){
-            opeCustomerInquiry.setAddress(enter.getAddress());
-        }else{
-            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+        if (StringUtils.isNotEmpty(opeCustomer.getDef2())) {
+            opeCustomerInquiry.setDef2(opeCustomer.getDef2());
         }
+        if (opeCustomer.getDistrust() != null) {
+            opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
+        }
+        opeCustomerInquiry.setDef3(opeCustomer.getDef3());
 
         opeCustomerInquiry.setScooterQuantity(1);
         opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
@@ -548,6 +568,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         checkCustomer(opeCustomer);
         opeCustomer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         opeCustomer.setUpdatedTime(new Date());
+        //todo 客户信息暂未更新
         return new GeneralResult();
     }
 
@@ -606,7 +627,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .lastName(opeCustomer.getCustomerLastName())
                 .address(opeCustomer.getAddress())
                 .customerCountry(opeCustomer.getDef1())
-                .district(opeCustomer.getDistrust()==null ? null:opeCustomer.getDistrust().toString())
+                .district(String.valueOf(opeCustomer.getDistrust()))
+                .city(opeCustomer.getDef2())
+                .countryId(opeCustomer.getCountry())
                 .build();
     }
 
@@ -691,7 +714,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
-        RequestBody body = RequestBody.create(mediaType,"{\"listIds\":["+ sendinBlueConfig.getListIds() +"],\"updateEnabled\":"+sendinBlueConfig.getUpdateEnabled()+",\"email\":\""+ email +"\"}");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("updateEnabled", sendinBlueConfig.getUpdateEnabled());
+        map.put("email", email);
+
+        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
         Request request = new Request.Builder()
                 .url(sendinBlueConfig.getUrl())
                 .post(body)
@@ -704,11 +732,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             System.out.println("response" + response.message());
         } catch (IOException e) {
             e.printStackTrace();
-            }
+        }
 
 
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
-        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getName());
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getEvent());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
         enter.setToMail(email);
@@ -718,6 +746,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         enter.setToUserId(0L);
         enter.setUserId(0L);
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
+
+        //数据同步Monday
+        mondayService.websiteSubscriptionEmail(email);
     }
 
     /**

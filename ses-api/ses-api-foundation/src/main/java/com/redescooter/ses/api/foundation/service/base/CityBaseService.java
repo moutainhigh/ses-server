@@ -2,11 +2,11 @@ package com.redescooter.ses.api.foundation.service.base;
 
 import java.util.List;
 
+import com.redescooter.ses.api.common.vo.base.CityNameEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.*;
 
 /**
  * description: CityBaseService
@@ -55,4 +55,42 @@ public interface CityBaseService {
      * @return
      */
     CityResult queryCityDetailByName(String name);
+
+    /**
+     * 批量保存城市
+     *
+     * @param list
+     * @return
+     */
+    int batchSaveCity(List<CityEnter> list);
+
+    /**
+     * @Author Aleks
+     * @Description  国家和城市
+     * @Date  2020/7/27 19:54
+     * @Param
+     * @return
+     **/
+    List<CountryCityResult> countryAndCity();
+
+    /**
+     * @Author Aleks
+     * @Description  根据城市选择对应的邮编
+     * @Date  2020/7/27 18:48
+     * @Param
+     * @return
+     **/
+     List<CityPostResult> cityPostCode(String cityName);
+
+
+    List<CountryCityResult> countryCityPostCode(CityNameEnter cityNameEnter);
+
+    /**
+     * @Author Aleks
+     * @Description  通过城市名称和区域邮编 查找区域的id（数据库对于同城市下的同区域邮编，已经去重,确保同一个城市下面没有重复的区域邮编）
+     * @Date  2020/8/5 14:27
+     * @Param
+     * @return
+     **/
+     Long getDistrictId(String cityName,String districtPost);
 }

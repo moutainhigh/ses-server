@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Mr.lijiating
@@ -45,18 +48,26 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
      * @return
      */
     @Override
-    public ExcelImportResult<T> importOssExcel(String url, Class<?> pojoClass,ImportParams params) {
+    public ExcelImportResult<T> importOssExcel(String url, Class<?> pojoClass, ImportParams params) {
 
         if (iExcelVerifyHandler != null) {
             params.setVerifyHandler(getiExcelVerifyHandler());
         }
 
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
         ExcelImportResult<T> excelImportResult = null;
         try {
             excelImportResult = ExcelImportUtil.importExcelMore(fileAppService.download(url), pojoClass, params);
-            System.out.println(new Date().getTime() - start);
-            if (excelImportResult.getFailList().size()>0) {
+            System.out.println(System.currentTimeMillis() - start);
+            List<T> failList = new ArrayList<>();
+            if (excelImportResult.getFailList().size() > 0) {
+                for (T t : excelImportResult.getFailList()) {
+                    if(!isAllFieldNull(t)){
+                        failList.add(t);
+                    }
+                    excelImportResult.setFailList(null);
+                    excelImportResult.setFailList(failList);
+                }
                 log.info("解析不合法数据为{}", excelImportResult.getFailList().toString());
                 log.info("本次解析Excel不合法数据共计{}条数据", excelImportResult.getFailList().size());
             } else {
@@ -70,6 +81,26 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
         }
 
         return excelImportResult;
+    }
+
+
+    //判断该对象是否
+    public static boolean isAllFieldNull(Object obj) throws Exception {
+        Class stuCla = (Class) obj.getClass();// 得到类对象
+        Field[] fs = stuCla.getDeclaredFields();//得到属性集合
+        boolean flag = true;
+        for (Field f : fs) {
+            int i = 0;
+            //遍历属性
+            f.setAccessible(true); // 设置属性是可以访问的(私有的也可以)
+            Object val = f.get(obj);// 得到此属性的值
+            if (!Objects.isNull(val) && !f.getName().equals("errorMsg")  && !f.getName().equals("rowNum")) {//只要有1个属性不为空,那么就不是所有的属性值都为空
+                flag = false;
+                break;
+            }
+            i ++;
+        }
+        return flag;
     }
 
 }

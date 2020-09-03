@@ -1,34 +1,34 @@
 package com.redescooter.ses.web.ros.service.factory.impl;
 
-import com.redescooter.ses.api.common.enums.employee.AddressBureauEnums;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.FactoryServiceMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeFactoryMapper;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeFactoryTrace;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.factory.FactoryRosService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryTraceService;
+import com.redescooter.ses.web.ros.service.factory.FactoryRosService;
 import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
-import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
+import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -39,6 +39,9 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Autowired
     private OpeFactoryService factoryService;
+
+    @Autowired
+    private OpeFactoryMapper opeFactoryMapper;
 
     @Autowired
     private FactoryServiceMapper factoryServiceMapper;
@@ -72,7 +75,11 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
         checkSaveFactoryParameter(enter);
-
+        //邮箱校验
+        Boolean booleanResult = checkMail(enter.getContactEmail(),"");
+        if (!booleanResult){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
       if (StringUtils.isNotEmpty(enter.getContactFirstName())){
@@ -114,14 +121,30 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    public Boolean checkMail(String mail,String idStr) {
+
+        QueryWrapper<OpeFactory> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeFactory.COL_CONTACT_EMAIL, mail);
+        wrapper.eq(OpeFactory.COL_DR, 0);
+        if(!Strings.isNullOrEmpty(idStr)){
+            // 修改的时候,排除当前的这条数据
+            wrapper.ne(OpeFactory.COL_ID, Long.parseLong(idStr));
+        }
+        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) > 0 ? Boolean.FALSE  : Boolean.TRUE;
+        return mailBoolean;
+    }
+
     @Transactional
     @Override
     public GeneralResult edit(FactoryEditEnter factorySaveEnter) {
       //employeeListEnter参数值去空格
       FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
       checkSaveFactoryParameter(enter);
-
-      //员工名称首位大写
+        Boolean mailBoolean = checkMail(enter.getContactEmail(),factorySaveEnter.getId().toString());
+        if (!mailBoolean){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
+        //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
       if(StringUtils.isNotEmpty(enter.getContactFirstName())){
           enter.setContactFirstName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
@@ -159,9 +182,9 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Override
     public PageResult<FactoryResult> list(FactoryPage page) {
-      if (page.getKeyword()!=null && page.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(page);
-      }
+        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(page);
+        }
         int count = factoryServiceMapper.listCount(page);
         if (count == 0) {
             return PageResult.createZeroRowResult(page);
@@ -205,7 +228,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
       if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20){
         throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
       }
-      if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 30 || !enter.getContactEmail().contains("@")){
+      if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")){
         throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
       }
       if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20){

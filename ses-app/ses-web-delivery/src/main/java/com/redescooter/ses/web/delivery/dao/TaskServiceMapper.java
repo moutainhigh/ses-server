@@ -2,6 +2,7 @@ package com.redescooter.ses.web.delivery.dao;
 
 import java.util.List;
 
+import com.redescooter.ses.web.delivery.vo.task.TaskDriverLsitEnter;
 import org.apache.ibatis.annotations.Param;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -79,7 +80,7 @@ public interface TaskServiceMapper {
      * @param enter
      * @return
      */
-    List<DriverListResult> driverList(GeneralEnter enter);
+    List<DriverListResult> driverList(TaskDriverLsitEnter enter);
 
     /**
      * 添加任务小定单列表

@@ -41,4 +41,11 @@ public class DeleteController {
         return new Response<>(deleteService.deleteCustomer(email));
     }
 
+    @IgnoreLoginCheck
+    @PostMapping(value = "/inquiry")
+    @ApiOperation(value = "删除询价单", response = GeneralResult.class)
+    public Response<GeneralResult> deleteInquiry(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter email) {
+        return new Response<>(deleteService.deleteInquiry(email));
+    }
+
 }

@@ -62,6 +62,9 @@ public class PlaCity implements Serializable {
     @ApiModelProperty(value = "状态")
     private String status;
 
+    @ApiModelProperty("邮政编码")
+    private String postCode;
+
     /**
      * 时区
      */
@@ -168,6 +171,8 @@ public class PlaCity implements Serializable {
     public static final String COL_P_ID = "p_id";
 
     public static final String COL_STATUS = "status";
+
+    public static final String COL_POST_CODE = "post_code";
 
     public static final String COL_TIME_ZONE = "time_zone";
 

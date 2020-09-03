@@ -1,8 +1,13 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,9 +23,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock_prod_part")
-public class OpeStockProdPart {
+public class OpeStockProdPart implements Serializable {
     public static final String COL_STOCK_BILL_ID = "stock_bill_id";
-    private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "")
     private Long id;
@@ -115,6 +119,13 @@ public class OpeStockProdPart {
     private Integer inWhQty;
 
     /**
+     * 可用数量
+     */
+    @TableField(value = "available_qty")
+    @ApiModelProperty(value = "可用数量")
+    private Integer availableQty;
+
+    /**
      * 入库时间
      */
     @TableField(value = "in_stock_time")
@@ -205,6 +216,8 @@ public class OpeStockProdPart {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -233,6 +246,8 @@ public class OpeStockProdPart {
 
     public static final String COL_IN__WH_QTY = "in__wh_qty";
 
+    public static final String COL_AVAILABLE_QTY = "available_qty";
+
     public static final String COL_IN_STOCK_TIME = "in_stock_time";
 
     public static final String COL_OUT_STOCK_TIME = "out_stock_time";
@@ -258,8 +273,4 @@ public class OpeStockProdPart {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeStockProdPartBuilder builder() {
-        return new OpeStockProdPartBuilder();
-    }
 }

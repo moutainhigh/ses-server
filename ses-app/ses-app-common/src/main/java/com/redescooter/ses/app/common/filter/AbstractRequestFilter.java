@@ -66,7 +66,15 @@ public abstract class AbstractRequestFilter implements Filter {
                     parameterMap.put("timeZone", reqHeader.getTimeZone());
                     parameterMap.put("clientType", reqHeader.getClientType() == null ? "PC" : reqHeader.getClientType());
                     parameterMap.put("version", reqHeader.getVersion());
-                    if ((!parameterMap.containsKey("lat")) ||
+
+                    //请求头中发现有经纬度，直接覆盖 请求体里的 经纬度值，请求头中若没有，就是用请求体里的参数值
+                    if ( StringUtils.isNotEmpty(reqHeader.getLng()) && StringUtils.isNotEmpty(reqHeader.getLng())){
+                        parameterMap.put("lat", reqHeader.getLat());
+                        parameterMap.put("lng", reqHeader.getLng());
+                    }
+
+
+                    /*if ((!parameterMap.containsKey("lat")) ||
                             (parameterMap.get("lat") == null) ||
                             (StringUtils.isNotEmpty(parameterMap.get("lat").toString())) ||
                             ((!parameterMap.containsKey("lng"))) ||
@@ -74,7 +82,7 @@ public abstract class AbstractRequestFilter implements Filter {
                             (StringUtils.isNotEmpty(parameterMap.get("lng").toString()))) {
                         parameterMap.put("lat", reqHeader.getLat());
                         parameterMap.put("lng", reqHeader.getLng());
-                    }
+                    }*/
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

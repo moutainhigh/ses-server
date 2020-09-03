@@ -9,14 +9,15 @@ import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
-import com.redescooter.ses.api.common.enums.jiguang.PlatformTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -30,7 +31,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.MapUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
@@ -61,6 +61,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -297,7 +298,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @return
      */
     @Override
-    public List<SelectDriverResult> selectDriverList(GeneralEnter enter) {
+    public List<SelectDriverResult> selectDriverList(QueryDriverListEnter enter) {
         return orderDeliveryServiceMapper.selectDriverList(enter);
     }
 
@@ -338,7 +339,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.CANCEL.getValue())
@@ -562,7 +563,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnum.ANDROID.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(corDelivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.PENDING.getValue())

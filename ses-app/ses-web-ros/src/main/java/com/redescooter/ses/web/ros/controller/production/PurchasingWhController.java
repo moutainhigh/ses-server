@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
-import com.redescooter.ses.web.ros.vo.production.wh.AssemblyProductResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
 import com.redescooter.ses.web.ros.vo.production.wh.QcingListResult;
@@ -84,8 +83,8 @@ public class PurchasingWhController {
     }
 
     @PostMapping(value = "/canAssemblyProductList")
-    @ApiOperation(value = "能够组装的商品", response = AssemblyProductResult.class)
-    public Response<List<AssemblyProductResult>> canAssemblyProductList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @ApiOperation(value = "能够组装的商品", response = Map.class)
+    public Response< Map<String, Integer>> canAssemblyProductList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchasingWhService.canAssemblyProductList(enter));
     }
 

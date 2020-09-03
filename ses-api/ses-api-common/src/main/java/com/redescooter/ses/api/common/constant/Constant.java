@@ -13,6 +13,8 @@ public interface Constant {
 
     String DEFAULT_COUNTRY = "US";
 
+    String CHINA = "cn";
+
     /**
      * 逻辑删除标识，删除
      */
@@ -52,7 +54,6 @@ public interface Constant {
      * 默认密码
      */
     String DEFAULT_PASSWORD = "RedEScooter2019";
-
     /**
      * Excel批量导入车辆模板地址
      */
@@ -62,7 +63,7 @@ public interface Constant {
     //百分比
     int AMOUNTP_ROPORTION = 100;
     //默认经纬度
-    BigDecimal LONGITUDE = new BigDecimal("48.862868");
+    BigDecimal LATITUDE = new BigDecimal("48.862868");
 
-    BigDecimal LATITUDE=new BigDecimal("2.313960");
+    BigDecimal LONGITUDE = new BigDecimal("2.313960");
 }

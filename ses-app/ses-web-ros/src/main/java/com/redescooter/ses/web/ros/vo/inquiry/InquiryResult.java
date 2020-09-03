@@ -59,17 +59,19 @@ public class InquiryResult extends GeneralResult {
     @ApiModelProperty(value = "国家代码")
     private String countryCode;
 
-    @ApiModelProperty(value = "城市")
-    private Long cityId;
-
+    @ApiModelProperty(value = "国家")
+//    private Long cityId;
+    private String countryName;
+//
     @ApiModelProperty(value = "城市名称")
+//    private String cityName;
     private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrustId;
-
+//    @ApiModelProperty(value = "区域")
+//    private Long distrustId;
+//
     @ApiModelProperty(value = "区域名称")
-    private String distrustName;
+    private String districtName;
 
     @ApiModelProperty(value = "状态")
     private String status;
@@ -97,9 +99,20 @@ public class InquiryResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date acceptanceTime;
 
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdTime;
+
     @ApiModelProperty(value = "剩余时间")
     private Long ttl;
 
-    @ApiModelProperty(value = "区域")
+    @ApiModelProperty(value = "国家")
+    private String def1;
+
+    @ApiModelProperty(value = "城市")
     private String def2;
+
+    @ApiModelProperty(value = "邮编")
+    private String def3;
 }

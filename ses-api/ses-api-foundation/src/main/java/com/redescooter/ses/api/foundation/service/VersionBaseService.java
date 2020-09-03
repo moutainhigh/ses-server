@@ -21,6 +21,13 @@ public interface VersionBaseService {
   VersionTypeResult getVersionData(VersionTypeEnter versionTypeEnter);
 
   void fileUpload(MultipartFile file,String fileMsg);
+  /**
+   * 获取南通版本信息
+   *
+   * @return
+   * @author joan
+   */
+  VersionTypeResult getAppNewVersionChData(VersionTypeEnter versionTypeEnter);
 
 
 }

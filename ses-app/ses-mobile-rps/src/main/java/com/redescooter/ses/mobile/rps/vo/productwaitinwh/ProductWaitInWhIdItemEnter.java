@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.vo.productwaitinwh;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +19,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class ProductWaitInWhIdItemEnter extends PageEnter {
+public class ProductWaitInWhIdItemEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "子单id")
     private Long id;

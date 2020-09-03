@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
@@ -55,23 +56,6 @@ public interface AccountBaseService {
      * @return
      */
     GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter);
-
-    /**
-     * 查询已创建 的账户
-     *
-     * @param enter
-     * @return
-     */
-    int countTenantAccount(QueryAccountListEnter enter);
-
-    /**
-     * 查询 已创建的 账户记录
-     *
-     * @param enter
-     * @return
-     */
-    List<QueryAccountResult> tenantAccountRecords(QueryAccountListEnter enter);
-
     /**
      * 账户冻结
      *
@@ -134,7 +118,7 @@ public interface AccountBaseService {
      * @param enter
      * @return
      */
-    Map<String, Integer> customerAccountCountByStatus(GeneralEnter enter);
+    Map<String, Integer> customerAccountCountByStatus(QueryAccountCountStatusEnter enter);
 
     /**
      * 客户账户列表

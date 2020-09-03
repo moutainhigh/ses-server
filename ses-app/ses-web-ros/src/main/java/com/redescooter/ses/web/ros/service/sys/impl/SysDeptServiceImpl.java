@@ -38,10 +38,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * @ClassName SysDeptServiceImpl
@@ -121,8 +118,16 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTreeReslt> trees(GeneralEnter enter) {
-        List<DeptTreeReslt> deptTreeReslts = deptList(enter);
-        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+      List<DeptTreeReslt> deptTreeReslts = deptList(enter);
+      //根据sort排序
+      Collections.sort(deptTreeReslts, new Comparator<DeptTreeReslt>() {
+        @Override
+        public int compare(DeptTreeReslt o1, DeptTreeReslt o2) {
+          return o1.getSort().compareTo(o2.getSort());
+        }
+      });
+      Collections.sort(deptTreeReslts, Comparator.comparing(DeptTreeReslt::getSort));
+      return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.delivery.dm.CorDelivery;
 import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
 
 import java.util.List;
 
@@ -47,7 +48,12 @@ public interface OrderDeliveryServiceMapper {
      */
     DeliveryDetailsResult details(IdEnter enter);
 
-    List<SelectDriverResult> selectDriverList(GeneralEnter enter);
+    /**
+     * 可选司机列表
+     * @param enter
+     * @return
+     */
+    List<SelectDriverResult> selectDriverList(QueryDriverListEnter enter);
 
     /**
      * 车辆地图统计

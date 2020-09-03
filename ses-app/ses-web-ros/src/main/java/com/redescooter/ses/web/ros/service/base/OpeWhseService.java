@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeWhseService extends IService<OpeWhse>{
+public interface OpeWhseService extends IService<OpeWhse> {
 
 
     int batchInsert(List<OpeWhse> list);
@@ -16,3 +16,4 @@ public interface OpeWhseService extends IService<OpeWhse>{
     int insertOrUpdateSelective(OpeWhse record);
 
 }
+

@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.bom.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.supplier.SupplierEventEnum;
 import com.redescooter.ses.api.common.enums.supplier.SupplierStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -11,6 +13,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.SupplierServiceMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSupplierMapper;
+import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeSupplier;
 import com.redescooter.ses.web.ros.dm.OpeSupplierTrace;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -41,6 +45,9 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     @Autowired
     private OpeSupplierService supplierService;
     @Autowired
+    private OpeSupplierMapper opeSupplierMapper;
+
+    @Autowired
     private OpeSupplierTraceService supplierTraceService;
     @Autowired
     private SupplierServiceMapper supplierServiceMapper;
@@ -63,12 +70,28 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         return map;
     }
 
+    public Boolean checkMail(String mail,String idStr) {
+
+        QueryWrapper<OpeSupplier> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeSupplier.COL_CONTACT_EMAIL, mail);
+        wrapper.eq(OpeSupplier.COL_DR, 0);
+        if(!Strings.isNullOrEmpty(idStr)){
+            // id不为空的时候，是为修改，排除当前这一条
+            wrapper.ne(OpeSupplier.COL_ID, Long.parseLong(idStr));
+        }
+        Boolean mailBoolean = opeSupplierMapper.selectCount(wrapper) > 0 ? Boolean.FALSE  : Boolean.TRUE;
+        return mailBoolean;
+    }
     @Transactional
     @Override
     public GeneralResult save(SupplierSaveEnter supplierSaveEnter) {
         //supplierSaveEnter参数值去空格
         SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
         checkSaveSupplierParameter(enter);
+        Boolean mailBoolean = checkMail(enter.getContactEmail(),"");
+        if (!mailBoolean){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
         //员工名称首位大写
         String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
         if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
@@ -115,6 +138,11 @@ public class SupplierRosServiceImpl implements SupplierRosService {
       //supplierSaveEnter参数值去空格
       SupplierSaveEnter enter = SesStringUtils.objStringTrim(supplierSaveEnter);
       checkSaveSupplierParameter(enter);
+
+        Boolean mailBoolean = checkMail(enter.getContactEmail(),supplierSaveEnter.getId().toString());
+        if (!mailBoolean){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
       //员工名称首位大写
       String factoryName = SesStringUtils.upperCaseString(enter.getSupplierName());
 
@@ -191,7 +219,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20) {
             throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 30 || !enter.getContactEmail().contains("@")) {
+        if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
         }
         if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20) {

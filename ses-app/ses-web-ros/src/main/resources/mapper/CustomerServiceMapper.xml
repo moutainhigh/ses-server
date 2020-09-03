@@ -44,7 +44,9 @@
        opc.created_by                 as createdBy,
        opc.created_time               as createdTime,
        opc.updated_by                 as updatedBy,
-       opc.updated_time               as updatedTime
+       opc.updated_time               as updatedTime,
+       opc.def2                       as cityName,
+       opc.def3                       as distrustName
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
@@ -112,8 +114,8 @@
             or company_name like concat("%",#{keyword},"%")
             or email like concat("%",#{keyword},"%")
             )
-            order by created_time desc
         </if>
+        order by created_time desc
     </select>
     <select id="customerList" resultType="com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult">
         select
@@ -124,10 +126,10 @@
         <if test="status != null and status != ''">
             and opc.status =#{status}
         </if>
-        <if test="oneCityiD != null">
-            and opc.city =#{oneCityiD}
-            <if test="twoCityiD != null">
-                and opc.distrust =#{twoCityiD}
+        <if test="cityName != null and cityName != ''">
+            and opc.def2 =#{cityName}
+            <if test="distrustName != null and distrustName != ''">
+                and opc.def3 =#{distrustName}
             </if>
         </if>
         <if test="customerType != null and customerType != ''">
@@ -170,10 +172,10 @@
         <if test="status != null and status != ''">
             and opc.status =#{status}
         </if>
-        <if test="oneCityiD != null">
-            and opc.city =#{oneCityiD}
-            <if test="twoCityiD != null">
-                and opc.distrust =#{twoCityiD}
+        <if test="cityName != null and cityName != ''">
+            and opc.def2 =#{cityName}
+            <if test="distrustName != null and distrustName != ''">
+                and opc.def3 =#{distrustName}
             </if>
         </if>
         <if test="customerType != null and customerType != ''">
@@ -220,6 +222,7 @@
         from ope_customer
         where dr = 0
         and status = 2
+        order by created_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="scooterCustomerCount"
@@ -229,5 +232,23 @@
             where dr = 0
             and status = 2
             order by created_time desc
+    </select>
+    <select id="queryAccountRecordEamil"
+            resultType="com.redescooter.ses.web.ros.vo.customer.AccountListResult">
+        select id as id,
+        tenant_id as tenantId,
+        customer_first_name as customerFirstName,
+        customer_last_name as customerLastName,
+        customer_full_name as customerFullName,
+        contact_first_name as contactFirstName,
+        contact_last_name as contactLastName,
+        contact_full_name as contactFullName,
+        company_name as companyName,
+        email as email,
+        customer_type as customerType,
+        industry_type as industryType
+        from ope_customer
+        where dr = 0
+        and status!=4
     </select>
 </mapper>

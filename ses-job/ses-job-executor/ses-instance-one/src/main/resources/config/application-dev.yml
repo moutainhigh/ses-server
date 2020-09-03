@@ -8,21 +8,21 @@ log:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://192.168.2.200:2181?backup=192.168.2.200:2182,192.168.2.200:2183
+    address: zookeeper://192.168.2.200:2181
 
 # xxl-job config
 xxl:
   job:
     admin:
       ### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
-      addresses: http://192.168.2.200:48090/job/
+      addresses: http://192.168.2.200:48090
     ### xxl-job executor address
     executor:
       appname: ses-executor-01
       ip:
       port: 48098
       ### xxl-job log path
-      logpath: /data/java_service/logs/dev/ses-job-executor
+      logpath: ${log.path}@profile-active@/@project.artifactId@
       ### xxl-job log retention days
       logretentiondays: 1
     ### xxl-job, access token

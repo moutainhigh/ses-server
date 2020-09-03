@@ -1,15 +1,10 @@
 package com.redescooter.ses.tool.utils;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
-import lombok.SneakyThrows;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * description: DateUtil 时间工具类
@@ -43,6 +38,10 @@ public class DateUtil {
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss
      */
     public static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * 缺省的日期显示格式： HH:mm:ss
+     */
+    public static final String DEFAULT_TIME_FORMAT="HH:mm:ss";
     /**
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss:sss
      */
@@ -882,7 +881,37 @@ public class DateUtil {
         return new Date(timeStamp);
     }
 
-    public static void main(String[] args) {
-        System.out.println(timeStampToDate(2553436800000L,UTC));
+    // 数字月份转为英文的月份
+    public static String numMonToEngMon(String month) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM");
+        Date date = sdf.parse(month);
+        sdf = new SimpleDateFormat("MMMMM", Locale.US);
+        month = sdf.format(date);
+        return month;
     }
+
+
+    /**
+     * @Author Aleks
+     * @Description  时间加上小时
+     * @Date  2020/8/21 10:05
+     * @Param [date, hour]
+     * @return 时间
+     **/
+    public static  Date dateAddHour(Date date, int hour){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (date == null) {
+            return new Date();
+        }
+        System.out.println("front:" + format.format(date)); //显示输入的日期
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);// 24小时制
+        date = cal.getTime();
+        System.out.println("after:" + format.format(date));  //显示更新后的日期
+        cal = null;
+        return date;
+
+    }
+
 }

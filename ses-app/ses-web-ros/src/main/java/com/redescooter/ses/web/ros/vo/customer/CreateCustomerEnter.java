@@ -9,11 +9,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -39,10 +35,10 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Long countrys;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private String cityName;
 
-    @ApiModelProperty(value = "区域")
-    private Long distrust;
+    @ApiModelProperty(value = "区域邮编")
+    private String distrustName;
 
     @ApiModelProperty(value = "销售")
     private Long salesId;
@@ -139,7 +135,7 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String contractAnnex;
 
     @ApiModelProperty(value = "备注")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
+//    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.REMARK_ILLEGAL_CHARACTER,message = "备注存在非法字符")
     private String remark;
 
 

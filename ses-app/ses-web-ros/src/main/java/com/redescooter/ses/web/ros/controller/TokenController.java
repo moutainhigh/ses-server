@@ -2,11 +2,13 @@ package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
+import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,15 +47,31 @@ public class TokenController {
         return new Response<>(tokenRosService.login(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录给用户发邮件（邮件里面是验证码）", response = GeneralResult.class)
+    @PostMapping(value = "/emailLoginSendCode")
+    public Response<GeneralResult> emailLoginSendCode(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRosService.emailLoginSendCode(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "邮箱加验证码登录", response = TokenResult.class)
+    @PostMapping(value = "/emailLogin")
+    public Response<TokenResult> emailLogin(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRosService.emailLogin(enter));
+    }
+
+
     @ApiOperation(value = "登出", response = GeneralResult.class)
     @PostMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenRosService.logout(enter));
     }
 
+    @IgnoreLoginCheck
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
-    @PostMapping(value = "/chanage/{code}")
-    public Response<GeneralResult> chanagePassword(@PathVariable("code") String code, @ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+    @PostMapping(value = "/chanage")
+    public Response<GeneralResult> chanagePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenRosService.modifyPassword(enter));
     }
 
@@ -75,4 +93,11 @@ public class TokenController {
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
+    @IgnoreLoginCheck
+    @ApiOperation(value = "发送邮箱", response = BooleanResult.class)
+    @PostMapping(value = "/sendForgetPasswordEmail")
+    public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
+      return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
+    }
+
 }

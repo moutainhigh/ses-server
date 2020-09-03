@@ -1,6 +1,10 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -28,7 +32,7 @@ public class OpeStock implements Serializable {
     private Long id;
 
     @TableField(value = "dr")
-    @ApiModelProperty(value = "删除标识")
+    @ApiModelProperty(value = "")
     @TableLogic
     private Integer dr;
 
@@ -74,6 +78,27 @@ public class OpeStock implements Serializable {
     @TableField(value = "worn_total")
     @ApiModelProperty(value = "破损总数")
     private Integer wornTotal;
+
+    /**
+     * 锁定库存
+     */
+    @TableField(value = "lock_total")
+    @ApiModelProperty(value = "锁定库存")
+    private Integer lockTotal;
+
+    /**
+     * 待生产
+     */
+    @TableField(value = "wait_product_total")
+    @ApiModelProperty(value = "待生产")
+    private Integer waitProductTotal;
+
+    /**
+     * 待入库
+     */
+    @TableField(value = "wait_stored_total")
+    @ApiModelProperty(value = "待入库")
+    private Integer waitStoredTotal;
 
     /**
      * 所属物料产品Id
@@ -186,6 +211,12 @@ public class OpeStock implements Serializable {
 
     public static final String COL_WORN_TOTAL = "worn_total";
 
+    public static final String COL_LOCK_TOTAL = "lock_total";
+
+    public static final String COL_WAIT_PRODUCT_TOTAL = "wait_product_total";
+
+    public static final String COL_WAIT_STORED_TOTAL = "wait_stored_total";
+
     public static final String COL_MATERIEL_PRODUCT_ID = "materiel_product_id";
 
     public static final String COL_MATERIEL_PRODUCT_TYPE = "materiel_product_type";
@@ -211,8 +242,4 @@ public class OpeStock implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeStockBuilder builder() {
-        return new OpeStockBuilder();
-    }
 }

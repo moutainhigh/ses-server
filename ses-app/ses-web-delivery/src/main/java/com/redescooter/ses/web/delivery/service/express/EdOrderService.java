@@ -3,10 +3,12 @@ package com.redescooter.ses.web.delivery.service.express;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageEnter;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
 import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
+import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import com.redescooter.ses.web.delivery.vo.edorder.*;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
@@ -119,4 +121,12 @@ public interface EdOrderService {
      * @return
      */
     GeneralResult cancelOrder(IdEnter enter);
+
+    /**
+     * 拒绝订单时 的司机列表
+     *
+     * @param enter
+     * @return
+     */
+    List<SelectDriverResult> refuseOrderDriverList(IdsEnter enter);
 }
