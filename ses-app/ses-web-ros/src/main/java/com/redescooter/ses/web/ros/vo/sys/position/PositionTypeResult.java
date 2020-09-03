@@ -20,8 +20,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class PositionTypeResult extends GeneralResult {
     @ApiModelProperty(value = "id", required = true)
-    private String id;
+    private long id;
 
     @ApiModelProperty(value = "岗位名称", required = true)
-    private long positionName;
+    private String positionName;
 }
