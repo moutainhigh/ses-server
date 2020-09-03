@@ -90,7 +90,7 @@
         from ope_sys_staff s
         left join ope_sys_dept d on s.dept_id = d.id
         left join ope_sys_position p on s.position_id = p.id
-        where s.dr = 0 and d.dr = 0 and p.dr = 0
+        where s.dr = 0
       <include refid="staffListCondition"></include>
       order by created_time desc
     </select>
