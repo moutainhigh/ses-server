@@ -288,7 +288,7 @@ public class SesWebRosApplicationTests {
         sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
         sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
         sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
-        sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
+        //sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
         SellsyIdResut document = sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
 
         log.info("------------创建发票的返回值 {}--------", document.toString());

@@ -411,7 +411,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 log.info("----------------货币单位出错------------");
                 throw new RuntimeException();
             }
-            sellsyCurrencyResults.stream().filter(item -> StringUtils.equals(item.getLongname()));
+            //sellsyCurrencyResults.stream().filter(item -> StringUtils.equals(item.getLongname()));
 
             List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList();
             if (CollectionUtils.isEmpty(sellsyClientResults)) {
@@ -484,7 +484,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
             sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
-            sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
+            //sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
             SellsyIdResut document = createDocument(sellsyClientServiceCreateDocumentEnter);
 
 

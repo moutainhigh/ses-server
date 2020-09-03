@@ -9,6 +9,14 @@ import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Mr.lijiating
@@ -97,6 +105,16 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
         try {
             excelImportResult = ExcelImportUtil.importExcelMore(transferToFile(file), pojoClass, params);
             System.out.println(System.currentTimeMillis() - start);
+            List<T> failList = new ArrayList<>();
+            if (excelImportResult.getFailList().size() > 0) {
+                for (T t : excelImportResult.getFailList()) {
+                    if (!isAllFieldNull(t)) {
+                        failList.add(t);
+                    }
+                    excelImportResult.setFailList(null);
+                    excelImportResult.setFailList(failList);
+                }
+            }
             if (excelImportResult.getFailList().size() > 0) {
                 log.info("解析不合法数据为{}", excelImportResult.getFailList().toString());
                 log.info("本次解析Excel不合法数据共计{}条数据", excelImportResult.getFailList().size());
