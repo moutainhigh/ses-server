@@ -62,7 +62,7 @@ public class SysStaffController {
     }
 
     @PostMapping(value = "/openAccount")
-    @ApiOperation(value = "员工列表", response = GeneralResult.class)
+    @ApiOperation(value = "员工开通账号", response = GeneralResult.class)
     public Response<GeneralResult> openAccount(@ModelAttribute @ApiParam("请求参数") StaffOpEnter enter) {
         return new Response(staffService.openAccount(enter));
     }
