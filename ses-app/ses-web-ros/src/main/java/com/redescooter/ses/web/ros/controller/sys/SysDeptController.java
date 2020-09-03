@@ -76,13 +76,13 @@ public class SysDeptController {
         return new Response<>(deptService.selectDeptType(enter));
     }
 
-    @PostMapping(value = "/selectEditDept--reseat")
-    @ApiOperation(value = "查询编辑部门", response = SelectDeptResult.class)
+    @PostMapping(value = "/selectEditDept")
+    @ApiOperation(value = "查询编辑部门--reseat", response = SelectDeptResult.class)
     public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.selectEditDept(enter));
     }
-        @PostMapping(value = "/editDept--reseat")
-    @ApiOperation(value = "部门编辑", response = GeneralResult.class)
+        @PostMapping(value = "/editDept")
+    @ApiOperation(value = "部门编辑--reseat", response = GeneralResult.class)
     public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
         return new Response<>(deptService.editDept(enter));
     }
@@ -105,8 +105,8 @@ public class SysDeptController {
         return new Response<>(deptService.trees(enter));
     }
 
-    @PostMapping(value = "/deptTree--reseat")
-    @ApiOperation(value = "部门列表树", response = DeptTreeListResult.class)
+    @PostMapping(value = "/deptTree")
+    @ApiOperation(value = "部门列表树--reseat", response = DeptTreeListResult.class)
     @IgnoreLoginCheck
     public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
         return new Response<>(deptService.deptTrees(enter));
