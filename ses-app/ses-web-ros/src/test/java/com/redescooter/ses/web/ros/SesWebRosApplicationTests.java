@@ -304,4 +304,9 @@ public class SesWebRosApplicationTests {
                 .build();
         sellsyDocumentService.upateDocumentStatus(build);
     }
+
+    @Test
+    public void createDocumentList() {
+        sellsyDocumentService.createDcumentList();
+    }
 }

@@ -20,6 +20,8 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocu
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
@@ -30,7 +32,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCorpInfoResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyTranslationLanguageResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import lombok.extern.log4j.Log4j2;
@@ -190,7 +192,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         SellsyLayoutResult sellsyLayoutResult = sellsyLayoutResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(enter.getDoclayout()))).findFirst().orElse(null);
         if (sellsyLayoutResult == null) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_LAYOUT_IS_NOT_EXIST.getMessage());
-        }*/
+        }
 
         if (enter.getDoclang() != null || enter.getDoclang() != 0) {
             //语言Id校验
@@ -203,7 +205,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             if (sellsyTranslationLanguageResult == null) {
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_TRANSLATION_LANG_IS_NOT_EXIST.getMessage());
             }
-        }
+        }*/
         CreateDocumentAttributesEnter createDocumentAttributesEnter = CreateDocumentAttributesEnter
                 .builder()
                 .doctype(SellsyDocmentTypeEnums.invoice)
@@ -244,6 +246,32 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         Map<String, SellsyRowEnter> rosMap = new HashMap<>();
         //第三行
+        for (int i = 0; i < enter.getSellsellEnterList().size(); i++) {
+            SellsyRowEnter item = enter.getSellsellEnterList().get(i);
+            String key = String.valueOf(Integer.valueOf(SellsyDocumentRosTypeEnums.ITEM.getCode()) + i);
+            rosMap.put(key, SellsyRowEnter.builder()
+                    .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
+                    .row_linkedid(item.getRow_linkedid())
+                    .row_declid(0)
+                    .row_name(item.getRow_name())
+                    .row_notes(item.getRow_notes())
+                    .row_unit(item.getRow_unit())
+                    .row_unitAmount(item.getRow_unitAmount())
+                    .row_taxid(item.getRow_taxid())
+                    .row_tax2id(null)
+                    .row_qt(item.getRow_qt())
+                    .row_whid(null)
+                    .row_isOption(SellsyBooleanEnums.N)
+                    .row_purchaseAmount(item.getRow_purchaseAmount())
+                    .row_discount(item.getRow_discount())
+                    .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                    .row_serial(item.getRow_serial())
+                    .row_barcode(null)
+                    .row_accountingCode(item.getRow_accountingCode())
+                    .build());
+
+        }
+
         enter.getSellsellEnterList().forEach(item -> {
             rosMap.put(SellsyDocumentRosTypeEnums.ITEM.getCode(), SellsyRowEnter.builder()
                     .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
@@ -395,9 +423,11 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         }
         List<SellsyInvoiceB> sellsyInvoiceBList = sellsyInvoiceBService.list(new LambdaQueryWrapper<SellsyInvoiceB>().in(SellsyInvoiceB::getInvoiceId,
                 sellsyInvoiceList.stream().map(SellsyInvoice::getId).collect(Collectors.toList())));
-        if (CollectionUtils.isNotEmpty(sellsyInvoiceBList)) {
+        if (CollectionUtils.isEmpty(sellsyInvoiceBList)) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getMessage());
         }
+
+        List<SellsyIdResut> result = new ArrayList<>();
 
         //封装 发票数据
         sellsyInvoiceList.forEach(item -> {
@@ -434,33 +464,49 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
 
             List<SellsyInvoiceB> invoiceBList = sellsyInvoiceBList.stream().filter(invoiceb -> item.getId().equals(invoiceb.getInvoiceId())).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(invoiceBList)) {
+            if (CollectionUtils.isEmpty(invoiceBList)) {
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getMessage());
             }
 
             List<SellsyRowEnter> sellsyRowEnterList = new ArrayList<>();
             invoiceBList.forEach(invoiceB -> {
+                //产品校验
+                SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
+                SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter = new SellsyCatalogueListSearchEnter();
+                sellsyCatalogueListSearchEnter.setName(invoiceB.getProductNum());
+                sellsyCatalogueListEnter.setType(SellsyCatalogueEnums.item);
+                sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
+                List<SellsyCatalogueResult> sellsyCatalogueResults = sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
+                if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
+                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
+                }
+                SellsyCatalogueResult sellsyCatalogueResult =
+                        sellsyCatalogueResults.stream().filter(catalogue -> StringUtils.equals(catalogue.getName(), invoiceB.getProductNum())).findFirst().orElse(null);
+                if (sellsyCatalogueResult == null) {
+                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
+                }
                 SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
                         .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
-                        .row_name(sellsyCatalogueResultList.get(0).getName())
-                        .row_taxid(Integer.valueOf(sellsyTaxeResults.get(0).getId()))
+                        .row_name(sellsyCatalogueResult.getTradename())
+                        .row_taxid(Integer.valueOf(sellsyCatalogueResult.getTaxid()))
                         .row_tax2id(null)
-                        .row_qt(10)
+                        .row_qt(invoiceB.getQty())
                         .row_isOption(SellsyBooleanEnums.N)
-                        .row_unitAmount(sellsyCatalogueResultList.get(0).getUnitAmount())
+                        .row_unitAmount(sellsyCatalogueResult.getUnitAmount())
                         .row_discount(0)
                         .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                        .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
-                        .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
-                        .row_notes("")
+                        .row_linkedid(Integer.valueOf(sellsyCatalogueResult.getId()))
+                        .row_declid(Integer.valueOf(sellsyCatalogueResult.getDeclid()))
+                        .row_notes(invoiceB.getProductNote())
                         .row_whid(null)
-                        .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
+                        .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResult.getUnitAmount()) * invoiceB.getQty()))
                         .row_serial(null)
                         .row_barcode(null)
                         .row_title("Invoice notes")
                         .row_comment(null)
                         .row_unit(null)
                         .build();
+                sellsyRowEnterList.add(sellsyRowEnter);
             });
 
 
@@ -476,12 +522,10 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
             sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyClientResult.getMainaddressid())));
             sellsyClientServiceCreateDocumentEnter.setSellsellEnterList(sellsyRowEnterList);
-            SellsyIdResut document = createDocument(sellsyClientServiceCreateDocumentEnter);
-
-
+            result.add(createDocument(sellsyClientServiceCreateDocumentEnter));
         });
 
-        return null;
+        return result;
     }
 
     private SellsyInvoice buildSellsyInvoice(SellsyExcleData item) {
