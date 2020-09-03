@@ -8,6 +8,8 @@ import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import lombok.*;
 
+import java.util.List;
+
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -48,15 +50,15 @@ public class SellsyClientServiceCreateDocumentEnter {
 
     // Current document currency ID 当前文件货币 ID 查询具体的Account 接口
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_CURRENCY_IS_EMPTY, message = "货币单位为空")
-    private int currency;
+    private Integer currency;
 
     // 布局Id 默认布局 有默认值 发票外观
-    @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_DOCLAYOUT_IS_EMPTY, message = "发票布局为空")
-    private int doclayout;
+    //@NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_DOCLAYOUT_IS_EMPTY, message = "发票布局为空")
+    private Integer doclayout;
 
     // 翻译语言 有系统设置
-    @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_LANG_IS_EMPTY, message = "发票语言为空")
-    private int doclang;
+    //@NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_LANG_IS_EMPTY, message = "发票语言为空")
+    private Integer doclang;
 
     //是否再PDF 上显示 联系方式
     private SellsyBooleanEnums showContactOnPdf = SellsyBooleanEnums.Y;
@@ -66,7 +68,7 @@ public class SellsyClientServiceCreateDocumentEnter {
     private int corpAddressId;
 
     //产品行  即第三行
-    private SellsyRowEnter sellsellEnter;
+    private List<SellsyRowEnter> sellsellEnterList;
 
     //客户地址 ID 可以不填写
     private SellsyIdEnter thirdaddress;

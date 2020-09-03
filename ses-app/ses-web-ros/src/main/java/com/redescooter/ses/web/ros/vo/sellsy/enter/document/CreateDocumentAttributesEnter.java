@@ -76,17 +76,17 @@ public class CreateDocumentAttributesEnter {
     // 是否使用与增值税号码相关的法律术语 默认为N
     private SellsyBooleanEnums hasTvaLawText = SellsyBooleanEnums.N;
 
-    // Current document currency ID 当前文件货币 ID 查询具体的Account 接口
+    // Current document currency ID 当前文件货币 ID 查询具体的Account 接口 有默认值
     //@NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_CURRENCY_IS_EMPTY, message = "货币单位为空")
-    private int currency;
+    private Integer currency;
 
     // 布局Id 默认布局 有默认值 发票外观
     //@NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_DOCLAYOUT_IS_EMPTY, message = "发票布局为空")
-    private int doclayout;
+    private Integer doclayout;
 
     // 翻译语言 有系统设置
     //@NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_LANG_IS_EMPTY, message = "发票语言为空")
-    private int doclang;
+    private Integer doclang;
 
     //Pay mean(s) array of IDs 支付平均值 id 数组
     // 支付方式 不填写的话 为账户默认值

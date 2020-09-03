@@ -46,6 +46,7 @@ public interface SellsyDocumentService {
      */
     public void upateDocumentStatus(SellsyUpdateDocumentStatusEnter enter);
 
+
     /**
      * 导入发票
      *
@@ -60,4 +61,10 @@ public interface SellsyDocumentService {
      * @return
      */
     SellsyImportExcelResult saveSellsyInvoid(List<SellsyExcleData> successList);
+
+    /**
+     * 根据数据库数据批量创建发票
+     * @return
+     */
+    List<SellsyIdResut> createDcumentList();
 }
