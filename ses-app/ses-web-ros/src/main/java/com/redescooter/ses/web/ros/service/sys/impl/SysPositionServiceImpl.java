@@ -119,7 +119,13 @@ public class SysPositionServiceImpl implements SysPositionService {
 
     @Override
     public PositionDetailsResult positionDetails(IdEnter enter) {
-        return null;
+        OpeSysPosition position = opeSysPositionService.getById(enter.getId());
+        if(position == null){
+            throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
+        }
+        PositionDetailsResult positionDetailsResult = positionServiceMapper.positionDetails(position.getId());
+        positionDetailsResult.setPositionPersonnel(staffService.deptStaffCount(position.getId(),2));
+        return positionDetailsResult;
     }
 
     /**

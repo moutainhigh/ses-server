@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,5 +22,7 @@ public interface PositionServiceMapper{
    int listcount(PositionEnter tenantId);
 
    List<PositionResult> list(PositionEnter tenantId);
+
+   PositionDetailsResult positionDetails(@Param("id") Long id);
 
 }

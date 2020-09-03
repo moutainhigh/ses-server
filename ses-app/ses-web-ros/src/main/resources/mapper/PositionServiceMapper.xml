@@ -47,4 +47,23 @@
         limit #{startRow},#{pageSize}
     </select>
 
+    <select id="positionDetails" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult">
+        select
+        pos.id,
+        pos.position_name,
+        pos.position_code,
+        dept.name as deptName,
+        pos.sort,
+        pos.position_status,
+        staff1.full_name as createdName，
+        staff2.full_name as updatedName，
+        pos.created_time,
+        pos.updated_time
+        from  ope_sys_position pos
+        left join ope_sys_staff staff1 on pos.created_by = staff1.id
+        left join ope_sys_staff staff2 on pos.updated_by = staff2.id
+        left join ope_sys_dept dept on pos.dept_id = dept.id
+        where pos.dr = 0 and pos.id = #{id}
+    </select>
+
 </mapper>

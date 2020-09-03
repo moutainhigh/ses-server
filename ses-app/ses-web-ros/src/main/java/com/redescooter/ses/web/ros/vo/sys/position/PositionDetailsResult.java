@@ -44,11 +44,14 @@ public class PositionDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "岗位状态  1：正常，2：禁用")
     private Integer positionStatus;
 
+    @ApiModelProperty(value = "创建人")
+    private String createdName;
+
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
-    private long updatedBy;
+    private String updatedName;
 
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;

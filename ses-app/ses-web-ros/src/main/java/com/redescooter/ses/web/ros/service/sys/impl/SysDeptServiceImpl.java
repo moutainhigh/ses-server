@@ -467,7 +467,9 @@ public class SysDeptServiceImpl implements SysDeptService {
         });
         if (byId.getPrincipal() != null) {
             OpeSysStaff PrincipalName = opeSysStaffService.getOne(new QueryWrapper<OpeSysStaff>().eq(OpeSysStaff.COL_ID, byId.getPrincipal()));
-            result.setPrincipalName(PrincipalName.getFullName());
+            if(PrincipalName != null){
+                result.setPrincipalName(PrincipalName.getFullName());
+            }
         }
 
         result.setDeptCount(list.size());
