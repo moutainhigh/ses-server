@@ -93,6 +93,7 @@
         where s.dr = 0
       <include refid="staffListCondition"></include>
       order by created_time desc
+      limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="principalData" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult">
