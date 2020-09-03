@@ -32,7 +32,7 @@ public class UpdateDeptEnter extends GeneralEnter {
      private String name;
 
     @ApiModelProperty(value = "父级部门id", required = true)
-    private Long pId;
+    private Long pid;
 
     @ApiModelProperty(value = "负责人", required = true)
     private Long principal;
