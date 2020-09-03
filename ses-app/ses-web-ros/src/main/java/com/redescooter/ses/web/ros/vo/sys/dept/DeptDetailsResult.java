@@ -34,7 +34,7 @@ public class DeptDetailsResult extends GeneralResult {
     private String code;
 
     @ApiModelProperty(value = "上级部门")
-    private Long pId;
+    private String pName;
 
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;
@@ -53,13 +53,13 @@ public class DeptDetailsResult extends GeneralResult {
 
     @TableField(value = "created_by")
     @ApiModelProperty(value = "创建人")
-    private Long createdBy;
+    private String createdName;
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private String updatedName;
 
     @ApiModelProperty(value = "修改时间")
     private Date updatedTime;
