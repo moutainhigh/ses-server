@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.config;
 
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -54,4 +53,7 @@ public class MondayConfig {
 
     //订阅邮件分组
     private String subEmailGroupName;
+
+    //是否加载模版
+    private Boolean loadTemplate;
 }

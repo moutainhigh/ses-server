@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:22181
+    address: zookeeper://localhost:22181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.110:62181
 
@@ -229,18 +229,19 @@ monday:
   httpMethod: POST
   MediaType: application/x-www-form-urlencoded
   #预订单业务
-  orderFormBoardName: Préco clients RED Série E test
+  orderFormBoardName: Test Website Order
   orderFormGroupName: Backlog
   #联系我们
-  contactUsBoardName: (RFQ) Relation client RED Série E test
+  contactUsBoardName: Test Website AboutUs
   contactUsGroupName: Backlog
   #订阅邮件
-  subEmailBoardName: RED Abonnements par e-mail test
+  subEmailBoardName: Test Website Email
   subEmailGroupName: Backlog
   # 工作空间 alex:132750
   workspaceId: 21182
   #模板Id
   templeteId: 581923336
+  load-template: false
 
 constant-us-email:
   sale-principal:
