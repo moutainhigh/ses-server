@@ -114,7 +114,8 @@ public class MondayServiceImpl implements MondayService {
                         new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
                 .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
         // 数据插入
-        return mutationData(gql).getData() != null ? mutationData(gql).getData().getCreate_item() : null;
+        MondayDataResult result = mutationData(gql).getData();
+        return result != null ? result.getCreate_item() : null;
     }
     
     /**
@@ -144,9 +145,10 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayParameterName.CREATE_ITEM_NAME,
                         new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
                 .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildContantUsSingle(enter));
-        
+
         // 数据插入
-        return mutationData(gql).getData() != null ? mutationData(gql).getData().getCreate_item() : null;
+        MondayDataResult result = mutationData(gql).getData();
+        return result != null ? result.getCreate_item() : null;
     }
     
     /**
@@ -173,7 +175,8 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayParameterName.CREATE_ITEM_NAME, email.split("@")[0])
                 .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildSubEmailSingle(email));
         // 数据插入
-        return mutationData(gql).getData() != null ? mutationData(gql).getData().getCreate_item() : null;
+        MondayDataResult result = mutationData(gql).getData();
+        return result != null ? result.getCreate_item() : null;
     }
     
     @Override
