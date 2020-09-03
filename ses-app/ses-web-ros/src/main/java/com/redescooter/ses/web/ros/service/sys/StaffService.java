@@ -49,4 +49,7 @@ public interface StaffService {
      **/
     Integer deptStaffCount(Long idd,Integer type);
 
+
+    GeneralResult openAccount(StaffOpEnter enter);
+
 }
