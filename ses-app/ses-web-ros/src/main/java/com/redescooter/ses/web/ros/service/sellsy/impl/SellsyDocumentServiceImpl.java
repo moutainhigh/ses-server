@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.constant.SellsyMethodConstant;
 import com.redescooter.ses.web.ros.dm.SellsyInvoice;
@@ -20,12 +21,18 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListSearchEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCorpInfoResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyTranslationLanguageResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
@@ -72,6 +79,9 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
     @Autowired
     private SellsyCatalogueService sellsyCatalogueService;
+
+    @Autowired
+    private SellsyConfig sellsyConfig;
 
     @Reference
     private IdAppService idAppService;
@@ -394,56 +404,33 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         //封装 发票数据
         sellsyInvoiceList.forEach(item -> {
-            //查询发票排版
-            /*List<SellsyLayoutResult> sellsyLayoutResults = sellsyAccountSettingService.queryDocLayoutList();
-            if (CollectionUtils.isEmpty(sellsyLayoutResults)) {
-                log.info("----------------布局出错------------");
-                throw new RuntimeException();
-            }*/
-            /*List<SellsyTranslationLanguageResult> sellsyTranslationLanguageResults = sellsyAccountSettingService.queryTranslationLanguages();
-            if (CollectionUtils.isEmpty(sellsyTranslationLanguageResults)) {
-                log.info("----------------语言出错------------");
-                throw new RuntimeException();
-            }*/
-
-            List<SellsyCurrencyResult> sellsyCurrencyResults = sellsyAccountSettingService.queryCurrencyList();
-            if (CollectionUtils.isEmpty(sellsyCurrencyResults)) {
-                log.info("----------------货币单位出错------------");
-                throw new RuntimeException();
-            }
-            //sellsyCurrencyResults.stream().filter(item -> StringUtils.equals(item.getLongname()));
-
-            List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList();
+            //客户校验
+            SellsyClientListEnter sellsyClientListEnter = new SellsyClientListEnter();
+            SellsyClientListSearchEnter sellsyClientSerach = new SellsyClientListSearchEnter();
+            sellsyClientSerach.setName(item.getClientName());
+            sellsyClientListEnter.setSearch(sellsyClientSerach);
+            List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList(sellsyClientListEnter);
             if (CollectionUtils.isEmpty(sellsyClientResults)) {
-                log.info("----------------客户出错------------");
-                throw new RuntimeException();
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
+            }
+            SellsyClientResult sellsyClientResult = sellsyClientResults.stream().filter(client -> StringUtils.equals(client.getName(), item.getClientName())).findFirst().orElse(null);
+            if (sellsyClientResult == null) {
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
             }
 
-            //查询个人信息
+            //查询当前用户的信息（即当前使用谁的token）
             SellsyCorpInfoResult sellsyCorpInfoResult = sellsyAccountSettingService.queryCorpInfos();
             if (sellsyCorpInfoResult == null) {
-                log.info("----------------公司出错------------");
-                throw new RuntimeException();
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getMessage());
             }
 
-            //查询税率
+            //查询增值税类型
             List<SellsyRateCategoryResult> sellsyRateCategoryResults = sellsyAccountSettingService.queryRateCategoryList();
             if (CollectionUtils.isEmpty(sellsyRateCategoryResults)) {
-                log.info("----------------税局出错------------");
-                throw new RuntimeException();
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
             }
-            //查询 税率
-            List<SellsyTaxeResult> sellsyTaxeResults = sellsyAccountSettingService.queryTaxeList();
-            if (CollectionUtils.isEmpty(sellsyTaxeResults)) {
-                log.info("----------------税率出错------------");
-                throw new RuntimeException();
-            }
-
-            List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueEnums.item));
-            if (CollectionUtils.isEmpty(sellsyCatalogueResultList)) {
-                log.info("----------------产品出错------------");
-                throw new RuntimeException();
-            }
+            SellsyRateCategoryResult sellsyRateCategoryResult =
+                    sellsyRateCategoryResults.stream().filter(rate -> StringUtils.equals(sellsyConfig.getRateCategory(), rate.getName())).findFirst().orElse(null);
 
             SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
                     .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
@@ -470,17 +457,12 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
             SellsyClientServiceCreateDocumentEnter sellsyClientServiceCreateDocumentEnter = new SellsyClientServiceCreateDocumentEnter();
             sellsyClientServiceCreateDocumentEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
-            sellsyClientServiceCreateDocumentEnter.setThirdid(Integer.valueOf(sellsyClientResults.get(1).getId()));
-            sellsyClientServiceCreateDocumentEnter.setIdent("BRO00001831");
-            sellsyClientServiceCreateDocumentEnter.setSubject("RedE Group Scooter");
+            sellsyClientServiceCreateDocumentEnter.setThirdid(Integer.valueOf(sellsyClientResult.getId()));
+            sellsyClientServiceCreateDocumentEnter.setIdent(item.getInvoiceNum());
+            sellsyClientServiceCreateDocumentEnter.setSubject(sellsyConfig.getSubject());
             sellsyClientServiceCreateDocumentEnter.setNotes(null);
             sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
-            sellsyClientServiceCreateDocumentEnter.setRateCategory(Integer.valueOf(sellsyRateCategoryResults.get(0).getId()));
-            sellsyClientServiceCreateDocumentEnter.setGlobalDiscount(0);
-            sellsyClientServiceCreateDocumentEnter.setGlobalDiscountUnit(SellsyGlobalDiscountUnitEnums.percent);
-            //sellsyClientServiceCreateDocumentEnter.setCurrency(1);
-            //sellsyClientServiceCreateDocumentEnter.setDoclayout(Integer.valueOf(sellsyLayoutResults.get(1).getId()));
-            //sellsyClientServiceCreateDocumentEnter.setDoclang(Integer.valueOf(sellsyTranslationLanguageResults.get(0).getId()));
+            //sellsyClientServiceCreateDocumentEnter.setRateCategory(Integer.valueOf(sellsyRateCategoryResults.get(0).getId()));
             sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
             sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
@@ -498,6 +480,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .builder()
                 .id(idAppService.getId("sellsy_invoice"))
                 .dr(0)
+                .clientName(item.getClient().trim())
                 .status(item.getEtat())
                 .invoiceNum(item.getInvoice_num())
                 .invoiceTime(DateUtil.formatDate(item.getInvoice_date()))

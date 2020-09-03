@@ -6,15 +6,20 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@ApiModel(value = "com-redescooter-ses-admin-dev-controller-SellsyInvoice")
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-SellsyInvoice")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "sellsy_invoice")
 public class SellsyInvoice implements Serializable {
     /**
@@ -32,9 +37,16 @@ public class SellsyInvoice implements Serializable {
     private Integer dr;
 
     /**
+     * 客户名称
+     */
+    @TableField(value = "client_name")
+    @ApiModelProperty(value = "客户名称")
+    private String clientName;
+
+    /**
      * 状态
      */
-    @TableField(value = "status")
+    @TableField(value = "`status`")
     @ApiModelProperty(value = "状态")
     private String status;
 
@@ -176,6 +188,8 @@ public class SellsyInvoice implements Serializable {
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
+
+    public static final String COL_CLIENT_NAME = "client_name";
 
     public static final String COL_STATUS = "status";
 

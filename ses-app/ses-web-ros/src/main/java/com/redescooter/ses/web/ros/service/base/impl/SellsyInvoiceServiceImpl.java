@@ -36,3 +36,4 @@ public class SellsyInvoiceServiceImpl extends ServiceImpl<SellsyInvoiceMapper, S
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

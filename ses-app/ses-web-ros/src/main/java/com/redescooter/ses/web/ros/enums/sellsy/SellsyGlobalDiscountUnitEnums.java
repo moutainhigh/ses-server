@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum SellsyGlobalDiscountUnitEnums {
 
-    percent("percent", "百分比", "percent"), amount("amount", "总金额", "amount");
-    
+    percent("percent", "百分比", "percent"),
+    amount("amount", "总金额", "amount");
+
     private String code;
-    
+
     private String message;
-    
+
     private String value;
 }

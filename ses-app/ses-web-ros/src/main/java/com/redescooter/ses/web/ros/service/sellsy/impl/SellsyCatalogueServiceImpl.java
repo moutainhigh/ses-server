@@ -41,8 +41,8 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
     @Override
     public SellsyCatalogueResult queryCatalogueOne(SellsyQueryCatalogueOneEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
-                .method(SellsyMethodConstant.Accountdatas_GetRateCategory).params(enter).build();
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Catalogue_GetOne).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 

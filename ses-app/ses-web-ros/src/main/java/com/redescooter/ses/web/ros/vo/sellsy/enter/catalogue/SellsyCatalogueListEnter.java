@@ -15,4 +15,11 @@ public class SellsyCatalogueListEnter {
 
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_CATALOGUE_TYPE_IS_EMPTY, message = "产品类型为空")
     private SellsyCatalogueEnums type;
+
+    //Possible values : item_name, item_tradename, item_qt or item_taxrate
+    private SellsyCatalogueListOrderEnter order;
+
+    private SellsyCatalogueListSearchEnter search;
+
+
 }

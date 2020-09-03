@@ -5,7 +5,8 @@ import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.QueryClientAddressEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientAddressEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -17,7 +18,6 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,21 +33,21 @@ public class SellsyClientServiceImpl implements SellsyClientService {
     
     @Autowired
     private SellsyService sellsyService;
-    
-    
+
+
     /**
      * 查询客户列表
      *
      */
     @Override
-    public List<SellsyClientResult> queryClientList() {
-        
+    public List<SellsyClientResult> queryClientList(SellsyClientListEnter enter) {
+
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
                 .method(SellsyMethodConstant.Client_List)
-                .params(new ArrayList<>())
+                .params(enter)
                 .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
                 .build();
-        
+
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         return sellsyService.jsonArrayFormattingByPage(sellsyGeneralResult, new SellsyClientResult());
     }
@@ -93,7 +93,7 @@ public class SellsyClientServiceImpl implements SellsyClientService {
      * @param enter
      */
     @Override
-    public SellsyClientAddressDetailResult queryClientAddress(QueryClientAddressEnter enter) {
+    public SellsyClientAddressDetailResult queryClientAddress(SellsyClientAddressEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
                 .method(SellsyMethodConstant.Client_AddAddress)
                 .params(enter)

@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
@@ -217,7 +218,7 @@ public class SesWebRosApplicationTests {
             throw new RuntimeException();
         }
 
-        List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList();
+        List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList(new SellsyClientListEnter());
         if (CollectionUtils.isEmpty(sellsyClientResults)) {
             log.info("----------------客户出错------------");
             throw new RuntimeException();
@@ -243,7 +244,7 @@ public class SesWebRosApplicationTests {
             throw new RuntimeException();
         }
 
-        List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueEnums.item));
+        List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueEnums.item, null, null));
         if (CollectionUtils.isEmpty(sellsyCatalogueResultList)) {
             log.info("----------------产品出错------------");
             throw new RuntimeException();

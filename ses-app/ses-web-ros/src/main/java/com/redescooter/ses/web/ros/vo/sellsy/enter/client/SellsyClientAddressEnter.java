@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class QueryClientAddressEnter {
+public class SellsyClientAddressEnter {
 
     @ApiModelProperty(value = "客户Id")
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_CLIENT_ID_IS_EMPTY, message = "客户Id 为空")

@@ -19,3 +19,4 @@ public interface SellsyInvoiceService extends IService<SellsyInvoice> {
     int insertOrUpdateSelective(SellsyInvoice record);
 
 }
+

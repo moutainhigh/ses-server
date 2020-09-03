@@ -32,6 +32,10 @@ public enum ThirdExceptionCodeEnums {
     SELLSY_DOCUMENT_INDENT_IS_ALREADY_EXIST(11010, "发票号已存在"),
 
     SELLSY_INVOICE_B_IS_NOT_EXIST(11011, "发票子记录不存在"),
+
+    SELLSY_CORPINFO_IS_NOT_EXIST(11012, "个人信息不存在"),
+
+    SELLSY_RATE_CATEGORY_IS_NOT_EXIST(11013, "文档增值税类型为空"),
     ;
 
     private int code;
