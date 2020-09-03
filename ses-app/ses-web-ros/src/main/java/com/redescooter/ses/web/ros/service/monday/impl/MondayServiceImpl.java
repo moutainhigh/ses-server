@@ -3,38 +3,21 @@ package com.redescooter.ses.web.ros.service.monday.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
-import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
 import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayWebsiteSubscriptionEmailEnums;
 import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
-import com.redescooter.ses.web.ros.enums.datatype.MondayColumnGeneralEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnPhoneEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayCountryShortNameEnums;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayGeneralResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayGroupResult;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayTagResult;
+import com.redescooter.ses.web.ros.vo.monday.enter.*;
+import com.redescooter.ses.web.ros.vo.monday.result.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -86,36 +69,43 @@ public class MondayServiceImpl implements MondayService {
     @PostConstruct
     @Override
     public void initializationMondaytemplate() {
-        log.info("-----------------------------初始化Monday模板------------------------------------------");
-        // 初始化预订单模板
-        for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
-            bookOrderMap.put(item.getTitle(), item.getId());
+        if (mondayConfig.getLoadTemplate()) {
+            log.info("-----------------------------初始化Monday模板------------------------------------------");
+            // 初始化预订单模板
+            for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
+                bookOrderMap.put(item.getTitle(), item.getId());
+            }
+            checkBookOrderBoardColumn(mondayConfig.getOrderFormBoardName());
+            // 初始化联系我们
+            for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
+                contantUsMap.put(item.getTitle(), item.getId());
+            }
+            checkCountantUsBoardColumn(mondayConfig.getContactUsBoardName());
+            //订阅邮件 模板初始化
+            for (MondayWebsiteSubscriptionEmailEnums item : MondayWebsiteSubscriptionEmailEnums.values()) {
+                subscribeEmailMap.put(item.getTitle(), item.getId());
+            }
+            checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName());
+            log.info("-----------------------------初始化Monday模板结束------------------------------------------");
+        } else {
+            log.info("-----------------------------其他环境跳过Monday模版加载------------------------------------------");
         }
-        checkBookOrderBoardColumn(mondayConfig.getOrderFormBoardName());
-        // 初始化联系我们
-        for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
-            contantUsMap.put(item.getTitle(), item.getId());
-        }
-        checkCountantUsBoardColumn(mondayConfig.getContactUsBoardName());
-        //订阅邮件 模板初始化
-        for (MondayWebsiteSubscriptionEmailEnums item : MondayWebsiteSubscriptionEmailEnums.values()) {
-            subscribeEmailMap.put(item.getTitle(), item.getId());
-        }
-        checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName());
-        log.info("-----------------------------初始化Monday模板结束------------------------------------------");
     }
     
     @Transactional
     @Override
     public MondayCreateResult websiteContantUs(MondayGeneralEnter enter) {
-        
+        if (!mondayConfig.getLoadTemplate()) {
+            return new MondayCreateResult();
+        }
+
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getContactUsBoardName());
-        
+
         // 校验分组是否存在
         MondayCreateResult groupResult =
                 getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getContactUsGroupName());
-        
+
         // 替换语句中的id 参数
         String gql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
                 .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
@@ -136,13 +126,17 @@ public class MondayServiceImpl implements MondayService {
     @Transactional
     @Override
     public MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter) {
+        if (!mondayConfig.getLoadTemplate()) {
+            return new MondayCreateResult();
+        }
+
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getOrderFormBoardName());
-        
+
         // 校验分组是否存在
         MondayCreateResult groupResult =
                 getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getOrderFormGroupName());
-        
+
         // 替换语句中的id 参数
         String gql = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
                 .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardResult.getId())
@@ -163,9 +157,12 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public MondayCreateResult websiteSubscriptionEmail(String email) {
+        if (!mondayConfig.getLoadTemplate()) {
+            return new MondayCreateResult();
+        }
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getSubEmailBoardName());
-        
+
         // 校验分组是否存在
         MondayCreateResult groupResult =
                 getMondayGroupByBoardId(mondayBoardResult.getId(), mondayConfig.getSubEmailGroupName());
