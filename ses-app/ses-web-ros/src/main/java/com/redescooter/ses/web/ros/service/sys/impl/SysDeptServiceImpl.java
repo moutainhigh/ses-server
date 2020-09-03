@@ -389,9 +389,10 @@ public class SysDeptServiceImpl implements SysDeptService {
             }
         }
         BeanUtils.copyProperties(enter,opeSysDept);
+        opeSysDept.setPId(enter.getPid());
         opeSysDept.setUpdatedBy(enter.getUserId());
         opeSysDept.setUpdatedTime(new Date());
-        opeSysDeptService.insertOrUpdate(opeSysDept);
+        opeSysDeptService.updateById(opeSysDept);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -527,8 +528,10 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         OpeSysDept dept = new OpeSysDept();
         BeanUtils.copyProperties(enter, dept);
-        if (dept.getPId() == null || dept.getPId() == 0) {
+        if (enter.getPid() == null || enter.getPid() == 0) {
             dept.setPId(Constant.DEPT_TREE_ROOT_ID);
+        }else{
+            dept.setPId(enter.getPid());
         }
         dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
         dept.setDr(Constant.DR_FALSE);

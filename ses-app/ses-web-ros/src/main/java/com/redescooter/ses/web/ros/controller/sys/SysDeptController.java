@@ -81,7 +81,7 @@ public class SysDeptController {
     public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.selectEditDept(enter));
     }
-    @PostMapping(value = "/editDept")
+        @PostMapping(value = "/editDept")
     @ApiOperation(value = "部门编辑", response = GeneralResult.class)
     public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
         return new Response<>(deptService.editDept(enter));
