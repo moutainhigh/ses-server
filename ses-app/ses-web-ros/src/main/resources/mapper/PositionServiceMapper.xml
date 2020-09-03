@@ -4,7 +4,7 @@
 
     <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
         select id as id
-        ,name as name
+        ,position_name as positionName
         from ope_sys_position
         where dr = 0
         and tenant_id = #{tenantId}
