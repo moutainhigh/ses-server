@@ -1,6 +1,7 @@
 package com.redescooter.ses.tool.utils;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -888,5 +889,32 @@ public class DateUtil {
         sdf = new SimpleDateFormat("MMMMM", Locale.US);
         month = sdf.format(date);
         return month;
+    }
+
+    /**
+     * 格式化处理 dd/mm/yy 格式的时间
+     * @param date
+     * @return
+     */
+    public static Date formatDate(String date) {
+        if (StringUtils.isEmpty(date)) {
+            return new Date();
+        }
+        String[] splitList = date.split("/", 3);
+        StringBuilder newDate = new StringBuilder();
+        for (int i = splitList.length - 1; i >= 0; i--) {
+            newDate.append(splitList[i]);
+            if (i > 0) {
+                newDate.append("-");
+            }
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+        Date result = null;
+        try {
+            result = sdf.parse(newDate.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

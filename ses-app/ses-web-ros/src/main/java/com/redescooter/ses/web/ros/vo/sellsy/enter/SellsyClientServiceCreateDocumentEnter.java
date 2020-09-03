@@ -59,7 +59,7 @@ public class SellsyClientServiceCreateDocumentEnter {
     private int doclang;
 
     //是否再PDF 上显示 联系方式
-    private SellsyBooleanEnums showContactOnPdf = SellsyBooleanEnums.N;
+    private SellsyBooleanEnums showContactOnPdf = SellsyBooleanEnums.Y;
 
     // 公司地址 无默认值
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCUMENT_COMPANY_ADDRESS_IS_EMPTY, message = "公司地址为空")

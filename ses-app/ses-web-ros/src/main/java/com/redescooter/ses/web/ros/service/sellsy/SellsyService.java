@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
 
 import java.util.List;
 
@@ -51,10 +52,17 @@ public interface SellsyService {
 
     /**
      * json 处理单个对象
-     * 
+     *
      * @param sellsyGeneralResult
      * @param t
      * @return
      */
     public Object jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, Class t);
+
+    /**
+     *  格式化 创建业务 返回的Id 问题
+     * @param sellsyGeneralResult
+     * @return
+     */
+    public SellsyIdResut jsonCreateResut(SellsyGeneralResult sellsyGeneralResult);
 }

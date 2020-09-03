@@ -64,6 +64,9 @@ public interface SellsyMethodConstant {
     // 单据创建
     String Document_Create = "Document.create";
 
+    //更新单据状态
+    String Document_UpdateStep = "Document.updateStep";
+
 
     // 获取货币列表
     String AccountPrefs_GetCurrencies = "AccountPrefs.getCurrencies";

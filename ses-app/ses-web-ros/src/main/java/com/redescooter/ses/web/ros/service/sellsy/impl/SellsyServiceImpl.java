@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.enums.sellsy.DefultFiledEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
@@ -175,5 +176,24 @@ public class SellsyServiceImpl implements SellsyService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     *  格式化 创建业务 返回的Id 问题
+     * @param sellsyGeneralResult
+     * @return
+     */
+    @Override
+    public SellsyIdResut jsonCreateResut(SellsyGeneralResult sellsyGeneralResult) {
+        if (sellsyGeneralResult.getResult() == null) {
+            return null;
+        }
+        Map<String, Integer> result = null;
+        try {
+            result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new SellsyIdResut(new ArrayList<>(result.values()).get(0));
     }
 }

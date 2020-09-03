@@ -1,6 +1,7 @@
 package com.redescooter.ses.tool.utils;
 
 import com.google.common.base.Strings;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Log4j2
 public class SesStringUtils extends StringUtils {
 
     //
@@ -207,10 +209,12 @@ public class SesStringUtils extends StringUtils {
             }
         }
 
+        log.info("-----------当前对象{}----------", t);
         try {
             //获取所有字段
             Field[] declaredFields = t.getClass().getDeclaredFields();
             for (Field item : declaredFields) {
+
                 // 如果时String 类型 的字段 前后去空格
                 if (item.getGenericType().toString().equals(stringFullName)) {
                     // 设置属性可以直接的进行访问
@@ -220,7 +224,6 @@ public class SesStringUtils extends StringUtils {
                     if (org.springframework.util.StringUtils.isEmpty(item.get(t))){
                         continue;
                     }
-
                     //属性值前后去空格返回
                     item.set(t,String.valueOf(item.get(t)).trim());
                 }

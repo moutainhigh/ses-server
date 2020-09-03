@@ -2,19 +2,23 @@ package com.redescooter.ses.web.ros.controller.sellsy;
 
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Api(tags = {"ROS-Sellsy发票业务"})
@@ -42,10 +46,18 @@ public class SellsyDocumentController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "发票创建", response = GeneralResult.class)
+    @ApiOperation(value = "发票创建", response = SellsyIdResut.class)
     @PostMapping(value = "/createDocument")
-    public Response<GeneralResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
-        documentService.createDocument(enter);
-        return new Response<>(new GeneralResult());
+    public Response<SellsyIdResut> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
+        return new Response<>(documentService.createDocument(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "发票excel导入", response = SellsyImportExcelResult.class)
+    @PostMapping(value = "/import")
+    public Response<SellsyImportExcelResult> importDocument(HttpServletRequest request,
+                                                            HttpServletResponse response,
+                                                            MultipartFile file) {
+        return new Response<>(documentService.importSellsyDocument(file));
     }
 }

@@ -59,4 +59,13 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     //地址Id为空
     int SELLSY_ADDRESS_ID_EMPTY = 11016;
+
+    //单据Id为空
+    int SELLSY_DOCUMENT_ID_IS_EMTPY = 11017;
+
+    //单据状态为空
+    int SELLSY_DOCUMENT_STATUS_IS_EMPTY = 11018;
+
+    //业务对象为空
+    int BUSSINESS_OBJ_IS_EMPTY = 11019;
 }

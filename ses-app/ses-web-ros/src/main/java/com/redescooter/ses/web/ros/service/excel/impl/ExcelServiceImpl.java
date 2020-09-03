@@ -6,26 +6,24 @@ import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
-import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
+import com.redescooter.ses.web.ros.verifyhandler.SellsyExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * @ClassName ExcelServiceImpl
@@ -45,6 +43,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private OpePartsService partsService;
+
+    @Autowired
+    private SellsyDocumentService sellsyDocumentService;
 
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
@@ -110,6 +111,55 @@ public class ExcelServiceImpl implements ExcelService {
             });
         }
         return partsRosService.savePartsList(successList, enter);
+    }
+
+    /**
+     * 导入零部件
+     *
+     * @param file
+     * @return
+     */
+    @Override
+    public SellsyImportExcelResult readExcelDataBySellsy(MultipartFile file) {
+        SellsyImportExcelResult result = new SellsyImportExcelResult();
+        ImportParams importParams = new ImportParams();
+        ExcelImportResult<SellsyExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new SellsyExcelVerifyHandlerImpl()).importExcelByFile(file,
+                SellsyExcleData.class, importParams);
+        if (excelImportResult == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+
+        List<SellsyExcleData> successList = excelImportResult.getList();
+        List<SellsyExcleData> failList = excelImportResult.getFailList();
+
+        //验证是否有不合法的Eecel数据
+        if (failList.size() > 0) {
+            Map<String, String> map = null;
+            List<Map<String, String>> errorMsgList = new ArrayList<>();
+            result.setSuccess(Boolean.FALSE);
+            result.setSuccessNum(successList.size());
+            result.setFailNum(failList.size());
+            for (SellsyExcleData excle : failList) {
+                map = new HashMap<>();
+                map.put(String.valueOf(excle.getRowNum()), excle.getErrorMsg());
+                errorMsgList.add(map);
+            }
+            result.setErrorMsgList(errorMsgList);
+            return result;
+        }
+        if (CollectionUtils.isEmpty(successList)) {
+            //表格数据为空 做逻辑判断
+            result.setSuccess(Boolean.FALSE);
+            Map<String, String> map = new TreeMap<>();
+            map.put("msg", "The table data is empty and the import failed.");
+            List<Map<String, String>> mapList = new ArrayList<>();
+            mapList.add(map);
+            result.setSuccessNum(0);
+            result.setFailNum(successList.size());
+            result.setErrorMsgList(mapList);
+            return result;
+        }
+        return sellsyDocumentService.saveSellsyInvoid(successList);
     }
 
     @Override

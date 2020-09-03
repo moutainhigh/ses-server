@@ -13,12 +13,15 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocu
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.jasypt.encryption.StringEncryptor;
@@ -37,7 +40,7 @@ import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Log4j
+@Log4j2
 public class SesWebRosApplicationTests {
 
     @Before
@@ -286,6 +289,18 @@ public class SesWebRosApplicationTests {
         sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
         sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
         sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
-        sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
+        SellsyIdResut document = sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
+
+        log.info("------------创建发票的返回值 {}--------", document.toString());
+    }
+
+    @Test
+    public void updateDocumentStatus() {
+        SellsyUpdateDocumentStatusEnter build = SellsyUpdateDocumentStatusEnter
+                .builder()
+                .docid(19841560)
+                .document(new SellsyUpdateDocumentInvoidSatusEnter(SellsyDocmentTypeEnums.invoice, SellsyDocumentInvoiceStatusEnums.cancelled))
+                .build();
+        sellsyDocumentService.upateDocumentStatus(build);
     }
 }

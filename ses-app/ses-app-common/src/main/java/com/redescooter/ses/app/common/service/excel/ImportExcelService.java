@@ -3,6 +3,7 @@ package com.redescooter.ses.app.common.service.excel;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Mr.lijiating
@@ -20,6 +21,14 @@ public interface ImportExcelService<T> {
      * @return
      */
     ExcelImportResult importOssExcel(String url, Class<?> pojoClass, ImportParams params);
+
+    /**
+     * 解析表格操作
+     *
+     * @param file
+     * @return
+     */
+    ExcelImportResult importExcelByFile(MultipartFile file, Class<?> pojoClass, ImportParams params);
 
     /**
      * 设置表格验证方式，非必须设置的

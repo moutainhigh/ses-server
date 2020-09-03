@@ -3,8 +3,8 @@ package com.redescooter.ses.web.ros.service.excel;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-
-import javax.servlet.http.HttpServletResponse;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -23,6 +23,14 @@ public interface ExcelService<T extends GeneralEnter> {
      * @return
      */
     ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter);
+
+    /**
+     * 导入零部件
+     *
+     * @param file
+     * @return
+     */
+    SellsyImportExcelResult readExcelDataBySellsy(MultipartFile file);
 
     /**
      * 零部件模板下载

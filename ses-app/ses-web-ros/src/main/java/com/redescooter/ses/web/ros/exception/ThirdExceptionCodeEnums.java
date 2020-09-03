@@ -28,6 +28,8 @@ public enum ThirdExceptionCodeEnums {
     SELLSY_TRANSLATION_LANG_IS_NOT_EXIST(11008, "翻译语言不存在"),
 
     SELLSY_ADDRESS_IS_NOT_EXIST(11009, "客户地址不存在"),
+
+    SELLSY_DOCUMENT_INDENT_IS_ALREADY_EXIST(11010, "发票号已存在"),
     ;
 
     private int code;
