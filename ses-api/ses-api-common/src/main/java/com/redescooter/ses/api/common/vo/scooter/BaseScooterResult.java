@@ -43,7 +43,7 @@ public class BaseScooterResult extends GeneralResult {
     @ApiModelProperty(value = "后备箱状态 1 LOCKED; 2 UNLOCKED")
     private String boxStatus;
 
-    @ApiModelProperty(value = "型号")
+    @ApiModelProperty(value = "型号 1 25CC,2 50CC,3 125CC")
     private String model;
 
     @ApiModelProperty(value = "牌照")

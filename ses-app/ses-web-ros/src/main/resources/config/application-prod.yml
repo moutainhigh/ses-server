@@ -93,6 +93,7 @@ monday:
   workspaceId: 21182
   #模板Id
   templeteId: 581923336
+  load-template: true
 
 constant-us-email:
   sale-principal:

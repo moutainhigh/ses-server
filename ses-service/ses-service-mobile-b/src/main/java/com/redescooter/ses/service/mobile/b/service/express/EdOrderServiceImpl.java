@@ -188,10 +188,21 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 骑行数据维护
         CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
-        corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()).add(corExpressDelivery.getDrivenMileage()));
-        corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
-        corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
-        // 刚开始第一单
+        if(corExpressDelivery.getDrivenMileage().equals(null)){
+            corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()).add(corExpressDelivery.getDrivenMileage()));
+        }else {
+            corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
+        }
+        if(corExpressDelivery.getCo2().equals(null)){
+            corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
+        }else {
+            corExpressDelivery.setCo2(new BigDecimal(enter.getMileage()));
+        }
+        if(corExpressDelivery.getSavings().equals(null)){
+            corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
+        }else {
+            corExpressDelivery.setSavings(new BigDecimal(enter.getMileage()));
+        } // 刚开始第一单
         if (corExpressDelivery.getOrderCompleteNum() == 0) {
             corExpressDelivery.setStatus(TaskStatusEnums.INPROGRESS.getValue());
             corExpressDelivery.setDeliveryStartTime(new Date());
