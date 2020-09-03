@@ -156,8 +156,11 @@ public class SysPositionServiceImpl implements SysPositionService {
 
     @Override
     public GeneralResult deletePosition(IdEnter enter) {
-
-
+        Integer count = staffService.deptStaffCount(enter.getId(), 2);
+        if (count<=0){
+            throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
+        }
+        opeSysPositionService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 }
