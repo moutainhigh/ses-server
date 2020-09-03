@@ -20,8 +20,6 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocu
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
@@ -33,7 +31,6 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCorpInfoResult
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyTranslationLanguageResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import lombok.extern.log4j.Log4j2;
@@ -431,28 +428,40 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             }
             SellsyRateCategoryResult sellsyRateCategoryResult =
                     sellsyRateCategoryResults.stream().filter(rate -> StringUtils.equals(sellsyConfig.getRateCategory(), rate.getName())).findFirst().orElse(null);
+            if (sellsyRateCategoryResult == null) {
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
+            }
 
-            SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
-                    .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
-                    .row_name(sellsyCatalogueResultList.get(0).getName())
-                    .row_taxid(Integer.valueOf(sellsyTaxeResults.get(0).getId()))
-                    .row_tax2id(null)
-                    .row_qt(10)
-                    .row_isOption(SellsyBooleanEnums.N)
-                    .row_unitAmount(sellsyCatalogueResultList.get(0).getUnitAmount())
-                    .row_discount(0)
-                    .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                    .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
-                    .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
-                    .row_notes("")
-                    .row_whid(null)
-                    .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
-                    .row_serial(null)
-                    .row_barcode(null)
-                    .row_title("Invoice notes")
-                    .row_comment(null)
-                    .row_unit(null)
-                    .build();
+
+            List<SellsyInvoiceB> invoiceBList = sellsyInvoiceBList.stream().filter(invoiceb -> item.getId().equals(invoiceb.getInvoiceId())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(invoiceBList)) {
+                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getMessage());
+            }
+
+            List<SellsyRowEnter> sellsyRowEnterList = new ArrayList<>();
+            invoiceBList.forEach(invoiceB -> {
+                SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
+                        .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
+                        .row_name(sellsyCatalogueResultList.get(0).getName())
+                        .row_taxid(Integer.valueOf(sellsyTaxeResults.get(0).getId()))
+                        .row_tax2id(null)
+                        .row_qt(10)
+                        .row_isOption(SellsyBooleanEnums.N)
+                        .row_unitAmount(sellsyCatalogueResultList.get(0).getUnitAmount())
+                        .row_discount(0)
+                        .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                        .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
+                        .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
+                        .row_notes("")
+                        .row_whid(null)
+                        .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
+                        .row_serial(null)
+                        .row_barcode(null)
+                        .row_title("Invoice notes")
+                        .row_comment(null)
+                        .row_unit(null)
+                        .build();
+            });
 
 
             SellsyClientServiceCreateDocumentEnter sellsyClientServiceCreateDocumentEnter = new SellsyClientServiceCreateDocumentEnter();
@@ -465,8 +474,8 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             //sellsyClientServiceCreateDocumentEnter.setRateCategory(Integer.valueOf(sellsyRateCategoryResults.get(0).getId()));
             sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
-            sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
-            //sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
+            sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyClientResult.getMainaddressid())));
+            sellsyClientServiceCreateDocumentEnter.setSellsellEnterList(sellsyRowEnterList);
             SellsyIdResut document = createDocument(sellsyClientServiceCreateDocumentEnter);
 
 
