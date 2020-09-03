@@ -79,7 +79,7 @@
           r.create_time
         from ope_sys_role r
         left join ope_sys_position p on r.position_id = p.id
-        where r.dr = 0 and p.dr = 0
+        where r.dr = 0
         <include refid="roleListCondition"></include>
         order by r.sort,r.create_time desc
     </select>
