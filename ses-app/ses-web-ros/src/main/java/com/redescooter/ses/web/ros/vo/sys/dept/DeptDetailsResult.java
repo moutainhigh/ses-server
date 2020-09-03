@@ -33,8 +33,7 @@ public class DeptDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "部门编码")
     private String code;
 
-    @ApiModelProperty(value = "上级部门", required = true)
-    @NotNull(code = ValidationExceptionCode.PID_IS_EMPTY, message = "上级部门")
+    @ApiModelProperty(value = "上级部门")
     private Long pId;
 
     @ApiModelProperty(value = "级别0公司，1部门")
