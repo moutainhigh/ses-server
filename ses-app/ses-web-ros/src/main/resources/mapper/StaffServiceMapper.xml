@@ -12,7 +12,7 @@
           s.gender,
           s.code,
           d.name as deptName,
-          d.position_name as positionName,
+          p.position_name as positionName,
           s.telephone,
           s.email,
           s.entry_date,
@@ -32,7 +32,7 @@
           left join ope_sys_position p on s.position_id = p.id
           left join ope_sys_staff s1 on s.created_by = s1.id
           left join ope_sys_staff s2 on s.updated_by = s2.id
-          where s.dr = 0 and d.dr = 0 and p.dr = 0 and s1.dr = 0 and s2.dr = 0
+          where s.dr = 0 and
                 s.id = #{id}
 
     </select>
@@ -90,7 +90,7 @@
         from ope_sys_staff s
         left join ope_sys_dept d on s.dept_id = d.id
         left join ope_sys_position p on s.position_id = p.id
-        where s.dr = 0 and d.dr = 0 and p.dr = 0
+        where s.dr = 0
       <include refid="staffListCondition"></include>
       order by created_time desc
     </select>

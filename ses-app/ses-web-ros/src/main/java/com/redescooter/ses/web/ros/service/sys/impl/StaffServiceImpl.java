@@ -90,6 +90,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
         opeSysStaffService.removeByIds(enter.getIds());
+
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -324,6 +324,7 @@ public class RoleServiceImpl implements RoleService {
         role.setRoleCode("R0"+new Random().nextInt(9999));
         role.setCreatedBy(enter.getUserId());
         role.setUpdatedBy(enter.getUserId());
+        role.setUpdateTime(new Date());
         sysRoleService.save(role);
         return new GeneralResult(enter.getRequestId());
     }
