@@ -6,10 +6,8 @@ import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.dept.AddDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
-import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.*;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import io.swagger.annotations.Api;
@@ -59,11 +57,15 @@ public class SysPositionController{
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePositionEnter enter) {
         return new Response<>(sysPositionService.save(enter));
     }
-
-    @PostMapping(value = "/deptDetails")
+    @PostMapping(value = "/editPosition")
+    @ApiOperation(value = "岗位编辑--reseat", response = GeneralResult.class)
+    public Response<EditPositionEnter> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
+        return new Response<>(sysPositionService.positionEdit(enter));
+    }
+    @PostMapping(value = "/positionDetails")
     @ApiOperation(value = "岗位详情", response = DeptDetailsResult.class)
-    public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(deptService.deptDetails(enter));
+    public Response<PositionDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(sysPositionService.positionDetails(enter));
     }
 
     @PostMapping(value = "/deletePositionSelect")

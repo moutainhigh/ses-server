@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
-import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.*;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -38,7 +38,12 @@ public interface SysPositionService {
      *
      * @param enter
      * @return
+
      */
+   EditPositionEnter positionEdit( UpdateDeptEnter enter);
+
+    PositionDetailsResult positionDetails(IdEnter enter);
+
     GeneralResult save(SavePositionEnter enter);
 
    BooleanResult deletePositionSelect(IdEnter enter);

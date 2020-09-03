@@ -13,10 +13,8 @@ import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
-import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
-import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -102,18 +100,33 @@ public class SysPositionServiceImpl implements SysPositionService {
      * @return
      */
     @Override
+    public EditPositionEnter positionEdit(UpdateDeptEnter enter) {
+        return null;
+    }
+
+    @Override
+    public PositionDetailsResult positionDetails(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * 岗位列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
     public GeneralResult save(SavePositionEnter enter) {
-      /*  OpeSysPosition position = new OpeSysPosition();
+     /*   OpeSysPosition position = new OpeSysPosition();
         BeanUtils.copyProperties(enter,position);
-        position.getId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
+        position.getId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
         position.setDr(Constant.DR_FALSE);
         position.setCreatedBy(enter.getUserId());
         position.setCreatedTime(new Date());
         position.setUpdatedBy(enter.getUserId());
         position.setUpdatedTime(new Date());
-        opeSysPositionService.save(position);
-        return new GeneralResult(enter.getRequestId());*/
-      return null;
+        opeSysPositionService.save(position);*/
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
