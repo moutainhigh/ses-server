@@ -14,7 +14,6 @@ import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysPosition")
 @Data
-@Builder
 @TableName(value = "ope_sys_position")
 public class OpeSysPosition implements Serializable {
     /**
@@ -99,7 +98,7 @@ public class OpeSysPosition implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private long updatedBy;
+    private Long updatedBy;
 
     /**
      * 更新时间
@@ -181,7 +180,4 @@ public class OpeSysPosition implements Serializable {
 
     public static final String COL_DEF5 = "def5";
 
-    public static OpeSysPositionBuilder builder() {
-        return new OpeSysPositionBuilder();
-    }
 }

@@ -58,8 +58,8 @@ public class SysPositionController{
         return new Response<>(sysPositionService.save(enter));
     }
     @PostMapping(value = "/editPosition")
-    @ApiOperation(value = "岗位编辑--reseat", response = GeneralResult.class)
-    public Response<EditPositionEnter> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
+    @ApiOperation(value = "岗位编辑", response = GeneralResult.class)
+    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
         return new Response<>(sysPositionService.positionEdit(enter));
     }
     @PostMapping(value = "/positionDetails")
@@ -75,7 +75,7 @@ public class SysPositionController{
     }
 
     @PostMapping(value = "/deletePosition")
-    @ApiOperation(value = "岗位删除--reseat", response = GeneralResult.class)
+    @ApiOperation(value = "岗位删除", response = GeneralResult.class)
     public Response<GeneralResult> deletePosition(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysPositionService.deletePosition(enter));
     }

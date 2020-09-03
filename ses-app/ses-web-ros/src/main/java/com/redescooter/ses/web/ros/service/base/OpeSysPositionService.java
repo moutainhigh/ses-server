@@ -3,7 +3,8 @@ package com.redescooter.ses.web.ros.service.base;
 import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeSysPositionService extends IService<OpeSysPosition>{
+
+public interface OpeSysPositionService extends IService<OpeSysPosition> {
 
 
     int updateBatch(List<OpeSysPosition> list);
@@ -17,3 +18,4 @@ public interface OpeSysPositionService extends IService<OpeSysPosition>{
     int insertOrUpdateSelective(OpeSysPosition record);
 
 }
+

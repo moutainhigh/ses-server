@@ -9,9 +9,12 @@ import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
@@ -39,7 +42,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Autowired
     private OpeSysPositionService opeSysPositionService;
     @Autowired
-    private OpeSysDeptService opeSysDeptService;
+    private StaffService staffService;
     @Autowired
     private OpeSysStaffService opeSysStaffService;
     @Autowired
@@ -94,14 +97,24 @@ public class SysPositionServiceImpl implements SysPositionService {
     }
 
     /**
-     * 岗位列表
+     * 岗位编辑
      *
      * @param enter
      * @return
      */
     @Override
-    public EditPositionEnter positionEdit(UpdateDeptEnter enter) {
-        return null;
+    public GeneralResult positionEdit(UpdateDeptEnter enter) {
+        OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
+        if (byId==null){
+            throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
+        }
+        OpeSysPosition position = new OpeSysPosition();
+        BeanUtils.copyProperties(enter,position);
+        position.setDr(Constant.DR_FALSE);
+        position.setUpdatedBy(enter.getUserId());
+        position.setUpdatedTime(new Date());
+        opeSysPositionService.updateById(position);
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
@@ -117,25 +130,34 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public GeneralResult save(SavePositionEnter enter) {
-     /*   OpeSysPosition position = new OpeSysPosition();
+      OpeSysPosition position = new OpeSysPosition();
         BeanUtils.copyProperties(enter,position);
-        position.getId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
         position.setDr(Constant.DR_FALSE);
         position.setCreatedBy(enter.getUserId());
         position.setCreatedTime(new Date());
         position.setUpdatedBy(enter.getUserId());
         position.setUpdatedTime(new Date());
-        opeSysPositionService.save(position);*/
+        opeSysPositionService.save(position);
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public BooleanResult deletePositionSelect(IdEnter enter) {
-        return null;
+        Integer count = staffService.deptStaffCount(enter.getId(), 2);
+        BooleanResult booleanResult = new BooleanResult();
+        if (count>0){
+            booleanResult.setSuccess(true);
+        }else {
+            booleanResult.setSuccess(false);
+        }
+        return booleanResult;
     }
 
     @Override
     public GeneralResult deletePosition(IdEnter enter) {
-        return null;
+
+
+        return new GeneralResult(enter.getRequestId());
     }
 }
