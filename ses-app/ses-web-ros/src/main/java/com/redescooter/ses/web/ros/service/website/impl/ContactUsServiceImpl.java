@@ -47,6 +47,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -115,44 +117,33 @@ public class ContactUsServiceImpl implements ContactUsService {
         List<OpeContactUsTrace> opeContactUsTraceList = opeContactUsTraceService.list(
                 new QueryWrapper<OpeContactUsTrace>()
                         .eq(OpeContactUsTrace.COL_CONTACT_US_ID, enter.getId())
-                        .orderByDesc(OpeContactUsTrace.COL_CREATED_TIME));
+                        .orderByAsc(OpeContactUsTrace.COL_CREATED_TIME));
 
-        Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();
-
-        opeContactUsTraceList.forEach(item -> {
-            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.LEAVE_MESSAGE.getValue())) {
-                ContactUsHistoryResult contactUsHistoryResult = new ContactUsHistoryResult();
-                BeanUtils.copyProperties(item, contactUsHistoryResult);
-                resultMap.put(contactUsHistoryResult, new ArrayList<>());
-            }
-            if (StringUtils.equals(item.getMessageType(), ContantUsMessageType.REPLY.getValue())) {
-                resultMap.keySet().forEach(reply -> {
-                    if (item.getLeaveWordId().equals(reply.getId()) && StringUtils.isNotEmpty(reply.getRemark())) {
-                        List<ContactUsHistoryReplyResult> contactUsHistoryReplyResultList = resultMap.get(reply);
-
-                        ContactUsHistoryReplyResult contactUsHistoryReplyResult = new ContactUsHistoryReplyResult();
-                        contactUsHistoryReplyResult.setId(item.getId());
-                        contactUsHistoryReplyResult.setReply(item.getRemark());
-                        contactUsHistoryReplyResult.setReplyCreatedTime(item.getCreatedTime());
-                        contactUsHistoryReplyResultList.add(contactUsHistoryReplyResult);
-                        resultMap.put(reply, contactUsHistoryReplyResultList);
-                    }
-                });
-
-            }
-        });
-
+        //获取拼接的历史留言数据以及历史回复数据
+        Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = getTraceParameter(opeContactUsTraceList);
+        //将留言回复数据转换为list
         List<ContactUsHistoryResult> result = new ArrayList<>();
-
-        resultMap.keySet().forEach(item->{
+        resultMap.keySet().forEach(item -> {
             item.setReplyList(resultMap.get(item));
             result.add(item);
         });
-
+        //list时间降序
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (result.size() > 1) {
+            //list 集合倒叙排序
+            result.sort((a1, a2) -> {
+                try {
+                    return df.parse(sdf.format(a2.getCreatedTime())).compareTo(df.parse(sdf.format(a1.getCreatedTime())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 1;
+            });
+        }
 
         return result;
     }
-
     @Override
     public GeneralResult message(ContactUsMessageEnter enter) {
         OpeContactUsTrace one = opeContactUsTraceService.getOne(new QueryWrapper<OpeContactUsTrace>().eq(OpeContactUsTrace.COL_ID, enter.getId()));
