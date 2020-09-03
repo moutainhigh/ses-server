@@ -1,5 +1,9 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+
+import java.util.List;
+
 /**
  * @ClassNameSysPositionMapper
  * @Description
@@ -8,5 +12,7 @@ package com.redescooter.ses.web.ros.dao.sys;
  * @Version V1.0
  **/
 public interface PositionServiceMapper{
+
+List<PositionTypeResult> positionTypeList(long tenantId);
 
 }

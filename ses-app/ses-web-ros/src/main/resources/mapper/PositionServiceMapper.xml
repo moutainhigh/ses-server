@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
 
+    <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
+        select id as id
+        ,name as name
+        from ope_sys_position
+        where dr = 0
+        and tenant_id = #{tenantId}
+    </select>
 </mapper>

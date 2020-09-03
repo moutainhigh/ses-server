@@ -44,7 +44,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/principal")
-    @ApiOperation(value = "查询负责人", response = GeneralResult.class)
+    @ApiOperation(value = "查询负责人", response = StaffDataResult.class)
     public Response<List<StaffDataResult>> principal(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(taffService.principalData(enter.getTenantId()));
     }
@@ -55,12 +55,12 @@ public class SysDeptController {
         return new Response<>(deptService.addSave(enter));
     }
     @PostMapping(value = "/deptDetails")
-    @ApiOperation(value = "部门详情", response = GeneralResult.class)
+    @ApiOperation(value = "部门详情", response = DeptDetailsResult.class)
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deptDetails(enter));
     }
     @PostMapping(value = "/deleteDeptSelect")
-    @ApiOperation(value = "部门删除校验", response = GeneralResult.class)
+    @ApiOperation(value = "部门删除校验", response = BooleanResult.class)
     public Response<BooleanResult> deleteDeptSelect(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deleteDeptSelect(enter));
     }
@@ -71,13 +71,13 @@ public class SysDeptController {
         return new Response<>(deptService.deleteDept(enter));
     }
     @PostMapping(value = "/selectDeptType")
-    @ApiOperation(value = "查询部门类型", response = GeneralResult.class)
+    @ApiOperation(value = "查询部门类型", response = DeptTypeResult.class)
     public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(deptService.selectDeptType(enter));
     }
 
     @PostMapping(value = "/selectEditDept")
-    @ApiOperation(value = "查询编辑部门", response = GeneralResult.class)
+    @ApiOperation(value = "查询编辑部门", response = SelectDeptResult.class)
     public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.selectEditDept(enter));
     }
@@ -106,7 +106,7 @@ public class SysDeptController {
     }
 
     @PostMapping(value = "/deptTree")
-    @ApiOperation(value = "部门列表树", response = GeneralResult.class)
+    @ApiOperation(value = "部门列表树", response = DeptTreeListResult.class)
     @IgnoreLoginCheck
     public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
         return new Response<>(deptService.deptTrees(enter));
