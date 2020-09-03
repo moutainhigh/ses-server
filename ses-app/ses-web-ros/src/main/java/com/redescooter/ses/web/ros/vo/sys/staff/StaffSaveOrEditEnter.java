@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
      */
     @TableField(value = "role_id")
     @ApiModelProperty(value = "所属角色id")
-    private List<Long> roleIds;
+    private String roleIds;
 
     /**
      * 联系电话
@@ -64,7 +63,7 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
      */
     @TableField(value = "entry_date")
     @ApiModelProperty(value = "入职日期")
-    private Date entryDate;
+    private String entryDate;
 
     /**
      * 国籍
@@ -92,7 +91,7 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
      */
     @TableField(value = "birthday")
     @ApiModelProperty(value = "生日")
-    private Date birthday;
+    private String birthday;
 
     /**
      * 证件类型 1：身份证，2：驾驶证，3：护照

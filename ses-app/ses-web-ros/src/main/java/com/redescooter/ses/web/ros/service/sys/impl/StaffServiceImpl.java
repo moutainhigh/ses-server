@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +64,12 @@ public class StaffServiceImpl implements StaffService {
         staff.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
+        if(!Strings.isNullOrEmpty(enter.getBirthday())){
+            staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
+        }
+        if(!Strings.isNullOrEmpty(enter.getEntryDate())){
+            staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
@@ -82,15 +91,14 @@ public class StaffServiceImpl implements StaffService {
         staff.setUpdatedTime(new Date());
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
-        creatRoleStaff(staff.getId(),enter.getRoleIds());
+//        creatRoleStaff(staff.getId(),enter.getRoleIds());
         return new GeneralResult(enter.getRequestId());
     }
 
 
     @Override
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
-        opeSysStaffService.removeByIds(enter.getIds());
-
+        opeSysStaffService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -150,7 +158,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
-    private void creatRoleStaff(Long staffId, List<Long> roleIds){
+    private void creatRoleStaff(Long staffId, String roleIds){
          // 先看看当前这个员工有没有role关系，有的话先删除，再插入
         QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysUserRole.COL_USER_ID,staffId);
@@ -158,11 +166,11 @@ public class StaffServiceImpl implements StaffService {
         if(CollectionUtils.isNotEmpty(list)){
             opeSysUserRoleMapper.delete(qw);
         }
-        if(CollectionUtils.isNotEmpty(roleIds)){
+        if(!Strings.isNullOrEmpty(roleIds)){
             List<OpeSysUserRole> insertList = new ArrayList<>();
-            for (Long roleId : roleIds) {
+            for (String roleId : roleIds.split(",")) {
                 OpeSysUserRole userRole = new OpeSysUserRole();
-                userRole.setRoleId(roleId);
+                userRole.setRoleId(Long.valueOf(roleId));
                 userRole.setUserId(staffId);
                 insertList.add(userRole);
             }
