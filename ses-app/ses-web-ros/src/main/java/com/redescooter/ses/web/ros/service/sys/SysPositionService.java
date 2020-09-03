@@ -22,4 +22,5 @@ public interface SysPositionService {
     List<PositionTypeResult> selectPositionType(GeneralEnter enter);
 
 
+
 }
