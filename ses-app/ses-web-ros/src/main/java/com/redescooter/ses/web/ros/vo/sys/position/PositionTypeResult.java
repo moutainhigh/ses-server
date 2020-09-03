@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.vo.sys.position;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+
+import java.util.Date;
 
 /**
  * @ClassNamePositionTypeResult

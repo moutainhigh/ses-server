@@ -12,15 +12,13 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.DeptRelationServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
-import com.redescooter.ses.web.ros.dm.OpeSysPosition;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
@@ -59,6 +57,8 @@ public class SysDeptServiceImpl implements SysDeptService {
     private RoleService roleService;
     @Autowired
     private OpeSysPositionService opeSysPositionService;
+    @Autowired
+    private OpeSysUserProfileService opeSysUserProfileService;
     @Autowired
     private SysDeptRelationService sysDeptRelationService;
     @Autowired
@@ -454,9 +454,20 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
+        OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, byId.getPId()));
         BeanUtils.copyProperties(byId, result);
+        result.setPName(one.getName());
+        List<OpeSysUserProfile> userProfile = opeSysUserProfileService.list(new QueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile.COL_SYS_USER_ID, byId.getUpdatedBy(), byId.getCreatedBy()));
+         userProfile.forEach(item ->{
+           if (item.getId().equals(byId.getCreatedBy())){
+               result.setCreatedName(item.getFullName());
+           }
+           if (item.getId().equals(byId.getUpdatedBy())){
+               result.setUpdatedName(item.getFullName());
+           }
+       });
         result.setDeptCount(list.size());
-        result.setEmployeeCount(taffService.deptStaffCount(byId.getId()));
+        result.setEmployeeCount(taffService.deptStaffCount(byId.getId(),1));
         return result;
     }
 

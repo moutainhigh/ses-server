@@ -6,7 +6,11 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -35,7 +39,11 @@ public class SysPositionController{
     public Response<List<PositionTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysPositionService.selectPositionType(enter));
     }
-
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "岗位列表", response = PositionResult.class)
+    public Response<List<PositionResult>> list(@ModelAttribute @ApiParam("请求参数") PositionEnter enter) {
+        return new Response<>(sysPositionService.list(enter));
+    }
 
 
 

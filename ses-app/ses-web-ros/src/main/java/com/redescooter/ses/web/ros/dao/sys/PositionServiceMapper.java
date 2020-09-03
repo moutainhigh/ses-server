@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
 
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.List;
  **/
 public interface PositionServiceMapper{
 
-List<PositionTypeResult> positionTypeList(long tenantId);
+    List<PositionTypeResult> positionTypeList(long tenantId);
+
+   int listcount(PositionEnter tenantId);
+
+   List<PositionResult> list(PositionEnter tenantId);
 
 }

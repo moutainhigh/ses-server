@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  * @ClassNamePositionResult
  * @Description
@@ -19,10 +21,27 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class PositionResult extends GeneralResult {
-    @ApiModelProperty(value = "部门名称", required = true)
-    private String name;
-
-    @ApiModelProperty(value = "部门id", required = true)
+    @ApiModelProperty(value = "id", required = true)
     private long id;
 
+    @ApiModelProperty(value = "岗位名称")
+    private String positionName;
+
+    @ApiModelProperty(value = "岗位编码")
+    private String positionCode;
+
+    @ApiModelProperty(value = "所属部门id")
+    private Long deptName;
+
+    @ApiModelProperty(value = "岗位排序")
+    private Integer sort;
+
+    @ApiModelProperty(value = "岗位人数")
+    private Integer positionPersonnel;
+
+    @ApiModelProperty(value = "岗位状态  1：正常，2：禁用")
+    private Integer positionStatus;
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
 }
