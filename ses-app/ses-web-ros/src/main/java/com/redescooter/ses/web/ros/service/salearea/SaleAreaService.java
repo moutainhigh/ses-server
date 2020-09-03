@@ -1,5 +1,9 @@
 package com.redescooter.ses.web.ros.service.salearea;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.salearea.SaleAreaOpEnter;
+import com.redescooter.ses.web.ros.vo.salearea.SaleAreaSaveEnter;
+
 /**
  * @ClassNameSaleAreaService
  * @Description
@@ -9,7 +13,10 @@ package com.redescooter.ses.web.ros.service.salearea;
  **/
 public interface SaleAreaService {
 
+     GeneralResult saleAreaSave(SaleAreaSaveEnter enter);
 
+
+     GeneralResult saleAreaDetele(SaleAreaOpEnter enter);
 
 
 }

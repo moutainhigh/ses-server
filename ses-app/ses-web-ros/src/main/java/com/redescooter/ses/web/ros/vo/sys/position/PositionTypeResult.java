@@ -23,7 +23,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class PositionTypeResult extends GeneralResult {
     @ApiModelProperty(value = "id", required = true)
-    private long id;
+    private long positionId;
 
     @ApiModelProperty(value = "岗位名称", required = true)
     private String positionName;
