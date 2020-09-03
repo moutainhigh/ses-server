@@ -131,8 +131,8 @@
        and dept.id =#{id}
     </select>
     <select id="deptType" resultType="com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult">
-         select id as id
-        ,name as name
+         select id as deptId,
+         name as name
         from ope_sys_dept
         where dr = 0
         and tenant_id = #{tenantId}

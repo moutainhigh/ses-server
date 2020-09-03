@@ -120,4 +120,8 @@ public interface SequenceName {
     String OPE_CONTACT_US = "OPE_CONTACT_US";
 
     String OPE_CONTACT_US_TRACE = "OPE_CONTACT_US_TRACE";
+
+    String OPE_SALE_AREA = "OPE_SALE_AREA";
+
+    String OPE_SYS_POSITION = "OPE_SYS_POSITION";
 }

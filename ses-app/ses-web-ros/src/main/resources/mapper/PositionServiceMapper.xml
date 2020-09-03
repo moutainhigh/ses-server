@@ -3,8 +3,8 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
 
     <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
-        select id as id
-        ,position_name as positionName
+        select id as positionId,
+        position_name as positionName
         from ope_sys_position
         where dr = 0
         and tenant_id = #{tenantId}

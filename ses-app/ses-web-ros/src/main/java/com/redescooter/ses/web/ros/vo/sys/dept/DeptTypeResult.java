@@ -25,5 +25,5 @@ public class DeptTypeResult extends GeneralResult {
     private String name;
 
     @ApiModelProperty(value = "部门id", required = true)
-    private long id;
+    private long deptId;
 }
