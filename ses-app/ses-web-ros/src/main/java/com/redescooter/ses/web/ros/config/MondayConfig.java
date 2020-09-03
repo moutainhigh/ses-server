@@ -55,5 +55,5 @@ public class MondayConfig {
     private String subEmailGroupName;
 
     //是否加载模版
-    private Boolean loadTemplate;
+    private Boolean loadTemplate=Boolean.FALSE;
 }
