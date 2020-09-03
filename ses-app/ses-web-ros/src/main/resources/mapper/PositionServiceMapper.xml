@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
-
+    <sql id="positionList">
+        WHERE
+        pos.dr=0
+        <if test="deptId!=null and deptId != ''">
+            and  pos.dept_id=#{deptId}
+        </if>
+        <if test="positionStatus!=null and positionStatus != ''">
+            and  pos.position_status=#{positionStatus}
+        </if>
+        <if test="keyWord !=null and  keyWord !=''">
+            and(
+            pos.position_name like concat ('%',#{keyWord},'%')
+            )
+        </if>
+    </sql>
     <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
         select id as positionId,
         position_name as positionName
@@ -10,10 +24,27 @@
         and tenant_id = #{tenantId}
     </select>
     <select id="listcount" resultType="int">
-
+        SELECT
+        count(*)
+        FROM
+        ope_sys_position pos
+        <include refid="positionList"/>
     </select>
-    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionResult">
 
+    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionResult">
+        SELECT
+        pos.id AS id,
+        pos.position_name AS positionName,
+        pos.position_code AS positionCode,
+        dept.name AS deptName,
+        pos.sort AS sort,
+        pos.position_status AS positionStatus,
+        pos.created_time AS createdTime
+        FROM
+        ope_sys_position pos LEFT JOIN ope_sys_dept dept ON pos.dept_id=dept.id
+        <include refid="positionList"/>
+        order by  pos.created_time desc
+        limit #{startRow},#{pageSize}
     </select>
 
 </mapper>

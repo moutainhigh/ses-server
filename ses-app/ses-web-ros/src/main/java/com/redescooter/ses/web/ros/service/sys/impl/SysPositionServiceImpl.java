@@ -1,20 +1,30 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysPosition;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
-import javafx.geometry.Pos;
+import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.text.Position;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameSysPositionServiceImpl
@@ -30,6 +40,13 @@ public class SysPositionServiceImpl implements SysPositionService {
     private PositionServiceMapper positionServiceMapper;
     @Autowired
     private OpeSysPositionService opeSysPositionService;
+    @Autowired
+    private OpeSysDeptService opeSysDeptService;
+    @Autowired
+    private OpeSysStaffService opeSysStaffService;
+    @Autowired
+    private IdAppService idAppService;
+
     /**
      * 岗位类型查询
      *
@@ -44,12 +61,68 @@ public class SysPositionServiceImpl implements SysPositionService {
     /**
      * 岗位列表
      *
+     * @param page
+     * @return
+     */
+    @Override
+    public PageResult<PositionResult> list(PositionEnter page) {
+        if (page.getKeyWord()!=null && page.getKeyWord().length()>50){
+            return PageResult.createZeroRowResult(page);
+        }
+        int totalRows = positionServiceMapper.listcount(page);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(page);
+        }
+        List<PositionResult> list = positionServiceMapper.list(page);
+
+        //获取岗位下的人员
+        List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.in(OpeSysStaff.COL_POSITION_ID,positionIds);
+        List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
+        if(CollectionUtils.isNotEmpty(staffs)){
+            Map<Long,List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
+            for (Long positionId : map.keySet()) {
+                for (PositionResult result : list) {
+                    if(Objects.deepEquals(result.getId(),positionId)){
+                        result.setPositionPersonnel(map.get(positionId).size());
+                    }
+                }
+
+
+            }
+        }
+        return PageResult.create(page, totalRows, list);
+    }
+
+    /**
+     * 岗位列表
+     *
      * @param enter
      * @return
      */
     @Override
-    public List<PositionResult> list(PositionEnter enter) {
+    public GeneralResult save(SavePositionEnter enter) {
+      /*  OpeSysPosition position = new OpeSysPosition();
+        BeanUtils.copyProperties(enter,position);
+        position.getId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
+        position.setDr(Constant.DR_FALSE);
+        position.setCreatedBy(enter.getUserId());
+        position.setCreatedTime(new Date());
+        position.setUpdatedBy(enter.getUserId());
+        position.setUpdatedTime(new Date());
+        opeSysPositionService.save(position);
+        return new GeneralResult(enter.getRequestId());*/
+      return null;
+    }
 
+    @Override
+    public BooleanResult deletePositionSelect(IdEnter enter) {
+        return null;
+    }
+
+    @Override
+    public GeneralResult deletePosition(IdEnter enter) {
         return null;
     }
 }

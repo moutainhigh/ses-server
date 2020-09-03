@@ -99,7 +99,7 @@ public class OpeSysPosition implements Serializable {
      */
     @TableField(value = "updated_by")
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private long updatedBy;
 
     /**
      * 更新时间

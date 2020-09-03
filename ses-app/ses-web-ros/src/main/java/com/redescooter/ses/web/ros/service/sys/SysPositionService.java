@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.service.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
 
 import java.util.List;
 
@@ -30,7 +31,17 @@ public interface SysPositionService {
      * @param enter
      * @return
      */
-    List<PositionResult> list(PositionEnter enter);
+    PageResult<PositionResult> list(PositionEnter enter);
 
+    /**
+     * 岗位列表
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult save(SavePositionEnter enter);
 
+   BooleanResult deletePositionSelect(IdEnter enter);
+
+    GeneralResult deletePosition(IdEnter enter);
 }

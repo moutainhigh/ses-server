@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sys.position;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -18,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = true)
-public class PositionEnter extends GeneralEnter {
+public class PositionEnter extends PageEnter {
     @ApiModelProperty(value = "所属部门id")
     private Long deptId;
 

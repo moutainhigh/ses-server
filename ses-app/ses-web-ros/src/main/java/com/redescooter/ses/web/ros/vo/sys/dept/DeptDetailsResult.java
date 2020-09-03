@@ -36,11 +36,17 @@ public class DeptDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "上级部门")
     private String pName;
 
+    @ApiModelProperty(value = "上级id")
+    private long pId;
+
     @ApiModelProperty(value = "级别0公司，1部门")
     private Integer level;
 
     @ApiModelProperty(value = "负责人")
     private Long principal;
+
+    @ApiModelProperty(value = "负责人名称")
+    private String principalName;
 
     @ApiModelProperty(value = "部门人数")
     private int employeeCount;

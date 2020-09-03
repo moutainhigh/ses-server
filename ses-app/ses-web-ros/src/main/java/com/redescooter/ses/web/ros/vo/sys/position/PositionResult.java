@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sys.position;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -30,8 +32,9 @@ public class PositionResult extends GeneralResult {
     @ApiModelProperty(value = "岗位编码")
     private String positionCode;
 
-    @ApiModelProperty(value = "所属部门id")
-    private Long deptName;
+
+    @ApiModelProperty(value = "所属部门名称")
+    private String deptName;
 
     @ApiModelProperty(value = "岗位排序")
     private Integer sort;
