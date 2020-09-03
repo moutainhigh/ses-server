@@ -6,6 +6,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
+
 /**
  * @author Mr.lijiating
  * @version V1.0
@@ -22,7 +24,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean logFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new LogAndExceptionFilter());
+        registration.setFilter((Filter) new LogAndExceptionFilter());
         registration.addUrlPatterns("/*");
         registration.setName("logAndExceptionFilter");
         registration.setOrder(10);
@@ -32,7 +34,7 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean requestFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new RequestFilter());
+        registration.setFilter((Filter) new RequestFilter());
         registration.addUrlPatterns("/*");
         registration.setName("requestFilter");
         registration.setOrder(20);

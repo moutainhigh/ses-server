@@ -41,4 +41,7 @@ public class EditUserProfileEnter extends GeneralResult {
 
     @ApiModelProperty(value = "姓名")
     private String lastName;
+
+    @ApiModelProperty("用户id")
+    private Long userId;
 }

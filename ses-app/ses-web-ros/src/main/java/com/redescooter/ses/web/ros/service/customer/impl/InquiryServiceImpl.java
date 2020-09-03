@@ -417,9 +417,11 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
         List<InquiryResult> list = inquiryServiceMapper.exportInquiry(enter);
+        log.info("总共的数据量："+list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryResult inquiry : list) {
+                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(),8));
                 dataMap.add(toMap(inquiry));
             }
             String sheetName = "询价单";
@@ -447,7 +449,7 @@ public class InquiryServiceImpl implements InquiryService {
                     file.delete();
                 }
             } catch (Exception e) {
-
+                log.info("这里出问题了！！！");
             }
         }
         return new GeneralResult(excelPath);
@@ -460,10 +462,10 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
         map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
         map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDef2()) ? "--" : opeCustomerInquiry.getDef2());
         map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
-        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getDef3()) ? "--" : opeCustomerInquiry.getDef3());
-        map.put("CREATE TIME", opeCustomerInquiry.getAcceptanceTime() == null ? "--" : DateUtil.getTimeStrDefault(opeCustomerInquiry.getAcceptanceTime()));
+        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
+        map.put("CREATE TIME", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
         return map;
     }
 

@@ -2,16 +2,18 @@ package com.redescooter.ses.web.ros.service.excel.impl;
 
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpePartsDraft;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsDraftService;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
-import com.redescooter.ses.web.ros.verifyhandler.SellsyExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ExcelServiceImpl
@@ -49,6 +52,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
+
+    @Autowired
+    private OpePartsDraftService opePartsDraftService;
 
     @Override
     public ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter) {
@@ -90,6 +96,34 @@ public class ExcelServiceImpl implements ExcelService {
             result.setFailNum(successList.size());
             result.setErrorMsgList(mapList);
             return result;
+        }else {
+            // 验证导入的PartsN在数据库中是否存在
+            List<String> partNos = successList.stream().map(ExpressPartsExcleData::getPartsN).collect(Collectors.toList());
+            QueryWrapper<OpePartsDraft> qw = new QueryWrapper<>();
+            qw.in(OpePartsDraft.COL_PARTS_NUMBER,partNos);
+            List<OpePartsDraft> partsDraftList  = opePartsDraftService.list(qw);
+            if(CollectionUtils.isNotEmpty(partsDraftList)){
+                // 说明已存在这些partN了
+                Map<String, String> map = null;
+                List<Map<String, String>> errorMsgList = new ArrayList<>();
+                result.setSuccess(Boolean.FALSE);
+                result.setSuccessNum(successList.size());
+                result.setFailNum(partsDraftList.size());
+                List<String> list = partsDraftList.stream().map(OpePartsDraft::getPartsNumber).collect(Collectors.toList());
+                List<ExpressPartsExcleData> fail = new ArrayList<>();
+                for (ExpressPartsExcleData data : successList) {
+                    if(list.contains(data.getPartsN())){
+                        fail.add(data);
+                    }
+                }
+                for (ExpressPartsExcleData excle : fail) {
+                    map = new HashMap<>();
+                    map.put(String.valueOf(excle.getRowNum()), "PartsN Already exists");
+                    errorMsgList.add(map);
+                }
+                result.setErrorMsgList(errorMsgList);
+                return result;
+            }
         }
 
         //1.判断productNList里面是否有重复的产品编号

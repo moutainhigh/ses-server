@@ -891,6 +891,31 @@ public class DateUtil {
         return month;
     }
 
+
+    /**
+     * @Author Aleks
+     * @Description  时间加上小时
+     * @Date  2020/8/21 10:05
+     * @Param [date, hour]
+     * @return 时间
+     **/
+    public static  Date dateAddHour(Date date, int hour){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (date == null) {
+            return new Date();
+        }
+        System.out.println("front:" + format.format(date)); //显示输入的日期
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);// 24小时制
+        date = cal.getTime();
+        System.out.println("after:" + format.format(date));  //显示更新后的日期
+        cal = null;
+        return date;
+
+    }
+
+
     /**
      * 格式化处理 dd/mm/yy 格式的时间
      * @param date

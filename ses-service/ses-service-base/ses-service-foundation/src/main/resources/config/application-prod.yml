@@ -37,7 +37,10 @@ spring:
         - 172.31.5.73:7003
         - 172.31.5.73:7004
         - 172.31.5.73:7005
-
+saas-login-extreme-experience:
+    web: true
+    app-android: false
+    app-ios: false
 
 
 # 多注册中心配置

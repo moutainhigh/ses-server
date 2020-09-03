@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
+import com.redescooter.ses.web.delivery.vo.task.TaskDriverLsitEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -223,7 +224,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public List<DriverListResult> driverList(GeneralEnter enter) {
+    public List<DriverListResult> driverList(TaskDriverLsitEnter enter) {
         return taskServiceMapper.driverList(enter);
     }
 

@@ -26,6 +26,9 @@ import java.util.List;
 @Builder
 public class AvailableListResult extends GeneralResult {
 
+    @ApiModelProperty("stockId")
+    private Long stockId;
+
     @ApiModelProperty(value = "id")
     private Long id;
 

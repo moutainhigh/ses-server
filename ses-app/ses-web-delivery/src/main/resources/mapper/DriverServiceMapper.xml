@@ -156,7 +156,7 @@
         and trace.status in (
         '3', '5', '6', '7'
         )
-        order by delivery.created_time ASC
+        order by completeTime desc
         limit #{startRow},#{pageSize}
     </select>
 

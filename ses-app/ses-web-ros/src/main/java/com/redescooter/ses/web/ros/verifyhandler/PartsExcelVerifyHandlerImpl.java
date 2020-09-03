@@ -30,28 +30,28 @@ public class PartsExcelVerifyHandlerImpl implements IExcelVerifyHandler<ExpressP
     public ExcelVerifyHandlerResult verifyHandler(ExpressPartsExcleData obj) {
         StringBuilder builder = new StringBuilder();
         if (StringUtils.isEmpty(obj.getPartsN())) {
-            builder.append(ExpressPartsExcleData.PARTS_N + ",This is  not must null;");
+            builder.append("Parts N ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getEsc())) {
-            builder.append(ExpressPartsExcleData.ESC + ",This is  not must null;");
+            builder.append("ESC,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getType())) {
-            builder.append(ExpressPartsExcleData.TYPE + ",This is  not must null;");
+            builder.append("Type,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(BomCommonTypeEnums.checkCode(obj.getType()))) {
-            builder.append(ExpressPartsExcleData.TYPE + ",Invalid input, please check;");
+            builder.append("Type,Invalid input, please check;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
 
         if (StringUtils.isEmpty(BomSnClassEnums.checkCode(obj.getSnClass()))) {
-            builder.append(ExpressPartsExcleData.SN_CLASS + ",Invalid input, please check;");
+            builder.append("SN CLASS,Invalid input, please check;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(ESCUtils.checkESC(obj.getEsc()))) {
-            builder.append(ExpressPartsExcleData.ESC + ",Invalid input, please check;");
+            builder.append("ESC,Invalid input, please check;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         return new ExcelVerifyHandlerResult(true, builder.toString());

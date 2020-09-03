@@ -22,8 +22,8 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class VersionTypeEnter extends GeneralEnter {
  
-  @ApiModelProperty(value = "1.rps  2.singlechip")
-  @NotNull(code = ValidationExceptionCode.CLIENT_TYPE_IS_EMPTY,message = "客户端类型为空")
+  @ApiModelProperty(value = "版本类型")
+  @NotNull(code = ValidationExceptionCode.CLIENT_TYPE_IS_EMPTY,message = "版本类型为空")
   private Integer type;
 
   @ApiModelProperty(value = "应用code")

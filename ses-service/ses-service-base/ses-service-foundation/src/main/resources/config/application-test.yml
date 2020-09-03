@@ -30,3 +30,7 @@ spring:                                                                         
         - 172.31.8.126:7003
         - 172.31.8.126:7004
         - 172.31.8.126:7005
+saas-login-extreme-experience:
+    web: true
+    app-android: false
+    app-ios: false

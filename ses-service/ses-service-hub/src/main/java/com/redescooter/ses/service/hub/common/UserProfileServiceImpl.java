@@ -3,22 +3,25 @@ package com.redescooter.ses.service.hub.common;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
-import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
-import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
+import com.redescooter.ses.api.hub.exception.SeSHubException;
+import com.redescooter.ses.api.hub.vo.*;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
+import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -120,6 +123,8 @@ public class UserProfileServiceImpl implements UserProfileService {
         QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_TENANT_ID, enter.getInputTenantId());
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_EMAIL_1, enter.getEmail());
+        corUserProfileQueryWrapper.eq(CorUserProfile.COL_USER_ID, enter.getUserId());
+        corUserProfileQueryWrapper.last("limit 1");
         CorUserProfile corUserProfile = corUserProfileMapper.selectOne(corUserProfileQueryWrapper);
         if (corUserProfile != null) {
             corUserProfile.setFirstName(enter.getFirstName());
@@ -142,5 +147,21 @@ public class UserProfileServiceImpl implements UserProfileService {
         BeanUtils.copyProperties(enter, editUserProfile);
         userProfileProService.editUserProfile(editUserProfile);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 获取用户信息cor
+     * @param enter
+     * @return
+     */
+
+    @Override
+    public List<QueryUserProfileByEmailResult> getUserPicture(QueryUserProfileByEmailEnter enter) {
+        List<QueryUserProfileByEmailResult> queryUserProfileByEmailResults = corUserProfileMapper.QueryUserProfileByEmail(enter);
+
+        if (CollectionUtils.isEmpty(queryUserProfileByEmailResults)){
+            throw new SeSHubException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        return queryUserProfileByEmailResults;
     }
 }

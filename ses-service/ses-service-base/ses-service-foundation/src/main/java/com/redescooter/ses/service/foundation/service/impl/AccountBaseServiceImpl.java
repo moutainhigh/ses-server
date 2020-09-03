@@ -212,12 +212,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Override
     public Boolean chectMail(String mail) {
-
-        QueryWrapper<PlaTenant> wrapper = new QueryWrapper<>();
-        wrapper.eq(PlaTenant.COL_EMAIL, mail);
-        wrapper.eq(PlaTenant.COL_DR, 0);
-
-        return tenantMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
+        QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
+        wrapper.in(PlaUser.COL_USER_TYPE,AccountTypeEnums.WEB_RESTAURANT,AccountTypeEnums.WEB_EXPRESS,AccountTypeEnums.APP_PERSONAL);
+        wrapper.eq(PlaUser.COL_LOGIN_NAME,mail);
+        return plaUserMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**

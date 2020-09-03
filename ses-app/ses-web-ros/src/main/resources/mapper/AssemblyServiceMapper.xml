@@ -112,7 +112,7 @@
         and product.status=#{status}
       </if>
       <if test="qcStartTime != null and qcEndTime != null">
-        and (product.created_time between #{qcStartTime}  and #{qcEndTime} )
+        and (assBqc.created_time between #{qcStartTime}  and #{qcEndTime} )
       </if>
     </sql>
 

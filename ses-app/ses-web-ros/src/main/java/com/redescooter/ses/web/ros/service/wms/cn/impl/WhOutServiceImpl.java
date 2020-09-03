@@ -416,11 +416,17 @@ public class WhOutServiceImpl implements WhOutService {
         //保存库存条目
         buildProductItem(enter, opeStockBillList, opeFrStockList, opeFrStockProductList);
 
-        opeFrStockBillService.saveOrUpdateBatch(opeStockBillList);
-        //库存累加
-        opeFrStockService.saveOrUpdateBatch(opeFrStockList);
-        //子条目累加
-        opeFrStockProductService.saveOrUpdateBatch(opeFrStockProductList);
+        if (CollectionUtils.isNotEmpty(opeStockBillList)) {
+            opeFrStockBillService.saveOrUpdateBatch(opeStockBillList);
+        }
+        if (CollectionUtils.isNotEmpty(opeFrStockList)) {
+            // 库存累加
+            opeFrStockService.saveOrUpdateBatch(opeFrStockList);
+        }
+        if (CollectionUtils.isNotEmpty(opeFrStockProductList)) {
+            // 子条目累加
+            opeFrStockProductService.saveOrUpdateBatch(opeFrStockProductList);
+        }
 
         //修改主订单
         opeOutwhOrder.setStatus(WhOutStatusEnums.IN_WH.getValue());
@@ -944,10 +950,6 @@ public class WhOutServiceImpl implements WhOutService {
             List<OpeStockPurchas> stockPurchasList = opeStockPurchasService.list(new LambdaQueryWrapper<OpeStockPurchas>().in(OpeStockPurchas::getBindOrderId,
                     partOutWhOrderList.stream().map(OpeOutwhOrderB::getId).collect(Collectors.toList())));
 
-            if (CollectionUtils.isEmpty(stockPurchasList)) {
-                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
-            }
-
             partOutWhOrderList.forEach(item -> {
                 OpeStockBill opeStockBill = OpeStockBill.builder()
                         .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
@@ -967,39 +969,45 @@ public class WhOutServiceImpl implements WhOutService {
                         .build();
 
 
-                int count = item.getTotalCount();
-                for (OpeStockPurchas part : stockPurchasList) {
-                    if (item.getId().equals(part.getBindOrderId())) {
+                // todo 出库单无Id库存条目 需要锁定字段 测试Bug已提出 发票对接结束后 修改
+                if (CollectionUtils.isNotEmpty(stockPurchasList)) {
+                    int count = item.getTotalCount();
+                    for (OpeStockPurchas part : stockPurchasList) {
+                        if (item.getId().equals(part.getBindOrderId())) {
 
-                        if (count >= part.getAvailableQty()) {
-                            count -= part.getAvailableQty();
+                            if (count >= part.getAvailableQty()) {
+                                count -= part.getAvailableQty();
 
-                            part.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
-                            part.setOutPrincipalId(enter.getUserId());
-                            part.setOutStockTime(new Date());
-                            part.setOutStockBillId(opeStockBill.getId());
-                            part.setUpdatedBy(enter.getUserId());
-                            part.setUpdatedTime(new Date());
-                            part.setAvailableQty(0);
+                                part.setStatus(StockProductPartStatusEnums.OUT_WH.getValue());
+                                part.setOutPrincipalId(enter.getUserId());
+                                part.setOutStockTime(new Date());
+                                part.setOutStockBillId(opeStockBill.getId());
+                                part.setUpdatedBy(enter.getUserId());
+                                part.setUpdatedTime(new Date());
+                                part.setAvailableQty(0);
+                                if (count == 0) {
+                                    break;
+                                }
+                            }
+                            if (count < part.getAvailableQty()) {
+                                part.setAvailableQty(part.getAvailableQty() - count);
+                                part.setUpdatedBy(enter.getUserId());
+                                part.setUpdatedTime(new Date());
+                            }
+
                             if (count == 0) {
                                 break;
                             }
                         }
-                        if (count < part.getAvailableQty()) {
-                            part.setAvailableQty(part.getAvailableQty()-count);
-                            part.setUpdatedBy(enter.getUserId());
-                            part.setUpdatedTime(new Date());
-                        }
-
-                        if (count == 0) {
-                            break;
-                        }
+                        break;
                     }
-                    break;
                 }
+
                 opeStockBillList.add(opeStockBill);
             });
-            opeStockPurchasService.updateBatch(stockPurchasList);
+            if (CollectionUtils.isNotEmpty(stockPurchasList)) {
+                opeStockPurchasService.updateBatch(stockPurchasList);
+            }
         }
         //出库单集合
         opeStockBillService.batchInsert(opeStockBillList);
@@ -1096,6 +1104,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 opeFrStockBill.getStockId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
+                    break;
                 }
                 if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
                     opeStockScooterList.forEach(item -> {
@@ -1109,6 +1118,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 opeFrStockBill.getId(),
                                 opeOutwhOrderB.getTotalCount()));
                     });
+                    break;
                 }
             }
         }
@@ -1136,6 +1146,7 @@ public class WhOutServiceImpl implements WhOutService {
                                         opeFrStockBill.getStockId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
+                            break;
                         }
                         if (CollectionUtils.isNotEmpty(scooterOutWhOrderList)) {
                             opeStockScooterList.forEach(stockScooter -> {
@@ -1149,10 +1160,10 @@ public class WhOutServiceImpl implements WhOutService {
                                         opeFrStockBill.getId(),
                                         opeOutwhOrderB.getTotalCount()));
                             });
+                            break;
                         }
                         opeStockBillList.add(opeFrStockBill);
                         opeFrStockList.add(stock);
-                        break;
                     }
                 }
             }

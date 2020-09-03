@@ -1,8 +1,12 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
@@ -11,7 +15,9 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
+import com.redescooter.ses.starter.common.config.OssConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.ConstantUsEmailConfig;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
@@ -23,19 +29,27 @@ import com.redescooter.ses.web.ros.service.base.OpeContactUsService;
 import com.redescooter.ses.web.ros.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
+import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -45,6 +59,7 @@ import java.util.*;
  * @Date2020/8/4 20:07
  * @Version V1.0
  **/
+@Slf4j
 @Service
 public class ContactUsServiceImpl implements ContactUsService {
 
@@ -72,6 +87,12 @@ public class ContactUsServiceImpl implements ContactUsService {
     @Autowired
     private ConstantUsEmailConfig constantUsEmailConfig;
 
+    @Value("${excel.folder}")
+    private String excelFolder;
+
+    @Autowired
+    private OssConfig ossConfig;
+
     @Override
     public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
         ;
@@ -90,7 +111,7 @@ public class ContactUsServiceImpl implements ContactUsService {
     public List<ContactUsDetailResult> detail(ContactUsEnter enter) {
         return contactUsMapper.detailList(enter);
     }
-    
+
     @Override
     public List<ContactUsHistoryResult> trace(ContactUsEnter enter) {
         List<OpeContactUsTrace> opeContactUsTraceList = opeContactUsTraceService.list(
@@ -120,10 +141,9 @@ public class ContactUsServiceImpl implements ContactUsService {
                 return 1;
             });
         }
-        
+
         return result;
     }
-
     @Override
     public GeneralResult message(ContactUsMessageEnter enter) {
         OpeContactUsTrace one = opeContactUsTraceService.getOne(new QueryWrapper<OpeContactUsTrace>().eq(OpeContactUsTrace.COL_ID, enter.getId()));
@@ -156,28 +176,6 @@ public class ContactUsServiceImpl implements ContactUsService {
         contactUsEntity = createContactUsEntity(enter, contactUsEntity);
         // 再处理联系我们的历史记录
         contactUsTraceService.createContactUsTrace(contactUsEntity);
-
-        //发送邮件
-        //constantUsSendEmail(enter);
-    }
-    
-    private void constantUsSendEmail(SaveInquiryEnter enter) {
-        constantUsEmailConfig.getSalePrincipal().forEach(item -> {
-            BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
-            baseMailTaskEnter.setEvent(MailTemplateEventEnums.CONSTANT_US_NOTICE.getEvent());
-            baseMailTaskEnter.setAppId(AppIDEnums.SES_ROS.getAppId());
-            baseMailTaskEnter.setSystemId(AppIDEnums.SES_ROS.getSystemId());
-            baseMailTaskEnter.setToMail(item);
-            baseMailTaskEnter.setUserRequestId(enter.getRequestId());
-            baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getAppId());
-            baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
-            baseMailTaskEnter.setName(enter.getEmail().split("@")[0]);
-            baseMailTaskEnter.setUserId(0L);
-            baseMailTaskEnter.setRequestId(enter.getRequestId());
-            baseMailTaskEnter.setEmail(item);
-            mailMultiTaskService.addMultiMailTask(baseMailTaskEnter);
-        });
-
     }
 
 
@@ -208,6 +206,76 @@ public class ContactUsServiceImpl implements ContactUsService {
         opeContactUsService.saveOrUpdate(opeContactUs);
         return opeContactUs;
     }
+
+
+    @Override
+    public GeneralResult export(ContactUsListEnter enter) {
+        String excelPath = "";
+        List<ContactUsListResult> list = contactUsMapper.export(enter);
+        List<Map<String, Object>> dataMap = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(list)){
+            for (ContactUsListResult contactUsListResult : list) {
+                contactUsListResult.setCreateTime(DateUtil.dateAddHour(contactUsListResult.getCreateTime(),8));
+                dataMap.add(toMap(contactUsListResult));
+            }
+            String sheetName = "Contact Us";
+            String[] headers = {"CUSTOMER NAME", "EMAIL", "PHONE", "COUNTRY", "AREA", "ADDRESS", "FREQUENCY", "CREATION TIME"};
+            String exportExcelName = String.valueOf(System.currentTimeMillis());
+            try {
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+                log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
+                File file = new File(path);
+                FileInputStream inputStream = new FileInputStream(file);
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
+                        ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
+
+                ClientConfiguration conf = new ClientConfiguration();
+                conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
+                OSSClient ossClient = null;
+                ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
+                        ossConfig.getSecretAccesskey(), conf);
+                String fileName = System.currentTimeMillis() + ".xlsx";
+                ossClient.putObject(ossConfig.getDefaultBucketName(), fileName,
+                        multipartFile.getInputStream());
+                String bucket = ossConfig.getDefaultBucketName();
+                excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
+                if (file.exists()) {
+                    file.delete();
+                }
+            }catch (Exception e){
+               log.info("出问题了！！！！！！！！");
+            }
+        }else {
+            log.info("没有找到数据！！！！！！！！！！");
+        }
+        return new GeneralResult(excelPath);
+    }
+
+
+    private Map<String, Object> toMap(ContactUsListResult contactUsListResult) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("CUSTOMER NAME", Strings.isNullOrEmpty(contactUsListResult.getFullName()) ? "--" : contactUsListResult.getFullName());
+        map.put("EMAIL", Strings.isNullOrEmpty(contactUsListResult.getEmail()) ? "--" : contactUsListResult.getEmail());
+        map.put("PHONE", Strings.isNullOrEmpty(contactUsListResult.getTelephone()) ? "--" : contactUsListResult.getTelephone());
+        map.put("COUNTRY", Strings.isNullOrEmpty(contactUsListResult.getCountryName()) ? "--" : contactUsListResult.getCountryName());
+        String area = "";
+        if (!Strings.isNullOrEmpty(contactUsListResult.getCityName()) && !Strings.isNullOrEmpty(contactUsListResult.getDistrictName())) {
+            area = contactUsListResult.getCityName() + " " + contactUsListResult.getDistrictName();
+        } else if (Strings.isNullOrEmpty(contactUsListResult.getCityName()) && Strings.isNullOrEmpty(contactUsListResult.getDistrictName())) {
+            area = "--";
+        } else if (!Strings.isNullOrEmpty(contactUsListResult.getCityName()) && Strings.isNullOrEmpty(contactUsListResult.getDistrictName())) {
+            area = contactUsListResult.getCityName() + " --";
+        } else if (Strings.isNullOrEmpty(contactUsListResult.getCityName()) && !Strings.isNullOrEmpty(contactUsListResult.getDistrictName())) {
+            area = "-- " + contactUsListResult.getDistrictName();
+        }
+        map.put("AREA", area);
+        map.put("ADDRESS", Strings.isNullOrEmpty(contactUsListResult.getAddress()) ? "--" : contactUsListResult.getAddress());
+        map.put("FREQUENCY", contactUsListResult.getFrequency());
+        map.put("CREATION TIME", contactUsListResult.getCreateTime() == null ? "--" : DateUtil.format(contactUsListResult.getCreateTime(),""));
+        return map;
+    }
+
+
 
     private Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> getTraceParameter(List<OpeContactUsTrace> opeContactUsTraceList) {
         Map<ContactUsHistoryResult, List<ContactUsHistoryReplyResult>> resultMap = new HashMap<>();

@@ -68,7 +68,8 @@
            inquiry.address                                    as address,
            inquiry.def1                                       as countryName,
            inquiry.def2                                       as cityName,
-           inquiry.def3                                       as districtName
+           inquiry.def3                                       as districtName,
+           inquiry.created_time                                as createdTime
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">

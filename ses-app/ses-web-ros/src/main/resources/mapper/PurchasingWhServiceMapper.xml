@@ -102,6 +102,7 @@
 
     <select id="availableList" resultType="com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult">
         select stock.materiel_product_id as id,
+        stock.id as stockId,
         parts_number as partN,
         part.parts_type as type,
         part.en_name as enName,

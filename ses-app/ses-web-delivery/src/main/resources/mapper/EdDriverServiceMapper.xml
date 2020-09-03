@@ -29,7 +29,7 @@
         and detail.dr = 0
         and ceo.tenant_id =#{tenantId}
         and ced.driver_id =#{id}
-        order by detail.ata desc
+        order by completeTime desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="queryTodayDriverUncompletedOrder" resultType="int">

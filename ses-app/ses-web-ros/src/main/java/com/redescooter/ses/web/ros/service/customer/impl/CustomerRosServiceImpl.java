@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.*;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -15,6 +16,7 @@ import com.redescooter.ses.api.foundation.vo.account.CheckOpenAccountEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountCountStatusEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountListEnter;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.foundation.vo.tenant.SynchTenantEnter;
 import com.redescooter.ses.api.foundation.vo.user.DeleteUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
@@ -35,6 +37,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.*;
 import com.redescooter.ses.web.ros.vo.customer.*;
@@ -85,6 +88,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private UserBaseService userBaseService;
     @Reference
     private UserProfileService userProfileService;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
 
     /**
@@ -189,6 +195,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         EditCustomerEnter enter = SesStringUtils.objStringTrim(editCustomerEnter);
         //客户字段长度校验
         checkEditCustomerFiledSingle(enter);
+        //已存在客户 不可重复添加
+        QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
+        queryWrapper.ne(OpeCustomer.COL_ID,enter.getId());
+        Integer count = opeCustomerMapper.selectCount(queryWrapper);
+
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -213,14 +229,20 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             editUserProfileEnter.setEmail(customer.getEmail());
             editUserProfileEnter.setFirstName(enter.getCustomerFirstName());
             editUserProfileEnter.setLastName(enter.getCustomerLastName());
-
+            List<Integer> userTypeList = new ArrayList<>();
             // 已创建的是web 账户
             if (customer.getTenantId() != 0) {
+                // corporate的用户文件表会存在邮箱重复的可能，所以这里需要取到platform的userId，带进去作为条件查询
+                userTypeList.add(AccountTypeEnums.WEB_RESTAURANT.getAccountType().intValue());
+                userTypeList.add(AccountTypeEnums.WEB_EXPRESS.getAccountType().intValue());
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
                 // saas 更新个人信息
                 userProfileService.editUserProfile2B(editUserProfileEnter);
             }
             if (customer.getTenantId() == 0 && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
                 // TOc 更新个人信息
+                userTypeList.add(AccountTypeEnums.APP_PERSONAL.getAccountType().intValue());
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
                 userProfileService.editUserProfile2C(editUserProfileEnter);
             }
         }
@@ -242,6 +264,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         update.setContactFullName(enter.getContactFirstName() + " " + enter.getContactLastName());
         opeCustomerMapper.updateById(update);
 
+        // 修改客户的时候，数据同步到platform数据库的租户表(这个方法异步执行，不影响现有逻辑)
+        SynchTenantEnter tenantEnter = new SynchTenantEnter();
+        tenantEnter.setEmail(enter.getEmail());
+        tenantEnter.setCompanyName(enter.getCompanyName());
+        tenantEnter.setAddress(enter.getAddress());
+        userBaseService.custDataSynchTenant(tenantEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -341,12 +369,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         result.setRequestId(enter.getRequestId());
-        if (opeCustomer.getCity() != null) {
-            result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
-            if (opeCustomer.getDistrust() != null) {
-                result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
-            }
-        }
+//        if (opeCustomer.getCity() != null) {
+//            result.setCityName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getCity()).build()).getName());
+//            if (opeCustomer.getDistrust() != null) {
+//                result.setDistrustName(cityBaseService.queryCityDeatliById(IdEnter.builder().id(result.getDistrust()).build()).getName());
+//            }
+//        }
 
         Integer accountType = AccountTypeUtils.getAccountType(opeCustomer.getCustomerType(), opeCustomer.getIndustryType());
         BooleanResult booleanResult = accountBaseService.checkOpenAccount(CheckOpenAccountEnter.builder().accountType(accountType).email(opeCustomer.getEmail()).build());
@@ -469,6 +497,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
+        if(customer == null){
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        // 校验该客户是否已激活
+        if(userBaseService.checkActivat(customer.getEmail())){
+            throw new SesWebRosException(ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getCode(), ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getMessage());
+        }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
@@ -478,11 +513,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer update = new OpeCustomer();
         update.setId(enter.getId());
         update.setStatus(CustomerStatusEnum.TRASH_CUSTOMER.getValue());
-        update.setMemo(enter.getReason());
+        update.setDescription(enter.getReason());
         opeCustomerMapper.updateById(update);
 
         return new GeneralResult(enter.getRequestId());
     }
+
 
     /**
      * 客户转正
@@ -595,14 +631,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         List<AccountListResult> resultList = new ArrayList<>();
         if (!CollectionUtils.isEmpty(queryAccountListResult)) {
             queryAccountListResult.forEach(account -> {
-                accountList.forEach(item -> {
+                for (AccountListResult item : accountList) {
                     if (StringUtils.equals(account.getEmail(), item.getEmail())) {
                         item.setStatus(account.getStatus());
                         item.setActivationTime(account.getActivationTime());
                         item.setExpirationTime(account.getExpirationTime());
                         resultList.add(item);
+                        break;
                     }
-                });
+                }
             });
         }
         return PageResult.create(enter, customerAccountCount, resultList);

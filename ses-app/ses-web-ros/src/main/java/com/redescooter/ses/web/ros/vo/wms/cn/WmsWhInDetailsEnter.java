@@ -27,6 +27,7 @@ public class WmsWhInDetailsEnter extends PageEnter {
   private  long id;
 
   @ApiModelProperty(value = "类型")
+  @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.TYPE_IS_EMPTY, message = "类型 为空")
   private String classType;
 
   @ApiModelProperty(value = "单据类型",required = true)

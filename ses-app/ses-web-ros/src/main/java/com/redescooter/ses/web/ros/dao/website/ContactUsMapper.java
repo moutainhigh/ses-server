@@ -13,10 +13,12 @@ import java.util.List;
  * @Version V1.0
  **/
 public interface ContactUsMapper {
- int  totalRows(@Param("enter")  ContactUsListEnter enter);
+ int totalRows(@Param("enter") ContactUsListEnter enter);
 
- List<ContactUsListResult>  list(@Param("enter")  ContactUsListEnter enter);
+ List<ContactUsListResult> list(@Param("enter") ContactUsListEnter enter);
 
-List<ContactUsDetailResult> detailList(@Param("enter") ContactUsEnter enter);
+ List<ContactUsDetailResult> detailList(@Param("enter") ContactUsEnter enter);
+
+ List<ContactUsListResult> export(@Param("enter") ContactUsListEnter enter);
 
 }

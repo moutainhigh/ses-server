@@ -13,6 +13,8 @@ public interface Constant {
 
     String DEFAULT_COUNTRY = "US";
 
+    String CHINA = "cn";
+
     /**
      * 逻辑删除标识，删除
      */

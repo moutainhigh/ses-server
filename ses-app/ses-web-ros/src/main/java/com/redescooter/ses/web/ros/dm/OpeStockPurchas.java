@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_stock_purchas")
-public class OpeStockPurchas implements Serializable {
+public class  OpeStockPurchas implements Serializable {
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "")
     private Long id;
