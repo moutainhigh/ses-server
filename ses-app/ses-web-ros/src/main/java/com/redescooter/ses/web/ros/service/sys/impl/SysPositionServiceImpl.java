@@ -49,6 +49,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public List<PositionResult> list(PositionEnter enter) {
+
         return null;
     }
 }

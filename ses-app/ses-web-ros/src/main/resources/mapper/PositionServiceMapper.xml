@@ -9,4 +9,11 @@
         where dr = 0
         and tenant_id = #{tenantId}
     </select>
+    <select id="listcount" resultType="int">
+
+    </select>
+    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionResult">
+
+    </select>
+
 </mapper>
