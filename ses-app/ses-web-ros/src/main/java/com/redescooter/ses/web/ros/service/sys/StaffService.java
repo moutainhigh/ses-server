@@ -44,9 +44,9 @@ public interface StaffService {
      * @Author Aleks
      * @Description  统计部门下面的总人数
      * @Date  2020/9/2 14:25
-     * @Param
+     * @Param type为1的时候 id为部门id，查部门下面的人数；type为2的时候 id为岗位id，查岗位下面的人数
      * @return
      **/
-    Integer deptStaffCount(Long deptId);
+    Integer deptStaffCount(Long idd,Integer type);
 
 }

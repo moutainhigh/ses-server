@@ -136,12 +136,16 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    public Integer deptStaffCount(Long deptId) {
-        if (deptId == null) {
+    public Integer deptStaffCount(Long id,Integer type) {
+        if (id == null) {
             return 0;
         }
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.eq(OpeSysStaff.COL_DEPT_ID, deptId);
+        if(type == 1){
+            qw.eq(OpeSysStaff.COL_DEPT_ID, id);
+        } else if (type == 2){
+            qw.eq(OpeSysStaff.COL_POSITION_ID, id);
+        }
         return opeSysStaffService.count(qw);
     }
 
