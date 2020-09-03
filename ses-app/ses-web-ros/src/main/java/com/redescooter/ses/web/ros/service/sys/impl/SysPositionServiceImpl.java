@@ -5,6 +5,8 @@ import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.text.Position;
@@ -17,6 +19,8 @@ import java.util.List;
  * @Date2020/9/2 17:25
  * @Version V1.0
  **/
+@Slf4j
+@Service
 public class SysPositionServiceImpl implements SysPositionService {
     @Autowired
     private PositionServiceMapper positionServiceMapper;
