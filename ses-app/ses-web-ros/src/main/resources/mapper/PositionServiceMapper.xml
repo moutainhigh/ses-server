@@ -55,8 +55,8 @@
         dept.name as deptName,
         pos.sort,
         pos.position_status,
-        staff1.full_name as createdName，
-        staff2.full_name as updatedName，
+        staff1.full_name as createdName,
+        staff2.full_name as updatedName,
         pos.created_time,
         pos.updated_time
         from  ope_sys_position pos

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -14,6 +15,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
@@ -23,6 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +44,8 @@ public class SysPositionServiceImpl implements SysPositionService {
     private PositionServiceMapper positionServiceMapper;
     @Autowired
     private OpeSysPositionService opeSysPositionService;
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private StaffService staffService;
     @Autowired
@@ -67,7 +72,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public PageResult<PositionResult> list(PositionEnter page) {
-        if (page.getKeyWord()!=null && page.getKeyWord().length()>50){
+        if (page.getKeyWord() != null && page.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(page);
         }
         int totalRows = positionServiceMapper.listcount(page);
@@ -79,13 +84,13 @@ public class SysPositionServiceImpl implements SysPositionService {
         //获取岗位下的人员
         List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.in(OpeSysStaff.COL_POSITION_ID,positionIds);
+        qw.in(OpeSysStaff.COL_POSITION_ID, positionIds);
         List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
-        if(CollectionUtils.isNotEmpty(staffs)){
-            Map<Long,List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
+        if (CollectionUtils.isNotEmpty(staffs)) {
+            Map<Long, List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
             for (Long positionId : map.keySet()) {
                 for (PositionResult result : list) {
-                    if(Objects.deepEquals(result.getId(),positionId)){
+                    if (Objects.deepEquals(result.getId(), positionId)) {
                         result.setPositionPersonnel(map.get(positionId).size());
                     }
                 }
@@ -103,13 +108,20 @@ public class SysPositionServiceImpl implements SysPositionService {
      * @return
      */
     @Override
-    public GeneralResult positionEdit(UpdateDeptEnter enter) {
+    @Transactional
+    public GeneralResult positionEdit(EditPositionEnter enter) {
         OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
-        if (byId==null){
+        if (byId == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
+        if (byId.getPositionStatus() == 1 && enter.getPositionStatus() == 2) {
+            //岗位角色员工禁用
+            List<Long> list = new ArrayList<>();
+            list.add(byId.getId());
+            roleService.disableRole(list);
+        }
         OpeSysPosition position = new OpeSysPosition();
-        BeanUtils.copyProperties(enter,position);
+        BeanUtils.copyProperties(enter, position);
         position.setDr(Constant.DR_FALSE);
         position.setUpdatedBy(enter.getUserId());
         position.setUpdatedTime(new Date());
@@ -120,11 +132,11 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     public PositionDetailsResult positionDetails(IdEnter enter) {
         OpeSysPosition position = opeSysPositionService.getById(enter.getId());
-        if(position == null){
+        if (position == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         PositionDetailsResult positionDetailsResult = positionServiceMapper.positionDetails(position.getId());
-        positionDetailsResult.setPositionPersonnel(staffService.deptStaffCount(position.getId(),2));
+        positionDetailsResult.setPositionPersonnel(staffService.deptStaffCount(position.getId(), 2));
         return positionDetailsResult;
     }
 
@@ -136,8 +148,8 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public GeneralResult save(SavePositionEnter enter) {
-      OpeSysPosition position = new OpeSysPosition();
-        BeanUtils.copyProperties(enter,position);
+        OpeSysPosition position = new OpeSysPosition();
+        BeanUtils.copyProperties(enter, position);
         position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
         position.setDr(Constant.DR_FALSE);
         position.setCreatedBy(enter.getUserId());
@@ -152,10 +164,10 @@ public class SysPositionServiceImpl implements SysPositionService {
     public BooleanResult deletePositionSelect(IdEnter enter) {
         Integer count = staffService.deptStaffCount(enter.getId(), 2);
         BooleanResult booleanResult = new BooleanResult();
-        if (count>0){
-            booleanResult.setSuccess(true);
-        }else {
+        if (count > 0) {
             booleanResult.setSuccess(false);
+        } else {
+            booleanResult.setSuccess(true);
         }
         return booleanResult;
     }
@@ -163,7 +175,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     public GeneralResult deletePosition(IdEnter enter) {
         Integer count = staffService.deptStaffCount(enter.getId(), 2);
-        if (count<=0){
+        if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
         opeSysPositionService.removeById(enter.getId());

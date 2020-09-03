@@ -40,7 +40,7 @@ public interface SysPositionService {
      * @return
 
      */
-    GeneralResult positionEdit( UpdateDeptEnter enter);
+    GeneralResult positionEdit( EditPositionEnter enter);
 
     PositionDetailsResult positionDetails(IdEnter enter);
 

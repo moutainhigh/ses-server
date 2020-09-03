@@ -59,7 +59,7 @@ public class SysPositionController{
     }
     @PostMapping(value = "/editPosition")
     @ApiOperation(value = "岗位编辑", response = GeneralResult.class)
-    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
+    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数")EditPositionEnter enter) {
         return new Response<>(sysPositionService.positionEdit(enter));
     }
     @PostMapping(value = "/positionDetails")
