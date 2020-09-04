@@ -26,6 +26,9 @@ public class RoleDetailResult extends GeneralResult {
     @ApiModelProperty("角色编码")
     private String roleCode;
 
+    @ApiModelProperty("所属岗位id")
+    private String positionId;
+
     @ApiModelProperty("所属岗位")
     private String positionName;
 

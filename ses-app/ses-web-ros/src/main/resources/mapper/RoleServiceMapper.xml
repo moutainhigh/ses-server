@@ -54,7 +54,8 @@
             r.create_time,
             s2.full_name as updatedName,
             r.update_time,
-            r.sale_area
+            r.sale_area,
+            r.position_id
         from
         ope_sys_role r
         left join ope_sys_staff s1 on r.created_by = s1.id
@@ -78,7 +79,8 @@
           p.position_name,
           r.role_status,
           r.create_time,
-          r.sale_area
+          r.sale_area,
+          r.position_id
         from ope_sys_role r
         left join ope_sys_position p on r.position_id = p.id
         where r.dr = 0

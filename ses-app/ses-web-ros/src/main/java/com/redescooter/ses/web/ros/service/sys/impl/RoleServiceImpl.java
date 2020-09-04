@@ -321,7 +321,8 @@ public class RoleServiceImpl implements RoleService {
         BeanUtils.copyProperties(enter,role);
         role.setId(idAppService.getId(SequenceName.OPE_SYS_ROLE));
         role.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
-        role.setRoleCode("R0"+new Random().nextInt(9999));
+        String roleCode = createCode();
+        role.setRoleCode(roleCode);
         role.setCreatedBy(enter.getUserId());
         role.setUpdatedBy(enter.getUserId());
         role.setUpdateTime(new Date());
@@ -329,6 +330,18 @@ public class RoleServiceImpl implements RoleService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+    // 新增角色的时候  生成角色编码
+    public String createCode(){
+        String roleCode = "R0"+new Random().nextInt(99999);
+        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysRole.COL_ROLE_CODE,roleCode);
+        int count = sysRoleService.count(qw);
+        if(count > 0){
+            createCode();
+        }
+        return roleCode;
+    }
 
     @Override
     @Transactional
