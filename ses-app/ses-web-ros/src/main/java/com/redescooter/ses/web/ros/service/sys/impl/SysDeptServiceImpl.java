@@ -394,6 +394,14 @@ public class SysDeptServiceImpl implements SysDeptService {
                 roleService.disableRole(ids);
             }
         }
+        if (deptResult.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue())){
+            if (enter.getPid() != null) {
+                OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, enter.getPid()));
+                if (one!=null&&one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
+                    throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
+                }
+            }
+        }
         BeanUtils.copyProperties(enter, opeSysDept);
         if (enter.getPid()!=null){
             opeSysDept.setLevel(addDeptLevel(enter.getPid()));
