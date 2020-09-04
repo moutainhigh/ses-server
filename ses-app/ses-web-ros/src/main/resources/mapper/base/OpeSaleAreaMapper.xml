@@ -6,7 +6,7 @@
     <!--@Table ope_sale_area-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="level" jdbcType="INTEGER" property="level" />
@@ -19,8 +19,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, parent_id, area_code, area_name, `level`, longitude, latitude, created_by, 
-    create_time, updated_by, update_time
+    id, dr, p_id, area_code, area_name, `level`, longitude, latitude, created_by, create_time, 
+    updated_by, update_time
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -31,9 +31,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="parent_id = case" suffix="end,">
+      <trim prefix="p_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="area_code = case" suffix="end,">
@@ -98,10 +98,10 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="parent_id = case" suffix="end,">
+      <trim prefix="p_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.parentId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.parentId,jdbcType=BIGINT}
+          <if test="item.pId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -177,11 +177,11 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_sale_area
-    (id, dr, parent_id, area_code, area_name, `level`, longitude, latitude, created_by, 
-      create_time, updated_by, update_time)
+    (id, dr, p_id, area_code, area_name, `level`, longitude, latitude, created_by, create_time, 
+      updated_by, update_time)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.parentId,jdbcType=BIGINT}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, 
         #{item.areaCode,jdbcType=VARCHAR}, #{item.areaName,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER}, 
         #{item.longitude,jdbcType=VARCHAR}, #{item.latitude,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP}
@@ -191,17 +191,17 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSaleArea">
     <!--@mbg.generated-->
     insert into ope_sale_area
-    (id, dr, parent_id, area_code, area_name, `level`, longitude, latitude, created_by, 
-      create_time, updated_by, update_time)
+    (id, dr, p_id, area_code, area_name, `level`, longitude, latitude, created_by, create_time, 
+      updated_by, update_time)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{parentId,jdbcType=BIGINT}, #{areaCode,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{pId,jdbcType=BIGINT}, #{areaCode,jdbcType=VARCHAR}, 
       #{areaName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    parent_id = #{parentId,jdbcType=BIGINT}, 
+    p_id = #{pId,jdbcType=BIGINT}, 
     area_code = #{areaCode,jdbcType=VARCHAR}, 
     area_name = #{areaName,jdbcType=VARCHAR}, 
     `level` = #{level,jdbcType=INTEGER}, 
@@ -222,8 +222,8 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="parentId != null">
-        parent_id,
+      <if test="pId != null">
+        p_id,
       </if>
       <if test="areaCode != null">
         area_code,
@@ -261,8 +261,8 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null">
-        #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
       </if>
       <if test="areaCode != null">
         #{areaCode,jdbcType=VARCHAR},
@@ -300,8 +300,8 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=BIGINT},
       </if>
       <if test="areaCode != null">
         area_code = #{areaCode,jdbcType=VARCHAR},
