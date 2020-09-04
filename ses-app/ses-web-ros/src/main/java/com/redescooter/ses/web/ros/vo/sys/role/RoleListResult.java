@@ -26,7 +26,7 @@ public class RoleListResult extends GeneralResult {
     private String roleCode;
 
     @ApiModelProperty("所属岗位id")
-    private String positionId;
+    private Long positionId;
 
     @ApiModelProperty("所属岗位")
     private String positionName;
