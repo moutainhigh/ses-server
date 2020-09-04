@@ -27,7 +27,7 @@ public class EditPositionEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "所属部门id")
     @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.PLEASE_SELECT_DEPARTMENT, message = "请选择所属部门")
-    private long deptId;
+    private Long deptId;
 
     @ApiModelProperty(value = "岗位排序")
     private Integer sort;

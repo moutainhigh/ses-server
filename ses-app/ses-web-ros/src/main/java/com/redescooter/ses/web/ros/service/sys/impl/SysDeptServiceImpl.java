@@ -136,11 +136,13 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         }
         OpeSysDept dept = this.addDept(enter);
-        //todo 生成部门编码
         sysDeptService.save(dept);
 
         return new GeneralResult(enter.getRequestId());
     }
+
+
+
 
     /**
      * 部门树
@@ -369,7 +371,10 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
-        checkDeptStatus(enter.getPid());
+        if (enter.getPid()!=null){
+            checkDeptStatus(enter.getPid());
+        }
+
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
         OpeSysDept opeSysDept = new OpeSysDept();
         List<Long> ids = new ArrayList<>();
@@ -562,6 +567,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         } else {
             dept.setPId(enter.getPid());
         }
+        dept.setCode(createCode());
         dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
         dept.setDr(Constant.DR_FALSE);
         dept.setCreatedBy(enter.getUserId());
@@ -593,5 +599,15 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         return dept;
     }
-
+    // 新增角色的时候  生成角色编码
+    public String createCode(){
+        String deptCode = "D0"+new Random().nextInt(99999);
+        QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
+        qw.eq(OpeSysDept.COL_CODE,deptCode);
+        int count = sysDeptService.count(qw);
+        if(count > 0){
+            createCode();
+        }
+        return deptCode;
+    }
 }

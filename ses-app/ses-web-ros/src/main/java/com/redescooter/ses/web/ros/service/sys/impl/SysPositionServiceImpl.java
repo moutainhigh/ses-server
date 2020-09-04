@@ -7,14 +7,17 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +52,8 @@ public class SysPositionServiceImpl implements SysPositionService {
     private OpeSysStaffService opeSysStaffService;
     @Autowired
     private IdAppService idAppService;
+    @Autowired
+    private SysDeptService sysDeptService;
 
     /**
      * 岗位类型查询
@@ -107,6 +112,9 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     @Transactional
     public GeneralResult positionEdit(EditPositionEnter enter) {
+        if (enter.getDeptId()!=null){
+            sysDeptService.checkDeptStatus(enter.getDeptId());
+        }
         OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
         if (byId == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
@@ -138,17 +146,20 @@ public class SysPositionServiceImpl implements SysPositionService {
     }
 
     /**
-     * 岗位列表
+     * 岗位新增
      *
      * @param enter
      * @return
      */
     @Override
     public GeneralResult save(SavePositionEnter enter) {
+        //校验上级部门是否被禁用
+        sysDeptService.checkDeptStatus(enter.getDeptId());
         OpeSysPosition position = new OpeSysPosition();
         BeanUtils.copyProperties(enter, position);
         position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
         position.setDr(Constant.DR_FALSE);
+        position.setPositionCode(createCode());
         position.setCreatedBy(enter.getUserId());
         position.setCreatedTime(new Date());
         position.setUpdatedBy(enter.getUserId());
@@ -177,5 +188,16 @@ public class SysPositionServiceImpl implements SysPositionService {
         }
         opeSysPositionService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
+    }
+    // 新增角色的时候  生成角色编码
+    public String createCode(){
+        String positionCode = "P0"+new Random().nextInt(99999);
+        QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
+        qw.eq(OpeSysPosition.COL_POSITION_CODE,positionCode);
+        int count = opeSysPositionService.count(qw);
+        if(count > 0){
+            createCode();
+        }
+        return positionCode;
     }
 }

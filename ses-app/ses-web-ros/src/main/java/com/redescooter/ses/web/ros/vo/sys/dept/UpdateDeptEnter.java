@@ -28,13 +28,13 @@ public class UpdateDeptEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
-    @ApiModelProperty(value = "部门名称", required = true)
+    @ApiModelProperty(value = "部门名称")
      private String name;
 
-    @ApiModelProperty(value = "父级部门id", required = true)
+    @ApiModelProperty(value = "父级部门id")
     private Long pid;
 
-    @ApiModelProperty(value = "负责人", required = true)
+    @ApiModelProperty(value = "负责人")
     private Long principal;
 
     @ApiModelProperty(value = "部门状态 1：正常，2：禁用")
