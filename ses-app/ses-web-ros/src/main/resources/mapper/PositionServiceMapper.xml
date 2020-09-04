@@ -53,6 +53,7 @@
         pos.position_name,
         pos.position_code,
         dept.name as deptName,
+        pos.dept_id as deptId,
         pos.sort,
         pos.position_status,
         staff1.full_name as createdName,

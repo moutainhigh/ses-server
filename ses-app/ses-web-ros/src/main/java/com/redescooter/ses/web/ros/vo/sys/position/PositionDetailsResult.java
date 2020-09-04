@@ -31,9 +31,11 @@ public class PositionDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "岗位编码")
     private String positionCode;
 
-
     @ApiModelProperty(value = "所属部门名称")
     private String deptName;
+
+    @ApiModelProperty(value = "所属部门id")
+    private String deptId;
 
     @ApiModelProperty(value = "岗位排序")
     private Integer sort;
