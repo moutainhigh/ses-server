@@ -123,6 +123,8 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public GeneralResult addSave(AddDeptEnter enter) {
+        //校验上级部门是否被禁用
+        checkDeptStatus(enter.getPid());
         List<OpeSysDept> saveDeptList = new ArrayList<>();
         //SaveDeptEnter参数值去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -279,7 +281,6 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Override
     public GeneralResult edit(EditDeptEnter enter) {
-
         List<OpeSysDept> updateDeptList = new ArrayList<>();
         OpeSysDept checkDept = null;
 
@@ -367,6 +368,8 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public GeneralResult editDept(UpdateDeptEnter enter) {
+        //校验上级部门是否被禁用
+        checkDeptStatus(enter.getPid());
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
         OpeSysDept opeSysDept = new OpeSysDept();
         List<Long> ids = new ArrayList<>();
@@ -546,8 +549,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     public void checkDeptStatus(Long deptId) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
         if (one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
-            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
-
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
     }
 

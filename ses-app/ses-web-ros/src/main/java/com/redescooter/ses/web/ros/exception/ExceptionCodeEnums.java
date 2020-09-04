@@ -358,7 +358,10 @@ public enum ExceptionCodeEnums {
 
     ID_IS_NOT_NULL(10170, "id不能为空"),
 
+    DEPT_DISABLE(10171, "当前部门被禁用")
+
     ;
+
 
 
     private int code;
