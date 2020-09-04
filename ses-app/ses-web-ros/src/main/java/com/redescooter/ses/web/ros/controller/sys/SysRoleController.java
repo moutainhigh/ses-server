@@ -59,7 +59,8 @@ public class SysRoleController {
     }
 
     @PostMapping(value = "/authDetailsById/{type}")
-    @ApiOperation(value = "权限展示", response = DeptAuthorityDetailsResult.class)
+    @ApiOperation(value = "角色菜单" +
+            "权限展示--reseat", response = DeptAuthorityDetailsResult.class)
     public Response<DeptAuthorityDetailsResult> authDetailsById(@PathVariable(required = false) String type, @ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(roleService.roleAuthDetails(type, enter));
     }
