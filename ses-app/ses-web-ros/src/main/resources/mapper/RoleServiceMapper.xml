@@ -65,8 +65,8 @@
     </select>
 
     <select id="totalRows" resultType="int">
-        select count(*) from ope_sys_role
-        where dr = 0
+        select count(*) from ope_sys_role r
+        where r.dr = 0
         <include refid="roleListCondition"></include>
     </select>
 
