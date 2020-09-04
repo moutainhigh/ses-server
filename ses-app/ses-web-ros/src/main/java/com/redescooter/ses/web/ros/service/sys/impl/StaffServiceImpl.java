@@ -31,10 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassNameStaffServiceImpl
@@ -81,10 +78,23 @@ public class StaffServiceImpl implements StaffService {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
         }
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
+        staff.setCode(createCode());
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(),enter.getRoleIds());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    // 新增角色的时候  生成角色编码
+    public String createCode(){
+        String staffCode = "S0"+new Random().nextInt(99999);
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_CODE,staffCode);
+        int count = opeSysStaffService.count(qw);
+        if(count > 0){
+            createCode();
+        }
+        return staffCode;
     }
 
 
