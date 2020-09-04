@@ -19,7 +19,7 @@ public class RoleMenuEditEnter extends GeneralEnter {
     @ApiModelProperty("角色id")
     private Long roleId;
 
-    @ApiModelProperty("菜单id")
-    private List<Long> menuIds;
+    @ApiModelProperty("菜单id,多个用,隔开")
+    private String menuIds;
 
 }
