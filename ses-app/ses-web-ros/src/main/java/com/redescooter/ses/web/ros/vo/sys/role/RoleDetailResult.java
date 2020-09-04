@@ -26,6 +26,9 @@ public class RoleDetailResult extends GeneralResult {
     @ApiModelProperty("角色编码")
     private String roleCode;
 
+    @ApiModelProperty("所属岗位id")
+    private String positionId;
+
     @ApiModelProperty("所属岗位")
     private String positionName;
 
@@ -52,4 +55,7 @@ public class RoleDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    @ApiModelProperty("是否开启销售区域功能 0：否，1：是")
+    private Integer saleArea;
 }

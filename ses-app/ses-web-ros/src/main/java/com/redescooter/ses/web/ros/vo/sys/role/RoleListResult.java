@@ -25,6 +25,9 @@ public class RoleListResult extends GeneralResult {
     @ApiModelProperty("角色编码")
     private String roleCode;
 
+    @ApiModelProperty("所属岗位id")
+    private String positionId;
+
     @ApiModelProperty("所属岗位")
     private String positionName;
 
@@ -40,4 +43,6 @@ public class RoleListResult extends GeneralResult {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+    @ApiModelProperty("是否开启销售区域功能 0：否，1：是")
+    private Integer saleArea;
 }
