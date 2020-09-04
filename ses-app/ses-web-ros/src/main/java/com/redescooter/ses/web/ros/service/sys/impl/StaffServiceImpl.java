@@ -108,6 +108,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
+        if(Strings.isNullOrEmpty(enter.getIds())){
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
         opeSysStaffService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         return new GeneralResult(enter.getRequestId());
     }
