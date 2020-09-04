@@ -40,4 +40,6 @@ public class RoleListResult extends GeneralResult {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+    @ApiModelProperty("是否开启销售区域功能 0：否，1：是")
+    private Integer saleArea;
 }

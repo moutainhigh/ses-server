@@ -52,4 +52,7 @@ public class RoleDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    @ApiModelProperty("是否开启销售区域功能 0：否，1：是")
+    private Integer saleArea;
 }
