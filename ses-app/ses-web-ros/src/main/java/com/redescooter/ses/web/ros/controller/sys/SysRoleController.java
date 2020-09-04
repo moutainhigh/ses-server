@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.salearea.SaleAreaService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
+import com.redescooter.ses.web.ros.vo.salearea.RoleAreaEnter;
+import com.redescooter.ses.web.ros.vo.salearea.SaleCityTreeResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
@@ -27,6 +30,9 @@ public class SysRoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private SaleAreaService saleAreaService;
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "岗位创建", response = GeneralResult.class)
@@ -128,5 +134,19 @@ public class SysRoleController {
     @ApiOperation(value = "角色的下拉数据接口--reseat", response = GeneralResult.class)
     public Response<List<RoleDataResult>> roleData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(roleService.roleData(enter));
+    }
+
+
+    @PostMapping(value = "/roleAreaAuthShow")
+    @ApiOperation(value = "查看角色的销售区域--reseat", response = GeneralResult.class)
+    public Response<List<SaleCityTreeResult>> roleAreaAuthShow(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
+        return new Response(saleAreaService.roleAreaAuthShow(enter));
+    }
+
+
+    @PostMapping(value = "/roleAreaAuth")
+    @ApiOperation(value = "保存或角色的销售区域--reseat", response = GeneralResult.class)
+    public Response<GeneralResult> roleAreaAuth(@ModelAttribute @ApiParam("请求参数") RoleAreaEnter enter) {
+        return new Response(saleAreaService.roleAreaAuth(enter));
     }
 }

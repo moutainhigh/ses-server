@@ -3,7 +3,8 @@ package com.redescooter.ses.web.ros.service.base;
 import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeSaleArea;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeSaleAreaService extends IService<OpeSaleArea>{
+
+public interface OpeSaleAreaService extends IService<OpeSaleArea> {
 
 
     int updateBatch(List<OpeSaleArea> list);
@@ -17,3 +18,4 @@ public interface OpeSaleAreaService extends IService<OpeSaleArea>{
     int insertOrUpdateSelective(OpeSaleArea record);
 
 }
+

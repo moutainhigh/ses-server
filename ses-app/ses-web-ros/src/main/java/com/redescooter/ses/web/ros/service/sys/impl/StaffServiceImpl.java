@@ -2,6 +2,9 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
+import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -10,15 +13,19 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +61,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Autowired
     private OpeSysUserRoleMapper opeSysUserRoleMapper;
+
+    @Autowired
+    private OpeSysUserService opeSysUserService;
 
     @Override
     @Transactional
@@ -98,6 +108,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
+        if(Strings.isNullOrEmpty(enter.getIds())){
+            throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
+        }
         opeSysStaffService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         return new GeneralResult(enter.getRequestId());
     }
@@ -155,6 +168,35 @@ public class StaffServiceImpl implements StaffService {
             qw.eq(OpeSysStaff.COL_POSITION_ID, id);
         }
         return opeSysStaffService.count(qw);
+    }
+
+    @Override
+    public GeneralResult openAccount(StaffOpEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
+        if(staff == null){
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        // todo 加判断 是否已经开通过账号
+        OpeSysUser user = new OpeSysUser();
+        int salt = RandomUtils.nextInt(10000, 99999);
+        String decryptPassword = "RedeScooter2019";
+        user.setId(staff.getId());
+        user.setDeptId(staff.getDeptId());
+        user.setAppId(AppIDEnums.SES_ROS.getValue());
+        user .setSystemId(AppIDEnums.SES_ROS.getSystemId());
+        user.setPassword(DigestUtils.md5Hex(decryptPassword + salt));
+        user.setSalt(String.valueOf(salt));
+        user.setStatus(SysUserStatusEnum.NORMAL.getCode());
+        user.setLoginName(staff.getEmail());
+        user.setLastLoginToken(null);
+        user.setLastLoginIp(null);
+        user.setCreatedBy(enter.getUserId());
+        user.setCreatedTime(new Date());
+        user.setUpdatedBy(enter.getUserId());
+        user.setUpdatedTime(new Date());
+        user.setDef1(SysUserSourceEnum.WEBSITE.getValue());
+        opeSysUserService.save(user);
+        return new GeneralResult(enter.getRequestId());
     }
 
 
