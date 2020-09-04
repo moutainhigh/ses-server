@@ -453,7 +453,11 @@ public class RoleServiceImpl implements RoleService {
     public GeneralResult roleMenuEdit(RoleMenuEditEnter enter) {
         // 先把当前角色已经有的菜单权限全部删除
         rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
-        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), new HashSet<>(enter.getMenuIds()));
+        Set<Long> set = new HashSet<>();
+        for (String s : enter.getMenuIds().split(",")) {
+            set.add(Long.parseLong(s));
+        }
+        rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(),set);
         return new GeneralResult(enter.getRequestId());
     }
 
