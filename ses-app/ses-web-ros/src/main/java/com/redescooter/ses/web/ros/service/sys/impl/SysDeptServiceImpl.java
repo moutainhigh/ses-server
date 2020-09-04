@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -539,6 +540,15 @@ public class SysDeptServiceImpl implements SysDeptService {
             deptIds.add(enter.getId());
         }
         return deptServiceMapper.principals(deptIds);
+    }
+
+    @Override
+    public void checkDeptStatus(Long deptId) {
+        OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
+        if (one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+
+        }
     }
 
     private OpeSysDept addDept(AddDeptEnter enter) {

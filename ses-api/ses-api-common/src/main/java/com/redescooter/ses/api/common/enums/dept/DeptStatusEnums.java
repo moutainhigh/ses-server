@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum DeptStatusEnums {
-    COMPANY("NORMAL", "正常", "1"),
-    DEPARTMENT("DISABLE", "禁用", "2"),
+    COMPANY("NORMAL", "正常", 1),
+    DEPARTMENT("DISABLE", "禁用", 2),
     ;
 
     private String code;
 
     private String message;
 
-    private String value;
+    private Integer value;
 
 }

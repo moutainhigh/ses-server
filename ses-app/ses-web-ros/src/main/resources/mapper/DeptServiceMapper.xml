@@ -136,7 +136,6 @@
         from ope_sys_dept
         where dr = 0
         and tenant_id = #{tenantId}
-
     </select>
 
 </mapper>

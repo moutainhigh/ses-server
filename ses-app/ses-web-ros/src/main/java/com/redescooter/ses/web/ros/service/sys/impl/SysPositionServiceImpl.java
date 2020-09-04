@@ -7,18 +7,15 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
-import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -114,7 +111,7 @@ public class SysPositionServiceImpl implements SysPositionService {
         if (byId == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
-        if (byId.getPositionStatus() == 1 && enter.getPositionStatus() == 2) {
+        if (byId.getPositionStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getPositionStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             //岗位角色员工禁用
             List<Long> list = new ArrayList<>();
             list.add(byId.getId());

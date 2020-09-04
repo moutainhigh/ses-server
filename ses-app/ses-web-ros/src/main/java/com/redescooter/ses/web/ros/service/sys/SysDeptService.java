@@ -156,4 +156,6 @@ public interface SysDeptService {
      * @return
      */
     List<PrincipalResult> principals(PrincipalsEnter enter);
+
+    void checkDeptStatus(Long deptId);
 }
