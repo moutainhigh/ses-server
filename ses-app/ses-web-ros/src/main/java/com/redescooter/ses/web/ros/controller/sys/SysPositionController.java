@@ -29,17 +29,19 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sys/position")
-public class SysPositionController{
+public class SysPositionController {
     @Autowired
     private SysPositionService sysPositionService;
 
     @Autowired
     private SysDeptService deptService;
+
     @PostMapping(value = "/selectPositionType")
     @ApiOperation(value = "查询岗位类型", response = PositionTypeResult.class)
     public Response<List<PositionTypeResult>> selectPosition(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysPositionService.selectPositionType(enter));
     }
+
     @PostMapping(value = "/list")
     @ApiOperation(value = "岗位列表", response = PositionResult.class)
     public Response<PageResult<PositionResult>> list(@ModelAttribute @ApiParam("请求参数") PositionEnter enter) {
@@ -57,11 +59,13 @@ public class SysPositionController{
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePositionEnter enter) {
         return new Response<>(sysPositionService.save(enter));
     }
+
     @PostMapping(value = "/editPosition")
     @ApiOperation(value = "岗位编辑", response = GeneralResult.class)
-    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数")EditPositionEnter enter) {
+    public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") EditPositionEnter enter) {
         return new Response<>(sysPositionService.positionEdit(enter));
     }
+
     @PostMapping(value = "/positionDetails")
     @ApiOperation(value = "岗位详情", response = DeptDetailsResult.class)
     public Response<PositionDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {

@@ -7,12 +7,10 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
@@ -112,7 +110,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     @Transactional
     public GeneralResult positionEdit(EditPositionEnter enter) {
-        if (enter.getDeptId()!=null){
+        if (enter.getDeptId() != null) {
             sysDeptService.checkDeptStatus(enter.getDeptId());
         }
         OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
@@ -189,13 +187,14 @@ public class SysPositionServiceImpl implements SysPositionService {
         opeSysPositionService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
+
     // 新增角色的时候  生成角色编码
-    public String createCode(){
-        String positionCode = "P0"+new Random().nextInt(99999);
+    public String createCode() {
+        String positionCode = "P0" + new Random().nextInt(99999);
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
-        qw.eq(OpeSysPosition.COL_POSITION_CODE,positionCode);
+        qw.eq(OpeSysPosition.COL_POSITION_CODE, positionCode);
         int count = opeSysPositionService.count(qw);
-        if(count > 0){
+        if (count > 0) {
             createCode();
         }
         return positionCode;

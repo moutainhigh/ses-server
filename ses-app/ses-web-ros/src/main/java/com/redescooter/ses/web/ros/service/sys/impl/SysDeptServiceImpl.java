@@ -6,7 +6,10 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -24,12 +27,10 @@ import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
-import jdk.nashorn.internal.ir.FunctionNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +72,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysStaffService opeSysStaffService;
     @Autowired
     private StaffService taffService;
+
     @Transactional
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
@@ -140,8 +142,6 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         return new GeneralResult(enter.getRequestId());
     }
-
-
 
 
     /**
@@ -371,7 +371,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
-        if (enter.getPid()!=null){
+        if (enter.getPid() != null) {
             checkDeptStatus(enter.getPid());
         }
 
@@ -476,7 +476,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         });
         if (byId.getPrincipal() != null) {
             OpeSysStaff PrincipalName = opeSysStaffService.getOne(new QueryWrapper<OpeSysStaff>().eq(OpeSysStaff.COL_ID, byId.getPrincipal()));
-            if(PrincipalName != null){
+            if (PrincipalName != null) {
                 result.setPrincipalName(PrincipalName.getFullName());
             }
         }
@@ -553,7 +553,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public void checkDeptStatus(Long deptId) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
-        if (one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
+        if (one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
     }
@@ -599,13 +599,14 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         return dept;
     }
+
     // 新增角色的时候  生成角色编码
-    public String createCode(){
-        String deptCode = "D0"+new Random().nextInt(99999);
+    public String createCode() {
+        String deptCode = "D0" + new Random().nextInt(99999);
         QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
-        qw.eq(OpeSysDept.COL_CODE,deptCode);
+        qw.eq(OpeSysDept.COL_CODE, deptCode);
         int count = sysDeptService.count(qw);
-        if(count > 0){
+        if (count > 0) {
             createCode();
         }
         return deptCode;

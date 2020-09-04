@@ -54,11 +54,13 @@ public class SysDeptController {
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
+
     @PostMapping(value = "/deptDetails")
     @ApiOperation(value = "部门详情--reseat", response = DeptDetailsResult.class)
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deptDetails(enter));
     }
+
     @PostMapping(value = "/deleteDeptSelect")
     @ApiOperation(value = "部门删除校验--reseat", response = BooleanResult.class)
     public Response<BooleanResult> deleteDeptSelect(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -70,6 +72,7 @@ public class SysDeptController {
     public Response<GeneralResult> deleteDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deleteDept(enter));
     }
+
     @PostMapping(value = "/selectDeptType")
     @ApiOperation(value = "查询部门类型--reseat", response = DeptTypeResult.class)
     public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
@@ -81,6 +84,7 @@ public class SysDeptController {
     public Response<SelectDeptResult> selectEditDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.selectEditDept(enter));
     }
+
     @PostMapping(value = "/editDept")
     @ApiOperation(value = "部门编辑--reseat", response = GeneralResult.class)
     public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
