@@ -553,7 +553,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public void checkDeptStatus(Long deptId) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
-        if (one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
+        if (one!=null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
     }
