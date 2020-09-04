@@ -127,6 +127,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
         checkDeptStatus(enter.getPid());
+
         List<OpeSysDept> saveDeptList = new ArrayList<>();
         //SaveDeptEnter参数值去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -394,6 +395,9 @@ public class SysDeptServiceImpl implements SysDeptService {
             }
         }
         BeanUtils.copyProperties(enter, opeSysDept);
+        if (enter.getPid()!=null){
+            opeSysDept.setLevel(addDeptLevel(enter.getPid()));
+        }
         opeSysDept.setPId(enter.getPid());
         opeSysDept.setUpdatedBy(enter.getUserId());
         opeSysDept.setUpdatedTime(new Date());
@@ -558,6 +562,22 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
     }
 
+    /**
+     * 添加部门等级
+     *
+     * @param pid
+     * @return
+     */
+    @Override
+    public Integer addDeptLevel(Long pid) {
+        OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, pid));
+        Integer level = null;
+            if (one!=null){
+                level=one.getLevel()+1;
+            }
+        return level;
+    }
+
     private OpeSysDept addDept(AddDeptEnter enter) {
 
         OpeSysDept dept = new OpeSysDept();
@@ -570,6 +590,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         dept.setCode(createCode());
         dept.setId(idAppService.getId(SequenceName.OPE_SYS_DEPT));
         dept.setDr(Constant.DR_FALSE);
+        dept.setLevel(addDeptLevel(enter.getPid()));
         dept.setCreatedBy(enter.getUserId());
         dept.setCreatedTime(new Date());
         dept.setUpdatedBy(enter.getUserId());

@@ -157,5 +157,19 @@ public interface SysDeptService {
      */
     List<PrincipalResult> principals(PrincipalsEnter enter);
 
+    /**
+     * 检查部门状态
+     *
+     * @param
+     * @return
+     */
     void checkDeptStatus(Long deptId);
+
+    /**
+     * 添加部门等级
+     *
+     * @param pid
+     * @return
+     */
+    Integer addDeptLevel(Long pid);
 }
