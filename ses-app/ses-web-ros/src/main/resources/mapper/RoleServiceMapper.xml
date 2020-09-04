@@ -91,13 +91,13 @@
 
     <sql id="roleListCondition">
         <if test="enter.positionId != null and enter.positionId != ''">
-            and position_id = #{enter.positionId}
+            and r.position_id = #{enter.positionId}
         </if>
         <if test="enter.roleStatus != null">
-            and role_status = #{enter.roleStatus}
+            and r.role_status = #{enter.roleStatus}
         </if>
         <if test="enter.keyWord != null and enter.keyWord != ''">
-            and role_name like concat('%', #{enter.keyWord}, '%')
+            and r.role_name like concat('%', #{enter.keyWord}, '%')
         </if>
     </sql>
 </mapper>

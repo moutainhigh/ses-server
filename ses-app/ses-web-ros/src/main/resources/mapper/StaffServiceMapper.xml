@@ -45,21 +45,21 @@
 
     <sql id="staffListCondition">
       <if test="enter.deptId != null">
-        and dept_id = #{enter.deptId}
+        and s.dept_id = #{enter.deptId}
       </if>
       <if test="enter.positionId != null">
-        and position_id = #{enter.positionId}
+        and s.position_id = #{enter.positionId}
       </if>
       <if test="enter.roleId != null">
-        and role_id = #{enter.roleId}
+        and s.role_id = #{enter.roleId}
       </if>
       <if test="enter.status != null">
-        and status = #{enter.status}
+        and s.status = #{enter.status}
       </if>
       <if test="enter.keyWord != null and enter.keyWord != ''">
-        and (full_name like concat('%', #{enter.keyWord}, '%')
-        or telephone like concat('%', #{enter.keyWord}, '%')
-        or email like concat('%', #{enter.keyWord}, '%')
+        and (s.full_name like concat('%', #{enter.keyWord}, '%')
+        or s.telephone like concat('%', #{enter.keyWord}, '%')
+        or s.email like concat('%', #{enter.keyWord}, '%')
         )
       </if>
     </sql>
