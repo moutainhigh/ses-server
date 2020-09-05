@@ -663,7 +663,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryB.setProductPrice(price);
         opeCustomerInquiryB.setProductQty(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? 1 : enter.getAccessoryBatteryQty());
         opeCustomerInquiryB.setProductType(type);
-        opeCustomerInquiryB.setProductId(enter.getProductId());
         opeCustomerInquiryB.setCreatedBy(enter.getUserId());
         opeCustomerInquiryB.setCreatedTime(new Date());
         opeCustomerInquiryB.setUpdatedBy(enter.getUserId());
