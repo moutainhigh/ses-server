@@ -6,6 +6,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.enums.sellsy.DefultFiledEnums;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
@@ -88,6 +90,8 @@ public class SellsyServiceImpl implements SellsyService {
             resultList = (List<T>) JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t.getClass());
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return resultList;
     }
@@ -121,6 +125,9 @@ public class SellsyServiceImpl implements SellsyService {
             }
             resultList.addAll((List<T>) JSON.parseArray(objMap.values().toString(), t.getClass()));
         } catch (Exception e) {
+            e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return resultList;
     }
@@ -146,13 +153,15 @@ public class SellsyServiceImpl implements SellsyService {
             objMap.keySet().forEach(item -> {
                 if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
 
-                    List<T> targetMap = (List<T>) JSON.parseArray(objMap.get(item).values().toString(), t);
+                    List<T> targetMap = JSON.parseArray(objMap.get(item).values().toString(), t);
                     resultList.addAll(targetMap);
                 }
             });
 
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return resultList;
     }
@@ -174,6 +183,8 @@ public class SellsyServiceImpl implements SellsyService {
             result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), t);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return result;
     }
@@ -193,6 +204,8 @@ public class SellsyServiceImpl implements SellsyService {
             result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return new SellsyIdResut(new ArrayList<>(result.values()).get(0));
     }

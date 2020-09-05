@@ -46,7 +46,7 @@ public class SellsyRowEnter {
     private SellsyBooleanEnums row_isOption;
     
     // 行折扣金额 默认0 如果是 百分数 必须是 1-100的整数
-    private float row_discount;
+    private Float row_discount;
     
     //单位 amount, percent
     private SellsyGlobalDiscountUnitEnums row_discountUnit;

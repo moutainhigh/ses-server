@@ -257,4 +257,18 @@ public class SesStringUtils extends StringUtils {
     public static Boolean checkString(String source, String regularExpression) {
         return source.matches(regularExpression);
     }
+
+    /**
+     * string 转json 是处理 str中的转义字符
+     * 
+     * @param str
+     * @return
+     */
+    public static String stringEscapeCharacter(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return null;
+        }
+        return str.replace("/", "\\/").replace("\r", "\\r").replace("\n", "\\n").replace("\b", "\\b")
+            .replace("\f", "\\f").replace("\t", "\\t");
+    }
 }

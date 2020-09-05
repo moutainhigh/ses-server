@@ -258,7 +258,7 @@ public class SesWebRosApplicationTests {
                 .row_qt(10)
                 .row_isOption(SellsyBooleanEnums.N)
                 .row_unitAmount(sellsyCatalogueResultList.get(0).getUnitAmount())
-                .row_discount(0)
+            .row_discount(null)
                 .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
                 .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
@@ -267,7 +267,7 @@ public class SesWebRosApplicationTests {
                 .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
                 .row_serial(null)
                 .row_barcode(null)
-                .row_title("Invoice notes")
+            .row_title(null)
                 .row_comment(null)
                 .row_unit(null)
                 .build();
@@ -303,6 +303,7 @@ public class SesWebRosApplicationTests {
                 .document(new SellsyUpdateDocumentInvoidSatusEnter(SellsyDocmentTypeEnums.invoice, SellsyDocumentInvoiceStatusEnums.cancelled))
                 .build();
         sellsyDocumentService.upateDocumentStatus(build);
+
     }
 
     @Test

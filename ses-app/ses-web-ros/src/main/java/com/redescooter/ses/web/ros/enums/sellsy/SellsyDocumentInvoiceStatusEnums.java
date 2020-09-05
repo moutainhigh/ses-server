@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum SellsyDocumentInvoiceStatusEnums {
     draft("draft", "草稿"),
-    due("due", "到期"),
+    due("due", "未付款"),
     payinprogress("payinprogress", "部分付款"),
-    paid("paid", "付款"),
+    paid("paid", "已付款"),
     late("late", "延期"),
     cancelled("cancelled", "取消");
 
