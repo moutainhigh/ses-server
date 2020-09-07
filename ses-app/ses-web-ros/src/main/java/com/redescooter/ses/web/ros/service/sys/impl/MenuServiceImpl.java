@@ -387,6 +387,8 @@ public class MenuServiceImpl implements MenuService {
         node.setDef1(menu.getDef1());
         node.setDef2(menu.getDef2());
         node.setDef3(menu.getDef3());
+        node.setCreatedTime(menu.getCreatedTime());
+        node.setMenuStatus(menu.getMenuStatus());
         return node;
     }
 

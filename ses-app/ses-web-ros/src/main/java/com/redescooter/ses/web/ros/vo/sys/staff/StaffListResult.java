@@ -52,5 +52,7 @@ public class StaffListResult extends GeneralResult {
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
+    @ApiModelProperty("是否开通过账号，0：未开通，1：已开通")
+    private String def1;
 
 }

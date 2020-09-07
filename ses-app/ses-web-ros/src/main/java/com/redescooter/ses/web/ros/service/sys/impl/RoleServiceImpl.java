@@ -368,6 +368,7 @@ public class RoleServiceImpl implements RoleService {
         role.setRoleDesc(enter.getRoleDesc());
         role.setUpdatedBy(enter.getUserId());
         role.setUpdateTime(new Date());
+        role.setSaleArea(enter.getSaleArea());
         sysRoleService.updateById(role);
         return new GeneralResult(enter.getRequestId());
     }

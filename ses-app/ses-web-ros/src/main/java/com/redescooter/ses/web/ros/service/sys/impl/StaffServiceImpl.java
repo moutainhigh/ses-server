@@ -65,6 +65,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     @Transactional
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
+        if(Strings.isNullOrEmpty(enter.getEmail())){
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
+        // 校验邮箱是否存在
+        checkEmail(enter.getEmail(),enter.getId());
         OpeSysStaff staff = new OpeSysStaff();
         BeanUtils.copyProperties(enter,staff);
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
@@ -98,6 +103,20 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
+    void checkEmail(String email,Long id){
+        QueryWrapper<OpeSysStaff>  qw = new QueryWrapper<>();
+        qw.eq(OpeSysStaff.COL_EMAIL,email);
+        if(id != null){
+            // 员工修改
+            qw.ne(OpeSysStaff.COL_ID,id);
+        }
+        int count = opeSysStaffService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
+    }
+
+
     @Transactional
     @Override
     public GeneralResult staffEdit(StaffSaveOrEditEnter enter) {
@@ -105,6 +124,7 @@ public class StaffServiceImpl implements StaffService {
         if(staff == null){
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        checkEmail(enter.getEmail(),enter.getId());
         BeanUtils.copyProperties(enter,staff);
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
         staff.setUpdatedBy(enter.getUserId());
@@ -181,12 +201,17 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Transactional
     public GeneralResult openAccount(StaffOpEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
         if(staff == null){
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        // todo 加判断 是否已经开通过账号
+        if(!Strings.isNullOrEmpty(staff.getDef1()) && staff.getDef1().equals("1")){
+            throw new SesWebRosException(ExceptionCodeEnums.ALREADY_OPEN.getCode(), ExceptionCodeEnums.ALREADY_OPEN.getMessage());
+        }
+        staff.setDef1("1");
+        opeSysStaffService.updateById(staff);
         OpeSysUser user = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);
         String decryptPassword = "RedeScooter2019";
@@ -204,7 +229,7 @@ public class StaffServiceImpl implements StaffService {
         user.setCreatedTime(new Date());
         user.setUpdatedBy(enter.getUserId());
         user.setUpdatedTime(new Date());
-        user.setDef1(SysUserSourceEnum.WEBSITE.getValue());
+        user.setDef1(SysUserStatusEnum.NORMAL.getCode());
         opeSysUserService.save(user);
         return new GeneralResult(enter.getRequestId());
     }

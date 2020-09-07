@@ -105,4 +105,7 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
+    @ApiModelProperty("是否开通过账号，0：未开通，1：已开通")
+    private String def1;
+
 }

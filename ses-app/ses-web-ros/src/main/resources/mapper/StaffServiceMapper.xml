@@ -26,7 +26,8 @@
           s.created_time,
           s.updated_time,
           s1.full_name as createdName,
-          s2.full_name as updatedName
+          s2.full_name as updatedName,
+          s.def1
           from ope_sys_staff s
           left join ope_sys_dept d on s.dept_id = d.id
           left join ope_sys_position p on s.position_id = p.id
@@ -38,28 +39,28 @@
     </select>
 
     <select id="totalRows" resultType="int">
-      select count(*) from ope_sys_staff
-      where dr = 0
+      select count(*) from ope_sys_staff s
+      where s.dr = 0
       <include refid="staffListCondition"></include>
     </select>
 
     <sql id="staffListCondition">
       <if test="enter.deptId != null">
-        and dept_id = #{enter.deptId}
+        and s.dept_id = #{enter.deptId}
       </if>
       <if test="enter.positionId != null">
-        and position_id = #{enter.positionId}
+        and s.position_id = #{enter.positionId}
       </if>
       <if test="enter.roleId != null">
-        and role_id = #{enter.roleId}
+        and s.role_id = #{enter.roleId}
       </if>
       <if test="enter.status != null">
-        and status = #{enter.status}
+        and s.status = #{enter.status}
       </if>
       <if test="enter.keyWord != null and enter.keyWord != ''">
-        and (full_name like concat('%', #{enter.keyWord}, '%')
-        or telephone like concat('%', #{enter.keyWord}, '%')
-        or email like concat('%', #{enter.keyWord}, '%')
+        and (s.full_name like concat('%', #{enter.keyWord}, '%')
+        or s.telephone like concat('%', #{enter.keyWord}, '%')
+        or s.email like concat('%', #{enter.keyWord}, '%')
         )
       </if>
     </sql>
@@ -86,7 +87,8 @@
          s.status,
          s.created_time,
          d.name as deptName,
-         p.position_name as positionName
+         p.position_name as positionName,
+         s.def1
         from ope_sys_staff s
         left join ope_sys_dept d on s.dept_id = d.id
         left join ope_sys_position p on s.position_id = p.id

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeSysMenuService extends IService<OpeSysMenu>{
+public interface OpeSysMenuService extends IService<OpeSysMenu> {
 
 
     int updateBatch(List<OpeSysMenu> list);
@@ -17,4 +17,6 @@ public interface OpeSysMenuService extends IService<OpeSysMenu>{
 
     int insertOrUpdateSelective(OpeSysMenu record);
 
+    int updateBatchSelective(List<OpeSysMenu> list);
 }
+

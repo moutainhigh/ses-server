@@ -24,7 +24,7 @@ public class QueryMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "菜单编码")
     private String code;
 
-    @ApiModelProperty(value = "菜单类型")
+    @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮，2：目录")
     private String type;
 
     @ApiModelProperty(value = "菜单等级")
