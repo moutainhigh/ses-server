@@ -32,8 +32,8 @@ public class OpeSysStaff implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     @TableLogic
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
@@ -70,6 +70,13 @@ public class OpeSysStaff implements Serializable {
     @TableField(value = "role_id")
     @ApiModelProperty(value = "所属角色id")
     private Long roleId;
+
+    /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode;
 
     /**
      * 联系电话
@@ -140,6 +147,13 @@ public class OpeSysStaff implements Serializable {
     @TableField(value = "certificat_picture_2")
     @ApiModelProperty(value = "图片2（身份证反面）")
     private String certificatPicture2;
+
+    /**
+     * 是否开通账号 0：否，1：是
+     */
+    @TableField(value = "open_account")
+    @ApiModelProperty(value = "是否开通账号 0：否，1：是")
+    private String openAccount;
 
     /**
      * 备注
@@ -276,6 +290,8 @@ public class OpeSysStaff implements Serializable {
 
     public static final String COL_ROLE_ID = "role_id";
 
+    public static final String COL_COUNTRY_CODE = "country_code";
+
     public static final String COL_TELEPHONE = "telephone";
 
     public static final String COL_EMAIL = "email";
@@ -295,6 +311,8 @@ public class OpeSysStaff implements Serializable {
     public static final String COL_CERTIFICAT_PICTURE_1 = "certificat_picture_1";
 
     public static final String COL_CERTIFICAT_PICTURE_2 = "certificat_picture_2";
+
+    public static final String COL_OPEN_ACCOUNT = "open_account";
 
     public static final String COL_REMARK = "remark";
 

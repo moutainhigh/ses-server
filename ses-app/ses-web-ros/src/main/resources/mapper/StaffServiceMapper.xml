@@ -23,11 +23,14 @@
           s.certificate_type,
           s.certificat_picture_1,
           s.certificat_picture_2,
+          s.employee_picture,
           s.created_time,
           s.updated_time,
           s1.full_name as createdName,
           s2.full_name as updatedName,
-          s.def1
+          s.def1,
+          s.dept_id,
+          s.position_id
           from ope_sys_staff s
           left join ope_sys_dept d on s.dept_id = d.id
           left join ope_sys_position p on s.position_id = p.id

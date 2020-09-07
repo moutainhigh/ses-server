@@ -479,4 +479,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         enter.setUserId(saveEmployeeEnter.getUserId());
         mailMultiTaskService.addCreateEmployeeMailTask(enter);
     }
+
+
+    @Override
+    public void disAbleUser(List<Long> userIds) {
+        if(CollectionUtils.isNotEmpty(userIds)){
+            QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+            qw.in(OpeSysUser.COL_ID,userIds);
+            List<OpeSysUser> users = opeSysUserService.list(qw);
+            if(CollectionUtils.isNotEmpty(users)){
+                List<OpeSysUser> list = new ArrayList<>();
+                for (OpeSysUser user : users) {
+                    user.setStatus(SysUserStatusEnum.LOCK.getCode());
+                    list.add(user);
+                }
+                opeSysUserService.updateBatch(list);
+            }
+        }
+
+    }
+
 }

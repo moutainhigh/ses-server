@@ -156,8 +156,8 @@ public class StaffServiceImpl implements StaffService {
         // 查找员工的角色信息
         StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
         if(staffRoleResult != null){
-            staffDetail.setRoleIds(staffRoleResult.getRoleId());
-            staffDetail.setRoleNames(staffRoleResult.getRoleName());
+            staffDetail.setRoleId(staffRoleResult.getRoleId());
+            staffDetail.setRoleName(staffRoleResult.getRoleName());
         }
         return staffDetail;
     }
@@ -207,10 +207,10 @@ public class StaffServiceImpl implements StaffService {
         if(staff == null){
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if(!Strings.isNullOrEmpty(staff.getDef1()) && staff.getDef1().equals("1")){
+        if(!Strings.isNullOrEmpty(staff.getOpenAccount()) && staff.getOpenAccount().equals("1")){
             throw new SesWebRosException(ExceptionCodeEnums.ALREADY_OPEN.getCode(), ExceptionCodeEnums.ALREADY_OPEN.getMessage());
         }
-        staff.setDef1("1");
+        staff.setOpenAccount("1");
         opeSysStaffService.updateById(staff);
         OpeSysUser user = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);

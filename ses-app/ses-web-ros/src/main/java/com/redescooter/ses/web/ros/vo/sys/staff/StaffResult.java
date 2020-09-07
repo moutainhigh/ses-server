@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.sys.staff;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,21 +22,23 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "员工状态 1：正常，2：禁用")
     private Integer status;
 
+    @ApiModelProperty(value = "所属部门id")
+    private String deptId;
+
     @ApiModelProperty(value = "所属部门名称")
     private String deptName;
 
-    /**
-     * 所属岗位id
-     */
-    @TableField(value = "position_id")
+    @ApiModelProperty(value = "所属岗位id")
+    private String positionId;
+
     @ApiModelProperty(value = "所属岗位名称")
     private String positionName;
 
     @ApiModelProperty(value = "所属角色名称")
-    private String roleNames;
+    private String roleName;
 
     @ApiModelProperty(value = "所属角色id")
-    private String roleIds;
+    private String roleId;
 
     @ApiModelProperty(value = "联系电话")
     private String telephone;
@@ -94,18 +95,18 @@ public class StaffResult extends GeneralResult {
     private Long sysUserId;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdName;
+    private String createdName;
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedName;
+    private String updatedName;
 
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     @ApiModelProperty("是否开通过账号，0：未开通，1：已开通")
-    private String def1;
+    private String openAccount = "0";
 
 }

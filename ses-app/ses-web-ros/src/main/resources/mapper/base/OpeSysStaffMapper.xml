@@ -11,6 +11,7 @@
     <result column="dept_id" jdbcType="BIGINT" property="deptId" />
     <result column="position_id" jdbcType="BIGINT" property="positionId" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="entry_date" jdbcType="DATE" property="entryDate" />
@@ -21,6 +22,7 @@
     <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
     <result column="certificat_picture_1" jdbcType="VARCHAR" property="certificatPicture1" />
     <result column="certificat_picture_2" jdbcType="VARCHAR" property="certificatPicture2" />
+    <result column="open_account" jdbcType="CHAR" property="openAccount" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="employee_picture" jdbcType="VARCHAR" property="employeePicture" />
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
@@ -41,11 +43,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, `status`, dept_id, position_id, role_id, telephone, email, entry_date, 
-    country_name, address_1, address_2, birthday, certificate_type, certificat_picture_1, 
-    certificat_picture_2, remark, employee_picture, first_name, last_name, full_name, 
-    code, gender, sys_user_id, created_by, created_time, updated_by, updated_time, def1, 
-    def2, def3, def5, def6
+    id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
+    email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
+    certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
+    first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -79,6 +81,11 @@
       <trim prefix="role_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.roleId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="telephone = case" suffix="end,">
@@ -129,6 +136,11 @@
       <trim prefix="certificat_picture_2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.certificatPicture2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="open_account = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.openAccount,jdbcType=CHAR}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
@@ -268,6 +280,13 @@
           </if>
         </foreach>
       </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
       <trim prefix="telephone = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.telephone != null">
@@ -335,6 +354,13 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.certificatPicture2 != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.certificatPicture2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="open_account = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.openAccount != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.openAccount,jdbcType=CHAR}
           </if>
         </foreach>
       </trim>
@@ -466,19 +492,20 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_sys_staff
-    (id, dr, tenant_id, `status`, dept_id, position_id, role_id, telephone, email, entry_date, 
-      country_name, address_1, address_2, birthday, certificate_type, certificat_picture_1, 
-      certificat_picture_2, remark, employee_picture, first_name, last_name, full_name, 
-      code, gender, sys_user_id, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
+      email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
+      certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
+      first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.status,jdbcType=INTEGER}, #{item.deptId,jdbcType=BIGINT}, #{item.positionId,jdbcType=BIGINT}, 
-        #{item.roleId,jdbcType=BIGINT}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
-        #{item.entryDate,jdbcType=DATE}, #{item.countryName,jdbcType=VARCHAR}, #{item.address1,jdbcType=VARCHAR}, 
-        #{item.address2,jdbcType=VARCHAR}, #{item.birthday,jdbcType=TIMESTAMP}, #{item.certificateType,jdbcType=INTEGER}, 
-        #{item.certificatPicture1,jdbcType=VARCHAR}, #{item.certificatPicture2,jdbcType=VARCHAR}, 
+        #{item.roleId,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, 
+        #{item.email,jdbcType=VARCHAR}, #{item.entryDate,jdbcType=DATE}, #{item.countryName,jdbcType=VARCHAR}, 
+        #{item.address1,jdbcType=VARCHAR}, #{item.address2,jdbcType=VARCHAR}, #{item.birthday,jdbcType=TIMESTAMP}, 
+        #{item.certificateType,jdbcType=INTEGER}, #{item.certificatPicture1,jdbcType=VARCHAR}, 
+        #{item.certificatPicture2,jdbcType=VARCHAR}, #{item.openAccount,jdbcType=CHAR}, 
         #{item.remark,jdbcType=VARCHAR}, #{item.employeePicture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
         #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR}, 
         #{item.gender,jdbcType=INTEGER}, #{item.sysUserId,jdbcType=BIGINT}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -490,18 +517,19 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
     insert into ope_sys_staff
-    (id, dr, tenant_id, `status`, dept_id, position_id, role_id, telephone, email, entry_date, 
-      country_name, address_1, address_2, birthday, certificate_type, certificat_picture_1, 
-      certificat_picture_2, remark, employee_picture, first_name, last_name, full_name, 
-      code, gender, sys_user_id, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def5, def6)
+    (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
+      email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
+      certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
+      first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{deptId,jdbcType=BIGINT}, #{positionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
-      #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{entryDate,jdbcType=DATE}, 
-      #{countryName,jdbcType=VARCHAR}, #{address1,jdbcType=VARCHAR}, #{address2,jdbcType=VARCHAR}, 
-      #{birthday,jdbcType=TIMESTAMP}, #{certificateType,jdbcType=INTEGER}, #{certificatPicture1,jdbcType=VARCHAR}, 
-      #{certificatPicture2,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{employeePicture,jdbcType=VARCHAR}, 
+      #{countryCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{entryDate,jdbcType=DATE}, #{countryName,jdbcType=VARCHAR}, #{address1,jdbcType=VARCHAR}, 
+      #{address2,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, #{certificateType,jdbcType=INTEGER}, 
+      #{certificatPicture1,jdbcType=VARCHAR}, #{certificatPicture2,jdbcType=VARCHAR}, 
+      #{openAccount,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{employeePicture,jdbcType=VARCHAR}, 
       #{firstName,jdbcType=VARCHAR}, #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{sysUserId,jdbcType=BIGINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
@@ -515,6 +543,7 @@
     dept_id = #{deptId,jdbcType=BIGINT}, 
     position_id = #{positionId,jdbcType=BIGINT}, 
     role_id = #{roleId,jdbcType=BIGINT}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
     telephone = #{telephone,jdbcType=VARCHAR}, 
     email = #{email,jdbcType=VARCHAR}, 
     entry_date = #{entryDate,jdbcType=DATE}, 
@@ -525,6 +554,7 @@
     certificate_type = #{certificateType,jdbcType=INTEGER}, 
     certificat_picture_1 = #{certificatPicture1,jdbcType=VARCHAR}, 
     certificat_picture_2 = #{certificatPicture2,jdbcType=VARCHAR}, 
+    open_account = #{openAccount,jdbcType=CHAR}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     employee_picture = #{employeePicture,jdbcType=VARCHAR}, 
     first_name = #{firstName,jdbcType=VARCHAR}, 
@@ -568,6 +598,9 @@
       <if test="roleId != null">
         role_id,
       </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
       <if test="telephone != null">
         telephone,
       </if>
@@ -597,6 +630,9 @@
       </if>
       <if test="certificatPicture2 != null">
         certificat_picture_2,
+      </if>
+      <if test="openAccount != null">
+        open_account,
       </if>
       <if test="remark != null">
         remark,
@@ -673,6 +709,9 @@
       <if test="roleId != null">
         #{roleId,jdbcType=BIGINT},
       </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
       <if test="telephone != null">
         #{telephone,jdbcType=VARCHAR},
       </if>
@@ -702,6 +741,9 @@
       </if>
       <if test="certificatPicture2 != null">
         #{certificatPicture2,jdbcType=VARCHAR},
+      </if>
+      <if test="openAccount != null">
+        #{openAccount,jdbcType=CHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -778,6 +820,9 @@
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=BIGINT},
       </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
       <if test="telephone != null">
         telephone = #{telephone,jdbcType=VARCHAR},
       </if>
@@ -807,6 +852,9 @@
       </if>
       <if test="certificatPicture2 != null">
         certificat_picture_2 = #{certificatPicture2,jdbcType=VARCHAR},
+      </if>
+      <if test="openAccount != null">
+        open_account = #{openAccount,jdbcType=CHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},

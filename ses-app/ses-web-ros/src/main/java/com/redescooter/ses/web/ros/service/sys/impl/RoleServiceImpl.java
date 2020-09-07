@@ -23,10 +23,7 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.sys.MenuService;
-import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
-import com.redescooter.ses.web.ros.service.sys.RoleService;
-import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
+import com.redescooter.ses.web.ros.service.sys.*;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -77,6 +74,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private OpeSysStaffMapper opeSysStaffMapper;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Override
     @Transactional
@@ -547,6 +547,8 @@ public class RoleServiceImpl implements RoleService {
                 sysStaff.setStatus(2);
             }
             opeSysStaffMapper.updateBatch(updateList);
+            // 员工禁用之后，员工对应的账号也要被禁用
+            employeeService.disAbleUser(updateList.stream().map(OpeSysStaff::getId).collect(Collectors.toList()));
         }
     }
 }
