@@ -21,6 +21,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +31,7 @@ import java.util.Map;
 /**
  * @ClassName:SellsyServiceImpl
  * @description: SellsyServiceImpl
- * @author: Alex
- * @Version：1.3
+ * @author: Alex @Version：1.3
  * @create: 2020/08/18 19:44
  */
 @Log4j2
@@ -48,21 +50,22 @@ public class SellsyServiceImpl implements SellsyService {
     @Transactional
     @Override
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter) {
-        
+
         log.info("---------------------调用方法{}---------------------", enter.getMethod());
         log.info("-----------------------------方法参数{}---------------", enter.getParams());
-        //连接器 请求头配置
-        SellsySpringRestExecutor sellsySpringRestExecutor = new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(), sellsyConfig.getUserToken(),
-                sellsyConfig.getUserSecret());
-        
-        //配置 请求参数
+        // 连接器 请求头配置
+        SellsySpringRestExecutor sellsySpringRestExecutor =
+            new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(),
+                sellsyConfig.getUserToken(), sellsyConfig.getUserSecret());
+
+        // 配置 请求参数
         SellsyApiRequest request = new SellsyApiRequest(enter.getMethod(), enter.getParams());
-        
+
         SellsyGeneralResult sellsyGeneralResult = new SellsyGeneralResult();
-        
+
         SellsyApiResponse result = null;
         try {
-            //执行请求
+            // 执行请求
             result = sellsySpringRestExecutor.process(request);
             log.info("----------------返回值{}---------------", result);
             sellsyGeneralResult.setResult(result);
@@ -87,7 +90,8 @@ public class SellsyServiceImpl implements SellsyService {
             return resultList;
         }
         try {
-            resultList = (List<T>) JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(), t.getClass());
+            resultList = (List<T>)JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(),
+                t.getClass());
         } catch (Exception e) {
             e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
@@ -97,11 +101,8 @@ public class SellsyServiceImpl implements SellsyService {
     }
 
     /**
-     * 主要处理 存在默认值的返回值（无返回值 也可以处理） {
-     * 	"8189455_0": {
-     *        }
-     * 	"defaultShippingId": "8189455"
-     * }
+     * 主要处理 存在默认值的返回值（无返回值 也可以处理） { "8189455_0": { } "defaultShippingId": "8189455" }
+     * 
      * @param sellsyGeneralResult
      * @param t
      * @param <T>
@@ -114,16 +115,16 @@ public class SellsyServiceImpl implements SellsyService {
             return resultList;
         }
         try {
-            Map<String, String> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), new TypeReference<Map<String, String>>() {
-            });
+            Map<String, String> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(),
+                new TypeReference<Map<String, String>>() {});
 
-            //移除默认值字段
+            // 移除默认值字段
             for (DefultFiledEnums item : DefultFiledEnums.values()) {
                 if (objMap.keySet().contains(item.getValue())) {
                     objMap.remove(item.getValue());
                 }
             }
-            resultList.addAll((List<T>) JSON.parseArray(objMap.values().toString(), t.getClass()));
+            resultList.addAll((List<T>)JSON.parseArray(objMap.values().toString(), t.getClass()));
         } catch (Exception e) {
             e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
@@ -140,23 +141,71 @@ public class SellsyServiceImpl implements SellsyService {
      * @return
      */
     @Override
-    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, Class<T> t) {
+    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t) {
         List<T> resultList = new ArrayList<>();
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
             return resultList;
         }
         try {
-            Map<String, Map<String, T>> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+            Map<String, Map<String, T>> objMap =
+                JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
             if (CollectionUtil.isEmpty(objMap)) {
                 return resultList;
             }
             objMap.keySet().forEach(item -> {
                 if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
 
-                    List<T> targetMap = JSON.parseArray(objMap.get(item).values().toString(), t);
+                    List<T> targetMap = (List<T>)JSON.parseArray(objMap.get(item).values().toString(), t.getClass());
                     resultList.addAll(targetMap);
                 }
             });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
+                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        return resultList;
+    }
+
+    /**
+     * json 转Map
+     * 
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    @Override
+    public <T> List<Object> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, Object enumObj, T t) {
+        List<Object> resultList = new ArrayList<>();
+        if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
+            return resultList;
+        }
+        // 判断传入值 是否为枚举
+        if (!(enumObj instanceof java.lang.Enum)) {
+            return resultList;
+        }
+
+        try {
+            Map<String, String> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+            if (CollectionUtil.isEmpty(objMap)) {
+                return resultList;
+            }
+            for (Field item : t.getClass().getDeclaredFields()) {
+                item.setAccessible(true);
+                if (objMap.containsKey(item.getName())) {
+                    // 如果是List类型，得到其Generic的类型
+                    Type genericType = item.getGenericType();
+
+                    ParameterizedType pt = (ParameterizedType)genericType;
+                    // 得到泛型里的class类型对象
+                    Class<?> accountPrincipalApproveClazz = (Class<?>)pt.getActualTypeArguments()[0];
+                    Object accountPrincipalApprove = accountPrincipalApproveClazz.newInstance();
+
+                    resultList.add(accountPrincipalApprove);
+
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,7 +239,8 @@ public class SellsyServiceImpl implements SellsyService {
     }
 
     /**
-     *  格式化 创建业务 返回的Id 问题
+     * 格式化 创建业务 返回的Id 问题
+     * 
      * @param sellsyGeneralResult
      * @return
      */

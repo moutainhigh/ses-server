@@ -67,7 +67,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetDocLayouts).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonChildFormatting(sellsyGeneralResult, SellsyLayoutResult.class);
+        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyLayoutResult());
     }
 
     /**
@@ -82,7 +82,8 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetPayDates).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        List<SellsyPayDateResult> sellsyPayDateResults = sellsyService.jsonChildFormatting(sellsyGeneralResult, SellsyPayDateResult.class);
+        List<SellsyPayDateResult> sellsyPayDateResults =
+            sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyPayDateResult());
 
         return sellsyPayDateResults;
     }

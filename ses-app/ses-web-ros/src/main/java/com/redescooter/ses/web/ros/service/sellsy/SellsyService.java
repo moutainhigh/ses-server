@@ -48,7 +48,16 @@ public interface SellsyService {
      * @param t
      * @return
      */
-    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, Class<T> clazz);
+    public <T> List<T> jsonChildFormatting(SellsyGeneralResult sellsyGeneralResult, T t);
+
+    /**
+     * json 转Map
+     * 
+     * @param sellsyGeneralResult
+     * @param
+     * @return
+     */
+    public <T> List<Object> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, Object emumObj, T t);
 
     /**
      * json 处理单个对象
