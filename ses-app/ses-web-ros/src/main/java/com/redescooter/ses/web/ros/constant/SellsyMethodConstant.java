@@ -159,5 +159,15 @@ public interface SellsyMethodConstant {
     //地址详情
     String Addresses_GetOne = "Addresses.getOne";
 
+    /**
+     * 附件模版
+     */
+
+    // 附件列表
+    String Briefcases_GetList = "Briefcases.getList";
+    // 附件上传
+    String Briefcases_UploadFile = "Briefcases.uploadFile";
+    // 附件删除
+    String Briefcases_Delete = "Briefcases.delete";
 
 }

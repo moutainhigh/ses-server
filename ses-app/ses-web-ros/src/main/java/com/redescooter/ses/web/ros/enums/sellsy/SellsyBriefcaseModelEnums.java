@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum SellsyBriefcaseModelEnums {
 
-    flat("flat", "平面"), files("files", "文件"), folders("folders", "文件夹");
+    // flat("flat", "平面"),
+    files("files", "文件"), folders("folders", "文件夹");
 
     private String code;
 

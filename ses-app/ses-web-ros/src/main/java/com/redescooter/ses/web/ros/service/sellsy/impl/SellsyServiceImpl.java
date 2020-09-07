@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
-
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
@@ -21,9 +21,6 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -176,35 +173,18 @@ public class SellsyServiceImpl implements SellsyService {
      * @return
      */
     @Override
-    public <T> List<Object> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, Object enumObj, T t) {
-        List<Object> resultList = new ArrayList<>();
+    public <T> List<T> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, T t) {
+        List<T> resultList = new ArrayList<>();
         if (sellsyGeneralResult == null || sellsyGeneralResult.getResult() == null) {
-            return resultList;
-        }
-        // 判断传入值 是否为枚举
-        if (!(enumObj instanceof java.lang.Enum)) {
             return resultList;
         }
 
         try {
-            Map<String, String> objMap = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
-            if (CollectionUtil.isEmpty(objMap)) {
-                return resultList;
-            }
-            for (Field item : t.getClass().getDeclaredFields()) {
-                item.setAccessible(true);
-                if (objMap.containsKey(item.getName())) {
-                    // 如果是List类型，得到其Generic的类型
-                    Type genericType = item.getGenericType();
 
-                    ParameterizedType pt = (ParameterizedType)genericType;
-                    // 得到泛型里的class类型对象
-                    Class<?> accountPrincipalApproveClazz = (Class<?>)pt.getActualTypeArguments()[0];
-                    Object accountPrincipalApprove = accountPrincipalApproveClazz.newInstance();
-
-                    resultList.add(accountPrincipalApprove);
-
-                }
+            List<Map<String, T>> mapList =
+                (List<Map<String, T>>)JSONArray.parse(sellsyGeneralResult.getResult().extractResponseList().toString());
+            for (Map<String, T> item : mapList) {
+                resultList.addAll((List<T>)JSON.parseArray(item.values().toString(), t.getClass()));
             }
 
         } catch (Exception e) {

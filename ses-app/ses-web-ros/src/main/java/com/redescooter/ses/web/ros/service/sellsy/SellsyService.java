@@ -57,7 +57,7 @@ public interface SellsyService {
      * @param
      * @return
      */
-    public <T> List<Object> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, Object emumObj, T t);
+    public <T> List<T> jsonMaptoList(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
      * json 处理单个对象

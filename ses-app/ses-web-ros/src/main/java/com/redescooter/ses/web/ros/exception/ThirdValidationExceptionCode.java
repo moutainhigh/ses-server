@@ -68,4 +68,10 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     //业务对象为空
     int BUSSINESS_OBJ_IS_EMPTY = 11019;
+
+    // 附件类型 为空
+    int SELLSY_BRIEFCASES_LINKEDTYPE_IS_EMPTY = 11020;
+
+    // 文件Id 为空
+    int SELLSY_BRIEFCASES_MODEL_IS_EMPTY = 11021;
 }
