@@ -124,7 +124,11 @@ public class SysPositionServiceImpl implements SysPositionService {
             roleService.disableRole(list);
         }
         OpeSysPosition position = new OpeSysPosition();
-        BeanUtils.copyProperties(enter, position);
+        position.setId(enter.getId());
+        position.setDeptId(enter.getDeptId());
+        position.setSort(enter.getSort());
+        position.setPositionName(enter.getPositionName());
+        position.setPositionStatus(enter.getPositionStatus());
         position.setDr(Constant.DR_FALSE);
         position.setUpdatedBy(enter.getUserId());
         position.setUpdatedTime(new Date());
