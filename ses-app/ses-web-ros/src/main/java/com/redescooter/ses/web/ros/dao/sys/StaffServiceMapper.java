@@ -16,12 +16,13 @@ public interface StaffServiceMapper {
 
     StaffResult staffDetail(@Param("id") Long id);
 
+    List<Long> userIds(@Param("id") Long id);
 
     StaffRoleResult staffRoleMsg(@Param("staffId") Long staffId);
 
-    int totalRows(@Param("enter") StaffListEnter enter);
+    int totalRows(@Param("enter") StaffListEnter enter,@Param("userIds") List<Long>  userIds);
 
-    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter);
+    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter,List<Long>  userIds);
 
     List<StaffDataResult> principalData(@Param("tenantId")Long tenantId);
 

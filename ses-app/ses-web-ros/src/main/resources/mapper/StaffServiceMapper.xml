@@ -28,7 +28,7 @@
           s.updated_time,
           s1.full_name as createdName,
           s2.full_name as updatedName,
-          s.def1,
+          s.open_account,
           s.dept_id,
           s.position_id
           from ope_sys_staff s
@@ -39,33 +39,38 @@
           where s.dr = 0 and
                 s.id = #{id}
 
+
     </select>
 
     <select id="totalRows" resultType="int">
       select count(*) from ope_sys_staff s
       where s.dr = 0
-      <include refid="staffListCondition"></include>
+        <include refid="staffListCondition">
+        </include>
     </select>
 
     <sql id="staffListCondition">
-      <if test="enter.deptId != null">
-        and s.dept_id = #{enter.deptId}
-      </if>
-      <if test="enter.positionId != null">
-        and s.position_id = #{enter.positionId}
-      </if>
-      <if test="enter.roleId != null">
-        and s.role_id = #{enter.roleId}
-      </if>
-      <if test="enter.status != null">
-        and s.status = #{enter.status}
-      </if>
-      <if test="enter.keyWord != null and enter.keyWord != ''">
-        and (s.full_name like concat('%', #{enter.keyWord}, '%')
-        or s.telephone like concat('%', #{enter.keyWord}, '%')
-        or s.email like concat('%', #{enter.keyWord}, '%')
-        )
-      </if>
+        <if test="enter.deptId != null">
+            and s.dept_id = #{enter.deptId}
+        </if>
+        <if test="enter.positionId != null">
+            and s.position_id = #{enter.positionId}
+        </if>
+        <if test="enter.status != null">
+            and s.status = #{enter.status}
+        </if>
+        <if test="userIds != null and userIds.size() != 0">
+            and s.id in
+            <foreach collection="userIds" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="enter.keyWord != null and enter.keyWord != ''">
+            and (s.full_name like concat('%', #{enter.keyWord}, '%')
+            or s.telephone like concat('%', #{enter.keyWord}, '%')
+            or s.email like concat('%', #{enter.keyWord}, '%')
+            )
+        </if>
     </sql>
 
 
@@ -76,6 +81,7 @@
       ope_sys_role
       WHERE
       id IN (SELECT role_id FROM ope_sys_user_role where user_id = #{staffId}) and dr = 0
+
     </select>
 
     <select id="staffList" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffListResult">
@@ -91,22 +97,33 @@
          s.created_time,
          d.name as deptName,
          p.position_name as positionName,
-         s.def1
+         s.open_account
         from ope_sys_staff s
         left join ope_sys_dept d on s.dept_id = d.id
         left join ope_sys_position p on s.position_id = p.id
         where s.dr = 0
-      <include refid="staffListCondition"></include>
+
+        <include refid="staffListCondition">
+        </include>
+
       order by created_time desc
       limit #{enter.startRow},#{enter.pageSize}
+
     </select>
 
     <select id="principalData" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult">
+
         select
           id as principal,
           full_name as principalName
         from ope_sys_staff
         where dr = 0 and tenant_id = #{tenantId}
+
     </select>
 
+    <select id="userIds" resultType="java.lang.Long">
+
+        SELECT user_id from ope_sys_user_role where role_id = #{id}
+
+    </select>
 </mapper>

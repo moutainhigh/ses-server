@@ -164,11 +164,15 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public PageResult<StaffListResult> staffList(StaffListEnter enter) {
-        int totalRows = staffServiceMapper.totalRows(enter);
+        List<Long>  userIds = new ArrayList<>();
+        if(!Objects.isNull(enter.getRoleId())){
+            userIds = staffServiceMapper.userIds(enter.getRoleId());
+        }
+        int totalRows = staffServiceMapper.totalRows(enter,userIds);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter,userIds);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if(staffRoleResult != null){
