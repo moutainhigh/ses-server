@@ -60,7 +60,7 @@
         <if test="enter.status != null">
             and s.status = #{enter.status}
         </if>
-        <if test="userIds != null and userIds.size() != 0">
+        <if test="enter.roleId != null">
             and s.id in
             <foreach collection="userIds" separator="," open="(" close=")" item="item">
                 #{item}

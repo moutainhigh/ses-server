@@ -20,6 +20,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
@@ -167,6 +168,9 @@ public class StaffServiceImpl implements StaffService {
         List<Long>  userIds = new ArrayList<>();
         if(!Objects.isNull(enter.getRoleId())){
             userIds = staffServiceMapper.userIds(enter.getRoleId());
+            if(CollectionUtils.isEmpty(userIds)){
+                return PageResult.createZeroRowResult(enter);
+            }
         }
         int totalRows = staffServiceMapper.totalRows(enter,userIds);
         if (totalRows == 0) {
@@ -216,9 +220,18 @@ public class StaffServiceImpl implements StaffService {
         }
         staff.setOpenAccount("1");
         opeSysStaffService.updateById(staff);
+        // 判断邮箱在user表里面是否已经存在过
+        QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUser.COL_LOGIN_NAME,staff.getEmail());
+        int count = opeSysUserService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
+        }
         OpeSysUser user = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);
-        String decryptPassword = "RedeScooter2019";
+        String decryptPassword = "RedEScooter2019";
+        user.setPassword(DigestUtils.md5Hex(decryptPassword + salt));
+        user.setSalt(String.valueOf(salt));
         user.setId(staff.getId());
         user.setDeptId(staff.getDeptId());
         user.setAppId(AppIDEnums.SES_ROS.getValue());
@@ -233,7 +246,7 @@ public class StaffServiceImpl implements StaffService {
         user.setCreatedTime(new Date());
         user.setUpdatedBy(enter.getUserId());
         user.setUpdatedTime(new Date());
-        user.setDef1(SysUserStatusEnum.NORMAL.getCode());
+        user.setDef1(SysUserStatusEnum.NORMAL.getValue());
         opeSysUserService.save(user);
         return new GeneralResult(enter.getRequestId());
     }

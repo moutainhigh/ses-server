@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
@@ -300,6 +301,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setType(MenuTypeEnums.checkCode(enter.getType()));
         menu.setIcon(enter.getIcon());
         menu.setLevel(enter.getLevel());
+        menu.setType(enter.getLevel() == null?"":enter.getLevel().toString());
         menu.setSort(enter.getSort());
         menu.setRemark(enter.getRemark());
         menu.setDef1(enter.getDef1());
@@ -387,7 +389,7 @@ public class MenuServiceImpl implements MenuService {
         node.setPath(menu.getPath());
         node.setLevel(menu.getLevel());
         node.setType(menu.getType());
-        node.setIcon(menu.getIcon());
+        node.setIcon(Strings.isNullOrEmpty(menu.getIcon())?"":menu.getIcon());
         node.setSort(menu.getSort());
         node.setRemark(menu.getRemark());
         node.setDef1(menu.getDef1());

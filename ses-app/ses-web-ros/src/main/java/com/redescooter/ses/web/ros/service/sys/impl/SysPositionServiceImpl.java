@@ -117,6 +117,8 @@ public class SysPositionServiceImpl implements SysPositionService {
         if (byId == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
+        // 修改时校验名称是否重复
+        checkPositionName(enter.getId(),enter.getPositionName(),enter.getDeptId());
         if (byId.getPositionStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getPositionStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             //岗位角色员工禁用
             List<Long> list = new ArrayList<>();
@@ -155,6 +157,8 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public GeneralResult save(SavePositionEnter enter) {
+        // 校验同部门下的岗位名称是否已存在
+        checkPositionName(null,enter.getPositionName(),enter.getDeptId());
         //校验上级部门是否被禁用
         sysDeptService.checkDeptStatus(enter.getDeptId());
         OpeSysPosition position = new OpeSysPosition();
@@ -169,6 +173,23 @@ public class SysPositionServiceImpl implements SysPositionService {
         opeSysPositionService.save(position);
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 校验同部门下面的岗位名称不能重复
+    void checkPositionName(Long id,String positionName,Long deptId){
+        QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
+        qw.eq(OpeSysPosition.COL_POSITION_NAME,positionName);
+        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
+        if(id != null){
+            qw.ne(OpeSysPosition.COL_ID,id);
+        }
+        int count = opeSysPositionService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SAVE_DEPT_POSITION_NAME_NOT_REPEAT.getCode(), ExceptionCodeEnums.SAVE_DEPT_POSITION_NAME_NOT_REPEAT.getMessage());
+        }
+    }
+
+
 
     @Override
     public BooleanResult deletePositionSelect(IdEnter enter) {

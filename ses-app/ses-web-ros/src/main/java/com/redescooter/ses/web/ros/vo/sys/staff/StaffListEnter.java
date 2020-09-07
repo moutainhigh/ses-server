@@ -12,7 +12,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
-public class StaffListEnter extends PageEnter {
+public class  StaffListEnter extends PageEnter {
 
     @ApiModelProperty(value = "员工状态 1：正常，2：禁用")
     private Integer status;

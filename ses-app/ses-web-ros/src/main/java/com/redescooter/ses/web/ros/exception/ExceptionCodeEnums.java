@@ -362,7 +362,9 @@ public enum ExceptionCodeEnums {
 
     ALREADY_OPEN(10172, "当前员工已经开通过账号"),
 
-    TYPE_IS_NULL(10173, "类型不能为空")
+    TYPE_IS_NULL(10173, "类型不能为空"),
+
+    SAVE_DEPT_POSITION_NAME_NOT_REPEAT(10174, "同部门下面的岗位名称不能重复")
 
     ;
 

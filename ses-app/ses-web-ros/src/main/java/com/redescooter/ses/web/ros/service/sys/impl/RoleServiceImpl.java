@@ -459,6 +459,7 @@ public class RoleServiceImpl implements RoleService {
             for (String s : enter.getMenuIds().split(",")) {
                 set.add(Long.parseLong(s));
             }
+            set.add(1008301L);
             rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(),set);
         }
         return new GeneralResult(enter.getRequestId());

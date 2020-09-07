@@ -42,7 +42,7 @@ public class MenuTreeResult extends TreeNode {
     private String type;
 
     @ApiModelProperty(value = "图表")
-    private String icon;
+    private String icon = "";
 
     @ApiModelProperty(value = "等级")
     private Integer level;
