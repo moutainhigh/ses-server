@@ -85,6 +85,7 @@ public class StaffServiceImpl implements StaffService {
         }
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         staff.setCode(createCode());
+        staff.setSysUserId(staff.getId());
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(),enter.getRoleIds());

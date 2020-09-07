@@ -479,10 +479,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         List<OpeSysStaff> sysStaff = opeSysStaffService.list(new QueryWrapper<OpeSysStaff>().in(OpeSysStaff.COL_ID, byId.getUpdatedBy(), byId.getCreatedBy()));
         sysStaff.forEach(item -> {
-            if (item.getSysUserId().equals(byId.getCreatedBy())) {
+            if (item.getId().equals(byId.getCreatedBy())) {
                 result.setCreatedName(item.getFullName());
             }
-            if (item.getSysUserId().equals(byId.getUpdatedBy())) {
+            if (item.getId().equals(byId.getUpdatedBy())) {
                 result.setUpdatedName(item.getFullName());
             }
         });
