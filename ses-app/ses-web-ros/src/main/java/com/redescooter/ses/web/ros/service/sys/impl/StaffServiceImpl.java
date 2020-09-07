@@ -209,7 +209,7 @@ public class StaffServiceImpl implements StaffService {
         user.setCreatedTime(new Date());
         user.setUpdatedBy(enter.getUserId());
         user.setUpdatedTime(new Date());
-        user.setDef1(SysUserSourceEnum.WEBSITE.getValue());
+        user.setDef1(SysUserStatusEnum.NORMAL.getCode());
         opeSysUserService.save(user);
         return new GeneralResult(enter.getRequestId());
     }

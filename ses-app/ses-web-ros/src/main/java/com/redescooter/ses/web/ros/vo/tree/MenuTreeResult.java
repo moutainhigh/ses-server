@@ -35,7 +35,7 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "对应路由组件")
     private String component;
 
-    @ApiModelProperty(value = "菜单类型")
+    @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮，2：目录")
     private String type;
 
     @ApiModelProperty(value = "图表")

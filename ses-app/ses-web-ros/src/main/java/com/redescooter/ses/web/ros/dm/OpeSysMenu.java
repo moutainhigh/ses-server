@@ -78,7 +78,7 @@ public class OpeSysMenu {
      * 菜单类型：0菜单，1按钮，3开放API
      */
     @TableField(value = "type")
-    @ApiModelProperty(value="菜单类型：0菜单，1按钮，3开放API")
+    @ApiModelProperty(value="菜单类型：0菜单，1按钮，2：目录，3开放API")
     private String type;
 
     /**
