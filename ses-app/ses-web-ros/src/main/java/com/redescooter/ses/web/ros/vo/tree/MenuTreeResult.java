@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Date;
+
 
 /**
  * description: MenuTreeResult
@@ -71,9 +73,11 @@ public class MenuTreeResult extends TreeNode {
 
     @TableField(value = "menu_status")
     @ApiModelProperty(value = "状态 1：正常，2：禁用")
-    private Integer menuStatus;
+    private Integer menuStatus = 1;
 
-
+    @TableField(value = "created_time")
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
 
 
 }
