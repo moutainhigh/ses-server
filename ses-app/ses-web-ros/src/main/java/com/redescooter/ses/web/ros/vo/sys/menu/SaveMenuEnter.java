@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sys.menu;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
@@ -53,6 +54,14 @@ public class SaveMenuEnter extends GeneralEnter {
     @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮，2：目录")
     @NotNull(code = ValidationExceptionCode.MENU_TYPE_IS_EMPTY, message = "菜单类型为空")
     private String type;
+
+    @TableField(value = "if_to_link")
+    @ApiModelProperty(value = "是否外链。0：for，1：是")
+    private String ifToLink;
+
+    @TableField(value = "menu_status")
+    @ApiModelProperty(value = "状态 1：正常，2：禁用")
+    private Integer menuStatus;
 
     @ApiModelProperty(value = "等级")
     private Integer level;

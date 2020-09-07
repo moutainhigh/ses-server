@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -67,6 +68,12 @@ public class MenuTreeResult extends TreeNode {
 
     @ApiModelProperty(value = "是否隐藏")
     private boolean hidden = Boolean.FALSE;
+
+    @TableField(value = "menu_status")
+    @ApiModelProperty(value = "状态 1：正常，2：禁用")
+    private Integer menuStatus;
+
+
 
 
 }
