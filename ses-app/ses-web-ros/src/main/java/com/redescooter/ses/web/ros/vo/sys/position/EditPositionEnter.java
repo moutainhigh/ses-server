@@ -25,6 +25,9 @@ public class EditPositionEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
+    @ApiModelProperty(value = "岗位名称")
+    private String positionName;
+
     @ApiModelProperty(value = "所属部门id")
     @NotNull(code = com.redescooter.ses.web.ros.exception.ValidationExceptionCode.PLEASE_SELECT_DEPARTMENT, message = "请选择所属部门")
     private Long deptId;
