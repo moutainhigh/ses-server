@@ -109,7 +109,7 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty("是否开通过账号，0：未开通，1：已开通")
     private String openAccount = "0";
 
-    @ApiModelProperty(value = "更新人")
+    @ApiModelProperty(value = "国家编码如")
     private String countryCode;
 
 }

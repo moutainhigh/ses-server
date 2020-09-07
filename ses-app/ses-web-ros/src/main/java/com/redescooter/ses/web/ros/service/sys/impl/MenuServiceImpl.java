@@ -442,7 +442,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuDatasListResult> menuDatas(MenuDatasEnter enter) {
         if(enter.getType() == null){
-//            throw new SesWebRosException(ExceptionCodeEnums.；；.getCode(), ExceptionCodeEnums.；；.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.TYPE_IS_NULL.getCode(), ExceptionCodeEnums.TYPE_IS_NULL.getMessage());
         }
         List<MenuDatasListResult> list = new ArrayList<>();
         list = menuServiceMapper.menuDatas(enter.getType());

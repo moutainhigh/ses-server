@@ -156,5 +156,6 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
     @ApiModelProperty(value = "性别 1：男，2：女")
     private Integer gender;
 
-
+    @ApiModelProperty(value = "国家编码如")
+    private String countryCode;
 }

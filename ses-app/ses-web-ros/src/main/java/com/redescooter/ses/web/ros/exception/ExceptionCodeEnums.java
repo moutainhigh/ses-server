@@ -360,7 +360,9 @@ public enum ExceptionCodeEnums {
 
     DEPT_DISABLE(10171, "当前部门被禁用"),
 
-    ALREADY_OPEN(10172, "当前员工已经开通过账号")
+    ALREADY_OPEN(10172, "当前员工已经开通过账号"),
+
+    TYPE_IS_NULL(10173, "类型不能为空")
 
     ;
 
