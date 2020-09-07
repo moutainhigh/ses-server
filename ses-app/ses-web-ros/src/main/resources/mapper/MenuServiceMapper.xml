@@ -33,5 +33,18 @@
       and p_id = #{id}
     </select>
 
+    <select id="menuDatas" resultType="com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult">
+        select
+           id,name
+        from ope_sys_menu  where
+        dr = 0
+        <if test="type == 1">
+            and level = 1
+        </if>
+        <if test="type == 2">
+            and level = 2
+        </if>
+    </select>
+
 </mapper>
 

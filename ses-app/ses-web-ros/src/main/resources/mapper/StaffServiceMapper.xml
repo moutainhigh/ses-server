@@ -30,7 +30,8 @@
           s2.full_name as updatedName,
           s.open_account,
           s.dept_id,
-          s.position_id
+          s.position_id,
+          s.country_code
           from ope_sys_staff s
           left join ope_sys_dept d on s.dept_id = d.id
           left join ope_sys_position p on s.position_id = p.id

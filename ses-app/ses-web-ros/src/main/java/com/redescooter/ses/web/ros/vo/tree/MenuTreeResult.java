@@ -79,5 +79,7 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
+    @ApiModelProperty(value = "是否外链。0：否，1：是")
+    private String ifToLink;
 
 }

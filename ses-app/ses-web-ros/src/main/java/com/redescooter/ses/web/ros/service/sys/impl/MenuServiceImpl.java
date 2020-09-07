@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
@@ -29,6 +30,8 @@ import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -63,6 +66,9 @@ public class MenuServiceImpl implements MenuService {
     private IdAppService idAppService;
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private MenuServiceMapper menuServiceMapper;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -389,6 +395,7 @@ public class MenuServiceImpl implements MenuService {
         node.setDef3(menu.getDef3());
         node.setCreatedTime(menu.getCreatedTime());
         node.setMenuStatus(menu.getMenuStatus());
+        node.setIfToLink(menu.getIfToLink());
         return node;
     }
 
@@ -430,4 +437,16 @@ public class MenuServiceImpl implements MenuService {
         }
         return result;
     }
+
+
+    @Override
+    public List<MenuDatasListResult> menuDatas(MenuDatasEnter enter) {
+        if(enter.getType() == null){
+//            throw new SesWebRosException(ExceptionCodeEnums.；；.getCode(), ExceptionCodeEnums.；；.getMessage());
+        }
+        List<MenuDatasListResult> list = new ArrayList<>();
+        list = menuServiceMapper.menuDatas(enter.getType());
+        return list;
+    }
+
 }

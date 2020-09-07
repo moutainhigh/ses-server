@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -31,6 +33,6 @@ public interface MenuServiceMapper {
      */
     List<ModuleAuthResult> fatherModulePermissions(GeneralEnter enter);
 
-
+    List<MenuDatasListResult> menuDatas(@Param("type") Integer type);
 
 }

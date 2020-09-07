@@ -7,6 +7,8 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 
 import java.util.List;
@@ -118,6 +120,8 @@ public interface MenuService {
      * @return
      */
     List<VueRouter<MenuTreeResult>> vueRouters(GeneralEnter enter);
+
+    List<MenuDatasListResult> menuDatas(MenuDatasEnter enter);
 
 
 }
