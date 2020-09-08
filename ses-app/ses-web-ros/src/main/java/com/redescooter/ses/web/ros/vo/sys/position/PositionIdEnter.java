@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.vo.sys.position;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @ClassNamePositionIdEnter
