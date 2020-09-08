@@ -406,6 +406,9 @@ public class SysDeptServiceImpl implements SysDeptService {
                 deptChilds.add(deptResult.getId());
                 taffService.disAbleStaff(deptChilds);
             }
+            List<Long> disIds = new ArrayList<>();
+            disIds.add(deptResult.getId());
+            taffService.disAbleStaff(disIds);
             List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, enter.getId()));
             if (CollectionUtils.isNotEmpty(list)) {
                 //岗位禁用

@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
+import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -149,11 +150,37 @@ public class StaffServiceImpl implements StaffService {
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
+        if(!Strings.isNullOrEmpty(enter.getBirthday())){
+            staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
+        }
+        if(!Strings.isNullOrEmpty(enter.getEntryDate())){
+            staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
+        // 员工状态变化  影响到账号
+        if(enter.getStatus() != staff.getStatus()){
+            changeUserStatus(enter.getStatus(),staff.getStatus(),staff.getId());
+        }
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(),enter.getRoleId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    void changeUserStatus(Integer newStatus,Integer oldStatus,Long id){
+        OpeSysUser user = opeSysUserService.getById(id);
+        if(user != null){
+            if(newStatus == DeptStatusEnums.COMPANY.getValue() && oldStatus == DeptStatusEnums.DEPARTMENT.getValue()){
+                // 员工状态从正常变为禁用 user也要禁用
+                user.setStatus(UserStatusEnum.LOCK.getCode());
+            }else if (newStatus == DeptStatusEnums.DEPARTMENT.getValue() && oldStatus == DeptStatusEnums.COMPANY.getValue()){
+                // 员工状态从禁用变为正常 user也要正常
+                user.setStatus(UserStatusEnum.NORMAL.getCode());
+            }
+            opeSysUserService.updateById(user);
+        }
+    };
+
 
     void checkDeptPos(Long deptId,Long positionId){
         OpeSysDept dept = opeSysDeptMapper.selectById(deptId);

@@ -398,10 +398,10 @@ public class RoleServiceImpl implements RoleService {
         }
         RoleDetailResult roleDetail = roleServiceMapper.roleDetail(role.getId());
         // 查找当前角色下的员工数
-        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.eq(OpeSysStaff.COL_ROLE_ID, role.getId());
-        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
-        roleDetail.setNum(CollectionUtils.isNotEmpty(staffList)?0:staffList.size());
+        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUserRole.COL_ROLE_ID, role.getId());
+        List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
+        roleDetail.setNum(CollectionUtils.isEmpty(staffList)?0:staffList.size());
         return roleDetail;
     }
 
