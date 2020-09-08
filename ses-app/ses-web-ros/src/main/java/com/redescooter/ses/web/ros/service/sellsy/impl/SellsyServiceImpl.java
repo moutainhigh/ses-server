@@ -96,7 +96,8 @@ public class SellsyServiceImpl implements SellsyService {
         // 保存数据库
         if (e instanceof SellsyApiException || e instanceof HttpClientErrorException) {
             SellsyException sellsyException = sellsyExceptionService
-                .getOne(new LambdaQueryWrapper<SellsyException>().eq(SellsyException::getParameter, enter.toString()));
+                .getOne(
+                    new LambdaQueryWrapper<SellsyException>().eq(SellsyException::getMethodName, enter.getMethod()));
             if (sellsyException == null) {
                 // 保存
                 sellsyException = buildSellsyException(enter, e);
@@ -104,6 +105,7 @@ public class SellsyServiceImpl implements SellsyService {
                 sellsyException.setRequestCount(sellsyException.getRequestCount() + 1);
             }
             sellsyExceptionService.saveOrUpdate(sellsyException);
+            // 异常出现参数相同的异常出现三次后 发送邮件通知
             if (sellsyException.getRequestCount() > 2) {
                 // todo 发送邮件
             }
