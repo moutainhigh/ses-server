@@ -310,6 +310,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setUpdatedBy(enter.getUserId());
         menu.setUpdatedTime(new Date());
         menu.setIfToLink(enter.getIfToLink());
+        menu.setMenuStatus(enter.getMenuStatus());
         return menu;
     }
 

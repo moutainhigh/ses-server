@@ -590,6 +590,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (one!=null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
+        // 临时追加  部门最多加到4级
+        if(one.getLevel() != null && one.getLevel() >= 4){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_LEVEL_ERROR.getCode(), ExceptionCodeEnums.DEPT_LEVEL_ERROR.getMessage());
+        }
     }
 
     /**

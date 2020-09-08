@@ -372,6 +372,8 @@ public enum ExceptionCodeEnums {
 
     SORT_NOT_NEG(10177, "排序不能为负数"),
 
+    DEPT_LEVEL_ERROR(10178, "部门最多只能有4级"),
+
     ;
 
 
