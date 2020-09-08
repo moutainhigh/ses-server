@@ -14,6 +14,7 @@ import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnPhoneEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayCountryShortNameEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.*;
@@ -95,9 +96,9 @@ public class MondayServiceImpl implements MondayService {
     @Transactional
     @Override
     public MondayCreateResult websiteContantUs(MondayGeneralEnter enter) {
-        if (!mondayConfig.getLoadTemplate()) {
-            return new MondayCreateResult();
-        }
+//        if (!mondayConfig.getLoadTemplate()) {
+//            return new MondayCreateResult();
+//        }
 
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getContactUsBoardName());
@@ -127,9 +128,9 @@ public class MondayServiceImpl implements MondayService {
     @Transactional
     @Override
     public MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter) {
-        if (!mondayConfig.getLoadTemplate()) {
-            return new MondayCreateResult();
-        }
+//        if (!mondayConfig.getLoadTemplate()) {
+//            return new MondayCreateResult();
+//        }
 
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getOrderFormBoardName());
@@ -159,9 +160,9 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public MondayCreateResult websiteSubscriptionEmail(String email) {
-        if (!mondayConfig.getLoadTemplate()) {
-            return new MondayCreateResult();
-        }
+//        if (!mondayConfig.getLoadTemplate()) {
+//            return new MondayCreateResult();
+//        }
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult = getBoardByBoardName(mondayConfig.getSubEmailBoardName());
 
@@ -332,10 +333,6 @@ public class MondayServiceImpl implements MondayService {
         
         log.info("执行gql 返回值的json数据-------{}", mondayJson);
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
-        
-        if (mondayGeneralResult.getErrors() != null) {
-            throw new RuntimeException();
-        }
         return mondayGeneralResult;
     }
     
@@ -352,12 +349,18 @@ public class MondayServiceImpl implements MondayService {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add(mondayConfig.getParamQuery(), querySdl);
         map.add(mondayConfig.getParamVariables(), null);
-        
+
+        log.info("----------执行查询SQL{}----------",querySdl.toString());
         // 将请求头部和参数合成一个请求
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, httpHeaders);
         // 执行HTTP请求，将返回的结构使用ResultVO类格式化
-        ResponseEntity<String> response =
-                restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
+        ResponseEntity<String> response =null;
+       try {
+           response =
+                   restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
+       }catch (Exception e){
+           throw new SesWebRosException();
+       }
         return response.getBody();
     }
     
@@ -404,6 +407,7 @@ public class MondayServiceImpl implements MondayService {
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getTitle()), String.valueOf(enter.getT().getQty()));
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()), String.valueOf(enter.getT().getQty()));
             columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()), enter.getT().getProducModeltName());
+            columnValue.put(bookOrderMap.get(MondayBookOrderColumnEnums.COULEUR.getTitle()), enter.getT().getColor());
         }
         
         // 转json 并转义

@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
+import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -240,7 +241,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryService.save(opeCustomerInquiry);
     
         //发送数据到Monday
-        mondayData(product.getProductModel(), opeCustomerInquiry);
+        mondayData(product.getColor(),product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
     
@@ -249,7 +250,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param productModel
      * @param opeCustomerInquiry
      */
-    private void mondayData(String productModel, OpeCustomerInquiry opeCustomerInquiry) {
+    private void mondayData(String color,String productModel, OpeCustomerInquiry opeCustomerInquiry) {
         MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
         mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
@@ -263,6 +264,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
         mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
         mondayBookOrderEnter.setQty(1);
+        mondayBookOrderEnter.setColor(ProductColorEnums.getProductColorEnumsByValue(color).getCode());
         mondayGeneralEnter.setT(mondayBookOrderEnter);
         
         //Monday 同步数据
