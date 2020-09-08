@@ -3,8 +3,6 @@ package com.redescooter.ses.web.delivery.vo;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.annotation.Regexp;
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.delivery.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -59,8 +57,8 @@ public class SaveOrderDeliveryEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "收件人地址")
     @NotNull(code = ValidationExceptionCode.ADDRESS_IS_EMPTY, message = "收件人地址为空")
-    @MinimumLength(code = ValidationExceptionCode.ADDRESS_IS_UNAVAILABLE, message = "收件人地址字符长度为2-20字符")
-    @MaximumLength(code = ValidationExceptionCode.ADDRESS_IS_UNAVAILABLE, message = "收件人地址字符长度为2-20字符")
+    @MinimumLength(code = ValidationExceptionCode.ADDRESS_IS_UNAVAILABLE, message = "收件人地址字符长度为2-200字符")
+    @MaximumLength(value = "200", code = ValidationExceptionCode.ADDRESS_IS_UNAVAILABLE, message = "收件人地址字符长度为2-200字符")
     private String recipientAddress;
 
     @ApiModelProperty(value = "经度")

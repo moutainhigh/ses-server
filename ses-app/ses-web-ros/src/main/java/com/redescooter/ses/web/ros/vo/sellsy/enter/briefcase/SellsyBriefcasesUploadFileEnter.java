@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBriefcaseTypeEnums;
 import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 

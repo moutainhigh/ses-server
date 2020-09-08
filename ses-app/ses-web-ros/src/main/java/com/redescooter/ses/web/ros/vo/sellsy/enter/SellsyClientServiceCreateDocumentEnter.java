@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data //生成getter,setter等函数
@@ -75,4 +76,7 @@ public class SellsyClientServiceCreateDocumentEnter {
 
     //交付客户地址 ID 送货地址 可以都填写
     private SellsyIdEnter shipaddress;
+
+    // 期望时间
+    private Timestamp displayedDate;
 }

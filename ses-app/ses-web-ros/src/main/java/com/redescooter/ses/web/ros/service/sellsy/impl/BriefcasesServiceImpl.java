@@ -53,7 +53,7 @@ public class BriefcasesServiceImpl implements BriefcasesService {
     @Override
     public SellsyBriefcaseUploadFileResult briefcasesUploadFile(SellsyBriefcasesUploadFileEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.UPDATE.getValue())
                 .method(SellsyMethodConstant.Briefcases_UploadFile).params(enter).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
@@ -70,7 +70,7 @@ public class BriefcasesServiceImpl implements BriefcasesService {
     @Override
     public void briefcasesDelete(SellsyBriefcasesDeleteEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
-            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+            SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.DELETE.getValue())
                 .method(SellsyMethodConstant.Briefcases_Delete).params(enter).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
     }

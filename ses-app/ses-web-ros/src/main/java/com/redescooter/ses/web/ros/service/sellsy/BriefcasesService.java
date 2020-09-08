@@ -20,7 +20,7 @@ public interface BriefcasesService {
     SellsyBriefcasesListResult queryBriefcasesList(SellsyBriefcasesListEnter enter);
 
     /**
-     * 上传文件
+     * todo 上传文件 需要调试 SDK 具体和Sellsy 沟通后 在进行
      * 
      * @param enter
      * @return

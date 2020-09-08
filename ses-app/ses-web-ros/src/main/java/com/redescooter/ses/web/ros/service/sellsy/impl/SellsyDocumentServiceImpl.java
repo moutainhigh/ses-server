@@ -50,6 +50,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -319,7 +320,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .thirdid(enter.getThirdid())
                 .thirdident(SellsyConstant.NO_PARAMETER)
                 .ident(enter.getIdent())
-                .displayedDate(null)
+            .displayedDate(enter.getDisplayedDate())
                 .expireDate(null)
                 .subject(enter.getSubject())
                 .notes(enter.getNotes())
@@ -438,7 +439,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public List<SellsyIdResut> createDcumentList() {
         // 查询发票数据
         // List<SellsyInvoice> sellsyInvoiceList = sellsyInvoiceService.list(new
-        // LambdaQueryWrapper<SellsyInvoice>().eq(SellsyInvoice::getDef1, SellsyBooleanEnums.N.getCode()));
+        // LambdaQueryWrapper<SellsyInvoice>().eq(SellsyInvoice::getDef1, SellsyBooleanEnums.N.getvalue()));
         // if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
         // return new ArrayList<>();
         // }
@@ -575,16 +576,36 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyClientServiceCreateDocumentEnter.setSubject(sellsyConfig.getSubject());
             sellsyClientServiceCreateDocumentEnter.setNotes(item.getNotes());
             sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
-            // sellsyClientServiceCreateDocumentEnter.setRateCategory(Integer.valueOf(sellsyRateCategoryResults.get(0).getId()));
             sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter
                 .setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
             sellsyClientServiceCreateDocumentEnter
                 .setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyClientResult.getMainaddressid())));
             sellsyClientServiceCreateDocumentEnter.setSellsellEnterList(sellsyRowEnterList);
-            result.add(createDocument(sellsyClientServiceCreateDocumentEnter));
+            // java --》 php Timestamp 需要精确到秒 java默认精确到毫秒
+            sellsyClientServiceCreateDocumentEnter
+                .setDisplayedDate(new Timestamp(item.getInvoiceTime().getTime() / 1000));
+            SellsyIdResut sellsyIdResut = createDocument(sellsyClientServiceCreateDocumentEnter);
+
+            // 更新数据库 数据数据状态
+            item.setDef1(SellsyBooleanEnums.Y.getValue());
+            item.setDef2(String.valueOf(sellsyIdResut.getId()));
+            sellsyInvoiceService.updateById(item);
+
+            result.add(sellsyIdResut);
+
         });
 
+        // 更新发票状态
+        result.forEach(item -> {
+            SellsyUpdateDocumentInvoidSatusEnter sellsyUpdateDocumentInvoidSatusEnter =
+                SellsyUpdateDocumentInvoidSatusEnter.builder().doctype(SellsyDocmentTypeEnums.invoice)
+                    // todo 暂时都定为取消 等老板确认后 设置所有状态
+                    .step(SellsyDocumentInvoiceStatusEnums.cancelled).build();
+            SellsyUpdateDocumentStatusEnter sellsyUpdateDocumentStatusEnter = SellsyUpdateDocumentStatusEnter.builder()
+                .docid(item.getId()).document(sellsyUpdateDocumentInvoidSatusEnter).build();
+            upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
+        });
         return result;
     }
 
@@ -602,6 +623,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             jedisCluster.del(key);
         }
         try {
+            // 移除掉 value 值为null 的key 值
             Map<String, String> map = BeanUtils.describe(t);
             Set<String> removeKey = new HashSet<>();
             for (String item : map.keySet()) {
@@ -671,7 +693,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .createdTime(new Date())
                 .updatedTime(new Date())
                 .updatedBy(0L)
-                .def1(SellsyBooleanEnums.N.getCode())
+            .def1(SellsyBooleanEnums.N.getValue())
                 .build();
     }
 
@@ -682,7 +704,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .invoiceId(parentId)
                 .productNum(item.getProductNum())
                 .productName(item.getProductName())
-            .productNote(item.getProductNodes().replace("/", "-"))
+            .productNote(item.getProductNodes())
             // 税率
                 .tva(new BigDecimal(item.getTva()).multiply(new BigDecimal(100)).intValue())
                 .qty(Integer.valueOf(item.getProductQty()))
@@ -694,27 +716,5 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .createdTime(new Date())
                 .updatedBy(0L)
             .updatedTime(new Date()).build();
-    }
-
-    /**
-     * 将奇数个转义字符变为偶数个
-     * 
-     * @param s
-     * @return
-     */
-    public static String getDecodeJSONStr(String s) {
-        StringBuilder sb = new StringBuilder();
-        char c;
-        for (int i = 0; i < s.length(); i++) {
-            c = s.charAt(i);
-            switch (c) {
-                case '\\':
-                    sb.append("\\\\");
-                    break;
-                default:
-                    sb.append(c);
-            }
-        }
-        return sb.toString();
     }
 }

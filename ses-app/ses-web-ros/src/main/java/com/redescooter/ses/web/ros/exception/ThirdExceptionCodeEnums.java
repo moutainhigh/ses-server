@@ -38,6 +38,8 @@ public enum ThirdExceptionCodeEnums {
     SELLSY_RATE_CATEGORY_IS_NOT_EXIST(11013, "文档增值税类型为空"),
 
     SELLSY_PRODUCT_IS_NOT_EXIST(11014, "产品不存在"),
+
+    SELLSY_CALL_FAILED(11015, "Sellsy调用失败请稍后重试"),
     ;
 
     private int code;

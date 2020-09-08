@@ -1,27 +1,38 @@
 package com.redescooter.ses.web.ros.service.sellsy.impl;
+
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
+import com.redescooter.ses.web.ros.dm.SellsyException;
 import com.redescooter.ses.web.ros.enums.sellsy.DefultFiledEnums;
+import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.exception.ThirdExceptionCodeEnums;
+import com.redescooter.ses.web.ros.service.base.SellsyExceptionService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.sellsy.coreConnector.SellsyApiException;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,13 +49,18 @@ public class SellsyServiceImpl implements SellsyService {
     @Autowired
     private SellsyConfig sellsyConfig;
 
+    @Autowired
+    private SellsyExceptionService sellsyExceptionService;
+
+    @Reference
+    private IdAppService idAppService;
+
     /**
      * sellsy 具体执行器
      *
      * @param enter
      * @return
      */
-    @Transactional
     @Override
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter) {
 
@@ -62,15 +78,37 @@ public class SellsyServiceImpl implements SellsyService {
 
         SellsyApiResponse result = null;
         try {
+            throw new HttpClientErrorException(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
             // 执行请求
-            result = sellsySpringRestExecutor.process(request);
-            log.info("----------------返回值{}---------------", result);
-            sellsyGeneralResult.setResult(result);
+            // result = sellsySpringRestExecutor.process(request);
+            // log.info("----------------返回值{}---------------", result);
+            // sellsyGeneralResult.setResult(result);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("--------------调用出现问题-----------------");
+            // 异常处理
+            sellsyExceptionService(enter, e);
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
+                ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
         }
-        return sellsyGeneralResult;
+        // return sellsyGeneralResult;
+    }
+
+    private void sellsyExceptionService(SellsyExecutionEnter enter, Exception e) {
+        // 保存数据库
+        if (e instanceof SellsyApiException || e instanceof HttpClientErrorException) {
+            SellsyException sellsyException = sellsyExceptionService
+                .getOne(new LambdaQueryWrapper<SellsyException>().eq(SellsyException::getParameter, enter.toString()));
+            if (sellsyException == null) {
+                // 保存
+                sellsyException = buildSellsyException(enter, e);
+            } else {
+                sellsyException.setRequestCount(sellsyException.getRequestCount() + 1);
+            }
+            sellsyExceptionService.saveOrUpdate(sellsyException);
+            if (sellsyException.getRequestCount() > 2) {
+                // todo 发送邮件
+            }
+        }
+        e.printStackTrace();
     }
 
     /**
@@ -90,7 +128,6 @@ public class SellsyServiceImpl implements SellsyService {
             resultList = (List<T>)JSON.parseArray(sellsyGeneralResult.getResult().extractResponseList().toString(),
                 t.getClass());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -123,7 +160,6 @@ public class SellsyServiceImpl implements SellsyService {
             }
             resultList.addAll((List<T>)JSON.parseArray(objMap.values().toString(), t.getClass()));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -211,7 +247,6 @@ public class SellsyServiceImpl implements SellsyService {
         try {
             result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), t);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -233,10 +268,25 @@ public class SellsyServiceImpl implements SellsyService {
         try {
             result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return new SellsyIdResut(new ArrayList<>(result.values()).get(0));
+    }
+
+    /**
+     * 构建异常对象
+     * 
+     * @param enter
+     * @param e
+     * @return
+     */
+    private SellsyException buildSellsyException(SellsyExecutionEnter enter, Exception e) {
+        SellsyException sellsyException;
+        sellsyException = SellsyException.builder().id(idAppService.getId("sellsy_exception")).dr(0)
+            .parameter(enter.toString()).status(SellsyBooleanEnums.N.getValue()).exceptionCase(e.getMessage())
+            .methodType(enter.getSellsyMethodType()).methodName(enter.getMethod()).requestCount(1).createdBy(0L)
+            .createdTime(new Date()).updatedBy(0L).updatedTime(new Date()).build();
+        return sellsyException;
     }
 }
