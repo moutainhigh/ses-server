@@ -96,7 +96,7 @@
                     IF
                         ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
                     FROM
-                        ( SELECT id, p_id FROM ope_sys_dept t ) t1,
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
                         ( SELECT @pids := #{deptId}) t2
                     ) t3
                 WHERE
@@ -135,7 +135,24 @@
          name as name
         from ope_sys_dept
         where dr = 0
-        and tenant_id = #{tenantId}
+        and tenant_id = #{tenantId} and id != 1000000
+    </select>
+
+    <select id="getChildDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
+        SELECT * from ope_sys_dept  where id in (SELECT
+                  id
+               FROM
+                    (
+                    SELECT
+                        t1.id,
+                    IF
+                        ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+                    FROM
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
+                        ( SELECT @pids := #{deptId}) t2
+                    ) t3
+                WHERE
+            ischild != 0)
     </select>
 
 </mapper>

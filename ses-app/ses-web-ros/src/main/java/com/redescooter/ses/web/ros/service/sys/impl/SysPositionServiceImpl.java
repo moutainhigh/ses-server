@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -60,8 +61,8 @@ public class SysPositionServiceImpl implements SysPositionService {
      * @return
      */
     @Override
-    public List<PositionTypeResult> selectPositionType(GeneralEnter enter) {
-        return positionServiceMapper.positionTypeList(enter.getTenantId());
+    public List<PositionTypeResult> selectPositionType(DeptIdEnter enter) {
+        return positionServiceMapper.positionTypeList(enter.getTenantId(),enter.getDeptId());
     }
 
     /**

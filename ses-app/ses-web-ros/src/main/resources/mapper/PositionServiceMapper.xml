@@ -22,6 +22,9 @@
         from ope_sys_position
         where dr = 0
         and tenant_id = #{tenantId}
+        <if test="deptId != null">
+            and dept_id = #{deptId}
+        </if>
     </select>
     <select id="listcount" resultType="int">
         SELECT

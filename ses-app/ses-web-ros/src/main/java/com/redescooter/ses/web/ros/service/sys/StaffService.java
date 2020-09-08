@@ -52,4 +52,14 @@ public interface StaffService {
 
     GeneralResult openAccount(StaffOpEnter enter);
 
+
+    /**
+     * @Author Aleks
+     * @Description  禁用部门下面的员工
+     * @Date  2020/9/8 13:59
+     * @Param [deptIds]
+     * @return
+     **/
+    void disAbleStaff(List<Long> deptIds);
+
 }

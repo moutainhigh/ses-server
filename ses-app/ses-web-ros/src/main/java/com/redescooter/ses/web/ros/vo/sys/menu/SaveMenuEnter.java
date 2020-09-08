@@ -52,7 +52,7 @@ public class SaveMenuEnter extends GeneralEnter {
     private Integer sort;
 
     @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮，2：目录")
-    @NotNull(code = ValidationExceptionCode.MENU_TYPE_IS_EMPTY, message = "菜单类型为空")
+//    @NotNull(code = ValidationExceptionCode.MENU_TYPE_IS_EMPTY, message = "菜单类型为空")
     private String type;
 
     @TableField(value = "if_to_link")

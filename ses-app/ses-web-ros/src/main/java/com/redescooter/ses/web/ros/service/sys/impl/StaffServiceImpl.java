@@ -5,21 +5,23 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameStaffServiceImpl
@@ -63,6 +66,17 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSysUserService opeSysUserService;
 
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private OpeSysDeptMapper opeSysDeptMapper;
+
+    @Autowired
+    private OpeSysPositionMapper opeSysPositionMapper;
+
+
     @Override
     @Transactional
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
@@ -71,12 +85,15 @@ public class StaffServiceImpl implements StaffService {
         }
         // 校验邮箱是否存在
         checkEmail(enter.getEmail(),enter.getId());
+        // 校验部门、岗位是否是可用状态
+        checkDeptPos(enter.getDeptId(),enter.getPositionId());
         OpeSysStaff staff = new OpeSysStaff();
         BeanUtils.copyProperties(enter,staff);
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
         staff.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
+        staff.setCreatedBy(enter.getUserId());
         if(!Strings.isNullOrEmpty(enter.getBirthday())){
             staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
         }
@@ -88,7 +105,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setSysUserId(staff.getId());
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
-        creatRoleStaff(staff.getId(),enter.getRoleIds());
+        creatRoleStaff(staff.getId(),enter.getRoleId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -126,6 +143,7 @@ public class StaffServiceImpl implements StaffService {
         if(staff == null){
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        checkDeptPos(enter.getDeptId(),enter.getPositionId());
         checkEmail(enter.getEmail(),enter.getId());
         BeanUtils.copyProperties(enter,staff);
         staff.setFullName(staff.getFirstName()+" "+staff.getLastName());
@@ -133,8 +151,25 @@ public class StaffServiceImpl implements StaffService {
         staff.setUpdatedTime(new Date());
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
-//        creatRoleStaff(staff.getId(),enter.getRoleIds());
+        creatRoleStaff(staff.getId(),enter.getRoleId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    void checkDeptPos(Long deptId,Long positionId){
+        OpeSysDept dept = opeSysDeptMapper.selectById(deptId);
+        if(dept == null){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
+        }
+        if(dept.getDeptStatus() == DeptStatusEnums.DEPARTMENT.getValue()){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
+        }
+        OpeSysPosition position = opeSysPositionMapper.selectById(positionId);
+        if(position == null){
+            throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
+        }
+        if(position.getPositionStatus() == DeptStatusEnums.DEPARTMENT.getValue()){
+            throw new SesWebRosException(ExceptionCodeEnums.POSITION_DISABLED.getCode(), ExceptionCodeEnums.POSITION_DISABLED.getMessage());
+        }
     }
 
 
@@ -144,6 +179,7 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
         }
         opeSysStaffService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
+        opeSysUserService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -273,5 +309,24 @@ public class StaffServiceImpl implements StaffService {
         }
 
     }
+
+
+
+    @Override
+    public void disAbleStaff(List<Long> deptIds) {
+        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+        qw.in(OpeSysStaff.COL_DEPT_ID,deptIds);
+        List<OpeSysStaff>  staffList = opeSysStaffService.list(qw);
+        if(CollectionUtils.isNotEmpty(staffList)){
+            List<OpeSysStaff> staffs = new ArrayList<>();
+            for (OpeSysStaff staff : staffList) {
+                staff.setStatus(2);
+                staffs.add(staff);
+            }
+            opeSysStaffService.updateBatchById(staffs);
+            employeeService.disAbleUser(staffs.stream().map(OpeSysStaff::getId).collect(Collectors.toList()));
+            }
+    }
+
 
 }

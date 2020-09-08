@@ -17,7 +17,7 @@ import java.util.List;
  **/
 public interface PositionServiceMapper{
 
-    List<PositionTypeResult> positionTypeList(long tenantId);
+    List<PositionTypeResult> positionTypeList(@Param("tenantId") Long tenantId,@Param("deptId") Long deptId);
 
    int listcount(PositionEnter tenantId);
 

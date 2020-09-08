@@ -3,10 +3,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
-import com.redescooter.ses.web.ros.vo.sys.dept.AddDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptDetailsResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
@@ -38,7 +35,7 @@ public class SysPositionController {
 
     @PostMapping(value = "/selectPositionType")
     @ApiOperation(value = "查询岗位类型", response = PositionTypeResult.class)
-    public Response<List<PositionTypeResult>> selectPosition(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<PositionTypeResult>> selectPosition(@ModelAttribute @ApiParam("请求参数") DeptIdEnter enter) {
         return new Response<>(sysPositionService.selectPositionType(enter));
     }
 

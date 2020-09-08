@@ -6,6 +6,7 @@ import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.salearea.RoleAreaEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleCityTreeResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import io.swagger.annotations.Api;
@@ -133,7 +134,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleData")
     @ApiOperation(value = "角色的下拉数据接口--reseat", response = GeneralResult.class)
-    public Response<List<RoleDataResult>> roleData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<RoleDataResult>> roleData(@ModelAttribute @ApiParam("请求参数") PositionIdEnter enter) {
         return new Response(roleService.roleData(enter));
     }
 

@@ -364,7 +364,13 @@ public enum ExceptionCodeEnums {
 
     TYPE_IS_NULL(10173, "类型不能为空"),
 
-    SAVE_DEPT_POSITION_NAME_NOT_REPEAT(10174, "同部门下面的岗位名称不能重复")
+    SAVE_DEPT_POSITION_NAME_NOT_REPEAT(10174, "同部门下面的岗位名称不能重复"),
+
+    ACCOUNT_DISABLED(10175, "账号被禁用"),
+
+    POSITION_DISABLED(10176, "岗位被禁用"),
+
+    SORT_NOT_NEG(10177, "排序不能为负数"),
 
     ;
 

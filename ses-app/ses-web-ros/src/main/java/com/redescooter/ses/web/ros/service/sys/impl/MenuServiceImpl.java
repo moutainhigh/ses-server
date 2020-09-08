@@ -249,7 +249,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public GeneralResult edit(EditMenuEnter enter) {
-        OpeSysMenu menuUpdate = sysMenuService.getById(enter.getMenuId());
+        OpeSysMenu menuUpdate = sysMenuService.getById(enter.getId());
         if (menuUpdate == null) {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
@@ -309,6 +309,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setDef3(enter.getDef3());
         menu.setUpdatedBy(enter.getUserId());
         menu.setUpdatedTime(new Date());
+        menu.setIfToLink(enter.getIfToLink());
         return menu;
     }
 
@@ -398,6 +399,7 @@ public class MenuServiceImpl implements MenuService {
         node.setCreatedTime(menu.getCreatedTime());
         node.setMenuStatus(menu.getMenuStatus());
         node.setIfToLink(menu.getIfToLink());
+        node.setComponent(menu.getComponent());
         return node;
     }
 

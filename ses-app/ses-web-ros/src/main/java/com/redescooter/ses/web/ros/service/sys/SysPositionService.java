@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface SysPositionService {
      * @param enter
      * @return
      */
-    List<PositionTypeResult> selectPositionType(GeneralEnter enter);
+    List<PositionTypeResult> selectPositionType(DeptIdEnter enter);
 
     /**
      * 岗位列表

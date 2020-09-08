@@ -42,7 +42,7 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
      */
     @TableField(value = "role_id")
     @ApiModelProperty(value = "所属角色id")
-    private String roleIds;
+    private String roleId;
 
     /**
      * 联系电话

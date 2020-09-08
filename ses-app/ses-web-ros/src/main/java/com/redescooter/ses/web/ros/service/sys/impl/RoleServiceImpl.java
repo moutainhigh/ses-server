@@ -25,6 +25,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.*;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
@@ -309,6 +310,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public GeneralResult roleSave(RoleSaveOrEditEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
+        if (enter.getSort() != null && enter.getSort() < 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SORT_NOT_NEG.getCode(), ExceptionCodeEnums.SORT_NOT_NEG.getMessage());
+        }
         if (enter.getRoleName().length()<2||enter.getRoleName().length()>20){
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
         }
@@ -411,12 +415,12 @@ public class RoleServiceImpl implements RoleService {
         List<RoleListResult> list = roleServiceMapper.roleList(enter);
         List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
         // 查询这些角色下的员工数量
-        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.in(OpeSysStaff.COL_ROLE_ID,roleIds);
-        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+        qw.in(OpeSysUserRole.COL_ROLE_ID,roleIds);
+        List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
         if(CollectionUtils.isNotEmpty(staffList)){
             // 按角色id分组
-            Map<Long,List<OpeSysStaff>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysStaff::getRoleId));
+            Map<Long,List<OpeSysUserRole>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysUserRole::getRoleId));
             for (RoleListResult result : list) {
                 for (Long roleId : map.keySet()) {
                     if(Objects.equals(result.getId(),roleId)){
@@ -484,10 +488,13 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public List<RoleDataResult> roleData(GeneralEnter enter) {
+    public List<RoleDataResult> roleData(PositionIdEnter enter) {
         List<RoleDataResult> resultList = new ArrayList<>();
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
+        if(enter.getPositionId() != null){
+            qw.eq(OpeSysRole.COL_POSITION_ID,enter.getPositionId());
+        }
         List<OpeSysRole> roles = sysRoleService.list(qw);
         if(CollectionUtils.isNotEmpty(roles)){
             for (OpeSysRole role : roles) {
@@ -503,9 +510,9 @@ public class RoleServiceImpl implements RoleService {
 
 
     public void roleDeleCheck(Long roleId){
-        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.eq(OpeSysStaff.COL_ROLE_ID, roleId);
-        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUserRole.COL_ROLE_ID, roleId);
+        List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
         if(CollectionUtils.isNotEmpty(staffList)){
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_DELETE.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_DELETE.getMessage());
         }

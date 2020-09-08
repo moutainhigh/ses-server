@@ -107,6 +107,9 @@ public class TokenRosServiceImpl implements TokenRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
             }
         }
+        if(sysUser.getStatus().equals(SysUserStatusEnum.LOCK.getCode())){
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
+        }
         // 把密码的校验放到这里来  2020 7 17
         //密码解密
         String decryptPassword = checkPassWord(enter);
@@ -161,6 +164,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
+        boolean flag = false;
+        if(Strings.isNullOrEmpty(sysUser.getLastLoginToken())){
+            flag = true;
+        }
         //获取用户角色,更新至缓存
         //  setAuth(userRole.getRoleId());
 
@@ -174,6 +181,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
         result.setRequestId(enter.getRequestId());
+        result.setResetPsd(flag);
         return result;
     }
 

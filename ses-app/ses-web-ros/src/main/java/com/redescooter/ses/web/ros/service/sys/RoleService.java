@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
@@ -145,5 +146,5 @@ public interface RoleService {
     GeneralResult roleCityEdit( RoleCityEditEnter enter);
 
 
-    List<RoleDataResult> roleData( GeneralEnter enter);
+    List<RoleDataResult> roleData( PositionIdEnter enter);
 }

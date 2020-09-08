@@ -189,7 +189,6 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (CollectionUtils.isNotEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getCode(), ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getMessage());
         }
-
         opeSysDeptService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
@@ -370,6 +369,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
+    @Transactional
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
         if (enter.getPid() != null) {
@@ -382,8 +382,30 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (deptResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
+            // 禁用部门  部门下面的子部门全部禁用
+            List<OpeSysDept> childDepts = deptServiceMapper.getChildDept(deptResult.getId());
+            if (CollectionUtils.isNotEmpty(childDepts)){
+                List<OpeSysDept>  depts = new ArrayList<>();
+                for (OpeSysDept dept : childDepts) {
+                    dept.setDeptStatus(DeptStatusEnums.DEPARTMENT.getValue());
+                    depts.add(dept);
+                    opeSysDeptService.updateBatch(depts);
+                    List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, dept));
+                    if (CollectionUtils.isNotEmpty(list)) {
+                        //岗位禁用
+                        list.stream().forEach(opeSysPosition -> opeSysPosition.setPositionStatus(Integer.valueOf(DeptStatusEnums.DEPARTMENT.getValue())));
+                        opeSysPositionService.updateBatch(list);
+                        //岗位角色员工禁用
+                        ids = list.stream().map(OpeSysPosition::getId).collect(Collectors.toList());
+                        roleService.disableRole(ids);
+                    }
+                }
+                // 禁用部门下的员工
+                List<Long> deptChilds = childDepts.stream().map(OpeSysDept::getId).collect(Collectors.toList());
+                deptChilds.add(deptResult.getId());
+                taffService.disAbleStaff(deptChilds);
+            }
             List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, enter.getId()));
             if (CollectionUtils.isNotEmpty(list)) {
                 //岗位禁用

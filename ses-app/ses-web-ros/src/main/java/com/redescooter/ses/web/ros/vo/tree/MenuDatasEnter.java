@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class MenuDatasEnter extends GeneralEnter {
 
-    @ApiModelProperty("类型，查菜单传1，查目录传2")
+    @ApiModelProperty("类型，查菜单传2，查目录传1")
     private Integer type;
 
 }
