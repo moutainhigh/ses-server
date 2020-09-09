@@ -3,8 +3,6 @@ package com.redescooter.ses.web.ros.service.admin.impl;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
@@ -19,38 +17,16 @@ import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.admin.AdminServiceStarterMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.dm.OpeSysRole;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.service.admin.AdminServiceStarter;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
-import com.redescooter.ses.web.ros.service.base.impl.OpeSysUserRoleServiceImpl;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
-import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -195,7 +171,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      */
     @Transactional
     @Override
-    //@PostConstruct
+    @PostConstruct
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
