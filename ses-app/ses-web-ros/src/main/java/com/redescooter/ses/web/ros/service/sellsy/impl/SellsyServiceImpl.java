@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class SellsyServiceImpl implements SellsyService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter) {
 

@@ -329,8 +329,8 @@ public class SesWebRosApplicationTests {
     @Test
     public void  createCatalogue(){
 
-        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().eq(SellsyProduct::getStatus, "1"));
-        SellsyProduct sellsyProduct = sellsyProductList.get(0);
+        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3"));
+
 
         //查询计量单位
         List<SellsyUnitResult> sellsyUnitResultList = sellsyAccountSettingService.queryUnitList();
@@ -351,33 +351,41 @@ public class SesWebRosApplicationTests {
         if (sellsyTaxeResult==null){
             throw new SesWebRosException();
         }
-
-        //数据封装
-        SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
-        SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
-        catalogueTypeEnter.setName(sellsyProduct.getReplaceProductCode());
-        catalogueTypeEnter.setTradename(sellsyProduct.getProductName());
-        catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
-        catalogueTypeEnter.setNotes(StringUtils.isEmpty(sellsyProduct.getRemark())?null:sellsyProduct.getRemark());
-        catalogueTypeEnter.setTags(null);
-        catalogueTypeEnter.setUnitAmount(Float.valueOf(sellsyProduct.getProductPrice()));
-        catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
-        catalogueTypeEnter.setQty(1);
-        catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
-        catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
-        catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
-        sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
-        sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
-        SellsyIdResut catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
-        log.info("---------插入成功{}--------",catalogue);
+        sellsyProductList.forEach(item->{
+            //数据封装
+            SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
+            SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
+            catalogueTypeEnter.setName(StringUtils.isBlank(item.getReplaceProductCode())?item.getProductCode():item.getReplaceProductCode());
+            catalogueTypeEnter.setTradename(item.getProductName());
+            catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
+            catalogueTypeEnter.setNotes(StringUtils.isEmpty(item.getRemark())?null:item.getRemark());
+            catalogueTypeEnter.setTags(null);
+            catalogueTypeEnter.setUnitAmount(Float.valueOf(item.getProductPrice()));
+            catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
+            catalogueTypeEnter.setQty(1);
+            catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
+            catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
+            catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
+            sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+            sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
+            SellsyIdResut catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+            item.setDef1(String.valueOf(catalogue.getId()));
+        });
+        sellsyProductService.updateBatchById(sellsyProductList);
     }
 
     @Test
     public void deleteCatalogue(){
-        SellsyDeleteCatalogueEnter sellsyDeleteCatalogueEnter = new SellsyDeleteCatalogueEnter();
-        sellsyDeleteCatalogueEnter.setId(8418467);
-        sellsyDeleteCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
-        sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
+        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3"));
+        for (SellsyProduct item : sellsyProductList) {
+            if (StringUtils.isEmpty(item.getDef1())) {
+                break;
+            }
+            SellsyDeleteCatalogueEnter sellsyDeleteCatalogueEnter = new SellsyDeleteCatalogueEnter();
+            sellsyDeleteCatalogueEnter.setId(Integer.valueOf(item.getDef1()));
+            sellsyDeleteCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+            sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
+        }
     }
 
 }

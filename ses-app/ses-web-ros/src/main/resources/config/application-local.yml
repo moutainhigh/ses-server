@@ -280,7 +280,7 @@ sellsy:
   lang: cn #"flag": "cn" 翻译语言默认中文
   doc-layout: Facture pro # 发票布局
   subject: RedE Group Scooter # 发票主题
-  unit: 3497489 #计量单位 个
+  unit: 3497479 #计量单位 个
   tax-id: 3497473 #增值税税率
 
 

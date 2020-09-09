@@ -1,17 +1,10 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationException;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:SellsyExecutionEnter
@@ -26,7 +19,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyExecutionEnter extends GeneralEnter {
+public class SellsyExecutionEnter{
     
     
     @ApiModelProperty(value = "sellsy 方法")
