@@ -35,4 +35,7 @@ public interface MenuServiceMapper {
 
     List<MenuDatasListResult> menuDatas(@Param("type") Integer type);
 
+
+    List<Long> findChilds(@Param("id")Long id);
+
 }

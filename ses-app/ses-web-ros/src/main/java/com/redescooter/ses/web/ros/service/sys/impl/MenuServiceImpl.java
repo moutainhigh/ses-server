@@ -35,6 +35,7 @@ import com.redescooter.ses.web.ros.vo.tree.MenuDatasEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,7 +184,8 @@ public class MenuServiceImpl implements MenuService {
 
         OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
 
-        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+//        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+        if (admin.getLoginName().equals("carl@redescooter.com")) {
             return this.buildMenuParallel(sysMenuService.list(), null,Boolean.TRUE);
         } else {
             List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
@@ -220,18 +222,29 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public GeneralResult delete(IdEnter enter) {
-        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
-        wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
-        List<OpeSysMenu> list = sysMenuService.list(wrapper);
-        if (CollUtil.isNotEmpty(list)) {
-            //删除儿子
-            sysMenuService.remove(wrapper);
-            //删除角色菜单关系
-            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
-            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
-            roleMenuService.remove(delete);
+//        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
+//        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
+//        wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
+//        List<OpeSysMenu> list = sysMenuService.list(wrapper);
+//        if (CollUtil.isNotEmpty(list)) {
+//            //删除儿子
+//            sysMenuService.remove(wrapper);
+//            //删除角色菜单关系
+//            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+//            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
+//            roleMenuService.remove(delete);
+//        }
+
+        // 当前菜单或者目录下面的子的id集合，需要全部删除
+        List<Long> childs = findChilds(enter.getId());
+        if(CollectionUtils.isNotEmpty(childs)){
+            sysMenuService.removeByIds(childs);
         }
+        childs.add(enter.getId());
+        QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+        delete.in(OpeSysRoleMenu.COL_MENU_ID,childs);
+        roleMenuService.remove(delete);
+
         QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
         myself.eq(OpeSysMenu.COL_ID, enter.getId());
         myself.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
@@ -240,6 +253,14 @@ public class MenuServiceImpl implements MenuService {
 
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    public List<Long> findChilds(Long id){
+        List<Long> childs = menuServiceMapper.findChilds(id);
+        return childs;
+    }
+
+
 
     /**
      * 菜单编辑

@@ -20,6 +20,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
@@ -77,6 +78,9 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSysPositionMapper opeSysPositionMapper;
 
+    @Autowired
+    private OpeSysUserProfileService opeSysUserProfileService;
+
 
     @Override
     @Transactional
@@ -107,8 +111,40 @@ public class StaffServiceImpl implements StaffService {
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(),enter.getRoleId());
+        // 追加 创建user_profile数据
+        creatUserProfile(staff);
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 创建user_profile数据
+    public void creatUserProfile(OpeSysStaff staff){
+        OpeSysUserProfile opeSysUserProfile = new OpeSysUserProfile();
+        opeSysUserProfile.setId(idAppService.getId(SequenceName.OPE_SYS_USER_PROFILE));
+        opeSysUserProfile.setFirstName(staff.getFirstName());
+        opeSysUserProfile.setLastName(staff.getLastName());
+        opeSysUserProfile.setFullName(staff.getFullName());
+        opeSysUserProfile.setSysUserId(staff.getId());
+        opeSysUserProfile.setCreatedBy(staff.getCreatedBy());
+        opeSysUserProfile.setCreatedTime(new Date());
+        opeSysUserProfile.setUpdatedBy(staff.getUpdatedBy());
+        opeSysUserProfile.setUpdatedTime(new Date());
+        opeSysUserProfile.setCountryCode(staff.getCountryCode());
+        opeSysUserProfile.setEmail(staff.getEmail());
+        opeSysUserProfile.setGender(staff.getGender()==null?"1":staff.getGender().toString());
+        opeSysUserProfile.setAddress(staff.getAddress1());
+        opeSysUserProfile.setAddressBureau(staff.getAddress2());
+        opeSysUserProfile.setBirthday(staff.getBirthday());
+        opeSysUserProfile.setTelNumber(staff.getTelephone());
+        opeSysUserProfile.setJoinDate(staff.getEntryDate());
+        opeSysUserProfile.setCertificateType(staff.getCertificateType()==null?"1":staff.getCertificateType().toString());
+        opeSysUserProfile.setCertificateNegativeAnnex(staff.getCertificatPicture1());
+        opeSysUserProfile.setCertificatePositiveAnnex(staff.getCertificatPicture2());
+        opeSysUserProfile.setPicture(staff.getEmployeePicture());
+        opeSysUserProfileService.save(opeSysUserProfile);
+    }
+
+
 
     // 新增角色的时候  生成角色编码
     public String createCode(){

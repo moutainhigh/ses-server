@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao.admin;
 
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @ClassName:AdminServiceStarterMapper
@@ -18,7 +19,7 @@ public interface AdminServiceStarterMapper {
      * @param adminUserName
      * @return
      */
-    OpeSysUser checkAdmin(String adminUserName);
+    OpeSysUser checkAdmin(@Param("adminUserName") String adminUserName);
 
     /**
      * 查询部门根节点

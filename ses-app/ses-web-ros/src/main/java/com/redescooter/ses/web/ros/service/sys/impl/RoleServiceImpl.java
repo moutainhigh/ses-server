@@ -16,10 +16,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
 import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSysMenu;
-import com.redescooter.ses.web.ros.dm.OpeSysRole;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -78,6 +75,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private OpeSysRoleDataService opeSysRoleDataService;
 
     @Override
     @Transactional
@@ -387,6 +387,12 @@ public class RoleServiceImpl implements RoleService {
         // 检验角色下面是否有员工，有员工则不能删除
         roleDeleCheck(role.getId());
         sysRoleService.removeById(role.getId());
+        // 角色删除 把角色绑定菜单的关联关系删除（防止表数据过大）
+        rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getId()));
+        // 判断角色有没有数据权限，有的话 删除
+        QueryWrapper<OpeSysRoleData>  qw = new QueryWrapper<>();
+        qw.eq(OpeSysRoleData.COL_ROLE_ID,enter.getId());
+        opeSysRoleDataService.remove(qw);
         return new GeneralResult(enter.getRequestId());
     }
 

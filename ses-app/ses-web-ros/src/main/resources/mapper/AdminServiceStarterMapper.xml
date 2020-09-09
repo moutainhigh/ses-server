@@ -5,7 +5,7 @@
     <select id="checkAdmin" resultType="com.redescooter.ses.web.ros.dm.OpeSysUser">
         select *
         from ope_sys_user user
-        where user.login_name = 'sysAdmin'
+        where user.login_name = #{adminUserName}
     </select>
 
     <select id="topDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">

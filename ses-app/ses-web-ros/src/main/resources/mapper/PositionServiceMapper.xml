@@ -46,7 +46,7 @@
         FROM
         ope_sys_position pos LEFT JOIN ope_sys_dept dept ON pos.dept_id=dept.id
         <include refid="positionList"/>
-        order by  pos.created_time desc
+        order by pos.sort, pos.created_time desc
         limit #{startRow},#{pageSize}
     </select>
 
