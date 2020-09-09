@@ -131,20 +131,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         int salt = RandomUtils.nextInt(10000, 99999);
         //保存user
         OpeSysUser opeSysUser = buildOpeSysUser(dept.getId(), salt);
-
-        // 新建岗位
-        OpeSysPosition position = new OpeSysPosition();
-        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
-        position.setDeptId(dept.getId());
-        position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
-        position.setCreatedBy(opeSysUser.getId());
-        position.setUpdatedBy(opeSysUser.getId());
-        position.setCreatedTime(new Date());
-        position.setUpdatedTime(new Date());
-        position.setPositionCode("P000001");
-        position.setSort(1);
-        position.setTenantId(0L);
-        opeSysPositionService.save(position);
+        OpeSysPosition position = createOpeSysPosition(dept, opeSysUser);
 
         //保存员工
         OpeSysStaff opeSysStaff = buildOpeSysStaff(opeSysUser.getId());
@@ -157,8 +144,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
-            sysRole = saveRole();
-            sysRole.setPositionId(position.getId());
+            sysRole = saveRole(position.getId());
         }
 
         //账户保存
@@ -190,6 +176,23 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         return new GeneralResult();
     }
 
+    private OpeSysPosition createOpeSysPosition(OpeSysDept dept, OpeSysUser opeSysUser) {
+        // 新建岗位
+        OpeSysPosition position = new OpeSysPosition();
+        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setDeptId(dept.getId());
+        position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
+        position.setCreatedBy(opeSysUser.getId());
+        position.setUpdatedBy(opeSysUser.getId());
+        position.setCreatedTime(new Date());
+        position.setUpdatedTime(new Date());
+        position.setPositionCode("P000001");
+        position.setSort(1);
+        position.setTenantId(0L);
+        opeSysPositionService.save(position);
+        return position;
+    }
+
     /**
      * 校验admin 的数据是否完整
      * 在服务启动 完成 bean 注册后 会调用该方法
@@ -198,7 +201,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      */
     @Transactional
     @Override
-    //@PostConstruct
+    @PostConstruct
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
@@ -215,11 +218,15 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             saveAdmin();
             return new GeneralResult();
         }
+        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()));
+        if(position == null){
+            position = createOpeSysPosition(dept, sysUserServiceOne);
+        }
         //查询是否有admin Role 没有的话
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
-            sysRole = saveRole();
+            sysRole = saveRole(position.getId());
         }
         //查询员工 是否
         OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()).last("limit 1"));
@@ -261,9 +268,8 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     }
 
 
-    private OpeSysRole saveRole() {
-        OpeSysRole sysRole;
-        sysRole = OpeSysRole.builder()
+    private OpeSysRole saveRole(Long positionId) {
+        OpeSysRole sysRole = OpeSysRole.builder()
                 .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
                 .dr(0)
                 .tenantId(0L)
@@ -275,6 +281,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .updatedBy(0L)
                 .updateTime(new Date())
                 .roleCode("R000001")
+                .positionId(positionId)
                 .build();
         opeSysRoleService.save(sysRole);
         return sysRole;
