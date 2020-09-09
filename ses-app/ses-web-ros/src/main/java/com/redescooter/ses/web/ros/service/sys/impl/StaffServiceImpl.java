@@ -205,6 +205,7 @@ public class StaffServiceImpl implements StaffService {
         if(Strings.isNullOrEmpty(enter.getIds())){
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
         }
+        opeSysUserRoleService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         opeSysStaffService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         opeSysUserService.removeByIds(new ArrayList<>(Arrays.asList(enter.getIds().split(","))));
         return new GeneralResult(enter.getRequestId());
