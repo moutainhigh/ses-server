@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum SellsyCatalogueEnums {
+public enum SellsyCatalogueTypeEnums {
 
     item("item", "产品条目", "item"), service("service", "服务", "service");
 

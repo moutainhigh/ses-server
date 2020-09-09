@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.web.ros.dm.SellsyProduct;
 import com.redescooter.ses.web.ros.enums.sellsy.*;
+import com.redescooter.ses.web.ros.service.base.SellsyProductService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyCatalogueService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
@@ -12,6 +15,8 @@ import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueTypeEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
@@ -56,6 +61,9 @@ public class SesWebRosApplicationTests {
 
     @Autowired
     private JedisService jedisService;
+
+    @Autowired
+    private SellsyProductService sellsyProductService;
 
     @Autowired
     private WebSiteTokenService webSiteService;
@@ -244,7 +252,7 @@ public class SesWebRosApplicationTests {
             throw new RuntimeException();
         }
 
-        List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueEnums.item, null, null));
+        List<SellsyCatalogueResult> sellsyCatalogueResultList = sellsyCatalogueService.queryCatalogueList(new SellsyCatalogueListEnter(SellsyCatalogueTypeEnums.item, null, null));
         if (CollectionUtils.isEmpty(sellsyCatalogueResultList)) {
             log.info("----------------产品出错------------");
             throw new RuntimeException();
@@ -309,5 +317,27 @@ public class SesWebRosApplicationTests {
     @Test
     public void createDocumentList() {
         sellsyDocumentService.createDcumentList();
+    }
+
+    @Test
+    public void  createCatalogue(){
+
+        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().eq(SellsyProduct::getStatus, "1"));
+        SellsyProduct sellsyProduct = sellsyProductList.get(0);
+
+
+        SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
+
+        SellsyCreateCatalogueTypeEnter sellsyCreateCatalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
+        sellsyCreateCatalogueTypeEnter.setName(sellsyProduct.getProductName());
+        sellsyCreateCatalogueTypeEnter.setTradename(sellsyProduct.getProductName());
+        sellsyCreateCatalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
+
+
+        sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+        sellsyCreateCatalogueEnter.setItem(sellsyCreateCatalogueTypeEnter);
+        //sellsyCatalogueService.createCatalogue();
+
+
     }
 }

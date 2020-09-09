@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
@@ -78,18 +77,18 @@ public class SellsyServiceImpl implements SellsyService {
 
         SellsyApiResponse result = null;
         try {
-            throw new HttpClientErrorException(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-            // 执行请求
-            // result = sellsySpringRestExecutor.process(request);
-            // log.info("----------------返回值{}---------------", result);
-            // sellsyGeneralResult.setResult(result);
+            //throw new HttpClientErrorException(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+             //执行请求
+             result = sellsySpringRestExecutor.process(request);
+             log.info("----------------返回值{}---------------", result);
+             sellsyGeneralResult.setResult(result);
         } catch (Exception e) {
             // 异常处理
             sellsyExceptionService(enter, e);
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
                 ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
         }
-        // return sellsyGeneralResult;
+        return sellsyGeneralResult;
     }
 
     private void sellsyExceptionService(SellsyExecutionEnter enter, Exception e) {

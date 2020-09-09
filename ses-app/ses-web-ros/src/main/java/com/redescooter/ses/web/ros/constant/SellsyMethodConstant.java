@@ -138,6 +138,15 @@ public interface SellsyMethodConstant {
     // 产品详情
     String Catalogue_GetOne = "Catalogue.getOne";
 
+    //创建产品
+    String Catalogue_Create="Catalogue.create";
+
+    //更新产品
+    String Catalogue_Update="Catalogue.update";
+
+    //产品删除
+    String Catalogue_Delete="Catalogue.delete";
+
     /**
      * 员工查询
      */

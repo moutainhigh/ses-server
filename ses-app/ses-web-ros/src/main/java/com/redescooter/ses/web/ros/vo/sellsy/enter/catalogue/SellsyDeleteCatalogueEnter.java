@@ -2,9 +2,9 @@ package com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyCatalogueTypeEnums;
 import com.redescooter.ses.web.ros.exception.ThirdValidationExceptionCode;
+
 import lombok.*;
 
 @Data // 生成getter,setter等函数
@@ -12,16 +12,14 @@ import lombok.*;
 @NoArgsConstructor // 生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyQueryCatalogueOneEnter {
+public class SellsyDeleteCatalogueEnter {
 
-    @NotNull(code = ThirdValidationExceptionCode.SELLSY_CATALOGUE_TYPE_IS_EMPTY, message = "产品类型为空")
+    //产品类型
+    @NotNull(code = ThirdValidationExceptionCode.SELLSY_CATALOGUE_TYPE_IS_EMPTY,message = "产品类型为空")
     private SellsyCatalogueTypeEnums type;
 
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 为空")
-    private int id;
+    private SellsyCreateCatalogueTypeEnter item;
 
-    private SellsyBooleanEnums includeDecli;
-
-    // Language ID to use
-    private Integer langID;
+    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id为空")
+    private Integer id;
 }

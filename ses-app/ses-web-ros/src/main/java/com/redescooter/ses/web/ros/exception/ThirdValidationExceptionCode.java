@@ -74,4 +74,9 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
 
     // 文件Id 为空
     int SELLSY_BRIEFCASES_MODEL_IS_EMPTY = 11021;
+
+    //产品价格单位
+    int SELLSY_PRODUCT_UNIT_IS_EMPTY=11022;
+
+
 }

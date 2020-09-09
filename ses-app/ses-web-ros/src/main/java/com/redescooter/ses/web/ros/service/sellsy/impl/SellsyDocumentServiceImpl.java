@@ -530,7 +530,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter =
                         new SellsyCatalogueListSearchEnter();
                     sellsyCatalogueListSearchEnter.setName(invoiceB.getProductNum());
-                    sellsyCatalogueListEnter.setType(SellsyCatalogueEnums.item);
+                    sellsyCatalogueListEnter.setType(SellsyCatalogueTypeEnums.item);
                     sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
                     List<SellsyCatalogueResult> sellsyCatalogueResults =
                         sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
