@@ -189,6 +189,12 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (CollectionUtils.isNotEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getCode(), ExceptionCodeEnums.PLEASE_UNTIE_THE_SUBDEPT.getMessage());
         }
+        // 查当前部门下面的人数
+        Integer count = taffService.deptStaffCount(enter.getId(), 1);
+        if(count > 0){
+            // 部门下面有人  部门不能删除
+            throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
+        }
         opeSysDeptService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
