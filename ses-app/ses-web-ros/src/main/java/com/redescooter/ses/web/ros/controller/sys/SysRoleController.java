@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.sys;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.salearea.SaleAreaService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
+import com.redescooter.ses.web.ros.vo.roledata.RoleDataSaveEnter;
 import com.redescooter.ses.web.ros.vo.salearea.RoleAreaEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleCityTreeResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
@@ -151,4 +152,19 @@ public class SysRoleController {
     public Response<GeneralResult> roleAreaAuth(@ModelAttribute @ApiParam("请求参数") RoleAreaEnter enter) {
         return new Response(saleAreaService.roleAreaAuth(enter));
     }
+
+
+    @PostMapping(value = "/roleDataShow")
+    @ApiOperation(value = "查看角色的数据权限--reseat", response = GeneralResult.class)
+    public Response<GeneralResult> roleDataShow(@ModelAttribute @ApiParam("请求参数") RoleAreaEnter enter) {
+        return new Response(saleAreaService.roleAreaAuth(enter));
+    }
+
+
+//    @PostMapping(value = "/saveRoleData")
+//    @ApiOperation(value = "保存角色的数据权限--reseat", response = GeneralResult.class)
+//    public Response<GeneralResult> saveRoleData(@ModelAttribute @ApiParam("请求参数") RoleDataSaveEnter enter) {
+//        return new Response(saleAreaService.roleAreaAuth(enter));
+//    }
+
 }
