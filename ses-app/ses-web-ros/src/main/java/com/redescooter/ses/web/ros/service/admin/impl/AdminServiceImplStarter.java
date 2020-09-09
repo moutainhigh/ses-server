@@ -120,7 +120,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             log.info("---------------------admin存在无需保存--------------------------");
             return new GeneralResult();
         }
-
+        log.info("---------------------管理员账号不存在，开始创建--------------------------");
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
         if (dept == null) {
@@ -361,7 +361,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .tenantId(0L)
                 .principal(0L)
                 .level(Integer.valueOf(DeptLevelEnums.COMPANY.getValue()))
-                .name("RedE")
+                .name("ROOT")
                 .description(null)
                 .sort(1)
                 .createdBy(0L)
