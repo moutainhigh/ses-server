@@ -45,7 +45,7 @@ public class SellsyCreateCatalogueTypeEnter {
     private int qty=1;
 
     //单价是否含税
-    private SellsyBooleanEnums unitAmountIsTaxesFree;
+    private SellsyBooleanEnums unitAmountIsTaxesFree=SellsyBooleanEnums.N;
 
     //税率
     private Integer taxid;
@@ -77,7 +77,7 @@ public class SellsyCreateCatalogueTypeEnter {
     private float ecoTax;
 
     //增值税
-    private String taxrate;
+    private float taxrate;
 
     //宽度
     private float width;

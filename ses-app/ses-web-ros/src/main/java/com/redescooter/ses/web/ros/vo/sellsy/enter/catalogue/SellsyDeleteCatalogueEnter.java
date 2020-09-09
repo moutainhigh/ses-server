@@ -18,8 +18,6 @@ public class SellsyDeleteCatalogueEnter {
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_CATALOGUE_TYPE_IS_EMPTY,message = "产品类型为空")
     private SellsyCatalogueTypeEnums type;
 
-    private SellsyCreateCatalogueTypeEnter item;
-
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id为空")
     private Integer id;
 }

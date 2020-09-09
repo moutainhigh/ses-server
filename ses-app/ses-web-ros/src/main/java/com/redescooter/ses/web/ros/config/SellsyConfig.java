@@ -44,4 +44,10 @@ public class SellsyConfig {
 
     //主题
     private String subject;
+
+    //计量单位
+    private Integer unit;
+
+    //增值税税率
+    private Integer taxId;
 }

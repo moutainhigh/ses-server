@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.dm.SellsyProduct;
 import com.redescooter.ses.web.ros.enums.sellsy.*;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.SellsyProductService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyCatalogueService;
@@ -17,6 +19,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueTypeEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyDeleteCatalogueEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
@@ -30,6 +33,7 @@ import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
 import org.junit.Before;
@@ -270,7 +274,7 @@ public class SesWebRosApplicationTests {
                 .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
                 .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
-                .row_notes("")
+                .row_notes(null)
                 .row_whid(null)
                 .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
                 .row_serial(null)
@@ -319,25 +323,61 @@ public class SesWebRosApplicationTests {
         sellsyDocumentService.createDcumentList();
     }
 
+    @Autowired
+    private SellsyConfig sellsyConfig;
+
     @Test
     public void  createCatalogue(){
 
         List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().eq(SellsyProduct::getStatus, "1"));
         SellsyProduct sellsyProduct = sellsyProductList.get(0);
 
+        //查询计量单位
+        List<SellsyUnitResult> sellsyUnitResultList = sellsyAccountSettingService.queryUnitList();
+        if (CollectionUtils.isEmpty(sellsyUnitResultList)){
+            throw new SesWebRosException();
+        }
+        SellsyUnitResult sellsyUnitResult = sellsyUnitResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(sellsyConfig.getUnit()))).findFirst().orElse(null);
+        if (sellsyUnitResult==null){
+            throw new SesWebRosException();
+        }
+        //查询税率
+        List<SellsyTaxeResult> sellsyTaxeResults = sellsyAccountSettingService.queryTaxeList();
+        if (CollectionUtils.isEmpty(sellsyTaxeResults)){
+            throw new SesWebRosException();
+        }
 
+        SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(sellsyConfig.getTaxId()))).findFirst().orElse(null);
+        if (sellsyTaxeResult==null){
+            throw new SesWebRosException();
+        }
+
+        //数据封装
         SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
-
-        SellsyCreateCatalogueTypeEnter sellsyCreateCatalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
-        sellsyCreateCatalogueTypeEnter.setName(sellsyProduct.getProductName());
-        sellsyCreateCatalogueTypeEnter.setTradename(sellsyProduct.getProductName());
-        sellsyCreateCatalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
-
-
+        SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
+        catalogueTypeEnter.setName(sellsyProduct.getReplaceProductCode());
+        catalogueTypeEnter.setTradename(sellsyProduct.getProductName());
+        catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setNotes(StringUtils.isEmpty(sellsyProduct.getRemark())?null:sellsyProduct.getRemark());
+        catalogueTypeEnter.setTags(null);
+        catalogueTypeEnter.setUnitAmount(Float.valueOf(sellsyProduct.getProductPrice()));
+        catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
+        catalogueTypeEnter.setQty(1);
+        catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
+        catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
         sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
-        sellsyCreateCatalogueEnter.setItem(sellsyCreateCatalogueTypeEnter);
-        //sellsyCatalogueService.createCatalogue();
-
-
+        sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
+        SellsyIdResut catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+        log.info("---------插入成功{}--------",catalogue);
     }
+
+    @Test
+    public void deleteCatalogue(){
+        SellsyDeleteCatalogueEnter sellsyDeleteCatalogueEnter = new SellsyDeleteCatalogueEnter();
+        sellsyDeleteCatalogueEnter.setId(8418467);
+        sellsyDeleteCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+        sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
+    }
+
 }
