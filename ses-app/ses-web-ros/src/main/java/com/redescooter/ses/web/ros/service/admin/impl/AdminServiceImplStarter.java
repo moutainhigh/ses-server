@@ -3,12 +3,15 @@ package com.redescooter.ses.web.ros.service.admin.impl;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
+import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -20,13 +23,16 @@ import com.redescooter.ses.web.ros.dao.admin.AdminServiceStarterMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.service.admin.AdminServiceStarter;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.impl.OpeSysUserRoleServiceImpl;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -89,6 +95,9 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     @Autowired
     private OpeSysRoleMenuService opeSysRoleMenuService;
 
+    @Autowired
+    private OpeSysPositionService opeSysPositionService;
+
     /**
      * 检查admin 是否存在
      *
@@ -111,7 +120,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             log.info("---------------------admin存在无需保存--------------------------");
             return new GeneralResult();
         }
-
+        log.info("---------------------管理员账号不存在，开始创建--------------------------");
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
         if (dept == null) {
@@ -122,16 +131,20 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         int salt = RandomUtils.nextInt(10000, 99999);
         //保存user
         OpeSysUser opeSysUser = buildOpeSysUser(dept.getId(), salt);
+        OpeSysPosition position = createOpeSysPosition(dept, opeSysUser);
+
         //保存员工
         OpeSysStaff opeSysStaff = buildOpeSysStaff(opeSysUser.getId());
         opeSysStaff.setSysUserId(opeSysUser.getId());
+        opeSysStaff.setDeptId(dept.getId());
+        opeSysStaff.setPositionId(position.getId());
         //创建个人信息
         OpeSysUserProfile opeSysUserProfile = buildSysUserProfile(opeSysUser);
         //查询是否有admin Role 没有的话
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
-            sysRole = saveRole();
+            sysRole = saveRole(position.getId());
         }
 
         //账户保存
@@ -163,6 +176,23 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         return new GeneralResult();
     }
 
+    private OpeSysPosition createOpeSysPosition(OpeSysDept dept, OpeSysUser opeSysUser) {
+        // 新建岗位
+        OpeSysPosition position = new OpeSysPosition();
+        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setDeptId(dept.getId());
+        position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
+        position.setCreatedBy(opeSysUser.getId());
+        position.setUpdatedBy(opeSysUser.getId());
+        position.setCreatedTime(new Date());
+        position.setUpdatedTime(new Date());
+        position.setPositionCode("P000001");
+        position.setSort(1);
+        position.setTenantId(0L);
+        opeSysPositionService.save(position);
+        return position;
+    }
+
     /**
      * 校验admin 的数据是否完整
      * 在服务启动 完成 bean 注册后 会调用该方法
@@ -171,7 +201,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      */
     @Transactional
     @Override
-    @PostConstruct
+//    @PostConstruct
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
@@ -188,11 +218,15 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             saveAdmin();
             return new GeneralResult();
         }
+        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()).last("limit 1"));
+        if(position == null){
+            position = createOpeSysPosition(dept, sysUserServiceOne);
+        }
         //查询是否有admin Role 没有的话
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
         if (sysRole == null) {
             //创建角色
-            sysRole = saveRole();
+            sysRole = saveRole(position.getId());
         }
         //查询员工 是否
         OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()).last("limit 1"));
@@ -234,9 +268,8 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     }
 
 
-    private OpeSysRole saveRole() {
-        OpeSysRole sysRole;
-        sysRole = OpeSysRole.builder()
+    private OpeSysRole saveRole(Long positionId) {
+        OpeSysRole sysRole = OpeSysRole.builder()
                 .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
                 .dr(0)
                 .tenantId(0L)
@@ -247,6 +280,8 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .createTime(new Date())
                 .updatedBy(0L)
                 .updateTime(new Date())
+                .roleCode("R000001")
+                .positionId(positionId)
                 .build();
         opeSysRoleService.save(sysRole);
         return sysRole;
@@ -259,10 +294,10 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .repairShopId(0L)
                 .sysUserId(opeSysUser.getId())
                 .picture(null)
-                .firstName("ROOT")
-                .lastName("ROOT")
-                .fullName("ROOT ROOT")
-                .email("root@redescooter.com")
+                .firstName("rede")
+                .lastName("rede")
+                .fullName("rede rede")
+                .email("rede@redescooter.com")
                 .countryCode("33")
                 .telNumber(String.valueOf(RandomUtils.nextLong(10000L, 99999L)))
                 .gender(null)
@@ -281,7 +316,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysStaff buildOpeSysStaff(Long userId) {
         return OpeSysStaff.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_STAFF))
+                .id(userId)
                 .dr(0)
                 .status(Integer.parseInt(EmployeeStatusEnums.IN_SERVICE.getValue()))
                 .sysUserId(userId)
@@ -289,6 +324,13 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .createdTime(new Date())
                 .updatedBy(0L)
                 .updatedTime(new Date())
+                .firstName("rede")
+                .lastName("rede")
+                .fullName("rede rede")
+                .email("rede@redescooter.com")
+                .countryCode("33")
+                .code("S000001")
+                .openAccount("1")
                 .build();
     }
 
@@ -321,6 +363,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         dept = OpeSysDept.builder()
                 .id(idAppService.getId(SequenceName.OPE_SYS_DEPT))
                 .dr(0)
+                .code("D000001")
                 .pId(Constant.DEPT_TREE_ROOT_ID)
                 .tenantId(0L)
                 .principal(0L)

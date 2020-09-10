@@ -5,10 +5,10 @@
     <select id="checkAdmin" resultType="com.redescooter.ses.web.ros.dm.OpeSysUser">
         select *
         from ope_sys_user user
-        where user.login_name = 'sysAdmin'
+        where user.login_name = #{adminUserName}
     </select>
 
     <select id="topDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
-      select * from ope_sys_dept dept where dept.p_id=#{deptTreeRootId}
+      select * from ope_sys_dept dept where dept.p_id=#{deptTreeRootId} and dr = 0
     </select>
 </mapper>

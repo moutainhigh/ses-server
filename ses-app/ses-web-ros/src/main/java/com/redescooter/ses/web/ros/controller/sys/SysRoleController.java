@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.roledata.RoleDataService;
 import com.redescooter.ses.web.ros.service.salearea.SaleAreaService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.vo.roledata.RoleDataSaveEnter;
+import com.redescooter.ses.web.ros.vo.roledata.RoleDataShowResult;
 import com.redescooter.ses.web.ros.vo.salearea.RoleAreaEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleCityTreeResult;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
@@ -35,6 +37,9 @@ public class SysRoleController {
 
     @Autowired
     private SaleAreaService saleAreaService;
+
+    @Autowired
+    private RoleDataService roleDataService;
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "岗位创建", response = GeneralResult.class)
@@ -156,15 +161,15 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleDataShow")
     @ApiOperation(value = "查看角色的数据权限--reseat", response = GeneralResult.class)
-    public Response<GeneralResult> roleDataShow(@ModelAttribute @ApiParam("请求参数") RoleAreaEnter enter) {
-        return new Response(saleAreaService.roleAreaAuth(enter));
+    public Response<RoleDataShowResult> roleDataShow(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
+        return new Response(roleDataService.roleDataShow(enter));
     }
 
 
-//    @PostMapping(value = "/saveRoleData")
-//    @ApiOperation(value = "保存角色的数据权限--reseat", response = GeneralResult.class)
-//    public Response<GeneralResult> saveRoleData(@ModelAttribute @ApiParam("请求参数") RoleDataSaveEnter enter) {
-//        return new Response(saleAreaService.roleAreaAuth(enter));
-//    }
+    @PostMapping(value = "/saveRoleData")
+    @ApiOperation(value = "保存角色的数据权限--reseat", response = GeneralResult.class)
+    public Response<GeneralResult> saveRoleData(@ModelAttribute @ApiParam("请求参数") RoleDataSaveEnter enter) {
+        return new Response(roleDataService.saveRoleData(enter));
+    }
 
 }
