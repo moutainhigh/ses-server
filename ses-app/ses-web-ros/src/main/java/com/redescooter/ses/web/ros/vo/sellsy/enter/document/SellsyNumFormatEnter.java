@@ -30,5 +30,5 @@ public class SellsyNumFormatEnter {
     private String thousands = " ";
 
     // 小数点位置；小数位；小数位数 无默认值 主要指保留几位小数
-    private String precision = "2";
+    private String precision;
 }

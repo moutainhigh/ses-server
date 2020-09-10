@@ -28,7 +28,7 @@ public class SellsyConfig {
     private String userSecret;
 
     //保留小数位
-    private int decimalPlaces;
+    private String decimalPlaces;
 
     //税务类型
     private String rateCategory;

@@ -246,6 +246,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         } else {
             numFormatEnter.setCurrencyid(sellsyConfig.getCurrencyUnit());
         }
+        numFormatEnter.setPrecision(sellsyConfig.getDecimalPlaces());
 
         Map<String, SellsyRowEnter> rosMap = new HashMap<>();
         // 第三行
@@ -468,77 +469,78 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         List<SellsyIdResut> result = new ArrayList<>();
 
         // 封装 发票数据
-        sellsyInvoiceList.forEach(item -> {
-            // 先从缓存取，发现没有客户的缓存数据，再调用Sellsy
+        for (SellsyInvoice sellsyInvoice : sellsyInvoiceList) {// 先从缓存取，发现没有客户的缓存数据，再调用Sellsy
             SellsyClientResult sellsyClientResult =
-                getJedisDate(JedisConstant.SESSY_DOCUMENT_CLIENT + item.getClientName(), new SellsyClientResult());
+                    getJedisDate(JedisConstant.SESSY_DOCUMENT_CLIENT + sellsyInvoice.getClientName(), new SellsyClientResult());
 
             if (sellsyClientResult == null) {
                 // 客户校验
                 SellsyClientListEnter sellsyClientListEnter = new SellsyClientListEnter();
                 SellsyClientListSearchEnter sellsyClientSerach = new SellsyClientListSearchEnter();
-                sellsyClientSerach.setName(item.getClientName());
+                sellsyClientSerach.setName(sellsyInvoice.getClientName());
                 sellsyClientListEnter.setSearch(sellsyClientSerach);
                 List<SellsyClientResult> sellsyClientResults =
-                    sellsyClientService.queryClientList(sellsyClientListEnter);
+                        sellsyClientService.queryClientList(sellsyClientListEnter);
                 if (CollectionUtils.isEmpty(sellsyClientResults)) {
-                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
-                        ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
+                    log.info("---------客户不存在------{}-------------", sellsyInvoice.getClientName());
+                    continue;
+//                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
+//                        ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
                 }
                 sellsyClientResult = sellsyClientResults.stream()
-                    .filter(client -> StringUtils.equals(client.getName(), item.getClientName())).findFirst()
-                    .orElse(null);
+                        .filter(client -> StringUtils.equals(client.getName(), sellsyInvoice.getClientName())).findFirst()
+                        .orElse(null);
                 if (sellsyClientResult == null) {
-                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
-                        ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
+                    log.info("---------客户不存在------{}-------------", sellsyInvoice.getClientName());
+                    continue;
+//                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getCode(),
+//                            ThirdExceptionCodeEnums.SELLSY_CLIENT_IS_NOT_EXIST.getMessage());
                 }
                 // 更新缓存数据
-                setJedisDate(JedisConstant.SESSY_DOCUMENT_CLIENT + item.getClientName(), sellsyClientResult);
+                setJedisDate(JedisConstant.SESSY_DOCUMENT_CLIENT + sellsyInvoice.getClientName(), sellsyClientResult);
             }
 
             // 查询当前用户的信息（即当前使用谁的token）
             SellsyCorpInfoResult sellsyCorpInfoResult = sellsyAccountSettingService.queryCorpInfos();
             if (sellsyCorpInfoResult == null) {
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getCode(),
-                    ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getMessage());
+                        ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getMessage());
             }
 
             // 查询增值税类型 确认是税前发票 还是税后发票 默认为 税后的发票
             SellsyRateCategoryResult sellsyRateCategoryResult =
-                getJedisDate(JedisConstant.SELLSY_DOCUEMNT_RATECATEGORY, new SellsyRateCategoryResult());
+                    getJedisDate(JedisConstant.SELLSY_DOCUEMNT_RATECATEGORY, new SellsyRateCategoryResult());
             if (sellsyRateCategoryResult == null) {
                 List<SellsyRateCategoryResult> sellsyRateCategoryResults =
-                    sellsyAccountSettingService.queryRateCategoryList();
+                        sellsyAccountSettingService.queryRateCategoryList();
                 if (CollectionUtils.isEmpty(sellsyRateCategoryResults)) {
                     throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getCode(),
-                        ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
+                            ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
                 }
                 sellsyRateCategoryResult = sellsyRateCategoryResults.stream()
-                    .filter(rate -> StringUtils.equals(sellsyConfig.getRateCategory(), rate.getName())).findFirst()
-                    .orElse(null);
+                        .filter(rate -> StringUtils.equals(sellsyConfig.getRateCategory(), rate.getName())).findFirst()
+                        .orElse(null);
                 if (sellsyRateCategoryResult == null) {
                     throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getCode(),
-                        ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
+                            ThirdExceptionCodeEnums.SELLSY_RATE_CATEGORY_IS_NOT_EXIST.getMessage());
                 }
                 // 更新缓存数据
                 setJedisDate(JedisConstant.SELLSY_DOCUEMNT_RATECATEGORY, sellsyRateCategoryResult);
             }
 
             List<SellsyInvoiceB> invoiceBList = sellsyInvoiceBList.stream()
-                .filter(invoiceb -> item.getId().equals(invoiceb.getInvoiceId())).collect(Collectors.toList());
+                    .filter(invoiceb -> sellsyInvoice.getId().equals(invoiceb.getInvoiceId())).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(invoiceBList)) {
                 throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getCode(),
-                    ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getMessage());
+                        ThirdExceptionCodeEnums.SELLSY_INVOICE_B_IS_NOT_EXIST.getMessage());
             }
 
             //需要替换的产品编号
             List<SellsyProduct> sellsyProductList = sellsyProductService.list();
 
             List<SellsyRowEnter> sellsyRowEnterList = new ArrayList<>();
-            invoiceBList.forEach(invoiceB -> {
-
-                //确认是否需要替换 产品编号
-                if (CollectionUtils.isNotEmpty(sellsyProductList)){
+            for (SellsyInvoiceB invoiceB : invoiceBList) {//确认是否需要替换 产品编号
+                if (CollectionUtils.isNotEmpty(sellsyProductList)) {
                     for (SellsyProduct product : sellsyProductList) {
                         if (StringUtils.equals(invoiceB.getProductNum(), product.getProductCode())) {
                             invoiceB.setProductNote(invoiceB.getProductNote() + "   " + invoiceB.getProductNote() + "Changer en" + product.getReplaceProductCode() + "Le numéro de produit est " +
@@ -551,20 +553,22 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
                 // 产品校验
                 SellsyCatalogueResult sellsyCatalogueResult = getJedisDate(
-                    JedisConstant.SELSY_DOCUMENT_PRODUCT + invoiceB.getProductNum(), new SellsyCatalogueResult());
+                        JedisConstant.SELSY_DOCUMENT_PRODUCT + invoiceB.getProductNum(), new SellsyCatalogueResult());
                 if (sellsyCatalogueResult == null) {
 
                     SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
                     SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter =
-                        new SellsyCatalogueListSearchEnter();
+                            new SellsyCatalogueListSearchEnter();
                     sellsyCatalogueListSearchEnter.setName(invoiceB.getProductNum());
                     sellsyCatalogueListEnter.setType(SellsyCatalogueTypeEnums.item);
                     sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
                     List<SellsyCatalogueResult> sellsyCatalogueResults =
-                        sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
+                            sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
                     if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
-                        throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(),
-                            ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
+                        log.info("---------产品不存在------{}-------------", invoiceB.getProductNum());
+                        break;
+//                        throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(),
+//                                ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
                     }
                     //过滤
                     for (SellsyCatalogueResult catalogue : sellsyCatalogueResults) {
@@ -574,70 +578,73 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                         }
                     }
                     if (sellsyCatalogueResult == null) {
-                        throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(),
-                            ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
+                        log.info("---------产品不存在------{}-------------", invoiceB.getProductNum());
+                        break;
+//                        throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(),
+//                            ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
                     }
                     // 更新缓存数据
                     setJedisDate(JedisConstant.SELSY_DOCUMENT_PRODUCT + invoiceB.getProductNum(),
-                        sellsyCatalogueResult);
+                            sellsyCatalogueResult);
                 }
 
-                Integer productTaxId=null;
-                if (invoiceB.getTva()!=null){
-                    SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> StringUtils.equals(tax.getValue(), String.valueOf(invoiceB.getTva()))).findFirst().orElse(null);
-                    if (sellsyTaxeResult==null){
-                        productTaxId=Integer.valueOf(sellsyCatalogueResult.getTaxid());
-                    }else {
-                        productTaxId=Integer.valueOf(sellsyTaxeResult.getId());
+                Integer productTaxId = null;
+                if (invoiceB.getTva() != null) {
+                    SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> Float.valueOf(tax.getValue()).equals(Float.valueOf(invoiceB.getTva()))).findFirst().orElse(null);
+                    if (sellsyTaxeResult == null) {
+                        productTaxId = Integer.valueOf(sellsyCatalogueResult.getTaxid());
+                    } else {
+                        productTaxId = Integer.valueOf(sellsyTaxeResult.getId());
                     }
 
                 }
 
                 SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
-                    .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue()).row_name(sellsyCatalogueResult.getTradename())
-                    .row_taxid(productTaxId)
+                        .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue()).row_name(sellsyCatalogueResult.getTradename())
+                        .row_taxid(productTaxId)
                         .row_tax2id(null)
-                    .row_qt(invoiceB.getQty()).row_isOption(SellsyBooleanEnums.N)
-                    .row_unitAmount(sellsyCatalogueResult.getUnitAmount())
-                    .row_discount(Float.valueOf(invoiceB.getRem()))
-                    .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
-                    .row_linkedid(Integer.valueOf(sellsyCatalogueResult.getId()))
-                    .row_declid(Integer.valueOf(sellsyCatalogueResult.getDeclid()))
+                        .row_qt(invoiceB.getQty()).row_isOption(SellsyBooleanEnums.N)
+                        //使用发票中的产品单价
+                        .row_unitAmount(invoiceB.getUnitPrice())
+                        .row_discount(Float.valueOf(invoiceB.getRem()))
+                        .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
+                        .row_linkedid(Integer.valueOf(sellsyCatalogueResult.getId()))
+                        .row_declid(Integer.valueOf(sellsyCatalogueResult.getDeclid()))
                         .row_notes(invoiceB.getProductNote())
-                    .row_whid(null)
-                    .row_purchaseAmount(
-                        String.valueOf(Double.valueOf(sellsyCatalogueResult.getUnitAmount()) * invoiceB.getQty()))
-                    .row_serial(null).row_barcode(null).row_title(null).row_comment(null).row_unit(null).build();
+                        .row_whid(null)
+                        .row_purchaseAmount(
+                                String.valueOf(Double.valueOf(sellsyCatalogueResult.getUnitAmount()) * invoiceB.getQty()))
+                        .row_serial(null).row_barcode(null).row_title(null).row_comment(null).row_unit(null).build();
                 sellsyRowEnterList.add(sellsyRowEnter);
-            });
+            }
 
             SellsyClientServiceCreateDocumentEnter sellsyClientServiceCreateDocumentEnter =
-                new SellsyClientServiceCreateDocumentEnter();
+                    new SellsyClientServiceCreateDocumentEnter();
             sellsyClientServiceCreateDocumentEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
             sellsyClientServiceCreateDocumentEnter.setThirdid(Integer.valueOf(sellsyClientResult.getId()));
-            sellsyClientServiceCreateDocumentEnter.setIdent(item.getInvoiceNum());
+            sellsyClientServiceCreateDocumentEnter.setIdent(sellsyInvoice.getInvoiceNum());
             sellsyClientServiceCreateDocumentEnter.setSubject(sellsyConfig.getSubject());
-            sellsyClientServiceCreateDocumentEnter.setNotes(item.getNotes());
+            sellsyClientServiceCreateDocumentEnter.setNotes(sellsyInvoice.getNotes());
             sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter.setShowContactOnPdf(SellsyBooleanEnums.Y);
             sellsyClientServiceCreateDocumentEnter
-                .setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
+                    .setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
             sellsyClientServiceCreateDocumentEnter
-                .setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyClientResult.getMainaddressid())));
+                    .setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyClientResult.getMainaddressid())));
             sellsyClientServiceCreateDocumentEnter.setSellsellEnterList(sellsyRowEnterList);
             // java --》 php Timestamp 需要精确到秒 java默认精确到毫秒
             sellsyClientServiceCreateDocumentEnter
-                .setDisplayedDate(new Timestamp(item.getInvoiceTime().getTime() / 1000));
+                    .setDisplayedDate(new Timestamp(sellsyInvoice.getInvoiceTime().getTime() / 1000));
             SellsyIdResut sellsyIdResut = createDocument(sellsyClientServiceCreateDocumentEnter);
 
             // 更新数据库 数据数据状态
-            item.setDef1(SellsyBooleanEnums.Y.getValue());
-            item.setDef2(String.valueOf(sellsyIdResut.getId()));
-            sellsyInvoiceService.updateById(item);
+            sellsyInvoice.setDef1(SellsyBooleanEnums.Y.getValue());
+            sellsyInvoice.setDef2(String.valueOf(sellsyIdResut.getId()));
+            sellsyInvoiceService.updateById(sellsyInvoice);
 
             result.add(sellsyIdResut);
 
-        });
+        }
 
         // 更新发票状态
         result.forEach(item -> {
