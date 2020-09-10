@@ -53,6 +53,14 @@ public class SellsyDocumentController {
     }
 
     @IgnoreLoginCheck
+    @ApiOperation(value = "根据导入到数据库的数据批量创建发票", response = SellsyIdResut.class)
+    @PostMapping(value = "/createDcumentList")
+    public Response<List<SellsyIdResut>> createDcumentList() {
+        return new Response<>(documentService.createDcumentList());
+    }
+
+
+    @IgnoreLoginCheck
     @ApiOperation(value = "发票excel导入", response = SellsyImportExcelResult.class)
     @PostMapping(value = "/import")
     public Response<SellsyImportExcelResult> importDocument(HttpServletRequest request,
@@ -60,4 +68,6 @@ public class SellsyDocumentController {
                                                             MultipartFile file) {
         return new Response<>(documentService.importSellsyDocument(file));
     }
+
+
 }

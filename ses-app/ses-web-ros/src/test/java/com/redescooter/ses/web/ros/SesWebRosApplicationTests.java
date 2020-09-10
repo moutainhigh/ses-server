@@ -16,10 +16,7 @@ import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueTypeEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyDeleteCatalogueEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
@@ -376,15 +373,41 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void deleteCatalogue(){
-        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3"));
+        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3").orderByDesc(SellsyProduct::getId));
+        //List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().eq(SellsyProduct::getId,1000021));
+
+        SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
+        SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter =
+                new SellsyCatalogueListSearchEnter();
+        sellsyCatalogueListEnter.setType(SellsyCatalogueTypeEnums.item);
         for (SellsyProduct item : sellsyProductList) {
-            if (StringUtils.isEmpty(item.getDef1())) {
-                break;
+            if (StringUtils.isEmpty(item.getReplaceProductCode())){
+                sellsyCatalogueListSearchEnter.setName(item.getProductCode());
+            }else {
+                sellsyCatalogueListSearchEnter.setName(item.getReplaceProductCode());
+            }
+            sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
+
+            List<SellsyCatalogueResult> sellsyCatalogueResults =
+                    sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
+            if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
+                continue;
             }
             SellsyDeleteCatalogueEnter sellsyDeleteCatalogueEnter = new SellsyDeleteCatalogueEnter();
-            sellsyDeleteCatalogueEnter.setId(Integer.valueOf(item.getDef1()));
+
+            //过滤
+            for (SellsyCatalogueResult catalogue : sellsyCatalogueResults) {
+                if (StringUtils.equals(catalogue.getName(), sellsyCatalogueListSearchEnter.getName())) {
+                    sellsyDeleteCatalogueEnter.setId(Integer.valueOf(catalogue.getId()));
+                    break;
+                }
+            }
+            if (sellsyDeleteCatalogueEnter.getId()==null){
+                continue;
+            }
             sellsyDeleteCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
             sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
+            log.info("----------执行了--------");
         }
     }
 

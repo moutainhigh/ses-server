@@ -93,6 +93,11 @@ public class SellsyServiceImpl implements SellsyService {
         return sellsyGeneralResult;
     }
 
+    /**
+     * 出现异常后发送邮件
+     * @param enter
+     * @param e
+     */
     private void sellsyExceptionService(SellsyExecutionEnter enter, Exception e) {
         // 保存数据库
         if (e instanceof SellsyApiException || e instanceof HttpClientErrorException) {
