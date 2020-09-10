@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.roledata.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
@@ -80,7 +81,26 @@ public class RoleDataServiceImpl implements RoleDataService {
 
     @Override
     public GeneralResult saveRoleData(RoleDataSaveEnter enter) {
-
+        List<OpeSysRoleData> roleDataList = new ArrayList<>();
+        // 先判断类型  （若类型不为空，则选择的是上面的几个，若类型为空，则需判断有没有勾选部门）
+        if(enter.getDataType() != null){
+            // 类型不为空，则选择的是上面的几个,下面的部门不用管
+            OpeSysRoleData  roleData = new OpeSysRoleData();
+            roleData.setRoleId(enter.getRoleId());
+            roleData.setDataType(enter.getDataType());
+            roleDataList.add(roleData);
+        }else if(enter.getDataType() == null && !Strings.isNullOrEmpty(enter.getDeptId())){
+            // 类型为空，并勾选了下面的部门
+            for (String deptId : enter.getDeptId().split(",")) {
+                OpeSysRoleData  roleData = new OpeSysRoleData();
+                roleData.setRoleId(enter.getRoleId());
+                roleData.setDeptId(Long.parseLong(deptId));
+                roleDataList.add(roleData);
+            }
+        }
+        if(CollectionUtils.isNotEmpty(roleDataList)){
+            opeSysRoleDataService.batchInsert(roleDataList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 

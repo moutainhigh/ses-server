@@ -385,7 +385,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
     private OpeStockBill buildStockBillSingle(TransferScooterEnter enter, Long key, Integer value) {
         return OpeStockBill.builder()
-                .id(idAppService.getId(SequenceName.OPE_STOCK_PROD_PRODUCT))
+                .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)
                 .userId(enter.getUserId())
                 .tenantId(enter.getTenantId())

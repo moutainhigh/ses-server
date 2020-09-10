@@ -125,7 +125,7 @@ public class ScooterServiceImpl implements ScooterService {
 
     private ScoScooter buildScooterSingle(BaseScooterEnter enter) {
         ScoScooter saveScooter = new ScoScooter();
-        saveScooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+        saveScooter.setId(enter.getId());
         saveScooter.setDr(0);
         saveScooter.setScooterNo(enter.getScooterNo());
         saveScooter.setPicture(null);
