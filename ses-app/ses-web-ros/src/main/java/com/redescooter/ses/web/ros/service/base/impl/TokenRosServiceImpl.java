@@ -94,7 +94,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         wrapper.eq(OpeSysUser.COL_DR, 0);
         wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
-        wrapper.eq(OpeSysUser.COL_DEF1,SysUserStatusEnum.NORMAL.getValue());
+        wrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
         wrapper.last("limit 1");
         OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在

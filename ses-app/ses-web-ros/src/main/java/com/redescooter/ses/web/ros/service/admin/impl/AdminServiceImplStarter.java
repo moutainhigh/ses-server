@@ -201,7 +201,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      */
     @Transactional
     @Override
-    @PostConstruct
+//    @PostConstruct
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
@@ -218,7 +218,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             saveAdmin();
             return new GeneralResult();
         }
-        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()));
+        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()).last("limit 1"));
         if(position == null){
             position = createOpeSysPosition(dept, sysUserServiceOne);
         }

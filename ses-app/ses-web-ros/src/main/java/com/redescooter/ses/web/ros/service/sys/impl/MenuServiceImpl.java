@@ -184,15 +184,14 @@ public class MenuServiceImpl implements MenuService {
 
         OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
 
-//        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
-        if (admin.getLoginName().equals("carl@redescooter.com")) {
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             return this.buildMenuParallel(sysMenuService.list(), null,Boolean.TRUE);
         } else {
             List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
             if (CollUtil.isNotEmpty(roleIds)) {
                 List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
                 if (CollUtil.isNotEmpty(menuIds)) {
-                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds,Boolean.FALSE);
+                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).orderByAsc(OpeSysMenu::getCreatedTime)), roleIds,Boolean.FALSE);
                     return results;
                 }
             }
