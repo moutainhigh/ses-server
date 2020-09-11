@@ -254,7 +254,7 @@
         ope_allocate allocate
         JOIN
         ope_sys_user_profile pro
-        ON allocate.consignee_id = pro.id
+        ON allocate.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_inHw_allocate"/>
         UNION
@@ -264,7 +264,7 @@
         ope_assembly_order ord
         JOIN
         ope_sys_user_profile pro
-        ON ord.consignee_id = pro.id
+        ON ord.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_inHw_assembly"/>)aa
     </select>
@@ -273,7 +273,7 @@
         allocate.id as id,
         allocate.allocate_num as allocateNumber,
         allocate.count as qty,
-        pro.id as consigneeId,
+        pro.sys_user_id as consigneeId,
         pro.first_name as consigneeFristName,
         pro.last_name as consigneelastName,
         '2' as documentType,
@@ -283,7 +283,7 @@
         ope_allocate allocate
         JOIN
         ope_sys_user_profile pro
-        ON allocate.consignee_id = pro.id
+        ON allocate.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_inHw_allocate"/>
         UNION
@@ -291,7 +291,7 @@
         ord.id as id,
         ord.assembly_number as allocateNumber,
         ord.in_wait_wh_total as qty,
-        pro.id as consigneeId,
+        pro.sys_user_id as consigneeId,
         pro.first_name as consigneeFristName,
         pro.last_name as consigneelastName,
         '3' as documentType,
@@ -301,7 +301,7 @@
         ope_assembly_order ord
         JOIN
         ope_sys_user_profile pro
-        ON ord.consignee_id = pro.id
+        ON ord.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_inHw_assembly"/>
         order by inWhTime desc
@@ -347,7 +347,7 @@
         ope_allocate allocate
         JOIN
         ope_sys_user_profile pro
-        ON allocate.consignee_id = pro.id
+        ON allocate.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_stockPending_allocate"/>
         UNION
@@ -357,7 +357,7 @@
         ope_assembly_order ord
         JOIN
         ope_sys_user_profile pro
-        ON ord.consignee_id = pro.id
+        ON ord.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_stockPending_assembly"/>)aa
     </select>
@@ -368,7 +368,7 @@
         allocate.allocate_num as allocateNumber,
         allocate.count-allocate.pending_storage_total as qty,
         allocate.count as sumTotal,
-        pro.id as consigneeId,
+        pro.sys_user_id as consigneeId,
         pro.first_name as consigneeFristName,
         pro.last_name as consigneelastName,
         '2' as documentType,
@@ -378,7 +378,7 @@
         ope_allocate allocate
         JOIN
         ope_sys_user_profile pro
-        ON allocate.consignee_id = pro.id
+        ON allocate.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_stockPending_allocate"/>
         UNION
@@ -387,7 +387,7 @@
         ord.assembly_number as allocateNumber,
         ord.total_qty-ord.in_wait_wh_total as qty,
         ord.total_qty as sumTotal,
-        pro.id as consigneeId,
+        pro.sys_user_id as consigneeId,
         pro.first_name as consigneeFristName,
         pro.last_name as consigneelastName,
         '3' as documentType,
@@ -397,7 +397,7 @@
         ope_assembly_order ord
         JOIN
         ope_sys_user_profile pro
-        ON ord.consignee_id = pro.id
+        ON ord.consignee_id = pro.sys_user_id
         and pro.dr = 0
         <include refid="where_stockPending_assembly"/>
         ) aa
@@ -409,7 +409,7 @@
     allocate.id as id,
     allocate.allocate_num as allocateNumber,
     allocate.STATUS as `status`,
-    pro.id as consigneeId,
+    pro.sys_user_id as consigneeId,
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     pro.email as email,
@@ -420,7 +420,7 @@
     ope_allocate allocate
     JOIN
     ope_sys_user_profile pro
-    ON allocate.consignee_id = pro.id
+    ON allocate.consignee_id = pro.sys_user_id
     and pro.dr = 0
   WHERE
     allocate.id =#{enter.id} and allocate.dr = 0
@@ -430,7 +430,7 @@
     ord.id as id,
     ord.assembly_number as allocateNumber,
     ord.STATUS as `status`,
-    pro.id as consigneeId,
+    pro.sys_user_id as consigneeId,
     pro.first_name as consigneeFristName,
     pro.last_name as consigneelastName,
     pro.email as email,
@@ -441,7 +441,7 @@
     ope_assembly_order ord
     JOIN
     ope_sys_user_profile pro
-    ON ord.consignee_id = pro.id
+    ON ord.consignee_id = pro.sys_user_id
     and pro.dr = 0
     WHERE
     ord.id = #{enter.id} and ord.dr = 0
@@ -488,7 +488,7 @@
         count(*) AS count
       FROM
         ope_allocate allocate
-        JOIN ope_sys_user_profile pro ON allocate.consignee_id = pro.id
+        JOIN ope_sys_user_profile pro ON allocate.consignee_id = pro.sys_user_id
         AND pro.dr = 0
     WHERE
         allocate.dr = 0
@@ -498,7 +498,7 @@
     count(*) AS count
       FROM
         ope_assembly_order ord
-        JOIN ope_sys_user_profile pro ON ord.consignee_id = pro.id
+        JOIN ope_sys_user_profile pro ON ord.consignee_id = pro.sys_user_id
         AND pro.dr = 0
       WHERE
         ord.dr = 0
@@ -518,7 +518,7 @@ FROM
     ope_allocate allocate
     JOIN
     ope_sys_user_profile pro
-    ON allocate.consignee_id = pro.id
+    ON allocate.consignee_id = pro.sys_user_id
     and pro.dr = 0
 	WHERE
     allocate.dr = 0
@@ -530,7 +530,7 @@ FROM
     ope_assembly_order ord
     JOIN
     ope_sys_user_profile pro
-    ON ord.consignee_id = pro.id
+    ON ord.consignee_id = pro.sys_user_id
     and pro.dr = 0
 	WHERE
     ord.dr = 0
