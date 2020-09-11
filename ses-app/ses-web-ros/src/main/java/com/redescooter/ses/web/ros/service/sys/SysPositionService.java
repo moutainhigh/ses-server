@@ -71,4 +71,14 @@ public interface SysPositionService {
      * @return
      */
     GeneralResult deletePosition(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  删除部门时，如果部门下面有岗位  岗位下面没有人  则岗位也要删除
+     * @Date  2020/9/10 19:16
+     * @Param deptId
+     * @return
+     **/
+    void delePositionByDeptId(Long deptId);
 }

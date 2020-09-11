@@ -565,4 +565,13 @@ public class RoleServiceImpl implements RoleService {
             employeeService.disAbleUser(updateList.stream().map(OpeSysStaff::getId).collect(Collectors.toList()));
         }
     }
+
+
+    @Override
+    public void deleRoleByPosIds(List<Long> posIds) {
+         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
+         qw.in(OpeSysRole.COL_POSITION_ID,posIds);
+        sysRoleService.remove(qw);
+    }
+
 }

@@ -112,7 +112,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Transactional
     public GeneralResult positionEdit(EditPositionEnter enter) {
         if (enter.getDeptId() != null) {
-            sysDeptService.checkDeptStatus(enter.getDeptId());
+            sysDeptService.checkDeptStatus(enter.getDeptId(),false);
         }
         OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
         if (byId == null) {
@@ -161,7 +161,7 @@ public class SysPositionServiceImpl implements SysPositionService {
         // 校验同部门下的岗位名称是否已存在
         checkPositionName(null,enter.getPositionName(),enter.getDeptId());
         //校验上级部门是否被禁用
-        sysDeptService.checkDeptStatus(enter.getDeptId());
+        sysDeptService.checkDeptStatus(enter.getDeptId(),false);
         OpeSysPosition position = new OpeSysPosition();
         BeanUtils.copyProperties(enter, position);
         position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
@@ -224,5 +224,43 @@ public class SysPositionServiceImpl implements SysPositionService {
             createCode();
         }
         return positionCode;
+    }
+
+
+    @Override
+    @Transactional
+    public void delePositionByDeptId(Long deptId) {
+        QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
+        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
+        // 找到部门下面有哪些岗位
+        List<OpeSysPosition> positionList = opeSysPositionService.list(qw);
+        if(CollectionUtils.isNotEmpty(positionList)){
+            // 存放要删除的岗位id
+            List<Long> deleIds = new ArrayList<>();
+            List<Long> positionIds = positionList.stream().map(OpeSysPosition::getId).collect(Collectors.toList());
+             // 找到部门下面的人
+            QueryWrapper<OpeSysStaff> staffWrapper = new QueryWrapper<>();
+            staffWrapper.in(OpeSysStaff.COL_POSITION_ID,positionIds);
+            List<OpeSysStaff> staffList = opeSysStaffService.list(staffWrapper);
+            if(CollectionUtils.isEmpty(staffList)){
+                // 岗位下面没有人 直接删除 不多比比
+                deleIds.addAll(positionIds);
+            }else {
+                // 岗位下面的人 按照岗位来进行分组
+                Map<Long, List<OpeSysStaff>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
+                for (Long id : positionIds) {
+                    if(!map.keySet().contains(id)){
+                        // 如果map里面不包括当前岗位，就删除
+                        deleIds.add(id);
+                    }
+                }
+            }
+            if(CollectionUtils.isNotEmpty(deleIds)){
+                opeSysPositionService.removeByIds(deleIds);
+                // 岗位删除之后  再把岗位下面的角色删除了（因为岗位和角色是级联关系，所以岗位下面没有人，角色下面必然没有人）
+                roleService.deleRoleByPosIds(deleIds);
+            }
+        }
+
     }
 }

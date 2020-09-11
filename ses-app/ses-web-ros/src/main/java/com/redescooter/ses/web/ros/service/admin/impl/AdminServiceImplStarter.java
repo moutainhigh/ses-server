@@ -180,6 +180,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         // 新建岗位
         OpeSysPosition position = new OpeSysPosition();
         position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setPositionName("rede");
         position.setDeptId(dept.getId());
         position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
         position.setCreatedBy(opeSysUser.getId());
@@ -273,7 +274,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
                 .dr(0)
                 .tenantId(0L)
-                .roleName(Constant.ADMIN_USER_NAME)
+                .roleName("rede")
                 .roleCode(null)
                 .roleDesc(Constant.ADMIN_USER_NAME)
                 .createdBy(0L)
@@ -367,7 +368,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .pId(Constant.DEPT_TREE_ROOT_ID)
                 .tenantId(0L)
                 .principal(0L)
-                .level(Integer.valueOf(DeptLevelEnums.COMPANY.getValue()))
+                .level(Integer.valueOf(DeptLevelEnums.DEPARTMENT.getValue()))
                 .name("ROOT")
                 .description(null)
                 .sort(1)

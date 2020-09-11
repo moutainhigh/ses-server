@@ -19,7 +19,7 @@ public class OpeSysRoleData implements Serializable {
     /**
      * 角色Id
      */
-    @TableId(value = "role_id", type = IdType.AUTO)
+    @TableField(value = "role_id")
     @ApiModelProperty(value = "角色Id")
     private Long roleId;
 

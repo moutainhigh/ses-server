@@ -163,7 +163,7 @@ public interface SysDeptService {
      * @param
      * @return
      */
-    void checkDeptStatus(Long deptId);
+    void checkDeptStatus(Long deptId,boolean flag);
 
     /**
      * 添加部门等级

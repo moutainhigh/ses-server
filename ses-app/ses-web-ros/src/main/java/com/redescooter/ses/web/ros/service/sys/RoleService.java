@@ -147,4 +147,14 @@ public interface RoleService {
 
 
     List<RoleDataResult> roleData( PositionIdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  岗位删除时 删除下面的没有人的角色
+     * @Date  2020/9/11 10:36
+     * @Param
+     * @return
+     **/
+    void deleRoleByPosIds(List<Long> posIds);
 }

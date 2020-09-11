@@ -19,10 +19,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.sys.RoleService;
-import com.redescooter.ses.web.ros.service.sys.StaffService;
-import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
-import com.redescooter.ses.web.ros.service.sys.SysDeptService;
+import com.redescooter.ses.web.ros.service.sys.*;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.*;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
@@ -72,6 +69,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysStaffService opeSysStaffService;
     @Autowired
     private StaffService taffService;
+
+    @Autowired
+    private SysPositionService sysPositionService;
 
     @Transactional
     @Override
@@ -126,7 +126,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
-        checkDeptStatus(enter.getPid());
+        checkDeptStatus(enter.getPid(),true);
 
         List<OpeSysDept> saveDeptList = new ArrayList<>();
         //SaveDeptEnter参数值去空格
@@ -184,6 +184,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
+    @Transactional
     public GeneralResult deleteDept(IdEnter enter) {
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         if (CollectionUtils.isNotEmpty(list)) {
@@ -196,6 +197,8 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
         opeSysDeptService.removeById(enter.getId());
+        // 2020 9 10追加  部门删除的时候  如果该部门下面有角色，有岗位  但是角色岗位下面都没有人  就把部门下面的角色和岗位一起删除
+        sysPositionService.delePositionByDeptId(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -379,7 +382,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
         if (enter.getPid() != null) {
-            checkDeptStatus(enter.getPid());
+            checkDeptStatus(enter.getPid(),true);
         }
 
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
@@ -594,14 +597,16 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void checkDeptStatus(Long deptId) {
+    public void checkDeptStatus(Long deptId,boolean flag) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
         if (one!=null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
         // 临时追加  部门最多加到4级
-        if(one.getLevel() != null && one.getLevel() >= 4){
-            throw new SesWebRosException(ExceptionCodeEnums.DEPT_LEVEL_ERROR.getCode(), ExceptionCodeEnums.DEPT_LEVEL_ERROR.getMessage());
+        if(flag){
+            if(one.getLevel() != null && one.getLevel() >= 4){
+                throw new SesWebRosException(ExceptionCodeEnums.DEPT_LEVEL_ERROR.getCode(), ExceptionCodeEnums.DEPT_LEVEL_ERROR.getMessage());
+            }
         }
     }
 

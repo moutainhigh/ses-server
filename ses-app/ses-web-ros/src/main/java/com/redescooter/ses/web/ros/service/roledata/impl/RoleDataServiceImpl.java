@@ -89,7 +89,7 @@ public class RoleDataServiceImpl implements RoleDataService {
             roleData.setRoleId(enter.getRoleId());
             roleData.setDataType(enter.getDataType());
             roleDataList.add(roleData);
-        }else if(enter.getDataType() == null && !Strings.isNullOrEmpty(enter.getDeptId())){
+        }else if(!Strings.isNullOrEmpty(enter.getDeptId())){
             // 类型为空，并勾选了下面的部门
             for (String deptId : enter.getDeptId().split(",")) {
                 OpeSysRoleData  roleData = new OpeSysRoleData();
@@ -99,7 +99,7 @@ public class RoleDataServiceImpl implements RoleDataService {
             }
         }
         if(CollectionUtils.isNotEmpty(roleDataList)){
-            opeSysRoleDataService.batchInsert(roleDataList);
+            opeSysRoleDataService.saveBatch(roleDataList);
         }
         return new GeneralResult(enter.getRequestId());
     }
