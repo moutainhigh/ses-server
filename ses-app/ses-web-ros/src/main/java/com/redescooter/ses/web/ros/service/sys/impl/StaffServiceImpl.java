@@ -360,7 +360,7 @@ public class StaffServiceImpl implements StaffService {
         opeSysUserService.save(user);
         // 2020 09 11 追加  员工开通账号之后  给员工发邮件
         try {
-
+            emailToStaff(staff,enter.getRequestId());
         }catch (Exception e){
 
         }
@@ -370,16 +370,16 @@ public class StaffServiceImpl implements StaffService {
 
     // 给员工发邮件，这个方法作为异步执行
     @Async
-    void emailToStaff(OpeSysStaff staff,String requestId){
+    public void emailToStaff(OpeSysStaff staff,String requestId){
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setName(staff.getFullName());
-        enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
+        enter.setEvent(MailTemplateEventEnums.ROS_CREATE_EMPLOYEE.getEvent());
         enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
         enter.setAppId(AppIDEnums.SES_ROS.getValue());
         enter.setEmail(staff.getEmail());
         enter.setRequestId(requestId);
         enter.setUserId(staff.getId());
-        mailMultiTaskService.addMultiMailTask(enter);
+        mailMultiTaskService.addCreateEmployeeMailTask(enter);
     }
 
 
