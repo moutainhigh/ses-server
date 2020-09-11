@@ -1,16 +1,8 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.client;
 
-import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:SellsyCreateClientEnter
@@ -26,101 +18,14 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class SellsyCreateClientEnter {
-    
-    @ApiModelProperty(value = "")
-    private String name;
-    
-    @ApiModelProperty(value = "")
-    private String ident;
-    
-    @ApiModelProperty(value = "")
-    private String type;
-    
-    @ApiModelProperty(value = "")
-    private String email;
-    
-    @ApiModelProperty(value = "")
-    private String tel;
-    
-    @ApiModelProperty(value = "")
-    private String fax;
-    
-    @ApiModelProperty(value = "")
-    private String mobile;
-    
-    @ApiModelProperty(value = "")
-    private Timestamp joinDate;
-    
-    @ApiModelProperty(value = "")
-    private String web;
-    
-    @ApiModelProperty(value = "")
-    private String siret;
-    
-    @ApiModelProperty(value = "")
-    private String siren;
-    
-    @ApiModelProperty(value = "")
-    private String vat;
-    
-    @ApiModelProperty(value = "")
-    private String rcs;
-    
-    @ApiModelProperty(value = "")
-    private String apenaf;
-    
-    @ApiModelProperty(value = "")
-    private String capital;
-    
-    @ApiModelProperty(value = "")
-    private String tags;
-    
-    @ApiModelProperty(value = "")
-    private String stickyNote;
-    
-    @ApiModelProperty(value = "")
-    private String rateCategory;
-    
-    @ApiModelProperty(value = "")
-    private SellsyBooleanEnums massmailingUnsubscribed;
-    
-    @ApiModelProperty(value = "")
-    private SellsyBooleanEnums massmailingUnsubscribedSMS;
-    
-    @ApiModelProperty(value = "")
-    private SellsyBooleanEnums phoningUnsubscribed;
-    
-    @ApiModelProperty(value = "")
-    private SellsyBooleanEnums massmailingUnsubscribedMail;
-    
-    @ApiModelProperty(value = "")
-    private SellsyBooleanEnums massmailingUnsubscribedCustom;
-    
-    @ApiModelProperty(value = "")
-    private String facebook;
-    
-    @ApiModelProperty(value = "")
-    private String twitter;
-    
-    @ApiModelProperty(value = "")
-    private String viadeo;
-    
-    @ApiModelProperty(value = "")
-    private String linkedin;
-    
-    @ApiModelProperty(value = "")
-    private String accountingcode;
-    
-    @ApiModelProperty(value = "")
-    private String auxcode;
-    
-    @ApiModelProperty(value = "")
-    private String accountingpurchasecode;
+
+    @ApiModelProperty(value = "客户信息")
+    private SellsyCreateClientThirdEnter third;
     
     @ApiModelProperty(value = "")//Contact the parameter is required only if the type of the third is person
-    private List<SellsyCreateClientContactEnter> contact;
+    private SellsyCreateClientContactEnter contact;
     
     @ApiModelProperty(value = "")//The address parameter is not mandatory
-    private List<SellsyCreateClientAddressEnter> address;
+    private SellsyCreateClientAddressEnter address;
     
 }

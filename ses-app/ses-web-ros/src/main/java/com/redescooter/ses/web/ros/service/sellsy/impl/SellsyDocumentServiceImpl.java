@@ -26,6 +26,8 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCatalogueListSearchEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.SellsyCreateCatalogueTypeEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListSearchEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
@@ -33,10 +35,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCorpInfoResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyCurrencyResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyRateCategoryResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.account.SellsyTaxeResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
@@ -657,6 +656,53 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         });
         return result;
     }
+
+    /**
+     *
+     * @param sellsyUnitResult
+     * @param sellsyTaxeResult
+     * @param sellsyInvoiceB
+     * @return
+     */
+    private SellsyIdResut createDocumentProduct(SellsyUnitResult sellsyUnitResult,SellsyTaxeResult sellsyTaxeResult,SellsyInvoiceB sellsyInvoiceB){
+        //数据封装
+        SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
+        SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
+        catalogueTypeEnter.setName(sellsyInvoiceB.getProductNum());
+        catalogueTypeEnter.setTradename(sellsyInvoiceB.getProductName());
+        catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setNotes("自定义添加的产品可以删除");
+        catalogueTypeEnter.setTags(null);
+        catalogueTypeEnter.setUnitAmount(Float.valueOf(sellsyInvoiceB.getUnitPrice()));
+        catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
+        catalogueTypeEnter.setQty(1);
+        catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
+        catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
+        sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+        sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
+
+        //产品创建
+        SellsyIdResut catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+
+        //sellsy 产品 保存到本地数据库
+        sellsyProductService.save(SellsyProduct.builder()
+                .id(idAppService.getId("sellsy_product"))
+                .dr(0)
+                .status(SellsyProductEnums.MYSELY_CREATE.getValue())
+                .productCode(sellsyInvoiceB.getProductNum())
+                .productName(sellsyInvoiceB.getProductName())
+                .productPrice(sellsyInvoiceB.getUnitPrice())
+                .type(SellsyCatalogueTypeEnums.item.getValue())
+                .createdBy(0L)
+                .createdTime(new Date())
+                .updatedBy(0L)
+                .updatedTime(new Date())
+                .def1(String.valueOf(catalogue.getId()))
+                .build());
+        return catalogue;
+    }
+
 
     /**
      * jedis 放入数据

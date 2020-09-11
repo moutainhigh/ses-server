@@ -18,6 +18,8 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocu
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientAddressEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientThirdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
@@ -409,6 +411,23 @@ public class SesWebRosApplicationTests {
             sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
             log.info("----------执行了--------");
         }
+    }
+
+    @Test
+    public void  createclient(){
+        SellsyCreateClientThirdEnter third = new SellsyCreateClientThirdEnter();
+        third.setName("alex");
+        third.setType(SellsyClientTypeEnums.corporation.getValue());
+        third.setEmail("alex@redescooter.com");
+
+
+        SellsyCreateClientAddressEnter address = SellsyCreateClientAddressEnter
+                .builder()
+                .name("中国上海")
+                .part1("中国上海")
+                .build();
+
+        //SellsyCreateClientEnter();
     }
 
 }
