@@ -5,10 +5,14 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -31,8 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,6 +86,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Autowired
     private OpeSysUserProfileService opeSysUserProfileService;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
 
     @Override
@@ -349,7 +358,28 @@ public class StaffServiceImpl implements StaffService {
         user.setUpdatedTime(new Date());
         user.setDef1(SysUserStatusEnum.NORMAL.getValue());
         opeSysUserService.save(user);
+        // 2020 09 11 追加  员工开通账号之后  给员工发邮件
+        try {
+
+        }catch (Exception e){
+
+        }
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 给员工发邮件，这个方法作为异步执行
+    @Async
+    void emailToStaff(OpeSysStaff staff,String requestId){
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setName(staff.getFullName());
+        enter.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
+        enter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        enter.setAppId(AppIDEnums.SES_ROS.getValue());
+        enter.setEmail(staff.getEmail());
+        enter.setRequestId(requestId);
+        enter.setUserId(staff.getId());
+        mailMultiTaskService.addMultiMailTask(enter);
     }
 
 

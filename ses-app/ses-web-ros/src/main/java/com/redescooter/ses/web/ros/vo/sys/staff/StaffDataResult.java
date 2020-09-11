@@ -14,7 +14,7 @@ import lombok.Data;
 public class StaffDataResult {
 
     @ApiModelProperty("负责人id")
-    private String principal;
+    private Long principal;
 
     @ApiModelProperty("负责人名称")
     private String principalName;
