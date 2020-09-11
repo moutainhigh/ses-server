@@ -40,6 +40,8 @@ public interface SellsyDocumentService {
      */
     public SellsyIdResut createDocument(SellsyClientServiceCreateDocumentEnter enter);
 
+
+    //public void deleteDocument()；
     /**
      * 更新单据状态
      * @param enter

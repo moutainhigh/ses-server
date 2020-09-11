@@ -469,7 +469,8 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         List<SellsyIdResut> result = new ArrayList<>();
 
         // 封装 发票数据
-        for (SellsyInvoice sellsyInvoice : sellsyInvoiceList) {// 先从缓存取，发现没有客户的缓存数据，再调用Sellsy
+
+        invoice:for (SellsyInvoice sellsyInvoice : sellsyInvoiceList) {// 先从缓存取，发现没有客户的缓存数据，再调用Sellsy
             SellsyClientResult sellsyClientResult =
                     getJedisDate(JedisConstant.SESSY_DOCUMENT_CLIENT + sellsyInvoice.getClientName(), new SellsyClientResult());
 
@@ -543,10 +544,8 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 if (CollectionUtils.isNotEmpty(sellsyProductList)) {
                     for (SellsyProduct product : sellsyProductList) {
                         if (StringUtils.equals(invoiceB.getProductNum(), product.getProductCode())) {
-                            invoiceB.setProductNote(invoiceB.getProductNote() + "   " + invoiceB.getProductNote() + "Changer en" + product.getReplaceProductCode() + "Le numéro de produit est " +
-                                    "différent, mais se réfère au même produit");
                             invoiceB.setProductNum(product.getReplaceProductCode());
-                            break;
+                            continue invoice;
                         }
                     }
                 }
@@ -566,7 +565,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                             sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
                     if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
                         log.info("---------产品不存在------{}-------------", invoiceB.getProductNum());
-                        break;
+                        continue invoice;
 //                        throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getCode(),
 //                                ThirdExceptionCodeEnums.SELLSY_PRODUCT_IS_NOT_EXIST.getMessage());
                     }
