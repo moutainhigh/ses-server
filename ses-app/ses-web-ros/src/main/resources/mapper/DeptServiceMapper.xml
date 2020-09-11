@@ -135,7 +135,7 @@
          name as name
         from ope_sys_dept
         where dr = 0
-        and tenant_id = #{tenantId} and id != 1000000
+        and tenant_id = #{tenantId} and id != 1000000 and dept_status = 1
     </select>
 
     <select id="getChildDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">

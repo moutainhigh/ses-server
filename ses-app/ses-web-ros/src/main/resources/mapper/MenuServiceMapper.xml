@@ -64,5 +64,11 @@
 
     </select>
 
+    <select id="getRoleIds" resultType="java.lang.Long">
+        SELECT ur.role_id from ope_sys_user_role ur
+        LEFT JOIN ope_sys_role r on ur.role_id = r.id
+        where ur.user_id = #{userId} and r.role_status = 1
+    </select>
+
 </mapper>
 

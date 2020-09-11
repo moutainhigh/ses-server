@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -498,6 +499,7 @@ public class RoleServiceImpl implements RoleService {
         List<RoleDataResult> resultList = new ArrayList<>();
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
+        qw.eq(OpeSysRole.COL_ROLE_STATUS, DeptStatusEnums.COMPANY);
         if(enter.getPositionId() != null){
             qw.eq(OpeSysRole.COL_POSITION_ID,enter.getPositionId());
         }

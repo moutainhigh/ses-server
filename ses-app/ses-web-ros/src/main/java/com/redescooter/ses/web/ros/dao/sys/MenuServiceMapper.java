@@ -38,4 +38,6 @@ public interface MenuServiceMapper {
 
     List<Long> findChilds(@Param("id")Long id);
 
+    List<Long> getRoleIds(Long userId);
+
 }

@@ -435,10 +435,12 @@ public class MenuServiceImpl implements MenuService {
         if (enter.getId() != null) {
             if (enter.getId() != 0) {
                 //获取用户角色岗位
-                List<OpeSysUserRole> userRoles = userRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, enter.getId()));
-                if (CollUtil.isNotEmpty(userRoles)) {
-                    userRoles.forEach(ur -> result.add(ur.getRoleId()));
-                }
+                result = menuServiceMapper.getRoleIds(enter.getId());
+
+//                List<OpeSysUserRole> userRoles = userRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, enter.getId()));
+//                if (CollUtil.isNotEmpty(userRoles)) {
+//                    userRoles.forEach(ur -> result.add(ur.getRoleId()));
+//                }
             }
         }
         return result;

@@ -21,7 +21,7 @@
         position_name as positionName
         from ope_sys_position
         where dr = 0
-        and tenant_id = #{tenantId}
+        and tenant_id = #{tenantId} and id != 1000000 and position_status = 1
         <if test="deptId != null">
             and dept_id = #{deptId}
         </if>
