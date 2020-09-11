@@ -594,7 +594,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             }
         }
         if (StringUtils.isBlank(enter.getProductType())
-            && StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
+            || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
             // 整车产品查询列表
             List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter,
                 Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
