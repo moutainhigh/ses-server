@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 
 import java.util.List;
@@ -61,5 +62,7 @@ public interface StaffService {
      * @return
      **/
     void disAbleStaff(List<Long> deptIds);
+
+    void emailToStaff(OpeSysStaff staff, String requestId);
 
 }
