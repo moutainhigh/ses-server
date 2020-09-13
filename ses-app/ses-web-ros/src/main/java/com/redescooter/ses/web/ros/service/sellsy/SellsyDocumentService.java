@@ -7,7 +7,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEn
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +38,7 @@ public interface SellsyDocumentService {
      * 发票创建
      * @param enter
      */
-    public SellsyIdResut createDocument(SellsyClientServiceCreateDocumentEnter enter);
+    public SellsyIdResult createDocument(SellsyClientServiceCreateDocumentEnter enter);
 
 
     //public void deleteDocument()；
@@ -68,5 +68,5 @@ public interface SellsyDocumentService {
      * 根据数据库数据批量创建发票
      * @return
      */
-    List<SellsyIdResut> createDcumentList();
+    List<SellsyIdResult> createDcumentList();
 }

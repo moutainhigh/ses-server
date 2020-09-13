@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class SellsyIdResut {
+public class SellsyIdResult {
 
     private Integer id;
 }

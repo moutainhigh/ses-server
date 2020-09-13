@@ -1,12 +1,9 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientAddressEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientAddressDetailResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
 
 import java.util.List;
 
@@ -39,6 +36,12 @@ public interface SellsyClientService {
      * @param enter
      */
     public SellsyIdResult createClient(SellsyCreateClientEnter enter);
+
+    /**
+     * 删除客户
+     * @param enter
+     */
+    public void deleteClient(SellsyDeleteClientEnter enter);
 
 
     /**

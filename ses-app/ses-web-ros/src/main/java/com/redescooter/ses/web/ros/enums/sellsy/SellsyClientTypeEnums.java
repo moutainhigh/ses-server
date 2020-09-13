@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum SellsyClientTypeEnums {
-    corporation("corporation", "公司"),
-    person("person", "个人");
+    corporation("corporation", "公司","corporation"),
+    person("person", "个人","person");
 
     private String code;
+
+    private String message;
 
     private String value;
 }

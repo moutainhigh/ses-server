@@ -44,6 +44,6 @@ public class SellsyAddressServiceImpl implements SellsyAddressService {
                         .method(SellsyMethodConstant.Addresses_GetOne).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyAddressResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyAddressResult.class);
+        return (SellsyAddressResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyAddressResult());
     }
 }

@@ -7,7 +7,7 @@ import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
                         .method(SellsyMethodConstant.Catalogue_GetOne).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyCatalogueResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyCatalogueResult.class);
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyCatalogueResult());
     }
 
     /**
@@ -72,13 +72,13 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
      */
     @Transactional
     @Override
-    public SellsyIdResut createCatalogue(SellsyCreateCatalogueEnter enter) {
+    public SellsyIdResult createCatalogue(SellsyCreateCatalogueEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
                 SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                         .method(SellsyMethodConstant.Catalogue_Create).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyIdResut)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyIdResut.class);
+        return (SellsyIdResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
     }
 
     /**
@@ -88,13 +88,13 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
      */
     @Transactional
     @Override
-    public SellsyIdResut updateCatalogue(SellsyUpdateCatalogueEnter enter) {
+    public SellsyIdResult updateCatalogue(SellsyUpdateCatalogueEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
                 SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.UPDATE.getValue())
                         .method(SellsyMethodConstant.Catalogue_Update).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyIdResut)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyIdResut.class);
+        return (SellsyIdResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
     }
 
     /**

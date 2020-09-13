@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocu
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,16 +46,16 @@ public class SellsyDocumentController {
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "发票创建", response = SellsyIdResut.class)
+    @ApiOperation(value = "发票创建", response = SellsyIdResult.class)
     @PostMapping(value = "/createDocument")
-    public Response<SellsyIdResut> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
+    public Response<SellsyIdResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
         return new Response<>(documentService.createDocument(enter));
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "根据导入到数据库的数据批量创建发票", response = SellsyIdResut.class)
+    @ApiOperation(value = "根据导入到数据库的数据批量创建发票", response = SellsyIdResult.class)
     @PostMapping(value = "/createDcumentList")
-    public Response<List<SellsyIdResut>> createDcumentList() {
+    public Response<List<SellsyIdResult>> createDcumentList() {
         return new Response<>(documentService.createDcumentList());
     }
 

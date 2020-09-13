@@ -17,13 +17,11 @@ import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientAddressEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientThirdEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
@@ -278,7 +276,7 @@ public class SesWebRosApplicationTests {
                 .row_purchaseAmount(String.valueOf(Double.valueOf(sellsyCatalogueResultList.get(0).getUnitAmount()) * 10))
                 .row_serial(null)
                 .row_barcode(null)
-            .row_title(null)
+                .row_title(null)
                 .row_comment(null)
                 .row_unit(null)
                 .build();
@@ -301,7 +299,7 @@ public class SesWebRosApplicationTests {
         sellsyClientServiceCreateDocumentEnter.setCorpAddressId(Integer.parseInt(sellsyCorpInfoResult.getMainaddressid()));
         sellsyClientServiceCreateDocumentEnter.setThirdaddress(new SellsyIdEnter(Integer.valueOf(sellsyCorpInfoResult.getMainaddressid())));
         //sellsyClientServiceCreateDocumentEnter.setSellsellEnter(sellsyRowEnter);
-        SellsyIdResut document = sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
+        SellsyIdResult document = sellsyDocumentService.createDocument(sellsyClientServiceCreateDocumentEnter);
 
         log.info("------------创建发票的返回值 {}--------", document.toString());
     }
@@ -367,15 +365,16 @@ public class SesWebRosApplicationTests {
             catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
             sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
             sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
-            SellsyIdResut catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+            SellsyIdResult catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
             item.setDef1(String.valueOf(catalogue.getId()));
         });
         sellsyProductService.updateBatchById(sellsyProductList);
     }
 
+
     @Test
     public void deleteCatalogue(){
-        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3").orderByDesc(SellsyProduct::getId));
+        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().orderByDesc(SellsyProduct::getId));
         //List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().eq(SellsyProduct::getId,1000021));
 
         SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
@@ -399,7 +398,7 @@ public class SesWebRosApplicationTests {
 
             //过滤
             for (SellsyCatalogueResult catalogue : sellsyCatalogueResults) {
-                if (StringUtils.equals(catalogue.getName(), sellsyCatalogueListSearchEnter.getName())) {
+                if (StringUtils.equals(catalogue.getName(), sellsyCatalogueListSearchEnter.getName().trim())) {
                     sellsyDeleteCatalogueEnter.setId(Integer.valueOf(catalogue.getId()));
                     break;
                 }
@@ -410,6 +409,13 @@ public class SesWebRosApplicationTests {
             sellsyDeleteCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
             sellsyCatalogueService.deleteCatalogue(sellsyDeleteCatalogueEnter);
             log.info("----------执行了--------");
+        }
+    }
+
+    @Test
+    public  void btachDeleteProduct(){
+        for (int i = 0; i < 10; i++) {
+            deleteCatalogue();
         }
     }
 
@@ -427,7 +433,21 @@ public class SesWebRosApplicationTests {
                 .part1("中国上海")
                 .build();
 
-        //SellsyCreateClientEnter();
+        SellsyCreateClientEnter sellsyCreateClientEnter = SellsyCreateClientEnter.builder()
+                .third(third)
+                .address(address)
+                .contact(null)
+                .build();
+        SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
+        log.info("-----------取到返回值{}---------",client.getId());
     }
 
+    @Test
+    public void  deleteclient(){
+        SellsyDeleteClientEnter sellsyDeleteClientEnter = SellsyDeleteClientEnter.builder()
+                .clientid("25918711")
+                .build();
+        sellsyClientService.deleteClient(sellsyDeleteClientEnter);
+        //SellsyGeneralResult(error=null, status=null, result={"client_id":25918711}, sellsyResponseInfo=null)
+    }
 }

@@ -5,14 +5,11 @@ import com.redescooter.ses.web.ros.enums.sellsy.SellsyMethodTypeEnums;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientAddressEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyCreateClientEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyQueryClientOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientAddressDetailResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyIdResult;
 import lombok.extern.log4j.Log4j2;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,14 +62,13 @@ public class SellsyClientServiceImpl implements SellsyClientService {
                 .params(enter)
                 .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
                 .build();
-        
+
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        
-        return (SellsyClientResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyClientResult.class);
+        return (SellsyClientResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientResult());
     }
     
     /**
-     * todo 客户创建
+     * 客户创建
      *
      * @param enter
      */
@@ -85,7 +81,21 @@ public class SellsyClientServiceImpl implements SellsyClientService {
                 .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                 .build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return null;
+        return (SellsyIdResult) sellsyService.jsontoJavaObj(sellsyGeneralResult,new SellsyIdResult());
+    }
+
+    /**
+     * 删除客户
+     * @param enter
+     */
+    @Override
+    public void deleteClient(SellsyDeleteClientEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter = SellsyExecutionEnter.builder()
+                .method(SellsyMethodConstant.Client_Delete)
+                .params(enter)
+                .SellsyMethodType(SellsyMethodTypeEnums.DELETE.getValue())
+                .build();
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
     }
 
     /**
@@ -102,6 +112,6 @@ public class SellsyClientServiceImpl implements SellsyClientService {
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return (SellsyClientAddressDetailResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyClientAddressDetailResult.class);
+        return (SellsyClientAddressDetailResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientAddressDetailResult());
     }
 }

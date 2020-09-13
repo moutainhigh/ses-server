@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 
 import java.util.List;
@@ -32,14 +32,14 @@ public interface SellsyCatalogueService {
      * @param enter
      * @return
      */
-    public SellsyIdResut createCatalogue(SellsyCreateCatalogueEnter enter);
+    public SellsyIdResult createCatalogue(SellsyCreateCatalogueEnter enter);
 
     /**
      * 更新产品
      * @param enter
      * @return
      */
-    public SellsyIdResut updateCatalogue(SellsyUpdateCatalogueEnter enter);
+    public SellsyIdResult updateCatalogue(SellsyUpdateCatalogueEnter enter);
 
     /**
      * 删除 产品

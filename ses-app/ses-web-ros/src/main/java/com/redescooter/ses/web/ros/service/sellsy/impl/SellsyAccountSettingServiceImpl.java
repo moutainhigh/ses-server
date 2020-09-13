@@ -52,7 +52,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
 
         // 默认只有一种货币单位
 
-        return (SellsyCurrencyResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyCurrencyResult.class);
+        return (SellsyCurrencyResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyCurrencyResult());
     }
 
     /**
@@ -116,7 +116,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
         return (SellsyRateCategoryResult)sellsyService.jsontoJavaObj(sellsyGeneralResult,
-            SellsyRateCategoryResult.class);
+            new SellsyRateCategoryResult());
     }
 
     /**
@@ -163,7 +163,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                         .method(SellsyMethodConstant.AccountPrefs_GetAddress).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyAccountAddressResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyAccountAddressResult.class);
+        return (SellsyAccountAddressResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyAccountAddressResult());
     }
 
     /**
@@ -195,7 +195,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetTaxe).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyTaxeResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyTaxeResult.class);
+        return (SellsyTaxeResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyTaxeResult());
     }
 
     /**
@@ -225,7 +225,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                 .method(SellsyMethodConstant.Accountdatas_GetShipping).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyShippingResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyShippingResult.class);
+        return (SellsyShippingResult)sellsyService.jsontoJavaObj(sellsyGeneralResult,new SellsyShippingResult());
     }
 
     /**
@@ -252,7 +252,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                         .method(SellsyMethodConstant.Accountdatas_GetUnit).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyUnitResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyUnitResult.class);
+        return (SellsyUnitResult) sellsyService.jsontoJavaObj(sellsyGeneralResult,new SellsyUnitResult());
     }
 
     /**
@@ -280,7 +280,7 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                         .method(SellsyMethodConstant.Accountdatas_GetPackaging).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyPackagingResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyPackagingResult.class);
+        return (SellsyPackagingResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyPackagingResult());
     }
 
     /**
@@ -294,6 +294,6 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
                         .method(SellsyMethodConstant.AccountPrefs_GetCorpInfos).params(SellsyConstant.NO_PARAMETER).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyCorpInfoResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, SellsyCorpInfoResult.class);
+        return (SellsyCorpInfoResult) sellsyService.jsontoJavaObj(sellsyGeneralResult,new SellsyCorpInfoResult());
     }
 }

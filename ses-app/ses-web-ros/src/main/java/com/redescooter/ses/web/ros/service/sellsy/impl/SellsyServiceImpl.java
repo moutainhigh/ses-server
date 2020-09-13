@@ -18,7 +18,7 @@ import com.redescooter.ses.web.ros.service.base.SellsyExceptionService;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResut;
+import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.sellsy.coreConnector.SellsyApiException;
 import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -247,18 +249,25 @@ public class SellsyServiceImpl implements SellsyService {
      * @return
      */
     @Override
-    public Object jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, Class t) {
+    public <T> T jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, T t) {
         if (sellsyGeneralResult.getResult() == null) {
             return null;
         }
-        Object result = null;
         try {
-            result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), t);
+            if (t instanceof SellsyIdResult){
+                Map<String,String> map = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+
+             Field f = t.getClass().getDeclaredField("id");
+             f.setAccessible(true);
+             f.set(t, ((Integer)map.values().toArray()[0]).intValue());
+             return t;
+            }
+            t = JSON.parseObject(sellsyGeneralResult.getResult().toString(), (Type) t.getClass());
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        return result;
+        return t;
     }
 
     /**
@@ -268,7 +277,7 @@ public class SellsyServiceImpl implements SellsyService {
      * @return
      */
     @Override
-    public SellsyIdResut jsonCreateResut(SellsyGeneralResult sellsyGeneralResult) {
+    public SellsyIdResult jsonCreateResut(SellsyGeneralResult sellsyGeneralResult) {
         if (sellsyGeneralResult.getResult() == null) {
             return null;
         }
@@ -279,7 +288,7 @@ public class SellsyServiceImpl implements SellsyService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                 ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        return new SellsyIdResut(new ArrayList<>(result.values()).get(0));
+        return new SellsyIdResult(new ArrayList<>(result.values()).get(0));
     }
 
     /**

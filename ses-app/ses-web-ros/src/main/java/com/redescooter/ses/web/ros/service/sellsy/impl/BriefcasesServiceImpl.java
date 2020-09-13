@@ -58,7 +58,7 @@ public class BriefcasesServiceImpl implements BriefcasesService {
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
         return (SellsyBriefcaseUploadFileResult)sellsyService.jsontoJavaObj(sellsyGeneralResult,
-            SellsyBriefcaseUploadFileResult.class);
+           new SellsyBriefcaseUploadFileResult());
     }
 
     /**
