@@ -33,6 +33,9 @@ public class MondayConfig {
     //工作区域Id
     private String workspaceId;
 
+    // 数据备份工作区域
+    private String workspaceBackId;
+
     //模板Id
     private String templeteId;
 

@@ -1,18 +1,7 @@
 package com.redescooter.ses.web.ros.service.monday;
 
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayGeneralResult;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayGroupResult;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
-import com.redescooter.ses.web.ros.vo.monday.result.MondayTagResult;
+import com.redescooter.ses.web.ros.vo.monday.enter.*;
+import com.redescooter.ses.web.ros.vo.monday.result.*;
 
 import java.util.List;
 
@@ -29,6 +18,11 @@ public interface MondayService {
      * 初始化单据模板
      */
     void initializationMondaytemplate();
+
+    /**
+     * 初始化备份模版
+     */
+    void initializationBackMondaytemplate();
 
     /**
      * 官网联系我们
