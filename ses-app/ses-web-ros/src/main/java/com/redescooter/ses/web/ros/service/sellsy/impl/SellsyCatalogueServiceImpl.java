@@ -78,7 +78,7 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
                         .method(SellsyMethodConstant.Catalogue_Create).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyIdResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
     }
 
     /**
@@ -94,7 +94,7 @@ public class SellsyCatalogueServiceImpl implements SellsyCatalogueService {
                         .method(SellsyMethodConstant.Catalogue_Update).params(enter).build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyIdResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
     }
 
     /**

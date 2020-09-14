@@ -64,7 +64,7 @@ public class SellsyClientServiceImpl implements SellsyClientService {
                 .build();
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyClientResult)sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientResult());
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientResult());
     }
     
     /**
@@ -81,7 +81,7 @@ public class SellsyClientServiceImpl implements SellsyClientService {
                 .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue())
                 .build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return (SellsyIdResult) sellsyService.jsontoJavaObj(sellsyGeneralResult,new SellsyIdResult());
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
     }
 
     /**
@@ -112,6 +112,6 @@ public class SellsyClientServiceImpl implements SellsyClientService {
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return (SellsyClientAddressDetailResult) sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientAddressDetailResult());
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyClientAddressDetailResult());
     }
 }
