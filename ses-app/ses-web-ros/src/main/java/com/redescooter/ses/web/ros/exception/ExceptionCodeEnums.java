@@ -374,6 +374,8 @@ public enum ExceptionCodeEnums {
 
     DEPT_LEVEL_ERROR(10178, "部门最多只能有4级"),
 
+    ASSEMBLY_PRODUCT_IS_EMPTY(10179, "组装产品为空"),
+
     ;
 
 
