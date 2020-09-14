@@ -42,17 +42,23 @@ public class MondayConfig {
     //预定单板子名称
     private String orderFormBoardName;
 
+    private String orderFormBoardBackName;
+
     //板子内分组名称
     private String orderFormGroupName;
 
     //联系我们板子名称
     private String contactUsBoardName;
 
+    private String contactUsBoardBackName;
+
     //联系我们分组名称
     private String contactUsGroupName;
 
     //订阅邮件板子名称
     private String subEmailBoardName;
+
+    private String subEmailBoardBackName;
 
     //订阅邮件分组
     private String subEmailGroupName;
