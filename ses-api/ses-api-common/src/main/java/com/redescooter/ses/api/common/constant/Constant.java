@@ -66,4 +66,14 @@ public interface Constant {
     BigDecimal LATITUDE = new BigDecimal("48.862868");
 
     BigDecimal LONGITUDE = new BigDecimal("2.313960");
+
+    // 经纬度范围
+    // 最大经度
+    String maxlng = "48.902862";
+    // 最小经度
+    String minlng = "48.840000";
+    // 最大纬度
+    String minlat = "2.250000";
+    // 最小纬度
+    String maxlat = "2.356000";
 }

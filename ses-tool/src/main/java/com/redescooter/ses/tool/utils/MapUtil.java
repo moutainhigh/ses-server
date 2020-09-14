@@ -4,6 +4,9 @@ package com.redescooter.ses.tool.utils;
 import ch.hsr.geohash.GeoHash;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
+import java.util.Random;
+
 /**
  * @description: MapUtil
  * @author: Darren
@@ -74,8 +77,21 @@ public class MapUtil {
 		return geoHash;
 	}
 
-	//    合肥与杭州的经纬度距离计算
-	public static void main(String ar[]) {
-		System.out.println(getDistance(31.86, 117.27, 30.26, 120.19));
+    /**
+     * @Title: randomLonLat @Description: 在矩形内随机生成经纬度 @return 48.847993，2.250934 48.846780，2.417760 48.902862, 2.355427
+     * 48.818294，2.352570 @throws
+     */
+    public void randomLonLat() {
+        Random random = new Random();
+
+        Double maxlng = Double.valueOf("48.902862");
+        Double minlng = Double.valueOf("48.840000");
+        Double minlat = Double.valueOf("2.250000");
+        Double maxlat = Double.valueOf("2.356000");
+        // , double MaxLon, double MinLat, double MaxLat,
+        BigDecimal db = new BigDecimal(Math.random() * (maxlng - minlng) + minlng);
+        String lon = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();// 小数后6位
+        db = new BigDecimal(Math.random() * (maxlat - minlat) + minlat);
+        String lat = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
 	}
 }
