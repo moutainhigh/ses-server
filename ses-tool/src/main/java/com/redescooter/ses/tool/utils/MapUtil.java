@@ -2,7 +2,11 @@ package com.redescooter.ses.tool.utils;
 
 
 import ch.hsr.geohash.GeoHash;
+import com.redescooter.ses.api.common.constant.Constant;
 import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.Random;
 
 /**
  * @description: MapUtil
@@ -74,8 +78,33 @@ public class MapUtil {
 		return geoHash;
 	}
 
-	//    合肥与杭州的经纬度距离计算
-	public static void main(String ar[]) {
-		System.out.println(getDistance(31.86, 117.27, 30.26, 120.19));
+    /**
+     * @Title: randomLonLat @Description: 在矩形内随机生成经纬度
+     * @return BigDecimal
+     *
+     */
+    public static BigDecimal randomLonLat(String type) {
+        Random random = new Random();
+
+        Double maxlng = Double.valueOf(Constant.maxlng);
+        Double minlng = Double.valueOf(Constant.minlng);
+        Double minlat = Double.valueOf(Constant.minlat);
+        Double maxlat = Double.valueOf(Constant.maxlat);
+        // , double MaxLon, double MinLat, double MaxLat,
+        BigDecimal db = new BigDecimal(Math.random() * (maxlng - minlng) + minlng);
+        BigDecimal lon = db.setScale(Constant.precision, BigDecimal.ROUND_HALF_UP);// 小数后6位
+        db = new BigDecimal(Math.random() * (maxlat - minlat) + minlat);
+        BigDecimal lat = db.setScale(Constant.precision, BigDecimal.ROUND_HALF_UP);
+
+        if (StringUtils.equals(type, Constant.lng)) {
+            if (lon.intValue() == 0) {
+                return Constant.LONGITUDE;
+            }
+            return lon;
+        }
+        if (lat.intValue() == 0) {
+            return Constant.LATITUDE;
+        }
+        return lat;
 	}
 }

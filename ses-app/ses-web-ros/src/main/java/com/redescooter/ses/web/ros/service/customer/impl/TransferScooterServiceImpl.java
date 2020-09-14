@@ -27,6 +27,7 @@ import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -373,8 +374,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         HubSaveScooterEnter scooterEnter = HubSaveScooterEnter.builder()
                 .scooterId(item.getId())
                 .model(ScooterModelEnums.SCOOTER_125_CC.getValue())
-                .longitude(Constant.LONGITUDE)
-                .latitude(Constant.LATITUDE)
+            .longitude(MapUtil.randomLonLat(Constant.lng)).latitude(MapUtil.randomLonLat(Constant.lng))
                 .licensePlate(item.getNumberPlate())
                 .licensePlatePicture(null)
                 .status(ScooterStatusEnums.AVAILABLE.getValue())
