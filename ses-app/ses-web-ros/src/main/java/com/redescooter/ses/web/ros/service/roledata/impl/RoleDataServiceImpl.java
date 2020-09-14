@@ -6,8 +6,6 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDataService;
 import com.redescooter.ses.web.ros.service.roledata.RoleDataService;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,6 +78,10 @@ public class RoleDataServiceImpl implements RoleDataService {
 
     @Override
     public GeneralResult saveRoleData(RoleDataSaveEnter enter) {
+        // 先把原来的数据权限删除
+        QueryWrapper<OpeSysRoleData>  qw = new QueryWrapper<>();
+        qw.eq(OpeSysRoleData.COL_ROLE_ID,enter.getRoleId());
+        opeSysRoleDataService.remove(qw);
         List<OpeSysRoleData> roleDataList = new ArrayList<>();
         // 先判断类型  （若类型不为空，则选择的是上面的几个，若类型为空，则需判断有没有勾选部门）
         if(enter.getDataType() != null){
