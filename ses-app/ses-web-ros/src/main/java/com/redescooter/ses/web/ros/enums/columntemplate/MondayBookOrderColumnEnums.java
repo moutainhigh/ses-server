@@ -28,8 +28,10 @@ public enum MondayBookOrderColumnEnums {
     MODEL("text2", "Model","text"),
     VOTRE_MESSAGE("text47", "Votre Message","text"),
     CODE_POSTAL("text4", "Code Postal","text"),
-    VILLE("text", "ville", "text"), COULEUR("text8", "couleur", "text");
+    VILLE("text", "ville", "text"), COULEUR("text8", "couleur", "text"),
+    QUANTITÉ_DE_BATTERIE("couleur2", "Quantité de batterie", "text"), ADDRESSE("adresse5", "Adresse", "text"),
 
+    ;
 
     private String id;
 

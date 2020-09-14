@@ -1,13 +1,8 @@
 package com.redescooter.ses.web.ros.vo.monday.enter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import io.swagger.annotations.*;
-import org.apache.poi.ss.formula.functions.T;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 /**
  * @ClassName:MondayBookOrderEnter
@@ -29,4 +24,7 @@ public class MondayBookOrderEnter{
     
     @ApiModelProperty(value = "数量")
     private int qty;
+
+    @ApiModelProperty(value = "电池数量")
+    private int batteryQty;
 }

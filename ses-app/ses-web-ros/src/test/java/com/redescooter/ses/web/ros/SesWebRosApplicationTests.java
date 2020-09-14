@@ -6,6 +6,8 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -178,6 +181,22 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void sendRequestByRestTemplateGet() {
-        mondayService.websiteSubscriptionEmail("alex@redescooter.com");
+        // mondayService.websiteSubscriptionEmail("alex@redescooter.com");
+        MondayBookOrderEnter mondayBookOrderEnter =
+            MondayBookOrderEnter.builder().producModeltName("RED 125 CC").qty(2).batteryQty(4).build();
+        MondayGeneralEnter<MondayBookOrderEnter> enter = new MondayGeneralEnter<>();
+        enter.setRemarks("测试");
+        enter.setFirstName("alex");
+        enter.setLastName("alex");
+        enter.setCity("Paris");
+        enter.setDistant("75001");
+        enter.setEmail("alex@redescooter.com");
+        enter.setTelephone("1234567890");
+        enter.setCreatedTime(new Date());
+        enter.setUpdatedTime(new Date());
+        enter.setT(mondayBookOrderEnter);
+        // mondayService.websiteContantUs(enter);
+
+        mondayService.websiteBookOrder(enter);
     }
 }
