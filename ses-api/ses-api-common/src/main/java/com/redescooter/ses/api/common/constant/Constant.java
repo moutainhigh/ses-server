@@ -62,10 +62,6 @@ public interface Constant {
     Long ADMINUSERID = 1000000L;
     //百分比
     int AMOUNTP_ROPORTION = 100;
-    //默认经纬度
-    BigDecimal LATITUDE = new BigDecimal("48.862868");
-
-    BigDecimal LONGITUDE = new BigDecimal("2.313960");
 
     // 经纬度范围
     // 最大经度
@@ -76,4 +72,17 @@ public interface Constant {
     String minlat = "2.250000";
     // 最小纬度
     String maxlat = "2.356000";
+
+    // 经度参数名
+    String lng = "lng";
+    // 纬度参数名
+    String lat = "lat";
+
+    // 经纬度 精度
+    int precision = 6;
+
+    // 默认经纬度
+    BigDecimal LATITUDE = new BigDecimal("48.862868");
+
+    BigDecimal LONGITUDE = new BigDecimal("2.313960");
 }

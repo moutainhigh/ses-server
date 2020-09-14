@@ -2,6 +2,7 @@ package com.redescooter.ses.tool.utils;
 
 
 import ch.hsr.geohash.GeoHash;
+import com.redescooter.ses.api.common.constant.Constant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -78,20 +79,32 @@ public class MapUtil {
 	}
 
     /**
-     * @Title: randomLonLat @Description: 在矩形内随机生成经纬度 @return 48.847993，2.250934 48.846780，2.417760 48.902862, 2.355427
-     * 48.818294，2.352570 @throws
+     * @Title: randomLonLat @Description: 在矩形内随机生成经纬度
+     * @return BigDecimal
+     *
      */
-    public void randomLonLat() {
+    public static BigDecimal randomLonLat(String type) {
         Random random = new Random();
 
-        Double maxlng = Double.valueOf("48.902862");
-        Double minlng = Double.valueOf("48.840000");
-        Double minlat = Double.valueOf("2.250000");
-        Double maxlat = Double.valueOf("2.356000");
+        Double maxlng = Double.valueOf(Constant.maxlng);
+        Double minlng = Double.valueOf(Constant.minlng);
+        Double minlat = Double.valueOf(Constant.minlat);
+        Double maxlat = Double.valueOf(Constant.maxlat);
         // , double MaxLon, double MinLat, double MaxLat,
         BigDecimal db = new BigDecimal(Math.random() * (maxlng - minlng) + minlng);
-        String lon = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();// 小数后6位
+        BigDecimal lon = db.setScale(Constant.precision, BigDecimal.ROUND_HALF_UP);// 小数后6位
         db = new BigDecimal(Math.random() * (maxlat - minlat) + minlat);
-        String lat = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
+        BigDecimal lat = db.setScale(Constant.precision, BigDecimal.ROUND_HALF_UP);
+
+        if (StringUtils.equals(type, Constant.lng)) {
+            if (lon.intValue() == 0) {
+                return Constant.LONGITUDE;
+            }
+            return lon;
+        }
+        if (lat.intValue() == 0) {
+            return Constant.LATITUDE;
+        }
+        return lat;
 	}
 }
