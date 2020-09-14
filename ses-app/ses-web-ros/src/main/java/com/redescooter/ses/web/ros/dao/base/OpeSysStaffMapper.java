@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface OpeSysStaffMapper extends BaseMapper<OpeSysStaff> {
     int updateBatch(List<OpeSysStaff> list);
 
+    int updateBatchSelective(List<OpeSysStaff> list);
+
     int batchInsert(@Param("list") List<OpeSysStaff> list);
 
     int insertOrUpdate(OpeSysStaff record);

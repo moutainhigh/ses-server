@@ -42,6 +42,9 @@ public interface RegexpConstant {
 
      String number="^[0-9]*$";
 
+     //  正整数的正则表达式(不包括0)
+     String positiveInteger="^[1-9]\\d*$";
+
      //四种钱的表示形式我们可以接受:"10000.00" 和 "10,000.00", 和没有 "分" 的 "10000" 和 "10,000"
      String MONEY="^[0-9]+(.[0-9]+)?$";
 

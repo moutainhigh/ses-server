@@ -9,6 +9,8 @@ import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,4 +82,12 @@ public class SysMenuController {
     public Response<List<MenuTreeResult>> findMenuByRoleId(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(menuService.findMenuByRoleId(enter));
     }
+
+
+    @PostMapping(value = "/menuDatas")
+    @ApiOperation(value = "菜单下拉数据", response = MenuTreeResult.class)
+    public Response<List<MenuDatasListResult>> menuDatas(@ModelAttribute @ApiParam("请求参数") MenuDatasEnter enter) {
+        return new Response<>(menuService.menuDatas(enter));
+    }
+
 }

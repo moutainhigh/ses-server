@@ -83,7 +83,7 @@
         case when cup.email_1 is null then '2' ELSE '1' END loginType
         from cor_driver cdr
         inner join cor_user_profile cup on cdr.user_id = cup.user_id and cup.dr = 0
-        inner join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
+        left join cor_driver_scooter cds on cdr.id = cds.driver_id and cds.dr = 0
         left join cor_tenant_scooter cts on cds.scooter_id = cts.scooter_id and cts.dr = 0
         <include refid="where_driver_list"/>
         group by id,

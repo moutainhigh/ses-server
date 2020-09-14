@@ -96,11 +96,63 @@
                     IF
                         ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
                     FROM
-                        ( SELECT id, p_id FROM ope_sys_dept t ) t1,
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
                         ( SELECT @pids := #{deptId}) t2
                     ) t3
                 WHERE
             ischild != 0
 
     </select>
+    <select id="getDeptList" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+        <if test="keyWrod !=null and  keyWrod !=''">
+            and(
+            dept.name like concat ('%',#{keyWrod},'%')
+            )
+        </if>
+        <if test="deptType != null and deptType != ''">
+            and dept.dept_status =#{deptType}
+        </if>
+    </select>
+    <select id="selectEditDept" resultType="com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+       and dept.id =#{id}
+    </select>
+    <select id="deptType" resultType="com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult">
+         select id as deptId,
+         name as name
+        from ope_sys_dept
+        where dr = 0
+        and tenant_id = #{tenantId} and id != 1000000 and dept_status = 1
+    </select>
+
+    <select id="getChildDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
+        SELECT * from ope_sys_dept  where id in (SELECT
+                  id
+               FROM
+                    (
+                    SELECT
+                        t1.id,
+                    IF
+                        ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+                    FROM
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
+                        ( SELECT @pids := #{deptId}) t2
+                    ) t3
+                WHERE
+            ischild != 0)
+    </select>
+
 </mapper>

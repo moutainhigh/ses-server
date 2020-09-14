@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.base;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +19,11 @@ public interface OpeSysDeptService extends IService<OpeSysDept> {
 
     int insertOrUpdateSelective(OpeSysDept record);
 
+    int updateBatchSelective(List<OpeSysDept> list);
 }
+
+
+
+
+
 

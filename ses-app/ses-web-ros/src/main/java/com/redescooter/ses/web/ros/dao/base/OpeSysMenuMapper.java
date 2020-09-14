@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Param;
 public interface OpeSysMenuMapper extends BaseMapper<OpeSysMenu> {
     int updateBatch(List<OpeSysMenu> list);
 
+    int updateBatchSelective(List<OpeSysMenu> list);
+
     int batchInsert(@Param("list") List<OpeSysMenu> list);
 
     int insertOrUpdate(OpeSysMenu record);

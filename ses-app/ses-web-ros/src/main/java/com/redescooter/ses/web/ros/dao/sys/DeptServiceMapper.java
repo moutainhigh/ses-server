@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +36,25 @@ public interface DeptServiceMapper {
     List<DeptTreeReslt> deptList();
 
     /**
+     * 获取编辑部门信息
+     *
+     * @return
+     * */
+    SelectDeptResult selectEditDept (Long id);
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTypeResult> deptType(@Param("tenantId") long tenantId);
+
+    /**
+     * 获取部门信息
+     *
+     * @return
+     */
+    List<DeptTreeListResult> getDeptList(DeptListEnter enter);
+    /**
      * 根据部门查询员工信息
      *
      * @return
@@ -42,12 +63,22 @@ public interface DeptServiceMapper {
 
     /**
      * @Author Aleks
-     * @Description
+     * @Description 向下递归，查找子部门的id
      * @Date  2020/6/5 10:18
      * @Param [deptId]
      * @return
      **/
     List<Long> getChildDeptIds(@Param("deptId")  Long deptId);
+
+
+    /**
+     * @Author Aleks
+     * @Description 向下递归，查找子部门
+     * @Date  2020/6/5 10:18
+     * @Param [deptId]
+     * @return
+     **/
+    List<OpeSysDept> getChildDept(@Param("deptId")  Long deptId);
 
     /**
      * 负责人列表

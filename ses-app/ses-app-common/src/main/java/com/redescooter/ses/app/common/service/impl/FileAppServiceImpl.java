@@ -65,6 +65,9 @@ public class FileAppServiceImpl implements FileAppService {
         } finally {
             ossClient.shutdown();
         }
+        if (StringUtils.isNotEmpty(dirName)){
+            return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() +"/"+dirName+ "/" + fileName;
+        }
         return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
     }
 

@@ -13,4 +13,6 @@ public interface SequenceName {
 
     String CON_USER_SCOOTER = "CON_USER_SCOOTER";
 
+    String SCO_SCOOTER_NAVIGATION="SCO_SCOOTER_NAVIGATION";
+
 }

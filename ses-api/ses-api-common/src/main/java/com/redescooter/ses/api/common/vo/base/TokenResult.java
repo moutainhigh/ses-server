@@ -24,4 +24,7 @@ public class TokenResult extends GeneralResult {
     @ApiModelProperty(value = "token值")
     private String token;
 
+    @ApiModelProperty("是否需要重置密码")
+    private boolean resetPsd;
+
 }

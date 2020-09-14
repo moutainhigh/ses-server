@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
+    <sql id="positionList">
+        WHERE
+        pos.dr=0
+        <if test="deptId!=null and deptId != ''">
+            and  pos.dept_id=#{deptId}
+        </if>
+        <if test="positionStatus!=null and positionStatus != ''">
+            and  pos.position_status=#{positionStatus}
+        </if>
+        <if test="keyWord !=null and  keyWord !=''">
+            and(
+            pos.position_name like concat ('%',#{keyWord},'%')
+            )
+        </if>
+    </sql>
+    <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
+        select id as positionId,
+        position_name as positionName
+        from ope_sys_position
+        where dr = 0
+        and tenant_id = #{tenantId} and id != 1000000 and position_status = 1
+        <if test="deptId != null">
+            and dept_id = #{deptId}
+        </if>
+    </select>
+    <select id="listcount" resultType="int">
+        SELECT
+        count(*)
+        FROM
+        ope_sys_position pos
+        <include refid="positionList"/>
+    </select>
+
+    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionResult">
+        SELECT
+        pos.id AS id,
+        pos.position_name AS positionName,
+        pos.position_code AS positionCode,
+        dept.name AS deptName,
+        pos.sort AS sort,
+        pos.position_status AS positionStatus,
+        pos.created_time AS createdTime
+        FROM
+        ope_sys_position pos LEFT JOIN ope_sys_dept dept ON pos.dept_id=dept.id
+        <include refid="positionList"/>
+        order by pos.sort, pos.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="positionDetails" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult">
+        select
+        pos.id,
+        pos.position_name,
+        pos.position_code,
+        dept.name as deptName,
+        pos.dept_id as deptId,
+        pos.sort,
+        pos.position_status,
+        staff1.full_name as createdName,
+        staff2.full_name as updatedName,
+        pos.created_time,
+        pos.updated_time
+        from  ope_sys_position pos
+        left join ope_sys_staff staff1 on pos.created_by = staff1.id
+        left join ope_sys_staff staff2 on pos.updated_by = staff2.id
+        left join ope_sys_dept dept on pos.dept_id = dept.id
+        where pos.dr = 0 and pos.id = #{id}
+    </select>
+
+</mapper>

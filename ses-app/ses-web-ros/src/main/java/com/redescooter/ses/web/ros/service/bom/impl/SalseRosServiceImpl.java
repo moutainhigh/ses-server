@@ -311,7 +311,8 @@ public class SalseRosServiceImpl implements SalseRosService {
 
             // 保存记录
             opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, frRegionalPriceSheet.getId(), CurrencyUnitEnums.FR.getValue()));
-            opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, frRegionalPriceSheet.getId(), CurrencyUnitEnums.EN.getValue()));
+            opeRegionalPriceSheetHistoryList.add(buildOpeRegionalPriceSheetHistory(enter, enRegionalPriceSheet.getId(),
+                CurrencyUnitEnums.EN.getValue()));
 
         } else {
             // 修改报价

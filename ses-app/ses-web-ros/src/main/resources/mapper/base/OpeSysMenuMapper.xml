@@ -13,6 +13,8 @@
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="component" jdbcType="VARCHAR" property="component" />
     <result column="type" jdbcType="CHAR" property="type" />
+    <result column="if_to_link" jdbcType="CHAR" property="ifToLink" />
+    <result column="menu_status" jdbcType="INTEGER" property="menuStatus" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
@@ -29,9 +31,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, 
-    sort, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-    def5, def6
+    id, dr, p_id, `name`, code, permission, `path`, component, `type`, if_to_link, menu_status, 
+    icon, `level`, sort, remark, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -75,6 +77,16 @@
       <trim prefix="`type` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=CHAR}
+        </foreach>
+      </trim>
+      <trim prefix="if_to_link = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.ifToLink,jdbcType=CHAR}
+        </foreach>
+      </trim>
+      <trim prefix="menu_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.menuStatus,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="icon = case" suffix="end,">
@@ -148,22 +160,193 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_menu
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="p_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.pId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`name` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.name != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.code != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="permission = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.permission != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.permission,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`path` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.path != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.path,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="component = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.component != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.component,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`type` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.type != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=CHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="if_to_link = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.ifToLink != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.ifToLink,jdbcType=CHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="menu_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.menuStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.menuStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="icon = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.icon != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.icon,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`level` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.level != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.level,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sort = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.sort != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.sort,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into ope_sys_menu
-    (dr, p_id, `name`, code, permission, `path`, component, `type`, icon, `level`, sort, 
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-      def6)
+    (dr, p_id, `name`, code, permission, `path`, component, `type`, if_to_link, menu_status, 
+      icon, `level`, sort, remark, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, 
         #{item.code,jdbcType=VARCHAR}, #{item.permission,jdbcType=VARCHAR}, #{item.path,jdbcType=VARCHAR}, 
-        #{item.component,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR}, #{item.icon,jdbcType=VARCHAR}, 
-        #{item.level,jdbcType=INTEGER}, #{item.sort,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}, #{item.def6,jdbcType=VARCHAR}
-        )
+        #{item.component,jdbcType=VARCHAR}, #{item.type,jdbcType=CHAR}, #{item.ifToLink,jdbcType=CHAR}, 
+        #{item.menuStatus,jdbcType=INTEGER}, #{item.icon,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER}, 
+        #{item.sort,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=DECIMAL}, #{item.def6,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysMenu" useGeneratedKeys="true">
@@ -181,6 +364,8 @@
       `path`,
       component,
       `type`,
+      if_to_link,
+      menu_status,
       icon,
       `level`,
       sort,
@@ -208,6 +393,8 @@
       #{path,jdbcType=VARCHAR},
       #{component,jdbcType=VARCHAR},
       #{type,jdbcType=CHAR},
+      #{ifToLink,jdbcType=CHAR},
+      #{menuStatus,jdbcType=INTEGER},
       #{icon,jdbcType=VARCHAR},
       #{level,jdbcType=INTEGER},
       #{sort,jdbcType=INTEGER},
@@ -235,6 +422,8 @@
       `path` = #{path,jdbcType=VARCHAR},
       component = #{component,jdbcType=VARCHAR},
       `type` = #{type,jdbcType=CHAR},
+      if_to_link = #{ifToLink,jdbcType=CHAR},
+      menu_status = #{menuStatus,jdbcType=INTEGER},
       icon = #{icon,jdbcType=VARCHAR},
       `level` = #{level,jdbcType=INTEGER},
       sort = #{sort,jdbcType=INTEGER},
@@ -280,6 +469,12 @@
       </if>
       <if test="type != null">
         `type`,
+      </if>
+      <if test="ifToLink != null">
+        if_to_link,
+      </if>
+      <if test="menuStatus != null">
+        menu_status,
       </if>
       <if test="icon != null">
         icon,
@@ -350,6 +545,12 @@
       <if test="type != null">
         #{type,jdbcType=CHAR},
       </if>
+      <if test="ifToLink != null">
+        #{ifToLink,jdbcType=CHAR},
+      </if>
+      <if test="menuStatus != null">
+        #{menuStatus,jdbcType=INTEGER},
+      </if>
       <if test="icon != null">
         #{icon,jdbcType=VARCHAR},
       </if>
@@ -418,6 +619,12 @@
       </if>
       <if test="type != null">
         `type` = #{type,jdbcType=CHAR},
+      </if>
+      <if test="ifToLink != null">
+        if_to_link = #{ifToLink,jdbcType=CHAR},
+      </if>
+      <if test="menuStatus != null">
+        menu_status = #{menuStatus,jdbcType=INTEGER},
       </if>
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR},

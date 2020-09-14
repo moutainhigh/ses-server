@@ -60,4 +60,12 @@ public interface EmployeeService {
     GeneralResult trushEmployee(IdEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description
+     * @Date  2020/9/7 14:27
+     * @Param 禁用员工时，员工对应的账号也要被禁用
+     * @return
+     **/
+     void disAbleUser(List<Long> userIds);
 }

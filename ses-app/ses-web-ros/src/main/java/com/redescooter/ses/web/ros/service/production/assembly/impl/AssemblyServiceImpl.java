@@ -446,6 +446,10 @@ public class AssemblyServiceImpl implements AssemblyService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+        if (CollectionUtils.isEmpty(productList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_PRODUCT_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.ASSEMBLY_PRODUCT_IS_EMPTY.getMessage());
+        }
         //收货人、代工厂校验
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);

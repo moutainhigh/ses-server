@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysRoleDataMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleData">
+    <!--@mbg.generated-->
+    <!--@Table ope_sys_role_data-->
+    <id column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="data_type" jdbcType="INTEGER" property="dataType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    role_id, dept_id, data_type
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_role_data
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when role_id = #{item.roleId,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="data_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when role_id = #{item.roleId,jdbcType=BIGINT} then #{item.dataType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+    </trim>
+    where role_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.roleId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_role_data
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deptId != null">
+            when role_id = #{item.roleId,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="data_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dataType != null">
+            when role_id = #{item.roleId,jdbcType=BIGINT} then #{item.dataType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where role_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.roleId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="role_id" keyProperty="roleId" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_data
+    (dept_id, data_type)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.deptId,jdbcType=BIGINT}, #{item.dataType,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="role_id" keyProperty="roleId" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleData" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      dept_id,
+      data_type,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      #{deptId,jdbcType=BIGINT},
+      #{dataType,jdbcType=INTEGER},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      dept_id = #{deptId,jdbcType=BIGINT},
+      data_type = #{dataType,jdbcType=INTEGER},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="role_id" keyProperty="roleId" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRoleData" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into ope_sys_role_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="dataType != null">
+        data_type,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="dataType != null">
+        #{dataType,jdbcType=INTEGER},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="dataType != null">
+        data_type = #{dataType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

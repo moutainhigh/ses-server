@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+
+import java.util.Date;
 
 
 /**
@@ -35,11 +38,11 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "对应路由组件")
     private String component;
 
-    @ApiModelProperty(value = "菜单类型")
+    @ApiModelProperty(value = "菜单类型 0:菜单 1:按钮，2：目录")
     private String type;
 
     @ApiModelProperty(value = "图表")
-    private String icon;
+    private String icon = "";
 
     @ApiModelProperty(value = "等级")
     private Integer level;
@@ -68,5 +71,15 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "是否隐藏")
     private boolean hidden = Boolean.FALSE;
 
+    @TableField(value = "menu_status")
+    @ApiModelProperty(value = "状态 1：正常，2：禁用")
+    private Integer menuStatus = 1;
+
+    @TableField(value = "created_time")
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
+
+    @ApiModelProperty(value = "是否外链。0：否，1：是")
+    private String ifToLink;
 
 }
