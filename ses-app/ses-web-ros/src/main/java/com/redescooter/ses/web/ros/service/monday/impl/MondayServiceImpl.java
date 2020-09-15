@@ -494,6 +494,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), enter.getCity());
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDistant());
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.ADDRESSE.getTitle()), enter.getAddress());
 
         if (enter.getT() instanceof MondayBookOrderEnter) {
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()),
@@ -504,8 +505,6 @@ public class MondayServiceImpl implements MondayService {
                 enter.getT().getProductColor());
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.QUANTITÉ_DE_BATTERIE.getTitle()),
                 String.valueOf(enter.getT().getBatteryQty()));
-            columnValue.put(parameterMap.get(MondayContantUsColumnEnums.ADDRESSE.getTitle()), enter.getAddress());
-
         }
 
         // 转json 并转义
