@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -188,6 +187,7 @@ public class InquiryServiceImpl implements InquiryService {
         mondayGeneralEnter.setCity(enter.getCity());
         mondayGeneralEnter.setDistant(enter.getDistrust());
         mondayGeneralEnter.setRemarks(enter.getRemark());
+        mondayGeneralEnter.setAddress(enter.getAddress());
         mondayService.websiteContantUs(mondayGeneralEnter);
         return new GeneralResult(enter.getRequestId());
     }

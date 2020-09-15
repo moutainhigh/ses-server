@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 @Getter
 public enum MondayContantUsColumnEnums {
 
-    FIRST_CONTACT("first_contact8", "First contact", "date"),
+    FIRST_CONTACT("last_contacted", "First contact", "date"),
     LAST_CONTACTED("due_date", "Last contacted", "date"),
     NEXT_CONTACT("date", "Next contact", "date"),
     PRENOM("text06", "Prenom", "text"),
