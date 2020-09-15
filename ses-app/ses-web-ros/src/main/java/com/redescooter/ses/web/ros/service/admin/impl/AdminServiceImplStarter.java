@@ -345,7 +345,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .systemId(AccountTypeEnums.WEB_ROS.getSystemId())
                 .password(DigestUtils.md5Hex(Constant.DEFAULT_PASSWORD + salt))
                 .salt(String.valueOf(salt))
-                .status(SysUserStatusEnum.NORMAL.getValue())
+                .status(SysUserStatusEnum.NORMAL.getCode())
                 .loginName(Constant.ADMIN_USER_NAME)
                 .lastLoginTime(null)
                 .lastLoginIp(null)
