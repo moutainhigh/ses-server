@@ -434,6 +434,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer.getDistrust() != null) {
             opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
         }
+        if (StringUtils.isNotEmpty(opeCustomer.getAddress())) {
+            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
+        }
         opeCustomerInquiry.setDef3(opeCustomer.getDef3());
 
         opeCustomerInquiry.setScooterQuantity(1);
