@@ -481,27 +481,27 @@ public class MondayServiceImpl implements MondayService {
 
         Map<String, Object> columnValue = new HashMap<>();
         // 时间
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.FIRST_CONTACT.getId()), dateMap);
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.LAST_CONTACTED.getId()), null);
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.NEXT_CONTACT.getId()), null);
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.PRENOM.getId()), enter.getFirstName());
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.NOM.getId()), enter.getLastName());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.FIRST_CONTACT.getTitle()), dateMap);
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.LAST_CONTACTED.getTitle()), null);
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.NEXT_CONTACT.getTitle()), null);
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.PRENOM.getTitle()), enter.getFirstName());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.NOM.getTitle()), enter.getLastName());
         // 电话
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.TEL.getId()),
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.TEL.getTitle()),
             CollectionUtils.isEmpty(phoneMap) == true ? null : phoneMap);
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.EMAIL.getId()), enter.getEmail());
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VILLE.getId()), enter.getCity());
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getId()), enter.getDistant());
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getId()), enter.getRemarks());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.EMAIL.getTitle()), enter.getEmail());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), enter.getCity());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDistant());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
 
         if (enter.getT() instanceof MondayBookOrderEnter) {
-            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getId()),
+            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getTitle()),
                 String.valueOf(enter.getT().getQty()));
-            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getId()),
+            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()),
                 String.valueOf(enter.getT().getQty()));
-            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.MODEL.getId()),
+            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()),
                 enter.getT().getProducModeltName());
-            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.QUANTITÉ_DE_BATTERIE.getId()),
+            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.QUANTITÉ_DE_BATTERIE.getTitle()),
                 String.valueOf(enter.getT().getBatteryQty()));
         }
 
