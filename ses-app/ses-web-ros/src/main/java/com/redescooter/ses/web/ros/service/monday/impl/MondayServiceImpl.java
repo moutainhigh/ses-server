@@ -157,21 +157,23 @@ public class MondayServiceImpl implements MondayService {
         // 数据插入
         MondayDataResult result = mutationData(gql).getData();
 
-        // 备份数据
-        MondayBoardResult mondayBoardBackResult =
-            getBoardByBoardName(mondayConfig.getContactUsBoardBackName(), mondayConfig.getWorkspaceBackId());
-        // 校验分组是否存在
-        MondayCreateResult groupBackResult =
-            getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getContactUsGroupName());
-        // 替换语句中的id 参数
-        String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
-            .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
-            .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
-            .replace(MondayParameterName.CREATE_ITEM_NAME,
-                new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
-            .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildParameterJson(enter, contantUsBackMap));
-        // 数据插入
-        mutationData(gqlBack).getData();
+        if (mondayConfig.getLoadTemplate()) {
+            // 备份数据
+            MondayBoardResult mondayBoardBackResult =
+                getBoardByBoardName(mondayConfig.getContactUsBoardBackName(), mondayConfig.getWorkspaceBackId());
+            // 校验分组是否存在
+            MondayCreateResult groupBackResult =
+                getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getContactUsGroupName());
+            // 替换语句中的id 参数
+            String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME,
+                    new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildParameterJson(enter, contantUsBackMap));
+            // 数据插入
+            mutationData(gqlBack).getData();
+        }
         return result != null ? result.getCreate_item() : null;
     }
 
@@ -205,23 +207,25 @@ public class MondayServiceImpl implements MondayService {
         // 数据插入
         MondayDataResult result = mutationData(gql).getData();
 
-        // 备份数据
-        // 查看 板子是否存在
-        MondayBoardResult mondayBoardBackResult =
-            getBoardByBoardName(mondayConfig.getOrderFormBoardBackName(), mondayConfig.getWorkspaceBackId());
-        // 校验分组是否存在
-        MondayCreateResult groupBackResult =
-            getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getOrderFormGroupName());
+        if (mondayConfig.getLoadTemplate()) {
+            // 备份数据
+            // 查看 板子是否存在
+            MondayBoardResult mondayBoardBackResult =
+                getBoardByBoardName(mondayConfig.getOrderFormBoardBackName(), mondayConfig.getWorkspaceBackId());
+            // 校验分组是否存在
+            MondayCreateResult groupBackResult =
+                getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getOrderFormGroupName());
 
-        // 替换语句中的id 参数
-        String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
-            .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
-            .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
-            .replace(MondayParameterName.CREATE_ITEM_NAME,
-                new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
-            .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildParameterJson(enter, bookOrderBackMap));
-        // 数据插入
-        mutationData(gqlBack).getData();
+            // 替换语句中的id 参数
+            String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME,
+                    new StringBuilder(enter.getFirstName()).append(" ").append(enter.getLastName()).toString())
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildParameterJson(enter, bookOrderBackMap));
+            // 数据插入
+            mutationData(gqlBack).getData();
+        }
         return result != null ? result.getCreate_item() : null;
     }
 
@@ -252,22 +256,24 @@ public class MondayServiceImpl implements MondayService {
         // 数据插入
         MondayDataResult result = mutationData(gql).getData();
 
-        // 备份数据
-        // 查看 板子是否存在
-        MondayBoardResult mondayBoardBackResult =
-            getBoardByBoardName(mondayConfig.getSubEmailBoardBackName(), mondayConfig.getWorkspaceBackId());
+        if (mondayConfig.getLoadTemplate()) {
+            // 备份数据
+            // 查看 板子是否存在
+            MondayBoardResult mondayBoardBackResult =
+                getBoardByBoardName(mondayConfig.getSubEmailBoardBackName(), mondayConfig.getWorkspaceBackId());
 
-        // 校验分组是否存在
-        MondayCreateResult groupBackResult =
-            getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getSubEmailGroupName());
-        // 替换语句中的id 参数
-        String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
-            .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
-            .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
-            .replace(MondayParameterName.CREATE_ITEM_NAME, email.split("@")[0])
-            .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildSubEmailSingle(email, subscribeEmailBackMap));
-        // 数据插入
-        mutationData(gqlBack).getData();
+            // 校验分组是否存在
+            MondayCreateResult groupBackResult =
+                getMondayGroupByBoardId(mondayBoardBackResult.getId(), mondayConfig.getSubEmailGroupName());
+            // 替换语句中的id 参数
+            String gqlBack = MondayQueryGqlConstant.MUTATION_ITEM_COLUMN_DATA
+                .replace(MondayParameterName.BOARD_PARAMETER, mondayBoardBackResult.getId())
+                .replace(MondayParameterName.CREATE_BELONG_GROUP, groupBackResult.getId())
+                .replace(MondayParameterName.CREATE_ITEM_NAME, email.split("@")[0])
+                .replace(MondayParameterName.CREATE_COLUMN_VALUES, buildSubEmailSingle(email, subscribeEmailBackMap));
+            // 数据插入
+            mutationData(gqlBack).getData();
+        }
         return result != null ? result.getCreate_item() : null;
     }
 
