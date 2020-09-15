@@ -87,4 +87,13 @@ public interface DeptServiceMapper {
      */
     List<PrincipalResult> principals(List<Long> deptIds);
 
+
+    /*
+     * @Author Aleks
+     * @Description  通过角色id找到对应的部门id
+     * @Date  2020/9/14 18:33
+     * @Param
+     * @return
+     **/
+    Long getDeptIdByRoleId(@Param("roleId")Long roleId);
 }

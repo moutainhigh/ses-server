@@ -2,6 +2,8 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -19,6 +21,7 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
+import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -35,12 +38,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,6 +94,13 @@ public class StaffServiceImpl implements StaffService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+
+    @Autowired
+    private DeptServiceMapper deptServiceMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
 
 
     @Override
@@ -275,6 +287,20 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public PageResult<StaffListResult> staffList(StaffListEnter enter) {
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.add(Long.parseLong(s));
+                }
+            }
+        }
         List<Long>  userIds = new ArrayList<>();
         if(!Objects.isNull(enter.getRoleId())){
             userIds = staffServiceMapper.userIds(enter.getRoleId());
@@ -282,11 +308,11 @@ public class StaffServiceImpl implements StaffService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        int totalRows = staffServiceMapper.totalRows(enter,userIds);
+        int totalRows = staffServiceMapper.totalRows(enter,userIds,flag?null:deptIds);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter,userIds);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter,userIds,flag?null:deptIds);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if(staffRoleResult != null){
@@ -423,4 +449,72 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
+    /**
+     * @Author Aleks
+     * @Description  初始化用户信息
+     * @Date  2020/9/14 16:42
+     * @Param [id]
+     * @return
+     **/
+    @Override
+    public void inintUserMsg(Long id) {
+        String key = JedisConstant.LOGIN_ROLE_DATA + id;
+        if(jedisCluster.exists(key)){
+            jedisCluster.del(key);
+        }
+        OpeSysStaff staff = opeSysStaffService.getById(id);
+        if(staff == null){
+            return ;
+        }
+        if(staff.getEmail().equals(Constant.ADMIN_USER_NAME)){
+            // 管理员账号，直接返回
+            return;
+        }
+        // 最终目的是找到该用户对应的角色有哪些部门的查看权限
+        Set<Long> list = getDeptIds(id);
+        InitUserMsgResult userMsg = new InitUserMsgResult();
+        userMsg.setDeptIds(list);
+        Map<String,String> map = new HashMap<>();
+        map.put("deptIds", StringUtils.join(list,","));
+        jedisCluster.hmset(key, map);
+//        return userMsg;
+    }
+
+
+    public Set<Long> getDeptIds(Long id){
+        Set<Long> ids = new HashSet<>();
+        List<OpeSysRoleData> dataList = staffServiceMapper.roleDatas(id);
+        if(CollectionUtils.isNotEmpty(dataList)){
+            // 按照角色分组
+            Map<Long, List<OpeSysRoleData>> map = dataList.stream().collect(Collectors.groupingBy(OpeSysRoleData::getRoleId));
+            // 找到每个角色的对应的部门id
+            for (Long roleId : map.keySet()) {
+                if(map.get(roleId).size() > 1){
+                    // 这种情况必然是自定义的 且勾选了多条，直接拿部门id就行
+                    ids.addAll((map.get(roleId).stream().map(OpeSysRoleData::getDeptId).collect(Collectors.toSet())));
+                }else if (map.get(roleId).size() == 1){
+                    // 这种情况 就是勾选了上面的4种情况，需要分别找到对应的部门
+                    Integer type = map.get(roleId).get(0).getDataType();
+                    switch (type){
+                        case 1:
+                            // 全部的
+                            QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
+                            ids.addAll(opeSysDeptMapper.selectList(qw).stream().map(OpeSysDept::getId).collect(Collectors.toSet()));
+                            break;
+                        case 2:
+                            // 本人
+                        case 3:
+                            // 本部门 找到角色的部门（就是角色对应的岗位的部门）
+                            ids.add(deptServiceMapper.getDeptIdByRoleId(roleId));
+                        case 4:
+                            // 本部门及其子部门
+                            Long deptId = deptServiceMapper.getDeptIdByRoleId(roleId);
+                            ids.add(deptId);
+                            ids.addAll(deptServiceMapper.getChildDeptIds(deptId));
+                    }
+                }
+            }
+        }
+        return ids;
+    }
 }

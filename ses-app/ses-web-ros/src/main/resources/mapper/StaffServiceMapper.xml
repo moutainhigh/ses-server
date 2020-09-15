@@ -66,6 +66,20 @@
                 #{item}
             </foreach>
         </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and s.dept_id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and s.created_by = #{enter.userId}
+                </otherwise>
+            </choose>
+        </if>
+
         <if test="enter.keyWord != null and enter.keyWord != ''">
             and (s.full_name like concat('%', #{enter.keyWord}, '%')
             or s.telephone like concat('%', #{enter.keyWord}, '%')
@@ -126,5 +140,9 @@
 
         SELECT user_id from ope_sys_user_role where role_id = #{id}
 
+    </select>
+
+    <select id="roleDatas" resultType="com.redescooter.ses.web.ros.dm.OpeSysRoleData">
+        SELECT * from ope_sys_role_data where role_id in (SELECT role_id from ope_sys_user_role where user_id = #{id})
     </select>
 </mapper>

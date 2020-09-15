@@ -155,4 +155,10 @@
             ischild != 0)
     </select>
 
+    <select id="getDeptIdByRoleId" resultType="java.lang.Long">
+        select  pos.dept_id  from
+         ope_sys_position pos
+         where pos.dr = 0 and pos.id = (select position_id from ope_sys_role where dr = 0 and id = #{roleId})
+    </select>
+
 </mapper>
