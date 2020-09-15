@@ -144,6 +144,7 @@ public class ControllerAspect {
      * @param point
      */
     private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
+        // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接retrue出去就行
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);

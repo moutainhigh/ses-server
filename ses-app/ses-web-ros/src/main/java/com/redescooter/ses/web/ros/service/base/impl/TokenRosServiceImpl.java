@@ -37,6 +37,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -75,6 +76,9 @@ public class TokenRosServiceImpl implements TokenRosService {
     private MailMultiTaskService mailMultiTaskService;
     @Value("${Request.privateKey}")
     private  String privateKey;
+
+    @Autowired
+    private StaffService staffService;
 
     /**
      * 用户登录
@@ -139,6 +143,8 @@ public class TokenRosServiceImpl implements TokenRosService {
             jedisCluster.del(psdErrorKey);
         }
         TokenResult result = getTokenResult(enter, sysUser);
+        // 2020 9 14 追加 登陆成功之后，初始化用户的一些权限信息
+        staffService.inintUserMsg(sysUser.getId());
         return result;
     }
 

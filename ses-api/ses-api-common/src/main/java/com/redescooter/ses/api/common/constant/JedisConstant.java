@@ -18,6 +18,8 @@ public interface JedisConstant {
     // 登陆的时候 密码输错了，在这个路劲记录输错的次数
     String LOGIN_PSD_ERROR_NUM = "login:psd:error:num:";
 
+    String LOGIN_ROLE_DATA = "login:role:data:";
+
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
 }

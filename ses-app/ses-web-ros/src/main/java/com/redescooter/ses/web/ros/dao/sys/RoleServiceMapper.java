@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.vo.sys.role.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName:SysRoleServiceMapper
@@ -44,7 +45,7 @@ public interface RoleServiceMapper {
 
     RoleDetailResult roleDetail(@Param("roleId")Long roleId);
 
-    int totalRows(@Param("enter") RoleQueryListEnter enter);
+    int totalRows(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
 
-    List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter);
+    List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
 }

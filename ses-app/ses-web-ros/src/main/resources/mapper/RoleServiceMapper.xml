@@ -66,7 +66,8 @@
 
     <select id="totalRows" resultType="int">
         select count(*) from ope_sys_role r
-        where r.dr = 0
+        right JOIN ope_sys_position p on r.position_id =  p.id
+        where r.dr = 0 and p.dr = 0
         <include refid="roleListCondition"></include>
     </select>
 
@@ -98,6 +99,19 @@
         </if>
         <if test="enter.keyWord != null and enter.keyWord != ''">
             and r.role_name like concat('%', #{enter.keyWord}, '%')
+        </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and p.dept_id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and r.created_by = #{enter.userId}
+                </otherwise>
+            </choose>
         </if>
     </sql>
 </mapper>

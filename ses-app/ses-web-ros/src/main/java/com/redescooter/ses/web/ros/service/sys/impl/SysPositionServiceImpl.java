@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -25,6 +27,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +57,9 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Autowired
     private SysDeptService sysDeptService;
 
+    @Autowired
+    private JedisCluster jedisCluster;
+
     /**
      * 岗位类型查询
      *
@@ -73,14 +79,28 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public PageResult<PositionResult> list(PositionEnter page) {
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + page.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.add(Long.parseLong(s));
+                }
+            }
+        }
         if (page.getKeyWord() != null && page.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(page);
         }
-        int totalRows = positionServiceMapper.listcount(page);
+        int totalRows = positionServiceMapper.listcount(page,flag?null:deptIds);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
-        List<PositionResult> list = positionServiceMapper.list(page);
+        List<PositionResult> list = positionServiceMapper.list(page,flag?null:deptIds);
 
         //获取岗位下的人员
         List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());

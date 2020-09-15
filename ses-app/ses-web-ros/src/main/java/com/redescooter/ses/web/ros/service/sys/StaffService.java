@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 
@@ -64,5 +65,15 @@ public interface StaffService {
     void disAbleStaff(List<Long> deptIds);
 
     void emailToStaff(OpeSysStaff staff, String requestId);
+
+    /**
+     * @Author Aleks
+     * @Description  登陆成功之后 初始化用户的信息
+     * @Date  2020/9/14 16:41
+     * @Param [id] 用户的id
+     * @return
+     **/
+    @Async
+    void inintUserMsg(Long id);
 
 }

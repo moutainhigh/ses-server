@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -33,6 +34,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,6 +80,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private OpeSysRoleDataService opeSysRoleDataService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Override
     @Transactional
@@ -414,11 +419,25 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public PageResult<RoleListResult> roleList(RoleQueryListEnter enter) {
-        int totalRows = roleServiceMapper.totalRows(enter);
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.add(Long.parseLong(s));
+                }
+            }
+        }
+        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<RoleListResult> list = roleServiceMapper.roleList(enter);
+        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds);
         List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
         // 查询这些角色下的员工数量
         QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();

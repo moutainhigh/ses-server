@@ -7,6 +7,7 @@ import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassNameSysPositionMapper
@@ -19,9 +20,9 @@ public interface PositionServiceMapper{
 
     List<PositionTypeResult> positionTypeList(@Param("tenantId") Long tenantId,@Param("deptId") Long deptId);
 
-   int listcount(PositionEnter tenantId);
+   int listcount(@Param("enter") PositionEnter tenantId,@Param("deptIds") Set<Long> deptIds);
 
-   List<PositionResult> list(PositionEnter tenantId);
+   List<PositionResult> list(@Param("enter")PositionEnter tenantId,@Param("deptIds")Set<Long> deptIds);
 
    PositionDetailsResult positionDetails(@Param("id") Long id);
 

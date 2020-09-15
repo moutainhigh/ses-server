@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 
 import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
+import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.proxy.jiguang.PushTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -41,12 +42,13 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
         JpushUserEnter jpushUserEnter = new JpushUserEnter();
 
         BeanUtils.copyProperties(enter, jpushUserEnter);
+
         //由于是做登录操作，故设置值为0
         jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_IN.getValue());
-        if (enter.getClientType().equals(PlatformTypeEnums.ANDROID.getCode())) {
+        if (enter.getClientType().equals(ClientTypeEnums.APP_ANDROID.getCode())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnums.ANDROID.getValue());
         }
-        if (enter.getClientType().equals(PlatformTypeEnums.IOS.getCode())) {
+        if (enter.getClientType().equals(ClientTypeEnums.APP_IOS.getCode())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnums.IOS.getValue());
         }
         jpushUserEnter.setAudienceType(PushTypeEnums.REGISTRATION_ID.getCode());

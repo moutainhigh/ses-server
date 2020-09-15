@@ -126,7 +126,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
-        checkDeptStatus(enter.getPid(),true);
+        if(enter.getPid() != null && enter.getPid() != -1){
+            checkDeptStatus(enter.getPid(),true);
+        }
 
         List<OpeSysDept> saveDeptList = new ArrayList<>();
         //SaveDeptEnter参数值去空格
@@ -381,7 +383,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Transactional
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
-        if (enter.getPid() != null) {
+        if (enter.getPid() != null && enter.getPid() != -1) {
             checkDeptStatus(enter.getPid(),true);
         }
 
@@ -400,7 +402,7 @@ public class SysDeptServiceImpl implements SysDeptService {
                     dept.setDeptStatus(DeptStatusEnums.DEPARTMENT.getValue());
                     depts.add(dept);
                     opeSysDeptService.updateBatch(depts);
-                    List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, dept));
+                    List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().in(OpeSysPosition.COL_DEPT_ID, depts.stream().map(OpeSysDept::getId).collect(Collectors.toList())));
                     if (CollectionUtils.isNotEmpty(list)) {
                         //岗位禁用
                         list.stream().forEach(opeSysPosition -> opeSysPosition.setPositionStatus(Integer.valueOf(DeptStatusEnums.DEPARTMENT.getValue())));
