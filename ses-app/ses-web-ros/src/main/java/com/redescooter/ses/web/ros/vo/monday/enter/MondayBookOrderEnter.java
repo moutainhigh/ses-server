@@ -27,4 +27,10 @@ public class MondayBookOrderEnter{
     
     @ApiModelProperty(value = "数量")
     private int qty;
+
+    @ApiModelProperty(value = "电池数量")
+    private int batteryQty;
+
+    @ApiModelProperty(value = "产品颜色")
+    private String productColor;
 }

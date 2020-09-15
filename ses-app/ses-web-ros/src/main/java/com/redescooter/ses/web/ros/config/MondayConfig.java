@@ -33,11 +33,16 @@ public class MondayConfig {
     //工作区域Id
     private String workspaceId;
 
+    // 数据备份工作区域
+    private String workspaceBackId;
+
     //模板Id
     private String templeteId;
 
     //预定单板子名称
     private String orderFormBoardName;
+
+    private String orderFormBoardBackName;
 
     //板子内分组名称
     private String orderFormGroupName;
@@ -45,11 +50,15 @@ public class MondayConfig {
     //联系我们板子名称
     private String contactUsBoardName;
 
+    private String contactUsBoardBackName;
+
     //联系我们分组名称
     private String contactUsGroupName;
 
     //订阅邮件板子名称
     private String subEmailBoardName;
+
+    private String subEmailBoardBackName;
 
     //订阅邮件分组
     private String subEmailGroupName;

@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 public enum MondayBookOrderColumnEnums {
 
-    FIRST_CONTACT("last_contacted", "First contact","date"),
+    FIRST_CONTACT("first_contact8", "First contact", "date"),
     LAST_CONTACTED("due_date", "Last contacted","date"),
     NEXT_CONTACT("date", "Next contact","date"),
     PRENOM("text06", "Prenom","text"),
@@ -28,8 +28,10 @@ public enum MondayBookOrderColumnEnums {
     MODEL("text2", "Model","text"),
     VOTRE_MESSAGE("text47", "Votre Message","text"),
     CODE_POSTAL("text4", "Code Postal","text"),
-    VILLE("text", "ville", "text"), COULEUR("text8", "couleur", "text");
+    VILLE("text", "ville", "text"), COULEUR("text8", "Couleur", "text"),
+    QUANTITÉ_DE_BATTERIE("couleur2", "Quantité de batterie", "text"), ADDRESSE("adresse5", "Adresse", "text"),
 
+    ;
 
     private String id;
 

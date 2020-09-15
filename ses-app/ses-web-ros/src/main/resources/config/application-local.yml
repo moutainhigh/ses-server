@@ -26,7 +26,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
 
@@ -44,12 +44,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - localhost:7000
+        - localhost:7001
+        - localhost:7002
+        - localhost:7003
+        - localhost:7004
+        - localhost:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -229,16 +229,20 @@ monday:
   httpMethod: POST
   MediaType: application/x-www-form-urlencoded
   #预订单业务
-  orderFormBoardName: Test Website Order
+  orderFormBoardName: Préco clients RED Série E
+  orderFormBoardBackName: Pré-vente
   orderFormGroupName: Backlog
   #联系我们
-  contactUsBoardName: Test Website AboutUs
+  contactUsBoardName: (RFQ) Relation client RED Série E
+  contactUsBoardBackName: laisser un message
   contactUsGroupName: Backlog
   #订阅邮件
-  subEmailBoardName: Test Website Email
+  subEmailBoardName: RED Abonnements par e-mail
+  subEmailBoardBackName: abonnement
   subEmailGroupName: Backlog
   # 工作空间 alex:132750
   workspaceId: 21182
+  workspaceBackId: 199275
   #模板Id
   templeteId: 581923336
   load-template: true

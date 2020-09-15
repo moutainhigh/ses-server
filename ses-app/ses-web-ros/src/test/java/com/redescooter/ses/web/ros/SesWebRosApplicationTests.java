@@ -5,10 +5,8 @@ import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
-import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -32,7 +30,7 @@ import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Log4j
+@Log4j2
 public class SesWebRosApplicationTests {
 
     @Before
@@ -50,9 +48,6 @@ public class SesWebRosApplicationTests {
 
     @Autowired
     private WebSiteTokenService webSiteService;
-
-    @Autowired
-    private StaffService staffService;
 
     @Test
     public void stream() {
@@ -189,18 +184,5 @@ public class SesWebRosApplicationTests {
     @Test
     public void sendRequestByRestTemplateGet() {
 
-    }
-
-
-    @Test
-    public void  passWord(){
-//        String test="RedEScooter2019";
-//        System.out.println(DigestUtils.md5Hex(test+ "40382"));
-
-        OpeSysStaff staff = new OpeSysStaff();
-        staff.setId(1046455L);
-        staff.setEmail("aleks@redescooter.com");
-        staff.setFullName("aleks xie");
-        staffService.emailToStaff(staff,"6877622");
     }
 }
