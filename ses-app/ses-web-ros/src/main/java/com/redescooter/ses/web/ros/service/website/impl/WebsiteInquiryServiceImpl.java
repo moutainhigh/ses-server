@@ -262,6 +262,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
         mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
         mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+        mondayGeneralEnter.setAddress(opeCustomerInquiry.getAddress());
         MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
         mondayBookOrderEnter.setProductColor(ProductColorEnums.getProductColorEnumsByValue(productColor).getMessage());
         mondayBookOrderEnter.setBatteryQty(batteryQty);

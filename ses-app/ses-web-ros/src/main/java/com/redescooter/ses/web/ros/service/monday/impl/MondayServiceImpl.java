@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.monday.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
 import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
@@ -11,7 +10,6 @@ import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnu
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayWebsiteSubscriptionEmailEnums;
 import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
-import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnPhoneEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayCountryShortNameEnums;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
@@ -474,15 +472,15 @@ public class MondayServiceImpl implements MondayService {
         }
 
         // 时间集合
-        Map<String, String> dateMap = new HashMap<>();
-        dateMap.put(MondayColumnDateEnums.DATE.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
-        dateMap.put(MondayColumnDateEnums.TIME.getTitle(),
-            DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
-
+        // Map<String, String> dateMap = new HashMap<>();
+        // dateMap.put(MondayColumnDateEnums.DATE.getTitle(),
+        // DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_DATE_FORMAT));
+        // dateMap.put(MondayColumnDateEnums.TIME.getTitle(),
+        // DateUtil.getTimeStr(enter.getCreatedTime(), DateUtil.DEFAULT_TIME_FORMAT));
+        //
         Map<String, Object> columnValue = new HashMap<>();
         // 时间
-        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.FIRST_CONTACT.getTitle()), dateMap);
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.FIRST_CONTACT.getTitle()), null);
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.LAST_CONTACTED.getTitle()), null);
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.NEXT_CONTACT.getTitle()), null);
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.PRENOM.getTitle()), enter.getFirstName());
@@ -494,6 +492,7 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VILLE.getTitle()), enter.getCity());
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.CODE_POSTAL.getTitle()), enter.getDistant());
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
+        columnValue.put(parameterMap.get(MondayContantUsColumnEnums.ADDRESSE.getTitle()), enter.getAddress());
 
         if (enter.getT() instanceof MondayBookOrderEnter) {
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()),

@@ -10,8 +10,9 @@ import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Log4j
+@Log4j2
 public class SesWebRosApplicationTests {
 
     @Before
@@ -193,11 +194,24 @@ public class SesWebRosApplicationTests {
         enter.setDistant("75001");
         enter.setEmail("alex@redescooter.com");
         enter.setTelephone("1234567890");
+        enter.setAddress("中国上海");
         enter.setCreatedTime(new Date());
         enter.setUpdatedTime(new Date());
         enter.setT(mondayBookOrderEnter);
         // mondayService.websiteContantUs(enter);
 
         mondayService.websiteBookOrder(enter);
+    }
+
+    @Test
+    public void test1() {
+        String test = "76ec3fb30e2f8f504595761e904c4030";
+        String password = "12345678";
+        int salt = 79231;
+        String savePassword = DigestUtils.md5Hex(password + salt);
+        log.info("------------加密后密码{}---------", savePassword);
+        if (StringUtils.equals(test, savePassword)) {
+            log.info("---------------密码一致-----------");
+        }
     }
 }
