@@ -6,9 +6,12 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleDataService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.roledata.RoleDataService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.roledata.RoleDataSaveEnter;
 import com.redescooter.ses.web.ros.vo.roledata.RoleDataShowResult;
@@ -37,6 +40,12 @@ public class RoleDataServiceImpl implements RoleDataService {
 
     @Autowired
     private OpeSysDeptService opeSysDeptService;
+
+    @Autowired
+    private StaffService staffService;
+
+    @Autowired
+    private OpeSysUserRoleService opeSysUserRoleService;
 
     @Override
     public RoleDataShowResult roleDataShow(RoleOpEnter enter) {
@@ -102,6 +111,16 @@ public class RoleDataServiceImpl implements RoleDataService {
         if(CollectionUtils.isNotEmpty(roleDataList)){
             opeSysRoleDataService.saveBatch(roleDataList);
         }
+        try {
+            QueryWrapper<OpeSysUserRole> queryWrapper = new QueryWrapper();
+            List<OpeSysUserRole> list = opeSysUserRoleService.list(queryWrapper);
+            if(CollectionUtils.isNotEmpty(list)){
+                List<Long> userIds = list.stream().map(OpeSysUserRole::getUserId).collect(Collectors.toList());
+                for (Long userId : userIds) {
+                    staffService.inintUserMsg(userId);
+                }
+            }
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 

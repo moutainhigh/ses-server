@@ -7,7 +7,7 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:42181
 #  metadata-report:
 #    address:  zookeeper://192.168.2.110:62181
 
@@ -26,7 +26,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://localhost:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
 
@@ -44,12 +44,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - localhost:7000
-        - localhost:7001
-        - localhost:7002
-        - localhost:7003
-        - localhost:7004
-        - localhost:7005
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -268,3 +268,9 @@ constant-us-email:
   sale-principal:
     - alex@redescooter.com
     - 123@qq.com
+
+halo:
+  mybatis:
+    list-where:
+      com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper.totalRows
+      com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper.staffList

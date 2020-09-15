@@ -500,9 +500,9 @@ public class StaffServiceImpl implements StaffService {
                             // 全部的
                             QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
                             ids.addAll(opeSysDeptMapper.selectList(qw).stream().map(OpeSysDept::getId).collect(Collectors.toSet()));
-                            break;
                         case 2:
                             // 本人
+                            break;
                         case 3:
                             // 本部门 找到角色的部门（就是角色对应的岗位的部门）
                             ids.add(deptServiceMapper.getDeptIdByRoleId(roleId));

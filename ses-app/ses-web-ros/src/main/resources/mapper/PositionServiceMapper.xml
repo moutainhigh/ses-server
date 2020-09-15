@@ -4,16 +4,29 @@
     <sql id="positionList">
         WHERE
         pos.dr=0
-        <if test="deptId!=null and deptId != ''">
-            and  pos.dept_id=#{deptId}
+        <if test="enter.deptId!=null and enter.deptId != ''">
+            and  pos.dept_id=#{enter.deptId}
         </if>
-        <if test="positionStatus!=null and positionStatus != ''">
-            and  pos.position_status=#{positionStatus}
+        <if test="enter.positionStatus!=null and enter.positionStatus != ''">
+            and  pos.position_status=#{enter.positionStatus}
         </if>
-        <if test="keyWord !=null and  keyWord !=''">
+        <if test="enter.keyWord !=null and  enter.keyWord !=''">
             and(
-            pos.position_name like concat ('%',#{keyWord},'%')
+            pos.position_name like concat ('%',#{enter.keyWord},'%')
             )
+        </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and pos.dept_id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and pos.created_by = #{enter.userId}
+                </otherwise>
+            </choose>
         </if>
     </sql>
     <select id="positionTypeList" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult">
@@ -47,7 +60,7 @@
         ope_sys_position pos LEFT JOIN ope_sys_dept dept ON pos.dept_id=dept.id
         <include refid="positionList"/>
         order by pos.sort, pos.created_time desc
-        limit #{startRow},#{pageSize}
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="positionDetails" resultType="com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult">
