@@ -83,7 +83,7 @@ public class MondayServiceImpl implements MondayService {
             }
             checkBookOrderBoardColumn(mondayConfig.getOrderFormBoardName(), bookOrderMap,
                 mondayConfig.getWorkspaceId());
-            /* // 初始化联系我们
+            // 初始化联系我们
             for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
                contantUsMap.put(item.getTitle(), item.getId());
             }
@@ -98,7 +98,7 @@ public class MondayServiceImpl implements MondayService {
             log.info("-----------------------------初始化Monday模板结束------------------------------------------");
             
             // 备份模版初始化
-            initializationBackMondaytemplate();*/
+            initializationBackMondaytemplate();
         } else {
             log.info("-----------------------------其他环境跳过Monday模版加载------------------------------------------");
         }
@@ -437,7 +437,8 @@ public class MondayServiceImpl implements MondayService {
         // 定义 httpHeaders 请求
         HttpHeaders httpHeaders = new HttpHeaders();
         // 以表单的方式提交
-        httpHeaders.setContentType(mondayConfig.getMediaType());
+        // httpHeaders.setContentType(mondayConfig.getMediaType());
+        httpHeaders.set(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=UTF-8");
         httpHeaders.add(MondayParameterName.AUTHORIZATION, mondayConfig.getAuthorization());
 
         // 请求体提交参数
@@ -495,12 +496,12 @@ public class MondayServiceImpl implements MondayService {
         columnValue.put(parameterMap.get(MondayContantUsColumnEnums.VOTRE_MESSAGE.getTitle()), enter.getRemarks());
 
         if (enter.getT() instanceof MondayBookOrderEnter) {
-            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.CODE_POSTAL.getTitle()),
-                String.valueOf(enter.getT().getQty()));
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.NB_SCOOTERS.getTitle()),
                 String.valueOf(enter.getT().getQty()));
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.MODEL.getTitle()),
                 enter.getT().getProducModeltName());
+            columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.COULEUR.getTitle()),
+                enter.getT().getProductColor());
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.QUANTITÉ_DE_BATTERIE.getTitle()),
                 String.valueOf(enter.getT().getBatteryQty()));
         }

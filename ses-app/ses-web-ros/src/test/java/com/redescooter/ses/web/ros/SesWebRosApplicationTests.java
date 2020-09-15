@@ -183,9 +183,10 @@ public class SesWebRosApplicationTests {
     public void sendRequestByRestTemplateGet() {
         // mondayService.websiteSubscriptionEmail("alex@redescooter.com");
         MondayBookOrderEnter mondayBookOrderEnter =
-            MondayBookOrderEnter.builder().producModeltName("RED 125 CC").qty(2).batteryQty(4).build();
+            MondayBookOrderEnter.builder().producModeltName("RED 125 CC").qty(2).batteryQty(4).productColor("RED")
+                .build();
         MondayGeneralEnter<MondayBookOrderEnter> enter = new MondayGeneralEnter<>();
-        enter.setRemarks("测试");
+        enter.setRemarks("test");
         enter.setFirstName("alex");
         enter.setLastName("alex");
         enter.setCity("Paris");
