@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 @NoArgsConstructor
 public enum MondayBookOrderColumnEnums {
 
-    FIRST_CONTACT("first_contact", "First contact", "date"),
+    FIRST_CONTACT("first_contact8", "First contact", "date"),
     LAST_CONTACTED("due_date", "Last contacted","date"),
     NEXT_CONTACT("date", "Next contact","date"),
     PRENOM("text06", "Prenom","text"),
