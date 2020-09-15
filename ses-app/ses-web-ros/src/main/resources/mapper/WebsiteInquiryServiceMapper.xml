@@ -20,8 +20,9 @@
                product.color     as color
         from ope_parts_product product
                  inner join ope_regional_price_sheet sheet
-                            on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+                            on sheet.parts_product_id = product.id and sheet.currency_unit = 1  and sheet.dr=0
         where product_type = 4
+        and product.dr=0
         and product.model = #{modelCode}
     </select>
     <select id="queryProductById" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
