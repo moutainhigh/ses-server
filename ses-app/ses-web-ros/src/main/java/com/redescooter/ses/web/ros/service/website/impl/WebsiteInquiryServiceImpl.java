@@ -400,6 +400,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setFullName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()) + SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
+        opeCustomerInquiry
+            .setTelephone(StringUtils.isNotBlank(opeCustomer.getTelephone()) ? opeCustomer.getTelephone() : null);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
