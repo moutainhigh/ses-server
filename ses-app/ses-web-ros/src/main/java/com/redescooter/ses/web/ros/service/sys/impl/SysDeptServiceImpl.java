@@ -402,7 +402,7 @@ public class SysDeptServiceImpl implements SysDeptService {
                     dept.setDeptStatus(DeptStatusEnums.DEPARTMENT.getValue());
                     depts.add(dept);
                     opeSysDeptService.updateBatch(depts);
-                    List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().eq(OpeSysPosition.COL_DEPT_ID, dept));
+                    List<OpeSysPosition> list = opeSysPositionService.list(new QueryWrapper<OpeSysPosition>().in(OpeSysPosition.COL_DEPT_ID, depts));
                     if (CollectionUtils.isNotEmpty(list)) {
                         //岗位禁用
                         list.stream().forEach(opeSysPosition -> opeSysPosition.setPositionStatus(Integer.valueOf(DeptStatusEnums.DEPARTMENT.getValue())));
