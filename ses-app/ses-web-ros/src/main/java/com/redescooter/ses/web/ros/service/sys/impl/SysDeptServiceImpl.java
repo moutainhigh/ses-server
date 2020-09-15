@@ -126,7 +126,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Override
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
-        checkDeptStatus(enter.getPid(),true);
+        if(enter.getPid() != null && enter.getPid() != -1){
+            checkDeptStatus(enter.getPid(),true);
+        }
 
         List<OpeSysDept> saveDeptList = new ArrayList<>();
         //SaveDeptEnter参数值去空格
@@ -381,7 +383,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Transactional
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
-        if (enter.getPid() != null) {
+        if (enter.getPid() != null && enter.getPid() != -1) {
             checkDeptStatus(enter.getPid(),true);
         }
 
