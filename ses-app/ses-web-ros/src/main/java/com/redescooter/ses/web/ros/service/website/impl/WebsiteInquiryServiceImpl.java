@@ -241,17 +241,18 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryService.save(opeCustomerInquiry);
     
         //发送数据到Monday
-        mondayData(product.getColor(),product.getProductModel(), opeCustomerInquiry);
+        mondayData(product.getColor(), enter.getAccessoryBatteryQty(), product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
-    
+
     /**
      * 发送数据到Monday
      * @param productModel
      * @param opeCustomerInquiry
      */
-    private void mondayData(String color,String productModel, OpeCustomerInquiry opeCustomerInquiry) {
-        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+    private void mondayData(String productColor, int batteryQty, String productModel,
+                            OpeCustomerInquiry opeCustomerInquiry) {
+        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
         mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
         mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
@@ -261,10 +262,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
         mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
         mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+        mondayGeneralEnter.setAddress(opeCustomerInquiry.getAddress());
         MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
+        mondayBookOrderEnter.setProductColor(ProductColorEnums.getProductColorEnumsByValue(productColor).getMessage());
+        mondayBookOrderEnter.setBatteryQty(batteryQty);
         mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
         mondayBookOrderEnter.setQty(1);
-        mondayBookOrderEnter.setColor(ProductColorEnums.getProductColorEnumsByValue(color).getCode());
         mondayGeneralEnter.setT(mondayBookOrderEnter);
         
         //Monday 同步数据
@@ -397,6 +400,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setFullName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()) + SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
+        opeCustomerInquiry
+            .setTelephone(StringUtils.isNotBlank(opeCustomer.getTelephone()) ? opeCustomer.getTelephone() : null);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
@@ -430,6 +435,9 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
         if (opeCustomer.getDistrust() != null) {
             opeCustomerInquiry.setDistrict(opeCustomer.getDistrust());
+        }
+        if (StringUtils.isNotEmpty(opeCustomer.getAddress())) {
+            opeCustomerInquiry.setAddress(opeCustomer.getAddress());
         }
         opeCustomerInquiry.setDef3(opeCustomer.getDef3());
 

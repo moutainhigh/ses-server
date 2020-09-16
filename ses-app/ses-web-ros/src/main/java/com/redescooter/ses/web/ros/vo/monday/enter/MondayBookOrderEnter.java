@@ -17,14 +17,17 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class MondayBookOrderEnter{
-    
+public class MondayBookOrderEnter {
+
     @ApiModelProperty(value = "产品名号")
     private String producModeltName;
 
-    @ApiModelProperty(value = "产品颜色")
-    private String color;
-    
     @ApiModelProperty(value = "数量")
     private int qty;
+
+    @ApiModelProperty(value = "电池数量")
+    private int batteryQty;
+
+    @ApiModelProperty(value = "产品颜色")
+    private String productColor;
 }

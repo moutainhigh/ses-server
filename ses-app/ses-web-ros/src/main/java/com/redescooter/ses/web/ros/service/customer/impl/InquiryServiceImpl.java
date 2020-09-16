@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -136,6 +135,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @date: 2020/3/5 15:03
      * @Version: Ros 1.3
      */
+    @Transactional
     @Override
     public GeneralResult saveInquiry(SaveInquiryEnter saveInquiryEnter) {
         //入参去空格
@@ -188,6 +188,7 @@ public class InquiryServiceImpl implements InquiryService {
         mondayGeneralEnter.setCity(enter.getCity());
         mondayGeneralEnter.setDistant(enter.getDistrust());
         mondayGeneralEnter.setRemarks(enter.getRemark());
+        mondayGeneralEnter.setAddress(enter.getAddress());
         mondayService.websiteContantUs(mondayGeneralEnter);
         return new GeneralResult(enter.getRequestId());
     }

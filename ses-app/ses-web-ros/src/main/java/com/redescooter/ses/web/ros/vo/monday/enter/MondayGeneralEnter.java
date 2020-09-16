@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-import io.swagger.annotations.*;
-import org.apache.poi.ss.formula.functions.T;
-
 /**
  * @ClassName:MondayGeneralEnter
  * @description: MondayGeneralEnter
@@ -26,31 +23,34 @@ import org.apache.poi.ss.formula.functions.T;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 public class MondayGeneralEnter<T> extends GeneralEnter {
-    
+
     @ApiModelProperty(value = "姓名")
     private String firstName;
-    
+
     @ApiModelProperty(value = "姓名")
     private String lastName;
-    
+
     @ApiModelProperty(value = "电话")
     private String telephone;
-    
+
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
     
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
-    
+
     @ApiModelProperty(value = "邮件")
     private String email;
-    
+
     @ApiModelProperty(value = "城市")
     private String city;
     
     @ApiModelProperty(value = "区域")
     private String distant;
-    
+
+    @ApiModelProperty(value = "地址")
+    private String address;
+
     @ApiModelProperty(value = "备注")
     private String remarks;
     
