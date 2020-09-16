@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @Version V1.0
  **/
 
-@Api(tags = {"ROS-Setting"})
+@Api(tags = {"ROS-Setting参数"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/setting/parameter")
