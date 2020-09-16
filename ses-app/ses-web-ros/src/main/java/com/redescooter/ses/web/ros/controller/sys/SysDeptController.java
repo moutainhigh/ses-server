@@ -111,7 +111,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/deptTree")
     @ApiOperation(value = "部门列表树--reseat", response = DeptTreeListResult.class)
-    @IgnoreLoginCheck
+//    @IgnoreLoginCheck
     public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
         return new Response<>(deptService.deptTrees(enter));
     }

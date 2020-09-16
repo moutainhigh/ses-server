@@ -111,13 +111,26 @@
         , dept.dept_status as deptStatus
         from ope_sys_dept dept
         where dept.dr = 0
-        <if test="keyWrod !=null and  keyWrod !=''">
+        <if test="enter.keyWrod !=null and  enter.keyWrod !=''">
             and(
-            dept.name like concat ('%',#{keyWrod},'%')
+            dept.name like concat ('%',#{enter.keyWrod},'%')
             )
         </if>
-        <if test="deptType != null and deptType != ''">
-            and dept.dept_status =#{deptType}
+        <if test="enter.deptType != null and enter.deptType != ''">
+            and dept.dept_status =#{enter.deptType}
+        </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and dept.id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and dept.created_by = #{enter.userId}
+                </otherwise>
+            </choose>
         </if>
     </select>
     <select id="selectEditDept" resultType="com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult">
@@ -159,6 +172,23 @@
         select  pos.dept_id  from
          ope_sys_position pos
          where pos.dr = 0 and pos.id = (select position_id from ope_sys_role where dr = 0 and id = #{roleId})
+    </select>
+
+    <select id="getParentIds" resultType="java.lang.Long">
+        SELECT DISTINCT
+        T2.id
+        FROM
+        (
+        SELECT DISTINCT
+        @r AS t1_id,
+        ( SELECT @r := p_id FROM ope_sys_dept WHERE dr = 0  AND id = t1_id ) AS NODE_PARENT_ID
+        FROM
+        ( SELECT @r := #{deptId} ) vars,
+        ope_sys_dept h
+        WHERE
+        @r != - 1
+        ) T1
+        JOIN ope_sys_dept T2 ON T1.t1_id = T2.id
     </select>
 
 </mapper>

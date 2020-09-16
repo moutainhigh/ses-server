@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
@@ -31,6 +32,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,6 +74,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
     private SysPositionService sysPositionService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Transactional
     @Override
@@ -155,7 +160,21 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTreeListResult> deptTrees(DeptListEnter enter) {
-        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter);
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.addAll(deptServiceMapper.getParentIds(Long.valueOf(s)));
+                }
+            }
+        }
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter,flag?null:deptIds);
         return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 

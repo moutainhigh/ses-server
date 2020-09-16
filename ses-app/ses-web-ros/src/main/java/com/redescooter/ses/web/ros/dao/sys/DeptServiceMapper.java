@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName:SysRoleServiceMapper
@@ -53,7 +54,7 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<DeptTreeListResult> getDeptList(DeptListEnter enter);
+    List<DeptTreeListResult> getDeptList(@Param("enter") DeptListEnter enter, @Param("deptIds")Set<Long> deptIds);
     /**
      * 根据部门查询员工信息
      *
@@ -69,6 +70,15 @@ public interface DeptServiceMapper {
      * @return
      **/
     List<Long> getChildDeptIds(@Param("deptId")  Long deptId);
+
+    /**
+     * @Author Aleks
+     * @Description  向上递归 查找当前部门和上面的所有父级部门的id
+     * @Date  2020/9/16 10:28
+     * @Param [deptId]
+     * @return
+     **/
+    Set<Long> getParentIds(@Param("deptId")  Long deptId);
 
 
     /**
