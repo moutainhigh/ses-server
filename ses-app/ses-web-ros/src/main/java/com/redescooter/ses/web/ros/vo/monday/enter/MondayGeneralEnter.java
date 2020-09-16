@@ -1,11 +1,9 @@
 package com.redescooter.ses.web.ros.vo.monday.enter;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
 
 import java.util.Date;
 
@@ -24,6 +22,7 @@ import java.util.Date;
 @Builder
 public class MondayGeneralEnter<T> extends GeneralEnter {
 
+    private static final long serialVersionUID = 6014382500835133847L;
     @ApiModelProperty(value = "姓名")
     private String firstName;
 
