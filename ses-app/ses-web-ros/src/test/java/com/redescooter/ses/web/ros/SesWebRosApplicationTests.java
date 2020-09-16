@@ -3,14 +3,12 @@ package com.redescooter.ses.web.ros;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
-import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.After;
@@ -22,14 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.math.BigDecimal;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Log4j2
+@Log4j
 public class SesWebRosApplicationTests {
 
     @Before
@@ -47,9 +43,6 @@ public class SesWebRosApplicationTests {
 
     @Autowired
     private WebSiteTokenService webSiteService;
-
-    @Autowired
-    private StaffService staffService;
 
     @Test
     public void stream() {
@@ -185,43 +178,5 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void sendRequestByRestTemplateGet() {
-
-    }
-
-
-    @Test
-    public void  passWord(){
-//        String test="RedEScooter2019";
-//        System.out.println(DigestUtils.md5Hex(test+ "40382"));
-
-        OpeSysStaff staff = new OpeSysStaff();
-        staff.setId(1046455L);
-        staff.setEmail("aleks@redescooter.com");
-        staff.setFullName("aleks xie");
-        staffService.emailToStaff(staff,"6877622");
-    }
-
-    @Test
-    public void lng() {
-        randomLonLat();
-    }
-
-    /**
-     * @Title: randomLonLat @Description: 在矩形内随机生成经纬度 @return 48.847993，2.250934 48.846780，2.417760 48.902862, 2.355427
-     * 48.818294，2.352570 @throws
-     */
-    public void randomLonLat() {
-        Random random = new Random();
-
-        Double maxlng = Double.valueOf("48.902862");
-        Double minlng = Double.valueOf("48.840000");
-        Double minlat = Double.valueOf("2.250000");
-        Double maxlat = Double.valueOf("2.356000");
-        // , double MaxLon, double MinLat, double MaxLat,
-        BigDecimal db = new BigDecimal(Math.random() * (maxlng - minlng) + minlng);
-        String lon = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();// 小数后6位
-        db = new BigDecimal(Math.random() * (maxlat - minlat) + minlat);
-        String lat = db.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
-        log.info("---------lng{}-------lat{}-----------", lon, lat);
     }
 }
