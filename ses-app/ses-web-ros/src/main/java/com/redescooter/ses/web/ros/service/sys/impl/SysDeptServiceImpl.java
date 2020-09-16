@@ -78,6 +78,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Autowired
+    private StaffService staffService;
+
     @Transactional
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
@@ -147,7 +150,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         OpeSysDept dept = this.addDept(enter);
         sysDeptService.save(dept);
-
+        try {
+            // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
+            staffService.inintUserMsg(enter.getUserId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 

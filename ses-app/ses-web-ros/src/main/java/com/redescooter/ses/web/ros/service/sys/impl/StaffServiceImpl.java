@@ -134,6 +134,10 @@ public class StaffServiceImpl implements StaffService {
         creatRoleStaff(staff.getId(),enter.getRoleId());
         // 追加 创建user_profile数据
         creatUserProfile(staff);
+        try {
+            // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
+            inintUserMsg(enter.getUserId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 

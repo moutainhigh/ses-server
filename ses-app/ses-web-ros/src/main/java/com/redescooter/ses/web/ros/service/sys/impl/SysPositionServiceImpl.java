@@ -192,6 +192,10 @@ public class SysPositionServiceImpl implements SysPositionService {
         position.setUpdatedBy(enter.getUserId());
         position.setUpdatedTime(new Date());
         opeSysPositionService.save(position);
+        try {
+            // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
+            staffService.inintUserMsg(enter.getUserId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 
