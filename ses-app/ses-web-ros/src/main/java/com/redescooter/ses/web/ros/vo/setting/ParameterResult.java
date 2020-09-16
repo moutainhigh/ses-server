@@ -50,4 +50,16 @@ public class ParameterResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
+
+    @ApiModelProperty(value = "更新人")
+    private Long upadtedById;
+
+    @ApiModelProperty(value = "更新人")
+    private String upadtedByFirtName;
+
+    @ApiModelProperty(value = "更新人")
+    private String upadtedByLastName;
+
+    @ApiModelProperty(value = "更新时间")
+    private Date updatedTime;
 }

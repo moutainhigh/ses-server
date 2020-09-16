@@ -15,7 +15,7 @@ public interface ParameterSettingService {
      * @param enter
      * @return
      */
-    PageResult<ParameterResult> List(ParameterListEnter enter);
+    PageResult<ParameterResult> list(ParameterListEnter enter);
 
     /**
      * 详情
@@ -36,7 +36,7 @@ public interface ParameterSettingService {
      * @param enter
      * @return
      */
-    GeneralResult exportParament(GeneralEnter enter);
+    GeneralResult export(GeneralEnter enter);
 
     /**
      * 导出参数列表
