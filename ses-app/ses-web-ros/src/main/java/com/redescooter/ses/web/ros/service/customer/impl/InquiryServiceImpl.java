@@ -135,6 +135,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @date: 2020/3/5 15:03
      * @Version: Ros 1.3
      */
+    @Transactional
     @Override
     public GeneralResult saveInquiry(SaveInquiryEnter saveInquiryEnter) {
         //入参去空格
