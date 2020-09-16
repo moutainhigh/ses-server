@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @ClassNameLogAnnotation
  * @Description
- * @Author kyle
+ * @Author aleks
  * @Date2020/9/15 17:32
  * @Version V1.0
  **/
