@@ -191,4 +191,22 @@
         JOIN ope_sys_dept T2 ON T1.t1_id = T2.id
     </select>
 
+    <select id="saveDeptSelectParent" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+        <if test="enter.keyWrod !=null and  enter.keyWrod !=''">
+            and(
+            dept.name like concat ('%',#{enter.keyWrod},'%')
+            )
+        </if>
+        <if test="enter.deptType != null and enter.deptType != ''">
+            and dept.dept_status =#{enter.deptType}
+        </if>
+    </select>
+
 </mapper>
