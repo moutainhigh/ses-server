@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
-import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
@@ -31,7 +30,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
-import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
@@ -399,6 +397,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     // 给员工发邮件，这个方法作为异步执行
+    @Override
     @Async
     public void emailToStaff(OpeSysStaff staff,String requestId){
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
