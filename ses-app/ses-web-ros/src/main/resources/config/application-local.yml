@@ -272,9 +272,3 @@ constant-us-email:
   sale-principal:
     - alex@redescooter.com
     - 123@qq.com
-
-halo:
-  mybatis:
-    list-where:
-      com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper.totalRows
-      com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper.staffList

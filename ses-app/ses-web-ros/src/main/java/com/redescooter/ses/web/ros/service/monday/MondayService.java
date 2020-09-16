@@ -15,6 +15,11 @@ import java.util.List;
 public interface MondayService {
 
     /**
+     * 初始化集合
+     */
+    void initializationMondayBoardMap();
+
+    /**
      * 初始化单据模板
      */
     void initializationMondaytemplate();

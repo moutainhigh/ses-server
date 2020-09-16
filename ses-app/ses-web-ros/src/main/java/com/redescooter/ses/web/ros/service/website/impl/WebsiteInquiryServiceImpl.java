@@ -244,15 +244,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mondayData(product.getColor(), enter.getAccessoryBatteryQty(), product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
-    
+
     /**
      * 发送数据到Monday
      * @param productModel
      * @param opeCustomerInquiry
      */
     private void mondayData(String productColor, int batteryQty, String productModel,
-        OpeCustomerInquiry opeCustomerInquiry) {
-        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+                            OpeCustomerInquiry opeCustomerInquiry) {
+        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
         mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
         mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());

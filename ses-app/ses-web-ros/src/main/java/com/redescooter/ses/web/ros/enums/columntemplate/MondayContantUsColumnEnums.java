@@ -26,7 +26,8 @@ public enum MondayContantUsColumnEnums {
     EMAIL("text1", "Email", "text"),
     VOTRE_MESSAGE("text", "Votre Message", "text"),
     CODE_POSTAL("text7", "Code Postal", "text"),
-    VILLE("text8", "ville", "text"), ADDRESSE("adresse5", "Adresse", "text");
+    VILLE("text8", "ville", "text"),
+    ADDRESSE("adresse5", "Adresse", "text");
 
 
     private String id;

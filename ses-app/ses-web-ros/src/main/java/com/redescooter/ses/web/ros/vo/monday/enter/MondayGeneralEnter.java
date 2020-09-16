@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.monday.enter;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -22,25 +24,24 @@ import java.util.Date;
 @Builder
 public class MondayGeneralEnter<T> extends GeneralEnter {
 
-    private static final long serialVersionUID = 4647673672449955355L;
     @ApiModelProperty(value = "姓名")
     private String firstName;
-    
+
     @ApiModelProperty(value = "姓名")
     private String lastName;
-    
+
     @ApiModelProperty(value = "电话")
     private String telephone;
-    
+
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
     
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
-    
+
     @ApiModelProperty(value = "邮件")
     private String email;
-    
+
     @ApiModelProperty(value = "城市")
     private String city;
     
@@ -49,7 +50,7 @@ public class MondayGeneralEnter<T> extends GeneralEnter {
 
     @ApiModelProperty(value = "地址")
     private String address;
-    
+
     @ApiModelProperty(value = "备注")
     private String remarks;
     

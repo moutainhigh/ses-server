@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 @Configuration
 @ConfigurationProperties(prefix = "monday", ignoreUnknownFields = true)
 public class MondayConfig {
-
     private String url;
 
     private String authorization;
@@ -64,5 +63,5 @@ public class MondayConfig {
     private String subEmailGroupName;
 
     //是否加载模版
-    private Boolean loadTemplate=Boolean.FALSE;
+    private Boolean loadTemplate = Boolean.FALSE;
 }

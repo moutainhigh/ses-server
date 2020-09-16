@@ -18,20 +18,21 @@ import org.apache.commons.lang3.StringUtils;
 public enum MondayBookOrderColumnEnums {
 
     FIRST_CONTACT("first_contact8", "First contact", "date"),
-    LAST_CONTACTED("due_date", "Last contacted","date"),
-    NEXT_CONTACT("date", "Next contact","date"),
-    PRENOM("text06", "Prenom","text"),
-    NOM("pr_nom", "Nom","text"),
-    TEL("phone", "Tel","phone"),
-    EMAIL("text1", "Email","text"),
-    NB_SCOOTERS("chiffres", "Nb scooters","text"),
-    MODEL("text2", "Model","text"),
-    VOTRE_MESSAGE("text47", "Votre Message","text"),
-    CODE_POSTAL("text4", "Code Postal","text"),
+    LAST_CONTACTED("due_date", "Last contacted", "date"),
+    NEXT_CONTACT("date", "Next contact", "date"),
+    PRENOM("text06", "Prenom", "text"),
+    NOM("pr_nom", "Nom", "text"),
+    TEL("phone", "Tel", "phone"),
+    EMAIL("text1", "Email", "text"),
+    NB_SCOOTERS("chiffres", "Nb scooters", "text"),
+    MODEL("text2", "Model", "text"),
+    VOTRE_MESSAGE("text47", "Votre Message", "text"),
+    CODE_POSTAL("text4", "Code Postal", "text"),
     VILLE("text", "ville", "text"), COULEUR("text8", "Couleur", "text"),
     QUANTITÉ_DE_BATTERIE("couleur2", "Quantité de batterie", "text"), ADDRESSE("adresse5", "Adresse", "text"),
 
     ;
+
 
     private String id;
 
