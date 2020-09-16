@@ -822,7 +822,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transational
+    @Transactional
     @Override
     public GeneralResult sendEmailActiv(IdEnter enter) {
 
