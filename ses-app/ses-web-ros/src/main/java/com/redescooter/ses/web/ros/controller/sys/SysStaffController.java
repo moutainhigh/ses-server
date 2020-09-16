@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
-import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -58,7 +57,7 @@ public class SysStaffController {
 
     @PostMapping(value = "/staffList")
     @ApiOperation(value = "员工列表", response = GeneralResult.class)
-    @LogAnnotation
+    //@LogAnnotation
     public Response<PageResult<StaffListResult>> staffList(@ModelAttribute @ApiParam("请求参数") StaffListEnter enter) {
         return new Response(staffService.staffList(enter));
     }
