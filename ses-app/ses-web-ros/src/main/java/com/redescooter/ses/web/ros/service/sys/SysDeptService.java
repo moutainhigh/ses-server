@@ -53,6 +53,9 @@ public interface SysDeptService {
      * @return
      */
     List<DeptTreeListResult> deptTrees(DeptListEnter enter);
+
+
+    List<DeptTreeListResult> saveDeptSelectParent(DeptListEnter enter);
     /**
      * 部门列表 平行结构
      *

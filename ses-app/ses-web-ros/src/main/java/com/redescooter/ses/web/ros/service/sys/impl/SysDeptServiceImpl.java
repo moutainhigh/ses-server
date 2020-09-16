@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
@@ -31,6 +32,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,6 +74,12 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
     private SysPositionService sysPositionService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
+    @Autowired
+    private StaffService staffService;
 
     @Transactional
     @Override
@@ -142,7 +150,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         OpeSysDept dept = this.addDept(enter);
         sysDeptService.save(dept);
-
+        try {
+            // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
+            staffService.inintUserMsg(enter.getUserId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -155,7 +166,40 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTreeListResult> deptTrees(DeptListEnter enter) {
-        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter);
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.addAll(deptServiceMapper.getParentIds(Long.valueOf(s)));
+                }
+            }else{
+                // 部门的树形结构特殊处理 到这里说明是只看自己的
+                QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
+                qw.eq(OpeSysDept.COL_CREATED_BY,enter.getUserId());
+                List<OpeSysDept> depts = sysDeptService.list(qw);
+                if(CollectionUtils.isNotEmpty(depts)){
+                    List<Long> idList = depts.stream().map(OpeSysDept::getId).collect(Collectors.toList());
+                    for (Long id : idList) {
+                        deptIds.addAll(deptServiceMapper.getParentIds(id));
+                    }
+                }
+            }
+        }
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter,flag?null:deptIds);
+        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+
+
+    @Override
+    public List<DeptTreeListResult> saveDeptSelectParent(DeptListEnter enter) {
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.saveDeptSelectParent(enter);
         return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 
