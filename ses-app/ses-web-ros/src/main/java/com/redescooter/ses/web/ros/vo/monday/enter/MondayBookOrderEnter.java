@@ -21,9 +21,6 @@ public class MondayBookOrderEnter{
     
     @ApiModelProperty(value = "产品名号")
     private String producModeltName;
-
-    @ApiModelProperty(value = "产品颜色")
-    private String color;
     
     @ApiModelProperty(value = "数量")
     private int qty;
