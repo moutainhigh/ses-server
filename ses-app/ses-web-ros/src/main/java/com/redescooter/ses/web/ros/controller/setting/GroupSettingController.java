@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @Version V1.0
  **/
 
-@Api(tags = {"ROS-Setting"})
+@Api(tags = {"ROS-Setting分组"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/setting/group")
@@ -28,7 +28,7 @@ public class GroupSettingController {
     @Autowired
     private GroupSettingService groupSettingService;
 
-    @ApiOperation(value = "参数列表", response = GroupResult.class)
+    @ApiOperation(value = "分组列表", response = GroupResult.class)
     @PostMapping(value = "/list")
     public Response<PageResult<GroupResult>> list(@ModelAttribute @ApiParam("请求参数") GroupListEnter enter) {
         return new Response<>(groupSettingService.list(enter));
