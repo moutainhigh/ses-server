@@ -55,6 +55,8 @@ public interface DeptServiceMapper {
      * @return
      */
     List<DeptTreeListResult> getDeptList(@Param("enter") DeptListEnter enter, @Param("deptIds")Set<Long> deptIds);
+
+    List<DeptTreeListResult> saveDeptSelectParent(@Param("enter") DeptListEnter enter);
     /**
      * 根据部门查询员工信息
      *

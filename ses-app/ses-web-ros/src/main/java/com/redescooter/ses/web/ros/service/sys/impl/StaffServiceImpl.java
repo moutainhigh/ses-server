@@ -503,17 +503,21 @@ public class StaffServiceImpl implements StaffService {
                             // 全部的
                             QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
                             ids.addAll(opeSysDeptMapper.selectList(qw).stream().map(OpeSysDept::getId).collect(Collectors.toSet()));
+                            break;
                         case 2:
                             // 本人
+                            default:
                             break;
                         case 3:
                             // 本部门 找到角色的部门（就是角色对应的岗位的部门）
                             ids.add(deptServiceMapper.getDeptIdByRoleId(roleId));
+                            break;
                         case 4:
                             // 本部门及其子部门
                             Long deptId = deptServiceMapper.getDeptIdByRoleId(roleId);
                             ids.add(deptId);
                             ids.addAll(deptServiceMapper.getChildDeptIds(deptId));
+                            break;
                     }
                 }
             }

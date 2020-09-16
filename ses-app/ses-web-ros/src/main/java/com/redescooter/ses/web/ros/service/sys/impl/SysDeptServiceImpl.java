@@ -178,9 +178,28 @@ public class SysDeptServiceImpl implements SysDeptService {
                 for (String s : ids.split(",")) {
                     deptIds.addAll(deptServiceMapper.getParentIds(Long.valueOf(s)));
                 }
+            }else{
+                // 部门的树形结构特殊处理 到这里说明是只看自己的
+                QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
+                qw.eq(OpeSysDept.COL_CREATED_BY,enter.getUserId());
+                List<OpeSysDept> depts = sysDeptService.list(qw);
+                if(CollectionUtils.isNotEmpty(depts)){
+                    List<Long> idList = depts.stream().map(OpeSysDept::getId).collect(Collectors.toList());
+                    for (Long id : idList) {
+                        deptIds.addAll(deptServiceMapper.getParentIds(id));
+                    }
+                }
             }
         }
         List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter,flag?null:deptIds);
+        return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
+    }
+
+
+
+    @Override
+    public List<DeptTreeListResult> saveDeptSelectParent(DeptListEnter enter) {
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.saveDeptSelectParent(enter);
         return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
 
