@@ -68,6 +68,22 @@ public class MondayServiceImpl implements MondayService {
     private OpePartsProductService opePartsProductService;
 
     /**
+     * 初始化集合
+     */
+    @Override
+    public void initializationMondayBoardMap() {
+        //非生产环境 允许加载 模版数据 单不加载正式模版对数据
+        if (!mondayConfig.getLoadTemplate()) {
+            if (CollectionUtils.isEmpty(bookOrderMap) || CollectionUtils.isEmpty(contantUsMap) || CollectionUtils.isEmpty(subscribeEmailMap)) {
+
+                log.info("--------------模版集合为空,发起初始化-----------------");
+                //正式模版初始化
+                initBoardMapHandler();
+            }
+        }
+    }
+
+    /**
      * 初始化单据模板
      * <p>
      * 注意：初始化模板主要逻辑如下 1、板子校验 没有就新建 2、列 是否合法 不合法就新建 （列不可通过API 删除）
@@ -76,33 +92,37 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public void initializationMondaytemplate() {
         if (mondayConfig.getLoadTemplate()) {
-            log.info("-----------------------------初始化正式数据Monday模板------------------------------------------");
-
-            // 初始化预订单模板
-            for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
-                bookOrderMap.put(item.getTitle(), item.getId());
-            }
-            checkBookOrderBoardColumn(mondayConfig.getOrderFormBoardName(), bookOrderMap,
-                    mondayConfig.getWorkspaceId());
-            // 初始化联系我们
-            for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
-                contantUsMap.put(item.getTitle(), item.getId());
-            }
-            checkCountantUsBoardColumn(mondayConfig.getContactUsBoardName(), contantUsMap,
-                    mondayConfig.getWorkspaceId());
-            // 订阅邮件 模板初始化
-            for (MondayWebsiteSubscriptionEmailEnums item : MondayWebsiteSubscriptionEmailEnums.values()) {
-                subscribeEmailMap.put(item.getTitle(), item.getId());
-            }
-            checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName(), subscribeEmailMap,
-                    mondayConfig.getWorkspaceId());
-            log.info("-----------------------------初始化Monday模板结束------------------------------------------");
-
+            //正式模版初始化
+            initBoardMapHandler();
             // 备份模版初始化
             initializationBackMondaytemplate();
         } else {
             log.info("-----------------------------其他环境跳过Monday模版加载------------------------------------------");
         }
+    }
+
+    private void initBoardMapHandler() {
+        log.info("-----------------------------初始化正式数据Monday模板------------------------------------------");
+
+        // 初始化预订单模板
+        for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
+            bookOrderMap.put(item.getTitle(), item.getId());
+        }
+        checkBookOrderBoardColumn(mondayConfig.getOrderFormBoardName(), bookOrderMap,
+                mondayConfig.getWorkspaceId());
+        // 初始化联系我们
+        for (MondayContantUsColumnEnums item : MondayContantUsColumnEnums.values()) {
+            contantUsMap.put(item.getTitle(), item.getId());
+        }
+        checkCountantUsBoardColumn(mondayConfig.getContactUsBoardName(), contantUsMap,
+                mondayConfig.getWorkspaceId());
+        // 订阅邮件 模板初始化
+        for (MondayWebsiteSubscriptionEmailEnums item : MondayWebsiteSubscriptionEmailEnums.values()) {
+            subscribeEmailMap.put(item.getTitle(), item.getId());
+        }
+        checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName(), subscribeEmailMap,
+                mondayConfig.getWorkspaceId());
+        log.info("-----------------------------初始化Monday模板结束------------------------------------------");
     }
 
     /**
@@ -139,7 +159,7 @@ public class MondayServiceImpl implements MondayService {
 //        if (!mondayConfig.getLoadTemplate()) {
 //            return new MondayCreateResult();
 //        }
-
+        initializationMondayBoardMap();
         // 正式数据
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult =
@@ -189,7 +209,7 @@ public class MondayServiceImpl implements MondayService {
 //        if (!mondayConfig.getLoadTemplate()) {
 //            return new MondayCreateResult();
 //        }
-
+        initializationMondayBoardMap();
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult =
                 getBoardByBoardName(mondayConfig.getOrderFormBoardName(), mondayConfig.getWorkspaceId());
@@ -240,6 +260,7 @@ public class MondayServiceImpl implements MondayService {
 //        if (!mondayConfig.getLoadTemplate()) {
 //            return new MondayCreateResult();
 //        }
+        initializationMondayBoardMap();
         // 查看 板子是否存在
         MondayBoardResult mondayBoardResult =
                 getBoardByBoardName(mondayConfig.getSubEmailBoardName(), mondayConfig.getWorkspaceId());

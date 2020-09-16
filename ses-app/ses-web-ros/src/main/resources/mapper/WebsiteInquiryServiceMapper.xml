@@ -28,7 +28,8 @@
         select product.id        as id,
                product.fr_name   as name,
                product.model     as productModel,
-               sheet.sales_price as price
+               sheet.sales_price as price,
+                product.color as color
         from ope_parts_product product
                  left join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
         where product_type = 4
