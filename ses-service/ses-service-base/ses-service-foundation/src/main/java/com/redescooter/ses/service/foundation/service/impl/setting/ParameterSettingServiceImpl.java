@@ -128,15 +128,16 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
 
-        PlaSysParamSetting plaSysParamSetting = buildParament(enter);
+        PlaSysParamSetting plaSysParamSetting = null;
         if (enter.getId() == null || enter.getId() == 0) {
             //编辑
-            plaSysParamSetting = buildParament(enter);
-        } else {
             plaSysParamSetting = buildParament(enter);
             plaSysParamSetting.setId(idAppService.getId(SequenceName.PLA_SYS_PARAM_SETTING));
             plaSysParamSetting.setCreatedBy(enter.getUserId());
             plaSysParamSetting.setCreatedTime(new Date());
+        } else {
+            plaSysParamSetting = buildParament(enter);
+            plaSysParamSetting.setId(enter.getId());
         }
 
         if (plaSysParamSetting != null) {
@@ -157,13 +158,12 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     private PlaSysParamSetting buildParament(SaveParamentEnter enter) {
         return PlaSysParamSetting.builder()
-                .id(enter.getId())
                 .systemType(enter.getSystemType().getValue())
                 .groupId(enter.getGroupId())
                 .parameterName(enter.getParameterName())
                 .paramKey(enter.getKey())
                 .paramValue(enter.getValue())
-                .enable(enter.getEnable())
+                .enable(enter.getEnable() == 1 ? Boolean.TRUE : Boolean.FALSE)
                 .desc(enter.getDesc())
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())

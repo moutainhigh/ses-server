@@ -63,4 +63,5 @@ public class ParameterResult extends GeneralResult {
 
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
+
 }

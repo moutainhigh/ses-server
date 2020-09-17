@@ -79,7 +79,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
                 .id(plaSysGroupSetting.getId())
                 .groupName(plaSysGroupSetting.getGroupName())
                 .desc(plaSysGroupSetting.getDesc())
-                .enable(plaSysGroupSetting.getEnable() ? "1" : "0")
+                .enable(plaSysGroupSetting.getEnable() ? 1 : 0)
                 .createdById(plaSysGroupSetting.getCreatedBy())
                 .updatedById(plaSysGroupSetting.getUpdatedBy())
                 .build();
