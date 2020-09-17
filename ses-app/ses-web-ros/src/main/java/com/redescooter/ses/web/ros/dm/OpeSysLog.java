@@ -47,6 +47,13 @@ public class OpeSysLog implements Serializable {
     private String opUserName;
 
     /**
+     * 操作人编码
+     */
+    @TableField(value = "op_user_code")
+    @ApiModelProperty(value = "操作人编码")
+    private String opUserCode;
+
+    /**
      * 操作人部门
      */
     @TableField(value = "op_user_dept_name")
@@ -188,6 +195,8 @@ public class OpeSysLog implements Serializable {
     public static final String COL_OP_MODUL = "op_modul";
 
     public static final String COL_OP_USER_NAME = "op_user_name";
+
+    public static final String COL_OP_USER_CODE = "op_user_code";
 
     public static final String COL_OP_USER_DEPT_NAME = "op_user_dept_name";
 

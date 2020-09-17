@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.log.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public interface SysLogService {
     PageResult<LogListResult> logList(LogListEnter enter);
 
 
-    GeneralResult logExport(LogExportEnter enter);
+    GeneralResult logExport(String id, HttpServletResponse response);
 
 
     Map<String,Integer> logCount(GeneralEnter enter);

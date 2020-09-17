@@ -22,11 +22,16 @@ public class LogListEnter extends PageEnter {
     @ApiModelProperty("关键字")
     private String keyword;
 
+
     @ApiModelProperty(value = "开始时间")
     private Date loginStartTime;
+
 
     @ApiModelProperty(value = "结束时间")
     private Date loginEndTime;
 
+
+    @ApiModelProperty("类型，1：登陆，2：操作，3：错误")
+    private String type;
 
 }

@@ -69,6 +69,9 @@ public interface StaffService {
     GeneralResult firstLoginEditPsd(UserPsdEnter enter);
 
 
+    String getSafeCode(IdEnter enter);
+
+
     /**
      * @Author Aleks
      * @Description  通过员工的id找到员工对应的销售区域（销售区域是绑定在员工对应的角色上的）

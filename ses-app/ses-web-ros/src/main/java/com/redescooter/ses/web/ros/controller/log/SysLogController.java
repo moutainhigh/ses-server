@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class SysLogController {
 
     @GetMapping(value = "/logExport")
     @ApiOperation(value = "系统日志导出", response = GeneralResult.class)
-    public Response<GeneralResult> logExport(@ModelAttribute @ApiParam("请求参数") LogExportEnter enter) {
-        return new Response(sysLogService.logExport(enter));
+    public Response<GeneralResult> logExport(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
+        return new Response(sysLogService.logExport(id,response));
     }
 
 

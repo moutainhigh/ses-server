@@ -508,6 +508,15 @@ public class StaffServiceImpl implements StaffService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Override
+    public String getSafeCode(IdEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        return staff.getSafeCode();
+    }
+
 
     /**
      * @return

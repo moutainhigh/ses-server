@@ -105,4 +105,10 @@ public class SysStaffController {
     public Response<GeneralResult> firstLoginEditPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
         return new Response(staffService.firstLoginEditPsd(enter));
     }
+
+    @PostMapping(value = "/getSafeCode")
+    @ApiOperation(value = "获取员工的安全码-1.7.1", response = GeneralResult.class)
+    public Response<String> getSafeCode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response(staffService.getSafeCode(enter));
+    }
 }

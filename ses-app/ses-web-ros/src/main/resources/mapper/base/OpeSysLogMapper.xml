@@ -8,6 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="op_modul" jdbcType="VARCHAR" property="opModul" />
     <result column="op_user_name" jdbcType="VARCHAR" property="opUserName" />
+    <result column="op_user_code" jdbcType="VARCHAR" property="opUserCode" />
     <result column="op_user_dept_name" jdbcType="VARCHAR" property="opUserDeptName" />
     <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
     <result column="request_address" jdbcType="VARCHAR" property="requestAddress" />
@@ -30,9 +31,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, op_modul, op_user_name, op_user_dept_name, login_ip, request_address, request_param, 
-    request_type, response_param, exp_msg, log_type, if_success, time_consum, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, login_ip, request_address, 
+    request_param, request_type, response_param, exp_msg, log_type, if_success, time_consum, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -51,6 +52,11 @@
       <trim prefix="op_user_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.opUserName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="op_user_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opUserCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="op_user_dept_name = case" suffix="end,">
@@ -176,6 +182,13 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.opUserName != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.opUserName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_user_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opUserCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opUserCode,jdbcType=VARCHAR}
           </if>
         </foreach>
       </trim>
@@ -321,14 +334,15 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_sys_log
-    (id, dr, op_modul, op_user_name, op_user_dept_name, login_ip, request_address, request_param, 
-      request_type, response_param, exp_msg, log_type, if_success, time_consum, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    (id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, login_ip, request_address, 
+      request_param, request_type, response_param, exp_msg, log_type, if_success, time_consum, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.opModul,jdbcType=VARCHAR}, 
-        #{item.opUserName,jdbcType=VARCHAR}, #{item.opUserDeptName,jdbcType=VARCHAR}, #{item.loginIp,jdbcType=VARCHAR}, 
-        #{item.requestAddress,jdbcType=VARCHAR}, #{item.requestParam,jdbcType=VARCHAR}, 
+        #{item.opUserName,jdbcType=VARCHAR}, #{item.opUserCode,jdbcType=VARCHAR}, #{item.opUserDeptName,jdbcType=VARCHAR}, 
+        #{item.loginIp,jdbcType=VARCHAR}, #{item.requestAddress,jdbcType=VARCHAR}, #{item.requestParam,jdbcType=VARCHAR}, 
         #{item.requestType,jdbcType=VARCHAR}, #{item.responseParam,jdbcType=VARCHAR}, #{item.expMsg,jdbcType=VARCHAR}, 
         #{item.logType,jdbcType=INTEGER}, #{item.ifSuccess,jdbcType=INTEGER}, #{item.timeConsum,jdbcType=BIGINT}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
@@ -340,23 +354,25 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysLog">
     <!--@mbg.generated-->
     insert into ope_sys_log
-    (id, dr, op_modul, op_user_name, op_user_dept_name, login_ip, request_address, request_param, 
-      request_type, response_param, exp_msg, log_type, if_success, time_consum, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    (id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, login_ip, request_address, 
+      request_param, request_type, response_param, exp_msg, log_type, if_success, time_consum, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{opModul,jdbcType=VARCHAR}, #{opUserName,jdbcType=VARCHAR}, 
-      #{opUserDeptName,jdbcType=VARCHAR}, #{loginIp,jdbcType=VARCHAR}, #{requestAddress,jdbcType=VARCHAR}, 
-      #{requestParam,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR}, #{responseParam,jdbcType=VARCHAR}, 
-      #{expMsg,jdbcType=VARCHAR}, #{logType,jdbcType=INTEGER}, #{ifSuccess,jdbcType=INTEGER}, 
-      #{timeConsum,jdbcType=BIGINT}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=DECIMAL}, #{def5,jdbcType=VARCHAR}
-      )
+      #{opUserCode,jdbcType=VARCHAR}, #{opUserDeptName,jdbcType=VARCHAR}, #{loginIp,jdbcType=VARCHAR}, 
+      #{requestAddress,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR}, #{requestType,jdbcType=VARCHAR}, 
+      #{responseParam,jdbcType=VARCHAR}, #{expMsg,jdbcType=VARCHAR}, #{logType,jdbcType=INTEGER}, 
+      #{ifSuccess,jdbcType=INTEGER}, #{timeConsum,jdbcType=BIGINT}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=DECIMAL}, 
+      #{def5,jdbcType=VARCHAR})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     op_modul = #{opModul,jdbcType=VARCHAR}, 
     op_user_name = #{opUserName,jdbcType=VARCHAR}, 
+    op_user_code = #{opUserCode,jdbcType=VARCHAR}, 
     op_user_dept_name = #{opUserDeptName,jdbcType=VARCHAR}, 
     login_ip = #{loginIp,jdbcType=VARCHAR}, 
     request_address = #{requestAddress,jdbcType=VARCHAR}, 
@@ -392,6 +408,9 @@
       </if>
       <if test="opUserName != null">
         op_user_name,
+      </if>
+      <if test="opUserCode != null">
+        op_user_code,
       </if>
       <if test="opUserDeptName != null">
         op_user_dept_name,
@@ -465,6 +484,9 @@
       <if test="opUserName != null">
         #{opUserName,jdbcType=VARCHAR},
       </if>
+      <if test="opUserCode != null">
+        #{opUserCode,jdbcType=VARCHAR},
+      </if>
       <if test="opUserDeptName != null">
         #{opUserDeptName,jdbcType=VARCHAR},
       </if>
@@ -536,6 +558,9 @@
       </if>
       <if test="opUserName != null">
         op_user_name = #{opUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserCode != null">
+        op_user_code = #{opUserCode,jdbcType=VARCHAR},
       </if>
       <if test="opUserDeptName != null">
         op_user_dept_name = #{opUserDeptName,jdbcType=VARCHAR},
