@@ -103,6 +103,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         } else {
             //编辑
             plaSysGroupSetting = buildGroup(enter);
+            plaSysGroupSetting.setId(enter.getId());
         }
         if (plaSysGroupSetting != null) {
             plaSysGroupSettingService.saveOrUpdate(plaSysGroupSetting);
