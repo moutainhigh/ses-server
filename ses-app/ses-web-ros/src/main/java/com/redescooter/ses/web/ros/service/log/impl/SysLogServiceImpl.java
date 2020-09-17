@@ -66,7 +66,17 @@ public class SysLogServiceImpl implements SysLogService {
 
     @Override
     public LogDetailResult logDetail(IdEnter enter) {
-
-        return new LogDetailResult();
+        LogDetailResult detailResult = new LogDetailResult();
+        detailResult.setId(0L);
+        detailResult.setIfSuccess(1);
+        detailResult.setExpMsg("1111");
+        detailResult.setLoginIp("192.168.2.200");
+        detailResult.setOpModul("部门新增");
+        detailResult.setOpUserDeptName("部门管理");
+        detailResult.setRequestAddress("/sys/sss/sss");
+        detailResult.setOpUserName("Amy");
+        detailResult.setRequestParam("xsvfz cxcDX");
+        detailResult.setResponseParam("chdchfahcac");
+        return detailResult;
     }
 }
