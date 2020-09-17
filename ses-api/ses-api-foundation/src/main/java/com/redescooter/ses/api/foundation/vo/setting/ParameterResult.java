@@ -36,7 +36,7 @@ public class ParameterResult extends GeneralResult {
     private String value;
 
     @ApiModelProperty(value = "是否启用")
-    private String enable;
+    private int enable;
 
     @ApiModelProperty(value = "创建人")
     private Long createdById;

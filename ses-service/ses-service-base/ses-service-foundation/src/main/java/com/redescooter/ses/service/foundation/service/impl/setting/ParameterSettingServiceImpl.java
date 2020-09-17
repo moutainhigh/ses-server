@@ -56,8 +56,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
 
         QueryWrapper<PlaSysParamSetting> paramQueryWrapper = new QueryWrapper();
-        paramQueryWrapper.eq(PlaSysParamSetting.COL_GROUP_ID, enter.getGroupId());
-        if (enter.getGroupId() != null || enter.getGroupId() != 0) {
+        if (enter.getGroupId() != null && enter.getGroupId() != 0) {
             paramQueryWrapper.eq(PlaSysParamSetting.COL_GROUP_ID, enter.getGroupId());
         }
         if (StringUtils.isNotBlank(enter.getKeyword())) {
@@ -158,6 +157,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     private PlaSysParamSetting buildParament(SaveParamentEnter enter) {
         return PlaSysParamSetting.builder()
+                .id(enter.getId())
                 .systemType(enter.getSystemType().getValue())
                 .groupId(enter.getGroupId())
                 .parameterName(enter.getParameterName())
