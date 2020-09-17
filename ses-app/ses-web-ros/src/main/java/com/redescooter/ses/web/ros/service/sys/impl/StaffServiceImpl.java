@@ -10,10 +10,7 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
@@ -418,6 +415,18 @@ public class StaffServiceImpl implements StaffService {
         }
         staff.setSafeCode(enter.getPassword());
         opeSysStaffService.updateById(staff);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult editUserPsd(WebResetPasswordEnter enter) {
+        // 前端传过来的密码 都是经过加密的 需要解密
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
+
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import io.swagger.annotations.Api;
@@ -96,6 +93,16 @@ public class SysStaffController {
     }
 
 
+    @PostMapping(value = "/editUserPsd")
+    @ApiOperation(value = "修改密码", response = GeneralResult.class)
+    public Response<GeneralResult> editUserPsd(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
+        return new Response(staffService.editUserPsd(enter));
+    }
 
 
+    @PostMapping(value = "/firstLoginEditPsd")
+    @ApiOperation(value = "首次登陆修改密码", response = GeneralResult.class)
+    public Response<GeneralResult> firstLoginEditPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
+        return new Response(staffService.firstLoginEditPsd(enter));
+    }
 }
