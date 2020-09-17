@@ -5,10 +5,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.service.setting.GroupSettingService;
-import com.redescooter.ses.web.ros.vo.setting.GroupListEnter;
-import com.redescooter.ses.web.ros.vo.setting.GroupResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveGroupEnter;
+import com.redescooter.ses.api.foundation.service.setting.GroupSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.annotation.Transactional;
 
