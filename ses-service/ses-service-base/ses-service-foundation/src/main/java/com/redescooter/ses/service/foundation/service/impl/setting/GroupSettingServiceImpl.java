@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.setting.impl;
+package com.redescooter.ses.service.foundation.service.impl.setting;
 
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

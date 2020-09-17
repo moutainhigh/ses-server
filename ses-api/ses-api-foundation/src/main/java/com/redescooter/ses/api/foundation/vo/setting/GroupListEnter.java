@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.setting;
+package com.redescooter.ses.api.foundation.vo.setting;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.*;

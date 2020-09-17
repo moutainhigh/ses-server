@@ -1,14 +1,14 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.setting.GroupSettingService;
-import com.redescooter.ses.web.ros.vo.setting.GroupListEnter;
-import com.redescooter.ses.web.ros.vo.setting.GroupResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveGroupEnter;
+import com.redescooter.ses.api.foundation.service.setting.GroupSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/setting/group")
 public class GroupSettingController {
 
-    @Autowired
+    @Reference
     private GroupSettingService groupSettingService;
 
     @ApiOperation(value = "分组列表", response = GroupResult.class)

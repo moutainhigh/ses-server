@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.vo.setting;
+package com.redescooter.ses.api.foundation.vo.setting;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import io.swagger.annotations.*;
 
 /**
  *  @author: alex
