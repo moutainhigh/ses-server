@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -31,6 +32,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -417,6 +419,13 @@ public class StaffServiceImpl implements StaffService {
         staff.setSafeCode(enter.getPassword());
         opeSysStaffService.updateById(staff);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Override
+    public List<StaffSaleAreaResult> staffSaleArea(IdEnter enter) {
+        List<StaffSaleAreaResult> list = new ArrayList<>();
+        return TreeUtil.build(list, Constant.AREA_TREE_ROOT_ID);
     }
 
 
