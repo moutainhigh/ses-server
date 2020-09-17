@@ -62,6 +62,11 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-hub</artifactId>
         </dependency>
+        <!-- jasypt加密组件: https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

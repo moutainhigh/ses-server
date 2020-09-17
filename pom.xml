@@ -282,6 +282,22 @@
         </dependency>
     </dependencies>
 
+<!--    自定义打包目录，mvn clean package -Dmaven.test.skip=true -Ppre -DjarPath=pre-->
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>pre</id>-->
+<!--            <activation>-->
+<!--                <property>-->
+<!--                    <name>jarPath</name>-->
+<!--                    <value>pre</value>-->
+<!--                </property>-->
+<!--            </activation>-->
+<!--            <properties>-->
+<!--                <jar.path>/Users/lijiating/Desktop/test</jar.path>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
     <build>
         <pluginManagement>
             <plugins>
@@ -374,14 +390,15 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- 指定打包的jar包输出路径-->
-                    <outputDirectory>${project.build.directory}/libs</outputDirectory>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 指定打包的jar包输出路径&ndash;&gt;-->
+<!--&lt;!&ndash;                    <outputDirectory>${project.build.directory}/libs</outputDirectory>&ndash;&gt;-->
+<!--                    <outputDirectory>${jar.path}/libs</outputDirectory>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

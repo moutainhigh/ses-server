@@ -17,13 +17,6 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-app-common</artifactId>
         </dependency>
-
-        <!-- jasypt加密组件: https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
-        </dependency>
     </dependencies>
 
     <!--环境配置-->
@@ -33,6 +26,7 @@
             <properties>
                 <profile-active>local</profile-active>
                 <log.path>logs/</log.path>
+                <jar.path>${project.build.directory}</jar.path>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -43,6 +37,7 @@
             <properties>
                 <profile-active>dev</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/dev</jar.path>
             </properties>
         </profile>
         <profile>
@@ -50,13 +45,7 @@
             <properties>
                 <profile-active>test</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>pre</id>
-            <properties>
-                <profile-active>pre</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/test</jar.path>
             </properties>
         </profile>
         <profile>
@@ -64,6 +53,15 @@
             <properties>
                 <profile-active>prod</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/prod</jar.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>pre</id>
+            <properties>
+                <profile-active>pre</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
     </profiles>
@@ -112,6 +110,13 @@
                             <artifactId>${project.artifactId}</artifactId>
                         </include>
                     </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${jar.path}/libs</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
