@@ -4,11 +4,15 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.service.foundation.dm.base.PlaSysParamSetting;
+import com.redescooter.ses.service.foundation.service.base.PlaSysParamSettingService;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +27,11 @@ import java.util.List;
 
 @Service
 public class ParameterSettingServiceImpl implements ParameterSettingService {
+
+    @Autowired
+    private PlaSysParamSettingService plaSysParamSettingService;
+
+
     /**
      * 参数名称
      * @param enter
@@ -81,6 +90,11 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      */
     @Override
     public GeneralResult delete(IdEnter enter) {
+        PlaSysParamSetting plaSysParamSetting = plaSysParamSettingService.getById(enter.getId());
+        if (plaSysParamSetting == null) {
+            throw new FoundationException();
+        }
+        plaSysParamSettingService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 

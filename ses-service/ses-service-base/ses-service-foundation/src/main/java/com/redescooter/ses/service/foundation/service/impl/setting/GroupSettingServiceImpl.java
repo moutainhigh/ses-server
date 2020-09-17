@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl.setting;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -18,6 +18,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,13 +51,17 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      */
     @Override
     public PageResult<GroupResult> list(GroupListEnter enter) {
+        QueryWrapper<PlaSysGroupSetting> groupQueryWrapper = new QueryWrapper<>();
+        groupQueryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSystemType().getValue());
+        if (StringUtils.isNotEmpty(enter.getKeyword())) {
+            groupQueryWrapper.like(PlaSysGroupSetting.COL_GROUP_NAME, enter.getKeyword());
+        }
         int count =
-                plaSysGroupSettingService.count(new LambdaQueryWrapper<PlaSysGroupSetting>().eq(PlaSysGroupSetting::getSystemType, enter.getSystemType().getMessage()).like(PlaSysGroupSetting::getGroupName,
-                        enter.getKeyword()));
+                plaSysGroupSettingService.count(groupQueryWrapper);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, 1, groupSettingServiceMapper.groupList(enter));
+        return PageResult.create(enter, count, groupSettingServiceMapper.groupList(enter));
     }
 
     /**
@@ -108,6 +113,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     private PlaSysGroupSetting buildGroup(SaveGroupEnter enter) {
         return PlaSysGroupSetting.builder()
                 .dr(0)
+                .groupName(enter.getGroupName())
                 .systemType(SystemTypeEnums.REDE_ROS.getValue())
                 .desc(enter.getDesc())
                 .enable(enter.getEnable())
