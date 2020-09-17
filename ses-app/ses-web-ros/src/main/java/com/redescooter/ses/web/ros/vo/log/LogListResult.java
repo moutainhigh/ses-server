@@ -35,6 +35,8 @@ public class LogListResult extends GeneralResult {
     @ApiModelProperty("耗时（毫秒）")
     private Long timeConsum;
 
+    @ApiModelProperty("日志内容")
+    private String logContent;
 
 
 }
