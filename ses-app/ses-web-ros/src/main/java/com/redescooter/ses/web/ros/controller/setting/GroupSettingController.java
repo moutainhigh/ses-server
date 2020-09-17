@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.service.setting.RosGroupService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/setting/group")
 public class GroupSettingController {
 
-    @Autowired
+    @Reference
     private RosGroupService rosGroupService;
 
     @ApiOperation(value = "分组列表", response = GroupResult.class)

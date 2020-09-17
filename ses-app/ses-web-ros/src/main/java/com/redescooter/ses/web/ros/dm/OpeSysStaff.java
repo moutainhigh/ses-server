@@ -6,16 +6,23 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 用户员工表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
-@Data
 @TableName(value = "ope_sys_staff")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeSysStaff implements Serializable {
     /**
      * 主键
