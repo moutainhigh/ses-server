@@ -8,7 +8,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户员工表
@@ -16,6 +20,9 @@ import lombok.Data;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
 @Data
 @TableName(value = "ope_sys_staff")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeSysStaff implements Serializable {
     /**
      * 主键
