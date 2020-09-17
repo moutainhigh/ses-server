@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.springframework.scheduling.annotation.Async;
@@ -60,6 +61,12 @@ public interface StaffService {
 
 
     GeneralResult editSafeCode(UserPsdEnter enter);
+
+
+    GeneralResult editUserPsd(WebResetPasswordEnter enter);
+
+
+    GeneralResult firstLoginEditPsd(UserPsdEnter enter);
 
 
     /**
