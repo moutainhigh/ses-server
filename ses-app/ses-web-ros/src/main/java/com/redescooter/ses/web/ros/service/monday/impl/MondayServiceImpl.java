@@ -297,17 +297,17 @@ public class MondayServiceImpl implements MondayService {
         }
         return result != null ? result.getCreate_item() : null;
     }
-
+    
     @Override
     public List<MondayBoardResult> queryBoard() {
-
+        
         log.info("查询板子执行gql----{}", MondayQueryGqlConstant.QUERY_BOARD);
-
+        
         MondayGeneralResult mondayGeneralResult = mutationData(MondayQueryGqlConstant.QUERY_BOARD);
-
+        
         return mondayGeneralResult.getData().getBoards();
     }
-
+    
     /**
      * 查询该板子下的分组
      *
@@ -317,19 +317,19 @@ public class MondayServiceImpl implements MondayService {
     @Transactional
     @Override
     public List<MondayGroupResult> queryGroupByBoardId(String boardId) {
-
+        
         // 替换语句中的id 参数
         String graphGql = MondayQueryGqlConstant.QUERY_GROUP.replace(MondayParameterName.BOARD_PARAMETER, boardId);
-
+        
         log.info("查询指定板子下的分组------{}", graphGql);
-
+        
         MondayGeneralResult mondayGeneralResult = mutationData(graphGql);
-
+        
         List<MondayGroupResult> groupList = mondayGeneralResult.getData().getBoards().get(0).getGroups();
-
+        
         return groupList;
     }
-
+    
     /**
      * 获取标签列表
      *
@@ -337,14 +337,14 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public List<MondayTagResult> queryTagList() {
-
+        
         log.info("查询所有标签-------{}", MondayQueryGqlConstant.QUERY_TAGS);
-
+        
         MondayGeneralResult mondayGeneralResult = mutationData(MondayQueryGqlConstant.QUERY_TAGS);
-
+        
         return mondayGeneralResult.getData().getTags();
     }
-
+    
     /**
      * 查询该板子所有列
      *
@@ -353,14 +353,14 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public List<MondayColumnResult> queryColumnResult(String boardId) {
         String graphGql = MondayQueryGqlConstant.QUERY_COLUMN.replace(MondayParameterName.BOARD_PARAMETER, boardId);
-
+        
         log.info("查询指定板子下的所有列---------------{}", graphGql);
-
+        
         MondayGeneralResult mondayGeneralResult = mutationData(graphGql);
-
+        
         return mondayGeneralResult.getData().getBoards().get(0).getColumns();
     }
-
+    
     /**
      * 插入板子
      *
@@ -378,7 +378,7 @@ public class MondayServiceImpl implements MondayService {
         log.info("插入板子执行gql------{}", graphGql);
         return MondayCreateResult.builder().id(mutationData(graphGql).getData().getCreate_board().getId()).build();
     }
-
+    
     /**
      * 插入分组
      *
@@ -393,7 +393,7 @@ public class MondayServiceImpl implements MondayService {
         log.info("插入分组执行的gql----{}", graphGql);
         return MondayCreateResult.builder().id(mutationData(graphGql).getData().getCreate_group().getId()).build();
     }
-
+    
     /**
      * 创建列
      *
@@ -413,7 +413,7 @@ public class MondayServiceImpl implements MondayService {
                                 StringUtils.isEmpty(item.getDefaults()) == true ? "{}" : item.getDefaults());
                 log.info("插列执行的gql----{}", graphGql);
                 MondayGeneralResult mondayGeneralResult = mutationData(graphGql);
-
+                
                 log.info("----------------------插入成功 ----->{}------------------",
                         mondayGeneralResult.getData().getCreate_column());
                 result.add(mondayGeneralResult.getData().getCreate_column());
@@ -421,7 +421,7 @@ public class MondayServiceImpl implements MondayService {
         }
         return result;
     }
-
+    
     /**
      * 创建一个钩子
      *
@@ -437,7 +437,7 @@ public class MondayServiceImpl implements MondayService {
         log.info("插入分组执行的gql----{}", graphGql);
         mutationData(graphGql);
     }
-
+    
     /**
      * 执行gql
      *
@@ -449,16 +449,16 @@ public class MondayServiceImpl implements MondayService {
     public MondayGeneralResult mutationData(String gql) {
         log.info("-----------执行gpl语句{}--------------", gql);
         String mondayJson = getMondayData(gql, HttpMethod.POST);
-
+        
         log.info("执行gql 返回值的json数据-------{}", mondayJson);
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
-
+        
         if (mondayGeneralResult.getErrors() != null) {
             throw new RuntimeException();
         }
         return mondayGeneralResult;
     }
-
+    
     private String getMondayData(String querySdl, HttpMethod method) {
         // 定义restTemplate 模板
         RestTemplate restTemplate = new RestTemplate();
@@ -467,7 +467,7 @@ public class MondayServiceImpl implements MondayService {
         // 以表单的方式提交
         httpHeaders.setContentType(mondayConfig.getMediaType());
         httpHeaders.add(MondayParameterName.AUTHORIZATION, mondayConfig.getAuthorization());
-
+        
         // 请求体提交参数
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add(mondayConfig.getParamQuery(), querySdl);
@@ -539,14 +539,14 @@ public class MondayServiceImpl implements MondayService {
             columnValue.put(parameterMap.get(MondayBookOrderColumnEnums.QUANTITÉ_DE_BATTERIE.getTitle()),
                     String.valueOf(enter.getT().getBatteryQty()));
         }
-
+        
         // 转json 并转义
         String columnValues = StringEscapeUtils.escapeJson(new JSONObject(columnValue).toJSONString());
         log.info("----------------------" + columnValues + "-------------------------");
-
+        
         return columnValues;
     }
-
+    
     /**
      * 联系我们 数据封装
      *
@@ -684,7 +684,7 @@ public class MondayServiceImpl implements MondayService {
         mondayCreateResult.setId(mondayGroupResult.getId());
         return mondayCreateResult;
     }
-
+    
     /**
      * 校验联系我们列名
      *

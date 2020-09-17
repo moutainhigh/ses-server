@@ -17,7 +17,7 @@ public enum PlatformTypeEnums {
 
     ALL("All", "all", "全部设备"),
     ANDROID("Android", "android", "安卓"),
-    IOS("iOS", "ios", "苹果"),
+    IOS("IOS", "ios", "苹果"),
     PC("PC", "pc", "电脑桌面"),
     NONE("NONE","none","暂无平台"),
     ;

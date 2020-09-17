@@ -6,23 +6,18 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
-import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
-import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
-import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
-import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
+import com.redescooter.ses.api.common.enums.production.*;
 import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
@@ -35,48 +30,13 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeFactory;
-import com.redescooter.ses.web.ros.dm.OpeParts;
-import com.redescooter.ses.web.ros.dm.OpePartsProduct;
-import com.redescooter.ses.web.ros.dm.OpePartsProductB;
-import com.redescooter.ses.web.ros.dm.OpePurchas;
-import com.redescooter.ses.web.ros.dm.OpePurchasB;
-import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
-import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
-import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
-import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
-import com.redescooter.ses.web.ros.dm.OpeStock;
-import com.redescooter.ses.web.ros.dm.OpeStockBill;
-import com.redescooter.ses.web.ros.dm.OpeSupplier;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeWhse;
-import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
-import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
-import com.redescooter.ses.web.ros.service.base.OpePartsService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasBQcService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasBService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasPaymentService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasProductService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasTraceService;
-import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
-import com.redescooter.ses.web.ros.service.base.OpeStockService;
-import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeWhseService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
-import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
-import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
-import com.redescooter.ses.web.ros.vo.production.PayEnter;
-import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
-import com.redescooter.ses.web.ros.vo.production.PaymentItemDetailResult;
-import com.redescooter.ses.web.ros.vo.production.ProductionPartsEnter;
-import com.redescooter.ses.web.ros.vo.production.SaveSupplierAnnexEnter;
-import com.redescooter.ses.web.ros.vo.production.StagingPaymentEnter;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.production.*;
 import com.redescooter.ses.web.ros.vo.production.purchasing.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -633,37 +593,43 @@ public class PurchasingServiceImpl implements PurchasingService {
                 productTypeList.add(item.getValue());
             }
         }
-        //整车产品查询列表
-        List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
-        //查询产品中包含的所有的部件
-        if (CollectionUtils.isNotEmpty(scooterProductList)) {
-            List<Long> productIds =
-                    scooterProductList.stream().filter(item -> StringUtils.equals(item.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())).map(PruchasingItemResult::getId).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(productIds)) {
-                //查询产品所有部件
-                List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
-                if (CollectionUtils.isNotEmpty(partList)) {
-                    
-                    for (PruchasingItemResult scooter : scooterProductList) {
-                        BigDecimal totalPrice = BigDecimal.ZERO;
-                        List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
-                        
-                        for (PruchasingItemResult item : partList) {
-                            if (item.getId().equals(scooter.getId())) {
-                                totalPrice = totalPrice.add(item.getPrice());
-                                scooterPartList.add(item);
+        if (StringUtils.isBlank(enter.getProductType())
+            || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
+            // 整车产品查询列表
+            List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter,
+                Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
+            // 查询产品中包含的所有的部件
+            if (CollectionUtils.isNotEmpty(scooterProductList)) {
+                List<Long> productIds = scooterProductList.stream()
+                    .filter(item -> StringUtils.equals(item.getProductType(), BomCommonTypeEnums.SCOOTER.getValue()))
+                    .map(PruchasingItemResult::getId).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(productIds)) {
+                    // 查询产品所有部件
+                    List<PruchasingItemResult> partList =
+                        purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
+                    if (CollectionUtils.isNotEmpty(partList)) {
+
+                        for (PruchasingItemResult scooter : scooterProductList) {
+                            BigDecimal totalPrice = BigDecimal.ZERO;
+                            List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
+
+                            for (PruchasingItemResult item : partList) {
+                                if (item.getId().equals(scooter.getId())) {
+                                    totalPrice = totalPrice.add(item.getPrice());
+                                    scooterPartList.add(item);
+                                }
+                            }
+                            scooter.setPrice(totalPrice);
+                            if (scooter.getProductType().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+                                scooter.setPruchasingItemResultList(scooterPartList);
                             }
                         }
-                        scooter.setPrice(totalPrice);
-                        if (scooter.getProductType().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
-                            scooter.setPruchasingItemResultList(scooterPartList);
-                        }
                     }
+                    resultList.addAll(scooterProductList);
                 }
-                resultList.addAll(scooterProductList);
             }
         }
-        
+
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         resultList.addAll(partProductList);
       

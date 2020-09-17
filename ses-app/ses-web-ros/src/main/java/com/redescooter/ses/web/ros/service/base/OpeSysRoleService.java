@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface OpeSysRoleService extends IService<OpeSysRole>{
+public interface OpeSysRoleService extends IService<OpeSysRole> {
 
 
     int updateBatch(List<OpeSysRole> list);
@@ -17,4 +17,8 @@ public interface OpeSysRoleService extends IService<OpeSysRole>{
 
     int insertOrUpdateSelective(OpeSysRole record);
 
+    int updateBatchSelective(List<OpeSysRole> list);
 }
+
+
+

@@ -96,11 +96,117 @@
                     IF
                         ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
                     FROM
-                        ( SELECT id, p_id FROM ope_sys_dept t ) t1,
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
                         ( SELECT @pids := #{deptId}) t2
                     ) t3
                 WHERE
             ischild != 0
 
     </select>
+    <select id="getDeptList" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+        <if test="enter.keyWrod !=null and  enter.keyWrod !=''">
+            and(
+            dept.name like concat ('%',#{enter.keyWrod},'%')
+            )
+        </if>
+        <if test="enter.deptType != null and enter.deptType != ''">
+            and dept.dept_status =#{enter.deptType}
+        </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and dept.id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and dept.created_by = #{enter.userId}
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+    <select id="selectEditDept" resultType="com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+       and dept.id =#{id}
+    </select>
+    <select id="deptType" resultType="com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult">
+         select id as deptId,
+         name as name
+        from ope_sys_dept
+        where dr = 0
+        and tenant_id = #{tenantId} and id != 1000000 and dept_status = 1
+    </select>
+
+    <select id="getChildDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">
+        SELECT * from ope_sys_dept  where id in (SELECT
+                  id
+               FROM
+                    (
+                    SELECT
+                        t1.id,
+                    IF
+                        ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+                    FROM
+                        ( SELECT id, p_id FROM ope_sys_dept t where t.dr = 0) t1,
+                        ( SELECT @pids := #{deptId}) t2
+                    ) t3
+                WHERE
+            ischild != 0)
+    </select>
+
+    <select id="getDeptIdByRoleId" resultType="java.lang.Long">
+        select  pos.dept_id  from
+         ope_sys_position pos
+         where pos.dr = 0 and pos.id = (select position_id from ope_sys_role where dr = 0 and id = #{roleId})
+    </select>
+
+    <select id="getParentIds" resultType="java.lang.Long">
+        SELECT DISTINCT
+        T2.id
+        FROM
+        (
+        SELECT DISTINCT
+        @r AS t1_id,
+        ( SELECT @r := p_id FROM ope_sys_dept WHERE dr = 0  AND id = t1_id ) AS NODE_PARENT_ID
+        FROM
+        ( SELECT @r := #{deptId} ) vars,
+        ope_sys_dept h
+        WHERE
+        @r != - 1
+        ) T1
+        JOIN ope_sys_dept T2 ON T1.t1_id = T2.id
+    </select>
+
+    <select id="saveDeptSelectParent" resultType="com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult">
+        select dept.id as id
+        , dept.name as name
+        , dept.sort as sort
+        , dept.p_id as pid
+        , dept.dept_status as deptStatus
+        from ope_sys_dept dept
+        where dept.dr = 0
+        <if test="enter.keyWrod !=null and  enter.keyWrod !=''">
+            and(
+            dept.name like concat ('%',#{enter.keyWrod},'%')
+            )
+        </if>
+        <if test="enter.deptType != null and enter.deptType != ''">
+            and dept.dept_status =#{enter.deptType}
+        </if>
+    </select>
+
 </mapper>

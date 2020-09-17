@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
@@ -14,6 +15,7 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
@@ -29,8 +31,11 @@ import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.menu.EditMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.QueryMenuEnter;
 import com.redescooter.ses.web.ros.vo.sys.menu.SaveMenuEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasEnter;
+import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +68,9 @@ public class MenuServiceImpl implements MenuService {
     private IdAppService idAppService;
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private MenuServiceMapper menuServiceMapper;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -183,7 +191,7 @@ public class MenuServiceImpl implements MenuService {
             if (CollUtil.isNotEmpty(roleIds)) {
                 List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
                 if (CollUtil.isNotEmpty(menuIds)) {
-                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds)), roleIds,Boolean.FALSE);
+                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).orderByAsc(OpeSysMenu::getCreatedTime)), roleIds,Boolean.FALSE);
                     return results;
                 }
             }
@@ -213,18 +221,29 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public GeneralResult delete(IdEnter enter) {
-        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
-        wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
-        List<OpeSysMenu> list = sysMenuService.list(wrapper);
-        if (CollUtil.isNotEmpty(list)) {
-            //删除儿子
-            sysMenuService.remove(wrapper);
-            //删除角色菜单关系
-            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
-            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
-            roleMenuService.remove(delete);
+//        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
+//        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
+//        wrapper.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
+//        List<OpeSysMenu> list = sysMenuService.list(wrapper);
+//        if (CollUtil.isNotEmpty(list)) {
+//            //删除儿子
+//            sysMenuService.remove(wrapper);
+//            //删除角色菜单关系
+//            QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+//            delete.eq(OpeSysRoleMenu.COL_MENU_ID, enter.getId());
+//            roleMenuService.remove(delete);
+//        }
+
+        // 当前菜单或者目录下面的子的id集合，需要全部删除
+        List<Long> childs = findChilds(enter.getId());
+        if(CollectionUtils.isNotEmpty(childs)){
+            sysMenuService.removeByIds(childs);
         }
+        childs.add(enter.getId());
+        QueryWrapper<OpeSysRoleMenu> delete = new QueryWrapper<>();
+        delete.in(OpeSysRoleMenu.COL_MENU_ID,childs);
+        roleMenuService.remove(delete);
+
         QueryWrapper<OpeSysMenu> myself = new QueryWrapper<>();
         myself.eq(OpeSysMenu.COL_ID, enter.getId());
         myself.eq(OpeSysMenu.COL_DR, Constant.DR_FALSE);
@@ -234,6 +253,14 @@ public class MenuServiceImpl implements MenuService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+    public List<Long> findChilds(Long id){
+        List<Long> childs = menuServiceMapper.findChilds(id);
+        return childs;
+    }
+
+
+
     /**
      * 菜单编辑
      *
@@ -242,7 +269,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public GeneralResult edit(EditMenuEnter enter) {
-        OpeSysMenu menuUpdate = sysMenuService.getById(enter.getMenuId());
+        OpeSysMenu menuUpdate = sysMenuService.getById(enter.getId());
         if (menuUpdate == null) {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
@@ -294,6 +321,7 @@ public class MenuServiceImpl implements MenuService {
         menu.setType(MenuTypeEnums.checkCode(enter.getType()));
         menu.setIcon(enter.getIcon());
         menu.setLevel(enter.getLevel());
+        menu.setType(enter.getLevel() == null?"":enter.getLevel().toString());
         menu.setSort(enter.getSort());
         menu.setRemark(enter.getRemark());
         menu.setDef1(enter.getDef1());
@@ -301,6 +329,8 @@ public class MenuServiceImpl implements MenuService {
         menu.setDef3(enter.getDef3());
         menu.setUpdatedBy(enter.getUserId());
         menu.setUpdatedTime(new Date());
+        menu.setIfToLink(enter.getIfToLink());
+        menu.setMenuStatus(enter.getMenuStatus());
         return menu;
     }
 
@@ -381,12 +411,16 @@ public class MenuServiceImpl implements MenuService {
         node.setPath(menu.getPath());
         node.setLevel(menu.getLevel());
         node.setType(menu.getType());
-        node.setIcon(menu.getIcon());
+        node.setIcon(Strings.isNullOrEmpty(menu.getIcon())?"":menu.getIcon());
         node.setSort(menu.getSort());
         node.setRemark(menu.getRemark());
         node.setDef1(menu.getDef1());
         node.setDef2(menu.getDef2());
         node.setDef3(menu.getDef3());
+        node.setCreatedTime(menu.getCreatedTime());
+        node.setMenuStatus(menu.getMenuStatus());
+        node.setIfToLink(menu.getIfToLink());
+        node.setComponent(menu.getComponent());
         return node;
     }
 
@@ -401,10 +435,12 @@ public class MenuServiceImpl implements MenuService {
         if (enter.getId() != null) {
             if (enter.getId() != 0) {
                 //获取用户角色岗位
-                List<OpeSysUserRole> userRoles = userRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, enter.getId()));
-                if (CollUtil.isNotEmpty(userRoles)) {
-                    userRoles.forEach(ur -> result.add(ur.getRoleId()));
-                }
+                result = menuServiceMapper.getRoleIds(enter.getId());
+
+//                List<OpeSysUserRole> userRoles = userRoleService.list(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getUserId, enter.getId()));
+//                if (CollUtil.isNotEmpty(userRoles)) {
+//                    userRoles.forEach(ur -> result.add(ur.getRoleId()));
+//                }
             }
         }
         return result;
@@ -428,4 +464,16 @@ public class MenuServiceImpl implements MenuService {
         }
         return result;
     }
+
+
+    @Override
+    public List<MenuDatasListResult> menuDatas(MenuDatasEnter enter) {
+        if(enter.getType() == null){
+            throw new SesWebRosException(ExceptionCodeEnums.TYPE_IS_NULL.getCode(), ExceptionCodeEnums.TYPE_IS_NULL.getMessage());
+        }
+        List<MenuDatasListResult> list = new ArrayList<>();
+        list = menuServiceMapper.menuDatas(enter.getType());
+        return list;
+    }
+
 }

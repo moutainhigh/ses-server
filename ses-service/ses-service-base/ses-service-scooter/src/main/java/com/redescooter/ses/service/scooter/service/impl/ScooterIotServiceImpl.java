@@ -222,7 +222,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
         Double distance = MapUtil.getDistance(enter.getLatitude().toString(), enter.getLongitude().toString(), scoScooter.getLatitude().toString(), enter.getLongitude().toString());
 
         ScoScooterNavigation savaNaviation = new ScoScooterNavigation();
-        savaNaviation.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+        savaNaviation.setId(idAppService.getId(SequenceName.SCO_SCOOTER_NAVIGATION));
         savaNaviation.setDr(0);
         savaNaviation.setScooterId(scoScooter.getId());
         savaNaviation.setScooterNo(scoScooter.getScooterNo());

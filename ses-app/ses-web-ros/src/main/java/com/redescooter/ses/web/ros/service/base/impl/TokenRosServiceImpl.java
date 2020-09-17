@@ -37,6 +37,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -76,6 +77,9 @@ public class TokenRosServiceImpl implements TokenRosService {
     @Value("${Request.privateKey}")
     private  String privateKey;
 
+    @Autowired
+    private StaffService staffService;
+
     /**
      * 用户登录
      *
@@ -94,7 +98,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         wrapper.eq(OpeSysUser.COL_DR, 0);
         wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
-        wrapper.eq(OpeSysUser.COL_DEF1,SysUserStatusEnum.NORMAL.getValue());
+        wrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
         wrapper.last("limit 1");
         OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
@@ -106,6 +110,9 @@ public class TokenRosServiceImpl implements TokenRosService {
             if (!CollUtil.isNotEmpty(roles)) {
                 throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
             }
+        }
+        if(sysUser.getStatus().equals(SysUserStatusEnum.LOCK.getCode())){
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
         }
         // 把密码的校验放到这里来  2020 7 17
         //密码解密
@@ -136,6 +143,8 @@ public class TokenRosServiceImpl implements TokenRosService {
             jedisCluster.del(psdErrorKey);
         }
         TokenResult result = getTokenResult(enter, sysUser);
+        // 2020 9 14 追加 登陆成功之后，初始化用户的一些权限信息
+        staffService.inintUserMsg(sysUser.getId());
         return result;
     }
 
@@ -161,6 +170,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
+        boolean flag = false;
+        if(Strings.isNullOrEmpty(sysUser.getLastLoginToken())){
+            flag = true;
+        }
         //获取用户角色,更新至缓存
         //  setAuth(userRole.getRoleId());
 
@@ -174,6 +187,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
         result.setRequestId(enter.getRequestId());
+        result.setResetPsd(flag);
         return result;
     }
 

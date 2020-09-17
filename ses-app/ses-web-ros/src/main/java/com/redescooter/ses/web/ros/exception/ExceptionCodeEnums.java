@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -345,7 +344,40 @@ public enum ExceptionCodeEnums {
 
     NO_MATERIAL_FOR_OUT_ORDER(10163, "该订单暂无备料"),
 
-    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除");;
+    ACTIVATION_CUSTOMER_NOT_DELETE(10164, "激活之后的客户不能删除"),
+
+    ROLE_IS_NOT_EXIST(10165, "角色不存在"),
+
+    ROLE_IS_NOT_DELETE(10166, "角色下面存在员工，不能删除"),
+
+    DEPT_NAME_IS_EMPTY(10167, "部门名称为空"),
+
+    SUPERIOR_DEPT_IS_EMPTY(10168, "上级部门为空"),
+
+    PLEASE_UNTIE_THE_SUBDEPT(10169, "请解绑子部门"),
+
+    ID_IS_NOT_NULL(10170, "id不能为空"),
+
+    DEPT_DISABLE(10171, "当前部门被禁用"),
+
+    ALREADY_OPEN(10172, "当前员工已经开通过账号"),
+
+    TYPE_IS_NULL(10173, "类型不能为空"),
+
+    SAVE_DEPT_POSITION_NAME_NOT_REPEAT(10174, "同部门下面的岗位名称不能重复"),
+
+    ACCOUNT_DISABLED(10175, "账号被禁用"),
+
+    POSITION_DISABLED(10176, "岗位被禁用"),
+
+    SORT_NOT_NEG(10177, "排序不能为负数"),
+
+    DEPT_LEVEL_ERROR(10178, "部门最多只能有4级"),
+
+    ASSEMBLY_PRODUCT_IS_EMPTY(10179, "组装产品为空"),
+
+    ;
+
 
 
     private int code;

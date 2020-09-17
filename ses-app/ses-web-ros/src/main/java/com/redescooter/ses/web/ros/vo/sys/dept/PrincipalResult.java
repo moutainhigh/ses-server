@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class PrincipalResult extends GeneralEnter {
+public class PrincipalResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;

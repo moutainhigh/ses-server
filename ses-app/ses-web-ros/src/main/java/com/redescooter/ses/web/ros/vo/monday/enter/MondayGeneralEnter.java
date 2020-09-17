@@ -43,7 +43,7 @@ public class MondayGeneralEnter<T> extends GeneralEnter {
 
     @ApiModelProperty(value = "城市")
     private String city;
-
+    
     @ApiModelProperty(value = "区域")
     private String distant;
 
@@ -52,8 +52,8 @@ public class MondayGeneralEnter<T> extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remarks;
-
+    
     @ApiModelProperty(value = "业务对象")
     private T t;
-
+    
 }

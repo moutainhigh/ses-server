@@ -1,15 +1,11 @@
 package com.redescooter.ses.web.ros.service.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
-import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
-import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -27,6 +23,12 @@ public interface SysDeptService {
      * @return
      */
     GeneralResult save(SaveDeptEnter enter);
+    /**
+     * 部门创建
+     *
+     * @return
+     */
+    GeneralResult addSave(AddDeptEnter enter);
 
     /**
      * 部门树
@@ -36,6 +38,24 @@ public interface SysDeptService {
      */
     List<DeptTreeReslt> trees(GeneralEnter enter);
 
+    /**
+     * 部门删除
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteDept(IdEnter enter);
+
+    /**
+     * 部门树
+     *
+     * @param enter
+     * @return
+     */
+    List<DeptTreeListResult> deptTrees(DeptListEnter enter);
+
+
+    List<DeptTreeListResult> saveDeptSelectParent(DeptListEnter enter);
     /**
      * 部门列表 平行结构
      *
@@ -59,6 +79,28 @@ public interface SysDeptService {
      * @return
      */
     GeneralResult edit(EditDeptEnter enter);
+        /**
+         * 部门类型查询
+         *
+         * @param enter
+         * @return
+         */
+     List<DeptTypeResult>  selectDeptType(GeneralEnter enter);
+    /**
+     * 查询编辑部门
+     *
+     * @param enter
+     * @return
+     */
+    SelectDeptResult selectEditDept(IdEnter enter);
+    /**
+     * 部门编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editDept(UpdateDeptEnter enter);
+
 
     /**
      * 部门删除
@@ -75,6 +117,23 @@ public interface SysDeptService {
      * @return
      */
     DeptTreeReslt details(IdEnter enter);
+
+    /**
+     * 部门详情
+     *
+     * @param enter
+     * @return
+     */
+    DeptDetailsResult  deptDetails(IdEnter enter);
+
+
+    /**
+     * 部门删除查询
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult deleteDeptSelect(IdEnter enter);
 
     /**
      * 获取部门子列表
@@ -100,4 +159,20 @@ public interface SysDeptService {
      * @return
      */
     List<PrincipalResult> principals(PrincipalsEnter enter);
+
+    /**
+     * 检查部门状态
+     *
+     * @param
+     * @return
+     */
+    void checkDeptStatus(Long deptId,boolean flag);
+
+    /**
+     * 添加部门等级
+     *
+     * @param pid
+     * @return
+     */
+    Integer addDeptLevel(Long pid);
 }

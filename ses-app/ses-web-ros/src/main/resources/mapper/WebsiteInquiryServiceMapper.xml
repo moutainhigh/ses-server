@@ -10,6 +10,7 @@
                acc.price        as price
         from ope_customer_accessories acc
         where acc.type = #{type}
+        and acc.dr=0
     </select>
 
     <select id="scooters" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
@@ -20,19 +21,21 @@
                product.color     as color
         from ope_parts_product product
                  inner join ope_regional_price_sheet sheet
-                            on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+                            on sheet.parts_product_id = product.id and sheet.currency_unit = 1  and sheet.dr=0
         where product_type = 4
+        and product.dr=0
         and product.model = #{modelCode}
     </select>
     <select id="queryProductById" resultType="com.redescooter.ses.web.ros.vo.website.ProductResult">
         select product.id        as id,
                product.fr_name   as name,
                product.model     as productModel,
-               sheet.sales_price as price,
-                product.color as color
+                product.color     as color,
+               sheet.sales_price as price
         from ope_parts_product product
-                 left join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+                 left join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1 and sheet.dr = 0
         where product_type = 4
+        and product.dr = 0
         and product.id=#{productId}
     </select>
     <select id="orderForms" resultType="com.redescooter.ses.web.ros.vo.website.OrderFormsResult">

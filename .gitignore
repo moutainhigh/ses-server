@@ -133,3 +133,7 @@ Thumbs.db
 /*/*/*/*/*/*/resources/rebel.xml
 
 workspace
+
+## yarn
+node_modules/*
+yarn.lock

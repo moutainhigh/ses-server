@@ -224,4 +224,10 @@ public interface ValidationExceptionCode {
     int MESSAGE_IS_EMPTY=10131;
     //消息为空
     int MESSAGE_IS_ILLEGAL=10132;
+    // 部门状态为空
+    int DEPT_STATUS_IS_EMPTY = 10133;
+    // 非法排序
+    int SORT_ILLEGAL = 10134;
+    // 请选择部门
+    int PLEASE_SELECT_DEPARTMENT = 10135;
 }

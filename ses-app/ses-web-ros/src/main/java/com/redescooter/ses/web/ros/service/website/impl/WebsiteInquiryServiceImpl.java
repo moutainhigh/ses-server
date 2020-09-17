@@ -269,7 +269,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
         mondayBookOrderEnter.setQty(1);
         mondayGeneralEnter.setT(mondayBookOrderEnter);
-
+        
         //Monday 同步数据
         mondayService.websiteBookOrder(mondayGeneralEnter);
     }
@@ -400,6 +400,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setFullName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()) + SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
         opeCustomerInquiry.setEmail(opeCustomer.getEmail());
+        opeCustomerInquiry
+            .setTelephone(StringUtils.isNotBlank(opeCustomer.getTelephone()) ? opeCustomer.getTelephone() : null);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
@@ -671,6 +673,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryB.setProductPrice(price);
         opeCustomerInquiryB.setProductQty(StringUtils.equals(type, AccessoryTypeEnums.TOP_CASE.getValue()) == true ? 1 : enter.getAccessoryBatteryQty());
         opeCustomerInquiryB.setProductType(type);
+        opeCustomerInquiryB.setProductId(enter.getProductId());
         opeCustomerInquiryB.setCreatedBy(enter.getUserId());
         opeCustomerInquiryB.setCreatedTime(new Date());
         opeCustomerInquiryB.setUpdatedBy(enter.getUserId());

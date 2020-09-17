@@ -66,6 +66,13 @@
                 <log.path>/data/java_service/logs/</log.path>
             </properties>
         </profile>
+        <profile>
+            <id>pre</id>
+            <properties>
+                <profile-active>pre</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+            </properties>
+        </profile>
     </profiles>
 
     <!-- 编译组件 -->

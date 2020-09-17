@@ -33,5 +33,42 @@
       and p_id = #{id}
     </select>
 
+    <select id="menuDatas" resultType="com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult">
+        select
+           id,name
+        from ope_sys_menu  where
+        dr = 0
+        <if test="type == 1">
+            and level = 1
+        </if>
+        <if test="type == 2">
+            and level = 2
+        </if>
+    </select>
+
+    <select id="findChilds" resultType="java.lang.Long">
+        SELECT
+        id
+        FROM
+        (
+        SELECT
+        t1.id,
+        IF
+        ( find_in_set( p_id, @pids ) > 0, @pids := concat( @pids, ',', id ), 0 ) AS ischild
+        FROM
+        ( SELECT id, p_id FROM ope_sys_menu t where t.dr = 0) t1,
+        ( SELECT @pids := #{id}) t2
+        ) t3
+        WHERE
+        ischild != 0
+
+    </select>
+
+    <select id="getRoleIds" resultType="java.lang.Long">
+        SELECT ur.role_id from ope_sys_user_role ur
+        LEFT JOIN ope_sys_role r on ur.role_id = r.id
+        where ur.user_id = #{userId} and r.role_status = 1
+    </select>
+
 </mapper>
 

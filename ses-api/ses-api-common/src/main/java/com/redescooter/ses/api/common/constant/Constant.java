@@ -48,7 +48,7 @@ public interface Constant {
     /**
      * 超级管理员用户名,原始adminRedE
      */
-    String ADMIN_USER_NAME = "root@redescooter.com";
+    String ADMIN_USER_NAME = "rede@redescooter.com";
 
     /**
      * 默认密码
@@ -62,7 +62,26 @@ public interface Constant {
     Long ADMINUSERID = 1000000L;
     //百分比
     int AMOUNTP_ROPORTION = 100;
-    //默认经纬度
+
+    // 经纬度范围
+    // 最大经度
+    String maxlng = "48.902862";
+    // 最小经度
+    String minlng = "48.840000";
+    // 最大纬度
+    String minlat = "2.250000";
+    // 最小纬度
+    String maxlat = "2.356000";
+
+    // 经度参数名
+    String lng = "lng";
+    // 纬度参数名
+    String lat = "lat";
+
+    // 经纬度 精度
+    int precision = 6;
+
+    // 默认经纬度
     BigDecimal LATITUDE = new BigDecimal("48.862868");
 
     BigDecimal LONGITUDE = new BigDecimal("2.313960");
