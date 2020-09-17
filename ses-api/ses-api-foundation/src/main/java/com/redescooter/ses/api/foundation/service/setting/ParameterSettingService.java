@@ -1,9 +1,6 @@
 package com.redescooter.ses.api.foundation.service.setting;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
@@ -51,4 +48,11 @@ public interface ParameterSettingService {
      * @return
      */
     GeneralResult save(SaveParamentEnter enter);
+
+    /**
+     * 下载模版
+     * @param enter
+     * @return
+     */
+    StringResult downloadExcel(GeneralEnter enter);
 }

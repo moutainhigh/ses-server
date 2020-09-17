@@ -28,6 +28,6 @@ public class SaveGroupEnter extends GeneralEnter {
     @ApiModelProperty(value = "描述")
     private String desc;
 
-    @ApiModelProperty(value = "是否启用")
-    private Boolean enable;
+    @ApiModelProperty(value = "是否启用", allowableValues = "0,1")
+    private String enable;
 }
