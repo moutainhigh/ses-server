@@ -57,6 +57,7 @@ public class SysStaffController {
 
     @PostMapping(value = "/staffList")
     @ApiOperation(value = "员工列表", response = GeneralResult.class)
+    //@LogAnnotation
     public Response<PageResult<StaffListResult>> staffList(@ModelAttribute @ApiParam("请求参数") StaffListEnter enter) {
         return new Response(staffService.staffList(enter));
     }

@@ -55,6 +55,13 @@ public class SysDeptController {
         return new Response<>(deptService.addSave(enter));
     }
 
+
+    @PostMapping(value = "/saveDeptSelectParent")
+    @ApiOperation(value = "新建部门选择父级部门的接口--reseat", response = GeneralResult.class)
+    public Response<List<DeptTreeListResult>> saveDeptSelectParent(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
+        return new Response<>(deptService.saveDeptSelectParent(enter));
+    }
+
     @PostMapping(value = "/deptDetails")
     @ApiOperation(value = "部门详情--reseat", response = DeptDetailsResult.class)
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -111,7 +118,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/deptTree")
     @ApiOperation(value = "部门列表树--reseat", response = DeptTreeListResult.class)
-    @IgnoreLoginCheck
+//    @IgnoreLoginCheck
     public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
         return new Response<>(deptService.deptTrees(enter));
     }

@@ -137,6 +137,10 @@ public class StaffServiceImpl implements StaffService {
         creatRoleStaff(staff.getId(),enter.getRoleId());
         // 追加 创建user_profile数据
         creatUserProfile(staff);
+        try {
+            // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
+            inintUserMsg(enter.getUserId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -417,6 +421,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     // 给员工发邮件，这个方法作为异步执行
+    @Override
     @Async
     public void emailToStaff(OpeSysStaff staff,String requestId){
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
@@ -522,17 +527,21 @@ public class StaffServiceImpl implements StaffService {
                             // 全部的
                             QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
                             ids.addAll(opeSysDeptMapper.selectList(qw).stream().map(OpeSysDept::getId).collect(Collectors.toSet()));
+                            break;
                         case 2:
                             // 本人
+                            default:
                             break;
                         case 3:
                             // 本部门 找到角色的部门（就是角色对应的岗位的部门）
                             ids.add(deptServiceMapper.getDeptIdByRoleId(roleId));
+                            break;
                         case 4:
                             // 本部门及其子部门
                             Long deptId = deptServiceMapper.getDeptIdByRoleId(roleId);
                             ids.add(deptId);
                             ids.addAll(deptServiceMapper.getChildDeptIds(deptId));
+                            break;
                     }
                 }
             }
