@@ -1,14 +1,14 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.web.ros.service.setting.ParameterSettingService;
-import com.redescooter.ses.web.ros.vo.setting.ParameterListEnter;
-import com.redescooter.ses.web.ros.vo.setting.ParameterResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/setting/parameter")
 public class ParameterSettingController {
 
-    @Autowired
+    @Reference
     private ParameterSettingService parameterSettingService;
 
     @ApiOperation(value = "参数列表", response = ParameterResult.class)

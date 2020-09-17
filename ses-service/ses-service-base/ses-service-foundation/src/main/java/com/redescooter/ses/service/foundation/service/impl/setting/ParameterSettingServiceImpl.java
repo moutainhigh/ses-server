@@ -1,13 +1,13 @@
-package com.redescooter.ses.web.ros.service.setting.impl;
+package com.redescooter.ses.service.foundation.service.impl.setting;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.service.setting.ParameterSettingService;
-import com.redescooter.ses.web.ros.vo.setting.ParameterListEnter;
-import com.redescooter.ses.web.ros.vo.setting.ParameterResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.ArrayList;

@@ -1,12 +1,12 @@
-package com.redescooter.ses.web.ros.service.setting;
+package com.redescooter.ses.api.foundation.service.setting;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.setting.ParameterListEnter;
-import com.redescooter.ses.web.ros.vo.setting.ParameterResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 
 public interface ParameterSettingService {
 

@@ -4,18 +4,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.setting.GroupListEnter;
-import com.redescooter.ses.web.ros.vo.setting.GroupResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveGroupEnter;
+import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 
-/**
- *  @author: alex
- *  @Date: 2020/9/16 18:26
- *  @version：V 1.2
- *  @Description:
- */
-
-public interface GroupSettingService {
+public interface RosGroupService {
     /**
      * 分组列表
      * @param enter

@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.vo.setting;
+package com.redescooter.ses.api.foundation.vo.setting;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import io.swagger.annotations.*;
 
 /**
  *  @author: alex
@@ -26,7 +26,7 @@ public class SaveGroupEnter extends GeneralEnter {
     private String groupName;
 
     @ApiModelProperty(value = "描述")
-    private String dec;
+    private String desc;
 
     @ApiModelProperty(value = "是否启用")
     private Boolean enable;

@@ -38,4 +38,8 @@ public interface SequenceName {
     String PLA_USER_NODE = "PLA_USER_NODE";
 
     String PLA_APP_VERSION = "PLA_APP_VERSION";
+
+    String PLA_SYS_GROUP_SETTING = "PLA_SYS_GROUP_SETTING";
+
+    String PLA_SYS_PARAM_SETTING = "PLA_SYS_PARAM_SETTING";
 }
