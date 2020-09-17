@@ -1,9 +1,12 @@
 package com.redescooter.ses.api.foundation.service.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+
+import java.util.List;
 
 public interface ParameterSettingService {
 
@@ -55,4 +58,11 @@ public interface ParameterSettingService {
      * @return
      */
     StringResult downloadExcel(GeneralEnter enter);
+
+    /**
+     * 分组列表
+     * @param enter
+     * @return
+     */
+    List<ParameterGroupResultList> groupList(GeneralEnter enter);
 }

@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
@@ -16,12 +17,15 @@ import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
 import com.redescooter.ses.service.foundation.service.base.PlaSysParamSettingService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *  @author: alex
@@ -154,6 +158,24 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     @Override
     public StringResult downloadExcel(GeneralEnter enter) {
         return new StringResult(Constant.PARAMETER_DOWNLOAD_URL);
+    }
+
+    /**
+     * 分组列表
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ParameterGroupResultList> groupList(GeneralEnter enter) {
+        List<ParameterGroupResultList> result = new ArrayList<>();
+        List<PlaSysGroupSetting> list = plaSysGroupSettingService.list();
+        if (CollectionUtils.isEmpty(list)) {
+            return result;
+        }
+        list.forEach(item -> {
+            result.add(ParameterGroupResultList.builder().id(item.getId()).name(item.getGroupName()).build());
+        });
+        return result;
     }
 
     private PlaSysParamSetting buildParament(SaveParamentEnter enter) {
