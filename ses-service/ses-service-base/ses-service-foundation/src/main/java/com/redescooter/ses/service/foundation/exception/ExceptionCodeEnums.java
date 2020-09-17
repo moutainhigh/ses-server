@@ -1,6 +1,5 @@
 package com.redescooter.ses.service.foundation.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -102,22 +101,24 @@ public enum ExceptionCodeEnums {
     VERSION_TYPE_IS_EMPTY(10044, "版本类型为空"),
     
     VERSION_CODE_IS_EMPTY(10045, "版本编号为空"),
-    
+
     DATA_EXCEPTION(10046, "参数数据异常或格式错误"),
-    
-    CODE_IS_EMPTY(10047,"验证码为空"),
-    
-    CODE_IS_WRONG(10048,"验证码错误"),
-    
-    LOGIN_PSD_ERROER_NUM_MANY(10049,"登录失败次数过多"),
-    
-    LOGIN_PSD_ERROER_NEED_CODE(10050,"登陆失败需要验证码"),
-    
+
+    CODE_IS_EMPTY(10047, "验证码为空"),
+
+    CODE_IS_WRONG(10048, "验证码错误"),
+
+    LOGIN_PSD_ERROER_NUM_MANY(10049, "登录失败次数过多"),
+
+    LOGIN_PSD_ERROER_NEED_CODE(10050, "登陆失败需要验证码"),
+
+    GROUP_IS_NOT_EXIST(10051, "分组不存在"),
+
     ;
-    
+
     private int code;
     private String message;
-    
+
     private static ExceptionCodeEnums getErrorCodeByCode(int code) {
         for (ExceptionCodeEnums item : ExceptionCodeEnums.values()) {
             if (item.getCode() == code) {

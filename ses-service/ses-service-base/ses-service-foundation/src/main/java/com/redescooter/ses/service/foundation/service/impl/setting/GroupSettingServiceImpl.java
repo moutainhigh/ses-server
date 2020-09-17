@@ -1,19 +1,28 @@
 package com.redescooter.ses.service.foundation.service.impl.setting;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.GroupSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
+import com.redescooter.ses.service.foundation.constant.SequenceName;
+import com.redescooter.ses.service.foundation.dao.GroupSettingServiceMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
+import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 /**
  *  @author: alex
@@ -24,6 +33,16 @@ import java.util.List;
 @Service
 public class GroupSettingServiceImpl implements GroupSettingService {
 
+
+    @Autowired
+    private GroupSettingServiceMapper groupSettingServiceMapper;
+
+    @Autowired
+    private PlaSysGroupSettingService plaSysGroupSettingService;
+
+    @Autowired
+    private IdAppService idAppService;
+
     /**
      * 分组列表
      * @param enter
@@ -31,21 +50,13 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      */
     @Override
     public PageResult<GroupResult> list(GroupListEnter enter) {
-        GroupResult build = GroupResult.builder()
-                .id(100000L)
-                .groupName("你猜")
-                .dec("你猜")
-                .enable(Boolean.TRUE)
-                .createdById(1000001L)
-                .createdByFirstName("你猜")
-                .createdByLastName("你猜")
-                .updatedById(100002L)
-                .updatedByFirstName("你猜")
-                .updatedByLastName("你猜")
-                .build();
-        List<GroupResult> buildList = new ArrayList<>();
-        buildList.add(build);
-        return PageResult.create(enter, 1, buildList);
+        int count =
+                plaSysGroupSettingService.count(new LambdaQueryWrapper<PlaSysGroupSetting>().eq(PlaSysGroupSetting::getSystemType, enter.getSystemType().getMessage()).like(PlaSysGroupSetting::getGroupName,
+                        enter.getKeyword()));
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, 1, groupSettingServiceMapper.groupList(enter));
     }
 
     /**
@@ -55,17 +66,17 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      */
     @Override
     public GroupResult detail(IdEnter enter) {
+        PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getId());
+        if (plaSysGroupSetting == null) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
         return GroupResult.builder()
-                .id(100000L)
-                .groupName("你猜")
-                .dec("你猜")
-                .enable(Boolean.TRUE)
-                .createdById(1000001L)
-                .createdByFirstName("你猜")
-                .createdByLastName("你猜")
-                .updatedById(100002L)
-                .updatedByFirstName("你猜")
-                .updatedByLastName("你猜")
+                .id(plaSysGroupSetting.getId())
+                .groupName(plaSysGroupSetting.getGroupName())
+                .desc(plaSysGroupSetting.getDesc())
+                .enable(plaSysGroupSetting.getEnable())
+                .createdById(plaSysGroupSetting.getCreatedBy())
+                .updatedById(plaSysGroupSetting.getUpdatedBy())
                 .build();
     }
 
@@ -77,7 +88,32 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Transactional
     @Override
     public GeneralResult save(SaveGroupEnter enter) {
+        PlaSysGroupSetting plaSysGroupSetting = null;
+        if (enter.getId() == null || enter.getId() == 0) {
+            //保存
+            plaSysGroupSetting = buildGroup(enter);
+            plaSysGroupSetting.setId(idAppService.getId(SequenceName.PLA_SYS_GROUP_SETTING));
+            plaSysGroupSetting.setCreatedBy(enter.getUserId());
+            plaSysGroupSetting.setCreatedTime(new Date());
+        } else {
+            //编辑
+            plaSysGroupSetting = buildGroup(enter);
+        }
+        if (plaSysGroupSetting != null) {
+            plaSysGroupSettingService.saveOrUpdate(plaSysGroupSetting);
+        }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private PlaSysGroupSetting buildGroup(SaveGroupEnter enter) {
+        return PlaSysGroupSetting.builder()
+                .dr(0)
+                .systemType(SystemTypeEnums.REDE_ROS.getValue())
+                .desc(enter.getDesc())
+                .enable(enter.getEnable())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
     }
 
     /**
@@ -88,6 +124,11 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Transactional
     @Override
     public GeneralResult delete(IdEnter enter) {
+        PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getId());
+        if (plaSysGroupSetting == null) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
+        plaSysGroupSettingService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 

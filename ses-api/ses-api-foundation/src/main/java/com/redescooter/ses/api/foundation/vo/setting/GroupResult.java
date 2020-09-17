@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Date;
+
 /**
  *  @author: alex
  *  @Date: 2020/9/16 18:35
@@ -27,7 +29,7 @@ public class GroupResult extends GeneralResult {
     private String groupName;
 
     @ApiModelProperty(value = "描述")
-    private String dec;
+    private String desc;
 
     @ApiModelProperty(value = "是否启用")
     private Boolean enable;
@@ -41,6 +43,9 @@ public class GroupResult extends GeneralResult {
     @ApiModelProperty(value = "创建人")
     private String createdByLastName;
 
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
+
     @ApiModelProperty(value = "更新人")
     private Long updatedById;
 
@@ -49,4 +54,7 @@ public class GroupResult extends GeneralResult {
 
     @ApiModelProperty(value = "更新人")
     private String updatedByLastName;
+
+    @ApiModelProperty(value = "更新时间")
+    private Date updatedTime;
 }
