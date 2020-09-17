@@ -36,12 +36,22 @@ public class ParameterServiceImpl implements ParameterService {
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
         PageResult<ParameterResult> list = parameterSettingService.list(enter);
 
-        //查询创建人 更新人信息
-        List<OpeSysUserProfile> createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(ParameterResult::getCreatedById).collect(Collectors.toList())));
 
-        List<OpeSysUserProfile> updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(ParameterResult::getUpadtedById).collect(Collectors.toList())));
+        List<Long> createIdList = list.getList().stream().map(ParameterResult::getCreatedById).collect(Collectors.toList());
+        List<OpeSysUserProfile> createUserProfileList = null;
+        if (CollectionUtils.isNotEmpty(createIdList)) {
+            //查询创建人 更新人信息
+            createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    createIdList));
+        }
+
+        List<Long> updateIdList = list.getList().stream().map(ParameterResult::getUpadtedById).collect(Collectors.toList());
+        List<OpeSysUserProfile> updateUserProfileList = null;
+        if (CollectionUtils.isNotEmpty(updateIdList)) {
+            updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    updateIdList));
+        }
+
 
         for (ParameterResult item : list.getList()) {
             if (CollectionUtils.isNotEmpty(createUserProfileList)) {
