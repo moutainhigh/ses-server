@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
@@ -23,8 +24,10 @@ import com.redescooter.ses.api.proxy.vo.jiguang.PushProxyEnter;
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaPushResultMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaJpushUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaPushResult;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaJpushUserService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,13 +38,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * description: PushServiceImpl 根据业务不同进行调用
@@ -64,6 +61,9 @@ public class PushServiceImpl implements PushService {
     private MessageService messageService;
     @Autowired
     private UserTokenService userTokenService;
+
+    @Autowired
+    private PlaJpushUserService plaJpushUserService;
     //调用极光底层推送
     @Reference
     private PushProxyService pushProxyService;
@@ -230,6 +230,12 @@ public class PushServiceImpl implements PushService {
 
         // 进行极光推送
         List<PushJgResult> pushJgResultList = null;
+
+        //查询消息接受者客户端 （android-IOS，默认 android）
+        PlaJpushUser plaJpushUser = plaJpushUserService.getOne(new LambdaQueryWrapper<PlaJpushUser>().eq(PlaJpushUser::getUserId, Long.valueOf(map.get("userIds").toString())));
+        if (plaJpushUser != null && StringUtils.isNotBlank(plaJpushUser.getRegistrationId())) {
+            map.put("pushType", plaJpushUser.getPlatformType());
+        }
 
         switch (map.get("pushType").toString()) {
             case "ios":

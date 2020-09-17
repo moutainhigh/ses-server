@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassNameSysStaffController
@@ -57,6 +60,7 @@ public class SysStaffController {
 
     @PostMapping(value = "/staffList")
     @ApiOperation(value = "员工列表", response = GeneralResult.class)
+    //@LogAnnotation
     public Response<PageResult<StaffListResult>> staffList(@ModelAttribute @ApiParam("请求参数") StaffListEnter enter) {
         return new Response(staffService.staffList(enter));
     }
@@ -66,4 +70,32 @@ public class SysStaffController {
     public Response<GeneralResult> openAccount(@ModelAttribute @ApiParam("请求参数") StaffOpEnter enter) {
         return new Response(staffService.openAccount(enter));
     }
+
+
+
+    // 以下为ros-1.7.1的
+
+    @PostMapping(value = "/checkLoginPsd")
+    @ApiOperation(value = "校验登陆密码", response = GeneralResult.class)
+    public Response<Boolean> checkLoginPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
+        return new Response(staffService.checkLoginPsd(enter));
+    }
+
+
+    @PostMapping(value = "/editSafeCode")
+    @ApiOperation(value = "修改安全码", response = GeneralResult.class)
+    public Response<GeneralResult> editSafeCode(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
+        return new Response(staffService.editSafeCode(enter));
+    }
+
+
+    @PostMapping(value = "/staffSaleArea")
+    @ApiOperation(value = "员工销售区域查看", response = GeneralResult.class)
+    public Response<List<StaffSaleAreaResult>> staffSaleArea(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response(staffService.staffSaleArea(enter));
+    }
+
+
+
+
 }

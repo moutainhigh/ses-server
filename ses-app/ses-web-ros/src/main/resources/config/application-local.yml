@@ -271,15 +271,15 @@ monday:
   httpMethod: POST
   MediaType: application/x-www-form-urlencoded
   #预订单业务
-  orderFormBoardName: Test Website Order
+  orderFormBoardName: local Website Order
   orderFormBoardBackName: Pré-vente
   orderFormGroupName: Backlog
   #联系我们
-  contactUsBoardName: Test Website AboutUs
+  contactUsBoardName: local Website AboutUs
   contactUsBoardBackName: laisser un message
   contactUsGroupName: Backlog
   #订阅邮件
-  subEmailBoardName: Test Website Email
+  subEmailBoardName: local Website Email
   subEmailBoardBackName: abonnement
   subEmailGroupName: Backlog
   # 工作空间 alex:132750
@@ -292,3 +292,5 @@ constant-us-email:
   sale-principal:
     - alex@redescooter.com
     - 123@qq.com
+
+
