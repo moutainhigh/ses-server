@@ -14,6 +14,8 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
@@ -39,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,6 +101,8 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Value("${Request.privateKey}")
+    private String privatekey;
 
 
     @Override
@@ -399,10 +404,16 @@ public class StaffServiceImpl implements StaffService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /*
+     * @Author Aleks
+     * @Description  开通账号之后 首次登陆系统 修改密码
+     * @Date  2020/9/17 14:16
+     * @Param [enter]
+     * @return
+     **/
     @Override
     public Boolean checkLoginPsd(UserPsdEnter enter) {
         boolean flag = true;
-        // 后端接受到的是加密之后的密码 需要解密
 
         return flag;
     }
@@ -426,7 +437,20 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
-
+        String psd = "";
+        // 后端接受到的是加密之后的密码 需要解密
+        try {
+            //密码校验
+            psd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if(user == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        user.setPassword(DigestUtils.md5Hex(psd + user.getSalt()));
+        opeSysUserService.updateById(user);
         return new GeneralResult(enter.getRequestId());
     }
 
