@@ -7,7 +7,6 @@
         <artifactId>ses-app</artifactId>
         <version>1.2.0</version>
     </parent>
-    <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-mobile-rps</artifactId>
     <version>1.2.0</version>
     <name>ses-mobile-rps</name>
@@ -102,6 +101,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 打包时候剔除内置依赖包（缩小体积）-->
+                <configuration>
+                    <!--项目启动类-->
+                    <mainClass>com.zq.data.SpringbootApplication</mainClass>
+                    <layout>ZIP</layout>
+                    <includes>
+                        <include>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                        </include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
