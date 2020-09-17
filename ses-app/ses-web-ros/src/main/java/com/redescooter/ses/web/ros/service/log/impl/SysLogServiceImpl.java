@@ -47,21 +47,12 @@ public class SysLogServiceImpl implements SysLogService {
     @Override
     public PageResult<LogListResult> logList(LogListEnter enter) {
         List<LogListResult> list = new ArrayList<>();
-        LogListResult result = new LogListResult();
-        result.setId(0L);
-        result.setCreatedTime(new Date());
-        result.setLogContent("操作成功");
-        result.setLoginIp("192.168.2.200");
-        result.setOpUserCode("S000001");
-        result.setOpUserName("Amy");
-        result.setTimeConsum(30L);
-        list.add(result);
         int totalRows = logServiceMapper.totalRows(enter);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         list = logServiceMapper.logList(enter);
-        return PageResult.create(enter, 1, list);
+        return PageResult.create(enter, totalRows, list);
     }
 
     @Override
