@@ -114,6 +114,8 @@ public enum ExceptionCodeEnums {
 
     GROUP_IS_NOT_EXIST(10051, "分组不存在"),
 
+    PARAMETER_IS_NOT_EXIST(10051, "参数不存在"),
+
     ;
 
     private int code;

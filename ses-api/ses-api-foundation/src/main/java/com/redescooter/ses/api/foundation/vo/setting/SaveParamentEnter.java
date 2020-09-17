@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.setting;
 
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,4 +30,10 @@ public class SaveParamentEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "是否启用")
     private Boolean enable;
+
+    @ApiModelProperty(value = "系统类型")
+    private SystemTypeEnums systemType;
+
+    @ApiModelProperty(value = "描述")
+    private String desc;
 }

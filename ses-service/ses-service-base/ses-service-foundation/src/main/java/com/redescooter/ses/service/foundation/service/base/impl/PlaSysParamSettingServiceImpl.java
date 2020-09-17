@@ -36,3 +36,4 @@ public class PlaSysParamSettingServiceImpl extends ServiceImpl<PlaSysParamSettin
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

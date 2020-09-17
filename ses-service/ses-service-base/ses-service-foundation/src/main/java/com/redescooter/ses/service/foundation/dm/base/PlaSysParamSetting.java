@@ -1,6 +1,9 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,8 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(value = "pla_sys_param_setting")
 public class PlaSysParamSetting implements Serializable {
+    public static final String COL_KEY = "key";
+    public static final String COL_VALUE = "value";
     /**
      * 主键
      */
@@ -33,7 +38,6 @@ public class PlaSysParamSetting implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -60,16 +64,16 @@ public class PlaSysParamSetting implements Serializable {
     /**
      * key值
      */
-    @TableField(value = "`key`")
+    @TableField(value = "param_key")
     @ApiModelProperty(value = "key值")
-    private String key;
+    private String paramKey;
 
     /**
      * 属性值
      */
-    @TableField(value = "`value`")
+    @TableField(value = "param_value")
     @ApiModelProperty(value = "属性值")
-    private String value;
+    private String paramValue;
 
     /**
      * 是否启用
@@ -160,9 +164,9 @@ public class PlaSysParamSetting implements Serializable {
 
     public static final String COL_PARAMETER_NAME = "parameter_name";
 
-    public static final String COL_KEY = "key";
+    public static final String COL_PARAM_KEY = "param_key";
 
-    public static final String COL_VALUE = "value";
+    public static final String COL_PARAM_VALUE = "param_value";
 
     public static final String COL_ENABLE = "enable";
 

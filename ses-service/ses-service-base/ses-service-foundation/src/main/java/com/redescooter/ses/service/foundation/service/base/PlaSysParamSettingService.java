@@ -19,3 +19,4 @@ public interface PlaSysParamSettingService extends IService<PlaSysParamSetting> 
     int insertOrUpdateSelective(PlaSysParamSetting record);
 
 }
+
