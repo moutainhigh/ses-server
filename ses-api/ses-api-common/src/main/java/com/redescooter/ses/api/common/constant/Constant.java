@@ -85,4 +85,7 @@ public interface Constant {
     BigDecimal LATITUDE = new BigDecimal("48.862868");
 
     BigDecimal LONGITUDE = new BigDecimal("2.313960");
+
+    //账户设置 下载导入模版的url
+    String PARAMETER_DOWNLOAD_URL = "https://rede.oss-cn-shanghai.aliyuncs.com/1600332621562.xlsx";
 }

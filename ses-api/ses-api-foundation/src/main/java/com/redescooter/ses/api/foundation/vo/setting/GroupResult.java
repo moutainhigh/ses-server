@@ -32,7 +32,7 @@ public class GroupResult extends GeneralResult {
     private String desc;
 
     @ApiModelProperty(value = "是否启用")
-    private Boolean enable;
+    private int enable;
 
     @ApiModelProperty(value = "创建人")
     private Long createdById;

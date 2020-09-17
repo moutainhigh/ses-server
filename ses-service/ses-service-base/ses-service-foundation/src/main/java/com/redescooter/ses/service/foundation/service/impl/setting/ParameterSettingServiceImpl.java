@@ -1,22 +1,27 @@
 package com.redescooter.ses.service.foundation.service.impl.setting;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.service.foundation.constant.SequenceName;
+import com.redescooter.ses.service.foundation.dao.ParameterSettingServiceMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
 import com.redescooter.ses.service.foundation.dm.base.PlaSysParamSetting;
+import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
 import com.redescooter.ses.service.foundation.service.base.PlaSysParamSettingService;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *  @author: alex
@@ -32,6 +37,16 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     private PlaSysParamSettingService plaSysParamSettingService;
 
 
+    @Autowired
+    private PlaSysGroupSettingService plaSysGroupSettingService;
+
+    @Autowired
+    private ParameterSettingServiceMapper parameterSettingServiceMapper;
+
+    @Autowired
+    private IdAppService idAppService;
+
+
     /**
      * 参数名称
      * @param enter
@@ -39,24 +54,19 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      */
     @Override
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
-        List<ParameterResult> list = new ArrayList<>();
-        list.add(ParameterResult.builder()
-                .id(100000L)
-                .groupId(100000L)
-                .groupName("你猜")
-                .key("我也不知道")
-                .value("我也不知道")
-                .createdById(100000L)
-                .createdByFirtName("你猜")
-                .createdByLastName("你猜")
-                .upadtedById(100001L)
-                .upadtedByFirtName("你猜")
-                .upadtedByLastName("你猜")
-                .updatedTime(new Date())
-                .createdTime(new Date())
-                .build());
 
-        return PageResult.create(enter, 1, list);
+        QueryWrapper<PlaSysParamSetting> paramQueryWrapper = new QueryWrapper();
+        if (enter.getGroupId() != null && enter.getGroupId() != 0) {
+            paramQueryWrapper.eq(PlaSysParamSetting.COL_GROUP_ID, enter.getGroupId());
+        }
+        if (StringUtils.isNotBlank(enter.getKeyword())) {
+            paramQueryWrapper.like(PlaSysParamSetting.COL_PARAMETER_NAME, enter.getKeyword());
+        }
+        int count = plaSysParamSettingService.count(paramQueryWrapper);
+        if (count == 0) {
+            PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, parameterSettingServiceMapper.paramList(enter));
     }
 
     /**
@@ -66,21 +76,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      */
     @Override
     public ParameterResult detail(IdEnter enter) {
-        return ParameterResult.builder()
-                .id(100000L)
-                .groupId(100000L)
-                .groupName("你猜")
-                .key("我也不知道")
-                .value("我也不知道")
-                .createdById(100000L)
-                .createdByFirtName("你猜")
-                .createdByLastName("你猜")
-                .upadtedById(100001L)
-                .upadtedByFirtName("你猜")
-                .upadtedByLastName("你猜")
-                .updatedTime(new Date())
-                .createdTime(new Date())
-                .build();
+        return parameterSettingServiceMapper.detail(enter);
     }
 
     /**
@@ -88,11 +84,12 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysParamSetting plaSysParamSetting = plaSysParamSettingService.getById(enter.getId());
         if (plaSysParamSetting == null) {
-            throw new FoundationException();
+            throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
         plaSysParamSettingService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -123,8 +120,53 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult save(SaveParamentEnter enter) {
+        PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getGroupId());
+        if (plaSysGroupSetting == null) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
+
+        PlaSysParamSetting plaSysParamSetting = null;
+        if (enter.getId() == null || enter.getId() == 0) {
+            //编辑
+            plaSysParamSetting = buildParament(enter);
+            plaSysParamSetting.setId(idAppService.getId(SequenceName.PLA_SYS_PARAM_SETTING));
+            plaSysParamSetting.setCreatedBy(enter.getUserId());
+            plaSysParamSetting.setCreatedTime(new Date());
+        } else {
+            plaSysParamSetting = buildParament(enter);
+            plaSysParamSetting.setId(enter.getId());
+        }
+
+        if (plaSysParamSetting != null) {
+            plaSysParamSettingService.saveOrUpdate(plaSysParamSetting);
+        }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 下载模版
+     * @param enter
+     * @return
+     */
+    @Override
+    public StringResult downloadExcel(GeneralEnter enter) {
+        return new StringResult(Constant.PARAMETER_DOWNLOAD_URL);
+    }
+
+    private PlaSysParamSetting buildParament(SaveParamentEnter enter) {
+        return PlaSysParamSetting.builder()
+                .systemType(enter.getSystemType().getValue())
+                .groupId(enter.getGroupId())
+                .parameterName(enter.getParameterName())
+                .paramKey(enter.getKey())
+                .paramValue(enter.getValue())
+                .enable(enter.getEnable() == 1 ? Boolean.TRUE : Boolean.FALSE)
+                .desc(enter.getDesc())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
     }
 }

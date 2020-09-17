@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.foundation.vo.setting;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class ParameterResult {
+public class ParameterResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
@@ -35,7 +36,7 @@ public class ParameterResult {
     private String value;
 
     @ApiModelProperty(value = "是否启用")
-    private Boolean enable;
+    private int enable;
 
     @ApiModelProperty(value = "创建人")
     private Long createdById;
@@ -62,4 +63,5 @@ public class ParameterResult {
 
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
+
 }

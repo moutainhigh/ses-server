@@ -63,4 +63,10 @@ public class ParameterSettingController {
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveParamentEnter enter) {
         return new Response<>(parameterSettingService.save(enter));
     }
+
+    @ApiOperation(value = "模版下载", response = StringResult.class)
+    @PostMapping(value = "/downloadExcel")
+    public Response<StringResult> downloadExcel(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(parameterSettingService.downloadExcel(enter));
+    }
 }

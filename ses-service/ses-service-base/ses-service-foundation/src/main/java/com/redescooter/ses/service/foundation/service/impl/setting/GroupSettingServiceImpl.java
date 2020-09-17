@@ -79,7 +79,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
                 .id(plaSysGroupSetting.getId())
                 .groupName(plaSysGroupSetting.getGroupName())
                 .desc(plaSysGroupSetting.getDesc())
-                .enable(plaSysGroupSetting.getEnable())
+                .enable(plaSysGroupSetting.getEnable() ? 1 : 0)
                 .createdById(plaSysGroupSetting.getCreatedBy())
                 .updatedById(plaSysGroupSetting.getUpdatedBy())
                 .build();
@@ -103,6 +103,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         } else {
             //编辑
             plaSysGroupSetting = buildGroup(enter);
+            plaSysGroupSetting.setId(enter.getId());
         }
         if (plaSysGroupSetting != null) {
             plaSysGroupSettingService.saveOrUpdate(plaSysGroupSetting);
@@ -116,7 +117,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
                 .groupName(enter.getGroupName())
                 .systemType(SystemTypeEnums.REDE_ROS.getValue())
                 .desc(enter.getDesc())
-                .enable(enter.getEnable())
+                .enable(StringUtils.equals(enter.getEnable(), "0") ? Boolean.FALSE : Boolean.TRUE)
                 .updatedBy(enter.getUserId())
                 .updatedTime(new Date())
                 .build();
