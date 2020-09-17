@@ -132,7 +132,7 @@
           id as principal,
           full_name as principalName
         from ope_sys_staff
-        where dr = 0 and tenant_id = #{tenantId}
+        where dr = 0 and status = 1 and tenant_id = #{tenantId}
 
     </select>
 
