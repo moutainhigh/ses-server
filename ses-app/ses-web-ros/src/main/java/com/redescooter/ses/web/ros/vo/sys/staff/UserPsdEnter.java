@@ -17,4 +17,8 @@ public class UserPsdEnter extends GeneralEnter {
     @ApiModelProperty("密码")
     private  String password;
 
+
+    @ApiModelProperty("确认新密码")
+    private  String confirmPassword;
+
 }

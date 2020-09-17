@@ -73,35 +73,35 @@ public class SysStaffController {
     // 以下为ros-1.7.1的
 
     @PostMapping(value = "/checkLoginPsd")
-    @ApiOperation(value = "校验登陆密码", response = GeneralResult.class)
+    @ApiOperation(value = "校验登陆密码-1.7.1", response = GeneralResult.class)
     public Response<Boolean> checkLoginPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
         return new Response(staffService.checkLoginPsd(enter));
     }
 
 
     @PostMapping(value = "/editSafeCode")
-    @ApiOperation(value = "修改安全码", response = GeneralResult.class)
+    @ApiOperation(value = "修改安全码-1.7.1", response = GeneralResult.class)
     public Response<GeneralResult> editSafeCode(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
         return new Response(staffService.editSafeCode(enter));
     }
 
 
     @PostMapping(value = "/staffSaleArea")
-    @ApiOperation(value = "员工销售区域查看", response = GeneralResult.class)
+    @ApiOperation(value = "员工销售区域查看-1.7.1", response = GeneralResult.class)
     public Response<List<StaffSaleAreaResult>> staffSaleArea(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(staffService.staffSaleArea(enter));
     }
 
 
     @PostMapping(value = "/editUserPsd")
-    @ApiOperation(value = "修改密码", response = GeneralResult.class)
+    @ApiOperation(value = "修改密码-1.7.1", response = GeneralResult.class)
     public Response<GeneralResult> editUserPsd(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
         return new Response(staffService.editUserPsd(enter));
     }
 
 
     @PostMapping(value = "/firstLoginEditPsd")
-    @ApiOperation(value = "首次登陆修改密码", response = GeneralResult.class)
+    @ApiOperation(value = "首次登陆修改密码-1.7.1", response = GeneralResult.class)
     public Response<GeneralResult> firstLoginEditPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
         return new Response(staffService.firstLoginEditPsd(enter));
     }
