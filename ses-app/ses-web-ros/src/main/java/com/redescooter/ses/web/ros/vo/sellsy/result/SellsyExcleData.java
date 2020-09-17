@@ -93,27 +93,13 @@ public class SellsyExcleData implements Serializable, IExcelModel, IExcelDataMod
      */
     private int rowNum;
 
-    public static final String ETAT = "Etat";
-    public static final String NUMÉRO = "Numéro";
-    public static final String DATE = "Date";
-    public static final String CLIENT = "Client";
-    public static final String RÉFÉRENCE = "Référence";
-    public static final String MONTANT_HT = "Montant HT";
-    public static final String MONTANT_TTC = "Montant TTC";
-    public static final String RECEIVE_PAYMENT = "Réglé";
-    public static final String REMAINING_PAYMENT = "Reste dû";
-    public static final String CLIENT_ADDRESS = "Adresse de livraison du client";
-    public static final String BUYER_NOTES = "Note du payeur";
-    public static final String PRODUCT_NODES = "Remarques sur le produit";
-    public static final String PRODUCT_NUM = "Numéro de produit";
-    public static final String PRODUCT_NAME = "nom du produit";
-    public static final String TVA = "TVA";
-    public static final String PRODUCT_QTY = "Qté";
-    public static final String PRODUCT_QTY_UNIT = "Unité";
-    public static final String DISCOUNT = "Rem";
-    public static final String PDF_URL = "PdfUrl";
-    public static final String UNIT_PRICE = "unit_price";
-    public static final String IS_PARENT = "is_parent";
+    public static final String STATUT = "Type de doc";
+    public static final String INVOICE_NUM = "N° pièce";
+    public static final String CLIENT_NAME = "Nom Client";
+    public static final String TIME = "Date Pièce";
+    public static final String totalHt = "Total HT";
+    public static final String TVA = "Taux TVA";
+    public static final String TOTALTTC = "Total TTC";
 
 
     /**
