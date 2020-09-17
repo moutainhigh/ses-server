@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
-import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
@@ -31,7 +30,6 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
-import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +127,11 @@ public class StaffServiceImpl implements StaffService {
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         staff.setCode(createCode());
         staff.setSysUserId(staff.getId());
+        // TODO 如果新增的时候开启了安全码，需要默认生成安全码(安全码需要加密之后再存数据库)
+        if(enter.getIfSafeCode() != null && enter.getIfSafeCode() == 1){
+            String code = "";
+            staff.setSafeCode(code);
+        }
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(),enter.getRoleId());
@@ -390,6 +393,25 @@ public class StaffServiceImpl implements StaffService {
         }catch (Exception e){
 
         }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public Boolean checkLoginPsd(UserPsdEnter enter) {
+        boolean flag = true;
+        // 后端接受到的是加密之后的密码 需要解密
+
+        return flag;
+    }
+
+    @Override
+    public GeneralResult editSafeCode(UserPsdEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if(staff == null){
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        staff.setSafeCode(enter.getPassword());
+        opeSysStaffService.updateById(staff);
         return new GeneralResult(enter.getRequestId());
     }
 

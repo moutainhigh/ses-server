@@ -55,6 +55,11 @@ public interface StaffService {
     GeneralResult openAccount(StaffOpEnter enter);
 
 
+    Boolean checkLoginPsd(UserPsdEnter enter);
+
+    GeneralResult editSafeCode(UserPsdEnter enter);
+
+
     /**
      * @Author Aleks
      * @Description  禁用部门下面的员工

@@ -66,4 +66,22 @@ public class SysStaffController {
     public Response<GeneralResult> openAccount(@ModelAttribute @ApiParam("请求参数") StaffOpEnter enter) {
         return new Response(staffService.openAccount(enter));
     }
+
+
+    @PostMapping(value = "/checkLoginPsd")
+    @ApiOperation(value = "校验登陆密码", response = GeneralResult.class)
+    public Response<Boolean> checkLoginPsd(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
+        return new Response(staffService.checkLoginPsd(enter));
+    }
+
+
+    @PostMapping(value = "/editSafeCode")
+    @ApiOperation(value = "修改安全码", response = GeneralResult.class)
+    public Response<GeneralResult> editSafeCode(@ModelAttribute @ApiParam("请求参数") UserPsdEnter enter) {
+        return new Response(staffService.editSafeCode(enter));
+    }
+
+
+
+
 }
