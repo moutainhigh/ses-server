@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.setting.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -36,6 +37,7 @@ public class RosGroupServiceImpl implements RosGroupService {
      */
     @Override
     public PageResult<GroupResult> list(GroupListEnter enter) {
+        enter.setSystemType(SystemTypeEnums.REDE_ROS);
         PageResult<GroupResult> list = groupSettingService.list(enter);
         if (CollectionUtils.isEmpty(list.getList())) {
             return list;
