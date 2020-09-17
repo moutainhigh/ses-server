@@ -25,10 +25,7 @@ import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
@@ -104,6 +101,11 @@ public class StaffServiceImpl implements StaffService {
     @Value("${Request.privateKey}")
     private String privatekey;
 
+    @Autowired
+    private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
+
+    @Autowired
+    private OpeSaleAreaService opeSaleAreaService;
 
     @Override
     @Transactional
@@ -404,17 +406,32 @@ public class StaffServiceImpl implements StaffService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    /*
+
+    /**
      * @Author Aleks
-     * @Description  开通账号之后 首次登陆系统 修改密码
-     * @Date  2020/9/17 14:16
+     * @Description  校验输入的密码是否正确
+     * @Date  2020/9/17 14:56
      * @Param [enter]
      * @return
      **/
     @Override
     public Boolean checkLoginPsd(UserPsdEnter enter) {
         boolean flag = true;
-
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if(user == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        String psd = "";
+        try {
+            //密码校验
+            psd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        String password = DigestUtils.md5Hex(psd + user.getSalt());
+        if(!password.equals(psd)){
+            flag = false;
+        }
         return flag;
     }
 
@@ -432,9 +449,42 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public GeneralResult editUserPsd(WebResetPasswordEnter enter) {
         // 前端传过来的密码 都是经过加密的 需要解密
+        String newPassword = null;
+        String confirmDecrypt = null;
+        String oldPsd = "";
+        try {
+            //密码校验
+            newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
+            confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey);
+            oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        // 老的密码和新的密码  不能一致
+        if (StringUtils.equals(newPassword, oldPsd)) {
+            throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+        // 校验两次的的新密码是否一致
+        if (!StringUtils.equals(newPassword, confirmDecrypt)) {
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if(user == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        user.setPassword(DigestUtils.md5Hex(enter.getNewPassword() + user.getSalt()));
+        opeSysUserService.updateById(user);
         return new GeneralResult(enter.getRequestId());
     }
 
+
+    /*
+     * @Author Aleks
+     * @Description  开通账号之后 首次登陆系统 修改密码
+     * @Date  2020/9/17 14:16
+     * @Param [enter]
+     * @return
+     **/
     @Override
     public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
         String psd = "";
@@ -455,10 +505,47 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
+    /**
+     * @Author Aleks
+     * @Description  员工的销售区域
+     * @Date  2020/9/17 15:19
+     * @Param [enter]
+     * @return
+     **/
     @Override
     public List<StaffSaleAreaResult> staffSaleArea(IdEnter enter) {
-        List<StaffSaleAreaResult> list = new ArrayList<>();
-        return TreeUtil.build(list, Constant.AREA_TREE_ROOT_ID);
+        List<StaffSaleAreaResult> results = new ArrayList<>();
+        // 先找到员工有哪些角色
+        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUserRole.COL_USER_ID, enter.getId());
+        List<OpeSysUserRole> list = opeSysUserRoleService.list(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            // 没有找到员工的角色信息，直接返回（正常情况下，不可能没有角色信息）
+            return new ArrayList<>();
+        }
+        // 找到角色对应的销售区域
+        QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in(OpeSysRoleSalesCidy.COL_ROLE_ID,list.stream().map(OpeSysUserRole::getRoleId).collect(Collectors.toList()));
+        List<OpeSysRoleSalesCidy> areaList = opeSysRoleSalesCidyService.list(queryWrapper);
+        if(CollectionUtils.isEmpty(areaList)){
+            // 角色没有设置销售区域，直接返回，不多比比
+            return new ArrayList<>();
+        }
+        // 如果角色有销售区域  找到这些销售区域 然后转为树结构
+        QueryWrapper<OpeSaleArea> wrapper = new QueryWrapper<>();
+        wrapper.in(OpeSaleArea.COL_ID,areaList.stream().map(OpeSysRoleSalesCidy::getCityId).collect(Collectors.toList()));
+        List<OpeSaleArea> saleAreas = opeSaleAreaService.list(wrapper);
+        if(CollectionUtils.isEmpty(saleAreas)){
+            // 没有找到销售区域，直接返回，不多比比
+            return new ArrayList<>();
+        }
+        for (OpeSaleArea area : saleAreas) {
+            StaffSaleAreaResult result = new StaffSaleAreaResult();
+            result.setAreaCode(area.getAreaCode());
+            result.setAreaName(area.getAreaName());
+            result.setSaleCityId(area.getId());
+        }
+        return TreeUtil.build(results, Constant.AREA_TREE_ROOT_ID);
     }
 
 

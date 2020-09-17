@@ -9,9 +9,7 @@ import com.redescooter.ses.web.ros.vo.log.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassNameSysLogServiceImpl
@@ -47,21 +45,12 @@ public class SysLogServiceImpl implements SysLogService {
     }
 
     @Override
-    public List<LogCountResult> logCount(GeneralEnter enter) {
-        List<LogCountResult> list = new ArrayList<>();
-        LogCountResult result1 = new LogCountResult();
-        result1.setType(1);
-        result1.setNum(1);
-        list.add(result1);
-        LogCountResult result2 = new LogCountResult();
-        result2.setType(2);
-        result2.setNum(2);
-        list.add(result2);
-        LogCountResult result3 = new LogCountResult();
-        result3.setType(3);
-        result3.setNum(3);
-        list.add(result3);
-        return list;
+    public Map<String,Integer> logCount(GeneralEnter enter) {
+        Map<String,Integer> map = new HashMap<>();
+        map.put("1",1);
+        map.put("2",2);
+        map.put("3",3);
+        return map;
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameSysLogController
@@ -45,7 +46,7 @@ public class SysLogController {
 
     @PostMapping(value = "/logCount")
     @ApiOperation(value = "系统日志统计", response = GeneralResult.class)
-    public Response<List<LogCountResult>> logCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String,Integer>> logCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(sysLogService.logCount(enter));
     }
 

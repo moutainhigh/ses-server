@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.log.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameSysLogService
@@ -24,7 +25,7 @@ public interface SysLogService {
     GeneralResult logExport(LogExportEnter enter);
 
 
-    List<LogCountResult> logCount(GeneralEnter enter);
+    Map<String,Integer> logCount(GeneralEnter enter);
 
 
     LogDetailResult logDetail(IdEnter enter);
