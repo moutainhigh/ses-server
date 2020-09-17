@@ -8,7 +8,8 @@ log:
 ## DUBBO 配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.31.6.101:2181?backup=172.31.6.101:2182,172.31.6.101:2183
+    address: zookeeper://172.31.6.101:2181
+
 spring:                                                                                                                 #spring config
   datasource:                                                                                                           #数据库连接
     url: jdbc:mysql://172.31.6.136:2116/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
