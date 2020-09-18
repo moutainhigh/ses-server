@@ -517,6 +517,22 @@ public class StaffServiceImpl implements StaffService {
         return staff.getSafeCode();
     }
 
+    @Override
+    public StaffResult userMsgDetail(GeneralEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        StaffResult staffDetail = staffServiceMapper.staffDetail(staff.getId());
+        // 查找员工的角色信息
+        StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
+        if (staffRoleResult != null) {
+            staffDetail.setRoleId(staffRoleResult.getRoleId());
+            staffDetail.setRoleName(staffRoleResult.getRoleName());
+        }
+        return staffDetail;
+    }
+
 
     /**
      * @return

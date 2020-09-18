@@ -111,4 +111,11 @@ public class SysStaffController {
     public Response<String> getSafeCode(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(staffService.getSafeCode(enter));
     }
+
+
+    @PostMapping(value = "/userMsgDetail")
+    @ApiOperation(value = "个人信息详情-1.7.1", response = GeneralResult.class)
+    public Response<StaffResult> userMsgDetail(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response(staffService.userMsgDetail(enter));
+    }
 }
