@@ -42,12 +42,20 @@ public class RosGroupServiceImpl implements RosGroupService {
         if (CollectionUtils.isEmpty(list.getList())) {
             return list;
         }
+        List<OpeSysUserProfile> createUserProfileList = null;
+        List<Long> createIdList = list.getList().stream().map(GroupResult::getCreatedById).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(createIdList)) {
+            createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    createIdList));
+        }
         //查询创建人 更新人信息
-        List<OpeSysUserProfile> createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(GroupResult::getCreatedById).collect(Collectors.toList())));
 
-        List<OpeSysUserProfile> updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(GroupResult::getUpdatedById).collect(Collectors.toList())));
+        List<OpeSysUserProfile> updateUserProfileList = null;
+        List<Long> updateIdList = list.getList().stream().map(GroupResult::getUpdatedById).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(updateIdList)) {
+            updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    updateIdList));
+        }
 
         for (GroupResult item : list.getList()) {
             if (CollectionUtils.isNotEmpty(createUserProfileList)) {

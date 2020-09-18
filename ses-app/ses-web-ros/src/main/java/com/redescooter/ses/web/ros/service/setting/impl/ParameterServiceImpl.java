@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.setting.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
@@ -35,12 +36,22 @@ public class ParameterServiceImpl implements ParameterService {
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
         PageResult<ParameterResult> list = parameterSettingService.list(enter);
 
-        //查询创建人 更新人信息
-        List<OpeSysUserProfile> createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(ParameterResult::getCreatedById).collect(Collectors.toList())));
 
-        List<OpeSysUserProfile> updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
-                list.getList().stream().map(ParameterResult::getUpadtedById).collect(Collectors.toList())));
+        List<Long> createIdList = list.getList().stream().map(ParameterResult::getCreatedById).collect(Collectors.toList());
+        List<OpeSysUserProfile> createUserProfileList = null;
+        if (CollectionUtils.isNotEmpty(createIdList)) {
+            //查询创建人 更新人信息
+            createUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    createIdList));
+        }
+
+        List<Long> updateIdList = list.getList().stream().map(ParameterResult::getUpadtedById).collect(Collectors.toList());
+        List<OpeSysUserProfile> updateUserProfileList = null;
+        if (CollectionUtils.isNotEmpty(updateIdList)) {
+            updateUserProfileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>().in(OpeSysUserProfile::getSysUserId,
+                    updateIdList));
+        }
+
 
         for (ParameterResult item : list.getList()) {
             if (CollectionUtils.isNotEmpty(createUserProfileList)) {
@@ -135,5 +146,15 @@ public class ParameterServiceImpl implements ParameterService {
     @Override
     public StringResult downloadExcel(GeneralEnter enter) {
         return parameterSettingService.downloadExcel(enter);
+    }
+
+    /**
+     * 分组列表
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ParameterGroupResultList> groupList(GeneralEnter enter) {
+        return parameterSettingService.groupList(enter);
     }
 }
