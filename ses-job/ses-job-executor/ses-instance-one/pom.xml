@@ -32,12 +32,12 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-common</artifactId>
             <version>${ses-app.version}</version>
-         <exclusions>
-             <exclusion>
-                 <groupId>com.redescooter.ses</groupId>
-                 <artifactId>ses-starter-swagger</artifactId>
-             </exclusion>
-         </exclusions>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.redescooter.ses</groupId>
+                    <artifactId>ses-starter-swagger</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
@@ -145,7 +145,7 @@
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
-                <log.path>logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>${project.build.directory}</jar.path>
             </properties>
             <activation>
@@ -220,13 +220,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

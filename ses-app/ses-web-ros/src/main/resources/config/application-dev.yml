@@ -259,13 +259,8 @@ stripe:
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
 
-oss:                                                                                                                    #阿里oss上传
-  #oss 使用HTTPS、HTTP请求方式
-  protocol: HTTP
-
 excel:
-  folder: /root/java_service/dev/projectExcel
-
+  folder: ${log.path}@profile-active@/projectExcel
 sendinblue:
   listIds: 119
 

@@ -33,7 +33,7 @@
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
-                <log.path>logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>${project.build.directory}</jar.path>
             </properties>
             <activation>

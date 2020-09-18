@@ -238,8 +238,7 @@ stripe:
   receipt_email: etienne@redescooter.fr
 
 excel:
-  folder: C:\\Users\\admin\\Desktop
-
+  folder: ${log.path}@profile-active@/projectExcel
 sendinblue:
   listIds: 119
 

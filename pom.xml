@@ -93,7 +93,6 @@
         <module>ses-app</module>
         <module>ses-service</module>
         <module>ses-monitor-admin</module>
-        <module>ses-txlcn-manager</module>
     </modules>
 
     <dependencyManagement>
