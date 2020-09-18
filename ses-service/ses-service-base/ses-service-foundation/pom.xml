@@ -53,7 +53,7 @@
             <id>pre</id>
             <properties>
                 <profile-active>pre</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
+                <log.path>/root/java_service/logs/</log.path>
                 <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
@@ -94,11 +94,26 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${jar.path}/libs</outputDirectory>
-                </configuration>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-lib-src-webapps</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${jar.path}/libs">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.name}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <delete dir="${project.build.directory}"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
