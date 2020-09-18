@@ -1,13 +1,9 @@
 package com.redescooter.ses.web.ros.vo.log;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 
 /**
  * @ClassNameLogListEnter
@@ -24,14 +20,14 @@ public class LogListEnter extends PageEnter {
 
 
     @ApiModelProperty(value = "开始时间")
-    private Date loginStartTime;
+    private String createStartDateTime;
 
 
     @ApiModelProperty(value = "结束时间")
-    private Date loginEndTime;
+    private String createEndDateTime;
 
 
     @ApiModelProperty("类型，1：登陆，2：操作，3：错误")
-    private String type;
+    private String classType;
 
 }

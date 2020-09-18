@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @ClassNameUserProfileController
  * @Description
@@ -47,9 +49,9 @@ public class GroupSettingController {
     }
 
     @ApiOperation(value = "导出", response = GeneralResult.class)
-    @PostMapping(value = "/export")
-    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(rosGroupService.export(enter));
+    @GetMapping(value = "/export")
+    public Response<GeneralResult> export(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
+        return new Response<>(rosGroupService.export(id,response));
     }
 
     @ApiOperation(value = "导入", response = GeneralResult.class)

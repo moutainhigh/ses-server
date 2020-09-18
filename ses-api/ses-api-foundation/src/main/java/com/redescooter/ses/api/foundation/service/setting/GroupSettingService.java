@@ -8,6 +8,8 @@ import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 
+import java.util.List;
+
 /**
  *  @author: alex
  *  @Date: 2020/9/16 18:26
@@ -46,10 +48,10 @@ public interface GroupSettingService {
 
     /**
      * 导出
-     * @param enter
+     * @param id
      * @return
      */
-    GeneralResult export(GeneralEnter enter);
+    List<GroupResult> export(String id);
 
     /**
      * 导入

@@ -43,6 +43,9 @@ public class LogDetailResult extends GeneralResult {
     @ApiModelProperty("异常信息")
     private String expMsg = "";
 
-    @ApiModelProperty("请求是否成功，1：是，2：否")
+    @ApiModelProperty("请求是否成功，1：是，0：否")
     private Integer ifSuccess;
+
+    @ApiModelProperty("操作方法")
+    private String opMethod = "";
 }

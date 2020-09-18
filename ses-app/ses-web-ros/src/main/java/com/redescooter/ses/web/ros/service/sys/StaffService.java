@@ -66,7 +66,10 @@ public interface StaffService {
     GeneralResult firstLoginEditPsd(UserPsdEnter enter);
 
 
-    String getSafeCode(IdEnter enter);
+    GeneralResult userMsgEdit(UserMsgEditEnter enter);
+
+
+    SafeCodeResult getSafeCode(GeneralEnter enter);
 
     StaffResult userMsgDetail(GeneralEnter enter);
 
@@ -78,7 +81,7 @@ public interface StaffService {
      * @Param [enter]
      * @return
      **/
-    List<StaffSaleAreaResult> staffSaleArea(IdEnter enter);
+    List<StaffSaleAreaResult> staffSaleArea(GeneralEnter enter);
 
 
     /**

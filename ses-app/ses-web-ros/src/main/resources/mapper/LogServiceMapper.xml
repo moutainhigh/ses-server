@@ -11,19 +11,19 @@
     <sql id="logListWhere">
         <if test="enter.keyword != null and enter.keyword != ''">
             and (log.op_user_name like concat('%', #{enter.keyword}, '%')
-            or log.op_user_code like concat('%', #{enter.keyword}, '%')
+            or log.op_user_code like concat('%', #{enter.keyword}, '%'))
         </if>
-        <if test="enter.loginStartTime != null and enter.loginEndTime != null">
-            and (log.created_time between #{enter.loginStartTime} and #{enter.loginEndTime})
+        <if test="enter.createStartDateTime != null and enter.createStartDateTime != '' and enter.createEndDateTime != null and enter.createEndDateTime != ''">
+            and (log.created_time between #{enter.createStartDateTime} and #{enter.createEndDateTime})
         </if>
-        <if test="enter.type != null and enter.type != ''">
-            <if test='enter.type == "1"'>
+        <if test="enter.classType != null and enter.classType != ''">
+            <if test='enter.classType == "1"'>
                  and log.log_type = 1
             </if>
-            <if test='enter.type == "2"'>
+            <if test='enter.classType == "2"'>
                 and log.log_type = 2
             </if>
-            <if test='enter.type == "3"'>
+            <if test='enter.classType == "3"'>
                 and log.if_success = 0
             </if>
         </if>
@@ -37,7 +37,8 @@
         log.created_time,
         log.login_ip,
         log.time_consum,
-        log.if_success
+        log.if_success,
+        log.op_modul
         from ope_sys_log log
         where log.dr = 0
         <include refid="logListWhere"></include>

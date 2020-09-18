@@ -8,6 +8,8 @@ import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface RosGroupService {
     /**
      * 分组列表
@@ -39,10 +41,10 @@ public interface RosGroupService {
 
     /**
      * 导出
-     * @param enter
+     * @param
      * @return
      */
-    GeneralResult export(GeneralEnter enter);
+    GeneralResult export(String id, HttpServletResponse response);
 
     /**
      * 导入

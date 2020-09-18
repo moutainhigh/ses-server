@@ -25,6 +25,8 @@ public class LogListResult extends GeneralResult {
     @ApiModelProperty("操作人姓名")
     private String opUserName = "";
 
+    @ApiModelProperty("操作内容")
+    private String opModul = "";
 
     @ApiModelProperty("登陆时间/操作时间")
     private Date createdTime;
@@ -35,8 +37,8 @@ public class LogListResult extends GeneralResult {
     @ApiModelProperty("耗时（毫秒）")
     private Long timeConsum;
 
-    @ApiModelProperty("请求是否成功，1：是，2：否")
-    private String ifSuccess;
+    @ApiModelProperty("请求是否成功，1：是，0：否")
+    private Integer ifSuccess;
 
 
 }

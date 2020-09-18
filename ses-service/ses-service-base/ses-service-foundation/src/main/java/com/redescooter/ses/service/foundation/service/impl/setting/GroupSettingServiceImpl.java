@@ -18,12 +18,16 @@ import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *  @author: alex
@@ -141,12 +145,31 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 导出
-     * @param enter
+     * @param id
      * @return
      */
     @Override
-    public GeneralResult export(GeneralEnter enter) {
-        return new GeneralResult(enter.getRequestId());
+    public List<GroupResult> export(String id) {
+        List<GroupResult> results = new ArrayList<>();
+        // id可能是多个  用，隔开的
+        QueryWrapper<PlaSysGroupSetting> qw = new QueryWrapper<>();
+        qw.in(PlaSysGroupSetting.COL_ID,id.split(","));
+        List<PlaSysGroupSetting> groupSettings = plaSysGroupSettingService.list(qw);
+        if(CollectionUtils.isNotEmpty(groupSettings)){
+            for (PlaSysGroupSetting setting : groupSettings) {
+                GroupResult result = new GroupResult();
+                result.setId(setting.getId());
+                result.setGroupName(setting.getGroupName());
+                result.setDesc(setting.getDesc());
+                result.setEnable(setting.getEnable()==null?0:(setting.getEnable()?1:0));
+                result.setCreatedTime(setting.getCreatedTime());
+                result.setCreatedById(setting.getCreatedBy());
+                result.setUpdatedById(setting.getUpdatedBy());
+                result.setUpdatedTime(setting.getUpdatedTime());
+                results.add(result);
+            }
+        }
+        return results;
     }
 
     /**

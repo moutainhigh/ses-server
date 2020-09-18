@@ -64,7 +64,7 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffServiceMapper staffServiceMapper;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
 
     @Autowired
@@ -476,7 +476,7 @@ public class StaffServiceImpl implements StaffService {
         if (user == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        user.setPassword(DigestUtils.md5Hex(enter.getNewPassword() + user.getSalt()));
+        user.setPassword(DigestUtils.md5Hex(newPassword + user.getSalt()));
         opeSysUserService.updateById(user);
         return new GeneralResult(enter.getRequestId());
     }
@@ -509,12 +509,40 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public String getSafeCode(IdEnter enter) {
+    public GeneralResult userMsgEdit(UserMsgEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        return staff.getSafeCode();
+        checkDeptPos(enter.getDeptId(), enter.getPositionId());
+        checkEmail(enter.getEmail(), enter.getUserId());
+        // 员工状态变化  影响到账号
+        if (enter.getStatus() != staff.getStatus()) {
+            changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
+        }
+        BeanUtils.copyProperties(enter, staff);
+        staff.setFullName(staff.getFirstName() + " " + staff.getLastName());
+        staff.setUpdatedBy(enter.getUserId());
+        staff.setUpdatedTime(new Date());
+        if (!Strings.isNullOrEmpty(enter.getBirthday())) {
+            staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
+        }
+        if (!Strings.isNullOrEmpty(enter.getEntryDate())) {
+            staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
+        opeSysStaffService.updateById(staff);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public SafeCodeResult getSafeCode(GeneralEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        SafeCodeResult result = new SafeCodeResult();
+        result.setSafeCode(staff.getSafeCode());
+        return result;
     }
 
     @Override
@@ -542,37 +570,34 @@ public class StaffServiceImpl implements StaffService {
      * @Param [enter]
      **/
     @Override
-    public List<StaffSaleAreaResult> staffSaleArea(IdEnter enter) {
+    public List<StaffSaleAreaResult> staffSaleArea(GeneralEnter enter) {
         List<StaffSaleAreaResult> results = new ArrayList<>();
         // 先找到员工有哪些角色
         QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
-        qw.eq(OpeSysUserRole.COL_USER_ID, enter.getId());
+        qw.eq(OpeSysUserRole.COL_USER_ID, enter.getUserId());
         List<OpeSysUserRole> list = opeSysUserRoleService.list(qw);
-        if (CollectionUtils.isEmpty(list)) {
-            // 没有找到员工的角色信息，直接返回（正常情况下，不可能没有角色信息）
-            return new ArrayList<>();
-        }
-        // 找到角色对应的销售区域
-        QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in(OpeSysRoleSalesCidy.COL_ROLE_ID, list.stream().map(OpeSysUserRole::getRoleId).collect(Collectors.toList()));
-        List<OpeSysRoleSalesCidy> areaList = opeSysRoleSalesCidyService.list(queryWrapper);
-        if (CollectionUtils.isEmpty(areaList)) {
-            // 角色没有设置销售区域，直接返回，不多比比
-            return new ArrayList<>();
-        }
-        // 如果角色有销售区域  找到这些销售区域 然后转为树结构
-        QueryWrapper<OpeSaleArea> wrapper = new QueryWrapper<>();
-        wrapper.in(OpeSaleArea.COL_ID, areaList.stream().map(OpeSysRoleSalesCidy::getCityId).collect(Collectors.toList()));
-        List<OpeSaleArea> saleAreas = opeSaleAreaService.list(wrapper);
-        if (CollectionUtils.isEmpty(saleAreas)) {
-            // 没有找到销售区域，直接返回，不多比比
-            return new ArrayList<>();
-        }
-        for (OpeSaleArea area : saleAreas) {
-            StaffSaleAreaResult result = new StaffSaleAreaResult();
-            result.setAreaCode(area.getAreaCode());
-            result.setAreaName(area.getAreaName());
-            result.setSaleCityId(area.getId());
+        if (!CollectionUtils.isEmpty(list)) {
+            // 找到角色对应的销售区域
+            QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
+            queryWrapper.in(OpeSysRoleSalesCidy.COL_ROLE_ID, list.stream().map(OpeSysUserRole::getRoleId).collect(Collectors.toList()));
+            List<OpeSysRoleSalesCidy> areaList = opeSysRoleSalesCidyService.list(queryWrapper);
+            if (!CollectionUtils.isEmpty(areaList)) {
+                // 如果角色有销售区域  找到这些销售区域 然后转为树结构
+                QueryWrapper<OpeSaleArea> wrapper = new QueryWrapper<>();
+                wrapper.in(OpeSaleArea.COL_ID, areaList.stream().map(OpeSysRoleSalesCidy::getCityId).collect(Collectors.toList()));
+                List<OpeSaleArea> saleAreas = opeSaleAreaService.list(wrapper);
+                if (!CollectionUtils.isEmpty(saleAreas)) {
+                    for (OpeSaleArea area : saleAreas) {
+                        StaffSaleAreaResult result = new StaffSaleAreaResult();
+                        result.setAreaCode(area.getAreaCode());
+                        result.setAreaName(area.getAreaName());
+                        result.setSaleCityId(area.getId());
+                        result.setId(area.getId());
+                        result.setPId(area.getPId());
+                        results.add(result);
+                    }
+                }
+            }
         }
         return TreeUtil.build(results, Constant.AREA_TREE_ROOT_ID);
     }

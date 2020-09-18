@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * @ClassNameLogAnnotation
- * @Description
+ * @Description 接口的控制层上面加上这个注解  会进入日志
  * @Author aleks
  * @Date2020/9/15 17:32
  * @Version V1.0

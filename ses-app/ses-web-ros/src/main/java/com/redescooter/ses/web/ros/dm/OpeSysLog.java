@@ -61,6 +61,13 @@ public class OpeSysLog implements Serializable {
     private String opUserDeptName;
 
     /**
+     * 操作方法
+     */
+    @TableField(value = "op_method")
+    @ApiModelProperty(value = "操作方法")
+    private String opMethod;
+
+    /**
      * 登陆的IP
      */
     @TableField(value = "login_ip")
@@ -110,10 +117,10 @@ public class OpeSysLog implements Serializable {
     private Integer logType;
 
     /**
-     * 请求是否成功，1：是，2：否
+     * 请求是否成功，1：是，0：否
      */
     @TableField(value = "if_success")
-    @ApiModelProperty(value = "请求是否成功，1：是，2：否")
+    @ApiModelProperty(value = "请求是否成功，1：是，0：否")
     private Integer ifSuccess;
 
     /**
@@ -199,6 +206,8 @@ public class OpeSysLog implements Serializable {
     public static final String COL_OP_USER_CODE = "op_user_code";
 
     public static final String COL_OP_USER_DEPT_NAME = "op_user_dept_name";
+
+    public static final String COL_OP_METHOD = "op_method";
 
     public static final String COL_LOGIN_IP = "login_ip";
 

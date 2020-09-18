@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -43,6 +44,7 @@ public class TokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "登录", response = TokenResult.class)
     @PostMapping(value = "/login")
+    @LogAnnotation
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
         return new Response<>(tokenRosService.login(enter));
     }
