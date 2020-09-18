@@ -53,7 +53,7 @@
             <id>pre</id>
             <properties>
                 <profile-active>pre</profile-active>
-                <log.path>/root/java_service/logs/</log.path>
+                <log.path>/data/java_service/logs/</log.path>
                 <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
