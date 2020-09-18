@@ -19,5 +19,5 @@ spring:
 
 xxl:
   job:
-    accessToken:
+    accessToken: jerery816
     i18n:
