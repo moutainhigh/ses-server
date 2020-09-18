@@ -201,7 +201,7 @@ oss:                                                                            
   protocol: HTTPS
 
 excel:
-  folder: /root/java_service/test/projectExcel
+  folder: /root/java_service/pre/projectExcel
 sendinblue:
   listIds: 119
 

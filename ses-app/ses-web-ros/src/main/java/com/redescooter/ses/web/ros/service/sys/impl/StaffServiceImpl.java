@@ -195,6 +195,7 @@ public class StaffServiceImpl implements StaffService {
     void checkEmail(String email, Long id) {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_EMAIL, email);
+        qw.eq(OpeSysStaff.COL_DR, 0);
         if (id != null) {
             // 员工修改
             qw.ne(OpeSysStaff.COL_ID, id);
