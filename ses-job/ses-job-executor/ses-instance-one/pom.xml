@@ -240,7 +240,7 @@
                                     <fileset dir="${project.build.directory}">
                                         <include name="${project.name}.jar"/>
                                     </fileset>
-                                </copy>
+                                </copy><ja></ja>
                                 <delete dir="${project.build.directory}"/>
                             </tasks>
                         </configuration>
