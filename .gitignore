@@ -87,6 +87,10 @@ target/
 */*/.project
 */*/.settings
 
+*/*/.mvn/*
+*/*/mvnw
+*/*/mvnw*
+
 .factorypath
 
 ### Gradle files
