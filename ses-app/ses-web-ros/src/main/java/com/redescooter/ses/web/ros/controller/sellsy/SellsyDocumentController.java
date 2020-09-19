@@ -58,9 +58,10 @@ public class SellsyDocumentController {
     public Response<GeneralResult> createDcumentTotalList() {
         int j = 0;
         try {
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 50; i++) {
                 j = i;
                 documentService.createDcumentTotalList();
+                log.debug("-----------休眠3秒--------");
                 wait(3000);
             }
         } catch (Exception e) {

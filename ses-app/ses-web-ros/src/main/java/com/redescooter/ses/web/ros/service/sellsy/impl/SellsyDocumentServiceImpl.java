@@ -627,34 +627,49 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
             return new ArrayList<>();
         }
-
-        List<SellsyUnitResult> sellsyUnitResultList = sellsyAccountSettingService.queryUnitList();
-        if (CollectionUtils.isEmpty(sellsyUnitResultList)) {
-            throw new SesWebRosException();
+    
+        SellsyUnitResult sellsyUnitResult = getJedisDate(JedisConstant.SELLSY_DOCUMENT_TAX , new SellsyUnitResult());
+        
+        if (sellsyUnitResult==null){
+            List<SellsyUnitResult> sellsyUnitResultList = sellsyAccountSettingService.queryUnitList();
+            if (CollectionUtils.isEmpty(sellsyUnitResultList)) {
+                throw new SesWebRosException();
+            }
+            sellsyUnitResult = sellsyUnitResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(sellsyConfig.getUnit()))).findFirst().orElse(null);
+            if (sellsyUnitResult == null) {
+                throw new SesWebRosException();
+            }
+            setJedisDate(JedisConstant.SELLSY_DOCUMENT_TAX, sellsyUnitResult);
         }
-        SellsyUnitResult sellsyUnitResult = sellsyUnitResultList.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(sellsyConfig.getUnit()))).findFirst().orElse(null);
-        if (sellsyUnitResult == null) {
-            throw new SesWebRosException();
-        }
+        
         //查询税率
+        
         List<SellsyTaxeResult> sellsyTaxeResults = sellsyAccountSettingService.queryTaxeList();
         if (CollectionUtils.isEmpty(sellsyTaxeResults)) {
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getCode(), ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getMessage());
         }
+        SellsyUnitResult finalSellsyUnitResult = sellsyUnitResult;
         sellsyInvoiceList.forEach(item -> {
 
             // 查询当前用户的信息（即当前使用谁的token）
-            SellsyCorpInfoResult sellsyCorpInfoResult = sellsyAccountSettingService.queryCorpInfos();
-            if (sellsyCorpInfoResult == null) {
-                throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getCode(),
-                        ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getMessage());
+            SellsyCorpInfoResult  sellsyCorpInfoResult= getJedisDate(JedisConstant.SELLSY_DOCUMENT_CORPINFO, new SellsyCorpInfoResult());
+    
+            if (sellsyCorpInfoResult==null){
+                sellsyCorpInfoResult = sellsyAccountSettingService.queryCorpInfos();
+                if (sellsyCorpInfoResult == null) {
+                    throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getCode(),
+                            ThirdExceptionCodeEnums.SELLSY_CORPINFO_IS_NOT_EXIST.getMessage());
+                }
+                setJedisDate(JedisConstant.SELLSY_DOCUMENT_CORPINFO, sellsyCorpInfoResult);
+    
             }
+            
             //客户信息
             SellsyClientResult sellsyClientResult = createDocumentCheckClient(item.getClientName());
 
 
             //校验产品
-            SellsyCatalogueResult sellsyCatalogueResult = createDocumentCheckProduct(item, sellsyUnitResult, sellsyTaxeResults);
+            SellsyCatalogueResult sellsyCatalogueResult = createDocumentCheckProduct(item, finalSellsyUnitResult, sellsyTaxeResults);
 
             Integer productTaxId = null;
             if (item.getTva() != null) {
@@ -768,13 +783,12 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     .address(address)
                     .contact(null)
                     .build();
-            SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
-
             try {
-                wait(1000);
+                wait(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
 
             //保存客户
             SellsyCustomer sellsyCustomer = SellsyCustomer
@@ -820,36 +834,39 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         Boolean createProduct = Boolean.FALSE;
         if (sellsyCatalogueResult == null) {
 
-            SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
-            SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter =
-                    new SellsyCatalogueListSearchEnter();
-            //sellsyCatalogueListSearchEnter.setName(invoiceB.getProductNum());
-            sellsyCatalogueListSearchEnter.setName("RED1000001");
-            sellsyCatalogueListEnter.setType(SellsyCatalogueTypeEnums.item);
-            sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
-            List<SellsyCatalogueResult> sellsyCatalogueResults =
-                    sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
-            if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
-                log.info("---------产品不存在------{}-------------", "RED1000001");
-                createProduct = Boolean.TRUE;
-                //创建产品
-            }
-            //过滤
-            for (SellsyCatalogueResult catalogue : sellsyCatalogueResults) {
-                if (StringUtils.equals(catalogue.getName(), "RED1000001")) {
-                    sellsyCatalogueResult = catalogue;
-                    break;
-                }
-            }
-            if (sellsyCatalogueResult == null) {
-                log.info("---------产品不存在------{}-------------", "RED1000001");
-                //创建产品
-                createProduct=Boolean.TRUE;
-
-            }
+//            SellsyCatalogueListEnter sellsyCatalogueListEnter = new SellsyCatalogueListEnter();
+//            SellsyCatalogueListSearchEnter sellsyCatalogueListSearchEnter =
+//                    new SellsyCatalogueListSearchEnter();
+//            //sellsyCatalogueListSearchEnter.setName(invoiceB.getProductNum());
+//            sellsyCatalogueListSearchEnter.setName("RED1000001");
+//            sellsyCatalogueListEnter.setType(SellsyCatalogueTypeEnums.item);
+//            sellsyCatalogueListEnter.setSearch(sellsyCatalogueListSearchEnter);
+//            List<SellsyCatalogueResult> sellsyCatalogueResults =
+//                    sellsyCatalogueService.queryCatalogueList(sellsyCatalogueListEnter);
+//            if (CollectionUtils.isEmpty(sellsyCatalogueResults)) {
+//                log.info("---------产品不存在------{}-------------", "RED1000001");
+//                createProduct = Boolean.TRUE;
+//                //创建产品
+//            }
+//            //过滤
+//            for (SellsyCatalogueResult catalogue : sellsyCatalogueResults) {
+//                if (StringUtils.equals(catalogue.getName(), "RED1000001")) {
+//                    sellsyCatalogueResult = catalogue;
+//                    break;
+//                }
+//            }
+//            if (sellsyCatalogueResult == null) {
+//                log.info("---------产品不存在------{}-------------", "RED1000001");
+//                //创建产品
+//                createProduct=Boolean.TRUE;
+//
+//            }
+            createProduct=Boolean.TRUE;
         }
-
-        SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> Float.valueOf(tax.getValue()).equals(Float.valueOf(sellsyInvoiceTotal.getTva()))).findFirst().orElse(null);
+    
+        //默认20税率
+        SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> sellsyConfig.getTaxId().equals(tax.getId())).findFirst().orElse(null);
+//        SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> Float.valueOf(tax.getValue()).equals(Float.valueOf(sellsyInvoiceTotal.getTva()))).findFirst().orElse(null);
         if (sellsyTaxeResult==null) {
             log.info("----------税率为空------------");
             sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> sellsyConfig.getTaxId().equals(tax.getId())).findFirst().orElse(null);
@@ -892,7 +909,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             SellsyIdResult catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
 
             try {
-                wait(1000);
+                wait(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
