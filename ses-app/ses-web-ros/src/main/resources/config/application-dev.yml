@@ -18,7 +18,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200:3306/sellsy?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -203,7 +203,29 @@ spring:                                                                         
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+
+      Sellsy-api:
+        #用户组api，可以配置多个组
+        group-name: Sellsy-API
+        #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 发票系统
+        #api组的标题，会在swagger-ui的标题处显示
+        description: 发票系统
+        #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /sellsy/.*
+        #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.0                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
@@ -252,3 +274,18 @@ monday:
 constant-us-email:
   sale-principal:
     - support@redelectric.fr
+
+sellsy:
+  consumer-token: b5f031688a37f258e85aa01d9bc6e400f32bc9ea
+  consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
+  user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
+  user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+  decimal-places: 3 #指保留几位小数
+  rate-category: Tarif TTC #增值税 百分比
+  currency-unit: 1 # 货币单位 Id 货币单位列表有系统生成不会改变
+  lang: cn #"flag": "cn" 翻译语言默认中文
+  doc-layout: Facture pro # 发票布局
+  subject: DS-NS-2 scooters # 发票主题
+  unit: 3497479 #计量单位 个
+  tax-id: 3497473 #增值税税率
+  download-url: /root/pdf/

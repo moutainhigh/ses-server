@@ -126,8 +126,8 @@ public class SellsyServiceImpl implements SellsyService {
         SellsyApiResponse result = null;
 
         //获得文件后缀名
-        String fileSuffixName = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."), file.getOriginalFilename().length());
-
+        //String fileSuffixName = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."), file.getOriginalFilename().length());
+        String fileSuffixName = ".pdf";
         //保存文件
         File newFile = new File(sellsyConfig.getDownloadUrl() + String.valueOf(System.currentTimeMillis()) + fileSuffixName);
         try {

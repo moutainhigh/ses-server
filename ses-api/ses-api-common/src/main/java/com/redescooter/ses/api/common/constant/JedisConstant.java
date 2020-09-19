@@ -30,6 +30,7 @@ public interface JedisConstant {
     // 货币单位
     String SELLSY_DOCUMENT_CURRENCY = "sellsy:document:currency:";
 
+
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
 }

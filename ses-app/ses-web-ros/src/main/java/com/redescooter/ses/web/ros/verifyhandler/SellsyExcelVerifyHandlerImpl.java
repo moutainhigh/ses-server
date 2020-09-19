@@ -43,7 +43,7 @@ public class SellsyExcelVerifyHandlerImpl implements IExcelVerifyHandler<SellsyE
 //            obj.setUnitPrice(obj.getUnitPrice().replaceAll(" ", ""));
 //        }
 //
-        if (StringUtils.equals(obj.getPayType(), "00/01/1900")) {
+        if (StringUtils.equals(obj.getPayTime(), "00/01/1900")) {
             obj.setPayTime(null);
         }
         if (StringUtils.isNotBlank(obj.getTva())) {

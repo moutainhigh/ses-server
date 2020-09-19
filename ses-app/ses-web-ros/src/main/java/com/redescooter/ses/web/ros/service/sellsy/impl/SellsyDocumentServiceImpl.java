@@ -623,10 +623,11 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public List<SellsyIdResult> createDcumentTotalList() {
         // 查询发票数据
         List<SellsyInvoiceTotal> sellsyInvoiceList = sellsyInvoiceTotalService.list(new
-                LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.N.getValue()));
+                LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.N.getValue()).orderByDesc());
         if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
             return new ArrayList<>();
         }
+
         List<SellsyUnitResult> sellsyUnitResultList = sellsyAccountSettingService.queryUnitList();
         if (CollectionUtils.isEmpty(sellsyUnitResultList)) {
             throw new SesWebRosException();
@@ -672,7 +673,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
             SellsyRowEnter sellsyRowEnter = SellsyRowEnter.builder()
                     .row_type(SellsyDocumentRosTypeEnums.ITEM.getValue())
-                    .row_name(item.getProductName())
+                    .row_name(sellsyCatalogueResult.getName())
                     .row_taxid(productTaxId)
                     .row_tax2id(null)
                     .row_qt(1).row_isOption(SellsyBooleanEnums.N)
@@ -741,7 +742,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 log.info("----------客户不存在---------");
             }
             sellsyClientResult = sellsyClientResults.stream()
-                    .filter(client -> StringUtils.equals(client.getName(), name)).findFirst()
+                    .filter(client -> StringUtils.equals(client.getName().trim(), name.trim())).findFirst()
                     .orElse(null);
             if (sellsyClientResult == null) {
                 //客户存在
@@ -768,6 +769,12 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     .contact(null)
                     .build();
             SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
+
+            try {
+                wait(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             //保存客户
             SellsyCustomer sellsyCustomer = SellsyCustomer
@@ -843,9 +850,11 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         }
 
         SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> Float.valueOf(tax.getValue()).equals(Float.valueOf(sellsyInvoiceTotal.getTva()))).findFirst().orElse(null);
-        if (sellsyTaxeResult==null){
+        if (sellsyTaxeResult==null) {
             log.info("----------税率为空------------");
-            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getMessage());
+            sellsyTaxeResult = sellsyTaxeResults.stream().filter(tax -> sellsyConfig.getTaxId().equals(tax.getId())).findFirst().orElse(null);
+
+            //throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getCode(),ThirdExceptionCodeEnums.SELLSY_TAX_NOT_EXIST.getMessage());
         }
 
         if (createProduct){
@@ -881,6 +890,12 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
             //产品创建
             SellsyIdResult catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+
+            try {
+                wait(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             //sellsy 产品 保存到本地数据库
 //            sellsyProductService.save(SellsyProduct.builder()

@@ -2,9 +2,9 @@ package com.redescooter.ses.web.ros.controller.sellsy;
 
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListR
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.util.List;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/sellsy/document")
+@Log4j2
 public class SellsyDocumentController {
 
     @Autowired
@@ -43,12 +45,31 @@ public class SellsyDocumentController {
         return new Response<>(documentService.queryDocumentOne(enter));
     }
 
+//    @IgnoreLoginCheck
+//    @ApiOperation(value = "发票创建", response = SellsyIdResult.class)
+//    @PostMapping(value = "/createDocument")
+//    public Response<SellsyIdResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
+//        return new Response<>(documentService.createDocument(enter));
+//    }
+
     @IgnoreLoginCheck
-    @ApiOperation(value = "发票创建", response = SellsyIdResult.class)
-    @PostMapping(value = "/createDocument")
-    public Response<SellsyIdResult> createDocument(@ModelAttribute @ApiParam("请求参数") SellsyClientServiceCreateDocumentEnter enter) {
-        return new Response<>(documentService.createDocument(enter));
+    @ApiOperation(value = "批量创建", response = GeneralResult.class)
+    @PostMapping(value = "/createDcumentTotalList")
+    public Response<GeneralResult> createDcumentTotalList() {
+        int j = 0;
+        try {
+            for (int i = 0; i < 100; i++) {
+                j = i;
+                documentService.createDcumentTotalList();
+                wait(3000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("-----------出错了第{}重试--------", j);
+        }
+        return new Response<>(new GeneralResult());
     }
+
 
     @IgnoreLoginCheck
     @ApiOperation(value = "根据导入到数据库的数据批量创建发票", response = SellsyIdResult.class)

@@ -7,10 +7,12 @@ import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
+import com.redescooter.ses.web.ros.dm.SellsyCustomer;
 import com.redescooter.ses.web.ros.dm.SellsyInvoiceTotal;
 import com.redescooter.ses.web.ros.dm.SellsyProduct;
 import com.redescooter.ses.web.ros.enums.sellsy.*;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.SellsyCustomerService;
 import com.redescooter.ses.web.ros.service.base.SellsyInvoiceTotalService;
 import com.redescooter.ses.web.ros.service.base.SellsyProductService;
 import com.redescooter.ses.web.ros.service.sellsy.*;
@@ -465,15 +467,28 @@ public class SesWebRosApplicationTests {
                 .contact(null)
                 .build();
         SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
-        log.info("-----------取到返回值{}---------",client.getId());
+        log.info("-----------取到返回值{}---------", client.getId());
     }
+
+    @Autowired
+    private SellsyCustomerService sellsyCustomerService;
 
     @Test
     public void deleteclient() {
-        SellsyDeleteClientEnter sellsyDeleteClientEnter = SellsyDeleteClientEnter.builder()
-                .clientid("26042643")
-                .build();
-        sellsyClientService.deleteClient(sellsyDeleteClientEnter);
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(SellsyCustomer.COL_DEF2, "1");
+        List<SellsyCustomer> list = sellsyCustomerService.list(queryWrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+        list.forEach(item -> {
+            SellsyDeleteClientEnter sellsyDeleteClientEnter = SellsyDeleteClientEnter.builder()
+                    .clientid(item.getDef2())
+                    .build();
+            sellsyClientService.deleteClient(sellsyDeleteClientEnter);
+        });
+
         //SellsyGeneralResult(error=null, status=null, result={"client_id":25918711}, sellsyResponseInfo=null)
     }
 
@@ -482,8 +497,16 @@ public class SesWebRosApplicationTests {
      */
     @Test
     public void DocumentCreateTotal() {
-        List<SellsyIdResult> dcumentTotalList =
-                sellsyDocumentService.createDcumentTotalList();
+        for (int i = 0; i < 10; i++) {
+            try {
+                List<SellsyIdResult> dcumentTotalList =
+                        sellsyDocumentService.createDcumentTotalList();
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("--------------出错了第{}重试----------", i);
+            }
+        }
+
 
         log.info("--------------执行成功---------");
     }
