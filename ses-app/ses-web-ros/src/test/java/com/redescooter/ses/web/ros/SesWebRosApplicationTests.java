@@ -1,21 +1,23 @@
 package com.redescooter.ses.web.ros;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
+import com.redescooter.ses.web.ros.dm.SellsyInvoiceTotal;
 import com.redescooter.ses.web.ros.dm.SellsyProduct;
 import com.redescooter.ses.web.ros.enums.sellsy.*;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.SellsyInvoiceTotalService;
 import com.redescooter.ses.web.ros.service.base.SellsyProductService;
-import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
-import com.redescooter.ses.web.ros.service.sellsy.SellsyCatalogueService;
-import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
-import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
+import com.redescooter.ses.web.ros.service.sellsy.*;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesUploadFileEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
@@ -41,6 +43,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,6 +72,27 @@ public class SesWebRosApplicationTests {
 
     @Autowired
     private WebSiteTokenService webSiteService;
+
+    @Autowired
+    private IdAppService idAppService;
+
+    @Autowired
+    private SellsyInvoiceTotalService sellsyInvoiceTotalService;
+
+    @Autowired
+    private SellsyDocumentService sellsyDocumentService;
+
+    @Autowired
+    private SellsyAccountSettingService sellsyAccountSettingService;
+
+    @Autowired
+    private SellsyClientService sellsyClientService;
+
+    @Autowired
+    private SellsyCatalogueService sellsyCatalogueService;
+
+    @Autowired
+    private BriefcasesService briefcasesService;
 
     @Test
     public void stream() {
@@ -194,19 +219,6 @@ public class SesWebRosApplicationTests {
         System.out.println(m.matches());
     }
 
-
-    @Autowired
-    private SellsyDocumentService sellsyDocumentService;
-
-    @Autowired
-    private SellsyAccountSettingService sellsyAccountSettingService;
-
-    @Autowired
-    private SellsyClientService sellsyClientService;
-
-    @Autowired
-    private SellsyCatalogueService sellsyCatalogueService;
-
     @Test
     public void createDocument() {
         //查询发票排版
@@ -267,7 +279,7 @@ public class SesWebRosApplicationTests {
                 .row_qt(10)
                 .row_isOption(SellsyBooleanEnums.N)
                 .row_unitAmount(sellsyCatalogueResultList.get(0).getUnitAmount())
-            .row_discount(null)
+                .row_discount(null)
                 .row_discountUnit(SellsyGlobalDiscountUnitEnums.percent)
                 .row_linkedid(Integer.valueOf(sellsyCatalogueResultList.get(0).getId()))
                 .row_declid(Integer.valueOf(sellsyCatalogueResultList.get(0).getDeclid()))
@@ -326,7 +338,7 @@ public class SesWebRosApplicationTests {
     @Test
     public void  createCatalogue(){
 
-        List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3"));
+        //List<SellsyProduct> sellsyProductList = sellsyProductService.list(new LambdaQueryWrapper<SellsyProduct>().in(SellsyProduct::getStatus,"1","3"));
 
 
         //查询计量单位
@@ -340,35 +352,49 @@ public class SesWebRosApplicationTests {
         }
         //查询税率
         List<SellsyTaxeResult> sellsyTaxeResults = sellsyAccountSettingService.queryTaxeList();
-        if (CollectionUtils.isEmpty(sellsyTaxeResults)){
+        if (CollectionUtils.isEmpty(sellsyTaxeResults)) {
             throw new SesWebRosException();
         }
 
         SellsyTaxeResult sellsyTaxeResult = sellsyTaxeResults.stream().filter(item -> StringUtils.equals(item.getId(), String.valueOf(sellsyConfig.getTaxId()))).findFirst().orElse(null);
-        if (sellsyTaxeResult==null){
+        if (sellsyTaxeResult == null) {
             throw new SesWebRosException();
         }
-        sellsyProductList.forEach(item->{
-            //数据封装
-            SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter=new SellsyCreateCatalogueEnter();
-            SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
-            catalogueTypeEnter.setName(StringUtils.isBlank(item.getReplaceProductCode())?item.getProductCode():item.getReplaceProductCode());
-            catalogueTypeEnter.setTradename(item.getProductName());
-            catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
-            catalogueTypeEnter.setNotes(StringUtils.isEmpty(item.getRemark())?null:item.getRemark());
-            catalogueTypeEnter.setTags(null);
-            catalogueTypeEnter.setUnitAmount(Float.valueOf(item.getProductPrice()));
-            catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
-            catalogueTypeEnter.setQty(1);
-            catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
-            catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
-            catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
-            sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
-            sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
-            SellsyIdResult catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
-            item.setDef1(String.valueOf(catalogue.getId()));
-        });
-        sellsyProductService.updateBatchById(sellsyProductList);
+        //数据封装
+        SellsyCreateCatalogueEnter sellsyCreateCatalogueEnter = new SellsyCreateCatalogueEnter();
+        SellsyCreateCatalogueTypeEnter catalogueTypeEnter = new SellsyCreateCatalogueTypeEnter();
+        catalogueTypeEnter.setName("RED1000001");
+        catalogueTypeEnter.setTradename("Electric motorcycles and accessories");
+        catalogueTypeEnter.setTradenametonote(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setNotes("自定义添加可删除");
+        catalogueTypeEnter.setTags(null);
+        catalogueTypeEnter.setUnitAmount(0);
+        catalogueTypeEnter.setUnit(sellsyUnitResult.getValue());
+        catalogueTypeEnter.setQty(1);
+        catalogueTypeEnter.setUnitAmountIsTaxesFree(SellsyBooleanEnums.Y);
+        catalogueTypeEnter.setTaxid(Integer.valueOf(sellsyTaxeResult.getId()));
+        catalogueTypeEnter.setTaxrate(Float.valueOf(sellsyTaxeResult.getValue()));
+        sellsyCreateCatalogueEnter.setType(SellsyCatalogueTypeEnums.item);
+        sellsyCreateCatalogueEnter.setItem(catalogueTypeEnter);
+        SellsyIdResult catalogue = sellsyCatalogueService.createCatalogue(sellsyCreateCatalogueEnter);
+
+        SellsyProduct sellsyProduct = SellsyProduct
+                .builder()
+                .id(idAppService.getId("SellsyProduct"))
+                .dr(0)
+                .productName(catalogueTypeEnter.getTradename())
+                .productCode(catalogueTypeEnter.getName())
+                .status("4")
+                .productPrice("0")
+                .remark(catalogueTypeEnter.getNotes())
+                .def1(String.valueOf(catalogue.getId()))
+                .createdBy(0L)
+                .createdTime(new Date())
+                .updatedBy(0L)
+                .updatedTime(new Date())
+                .build();
+
+        sellsyProductService.save(sellsyProduct);
     }
 
 
@@ -443,11 +469,59 @@ public class SesWebRosApplicationTests {
     }
 
     @Test
-    public void  deleteclient(){
+    public void deleteclient() {
         SellsyDeleteClientEnter sellsyDeleteClientEnter = SellsyDeleteClientEnter.builder()
-                .clientid("25918711")
+                .clientid("26042643")
                 .build();
         sellsyClientService.deleteClient(sellsyDeleteClientEnter);
         //SellsyGeneralResult(error=null, status=null, result={"client_id":25918711}, sellsyResponseInfo=null)
     }
+
+    /**
+     * 发票批量创建
+     */
+    @Test
+    public void DocumentCreateTotal() {
+        List<SellsyIdResult> dcumentTotalList =
+                sellsyDocumentService.createDcumentTotalList();
+
+        log.info("--------------执行成功---------");
+    }
+
+    /**
+     * 批量上传发票
+     */
+    @Test
+    public void docuemntUploadFile() {
+        QueryWrapper sellsyInvoiceWrapper = new QueryWrapper();
+        sellsyInvoiceWrapper.eq(SellsyInvoiceTotal.COL_DEF1, SellsyBooleanEnums.Y);
+        sellsyInvoiceWrapper.in(SellsyInvoiceTotal.COL_DEF3, SellsyBooleanEnums.N, null);
+        List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list();
+
+        if (CollectionUtils.isEmpty(sellsyInvoiceTotalList)) {
+            return;
+        }
+
+        List<SellsyInvoiceTotal> updateSellsyTotalList = new ArrayList<>();
+
+        for (SellsyInvoiceTotal item : sellsyInvoiceTotalList) {
+            if (StringUtils.isEmpty(item.getDef5())) {
+                continue;
+            }
+            SellsyBriefcasesUploadFileEnter enter =
+                    SellsyBriefcasesUploadFileEnter
+                            .builder()
+                            .linkedtype(SellsyBriefcaseTypeEnums.invoice)
+                            .linkedid(Integer.valueOf(item.getDef2()))
+                            .fileUrl(item.getDef5())
+                            .build();
+            briefcasesService.briefcasesUploadFile(enter, null);
+            item.setDef3(String.valueOf(SellsyBooleanEnums.Y));
+            updateSellsyTotalList.add(item);
+        }
+        if (CollectionUtils.isNotEmpty(updateSellsyTotalList)) {
+            sellsyInvoiceTotalService.updateBatch(updateSellsyTotalList);
+        }
+    }
 }
+

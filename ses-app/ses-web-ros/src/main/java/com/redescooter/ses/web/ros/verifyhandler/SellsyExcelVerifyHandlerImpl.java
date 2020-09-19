@@ -39,17 +39,20 @@ public class SellsyExcelVerifyHandlerImpl implements IExcelVerifyHandler<SellsyE
         }*/
 
         //剔除掉金额中间的空格
-        if (StringUtils.isNotBlank(obj.getUnitPrice())) {
-            obj.setUnitPrice(obj.getUnitPrice().replaceAll(" ", ""));
+//        if (StringUtils.isNotBlank(obj.getUnitPrice())) {
+//            obj.setUnitPrice(obj.getUnitPrice().replaceAll(" ", ""));
+//        }
+//
+        if (StringUtils.equals(obj.getPayType(), "00/01/1900")) {
+            obj.setPayTime(null);
         }
-
-        if (StringUtils.isNotBlank(obj.getReceivePayment())) {
-            obj.setReceivePayment(obj.getReceivePayment().replaceAll(" ", ""));
+        if (StringUtils.isNotBlank(obj.getTva())) {
+            obj.setTva(String.valueOf(Double.valueOf(obj.getTva()) * 100));
         }
-
-        if (StringUtils.isNotBlank(obj.getRemainingPayment())) {
-            obj.setRemainingPayment(obj.getRemainingPayment().replaceAll(" ", ""));
-        }
+//
+//        if (StringUtils.isNotBlank(obj.getRemainingPayment())) {
+//            obj.setRemainingPayment(obj.getRemainingPayment().replaceAll(" ", ""));
+//        }
         return new ExcelVerifyHandlerResult(true, builder.toString());
     }
 

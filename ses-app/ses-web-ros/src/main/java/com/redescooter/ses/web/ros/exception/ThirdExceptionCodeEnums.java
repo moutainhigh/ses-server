@@ -41,7 +41,9 @@ public enum ThirdExceptionCodeEnums {
 
     SELLSY_CALL_FAILED(11015, "Sellsy调用失败请稍后重试"),
 
-    SELLSY_TAX_NOT_EXIST(11016,"Sellsy 税率为空"),
+    SELLSY_TAX_NOT_EXIST(11016, "Sellsy 税率为空"),
+
+    SELLSY_FILE_IS_EMPTY(11017, "至少上传一种类型的文件"),
     ;
 
     private int code;

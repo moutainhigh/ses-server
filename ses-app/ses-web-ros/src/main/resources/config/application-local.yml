@@ -279,9 +279,10 @@ sellsy:
   currency-unit: 1 # 货币单位 Id 货币单位列表有系统生成不会改变
   lang: cn #"flag": "cn" 翻译语言默认中文
   doc-layout: Facture pro # 发票布局
-  subject: RedE Group Scooter # 发票主题
+  subject: DS-NS-2 scooters # 发票主题
   unit: 3497479 #计量单位 个
   tax-id: 3497473 #增值税税率
+  download-url: /Users/alex/Desktop/pdf/
 
 
 

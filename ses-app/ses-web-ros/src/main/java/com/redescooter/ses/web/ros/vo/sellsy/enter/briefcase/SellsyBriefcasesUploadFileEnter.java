@@ -20,4 +20,7 @@ public class SellsyBriefcasesUploadFileEnter {
     @ApiModelProperty(value = "关联Id 指相对应的单据Id")
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "附件Id为空")
     private int linkedid;
+
+    @ApiModelProperty(value = "文件地址 oss 下载地址")
+    private String fileUrl;
 }

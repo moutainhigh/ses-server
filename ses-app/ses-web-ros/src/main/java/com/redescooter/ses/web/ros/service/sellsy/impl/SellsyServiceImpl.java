@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
 import com.redescooter.ses.web.ros.constant.SellsyConstant;
@@ -30,7 +31,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -53,6 +56,9 @@ public class SellsyServiceImpl implements SellsyService {
 
     @Autowired
     private SellsyExceptionService sellsyExceptionService;
+
+    @Autowired
+    private FileAppService fileAppService;
 
     @Reference
     private IdAppService idAppService;
@@ -81,7 +87,6 @@ public class SellsyServiceImpl implements SellsyService {
 
         SellsyApiResponse result = null;
         try {
-            //throw new HttpClientErrorException(HttpStatus.NON_AUTHORITATIVE_INFORMATION);
              //执行请求
              result = sellsySpringRestExecutor.process(request);
              log.info("----------------返回值{}---------------", result);
@@ -90,7 +95,58 @@ public class SellsyServiceImpl implements SellsyService {
             // 异常处理
             sellsyExceptionService(enter, e);
             throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
-                ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
+                    ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
+        }
+        return sellsyGeneralResult;
+    }
+
+    /**
+     * 支持各类文件上传
+     * 动态生成文件后缀
+     * @param enter
+     * @param file
+     * @return
+     */
+    @Transactional
+    @Override
+    public SellsyGeneralResult sellsyExecutionByFile(SellsyExecutionEnter enter, MultipartFile file) {
+
+        log.info("---------------------调用方法{}---------------------", enter.getMethod());
+        log.info("-----------------------------方法参数{}---------------", enter.getParams());
+        // 连接器 请求头配置
+        SellsySpringRestExecutor sellsySpringRestExecutor =
+                new SellsySpringRestExecutor(sellsyConfig.getConsumerToken(), sellsyConfig.getConsumerSecret(),
+                        sellsyConfig.getUserToken(), sellsyConfig.getUserSecret());
+
+        // 配置 请求参数
+        SellsyApiRequest request = new SellsyApiRequest(enter.getMethod(), enter.getParams());
+
+        SellsyGeneralResult sellsyGeneralResult = new SellsyGeneralResult();
+
+        SellsyApiResponse result = null;
+
+        //获得文件后缀名
+        String fileSuffixName = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."), file.getOriginalFilename().length());
+
+        //保存文件
+        File newFile = new File(sellsyConfig.getDownloadUrl() + String.valueOf(System.currentTimeMillis()) + fileSuffixName);
+        try {
+            log.info("-------------------生成临时文件,文件名{},文件路径{}-------------------------", newFile.getName(), newFile.getPath());
+            file.transferTo(newFile);
+            //执行请求
+            result = sellsySpringRestExecutor.processByFile(request, newFile);
+            log.info("----------------返回值{}---------------", result);
+            sellsyGeneralResult.setResult(result);
+        } catch (Exception e) {
+            // 异常处理
+            sellsyExceptionService(enter, e);
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
+                    ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
+        } finally {
+            //删除文件
+            if (newFile != null) {
+                newFile.delete();
+            }
         }
         return sellsyGeneralResult;
     }
@@ -104,8 +160,8 @@ public class SellsyServiceImpl implements SellsyService {
         // 保存数据库
         if (e instanceof SellsyApiException || e instanceof HttpClientErrorException) {
             SellsyException sellsyException = sellsyExceptionService
-                .getOne(
-                    new LambdaQueryWrapper<SellsyException>().eq(SellsyException::getMethodName, enter.getMethod()));
+                    .getOne(
+                            new LambdaQueryWrapper<SellsyException>().eq(SellsyException::getMethodName, enter.getMethod()));
             if (sellsyException == null) {
                 // 保存
                 sellsyException = buildSellsyException(enter, e);

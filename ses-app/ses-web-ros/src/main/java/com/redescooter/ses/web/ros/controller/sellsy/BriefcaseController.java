@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.ros.controller.sellsy;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.BriefcasesService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesDeleteEnter;
@@ -12,10 +9,12 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesLis
 import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesUploadFileEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcasesListResult;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Api(tags = {"ROS-Sellsy-Briefcase"})
 @CrossOrigin
@@ -38,8 +37,8 @@ public class BriefcaseController {
     @ApiOperation(value = "上传附件", response = SellsyBriefcasesListResult.class)
     @PostMapping(value = "/briefcasesUploadFile")
     public Response<SellsyBriefcaseUploadFileResult>
-        briefcasesUploadFile(@ModelAttribute @ApiParam("请求参数") SellsyBriefcasesUploadFileEnter enter) {
-        return new Response<>(briefcasesService.briefcasesUploadFile(enter));
+    briefcasesUploadFile(@ModelAttribute @ApiParam("请求参数") SellsyBriefcasesUploadFileEnter enter, MultipartFile multipartFile) {
+        return new Response<>(briefcasesService.briefcasesUploadFile(enter, multipartFile));
     }
 
     @IgnoreLoginCheck

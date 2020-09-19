@@ -21,69 +21,38 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class SellsyExcleData implements Serializable, IExcelModel, IExcelDataModel {
 
-    @Excel(name = "Etat", width = 25)
-    public String etat;
+    @Excel(name = "Type de doc", width = 25)
+    public String status;
 
-    @Excel(name = "Numéro", width = 25)
+    @Excel(name = "N° pièce", width = 25)
     public String invoice_num;
 
-    @Excel(name = "Date", width = 25)
+    @Excel(name = "invoice_time", width = 25)
     public String invoice_date;
 
-    @Excel(name = "Client", width = 25)
-    public String client;
+    @Excel(name = "Nom Client", width = 25)
+    public String client_name;
 
-    @Excel(name = "Référence", width = 25)
-    public String invoice_notes;
-
-    @Excel(name = "Montant HT", width = 25)
-    public String ht;
-
-    @Excel(name = "Montant TTC", width = 25)
-    public String ttc;
-
-    @Excel(name = "Réglé", width = 25)
-    public String receivePayment;
-
-    @Excel(name = "Reste dû", width = 25)
-    public String remainingPayment;
-
-    @Excel(name = "Adresse de livraison du client", width = 25)
-    public String clientAddress;
-
-    @Excel(name = "Note du payeur", width = 25)
-    public String buyerNotes;
-
-    @Excel(name = "Remarques sur le produit", width = 25)
-    public String productNodes;
-
-    @Excel(name = "Numéro de produit", width = 25)
-    public String productNum;
-
-    @Excel(name = "nom du produit", width = 25)
-    public String productName;
-
-    @Excel(name = "TVA", width = 25)
+    @Excel(name = "Taux TVA", width = 25)
     public String tva;
 
-    @Excel(name = "Qté", width = 25)
-    public String productQty;
+    @Excel(name = "Total HT", width = 25)
+    public String ht;
 
-    @Excel(name = "Unité", width = 25)
-    public String productQtyUnit;
+    @Excel(name = "Total TTC", width = 25)
+    public String ttc;
 
-    @Excel(name = "Rem", width = 25)
-    public String discount;
+    @Excel(name = "Statut", width = 25)
+    public String payStatus;
 
-    @Excel(name = "PdfUrl", width = 25)
-    public String pdfUrl;
+    @Excel(name = "pay_time", width = 25)
+    public String payTime;
 
-    @Excel(name = "unit_price", width = 25)
-    public String unitPrice;
+    @Excel(name = "Moyen de paiement", width = 25)
+    public String payType;
 
-    @Excel(name = "is_parent", width = 25)
-    public String isParent;
-
+    @Excel(name = "PDF", width = 25)
+    private String url;
     /**
      * 解析错误信息
      */
@@ -97,9 +66,12 @@ public class SellsyExcleData implements Serializable, IExcelModel, IExcelDataMod
     public static final String INVOICE_NUM = "N° pièce";
     public static final String CLIENT_NAME = "Nom Client";
     public static final String TIME = "Date Pièce";
-    public static final String totalHt = "Total HT";
+    public static final String TOTALHT = "Total HT";
     public static final String TVA = "Taux TVA";
     public static final String TOTALTTC = "Total TTC";
+    public static final String PAY_STATUS = "Statut";
+    public static final String PAY_TYPE = "Moyen de paiement";
+    public static final String PAY_TIME = "Date de paiement";
 
 
     /**

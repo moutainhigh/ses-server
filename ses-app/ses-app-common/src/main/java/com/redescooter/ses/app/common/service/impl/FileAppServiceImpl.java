@@ -74,14 +74,22 @@ public class FileAppServiceImpl implements FileAppService {
         conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
 
         OSSClient ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
-                ossConfig.getSecretAccesskey(),conf);
+                ossConfig.getSecretAccesskey(), conf);
         if (url.indexOf("//") >= 0) {
             url = url.split("//")[1];
         }
         String bucketName = url.split("\\.")[0];
         String[] arrays = url.split("/");
-        String key = arrays[arrays.length - 1];
-        OSSObject ossObject = ossClient.getObject(bucketName, key);
+        StringBuffer key = new StringBuffer();
+        for (int i = 1; i < arrays.length; i++) {
+            key.append(arrays[i]);
+            if (i < arrays.length - 1) {
+                key.append("/");
+            }
+        }
+        //String key = arrays[arrays.length - 1];
+
+        OSSObject ossObject = ossClient.getObject(bucketName, key.toString());
         if (ossObject != null) {
             input = ossObject.getObjectContent();
         }

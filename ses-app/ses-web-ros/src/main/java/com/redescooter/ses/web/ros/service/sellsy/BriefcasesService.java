@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesLis
 import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesUploadFileEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcasesListResult;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 文件上传
@@ -21,11 +22,11 @@ public interface BriefcasesService {
 
     /**
      * todo 上传文件 需要调试 SDK 具体和Sellsy 沟通后 在进行
-     * 
+     *
      * @param enter
      * @return
      */
-    SellsyBriefcaseUploadFileResult briefcasesUploadFile(SellsyBriefcasesUploadFileEnter enter);
+    SellsyBriefcaseUploadFileResult briefcasesUploadFile(SellsyBriefcasesUploadFileEnter enter, MultipartFile multipartFile);
 
     /**
      * 附件删除

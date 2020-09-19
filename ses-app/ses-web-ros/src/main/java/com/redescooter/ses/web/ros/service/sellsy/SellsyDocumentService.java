@@ -69,4 +69,10 @@ public interface SellsyDocumentService {
      * @return
      */
     List<SellsyIdResult> createDcumentList();
+
+    /**
+     * 一整张发票为主整体 创建发票
+     * @return
+     */
+    List<SellsyIdResult> createDcumentTotalList();
 }

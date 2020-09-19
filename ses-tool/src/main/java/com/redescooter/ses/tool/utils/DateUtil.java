@@ -31,6 +31,11 @@ public class DateUtil {
      * 缺省的日期显示格式： yyyy/MM/dd
      */
     public static final String DEFAULT_DATE_FORMAT1 = "yyyy/MM/dd";
+
+    /**
+     * 缺省的日期显示格式： dd/MM/yyyy
+     */
+    public static final String DEFAULT_DATE_FORMAT2 = "dd/MM/yyyy";
     /**
      * 缺省的日期显示格式： yyyy-MM
      */
@@ -912,9 +917,7 @@ public class DateUtil {
         System.out.println("after:" + format.format(date));  //显示更新后的日期
         cal = null;
         return date;
-
     }
-
 
     /**
      * 格式化处理 dd/mm/yy 格式的时间

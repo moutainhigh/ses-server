@@ -50,4 +50,7 @@ public class SellsyConfig {
 
     //增值税税率
     private Integer taxId;
+
+    //文件下载路径
+    private String downloadUrl;
 }

@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sellsy;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,6 +23,14 @@ public interface SellsyService {
      * @return
      */
     public SellsyGeneralResult sellsyExecution(SellsyExecutionEnter enter);
+
+    /**
+     * 上传文件
+     * @param enter
+     * @return
+     */
+    public SellsyGeneralResult sellsyExecutionByFile(SellsyExecutionEnter enter, MultipartFile file);
+
 
     /**
      * extractResponseList 会抛出异常所以进行统一的格式处理

@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Api(tags = {"ROS-Sellsy发票业务"})
@@ -63,9 +61,7 @@ public class SellsyDocumentController {
     @IgnoreLoginCheck
     @ApiOperation(value = "发票excel导入", response = SellsyImportExcelResult.class)
     @PostMapping(value = "/import")
-    public Response<SellsyImportExcelResult> importDocument(HttpServletRequest request,
-                                                            HttpServletResponse response,
-                                                            MultipartFile file) {
+    public Response<SellsyImportExcelResult> importDocument(MultipartFile file) {
         return new Response<>(documentService.importSellsyDocument(file));
     }
 
