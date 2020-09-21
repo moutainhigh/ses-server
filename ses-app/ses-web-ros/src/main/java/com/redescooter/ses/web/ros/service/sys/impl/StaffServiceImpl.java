@@ -101,6 +101,9 @@ public class StaffServiceImpl implements StaffService {
     @Value("${Request.privateKey}")
     private String privatekey;
 
+    @Value("${Request.publicKey}")
+    private String publicKey;
+
     @Autowired
     private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
 
@@ -135,7 +138,12 @@ public class StaffServiceImpl implements StaffService {
         staff.setSysUserId(staff.getId());
         if (enter.getIfSafeCode() != null && enter.getIfSafeCode() == 1) {
             // 产生8位数的随机字符串
-            String code = RsaUtils.encryptByPrivateKey(getRundom(), privatekey);
+            String code = null;
+            try {
+                code = RsaUtils.encrypt(getRundom(), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             staff.setSafeCode(code);
         }
         opeSysStaffService.save(staff);
