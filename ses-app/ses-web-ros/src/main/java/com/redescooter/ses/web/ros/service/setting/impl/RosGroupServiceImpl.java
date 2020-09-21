@@ -164,7 +164,7 @@ public class RosGroupServiceImpl implements RosGroupService {
                 if(Strings.isNullOrEmpty(export.getUpdater())){
                     export.setFounder("--");
                 }
-                export.setUpdatedTime(group.getUpdatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getCreatedTime(),8),""));
+                export.setUpdatedTime(group.getUpdatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getUpdatedTime(),8),""));
                 exportList.add(export);
             }
             try {
