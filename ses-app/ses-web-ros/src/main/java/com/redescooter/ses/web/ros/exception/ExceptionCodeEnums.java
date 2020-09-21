@@ -378,6 +378,8 @@ public enum ExceptionCodeEnums {
 
     PSD_LENGTH_ERROR(10180, "密码长度不对"),
 
+    SAFE_CODE_NOT_OPEN(10181, "未开通安全码"),
+
     ;
 
 

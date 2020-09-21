@@ -439,6 +439,17 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public GeneralResult editSafeCode(UserPsdEnter enter) {
+        // 安全码解密 进行长度校验
+        String safeCode = "";
+        try {
+            //密码校验
+            safeCode = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        if(safeCode.length() < 8 || safeCode.length() > 20){
+            throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
+        }
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
@@ -476,6 +487,11 @@ public class StaffServiceImpl implements StaffService {
         OpeSysUser user = opeSysUserService.getById(enter.getUserId());
         if (user == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 验证旧密码是否正确
+        String password = DigestUtils.md5Hex(oldPsd + user.getSalt());
+        if (!password.equals(user.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         user.setPassword(DigestUtils.md5Hex(newPassword + user.getSalt()));
         opeSysUserService.updateById(user);
@@ -515,6 +531,18 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+
+        // 校验员工名字的长度
+        if (StringUtils.isNotEmpty(enter.getFirstName())) {
+            if (enter.getFirstName().length() < 2 || enter.getFirstName().length() > 20) {
+                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        if (StringUtils.isNotEmpty(enter.getLastName())) {
+            if (enter.getLastName().length() < 2 || enter.getLastName().length() > 20) {
+                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getUserId());
         // 员工状态变化  影响到账号
@@ -540,6 +568,9 @@ public class StaffServiceImpl implements StaffService {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        if(staff.getIfSafeCode() == null || staff.getIfSafeCode() == 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getCode(), ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getMessage());
         }
         SafeCodeResult result = new SafeCodeResult();
         result.setSafeCode(staff.getSafeCode());
