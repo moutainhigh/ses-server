@@ -83,12 +83,11 @@ public class SeataAutoConfig {
         mybatisPlus.setDataSource(proxy);
         mybatisPlus.setVfs(SpringBootVFS.class);
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        mybatisPlus.setMapperLocations(resolver.getResources("classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml"));
+        mybatisPlus.setMapperLocations(resolver.getResources("classpath*:mapper/**/*Mapper.xml,classpath*:mapper/*Mapper.xml"));
         GlobalConfig globalConfig = new GlobalConfig();
         GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
         // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID") UUID->`3`("全局唯一ID")
-        //使用ID_WORKER_STR，因为前后端分离使用整形，前端JS会有精度丢失
-        dbConfig.setIdType(IdType.ID_WORKER_STR);
+        dbConfig.setIdType(IdType.UUID);
         globalConfig.setDbConfig(dbConfig);
         mybatisPlus.setGlobalConfig(globalConfig);
         MybatisConfiguration mc = new MybatisConfiguration();

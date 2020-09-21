@@ -135,6 +135,11 @@
             </dependency>
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-seata</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-poi</artifactId>
                 <version>${ses.version}</version>
             </dependency>

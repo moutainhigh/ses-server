@@ -15,14 +15,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.seata</groupId>
-            <artifactId>seata-all</artifactId>
-            <version>${seata.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-db</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>${seata.version}</version>
         </dependency>
     </dependencies>
 
