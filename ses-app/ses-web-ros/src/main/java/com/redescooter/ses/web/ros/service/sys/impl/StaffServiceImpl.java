@@ -491,7 +491,7 @@ public class StaffServiceImpl implements StaffService {
         // 验证旧密码是否正确
         String password = DigestUtils.md5Hex(oldPsd + user.getSalt());
         if (!password.equals(user.getPassword())) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.OLD_PSD_ERROR.getCode(), ExceptionCodeEnums.OLD_PSD_ERROR.getMessage());
         }
         user.setPassword(DigestUtils.md5Hex(newPassword + user.getSalt()));
         opeSysUserService.updateById(user);

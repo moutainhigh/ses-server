@@ -380,6 +380,8 @@ public enum ExceptionCodeEnums {
 
     SAFE_CODE_NOT_OPEN(10181, "未开通安全码"),
 
+    OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
+
     ;
 
 

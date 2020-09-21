@@ -55,6 +55,7 @@ public class Advice {
         // 日志开始的时间
         LocalDateTime startTime = LocalDateTime.now();
         log.info("开始时间：" + startTime);
+        // 创建日志对象
         OpeSysLog sysLog = new OpeSysLog();
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Integer code = null;
@@ -80,6 +81,8 @@ public class Advice {
                     sysLog.setCreatedBy(userMsg.getId());
                     sysLog.setUpdatedBy(userMsg.getId());
                     sysLog.setLogType(2);
+                }else {
+                    sysLog.setLogType(1);
                 }
             }else {
                 // 这种情况就是登陆了
