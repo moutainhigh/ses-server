@@ -11,9 +11,12 @@ import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.setting.ParameterService;
+import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -34,9 +37,11 @@ public class ParameterServiceImpl implements ParameterService {
      * @return
      */
     @Override
-    public PageResult<ParameterResult> list(ParameterListEnter enter) {
-        enter.setSystemType(SystemTypeEnums.REDE_ROS);
-        PageResult<ParameterResult> list = parameterSettingService.list(enter);
+    public PageResult<ParameterResult> list(RosParameterListEnter enter) {
+        ParameterListEnter parameterListEnter = new ParameterListEnter();
+        BeanUtils.copyProperties(enter, parameterListEnter);
+        parameterListEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        PageResult<ParameterResult> list = parameterSettingService.list(parameterListEnter);
 
 
         List<Long> createIdList = list.getList().stream().map(ParameterResult::getCreatedById).collect(Collectors.toList());
@@ -136,9 +141,11 @@ public class ParameterServiceImpl implements ParameterService {
      * @return
      */
     @Override
-    public GeneralResult save(SaveParamentEnter enter) {
-        enter.setSystemType(SystemTypeEnums.REDE_ROS);
-        return parameterSettingService.save(enter);
+    public GeneralResult save(RosSaveParamentEnter enter) {
+        SaveParamentEnter saveParamentEnter = new SaveParamentEnter();
+        BeanUtils.copyProperties(enter, saveParamentEnter);
+        saveParamentEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        return parameterSettingService.save(saveParamentEnter);
     }
 
     /**

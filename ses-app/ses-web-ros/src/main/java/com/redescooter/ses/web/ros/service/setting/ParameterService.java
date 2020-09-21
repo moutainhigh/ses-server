@@ -2,9 +2,9 @@ package com.redescooter.ses.web.ros.service.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
-import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface ParameterService {
      * @param enter
      * @return
      */
-    PageResult<ParameterResult> list(ParameterListEnter enter);
+    PageResult<ParameterResult> list(RosParameterListEnter enter);
 
     /**
      * 详情
@@ -49,7 +49,7 @@ public interface ParameterService {
      * @param enter
      * @return
      */
-    GeneralResult save(SaveParamentEnter enter);
+    GeneralResult save(RosSaveParamentEnter enter);
 
     /**
      * 下载模版

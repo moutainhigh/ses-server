@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
-import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 import com.redescooter.ses.web.ros.service.setting.RosGroupService;
+import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +32,7 @@ public class GroupSettingController {
 
     @ApiOperation(value = "分组列表", response = GroupResult.class)
     @PostMapping(value = "/list")
-    public Response<PageResult<GroupResult>> list(@ModelAttribute @ApiParam("请求参数") GroupListEnter enter) {
+    public Response<PageResult<GroupResult>> list(@ModelAttribute @ApiParam("请求参数") RosGroupListEnter enter) {
         return new Response<>(rosGroupService.list(enter));
     }
 
@@ -62,7 +62,7 @@ public class GroupSettingController {
 
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveGroupEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveGroupEnter enter) {
         return new Response<>(rosGroupService.save(enter));
     }
 }

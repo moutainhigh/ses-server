@@ -20,11 +20,14 @@ import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.setting.RosGroupService;
-import com.redescooter.ses.web.ros.vo.setting.GroupExportResult;
+import com.redescooter.ses.web.ros.vo.setting.RosGroupExportResult;
+import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,9 +53,12 @@ public class RosGroupServiceImpl implements RosGroupService {
      * @return
      */
     @Override
-    public PageResult<GroupResult> list(GroupListEnter enter) {
-        enter.setSystemType(SystemTypeEnums.REDE_ROS);
-        PageResult<GroupResult> list = groupSettingService.list(enter);
+    public PageResult<GroupResult> list(RosGroupListEnter enter) {
+        GroupListEnter groupListEnter = new GroupListEnter();
+
+        BeanUtils.copyProperties(enter, groupListEnter);
+        groupListEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        PageResult<GroupResult> list = groupSettingService.list(groupListEnter);
         if (CollectionUtils.isEmpty(list.getList())) {
             return list;
         }
@@ -123,9 +129,11 @@ public class RosGroupServiceImpl implements RosGroupService {
      * @return
      */
     @Override
-    public GeneralResult save(SaveGroupEnter enter) {
-        enter.setSystemType(SystemTypeEnums.REDE_ROS);
-        return groupSettingService.save(enter);
+    public GeneralResult save(RosSaveGroupEnter enter) {
+        SaveGroupEnter saveGroupEnter = new SaveGroupEnter();
+        BeanUtils.copyProperties(enter, saveGroupEnter);
+        saveGroupEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        return groupSettingService.save(saveGroupEnter);
     }
 
     /**
@@ -150,9 +158,9 @@ public class RosGroupServiceImpl implements RosGroupService {
             // 找到创建人的名字和修改人的名字
             getUserName(groupList);
             // 现在创建人和修改人都补全了
-            List<GroupExportResult> exportList = new ArrayList<>();
+            List<RosGroupExportResult> exportList = new ArrayList<>();
             for (GroupResult group : groupList) {
-                GroupExportResult export = new GroupExportResult();
+                RosGroupExportResult export = new RosGroupExportResult();
                 export.setGroupName(group.getGroupName());
                 export.setDescription(group.getDesc());
                 export.setEnable(group.getEnable()==1?"Yes":"No");
@@ -177,7 +185,7 @@ public class RosGroupServiceImpl implements RosGroupService {
                 ExportParams exportParams = new ExportParams();
                 exportParams.setSheetName("group");
                 // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
-                Workbook workbook = ExcelExportUtil.exportExcel(exportParams, GroupExportResult.class, exportList);
+                Workbook workbook = ExcelExportUtil.exportExcel(exportParams, RosGroupExportResult.class, exportList);
                 workbook.write(response.getOutputStream());
             } catch (Exception e) {
                 System.out.println("+++++++++++++++++++");

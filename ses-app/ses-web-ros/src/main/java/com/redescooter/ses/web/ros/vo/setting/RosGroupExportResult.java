@@ -11,7 +11,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
-public class GroupExportResult {
+public class RosGroupExportResult {
 
     @Excel(name = "GROUP NAME")
     private String groupName;

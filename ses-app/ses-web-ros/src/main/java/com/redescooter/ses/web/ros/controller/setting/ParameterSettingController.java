@@ -2,10 +2,10 @@ package com.redescooter.ses.web.ros.controller.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
-import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import com.redescooter.ses.web.ros.service.setting.ParameterService;
+import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,7 +33,7 @@ public class ParameterSettingController {
 
     @ApiOperation(value = "参数列表", response = ParameterResult.class)
     @PostMapping(value = "/list")
-    public Response<PageResult<ParameterResult>> list(@ModelAttribute @ApiParam("请求参数") ParameterListEnter enter) {
+    public Response<PageResult<ParameterResult>> list(@ModelAttribute @ApiParam("请求参数") RosParameterListEnter enter) {
         return new Response<>(parameterService.list(enter));
     }
 
@@ -63,7 +63,7 @@ public class ParameterSettingController {
 
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveParamentEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveParamentEnter enter) {
         return new Response<>(parameterService.save(enter));
     }
 
