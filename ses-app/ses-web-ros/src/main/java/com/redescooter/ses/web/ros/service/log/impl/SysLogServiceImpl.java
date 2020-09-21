@@ -61,6 +61,7 @@ public class SysLogServiceImpl implements SysLogService {
         String[] ids = id.split(",");
         QueryWrapper<OpeSysLog> qw = new QueryWrapper<>();
         qw.in(OpeSysLog.COL_ID,ids);
+        qw.orderByDesc(OpeSysLog.COL_CREATED_TIME);
         List<OpeSysLog> logs = opeSysLogService.list(qw);
         if(CollectionUtils.isNotEmpty(logs)){
             List<LogExport> list = new ArrayList<>();
