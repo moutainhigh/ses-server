@@ -166,8 +166,10 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      * @return
      */
     @Override
-    public List<ParameterGroupResultList> groupList(GeneralEnter enter) {
+    public List<ParameterGroupResultList> groupList(StringEnter enter) {
         List<ParameterGroupResultList> result = new ArrayList<>();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSt());
         List<PlaSysGroupSetting> list = plaSysGroupSettingService.list();
         if (CollectionUtils.isEmpty(list)) {
             return result;

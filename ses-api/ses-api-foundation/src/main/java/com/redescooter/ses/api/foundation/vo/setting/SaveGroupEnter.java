@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.foundation.vo.setting;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -34,4 +35,7 @@ public class SaveGroupEnter extends GeneralEnter {
     @ApiModelProperty(value = "是否启用", allowableValues = "0,1")
     @NotNull(code = ValidationExceptionCode.ENABLE_IS_EMPTY, message = "启用按钮为空")
     private String enable;
+
+    @ApiModelProperty(value = "系统类型", allowableValues = "0,1")
+    private SystemTypeEnums systemType;
 }
