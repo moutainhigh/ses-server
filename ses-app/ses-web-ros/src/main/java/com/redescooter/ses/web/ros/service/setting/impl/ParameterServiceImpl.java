@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.setting.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
@@ -34,6 +35,7 @@ public class ParameterServiceImpl implements ParameterService {
      */
     @Override
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
+        enter.setSystemType(SystemTypeEnums.REDE_ROS);
         PageResult<ParameterResult> list = parameterSettingService.list(enter);
 
 

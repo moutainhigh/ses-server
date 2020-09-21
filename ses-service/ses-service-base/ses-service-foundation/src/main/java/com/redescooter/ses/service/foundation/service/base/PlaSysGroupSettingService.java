@@ -19,3 +19,4 @@ public interface PlaSysGroupSettingService extends IService<PlaSysGroupSetting> 
     int insertOrUpdateSelective(PlaSysGroupSetting record);
 
 }
+

@@ -31,3 +31,4 @@ public class PlaSysGroupSettingServiceImpl extends ServiceImpl<PlaSysGroupSettin
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
