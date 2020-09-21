@@ -70,7 +70,7 @@ public class SysLogServiceImpl implements SysLogService {
                 logExport.setOpUserName(sysLog.getOpUserName());
                 logExport.setLogContent(sysLog.getIfSuccess()==null?"fail":(sysLog.getIfSuccess()==1?"success":"fail"));
                 logExport.setLoginIp(sysLog.getLoginIp());
-                logExport.setCreatedTime(DateUtil.format(sysLog.getCreatedTime(),null));
+                logExport.setCreatedTime(DateUtil.format(DateUtil.dateAddHour(sysLog.getCreatedTime(),8),null));
                 logExport.setOpModul(sysLog.getOpModul());
                 logExport.setTimeConsum(sysLog.getTimeConsum()==null?"0":sysLog.getTimeConsum()+"");
                 list.add(logExport);

@@ -159,12 +159,12 @@ public class RosGroupServiceImpl implements RosGroupService {
                 if(Strings.isNullOrEmpty(export.getFounder())){
                     export.setFounder("--");
                 }
-                export.setCreatedTime(group.getCreatedTime()==null?"--": DateUtil.format(group.getCreatedTime(),""));
+                export.setCreatedTime(group.getCreatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getCreatedTime(),8),""));
                 export.setUpdater(group.getUpdatedByFirstName()+" "+group.getUpdatedByLastName());
                 if(Strings.isNullOrEmpty(export.getUpdater())){
                     export.setFounder("--");
                 }
-                export.setUpdatedTime(group.getUpdatedTime()==null?"--": DateUtil.format(group.getUpdatedTime(),""));
+                export.setUpdatedTime(group.getUpdatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getCreatedTime(),8),""));
                 exportList.add(export);
             }
             try {
