@@ -124,6 +124,7 @@ public class RosGroupServiceImpl implements RosGroupService {
      */
     @Override
     public GeneralResult save(SaveGroupEnter enter) {
+        enter.setSystemType(SystemTypeEnums.REDE_ROS);
         return groupSettingService.save(enter);
     }
 

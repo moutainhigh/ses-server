@@ -137,6 +137,7 @@ public class ParameterServiceImpl implements ParameterService {
      */
     @Override
     public GeneralResult save(SaveParamentEnter enter) {
+        enter.setSystemType(SystemTypeEnums.REDE_ROS);
         return parameterSettingService.save(enter);
     }
 
@@ -157,6 +158,6 @@ public class ParameterServiceImpl implements ParameterService {
      */
     @Override
     public List<ParameterGroupResultList> groupList(GeneralEnter enter) {
-        return parameterSettingService.groupList(enter);
+        return parameterSettingService.groupList(new StringEnter(SystemTypeEnums.REDE_ROS.getValue()));
     }
 }

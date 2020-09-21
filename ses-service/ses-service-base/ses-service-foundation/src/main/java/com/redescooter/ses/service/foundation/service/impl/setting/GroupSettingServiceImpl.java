@@ -2,7 +2,6 @@ package com.redescooter.ses.service.foundation.service.impl.setting;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -21,7 +20,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,7 +117,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         return PlaSysGroupSetting.builder()
                 .dr(0)
                 .groupName(enter.getGroupName())
-                .systemType(SystemTypeEnums.REDE_ROS.getValue())
+            .systemType(enter.getSystemType().getValue())
                 .desc(enter.getDesc())
                 .enable(StringUtils.equals(enter.getEnable(), "0") ? Boolean.FALSE : Boolean.TRUE)
                 .updatedBy(enter.getUserId())
