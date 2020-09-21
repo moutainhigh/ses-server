@@ -1,8 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.setting;
 
-import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -21,5 +19,5 @@ public class ParameterListEnter extends PageEnter {
     private String keyword;
 
     @ApiModelProperty(value = "系统类型", hidden = true)
-    private SystemTypeEnums systemType;
+    private String systemType;
 }

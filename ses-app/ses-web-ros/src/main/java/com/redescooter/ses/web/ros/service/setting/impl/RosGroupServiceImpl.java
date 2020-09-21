@@ -57,7 +57,7 @@ public class RosGroupServiceImpl implements RosGroupService {
         GroupListEnter groupListEnter = new GroupListEnter();
 
         BeanUtils.copyProperties(enter, groupListEnter);
-        groupListEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        groupListEnter.setSystemType(SystemTypeEnums.REDE_ROS.getValue());
         PageResult<GroupResult> list = groupSettingService.list(groupListEnter);
         if (CollectionUtils.isEmpty(list.getList())) {
             return list;

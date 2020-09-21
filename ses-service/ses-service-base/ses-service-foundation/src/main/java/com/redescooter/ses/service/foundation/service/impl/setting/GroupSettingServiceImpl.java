@@ -54,7 +54,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Override
     public PageResult<GroupResult> list(GroupListEnter enter) {
         QueryWrapper<PlaSysGroupSetting> groupQueryWrapper = new QueryWrapper<>();
-        groupQueryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSystemType().getValue());
+        groupQueryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSystemType());
         if (StringUtils.isNotEmpty(enter.getKeyword())) {
             groupQueryWrapper.like(PlaSysGroupSetting.COL_GROUP_NAME, enter.getKeyword());
         }

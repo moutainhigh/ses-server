@@ -40,7 +40,7 @@ public class ParameterServiceImpl implements ParameterService {
     public PageResult<ParameterResult> list(RosParameterListEnter enter) {
         ParameterListEnter parameterListEnter = new ParameterListEnter();
         BeanUtils.copyProperties(enter, parameterListEnter);
-        parameterListEnter.setSystemType(SystemTypeEnums.REDE_ROS);
+        parameterListEnter.setSystemType(SystemTypeEnums.REDE_ROS.getValue());
         PageResult<ParameterResult> list = parameterSettingService.list(parameterListEnter);
 
 
