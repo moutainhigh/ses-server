@@ -36,6 +36,6 @@ spring:                                                                         
     username: support@redelectric.f
     host: smtp.gmail.com
     # 邮箱原密码
-    password: RedE2020
+    password: xtiflxdroztqmxxw
     port: 465
     protocol: smtp
