@@ -173,6 +173,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
         List<ParameterGroupResultList> result = new ArrayList<>();
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSt());
+        queryWrapper.eq(PlaSysGroupSetting.COL_ENABLE, Boolean.TRUE);
         List<PlaSysGroupSetting> list = plaSysGroupSettingService.list();
         if (CollectionUtils.isEmpty(list)) {
             return result;
