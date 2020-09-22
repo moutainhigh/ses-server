@@ -37,5 +37,5 @@ spring:                                                                         
     host: smtp.gmail.com
     # 邮箱原密码
     password: xtiflxdroztqmxxw
-    port: 465
+    port: 25
     protocol: smtp
