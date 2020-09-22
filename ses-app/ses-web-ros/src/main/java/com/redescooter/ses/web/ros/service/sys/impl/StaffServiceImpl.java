@@ -360,6 +360,7 @@ public class StaffServiceImpl implements StaffService {
         // 判断邮箱在user表里面是否已经存在过
         QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
         qw.eq(OpeSysUser.COL_LOGIN_NAME, staff.getEmail());
+        qw.eq(OpeSysUser.COL_APP_ID, AppIDEnums.SES_ROS.getValue());
         int count = opeSysUserService.count(qw);
         if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());

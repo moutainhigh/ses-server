@@ -115,7 +115,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).last(
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getAppId,AppIDEnums.SES_WEBSITE.getValue()).last(
                         "limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -237,7 +237,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 .dr(0)
                 .deptId(0L)
                 .orgStaffId(0L)
-                .appId(AppIDEnums.SES_ROS.getValue())
+                .appId(AppIDEnums.SES_WEBSITE.getValue())
                 .systemId(AppIDEnums.SES_ROS.getSystemId())
                 .password(DigestUtils.md5Hex(decryptPassword + salt))
                 .salt(String.valueOf(salt))
