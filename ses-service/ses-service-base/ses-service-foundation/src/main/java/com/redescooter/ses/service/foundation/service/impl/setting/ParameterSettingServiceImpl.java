@@ -95,6 +95,9 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
         if (plaSysParamSetting == null) {
             throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
+        if(plaSysParamSetting.getEnable()){
+            throw new FoundationException(ExceptionCodeEnums.ENABLE_NOT_DELETE.getCode(), ExceptionCodeEnums.ENABLE_NOT_DELETE.getMessage());
+        }
         plaSysParamSettingService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }

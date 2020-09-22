@@ -137,6 +137,9 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         if (plaSysGroupSetting == null) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
+        if(plaSysGroupSetting.getEnable()){
+            throw new FoundationException(ExceptionCodeEnums.ENABLE_NOT_DELETE.getCode(), ExceptionCodeEnums.ENABLE_NOT_DELETE.getMessage());
+        }
         plaSysGroupSettingService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
