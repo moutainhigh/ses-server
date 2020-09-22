@@ -27,6 +27,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocument
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -500,7 +501,7 @@ public class SesWebRosApplicationTests {
         for (int i = 0; i < 10; i++) {
             try {
                 List<SellsyIdResult> dcumentTotalList =
-                        sellsyDocumentService.createDcumentTotalList();
+                        sellsyDocumentService.createDcumentTotalList(null);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("--------------出错了第{}重试----------", i);
@@ -518,7 +519,7 @@ public class SesWebRosApplicationTests {
     public void docuemntUploadFile() {
         QueryWrapper sellsyInvoiceWrapper = new QueryWrapper();
         sellsyInvoiceWrapper.eq(SellsyInvoiceTotal.COL_DEF1, SellsyBooleanEnums.Y);
-        sellsyInvoiceWrapper.in(SellsyInvoiceTotal.COL_DEF3, SellsyBooleanEnums.N, null);
+        sellsyInvoiceWrapper.isNull(SellsyInvoiceTotal.COL_DEF3);
         List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list();
 
         if (CollectionUtils.isEmpty(sellsyInvoiceTotalList)) {
@@ -538,13 +539,28 @@ public class SesWebRosApplicationTests {
                             .linkedid(Integer.valueOf(item.getDef2()))
                             .fileUrl(item.getDef5())
                             .build();
-            briefcasesService.briefcasesUploadFile(enter, null);
+            SellsyBriefcaseUploadFileResult sellsyBriefcaseUploadFileResult = briefcasesService.briefcasesUploadFile(enter, null);
             item.setDef3(String.valueOf(SellsyBooleanEnums.Y));
-            updateSellsyTotalList.add(item);
+            item.setDef6(Double.valueOf(sellsyBriefcaseUploadFileResult.getFile_id()));
+            //pdateSellsyTotalList.add(item);
+            sellsyInvoiceTotalService.updateById(item);
         }
         if (CollectionUtils.isNotEmpty(updateSellsyTotalList)) {
             sellsyInvoiceTotalService.updateBatch(updateSellsyTotalList);
         }
+    }
+
+    @Test
+    public void updaloadPciture() {
+        SellsyBriefcasesUploadFileEnter enter =
+                SellsyBriefcasesUploadFileEnter
+                        .builder()
+                        .linkedtype(SellsyBriefcaseTypeEnums.invoice)
+                        .linkedid(Integer.valueOf(20111882))
+                        .fileUrl("https://rede.oss-cn-shanghai.aliyuncs.com/invoice/16004095725194269.pdf")
+                        .build();
+        SellsyBriefcaseUploadFileResult sellsyBriefcaseUploadFileResult = briefcasesService.briefcasesUploadFile(enter, null);
+        log.info(sellsyBriefcaseUploadFileResult);
     }
 }
 

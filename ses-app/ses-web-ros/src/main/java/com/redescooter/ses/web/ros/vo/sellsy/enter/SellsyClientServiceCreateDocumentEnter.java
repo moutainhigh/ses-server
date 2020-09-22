@@ -21,9 +21,12 @@ public class SellsyClientServiceCreateDocumentEnter {
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_DOCTYPE_IS_EMPTY, message = "单据为空")
     private SellsyDocmentTypeEnums doctype;
 
+    //文件Id
+    private Integer docId;
+
     //客户Id
     @NotNull(code = ThirdValidationExceptionCode.SELLSY_CLIENT_ID_IS_EMPTY, message = "客户Id 为空")
-    private int thirdid;
+    private Integer thirdid;
 
     // 发票编号 支持自定义 如果 发票编号和已存在发票编号 重复sellsy 会自动生成新发票
     private String ident;

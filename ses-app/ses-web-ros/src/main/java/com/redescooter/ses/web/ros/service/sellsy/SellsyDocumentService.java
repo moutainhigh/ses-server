@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
@@ -40,8 +43,16 @@ public interface SellsyDocumentService {
      */
     public SellsyIdResult createDocument(SellsyClientServiceCreateDocumentEnter enter);
 
+    /**
+     * 文件更新
+     * @param enter
+     * @return
+     */
+    public SellsyIdResult updateDocument(SellsyExecutionEnter enter);
+
 
     //public void deleteDocument()；
+
     /**
      * 更新单据状态
      * @param enter
@@ -74,5 +85,20 @@ public interface SellsyDocumentService {
      * 一整张发票为主整体 创建发票
      * @return
      */
-    List<SellsyIdResult> createDcumentTotalList();
+    List<SellsyIdResult> createDcumentTotalList(IdEnter enter);
+
+    public List<SellsyIdResult> createDcumentTotalOne(IdEnter enter);
+
+    /**
+     * 确认以生成的发票是否都存在
+     * @return
+     */
+    GeneralResult checkDocumentExist(IdEnter enter);
+
+    /**
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult checkDocumentTTCFile(IdEnter enter);
 }

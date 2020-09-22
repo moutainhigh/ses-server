@@ -27,7 +27,7 @@ public class SellsyClientController {
     @ApiOperation(value = "查询指定客户", response = SellsyClientResult.class)
     @PostMapping(value = "/queryClientById")
     public Response<SellsyClientResult>
-        queryClientById(@ModelAttribute @ApiParam("请求参数") SellsyQueryClientOneEnter enter) {
+    queryClientById(@ModelAttribute @ApiParam("请求参数") SellsyQueryClientOneEnter enter) {
         return new Response<>(sellsyClientService.queryClientOne(enter));
     }
 

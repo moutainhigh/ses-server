@@ -67,6 +67,8 @@ public interface SellsyMethodConstant {
     //更新单据状态
     String Document_UpdateStep = "Document.updateStep";
 
+    String Document_Update = "Document.update";
+
 
     // 获取货币列表
     String AccountPrefs_GetCurrencies = "AccountPrefs.getCurrencies";

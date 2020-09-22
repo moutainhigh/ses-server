@@ -270,10 +270,17 @@ constant-us-email:
     - 123@qq.com
 
 sellsy:
-  consumer-token: b5f031688a37f258e85aa01d9bc6e400f32bc9ea
-  consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
-  user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
-  user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+  #group 密钥
+  #  consumer-token: b5f031688a37f258e85aa01d9bc6e400f32bc9ea
+  #  consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
+  #  user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
+  #  user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+
+  #rental 密钥
+  consumer-token: 968c60d765a8b39202c7a1ef3f29b3cd892a422b
+  consumer-secret: a28690878e010777062cd6e664b917a55cd67795
+  user-token: 0d4ddc2ad36ff62f6cd2aec92fd6342a1fe3ab55
+  user-secret: 748e30887ee517046c3696097742718257fbb209
   decimal-places: 3 #指保留几位小数
   rate-category: Tarif TTC #增值税 百分比
   currency-unit: 1 # 货币单位 Id 货币单位列表有系统生成不会改变

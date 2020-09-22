@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.sellsy;
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
@@ -34,7 +35,7 @@ public class SellsyDocumentController {
     @ApiOperation(value = "单据列表", response = SellsyDocumentListResult.class)
     @PostMapping(value = "/queryDocumentList")
     public Response<List<SellsyDocumentListResult>>
-        queryDocumentList(@ModelAttribute @ApiParam("请求参数") SellsyDocumentListEnter enter) {
+    queryDocumentList(@ModelAttribute @ApiParam("请求参数") SellsyDocumentListEnter enter) {
         return new Response<>(documentService.queryDocumentList(enter));
     }
 
@@ -55,20 +56,31 @@ public class SellsyDocumentController {
     @IgnoreLoginCheck
     @ApiOperation(value = "批量创建", response = GeneralResult.class)
     @PostMapping(value = "/createDcumentTotalList")
-    public Response<GeneralResult> createDcumentTotalList() {
-        int j = 0;
-        try {
-            for (int i = 0; i < 50; i++) {
-                j = i;
-                documentService.createDcumentTotalList();
-                log.debug("-----------休眠3秒--------");
-                wait(3000);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.debug("-----------出错了第{}重试--------", j);
-        }
+    public Response<GeneralResult> createDcumentTotalList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        documentService.createDcumentTotalList(enter);
         return new Response<>(new GeneralResult());
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "创建一个单据", response = GeneralResult.class)
+    @PostMapping(value = "/createDcumentTotalOne")
+    public Response<GeneralResult> createDcumentTotalOne(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        documentService.createDcumentTotalOne(enter);
+        return new Response<>(new GeneralResult());
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "checkDocumentExist", response = GeneralResult.class)
+    @PostMapping(value = "/checkDocumentExist")
+    public Response<GeneralResult> checkDocumentExist(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(documentService.checkDocumentExist(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "checkDocumentTTCFile", response = GeneralResult.class)
+    @PostMapping(value = "/checkDocumentTTCFile")
+    public Response<GeneralResult> checkDocumentTTCFile(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(documentService.checkDocumentTTCFile(enter));
     }
 
 

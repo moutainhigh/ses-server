@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sellsy.enter.client;
 
+import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyCommonPaginationEnter;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
@@ -13,4 +14,7 @@ public class SellsyClientListEnter {
 
     //查询
     private SellsyClientListSearchEnter search;
+
+    //分页
+    private SellsyCommonPaginationEnter pagination;
 }
