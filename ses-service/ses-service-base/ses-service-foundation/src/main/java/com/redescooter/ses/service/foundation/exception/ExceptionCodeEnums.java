@@ -114,7 +114,9 @@ public enum ExceptionCodeEnums {
 
     GROUP_IS_NOT_EXIST(10051, "分组不存在"),
 
-    PARAMETER_IS_NOT_EXIST(10051, "参数不存在"),
+    PARAMETER_IS_NOT_EXIST(10052, "参数不存在"),
+
+    ENABLE_NOT_DELETE(10053, "生效的数据不能删除"),
 
     ;
 
