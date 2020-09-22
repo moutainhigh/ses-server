@@ -32,9 +32,10 @@ spring:                                                                         
         - 172.31.6.136:7005
   # 邮件配置
   mail:
-    from: support@redelectric.fr
-    username: support@redelectric.fr
-    host: smtp.ionos.fr
+    from: lijerry816@gmail.com
+    username: lijerry816@gmail.com
+    host: smtp.gmail.com
     # 邮箱原密码
-    password: sh80QPSKjhqdou!
+    password: lijiating@816
     port: 465
+    protocol: smtp

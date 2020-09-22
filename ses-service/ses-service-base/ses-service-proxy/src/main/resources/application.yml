@@ -58,6 +58,8 @@ spring:
     properties:
       mail:
         smtp:
+          ssl:
+            enable: true
           auth: true
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
