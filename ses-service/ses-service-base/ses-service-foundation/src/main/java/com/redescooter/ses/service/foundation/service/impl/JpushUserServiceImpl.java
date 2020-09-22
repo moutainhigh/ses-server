@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.JpushUserService;
@@ -13,9 +14,9 @@ import com.redescooter.ses.service.foundation.dm.JpushUserData;
 import com.redescooter.ses.service.foundation.dm.base.PlaJpushUser;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.ddf.NullEscherSerializationListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * description: JpushUserServiceImpl
@@ -64,6 +66,15 @@ public class JpushUserServiceImpl implements JpushUserService {
         if (StringUtils.isBlank(enter.getRegistrationId())) {
             return new GeneralResult(enter.getRequestId());
         }
+
+        // 如果发现当前用户绑定有其他设备 直接删除设备绑定的令牌
+        List<PlaJpushUser> plaJpushUserList = jpushUserMapper
+            .selectList(new QueryWrapper<PlaJpushUser>().eq(PlaJpushUser.COL_USER_ID, enter.getUserId()));
+        if (CollectionUtils.isNotEmpty(plaJpushUserList)) {
+            jpushUserMapper
+                .deleteBatchIds(plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList()));
+        }
+
         PlaJpushUser jpushUser = null;
         JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId());
 
