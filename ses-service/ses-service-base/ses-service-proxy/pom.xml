@@ -80,7 +80,7 @@
             <properties>
                 <profile-active>pre</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
-                <jar.path>/Users/lijiating/Desktop/Jerry</jar.path>
+                <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
     </profiles>
