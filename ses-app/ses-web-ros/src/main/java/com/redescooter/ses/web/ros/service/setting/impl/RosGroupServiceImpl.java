@@ -203,7 +203,7 @@ public class RosGroupServiceImpl implements RosGroupService {
             // 补全创建人信息
             for (GroupResult result : groupList) {
                 for (OpeSysStaff staff : creatUserList) {
-                    if(result.getCreatedById() == staff.getId()){
+                    if(result.getCreatedById().equals(staff.getId())){
                         result.setCreatedByFirstName(staff.getFirstName());
                         result.setCreatedByLastName(staff.getLastName());
                     }
@@ -219,7 +219,7 @@ public class RosGroupServiceImpl implements RosGroupService {
             // 补全修改人信息
             for (GroupResult result : groupList) {
                 for (OpeSysStaff staff : updateUserList) {
-                    if(result.getUpdatedById() == staff.getId()){
+                    if(result.getUpdatedById().equals(staff.getId())){
                         result.setUpdatedByFirstName(staff.getFirstName());
                         result.setUpdatedByLastName(staff.getLastName());
                     }
