@@ -34,8 +34,17 @@ spring:                                                                         
   mail:
     from: support@redelectric.fr
     username: support@redelectric.fr
-    host: smtp.googlemail.com
+    host: smtp.ionos.fr
     # 邮箱原密码
-    password: xtiflxdroztqmxxw
-    port: 587
+    password: sh80QPSKjhqdou!
+    port: 465
  #   protocol: smtp
+
+  # 邮件配置
+#  mail:
+#    from: support@redelectric.fr
+#    username: support@redelectric.fr
+#    host: smtp.googlemail.com
+#    # 邮箱原密码
+#    password: xtiflxdroztqmxxw
+#    port: 587
