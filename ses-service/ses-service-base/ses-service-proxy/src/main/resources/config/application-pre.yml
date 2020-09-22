@@ -32,10 +32,10 @@ spring:                                                                         
         - 172.31.6.136:7005
   # 邮件配置
   mail:
-    from: lijerry816@gmail.com
-    username: lijerry816@gmail.com
+    from: support@redelectric.f
+    username: support@redelectric.f
     host: smtp.gmail.com
     # 邮箱原密码
-    password: btvsiiffefmxmepa
+    password: RedE2020
     port: 465
     protocol: smtp
