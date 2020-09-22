@@ -36,6 +36,6 @@ spring:                                                                         
     username: lijerry816@gmail.com
     host: smtp.gmail.com
     # 邮箱原密码
-    password: lijiating@816
+    password: btvsiiffefmxmepa
     port: 465
     protocol: smtp
