@@ -1,0 +1,127 @@
+package com.redescooter.ses.web.ros.service.restproduction;
+
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.*;
+
+import java.util.List;
+import java.util.Map;
+
+public interface RosServProductionProductService {
+    /**
+     * 状态统计
+     * 
+     * @param enter
+     * @return
+     */
+    Map<Integer, Integer> countByType(StringEnter enter);
+
+    /**
+     * 分组查询
+     * 
+     * @param generalEnter
+     * @return
+     */
+    List<BaseNameResult> groupList(GeneralEnter generalEnter);
+
+    /**
+     * 颜色查询
+     * 
+     * @param enter
+     * @return
+     */
+    List<BaseNameResult> colorList(GeneralEnter enter);
+
+    /**
+     * 车辆列表
+     * 
+     * @param enter
+     * @return
+     */
+    PageResult<RosProductionScooterListResult> scooterList(RosProductionScooterListEnter enter);
+
+    /**
+     * 组合列表
+     * 
+     * @param enter
+     * @return
+     */
+    PageResult<RosProductionCombinationListResult> combinationList(RosProductionCombinationListEnter enter);
+
+    /**
+     * 校验生效时间是否合理
+     * 
+     * @param enter
+     * @return
+     */
+    BooleanResult checkEffectiveDate(BaseTimeParmEnter enter);
+
+    /**
+     * excel 导入
+     * 
+     * @param enter
+     * @return
+     */
+    ImportExcelPartsResult saveScooterImportExcel(GeneralEnter enter);
+
+    /**
+     * 区域列表
+     * 
+     * @param enter
+     * @return
+     */
+    List<RosProductionSecResult> secList(GeneralEnter enter);
+
+    /**
+     * 部件查询列表
+     * 
+     * @param enter
+     * @return
+     */
+    PageResult<RosProductionProductPartListResult> productionProductPartList(RosProductionProductPartListEnter enter);
+
+    /**
+     * 车辆的保存
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult rosSaveProductionProduct(RosSaveProductonProductEnter enter);
+
+    /**
+     * 详情
+     * 
+     * @param enter
+     * @return
+     */
+    RosProductionProductDetailResult detail(RosProuductionTypeEnter enter);
+
+    /**
+     * 生效
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult takeEffect(IdEnter enter);
+
+    /**
+     * 产品禁用
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult productionProductDisable(IdEnter enter);
+
+    /**
+     * 发布
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult release(RosProuductionTypeEnter enter);
+
+}
