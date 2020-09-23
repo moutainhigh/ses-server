@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = {"生产车辆产品"})
+@Api(tags = {"生产组合产品"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/production/combination")
