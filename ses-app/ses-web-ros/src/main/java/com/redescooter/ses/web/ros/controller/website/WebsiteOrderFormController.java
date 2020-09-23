@@ -2,13 +2,7 @@ package com.redescooter.ses.web.ros.controller.website;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.website.*;
 import io.swagger.annotations.Api;
@@ -16,11 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -131,5 +121,12 @@ public class WebsiteOrderFormController {
     @ApiOperation(value = "存储邮箱", response = GeneralResult.class)
     public Response<GeneralResult> email(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
       return new Response<>(websiteOrderFormService.email(enter));
+  }
+
+  @IgnoreLoginCheck
+  @PostMapping(value = "/payAgainCheck")
+  @ApiOperation(value = "再次支付", response = GeneralResult.class)
+  public Response<GeneralResult> payAgainCheck(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+      return new Response<>(websiteOrderFormService.payAgainCheck(enter));
   }
 }

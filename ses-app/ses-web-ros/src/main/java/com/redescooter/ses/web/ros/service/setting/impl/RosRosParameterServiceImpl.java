@@ -10,7 +10,7 @@ import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.setting.ParameterService;
+import com.redescooter.ses.web.ros.service.setting.RosParameterService;
 import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ParameterServiceImpl implements ParameterService {
+public class RosRosParameterServiceImpl implements RosParameterService {
 
     @Reference
     private ParameterSettingService parameterSettingService;

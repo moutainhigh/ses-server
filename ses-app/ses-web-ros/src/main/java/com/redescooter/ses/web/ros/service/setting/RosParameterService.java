@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 
 import java.util.List;
 
-public interface ParameterService {
+public interface RosParameterService {
     /**
      * 参数名称
      * @param enter
