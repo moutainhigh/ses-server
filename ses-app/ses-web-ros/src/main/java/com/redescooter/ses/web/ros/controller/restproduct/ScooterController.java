@@ -1,11 +1,5 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
@@ -16,10 +10,14 @@ import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProduc
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductonProductEnter;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = {"生产车辆产品"})
 @CrossOrigin
@@ -101,8 +99,8 @@ public class ScooterController {
     }
 
     @PostMapping(value = "/release")
-    @ApiOperation(value = "发布", response = BaseNameResult.class)
-    public Response<List<BaseNameResult>> release(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+    @ApiOperation(value = "发布", response = GeneralResult.class)
+    public Response<GeneralResult> release(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.release(enter));
     }
 
