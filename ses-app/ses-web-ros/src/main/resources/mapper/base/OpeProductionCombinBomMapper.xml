@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionPartsMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionParts">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionCombinBomMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
     <!--@mbg.generated-->
-    <!--@Table ope_production_parts-->
+    <!--@Table ope_production_combin_bom-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="tenant_id" property="tenantId" />
     <result column="dept_id" property="deptId" />
-    <result column="parts_no" property="partsNo" />
-    <result column="parts_type" property="partsType" />
-    <result column="parts_sec" property="partsSec" />
-    <result column="disable" property="disable" />
-    <result column="sn_class" property="snClass" />
-    <result column="id_calss" property="idCalss" />
-    <result column="parts_is_assembly" property="partsIsAssembly" />
-    <result column="parts_is_for_assembly" property="partsIsForAssembly" />
-    <result column="parts_qty" property="partsQty" />
-    <result column="supplier_id" property="supplierId" />
+    <result column="version_identificat" property="versionIdentificat" />
+    <result column="bom_no" property="bomNo" />
     <result column="procurement_cycle" property="procurementCycle" />
-    <result column="dwg" property="dwg" />
-    <result column="remark" property="remark" />
+    <result column="effective_date" property="effectiveDate" />
+    <result column="group_id" property="groupId" />
+    <result column="color_id" property="colorId" />
+    <result column="disable" property="disable" />
+    <result column="bom_status" property="bomStatus" />
     <result column="announ_user_id" property="announUserId" />
     <result column="op_announ_user_id" property="opAnnounUserId" />
-    <result column="cn_name" property="cnName" />
+    <result column="versoin" property="versoin" />
     <result column="en_name" property="enName" />
-    <result column="fr_name" property="frName" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
@@ -38,14 +32,14 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-    id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-    dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+    group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+    en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_production_parts
+    update ope_production_combin_bom
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -62,54 +56,14 @@
           when id = #{item.id} then #{item.deptId}
         </foreach>
       </trim>
-      <trim prefix="parts_no = case" suffix="end,">
+      <trim prefix="version_identificat = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsNo}
+          when id = #{item.id} then #{item.versionIdentificat}
         </foreach>
       </trim>
-      <trim prefix="parts_type = case" suffix="end,">
+      <trim prefix="bom_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsType}
-        </foreach>
-      </trim>
-      <trim prefix="parts_sec = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsSec}
-        </foreach>
-      </trim>
-      <trim prefix="`disable` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.disable}
-        </foreach>
-      </trim>
-      <trim prefix="sn_class = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.snClass}
-        </foreach>
-      </trim>
-      <trim prefix="id_calss = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.idCalss}
-        </foreach>
-      </trim>
-      <trim prefix="parts_is_assembly = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsIsAssembly}
-        </foreach>
-      </trim>
-      <trim prefix="parts_is_for_assembly = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsIsForAssembly}
-        </foreach>
-      </trim>
-      <trim prefix="parts_qty = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsQty}
-        </foreach>
-      </trim>
-      <trim prefix="supplier_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.supplierId}
+          when id = #{item.id} then #{item.bomNo}
         </foreach>
       </trim>
       <trim prefix="procurement_cycle = case" suffix="end,">
@@ -117,14 +71,29 @@
           when id = #{item.id} then #{item.procurementCycle}
         </foreach>
       </trim>
-      <trim prefix="dwg = case" suffix="end,">
+      <trim prefix="effective_date = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dwg}
+          when id = #{item.id} then #{item.effectiveDate}
         </foreach>
       </trim>
-      <trim prefix="remark = case" suffix="end,">
+      <trim prefix="group_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.remark}
+          when id = #{item.id} then #{item.groupId}
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.colorId}
+        </foreach>
+      </trim>
+      <trim prefix="`disable` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.disable}
+        </foreach>
+      </trim>
+      <trim prefix="bom_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bomStatus}
         </foreach>
       </trim>
       <trim prefix="announ_user_id = case" suffix="end,">
@@ -137,19 +106,14 @@
           when id = #{item.id} then #{item.opAnnounUserId}
         </foreach>
       </trim>
-      <trim prefix="cn_name = case" suffix="end,">
+      <trim prefix="versoin = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.cnName}
+          when id = #{item.id} then #{item.versoin}
         </foreach>
       </trim>
       <trim prefix="en_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.enName}
-        </foreach>
-      </trim>
-      <trim prefix="fr_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.frName}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -205,58 +169,50 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_production_parts
-    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.partsNo}, #{item.partsType}, 
-        #{item.partsSec}, #{item.disable}, #{item.snClass}, #{item.idCalss}, #{item.partsIsAssembly}, 
-        #{item.partsIsForAssembly}, #{item.partsQty}, #{item.supplierId}, #{item.procurementCycle}, 
-        #{item.dwg}, #{item.remark}, #{item.announUserId}, #{item.opAnnounUserId}, #{item.cnName}, 
-        #{item.enName}, #{item.frName}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.versionIdentificat}, 
+        #{item.bomNo}, #{item.procurementCycle}, #{item.effectiveDate}, #{item.groupId}, 
+        #{item.colorId}, #{item.disable}, #{item.bomStatus}, #{item.announUserId}, #{item.opAnnounUserId}, 
+        #{item.versoin}, #{item.enName}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
         #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5}
         )
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionParts">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
     <!--@mbg.generated-->
-    insert into ope_production_parts
-    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def4, def5)
     values
-    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{partsNo}, #{partsType}, #{partsSec}, #{disable}, 
-      #{snClass}, #{idCalss}, #{partsIsAssembly}, #{partsIsForAssembly}, #{partsQty}, 
-      #{supplierId}, #{procurementCycle}, #{dwg}, #{remark}, #{announUserId}, #{opAnnounUserId}, 
-      #{cnName}, #{enName}, #{frName}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
-      #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{versionIdentificat}, #{bomNo}, #{procurementCycle}, 
+      #{effectiveDate}, #{groupId}, #{colorId}, #{disable}, #{bomStatus}, #{announUserId}, 
+      #{opAnnounUserId}, #{versoin}, #{enName}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
     tenant_id = #{tenantId}, 
     dept_id = #{deptId}, 
-    parts_no = #{partsNo}, 
-    parts_type = #{partsType}, 
-    parts_sec = #{partsSec}, 
-    `disable` = #{disable}, 
-    sn_class = #{snClass}, 
-    id_calss = #{idCalss}, 
-    parts_is_assembly = #{partsIsAssembly}, 
-    parts_is_for_assembly = #{partsIsForAssembly}, 
-    parts_qty = #{partsQty}, 
-    supplier_id = #{supplierId}, 
+    version_identificat = #{versionIdentificat}, 
+    bom_no = #{bomNo}, 
     procurement_cycle = #{procurementCycle}, 
-    dwg = #{dwg}, 
-    remark = #{remark}, 
+    effective_date = #{effectiveDate}, 
+    group_id = #{groupId}, 
+    color_id = #{colorId}, 
+    `disable` = #{disable}, 
+    bom_status = #{bomStatus}, 
     announ_user_id = #{announUserId}, 
     op_announ_user_id = #{opAnnounUserId}, 
-    cn_name = #{cnName}, 
+    versoin = #{versoin}, 
     en_name = #{enName}, 
-    fr_name = #{frName}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
@@ -267,9 +223,9 @@
     def4 = #{def4}, 
     def5 = #{def5}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionParts">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
     <!--@mbg.generated-->
-    insert into ope_production_parts
+    insert into ope_production_combin_bom
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -283,44 +239,29 @@
       <if test="deptId != null">
         dept_id,
       </if>
-      <if test="partsNo != null">
-        parts_no,
+      <if test="versionIdentificat != null">
+        version_identificat,
       </if>
-      <if test="partsType != null">
-        parts_type,
-      </if>
-      <if test="partsSec != null">
-        parts_sec,
-      </if>
-      <if test="disable != null">
-        `disable`,
-      </if>
-      <if test="snClass != null">
-        sn_class,
-      </if>
-      <if test="idCalss != null">
-        id_calss,
-      </if>
-      <if test="partsIsAssembly != null">
-        parts_is_assembly,
-      </if>
-      <if test="partsIsForAssembly != null">
-        parts_is_for_assembly,
-      </if>
-      <if test="partsQty != null">
-        parts_qty,
-      </if>
-      <if test="supplierId != null">
-        supplier_id,
+      <if test="bomNo != null">
+        bom_no,
       </if>
       <if test="procurementCycle != null">
         procurement_cycle,
       </if>
-      <if test="dwg != null">
-        dwg,
+      <if test="effectiveDate != null">
+        effective_date,
       </if>
-      <if test="remark != null">
-        remark,
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="colorId != null">
+        color_id,
+      </if>
+      <if test="disable != null">
+        `disable`,
+      </if>
+      <if test="bomStatus != null">
+        bom_status,
       </if>
       <if test="announUserId != null">
         announ_user_id,
@@ -328,14 +269,11 @@
       <if test="opAnnounUserId != null">
         op_announ_user_id,
       </if>
-      <if test="cnName != null">
-        cn_name,
+      <if test="versoin != null">
+        versoin,
       </if>
       <if test="enName != null">
         en_name,
-      </if>
-      <if test="frName != null">
-        fr_name,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -379,44 +317,29 @@
       <if test="deptId != null">
         #{deptId},
       </if>
-      <if test="partsNo != null">
-        #{partsNo},
+      <if test="versionIdentificat != null">
+        #{versionIdentificat},
       </if>
-      <if test="partsType != null">
-        #{partsType},
-      </if>
-      <if test="partsSec != null">
-        #{partsSec},
-      </if>
-      <if test="disable != null">
-        #{disable},
-      </if>
-      <if test="snClass != null">
-        #{snClass},
-      </if>
-      <if test="idCalss != null">
-        #{idCalss},
-      </if>
-      <if test="partsIsAssembly != null">
-        #{partsIsAssembly},
-      </if>
-      <if test="partsIsForAssembly != null">
-        #{partsIsForAssembly},
-      </if>
-      <if test="partsQty != null">
-        #{partsQty},
-      </if>
-      <if test="supplierId != null">
-        #{supplierId},
+      <if test="bomNo != null">
+        #{bomNo},
       </if>
       <if test="procurementCycle != null">
         #{procurementCycle},
       </if>
-      <if test="dwg != null">
-        #{dwg},
+      <if test="effectiveDate != null">
+        #{effectiveDate},
       </if>
-      <if test="remark != null">
-        #{remark},
+      <if test="groupId != null">
+        #{groupId},
+      </if>
+      <if test="colorId != null">
+        #{colorId},
+      </if>
+      <if test="disable != null">
+        #{disable},
+      </if>
+      <if test="bomStatus != null">
+        #{bomStatus},
       </if>
       <if test="announUserId != null">
         #{announUserId},
@@ -424,14 +347,11 @@
       <if test="opAnnounUserId != null">
         #{opAnnounUserId},
       </if>
-      <if test="cnName != null">
-        #{cnName},
+      <if test="versoin != null">
+        #{versoin},
       </if>
       <if test="enName != null">
         #{enName},
-      </if>
-      <if test="frName != null">
-        #{frName},
       </if>
       <if test="createdBy != null">
         #{createdBy},
@@ -475,44 +395,29 @@
       <if test="deptId != null">
         dept_id = #{deptId},
       </if>
-      <if test="partsNo != null">
-        parts_no = #{partsNo},
+      <if test="versionIdentificat != null">
+        version_identificat = #{versionIdentificat},
       </if>
-      <if test="partsType != null">
-        parts_type = #{partsType},
-      </if>
-      <if test="partsSec != null">
-        parts_sec = #{partsSec},
-      </if>
-      <if test="disable != null">
-        `disable` = #{disable},
-      </if>
-      <if test="snClass != null">
-        sn_class = #{snClass},
-      </if>
-      <if test="idCalss != null">
-        id_calss = #{idCalss},
-      </if>
-      <if test="partsIsAssembly != null">
-        parts_is_assembly = #{partsIsAssembly},
-      </if>
-      <if test="partsIsForAssembly != null">
-        parts_is_for_assembly = #{partsIsForAssembly},
-      </if>
-      <if test="partsQty != null">
-        parts_qty = #{partsQty},
-      </if>
-      <if test="supplierId != null">
-        supplier_id = #{supplierId},
+      <if test="bomNo != null">
+        bom_no = #{bomNo},
       </if>
       <if test="procurementCycle != null">
         procurement_cycle = #{procurementCycle},
       </if>
-      <if test="dwg != null">
-        dwg = #{dwg},
+      <if test="effectiveDate != null">
+        effective_date = #{effectiveDate},
       </if>
-      <if test="remark != null">
-        remark = #{remark},
+      <if test="groupId != null">
+        group_id = #{groupId},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId},
+      </if>
+      <if test="disable != null">
+        `disable` = #{disable},
+      </if>
+      <if test="bomStatus != null">
+        bom_status = #{bomStatus},
       </if>
       <if test="announUserId != null">
         announ_user_id = #{announUserId},
@@ -520,14 +425,11 @@
       <if test="opAnnounUserId != null">
         op_announ_user_id = #{opAnnounUserId},
       </if>
-      <if test="cnName != null">
-        cn_name = #{cnName},
+      <if test="versoin != null">
+        versoin = #{versoin},
       </if>
       <if test="enName != null">
         en_name = #{enName},
-      </if>
-      <if test="frName != null">
-        fr_name = #{frName},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},

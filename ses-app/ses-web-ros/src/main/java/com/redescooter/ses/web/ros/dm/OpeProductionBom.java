@@ -1,11 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,16 +8,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
- * 部件表
+ * 整车bom表
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionParts")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionBom")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_production_parts")
-public class OpeProductionParts implements Serializable {
+@TableName(value = "ope_production_bom")
+public class OpeProductionBom implements Serializable {
     /**
      * 主键id
      */
@@ -53,74 +52,18 @@ public class OpeProductionParts implements Serializable {
     private Long deptId;
 
     /**
-     * 部件编号
+     * 版本标识
      */
-    @TableField(value = "parts_no")
-    @ApiModelProperty(value = "部件编号")
-    private String partsNo;
+    @TableField(value = "version_identificat")
+    @ApiModelProperty(value = "版本标识")
+    private String versionIdentificat;
 
     /**
-     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination
+     * bom编号
      */
-    @TableField(value = "parts_type")
-    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
-    private Integer partsType;
-
-    /**
-     * 部件区域编码id
-     */
-    @TableField(value = "parts_sec")
-    @ApiModelProperty(value = "部件区域编码id")
-    private Long partsSec;
-
-    /**
-     * 是否禁用，0：否，1：是
-     */
-    @TableField(value = "`disable`")
-    @ApiModelProperty(value = "是否禁用，0：否，1：是")
-    private Integer disable;
-
-    /**
-     * 是否可采购，0：否，1：是
-     */
-    @TableField(value = "sn_class")
-    @ApiModelProperty(value = "是否可采购，0：否，1：是")
-    private Integer snClass;
-
-    /**
-     * 是否有序列号，0：否，1：是
-     */
-    @TableField(value = "id_calss")
-    @ApiModelProperty(value = "是否有序列号，0：否，1：是")
-    private Integer idCalss;
-
-    /**
-     * 是否是组装件，0：否，1：是
-     */
-    @TableField(value = "parts_is_assembly")
-    @ApiModelProperty(value = "是否是组装件，0：否，1：是")
-    private Integer partsIsAssembly;
-
-    /**
-     * 是否可用于组装件，0：否，1：是
-     */
-    @TableField(value = "parts_is_for_assembly")
-    @ApiModelProperty(value = "是否可用于组装件，0：否，1：是")
-    private Integer partsIsForAssembly;
-
-    /**
-     * 部品数量
-     */
-    @TableField(value = "parts_qty")
-    @ApiModelProperty(value = "部品数量")
-    private Integer partsQty;
-
-    /**
-     * 供应商id
-     */
-    @TableField(value = "supplier_id")
-    @ApiModelProperty(value = "供应商id")
-    private Long supplierId;
+    @TableField(value = "bom_no")
+    @ApiModelProperty(value = "bom编号")
+    private String bomNo;
 
     /**
      * 采购周期
@@ -130,18 +73,39 @@ public class OpeProductionParts implements Serializable {
     private Integer procurementCycle;
 
     /**
-     * 图纸
+     * 激活时间
      */
-    @TableField(value = "dwg")
-    @ApiModelProperty(value = "图纸")
-    private String dwg;
+    @TableField(value = "effective_date")
+    @ApiModelProperty(value = "激活时间")
+    private Date effectiveDate;
 
     /**
-     * 备注
+     * 分组的id
      */
-    @TableField(value = "remark")
-    @ApiModelProperty(value = "备注")
-    private String remark;
+    @TableField(value = "group_id")
+    @ApiModelProperty(value = "分组的id")
+    private Long groupId;
+
+    /**
+     * 颜色的id
+     */
+    @TableField(value = "color_id")
+    @ApiModelProperty(value = "颜色的id")
+    private Long colorId;
+
+    /**
+     * 是否禁用，0：否，1：是
+     */
+    @TableField(value = "`disable`")
+    @ApiModelProperty(value = "是否禁用，0：否，1：是")
+    private Integer disable;
+
+    /**
+     * 状态，1：未激活，2：已激活，2：已失效
+     */
+    @TableField(value = "bom_status")
+    @ApiModelProperty(value = "状态，1：未激活，2：已激活，2：已失效")
+    private Integer bomStatus;
 
     /**
      * 发布人id
@@ -158,25 +122,18 @@ public class OpeProductionParts implements Serializable {
     private Long opAnnounUserId;
 
     /**
-     * 中文名称
+     * 版本
      */
-    @TableField(value = "cn_name")
-    @ApiModelProperty(value = "中文名称")
-    private String cnName;
+    @TableField(value = "versoin")
+    @ApiModelProperty(value = "版本")
+    private String versoin;
 
     /**
-     * 英文名称
+     * 名称
      */
     @TableField(value = "en_name")
-    @ApiModelProperty(value = "英文名称")
+    @ApiModelProperty(value = "名称")
     private String enName;
-
-    /**
-     * 法文名称
-     */
-    @TableField(value = "fr_name")
-    @ApiModelProperty(value = "法文名称")
-    private String frName;
 
     /**
      * 创建人
@@ -251,41 +208,29 @@ public class OpeProductionParts implements Serializable {
 
     public static final String COL_DEPT_ID = "dept_id";
 
-    public static final String COL_PARTS_NO = "parts_no";
+    public static final String COL_VERSION_IDENTIFICAT = "version_identificat";
 
-    public static final String COL_PARTS_TYPE = "parts_type";
-
-    public static final String COL_PARTS_SEC = "parts_sec";
-
-    public static final String COL_DISABLE = "disable";
-
-    public static final String COL_SN_CLASS = "sn_class";
-
-    public static final String COL_ID_CALSS = "id_calss";
-
-    public static final String COL_PARTS_IS_ASSEMBLY = "parts_is_assembly";
-
-    public static final String COL_PARTS_IS_FOR_ASSEMBLY = "parts_is_for_assembly";
-
-    public static final String COL_PARTS_QTY = "parts_qty";
-
-    public static final String COL_SUPPLIER_ID = "supplier_id";
+    public static final String COL_BOM_NO = "bom_no";
 
     public static final String COL_PROCUREMENT_CYCLE = "procurement_cycle";
 
-    public static final String COL_DWG = "dwg";
+    public static final String COL_EFFECTIVE_DATE = "effective_date";
 
-    public static final String COL_REMARK = "remark";
+    public static final String COL_GROUP_ID = "group_id";
+
+    public static final String COL_COLOR_ID = "color_id";
+
+    public static final String COL_DISABLE = "disable";
+
+    public static final String COL_BOM_STATUS = "bom_status";
 
     public static final String COL_ANNOUN_USER_ID = "announ_user_id";
 
     public static final String COL_OP_ANNOUN_USER_ID = "op_announ_user_id";
 
-    public static final String COL_CN_NAME = "cn_name";
+    public static final String COL_VERSOIN = "versoin";
 
     public static final String COL_EN_NAME = "en_name";
-
-    public static final String COL_FR_NAME = "fr_name";
 
     public static final String COL_CREATED_BY = "created_by";
 

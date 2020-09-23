@@ -1,29 +1,16 @@
 package com.redescooter.ses.web.ros.dao.base;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
-public interface OpeProductionPartsMapper {
-    int deleteByPrimaryKey(Long id);
+public interface OpeProductionPartsMapper extends BaseMapper<OpeProductionParts> {
+    int updateBatch(List<OpeProductionParts> list);
 
-    int insert(OpeProductionParts record);
+    int batchInsert(@Param("list") List<OpeProductionParts> list);
 
     int insertOrUpdate(OpeProductionParts record);
 
     int insertOrUpdateSelective(OpeProductionParts record);
-
-    int insertSelective(OpeProductionParts record);
-
-    OpeProductionParts selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(OpeProductionParts record);
-
-    int updateByPrimaryKey(OpeProductionParts record);
-
-    int updateBatch(List<OpeProductionParts> list);
-
-    int batchInsert(@Param("list") List<OpeProductionParts> list);
 }

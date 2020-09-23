@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionCombinBomDraftMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft">
+    <!--@mbg.generated-->
+    <!--@Table ope_production_combin_bom_draft-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="dept_id" property="deptId" />
+    <result column="bom_no" property="bomNo" />
+    <result column="procurement_cycle" property="procurementCycle" />
+    <result column="group_id" property="groupId" />
+    <result column="color_id" property="colorId" />
+    <result column="en_name" property="enName" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, en_name, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_production_combin_bom_draft
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deptId}
+        </foreach>
+      </trim>
+      <trim prefix="bom_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bomNo}
+        </foreach>
+      </trim>
+      <trim prefix="procurement_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.procurementCycle}
+        </foreach>
+      </trim>
+      <trim prefix="group_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.groupId}
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.colorId}
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.enName}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom_draft
+    (id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, en_name, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.bomNo}, #{item.procurementCycle}, 
+        #{item.groupId}, #{item.colorId}, #{item.enName}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def4}, #{item.def5})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom_draft
+    (id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, en_name, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{bomNo}, #{procurementCycle}, #{groupId}, 
+      #{colorId}, #{enName}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+      #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    dept_id = #{deptId}, 
+    bom_no = #{bomNo}, 
+    procurement_cycle = #{procurementCycle}, 
+    group_id = #{groupId}, 
+    color_id = #{colorId}, 
+    en_name = #{enName}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom_draft
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="bomNo != null">
+        bom_no,
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="colorId != null">
+        color_id,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="deptId != null">
+        #{deptId},
+      </if>
+      <if test="bomNo != null">
+        #{bomNo},
+      </if>
+      <if test="procurementCycle != null">
+        #{procurementCycle},
+      </if>
+      <if test="groupId != null">
+        #{groupId},
+      </if>
+      <if test="colorId != null">
+        #{colorId},
+      </if>
+      <if test="enName != null">
+        #{enName},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId},
+      </if>
+      <if test="bomNo != null">
+        bom_no = #{bomNo},
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle = #{procurementCycle},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>

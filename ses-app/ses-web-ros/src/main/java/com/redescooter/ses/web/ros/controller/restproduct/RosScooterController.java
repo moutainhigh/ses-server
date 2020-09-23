@@ -23,7 +23,7 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/production/scooter")
-public class ScooterController {
+public class RosScooterController {
 
     @Autowired
     private RosServProductionProductService rosServProductionProductService;

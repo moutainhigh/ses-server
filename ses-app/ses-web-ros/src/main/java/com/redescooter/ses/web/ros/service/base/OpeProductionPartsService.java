@@ -1,28 +1,20 @@
 package com.redescooter.ses.web.ros.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-public interface OpeProductionPartsService{
 
-
-    int deleteByPrimaryKey(Long id);
-
-    int insert(OpeProductionParts record);
-
-    int insertOrUpdate(OpeProductionParts record);
-
-    int insertOrUpdateSelective(OpeProductionParts record);
-
-    int insertSelective(OpeProductionParts record);
-
-    OpeProductionParts selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(OpeProductionParts record);
-
-    int updateByPrimaryKey(OpeProductionParts record);
+@Transactional
+public interface OpeProductionPartsService extends IService<OpeProductionParts> {
 
     int updateBatch(List<OpeProductionParts> list);
 
     int batchInsert(List<OpeProductionParts> list);
+
+    int insertOrUpdate(OpeProductionParts record);
+
+    int insertOrUpdateSelective(OpeProductionParts record);
 
 }

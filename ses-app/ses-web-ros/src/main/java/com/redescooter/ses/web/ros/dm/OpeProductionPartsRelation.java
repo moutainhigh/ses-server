@@ -1,11 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -13,16 +8,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
- * 部件表
+ * 部件关系表
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionParts")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionPartsRelation")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_production_parts")
-public class OpeProductionParts implements Serializable {
+@TableName(value = "ope_production_parts-relation")
+public class OpeProductionPartsRelation implements Serializable {
     /**
      * 主键id
      */
@@ -39,18 +38,25 @@ public class OpeProductionParts implements Serializable {
     private Integer dr;
 
     /**
-     * 租户ID
+     * 关联的对象id（整车的草稿、bom，组装的草稿、bom）
      */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
-    private Long tenantId;
+    @TableField(value = "production_id")
+    @ApiModelProperty(value = "关联的对象id（整车的草稿、bom，组装的草稿、bom）")
+    private Long productionId;
 
     /**
-     * 部门id（做数据权限用）
+     * 关联的对象类型，1：整车草稿，2：整车bom，3：组装草稿，4：组装bom
      */
-    @TableField(value = "dept_id")
-    @ApiModelProperty(value = "部门id（做数据权限用）")
-    private Long deptId;
+    @TableField(value = "production_type")
+    @ApiModelProperty(value = "关联的对象类型，1：整车草稿，2：整车bom，3：组装草稿，4：组装bom")
+    private Integer productionType;
+
+    /**
+     * 部件id
+     */
+    @TableField(value = "parts_id")
+    @ApiModelProperty(value = "部件id")
+    private Long partsId;
 
     /**
      * 部件编号
@@ -60,67 +66,11 @@ public class OpeProductionParts implements Serializable {
     private String partsNo;
 
     /**
-     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination
-     */
-    @TableField(value = "parts_type")
-    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
-    private Integer partsType;
-
-    /**
      * 部件区域编码id
      */
     @TableField(value = "parts_sec")
     @ApiModelProperty(value = "部件区域编码id")
     private Long partsSec;
-
-    /**
-     * 是否禁用，0：否，1：是
-     */
-    @TableField(value = "`disable`")
-    @ApiModelProperty(value = "是否禁用，0：否，1：是")
-    private Integer disable;
-
-    /**
-     * 是否可采购，0：否，1：是
-     */
-    @TableField(value = "sn_class")
-    @ApiModelProperty(value = "是否可采购，0：否，1：是")
-    private Integer snClass;
-
-    /**
-     * 是否有序列号，0：否，1：是
-     */
-    @TableField(value = "id_calss")
-    @ApiModelProperty(value = "是否有序列号，0：否，1：是")
-    private Integer idCalss;
-
-    /**
-     * 是否是组装件，0：否，1：是
-     */
-    @TableField(value = "parts_is_assembly")
-    @ApiModelProperty(value = "是否是组装件，0：否，1：是")
-    private Integer partsIsAssembly;
-
-    /**
-     * 是否可用于组装件，0：否，1：是
-     */
-    @TableField(value = "parts_is_for_assembly")
-    @ApiModelProperty(value = "是否可用于组装件，0：否，1：是")
-    private Integer partsIsForAssembly;
-
-    /**
-     * 部品数量
-     */
-    @TableField(value = "parts_qty")
-    @ApiModelProperty(value = "部品数量")
-    private Integer partsQty;
-
-    /**
-     * 供应商id
-     */
-    @TableField(value = "supplier_id")
-    @ApiModelProperty(value = "供应商id")
-    private Long supplierId;
 
     /**
      * 采购周期
@@ -130,32 +80,11 @@ public class OpeProductionParts implements Serializable {
     private Integer procurementCycle;
 
     /**
-     * 图纸
+     * 部品数量
      */
-    @TableField(value = "dwg")
-    @ApiModelProperty(value = "图纸")
-    private String dwg;
-
-    /**
-     * 备注
-     */
-    @TableField(value = "remark")
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
-    /**
-     * 发布人id
-     */
-    @TableField(value = "announ_user_id")
-    @ApiModelProperty(value = "发布人id")
-    private Long announUserId;
-
-    /**
-     * 操作发布人id
-     */
-    @TableField(value = "op_announ_user_id")
-    @ApiModelProperty(value = "操作发布人id")
-    private Long opAnnounUserId;
+    @TableField(value = "parts_qty")
+    @ApiModelProperty(value = "部品数量")
+    private Integer partsQty;
 
     /**
      * 中文名称
@@ -247,39 +176,19 @@ public class OpeProductionParts implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_TENANT_ID = "tenant_id";
+    public static final String COL_PRODUCTION_ID = "production_id";
 
-    public static final String COL_DEPT_ID = "dept_id";
+    public static final String COL_PRODUCTION_TYPE = "production_type";
+
+    public static final String COL_PARTS_ID = "parts_id";
 
     public static final String COL_PARTS_NO = "parts_no";
 
-    public static final String COL_PARTS_TYPE = "parts_type";
-
     public static final String COL_PARTS_SEC = "parts_sec";
-
-    public static final String COL_DISABLE = "disable";
-
-    public static final String COL_SN_CLASS = "sn_class";
-
-    public static final String COL_ID_CALSS = "id_calss";
-
-    public static final String COL_PARTS_IS_ASSEMBLY = "parts_is_assembly";
-
-    public static final String COL_PARTS_IS_FOR_ASSEMBLY = "parts_is_for_assembly";
-
-    public static final String COL_PARTS_QTY = "parts_qty";
-
-    public static final String COL_SUPPLIER_ID = "supplier_id";
 
     public static final String COL_PROCUREMENT_CYCLE = "procurement_cycle";
 
-    public static final String COL_DWG = "dwg";
-
-    public static final String COL_REMARK = "remark";
-
-    public static final String COL_ANNOUN_USER_ID = "announ_user_id";
-
-    public static final String COL_OP_ANNOUN_USER_ID = "op_announ_user_id";
+    public static final String COL_PARTS_QTY = "parts_qty";
 
     public static final String COL_CN_NAME = "cn_name";
 
