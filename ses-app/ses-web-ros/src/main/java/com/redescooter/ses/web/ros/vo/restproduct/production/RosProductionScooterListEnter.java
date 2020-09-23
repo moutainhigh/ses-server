@@ -14,7 +14,7 @@ import io.swagger.annotations.*;
 @Builder
 public class RosProductionScooterListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "页面类型")
+    @ApiModelProperty(value = "页面类型 草稿bom", allowableValues = "1,2")
     private Integer classType;
 
     @ApiModelProperty(value = "分组Id")
