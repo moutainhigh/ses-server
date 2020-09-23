@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionCombinBomMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    <!--@Table ope_production_combin_bom-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="dept_id" property="deptId" />
+    <result column="version_identificat" property="versionIdentificat" />
+    <result column="bom_no" property="bomNo" />
+    <result column="procurement_cycle" property="procurementCycle" />
+    <result column="effective_date" property="effectiveDate" />
+    <result column="group_id" property="groupId" />
+    <result column="color_id" property="colorId" />
+    <result column="disable" property="disable" />
+    <result column="bom_status" property="bomStatus" />
+    <result column="announ_user_id" property="announUserId" />
+    <result column="op_announ_user_id" property="opAnnounUserId" />
+    <result column="versoin" property="versoin" />
+    <result column="en_name" property="enName" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+    group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+    en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_production_combin_bom
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deptId}
+        </foreach>
+      </trim>
+      <trim prefix="version_identificat = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.versionIdentificat}
+        </foreach>
+      </trim>
+      <trim prefix="bom_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bomNo}
+        </foreach>
+      </trim>
+      <trim prefix="procurement_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.procurementCycle}
+        </foreach>
+      </trim>
+      <trim prefix="effective_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.effectiveDate}
+        </foreach>
+      </trim>
+      <trim prefix="group_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.groupId}
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.colorId}
+        </foreach>
+      </trim>
+      <trim prefix="`disable` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.disable}
+        </foreach>
+      </trim>
+      <trim prefix="bom_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.bomStatus}
+        </foreach>
+      </trim>
+      <trim prefix="announ_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.announUserId}
+        </foreach>
+      </trim>
+      <trim prefix="op_announ_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.opAnnounUserId}
+        </foreach>
+      </trim>
+      <trim prefix="versoin = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.versoin}
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.enName}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.versionIdentificat}, 
+        #{item.bomNo}, #{item.procurementCycle}, #{item.effectiveDate}, #{item.groupId}, 
+        #{item.colorId}, #{item.disable}, #{item.bomStatus}, #{item.announUserId}, #{item.opAnnounUserId}, 
+        #{item.versoin}, #{item.enName}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
+        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def4, def5)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{versionIdentificat}, #{bomNo}, #{procurementCycle}, 
+      #{effectiveDate}, #{groupId}, #{colorId}, #{disable}, #{bomStatus}, #{announUserId}, 
+      #{opAnnounUserId}, #{versoin}, #{enName}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    dept_id = #{deptId}, 
+    version_identificat = #{versionIdentificat}, 
+    bom_no = #{bomNo}, 
+    procurement_cycle = #{procurementCycle}, 
+    effective_date = #{effectiveDate}, 
+    group_id = #{groupId}, 
+    color_id = #{colorId}, 
+    `disable` = #{disable}, 
+    bom_status = #{bomStatus}, 
+    announ_user_id = #{announUserId}, 
+    op_announ_user_id = #{opAnnounUserId}, 
+    versoin = #{versoin}, 
+    en_name = #{enName}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="versionIdentificat != null">
+        version_identificat,
+      </if>
+      <if test="bomNo != null">
+        bom_no,
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle,
+      </if>
+      <if test="effectiveDate != null">
+        effective_date,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="colorId != null">
+        color_id,
+      </if>
+      <if test="disable != null">
+        `disable`,
+      </if>
+      <if test="bomStatus != null">
+        bom_status,
+      </if>
+      <if test="announUserId != null">
+        announ_user_id,
+      </if>
+      <if test="opAnnounUserId != null">
+        op_announ_user_id,
+      </if>
+      <if test="versoin != null">
+        versoin,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="deptId != null">
+        #{deptId},
+      </if>
+      <if test="versionIdentificat != null">
+        #{versionIdentificat},
+      </if>
+      <if test="bomNo != null">
+        #{bomNo},
+      </if>
+      <if test="procurementCycle != null">
+        #{procurementCycle},
+      </if>
+      <if test="effectiveDate != null">
+        #{effectiveDate},
+      </if>
+      <if test="groupId != null">
+        #{groupId},
+      </if>
+      <if test="colorId != null">
+        #{colorId},
+      </if>
+      <if test="disable != null">
+        #{disable},
+      </if>
+      <if test="bomStatus != null">
+        #{bomStatus},
+      </if>
+      <if test="announUserId != null">
+        #{announUserId},
+      </if>
+      <if test="opAnnounUserId != null">
+        #{opAnnounUserId},
+      </if>
+      <if test="versoin != null">
+        #{versoin},
+      </if>
+      <if test="enName != null">
+        #{enName},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId},
+      </if>
+      <if test="versionIdentificat != null">
+        version_identificat = #{versionIdentificat},
+      </if>
+      <if test="bomNo != null">
+        bom_no = #{bomNo},
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle = #{procurementCycle},
+      </if>
+      <if test="effectiveDate != null">
+        effective_date = #{effectiveDate},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId},
+      </if>
+      <if test="disable != null">
+        `disable` = #{disable},
+      </if>
+      <if test="bomStatus != null">
+        bom_status = #{bomStatus},
+      </if>
+      <if test="announUserId != null">
+        announ_user_id = #{announUserId},
+      </if>
+      <if test="opAnnounUserId != null">
+        op_announ_user_id = #{opAnnounUserId},
+      </if>
+      <if test="versoin != null">
+        versoin = #{versoin},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>

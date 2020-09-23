@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionPartsRelationMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
+    <!--@mbg.generated-->
+    <!--@Table ope_production_parts-relation-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="production_id" property="productionId" />
+    <result column="production_type" property="productionType" />
+    <result column="parts_id" property="partsId" />
+    <result column="parts_no" property="partsNo" />
+    <result column="parts_sec" property="partsSec" />
+    <result column="procurement_cycle" property="procurementCycle" />
+    <result column="parts_qty" property="partsQty" />
+    <result column="cn_name" property="cnName" />
+    <result column="en_name" property="enName" />
+    <result column="fr_name" property="frName" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, production_id, production_type, parts_id, parts_no, parts_sec, procurement_cycle, 
+    parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_production_parts-relation
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="production_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.productionId}
+        </foreach>
+      </trim>
+      <trim prefix="production_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.productionType}
+        </foreach>
+      </trim>
+      <trim prefix="parts_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.partsId}
+        </foreach>
+      </trim>
+      <trim prefix="parts_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.partsNo}
+        </foreach>
+      </trim>
+      <trim prefix="parts_sec = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.partsSec}
+        </foreach>
+      </trim>
+      <trim prefix="procurement_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.procurementCycle}
+        </foreach>
+      </trim>
+      <trim prefix="parts_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.partsQty}
+        </foreach>
+      </trim>
+      <trim prefix="cn_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.cnName}
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.enName}
+        </foreach>
+      </trim>
+      <trim prefix="fr_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.frName}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_production_parts-relation
+    (id, dr, production_id, production_type, parts_id, parts_no, parts_sec, procurement_cycle, 
+      parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.productionId}, #{item.productionType}, #{item.partsId}, 
+        #{item.partsNo}, #{item.partsSec}, #{item.procurementCycle}, #{item.partsQty}, 
+        #{item.cnName}, #{item.enName}, #{item.frName}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def4}, #{item.def5})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
+    <!--@mbg.generated-->
+    insert into ope_production_parts-relation
+    (id, dr, production_id, production_type, parts_id, parts_no, parts_sec, procurement_cycle, 
+      parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
+    values
+    (#{id}, #{dr}, #{productionId}, #{productionType}, #{partsId}, #{partsNo}, #{partsSec}, 
+      #{procurementCycle}, #{partsQty}, #{cnName}, #{enName}, #{frName}, #{createdBy}, 
+      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, 
+      #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    production_id = #{productionId}, 
+    production_type = #{productionType}, 
+    parts_id = #{partsId}, 
+    parts_no = #{partsNo}, 
+    parts_sec = #{partsSec}, 
+    procurement_cycle = #{procurementCycle}, 
+    parts_qty = #{partsQty}, 
+    cn_name = #{cnName}, 
+    en_name = #{enName}, 
+    fr_name = #{frName}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
+    <!--@mbg.generated-->
+    insert into ope_production_parts-relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="productionId != null">
+        production_id,
+      </if>
+      <if test="productionType != null">
+        production_type,
+      </if>
+      <if test="partsId != null">
+        parts_id,
+      </if>
+      <if test="partsNo != null">
+        parts_no,
+      </if>
+      <if test="partsSec != null">
+        parts_sec,
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle,
+      </if>
+      <if test="partsQty != null">
+        parts_qty,
+      </if>
+      <if test="cnName != null">
+        cn_name,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="frName != null">
+        fr_name,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="productionId != null">
+        #{productionId},
+      </if>
+      <if test="productionType != null">
+        #{productionType},
+      </if>
+      <if test="partsId != null">
+        #{partsId},
+      </if>
+      <if test="partsNo != null">
+        #{partsNo},
+      </if>
+      <if test="partsSec != null">
+        #{partsSec},
+      </if>
+      <if test="procurementCycle != null">
+        #{procurementCycle},
+      </if>
+      <if test="partsQty != null">
+        #{partsQty},
+      </if>
+      <if test="cnName != null">
+        #{cnName},
+      </if>
+      <if test="enName != null">
+        #{enName},
+      </if>
+      <if test="frName != null">
+        #{frName},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="productionId != null">
+        production_id = #{productionId},
+      </if>
+      <if test="productionType != null">
+        production_type = #{productionType},
+      </if>
+      <if test="partsId != null">
+        parts_id = #{partsId},
+      </if>
+      <if test="partsNo != null">
+        parts_no = #{partsNo},
+      </if>
+      <if test="partsSec != null">
+        parts_sec = #{partsSec},
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle = #{procurementCycle},
+      </if>
+      <if test="partsQty != null">
+        parts_qty = #{partsQty},
+      </if>
+      <if test="cnName != null">
+        cn_name = #{cnName},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName},
+      </if>
+      <if test="frName != null">
+        fr_name = #{frName},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>
