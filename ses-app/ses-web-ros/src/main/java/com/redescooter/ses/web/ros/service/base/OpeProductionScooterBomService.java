@@ -18,3 +18,4 @@ public interface OpeProductionScooterBomService extends IService<OpeProductionSc
     int insertOrUpdateSelective(OpeProductionScooterBom record);
 
 }
+

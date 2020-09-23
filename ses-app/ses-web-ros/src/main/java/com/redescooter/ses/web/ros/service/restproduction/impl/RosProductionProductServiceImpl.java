@@ -1,24 +1,28 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.dm.OpePartsSec;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBomDraft;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import spark.utils.CollectionUtils;
 
 import java.util.*;
 
@@ -34,9 +38,18 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Autowired
     private OpeProductionCombinBomDraftService opeProductionCombinBomDraftService;
 
+    @Autowired
+    private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private OpeProductionScooterBomDraftService opeProductionScooterBomDraftService;
+
+    @Autowired
+    private OpePartsSecService opePartsSecService;
+
     /**
      * 状态统计
-     * 
+     *
      * @param enter
      * @return
      */
@@ -45,19 +58,26 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         Map<Integer, Integer> result = new HashMap<>();
         // 整车
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), enter.getSt())) {
-            result.put(ClassTypeEnums.TYPE_ONE.getValue(), 1);
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(), 2);
+            result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionScooterBomDraftService.count());
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
+                opeProductionScooterBomService
+                    .count(new LambdaQueryWrapper<OpeProductionScooterBom>().in(OpeProductionScooterBom::getBomStatus,
+                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
         }
+
         if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), enter.getSt())) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionCombinBomDraftService.count());
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionCombinBomService.count());
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
+                opeProductionCombinBomService
+                    .count(new LambdaQueryWrapper<OpeProductionCombinBom>().in(OpeProductionCombinBom::getBomStatus,
+                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
         }
         return result;
     }
 
     /**
      * 分组查询
-     * 
+     *
      * @param generalEnter
      * @return
      */
@@ -72,7 +92,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 颜色查询
-     * 
+     *
      * @param enter
      * @return
      */
@@ -88,7 +108,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 车辆列表
-     * 
+     *
      * @param enter
      * @return
      */
@@ -96,51 +116,61 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     public PageResult<RosProductionScooterListResult> scooterList(RosProductionScooterListEnter enter) {
 
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
-            // QueryWrapper<opeproduct>
-            // if (){
-            //
-            // }
-
+            QueryWrapper<OpeProductionScooterBomDraft> opeProductionScooterBomDraftQueryWrapper = new QueryWrapper<>();
+            opeProductionScooterBomDraftQueryWrapper.eq(OpeProductionScooterBomDraft.COL_COLOR_ID, enter.getColorId());
+            opeProductionScooterBomDraftQueryWrapper.eq(OpeProductionScooterBomDraft.COL_GROUP_ID, enter.getGroupId());
+            opeProductionScooterBomDraftQueryWrapper.like(OpeProductionScooterBomDraft.COL_BOM_NO, enter.getKeyword());
+            opeProductionScooterBomDraftQueryWrapper.like(OpeProductionScooterBomDraft.COL_EN_NAME, enter.getKeyword());
+            int count = opeProductionScooterBomDraftService.count(opeProductionScooterBomDraftQueryWrapper);
+            if (count == 0) {
+                return PageResult.createZeroRowResult(enter);
+            }
+            return PageResult.create(enter, count, rosProductionProductServiceMapper.scooterDraftList(enter));
         }
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
-
+            QueryWrapper<OpeProductionScooterBom> opeProductionScooterBomQueryWrapper = new QueryWrapper<>();
+            opeProductionScooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_COLOR_ID, enter.getColorId());
+            opeProductionScooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_GROUP_ID, enter.getGroupId());
+            opeProductionScooterBomQueryWrapper.in(OpeProductionCombinBom.COL_BOM_STATUS,
+                ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+            opeProductionScooterBomQueryWrapper.like(OpeProductionScooterBom.COL_BOM_NO, enter.getKeyword());
+            opeProductionScooterBomQueryWrapper.like(OpeProductionScooterBom.COL_EN_NAME, enter.getKeyword());
+            int count = opeProductionScooterBomService.count(opeProductionScooterBomQueryWrapper);
+            if (count == 0) {
+                if (count == 0) {
+                    return PageResult.createZeroRowResult(enter);
+                }
+                return PageResult.create(enter, count, rosProductionProductServiceMapper.scooterBomList(enter));
+            }
         }
-
-        return PageResult.create(enter, 1,
-            Lists.newArrayList(RosProductionScooterListResult.builder().id(100000000L).groupId(1000000L).groupName("你猜")
-                .productNum("你猜").enName("你擦").cnName("你猜").frName("你次").qty(11).productionCycle(20).build()));
+        return null;
     }
 
     /**
      * 组合列表
-     * 
+     *
      * @param enter
      * @return
      */
     @Override
     public PageResult<RosProductionCombinationListResult> combinationList(RosProductionCombinationListEnter enter) {
-        return PageResult.create(enter, 1, Lists.newArrayList(RosProductionCombinationListResult.builder()
-            .id(100000000L).partsId(1000000L).enName("你猜").partsN("你猜").sec("FOA").enName("你擦").cnName("你猜")
-            .frName("你次").qty(11).productionCycle(20)
-            .partsList(Lists.newArrayList(RosProductionCombinationPartsResult.builder().id(100000000L).partsId(1000000L)
-                .enName("你猜").partsN("你猜").sec("FOA").enName("你擦").cnName("你猜").frName("你次").qty(11).build()))
-            .build()));
+        return null;
     }
 
     /**
      * 校验生效时间是否合理
-     * 
+     *
      * @param enter
      * @return
      */
     @Override
-    public BooleanResult checkEffectiveDate(BaseTimeParmEnter enter) {
+    public BooleanResult checkEffectiveDate(RosProductionTimeParmEnter enter) {
         return new BooleanResult(Boolean.TRUE);
     }
 
     /**
      * excel 导入
-     * 
+     *
      * @param enter
      * @return
      */
@@ -151,19 +181,26 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 区域列表
-     * 
+     *
      * @param enter
      * @return
      */
     @Override
     public List<RosProductionSecResult> secList(GeneralEnter enter) {
-
-        return Lists.newArrayList(new RosProductionSecResult(10000000L, "F01", "F01", "描述"));
+        List<RosProductionSecResult> resultList = new ArrayList<>();
+        List<OpePartsSec> opePartsSecList = opePartsSecService.list();
+        if (CollectionUtils.isNotEmpty(opePartsSecList)) {
+            opePartsSecList.forEach(item -> {
+                resultList
+                    .add(new RosProductionSecResult(item.getId(), item.getName(), item.getCode(), item.getNote()));
+            });
+        }
+        return resultList;
     }
 
     /**
      * 部件查询列表
-     * 
+     *
      * @param enter
      * @return
      */
@@ -179,7 +216,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 车辆的保存
-     * 
+     *
      * @param enter
      * @return
      */
@@ -192,7 +229,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 详情
-     * 
+     *
      * @param enter
      * @return
      */
@@ -207,7 +244,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 生效
-     * 
+     *
      * @param enter
      * @return
      */
@@ -219,7 +256,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 产品禁用
-     * 
+     *
      * @param enter
      * @return
      */
@@ -231,7 +268,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     /**
      * 发布
-     * 
+     *
      * @param enter
      * @return
      */
