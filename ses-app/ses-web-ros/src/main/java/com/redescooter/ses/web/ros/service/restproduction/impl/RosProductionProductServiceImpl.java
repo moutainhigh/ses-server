@@ -2,7 +2,12 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
@@ -10,13 +15,24 @@ import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListRe
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
 public class RosProductionProductServiceImpl implements RosServProductionProductService {
+
+    @Autowired
+    private RosProductionProductServiceMapper rosProductionProductServiceMapper;
+
+    @Autowired
+    private OpeProductionCombinBomService opeProductionCombinBomService;
+
+    @Autowired
+    private OpeProductionCombinBomDraftService opeProductionCombinBomDraftService;
 
     /**
      * 状态统计
@@ -27,8 +43,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Override
     public Map<Integer, Integer> countByType(StringEnter enter) {
         Map<Integer, Integer> result = new HashMap<>();
-        result.put(ClassTypeEnums.TYPE_ONE.getValue(), 1);
-        result.put(ClassTypeEnums.TYPE_TWO.getValue(), 2);
+        // 整车
+        if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), enter.getSt())) {
+            result.put(ClassTypeEnums.TYPE_ONE.getValue(), 1);
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), 2);
+        }
+        if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), enter.getSt())) {
+            result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionCombinBomDraftService.count());
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionCombinBomService.count());
+        }
         return result;
     }
 
@@ -38,11 +61,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param generalEnter
      * @return
      */
+    // todo 产品下个版本更新分组数据源后 可更新
     @Override
     public List<BaseNameResult> groupList(GeneralEnter generalEnter) {
         List<BaseNameResult> result = new ArrayList<>();
-        result.add(new BaseNameResult(1000000L, "你猜"));
-        result.add(new BaseNameResult(100002L, "你猜"));
+        result.add(new BaseNameResult(1000000L, "分组筛选"));
+        result.add(new BaseNameResult(100002L, "分组筛选"));
         return result;
     }
 
@@ -55,8 +79,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Override
     public List<BaseNameResult> colorList(GeneralEnter enter) {
         List<BaseNameResult> result = new ArrayList<>();
-        result.add(new BaseNameResult(1000000L, "你猜"));
-        result.add(new BaseNameResult(100002L, "你猜"));
+        for (ProductColorEnums item : ProductColorEnums.values()) {
+            BaseNameResult baseNameResult =
+                BaseNameResult.builder().id(Long.valueOf(item.getValue())).name(item.getCode()).build();
+        }
         return result;
     }
 
@@ -68,6 +94,17 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public PageResult<RosProductionScooterListResult> scooterList(RosProductionScooterListEnter enter) {
+
+        if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
+            // QueryWrapper<opeproduct>
+            // if (){
+            //
+            // }
+
+        }
+        if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
+
+        }
 
         return PageResult.create(enter, 1,
             Lists.newArrayList(RosProductionScooterListResult.builder().id(100000000L).groupId(1000000L).groupName("你猜")
@@ -105,7 +142,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * excel 导入
      * 
      * @param enter
-     * @param file
      * @return
      */
     @Override

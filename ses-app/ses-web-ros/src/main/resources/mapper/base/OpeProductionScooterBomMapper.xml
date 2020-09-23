@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionBomMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionBom">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
     <!--@mbg.generated-->
-    <!--@Table ope_production_bom-->
+    <!--@Table ope_production_scooter_bom-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="tenant_id" property="tenantId" />
@@ -39,7 +39,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_production_bom
+    update ope_production_scooter_bom
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -169,7 +169,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_production_bom
+    insert into ope_production_scooter_bom
     (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
       group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
       en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
@@ -184,9 +184,9 @@
         )
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionBom">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
     <!--@mbg.generated-->
-    insert into ope_production_bom
+    insert into ope_production_scooter_bom
     (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
       group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
       en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
@@ -223,9 +223,9 @@
     def4 = #{def4}, 
     def5 = #{def5}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionBom">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
     <!--@mbg.generated-->
-    insert into ope_production_bom
+    insert into ope_production_scooter_bom
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
