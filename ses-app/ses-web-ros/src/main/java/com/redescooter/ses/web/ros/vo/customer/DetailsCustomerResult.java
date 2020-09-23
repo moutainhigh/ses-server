@@ -114,7 +114,7 @@ public class DetailsCustomerResult extends GeneralResult {
     private String contactFullName;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
-    private String countryCode;
+    private String countryCode = "+86";
 
     @ApiModelProperty(value = "电话")
     private String telephone;
