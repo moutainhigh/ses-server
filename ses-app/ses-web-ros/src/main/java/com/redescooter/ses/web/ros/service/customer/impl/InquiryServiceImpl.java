@@ -463,9 +463,9 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
         map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
         map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
+        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
         map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
         map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
         map.put("CREATE TIME", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
         return map;
     }
