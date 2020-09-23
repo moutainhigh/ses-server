@@ -6,9 +6,9 @@ import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEn
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductonProductEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,8 +22,8 @@ import java.util.Map;
 @Api(tags = {"生产车辆产品"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/production/scooter")
-public class ScooterController {
+@RequestMapping(value = "/production/combination")
+public class RosCombinationController {
 
     @Autowired
     private RosServProductionProductService rosServProductionProductService;
@@ -46,11 +46,11 @@ public class ScooterController {
         return new Response<>(rosServProductionProductService.colorList(enter));
     }
 
-    @PostMapping(value = "/scooterList")
-    @ApiOperation(value = "车辆列表", response = RosProductionScooterListResult.class)
-    public Response<PageResult<RosProductionScooterListResult>>
-        scooterList(@ModelAttribute @ApiParam("请求参数") RosProductionScooterListEnter enter) {
-        return new Response<>(rosServProductionProductService.scooterList(enter));
+    @PostMapping(value = "/combinationList")
+    @ApiOperation(value = "组合列表", response = RosProductionCombinationListResult.class)
+    public Response<PageResult<RosProductionCombinationListResult>>
+        combinationList(@ModelAttribute @ApiParam("请求参数") RosProductionCombinationListEnter enter) {
+        return new Response<>(rosServProductionProductService.combinationList(enter));
     }
 
     @PostMapping(value = "/checkEffectiveDate")
@@ -72,14 +72,14 @@ public class ScooterController {
     }
 
     @PostMapping(value = "/productionProductPartList")
-    @ApiOperation(value = "保存车辆部件列表", response = RosProductionProductPartListResult.class)
+    @ApiOperation(value = "保存组合部件列表", response = RosProductionProductPartListResult.class)
     public Response<PageResult<RosProductionProductPartListResult>>
         productionProductPartList(@ModelAttribute @ApiParam("请求参数") RosProductionProductPartListEnter enter) {
         return new Response<>(rosServProductionProductService.productionProductPartList(enter));
     }
 
     @PostMapping(value = "/rosSaveProductionProduct")
-    @ApiOperation(value = "车辆保存", response = BaseNameResult.class)
+    @ApiOperation(value = "组合保存", response = BaseNameResult.class)
     public Response<GeneralResult>
         rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductonProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));
@@ -90,12 +90,6 @@ public class ScooterController {
     public Response<RosProductionProductDetailResult>
         detail(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.detail(enter));
-    }
-
-    @PostMapping(value = "/takeEffect")
-    @ApiOperation(value = "产品禁用", response = GeneralResult.class)
-    public Response<GeneralResult> takeEffect(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(rosServProductionProductService.takeEffect(enter));
     }
 
     @PostMapping(value = "/release")
