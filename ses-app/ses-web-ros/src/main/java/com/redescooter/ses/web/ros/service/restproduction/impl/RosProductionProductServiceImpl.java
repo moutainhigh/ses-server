@@ -200,8 +200,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
                 OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
                 if (opeProductionScooterBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
                 }
                 List<OpeProductionScooterBom> opeProductionScooterBomList =
                     opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
@@ -209,8 +209,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         .in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
                             ProductionBomStatusEnums.ACTIVE.getValue()));
                 if (CollectionUtils.isEmpty(opeProductionScooterBomList)) {
-                    throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
                 }
 
                 if (opeProductionScooterBomList.size() == 1) {
@@ -262,8 +262,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClasstype())) {
                 OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
                 if (opeProductionCombinBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
                 List<OpeProductionCombinBom> opeProductionCombinBomList =
                     opeProductionCombinBomService.list(new LambdaQueryWrapper<OpeProductionCombinBom>()
@@ -271,8 +271,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         .in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
                             ProductionBomStatusEnums.ACTIVE.getValue()));
                 if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
                 }
 
                 if (opeProductionCombinBomList.size() == 1) {
@@ -452,14 +452,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         List<RosProductionProdductVersionResult> versionList = null;
         Long productionProductId = null;
         Integer productionPartsRelationType = null;
+
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(),
             String.valueOf(enter.getProductionProductType()))) {
             if (ClassTypeEnums.TYPE_ONE.getValue().equals(enter.getClassType())) {
                 OpeProductionScooterBomDraft opeProductionScooterBomDraft =
                     opeProductionScooterBomDraftService.getById(enter.getId());
                 if (opeProductionScooterBomDraft == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_DRAFT_IS_NOT_SCOOTER.getCode(),
-                        ExceptionCodeEnums.SCOOTER_DRAFT_IS_NOT_SCOOTER.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
                 // 部件列表信息
                 productionProductId = opeProductionScooterBomDraft.getId();
@@ -482,8 +483,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
                 OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
                 if (opeProductionScooterBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
                 }
                 // 其他版本列表
                 versionList =
@@ -512,8 +513,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 OpeProductionCombinBomDraft opeProductionCombinBomDraft =
                     opeProductionCombinBomDraftService.getById(enter.getId());
                 if (opeProductionCombinBomDraft == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
                 // 部件列表信息
                 productionProductId = opeProductionCombinBomDraft.getId();
@@ -528,8 +529,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
                 OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
                 if (opeProductionCombinBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
                 }
                 // 其他版本列表
                 versionList =
@@ -576,8 +577,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
             if (opeProductionScooterBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.SCOOTER_BOM_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
             if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
@@ -605,8 +606,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
             if (opeProductionCombinBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
             if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
@@ -646,8 +647,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
             if (opeProductionCombinBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
             if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
@@ -662,8 +663,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
             if (opeProductionScooterBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.COMBINATION_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
             if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
