@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.google.common.collect.Lists;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
@@ -19,7 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNamePartsRosServiceImpl
@@ -40,7 +44,12 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     @Override
     @Transactional
     public GeneralResult partsSave(StringEnter enter) {
-
+        List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
         return new GeneralResult();
     }
 
@@ -107,6 +116,22 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Override
     public GeneralResult partsDisable(IdEnter enter) {
+        return new GeneralResult();
+    }
+
+    @Override
+    public Map<String, Integer> listCount(GeneralEnter enter) {
+        Map<String,Integer> map = new HashMap<>();
+        // 1 2 分别对应草稿、部件
+        Integer num1 = 0;
+        Integer num2 = 0;
+        map.put("1",num1);
+        map.put("2",num2);
+        return map;
+    }
+
+    @Override
+    public GeneralResult partsExport(String id, HttpServletResponse response) {
         return new GeneralResult();
     }
 }
