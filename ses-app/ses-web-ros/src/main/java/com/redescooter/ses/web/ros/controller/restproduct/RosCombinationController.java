@@ -27,7 +27,7 @@ public class RosCombinationController {
 
     @PostMapping(value = "/countByType")
     @ApiOperation(value = "产品类型统计", response = Map.class)
-    public Response<Map<Integer, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    public Response<Map<Integer, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(rosServProductionProductService.countByType(enter));
     }
 

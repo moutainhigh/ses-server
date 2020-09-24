@@ -70,10 +70,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @return
      */
     @Override
-    public Map<Integer, Integer> countByType(StringEnter enter) {
+    public Map<Integer, Integer> countByType(IdEnter enter) {
         Map<Integer, Integer> result = new HashMap<>();
         // 整车
-        if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), enter.getSt())) {
+        if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionScooterBomDraftService.count());
             result.put(ClassTypeEnums.TYPE_TWO.getValue(),
                 opeProductionScooterBomService
@@ -82,7 +82,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         // 组合
-        if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), enter.getSt())) {
+        if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionCombinBomDraftService.count());
             result.put(ClassTypeEnums.TYPE_TWO.getValue(),
                 opeProductionCombinBomService
@@ -196,38 +196,35 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Override
     public BooleanResult checkEffectiveDate(RosProductionTimeParmEnter enter) {
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), String.valueOf(enter.getProductionType()))) {
-            if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClasstype())) {
-
-                OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
-                if (opeProductionScooterBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+            OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
+            if (opeProductionScooterBom == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-                }
-                List<OpeProductionScooterBom> opeProductionScooterBomList =
+            }
+            List<OpeProductionScooterBom> opeProductionScooterBomList =
                     opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
-                        .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
-                        .in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
-                            ProductionBomStatusEnums.ACTIVE.getValue()));
-                if (CollectionUtils.isEmpty(opeProductionScooterBomList)) {
-                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
+                    .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
+                    .in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
+                        ProductionBomStatusEnums.ACTIVE.getValue()));
+            if (CollectionUtils.isEmpty(opeProductionScooterBomList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-                }
+            }
 
-                if (opeProductionScooterBomList.size() == 1) {
-                    return new BooleanResult(Boolean.TRUE);
-                }
-                if (opeProductionScooterBomList.size() > 1) {
-                    // 移除当前对象
-                    opeProductionScooterBomList.remove(opeProductionScooterBom);
+            if (opeProductionScooterBomList.size() == 1) {
+                return new BooleanResult(Boolean.TRUE);
+            }
+            if (opeProductionScooterBomList.size() > 1) {
+                opeProductionScooterBomList.remove(opeProductionScooterBom);
 
-                    String timeDate = DateUtil.getDateTime(enter.getDateTime(), DateUtil.DEFAULT_DATE_FORMAT);
-                    for (OpeProductionScooterBom item : opeProductionScooterBomList) {
-                        if (StringUtils.equals(
+                String timeDate = DateUtil.getDateTime(enter.getDateTime(), DateUtil.DEFAULT_DATE_FORMAT);
+                for (OpeProductionScooterBom item : opeProductionScooterBomList) {
+                    if (StringUtils.equals(
                             DateUtil.getDateTime(item.getEffectiveDate(), DateUtil.DEFAULT_DATE_FORMAT), timeDate)) {
-                            return new BooleanResult(Boolean.FALSE);
-                        }
+                        return new BooleanResult(Boolean.FALSE);
                     }
                 }
+
             }
         }
 

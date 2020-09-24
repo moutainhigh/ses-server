@@ -15,7 +15,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    Map<Integer, Integer> countByType(StringEnter enter);
+    Map<Integer, Integer> countByType(IdEnter enter);
 
     /**
      * 分组查询
