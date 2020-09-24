@@ -3,8 +3,10 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -32,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -73,6 +76,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Value("${Request.privateKey}")
     private String privatekey;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @Override
     @Transactional
@@ -307,6 +313,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 flag = false;
             }
         }
+        // 把校验结果放在缓存里
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        jedisCluster.set(key, String.valueOf(flag));
+        jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
         return flag;
     }
 
