@@ -50,11 +50,14 @@ public class RosPartsSaveOrUpdateEnter extends GeneralEnter {
     private String frName;
 
     @ApiModelProperty(value = "供应商id")
-    private String supplierId;
+    private Long supplierId;
 
     @ApiModelProperty(value = "生产周期")
-    private Integer productionCycle;
+    private Integer procurementCycle;
+
+    @ApiModelProperty(value = "图纸")
+    private String dwgUrl;;
 
     @ApiModelProperty(value = "是否发布，0：否，1：是")
-    private Integer isAnnoun;
+    private Integer isAnnoun = 0;
 }

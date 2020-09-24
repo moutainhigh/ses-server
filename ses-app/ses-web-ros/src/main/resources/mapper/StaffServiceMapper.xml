@@ -146,4 +146,12 @@
     <select id="roleDatas" resultType="com.redescooter.ses.web.ros.dm.OpeSysRoleData">
         SELECT * from ope_sys_role_data where role_id in (SELECT role_id from ope_sys_user_role where user_id = #{id})
     </select>
+
+    <select id="announUser" resultType="com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult">
+        select
+          id as principal,
+          full_name as principalName
+        from ope_sys_staff
+        where dr = 0 and status = 1 and tenant_id = #{tenantId} and if_safe_code = 1
+    </select>
 </mapper>

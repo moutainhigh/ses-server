@@ -382,6 +382,10 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
+    PLEASE_COMPLETE_MSG(10183, "请完善信息"),
+
+    DRAFT_NOT_EXIST(10184, "草稿不存在"),
+
     ;
 
 

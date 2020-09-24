@@ -20,7 +20,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_production_parts-relation")
+@TableName(value = "ope_production_parts_relation")
 public class OpeProductionPartsRelation implements Serializable {
     /**
      * 主键id

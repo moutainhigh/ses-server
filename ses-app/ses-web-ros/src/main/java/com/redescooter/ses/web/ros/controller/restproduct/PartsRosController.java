@@ -4,7 +4,8 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCode;
+import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
@@ -66,7 +67,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/announ")
     @ApiOperation(value = "发布部件", response = GeneralResult.class)
-    public Response<GeneralResult> announ(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> announ(@ModelAttribute @ApiParam("请求参数") DraftAnnounEnter enter) {
         return new Response<>(partsRosService.partsAnnoun(enter));
     }
 
@@ -87,7 +88,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/checkAnnounUserSafeCode")
     @ApiOperation(value = "校验发布人的安全码", response = Boolean.class)
-    public Response<Boolean> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCode enter) {
+    public Response<Boolean> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCodeEnter enter) {
         return new Response<>(partsRosService.checkAnnounUserSafeCode(enter));
     }
 

@@ -3,10 +3,10 @@ package com.redescooter.ses.web.ros.service.restproduction;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCode;
+import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +36,7 @@ public interface PartsRosService {
     PageResult<RosPartsListResult> partsList(RosPartsListEnter enter);
 
 
-    GeneralResult partsAnnoun(IdEnter enter);
+    GeneralResult partsAnnoun(DraftAnnounEnter enter);
 
 
     ImportExcelPartsResult importParts(ImportPartsEnter enter);
@@ -45,7 +45,7 @@ public interface PartsRosService {
     List<StaffDataResult> announUser(Long tenantId);
 
 
-    Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCode enter);
+    Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter);
 
 
     GeneralResult partsCopy(IdEnter enter);
