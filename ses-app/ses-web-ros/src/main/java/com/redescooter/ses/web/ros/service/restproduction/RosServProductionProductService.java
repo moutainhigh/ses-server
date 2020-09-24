@@ -87,7 +87,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult rosSaveProductionProduct(RosSaveProductonProductEnter enter);
+    GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter);
 
     /**
      * 详情

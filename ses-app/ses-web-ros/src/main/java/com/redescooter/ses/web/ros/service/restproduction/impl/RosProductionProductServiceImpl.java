@@ -346,7 +346,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Transactional
     @Override
-    public GeneralResult rosSaveProductionProduct(RosSaveProductonProductEnter enter) {
+    public GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter) {
         List<ProductionProductEnter> partList = null;
         try {
             partList = JSON.parseArray(enter.getPartList(), ProductionProductEnter.class);
@@ -425,7 +425,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeProductionPartsRelation buildProductionRelation(RosSaveProductonProductEnter enter,
+    private OpeProductionPartsRelation buildProductionRelation(RosSaveProductionProductEnter enter,
         List<ProductionProductEnter> partList, Long productionProductId, Integer productionProducType,
         OpeProductionParts item) {
         return OpeProductionPartsRelation.builder().id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION))
@@ -686,14 +686,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         return new GeneralResult(enter.getRequestId());
     }
 
-    private OpeProductionCombinBomDraft buildProductionCombinBom(RosSaveProductonProductEnter enter, int qty) {
+    private OpeProductionCombinBomDraft buildProductionCombinBom(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionCombinBomDraft.builder().dr(0).bomNo(enter.getProductN())
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
             .enName(enter.getEnName()).cnName(enter.getCnName()).frName(enter.getFrName()).partsQty(qty)
             .updatedBy(enter.getUserId()).updatedTime(new Date()).build();
     }
 
-    private OpeProductionScooterBomDraft buildOpeProductionScooterDraft(RosSaveProductonProductEnter enter, int qty) {
+    private OpeProductionScooterBomDraft buildOpeProductionScooterDraft(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionScooterBomDraft.builder().dr(0).bomNo(enter.getProductN())
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
             .enName(enter.getEnName()).partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();

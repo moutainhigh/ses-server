@@ -6,7 +6,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductonProductEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductionProductEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -79,7 +79,7 @@ public class RosCombinationController {
     @PostMapping(value = "/rosSaveProductionProduct")
     @ApiOperation(value = "组合保存", response = BaseNameResult.class)
     public Response<GeneralResult>
-        rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductonProductEnter enter) {
+        rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));
     }
 
