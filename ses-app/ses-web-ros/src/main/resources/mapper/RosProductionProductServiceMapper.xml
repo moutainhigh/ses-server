@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper">
+
+    <sql id="where_scooterDraftList">
+        where draft.dr=0
+        <if test="colorId != null">
+            and draft.color_id=#{colorId}
+        </if>
+        <if test="groupId != null">
+            and draft.group_id=#{groupId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and(
+            draft.bom_no like concat ('%',#{keyword},'%') or
+            draft.enName like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_scooterBomList">
+        where bom.dr=0
+        <if test="status != null">
+            and bom.bom_status=#{status}
+        </if>
+        <if test="groupId != null">
+            and  bom.group_id=#{groupId}
+        </if>
+        <if test="colorId != null">
+            and bom.color_id=#{colorId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            bom.bom_no like  concat ('%',#{keyword},'%') or
+            bom.en_name like  concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_combinationList">
+        where bom.dr=0
+        <if test="status != null">
+            and  bom.bom_status=#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            bom.bom_no like concat ('%',#{keyword},'%') or
+            bom.en_name like concat ('%',#{keyword},'%') or
+            bom.fr_name like concat ('%',#{keyword},'%') or
+            bom.cn_name like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <sql id="where_productionProductPartList">
+        where parts.dr = 0
+        and parts.disable=0
+        <if test="secId != null">
+            and parts.parts_sec=#{secId}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            parts.parts_no like concat ('%',#{keyword},'%') or
+            parts.en_name like concat ('%',#{keyword},'%') or
+            parts.cn_name like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="scooterDraftListCount" resultType="int">
+        select count(1)
+        from ope_production_scooter_bom_draft draft
+        <include refid="where_scooterDraftList"/>
+    </select>
+
+    <select id="scooterDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
+        select draft.id as id,
+               draft.bom_no as productNum,
+               draft.procurement_cycle as productionCycle,
+               draft.group_id as groupId,
+               draft.color_id as colorId,
+               draft.cn_name as cnName,
+               draft.en_name as enName,
+               draft.fr_name as frName,
+                draft.parts_qty as qty
+        from ope_production_scooter_bom_draft draft
+       <include refid="where_scooterDraftList"/>
+        order by draft.created_time desc
+        limit #{startRow},#{pageNo}
+    </select>
+
+    <select id="scooterBomListCount" resultType="int">
+        select count(1)
+        from ope_production_scooter_bom bom
+        <include refid="where_scooterBomList"/>
+        order by bom.created_time desc
+        limit #{startRow},#{pageNo}
+    </select>
+
+    <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
+        select bom.id as id,
+        bom.bom_no as productNum,
+        bom.procurement_cycle as productionCycle,
+        bom.group_id as groupId,
+        bom.color_id as colorId,
+        bom.bom_status as status,
+        bom.cn_name as cnName,
+        bom.en_name as enName,
+        bom.fr_name as frName,
+        bom.parts_qty as qty
+        from ope_production_scooter_bom bom
+        <include refid="where_scooterBomList"/>
+        order by bom.created_time desc
+        limit #{startRow},#{pageNo}
+    </select>
+
+    <select id="combinationDraftListCount" resultType="int">
+        select count(1)
+            from ope_production_combin_bom_draft draft
+            where draft.dr=0
+            <if test="keyword != null and keyword != ''">
+                and (
+                draft.bom_no like concat ('%',#{keyword},'%') or
+                draft.cn_name like concat ('%',#{keyword},'%') or
+                draft.en_name like concat ('%',#{keyword},'%') or
+                draft.fr_name like concat ('%',#{keyword},'%')
+                )
+            </if>
+    </select>
+
+    <select id="combinationDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult">
+        select draft.id as id,
+               draft.bom_no as  productN,
+               draft.procurement_cycle as productionCycle,
+               draft.cn_name as enName,
+               draft.en_name as cnName,
+               draft.fr_name as frName,
+                draft.parts_qty as qty
+        from ope_production_combin_bom_draft draft
+        where draft.dr=0
+        <if test="keyword != null and keyword != ''">
+            and (
+            draft.bom_no like concat ('%',#{keyword},'%') or
+            draft.cn_name like concat ('%',#{keyword},'%') or
+            draft.en_name like concat ('%',#{keyword},'%') or
+            draft.fr_name like concat ('%',#{keyword},'%')
+            )
+        </if>
+        order by draft.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="combinationListCount" resultType="int">
+        select count(1)
+        from ope_production_combin_bom bom
+        <include refid="where_combinationList" />
+    </select>
+
+    <select id="combinationList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult">
+        select bom.id as id,
+               bom.bom_no as productNum,
+               bom.procurement_cycle as productionCycle,
+               bom.group_id as groupId,
+               bom.color_id as colorId,
+               bom.bom_status as status,
+               bom.cn_name as cnName,
+               bom.en_name as enName,
+               bom.fr_name as frName
+        from ope_production_combin_bom bom
+       <include refid="where_combinationList" />
+        order by bom.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productionProductPartListCount" resultType="int">
+        select count(1)
+        from ope_production_parts parts
+        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        <include refid="where_productionProductPartList" />
+    </select>
+
+    <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
+        select parts.id                as id,
+                parts.parts_no          as partsNum,
+                parts.parts_sec         as secId,
+                sec.name                as sec,
+                parts.procurement_cycle as productionCycle,
+                parts.dwg               as dwgUrl,
+                parts.cn_name           as cnName,
+                parts.en_name           as enName,
+                parts.fr_name           as frName,
+                1 as qty
+                from ope_production_parts parts
+        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        <include refid="where_productionProductPartList" />
+        order by parts.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="productionScooterVersionList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult">
+            select bom.id         as versionId,
+                   bom.versoin    as versionName,
+                   bom.bom_status as versionStatus
+            from ope_production_scooter_bom bom
+            where bom.dr=0
+            and bom.bom_no=#{bomNo}
+    </select>
+
+    <select id="rosProductionProductPartsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
+        select parts_id          as id,
+                parts_no          as partsNum,
+                parts_sec         as secId,
+                procurement_cycle as productionCycle,
+                parts_qty         as qty,
+                cn_name           as cnName,
+                en_name           as enName,
+                fr_name           as frName
+                from ope_production_parts_relation relation
+                left join ope_parts_sec sec on relation.parts_sec = sec.id and sec.dr=0
+        where relation.dr=0
+        and  relation.production_id=#{id}
+        and  relation.production_type=#{productTypeId}
+    </select>
+</mapper>
