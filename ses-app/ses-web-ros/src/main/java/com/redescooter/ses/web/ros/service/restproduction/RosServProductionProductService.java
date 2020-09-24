@@ -103,7 +103,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult takeEffect(IdEnter enter);
+    GeneralResult takeEffect(RosProuductionTypeEnter enter);
 
     /**
      * 产品禁用
@@ -111,7 +111,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult productionProductDisable(IdEnter enter);
+    GeneralResult productionProductDisable(RosProuductionTypeEnter enter);
 
     /**
      * 发布

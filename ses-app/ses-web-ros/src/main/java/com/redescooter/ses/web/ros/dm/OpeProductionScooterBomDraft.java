@@ -1,18 +1,16 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 整车草稿表
@@ -36,6 +34,7 @@ public class OpeProductionScooterBomDraft implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -81,11 +80,32 @@ public class OpeProductionScooterBomDraft implements Serializable {
     private Long colorId;
 
     /**
+     * 部件数量
+     */
+    @TableField(value = "parts_qty")
+    @ApiModelProperty(value = "部件数量")
+    private Integer partsQty;
+
+    /**
+     * 中文名称
+     */
+    @TableField(value = "cn_name")
+    @ApiModelProperty(value = "中文名称")
+    private String cnName;
+
+    /**
      * 名称
      */
     @TableField(value = "en_name")
     @ApiModelProperty(value = "名称")
     private String enName;
+
+    /**
+     * 法文名称
+     */
+    @TableField(value = "fr_name")
+    @ApiModelProperty(value = "法文名称")
+    private String frName;
 
     /**
      * 创建人
@@ -168,7 +188,13 @@ public class OpeProductionScooterBomDraft implements Serializable {
 
     public static final String COL_COLOR_ID = "color_id";
 
+    public static final String COL_PARTS_QTY = "parts_qty";
+
+    public static final String COL_CN_NAME = "cn_name";
+
     public static final String COL_EN_NAME = "en_name";
+
+    public static final String COL_FR_NAME = "fr_name";
 
     public static final String COL_CREATED_BY = "created_by";
 

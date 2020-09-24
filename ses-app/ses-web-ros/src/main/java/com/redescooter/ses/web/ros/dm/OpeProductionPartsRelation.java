@@ -1,16 +1,17 @@
 package com.redescooter.ses.web.ros.dm;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.*;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 部件关系表
@@ -20,7 +21,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_production_parts-relation")
+@TableName(value = "ope_production_parts_relation")
 public class OpeProductionPartsRelation implements Serializable {
     /**
      * 主键id

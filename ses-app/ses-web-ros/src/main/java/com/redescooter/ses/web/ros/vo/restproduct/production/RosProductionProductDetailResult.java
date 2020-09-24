@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.vo.restproduct.production;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -41,8 +43,17 @@ public class RosProductionProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "产品的名称")
     private String enName;
 
+    @ApiModelProperty(value = "产品的名称")
+    private String frName;
+
+    @ApiModelProperty(value = "产品的名称")
+    private String cnName;
+
     @ApiModelProperty(value = "产品状态")
-    private String status;
+    private Integer status;
+
+    @ApiModelProperty(value = "产品状态")
+    private String version;
 
     @ApiModelProperty(value = "版本结构")
     private List<RosProductionProdductVersionResult> versionList;
@@ -52,6 +63,11 @@ public class RosProductionProductDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "创建时间")
     private Long createById;
+
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createTime;
 
     @ApiModelProperty(value = "创建人")
     private String createByFirstName;

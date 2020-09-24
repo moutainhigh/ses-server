@@ -92,8 +92,15 @@ public class RosScooterController {
 
     @PostMapping(value = "/takeEffect")
     @ApiOperation(value = "产品禁用", response = GeneralResult.class)
-    public Response<GeneralResult> takeEffect(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> takeEffect(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.takeEffect(enter));
+    }
+
+    @PostMapping(value = "/productionProductDisable")
+    @ApiOperation(value = "产品禁用", response = GeneralResult.class)
+    public Response<GeneralResult>
+        productionProductDisable(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+        return new Response<>(rosServProductionProductService.productionProductDisable(enter));
     }
 
     @PostMapping(value = "/release")

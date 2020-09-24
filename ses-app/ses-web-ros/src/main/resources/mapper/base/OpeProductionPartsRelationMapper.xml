@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionPartsRelationMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
     <!--@mbg.generated-->
-    <!--@Table ope_production_parts-relation-->
+    <!--@Table ope_production_parts_relation-->
     <id column="id" property="id" />
     <result column="dr" property="dr" />
     <result column="production_id" property="productionId" />
@@ -34,7 +34,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_production_parts-relation
+    update ope_production_parts_relation
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -144,7 +144,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_production_parts-relation
+    insert into ope_production_parts_relation
     (id, dr, production_id, production_type, parts_id, parts_no, parts_sec, procurement_cycle, 
       parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def4, def5)
@@ -159,7 +159,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
     <!--@mbg.generated-->
-    insert into ope_production_parts-relation
+    insert into ope_production_parts_relation
     (id, dr, production_id, production_type, parts_id, parts_no, parts_sec, procurement_cycle, 
       parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def4, def5)
@@ -193,7 +193,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation">
     <!--@mbg.generated-->
-    insert into ope_production_parts-relation
+    insert into ope_production_parts_relation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

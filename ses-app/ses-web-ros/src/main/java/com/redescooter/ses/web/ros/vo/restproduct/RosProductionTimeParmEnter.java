@@ -19,9 +19,12 @@ public class RosProductionTimeParmEnter extends GeneralEnter {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dateTime;
 
-    @ApiModelProperty(value = "类型")
-    private String type;
+    @ApiModelProperty(value = "产品类型")
+    private Integer productionType;
 
-    @ApiModelProperty(value = "产品编码")
-    private String productionN;
+    @ApiModelProperty(value = "table类型")
+    private Integer classtype;
+
+    @ApiModelProperty(value = "id")
+    private Long id;
 }

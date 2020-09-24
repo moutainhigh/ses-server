@@ -19,7 +19,10 @@
     <result column="announ_user_id" property="announUserId" />
     <result column="op_announ_user_id" property="opAnnounUserId" />
     <result column="versoin" property="versoin" />
+    <result column="parts_qty" property="partsQty" />
+    <result column="cn_name" property="cnName" />
     <result column="en_name" property="enName" />
+    <result column="fr_name" property="frName" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
@@ -34,8 +37,8 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
     group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
-    en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-    def5
+    parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -111,9 +114,24 @@
           when id = #{item.id} then #{item.versoin}
         </foreach>
       </trim>
+      <trim prefix="parts_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.partsQty}
+        </foreach>
+      </trim>
+      <trim prefix="cn_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.cnName}
+        </foreach>
+      </trim>
       <trim prefix="en_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.enName}
+        </foreach>
+      </trim>
+      <trim prefix="fr_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.frName}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -172,16 +190,16 @@
     insert into ope_production_scooter_bom
     (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
       group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
-      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def4, def5)
+      parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.versionIdentificat}, 
         #{item.bomNo}, #{item.procurementCycle}, #{item.effectiveDate}, #{item.groupId}, 
         #{item.colorId}, #{item.disable}, #{item.bomStatus}, #{item.announUserId}, #{item.opAnnounUserId}, 
-        #{item.versoin}, #{item.enName}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
-        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5}
-        )
+        #{item.versoin}, #{item.partsQty}, #{item.cnName}, #{item.enName}, #{item.frName}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
@@ -189,13 +207,14 @@
     insert into ope_production_scooter_bom
     (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
       group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
-      en_name, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-      def4, def5)
+      parts_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
     values
     (#{id}, #{dr}, #{tenantId}, #{deptId}, #{versionIdentificat}, #{bomNo}, #{procurementCycle}, 
       #{effectiveDate}, #{groupId}, #{colorId}, #{disable}, #{bomStatus}, #{announUserId}, 
-      #{opAnnounUserId}, #{versoin}, #{enName}, #{createdBy}, #{createdTime}, #{updatedBy}, 
-      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+      #{opAnnounUserId}, #{versoin}, #{partsQty}, #{cnName}, #{enName}, #{frName}, #{createdBy}, 
+      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, 
+      #{def5})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -212,7 +231,10 @@
     announ_user_id = #{announUserId}, 
     op_announ_user_id = #{opAnnounUserId}, 
     versoin = #{versoin}, 
+    parts_qty = #{partsQty}, 
+    cn_name = #{cnName}, 
     en_name = #{enName}, 
+    fr_name = #{frName}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
@@ -272,8 +294,17 @@
       <if test="versoin != null">
         versoin,
       </if>
+      <if test="partsQty != null">
+        parts_qty,
+      </if>
+      <if test="cnName != null">
+        cn_name,
+      </if>
       <if test="enName != null">
         en_name,
+      </if>
+      <if test="frName != null">
+        fr_name,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -350,8 +381,17 @@
       <if test="versoin != null">
         #{versoin},
       </if>
+      <if test="partsQty != null">
+        #{partsQty},
+      </if>
+      <if test="cnName != null">
+        #{cnName},
+      </if>
       <if test="enName != null">
         #{enName},
+      </if>
+      <if test="frName != null">
+        #{frName},
       </if>
       <if test="createdBy != null">
         #{createdBy},
@@ -428,8 +468,17 @@
       <if test="versoin != null">
         versoin = #{versoin},
       </if>
+      <if test="partsQty != null">
+        parts_qty = #{partsQty},
+      </if>
+      <if test="cnName != null">
+        cn_name = #{cnName},
+      </if>
       <if test="enName != null">
         en_name = #{enName},
+      </if>
+      <if test="frName != null">
+        fr_name = #{frName},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},

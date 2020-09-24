@@ -13,6 +13,9 @@ import io.swagger.annotations.*;
 @Builder
 public class RosProductionProdductVersionResult extends GeneralResult {
 
+    @ApiModelProperty(value = "版本Id")
+    private Long versionId;
+
     @ApiModelProperty(value = "版本状态名称")
     private String versionName;
 

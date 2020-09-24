@@ -22,6 +22,9 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class RosSaveProductonProductEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "产品类型", required = true)
+    private Integer productionProductType;
+
     @ApiModelProperty(value = "id", required = false)
     private Long id;
 
@@ -31,11 +34,19 @@ public class RosSaveProductonProductEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品名字", required = true)
     @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY, message = "产品名字为空")
-    private String productName;
+    private String enName;
+
+    @ApiModelProperty(value = "产品名字", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY, message = "产品名字为空")
+    private String frName;
+
+    @ApiModelProperty(value = "产品名字", required = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_EN_NAME_IS_EMPTY, message = "产品名字为空")
+    private String cnName;
 
     @ApiModelProperty(value = "生产周期", required = true)
     @NotNull(code = ValidationExceptionCode.PRODUCT_CYCLE_IS_EMPTY, message = "产品生产周期为空")
-    private String procurementCycle;
+    private Integer procurementCycle;
 
     @ApiModelProperty(value = "Json配件列表，如[{\"id\":\"已选主键\",\"qty\":\"数量\"}]", required = true)
     private String partList;

@@ -19,3 +19,4 @@ public interface OpeProductionScooterBomDraftService extends IService<OpeProduct
 
 }
 
+
