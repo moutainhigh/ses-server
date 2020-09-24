@@ -2,10 +2,7 @@ package com.redescooter.ses.web.ros.service.restproduction;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 
 import java.util.List;
@@ -18,7 +15,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    Map<Integer, Integer> countByType(StringEnter enter);
+    Map<Integer, Integer> countByType(IdEnter enter);
 
     /**
      * 分组查询
@@ -58,7 +55,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    BooleanResult checkEffectiveDate(BaseTimeParmEnter enter);
+    BooleanResult checkEffectiveDate(RosProductionTimeParmEnter enter);
 
     /**
      * excel 导入
@@ -90,7 +87,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult rosSaveProductionProduct(RosSaveProductonProductEnter enter);
+    GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter);
 
     /**
      * 详情
@@ -106,7 +103,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult takeEffect(IdEnter enter);
+    GeneralResult takeEffect(RosProuductionTypeEnter enter);
 
     /**
      * 产品禁用
@@ -114,7 +111,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult productionProductDisable(IdEnter enter);
+    GeneralResult productionProductDisable(RosProuductionTypeEnter enter);
 
     /**
      * 发布

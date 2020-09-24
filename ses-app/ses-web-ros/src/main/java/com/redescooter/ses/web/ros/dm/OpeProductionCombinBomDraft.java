@@ -81,11 +81,32 @@ public class OpeProductionCombinBomDraft implements Serializable {
     private Long colorId;
 
     /**
+     * 部件数量
+     */
+    @TableField(value = "parts_qty")
+    @ApiModelProperty(value = "部件数量")
+    private Integer partsQty;
+
+    /**
+     * 中文名称
+     */
+    @TableField(value = "cn_name")
+    @ApiModelProperty(value = "中文名称")
+    private String cnName;
+
+    /**
      * 名称
      */
     @TableField(value = "en_name")
     @ApiModelProperty(value = "名称")
     private String enName;
+
+    /**
+     * 法文名称
+     */
+    @TableField(value = "fr_name")
+    @ApiModelProperty(value = "法文名称")
+    private String frName;
 
     /**
      * 创建人
@@ -168,7 +189,13 @@ public class OpeProductionCombinBomDraft implements Serializable {
 
     public static final String COL_COLOR_ID = "color_id";
 
+    public static final String COL_PARTS_QTY = "parts_qty";
+
+    public static final String COL_CN_NAME = "cn_name";
+
     public static final String COL_EN_NAME = "en_name";
+
+    public static final String COL_FR_NAME = "fr_name";
 
     public static final String COL_CREATED_BY = "created_by";
 

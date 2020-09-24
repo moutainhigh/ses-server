@@ -1,6 +1,7 @@
-package com.redescooter.ses.api.common.vo.base;
+package com.redescooter.ses.web.ros.vo.restproduct;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,12 +13,18 @@ import java.util.Date;
 @NoArgsConstructor // 生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class BaseTimeParmEnter extends GeneralEnter {
+public class RosProductionTimeParmEnter extends GeneralEnter {
     @ApiModelProperty(value = "日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date dateTime;
 
-    @ApiModelProperty(value = "类型")
-    private String type;
+    @ApiModelProperty(value = "产品类型")
+    private Integer productionType;
+
+    @ApiModelProperty(value = "table类型")
+    private Integer classtype;
+
+    @ApiModelProperty(value = "id")
+    private Long id;
 }

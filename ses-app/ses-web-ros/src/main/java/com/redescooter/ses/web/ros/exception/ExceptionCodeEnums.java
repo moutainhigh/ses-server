@@ -386,6 +386,14 @@ public enum ExceptionCodeEnums {
 
     DRAFT_NOT_EXIST(10184, "草稿不存在"),
 
+    BOM_IS_NOT_EXIST(10185, "BOM不存在"),
+
+    BOM_HAS_REACHED_EFFECTIVE_TIME(10186, "Bom未到生效时间"),
+
+    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少又一个部件"),
+
+    PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
+
     ;
 
 

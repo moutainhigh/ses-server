@@ -1,16 +1,17 @@
 package com.redescooter.ses.web.ros.dm;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.*;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 整车bom表
@@ -129,11 +130,32 @@ public class OpeProductionScooterBom implements Serializable {
     private String versoin;
 
     /**
+     * 部件数量
+     */
+    @TableField(value = "parts_qty")
+    @ApiModelProperty(value = "部件数量")
+    private Integer partsQty;
+
+    /**
+     * 中文名称
+     */
+    @TableField(value = "cn_name")
+    @ApiModelProperty(value = "中文名称")
+    private String cnName;
+
+    /**
      * 名称
      */
     @TableField(value = "en_name")
     @ApiModelProperty(value = "名称")
     private String enName;
+
+    /**
+     * 法文名称
+     */
+    @TableField(value = "fr_name")
+    @ApiModelProperty(value = "法文名称")
+    private String frName;
 
     /**
      * 创建人
@@ -230,7 +252,13 @@ public class OpeProductionScooterBom implements Serializable {
 
     public static final String COL_VERSOIN = "versoin";
 
+    public static final String COL_PARTS_QTY = "parts_qty";
+
+    public static final String COL_CN_NAME = "cn_name";
+
     public static final String COL_EN_NAME = "en_name";
+
+    public static final String COL_FR_NAME = "fr_name";
 
     public static final String COL_CREATED_BY = "created_by";
 

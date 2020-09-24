@@ -33,3 +33,5 @@ public class OpeProductionScooterBomServiceImpl extends
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+

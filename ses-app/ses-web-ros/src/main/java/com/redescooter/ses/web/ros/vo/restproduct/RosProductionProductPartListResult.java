@@ -22,11 +22,11 @@ public class RosProductionProductPartListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "部件主键")
-    private Long partsId;
-
     @ApiModelProperty(value = "产品编号")
-    private String partsNumber;
+    private String partsNum;
+
+    @ApiModelProperty(value = "部件区域Id")
+    private Long secId;
 
     @ApiModelProperty(value = "部件区域")
     private String sec;

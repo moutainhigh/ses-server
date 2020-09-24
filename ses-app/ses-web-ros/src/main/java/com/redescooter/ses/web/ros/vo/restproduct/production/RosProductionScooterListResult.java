@@ -1,9 +1,9 @@
 package com.redescooter.ses.web.ros.vo.restproduct.production;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import io.swagger.annotations.*;
 
 @ApiModel(value = "车辆列表出参", description = "车辆列表出参")
 @Data // 生成getter,setter等函数
@@ -11,7 +11,7 @@ import io.swagger.annotations.*;
 @NoArgsConstructor // 生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class RosProductionScooterListResult extends GeneralEnter {
+public class RosProductionScooterListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
@@ -21,8 +21,17 @@ public class RosProductionScooterListResult extends GeneralEnter {
     @ApiModelProperty(value = "分组Id")
     private Long groupId;
 
+    @ApiModelProperty(value = "颜色Id")
+    private Long colorId;
+
     @ApiModelProperty(value = "分组名字")
     private String groupName;
+
+    @ApiModelProperty(value = "颜色")
+    private String colorName;
+
+    @ApiModelProperty(value = "Bom状态")
+    private String status;
 
     @ApiModelProperty(value = "产品名称")
     private String enName;

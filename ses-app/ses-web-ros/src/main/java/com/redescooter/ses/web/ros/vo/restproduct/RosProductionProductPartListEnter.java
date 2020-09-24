@@ -15,5 +15,5 @@ public class RosProductionProductPartListEnter extends PageEnter {
     private String keyword;
 
     @ApiModelProperty(value = "区域代码", required = false)
-    private String sec;
+    private Long secId;
 }

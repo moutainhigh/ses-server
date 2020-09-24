@@ -18,5 +18,8 @@ public class RosProuductionTypeEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "产品类型")
-    private String productionProductType;
+    private Integer productionProductType;
+
+    @ApiModelProperty(value = "table 类习惯,选填")
+    private Integer classType;
 }

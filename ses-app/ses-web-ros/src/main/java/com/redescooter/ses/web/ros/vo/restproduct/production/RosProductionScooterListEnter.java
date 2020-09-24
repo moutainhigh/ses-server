@@ -24,7 +24,7 @@ public class RosProductionScooterListEnter extends PageEnter {
     private Long colorId;
 
     @ApiModelProperty(value = "产品列表")
-    private String status;
+    private Integer status;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
