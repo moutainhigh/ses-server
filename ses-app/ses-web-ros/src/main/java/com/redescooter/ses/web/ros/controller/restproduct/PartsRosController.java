@@ -4,10 +4,10 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCode;
+import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +15,9 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNamePartsRosController
@@ -36,7 +38,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增部件", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") List<RosPartsSaveOrUpdateEnter> enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         // 可能是保存并发布
         return new Response<>(partsRosService.partsSave(enter));
     }
@@ -51,7 +53,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑部件", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") List<RosPartsSaveOrUpdateEnter> enter) {
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.partsEdit(enter));
     }
 
@@ -65,7 +67,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/announ")
     @ApiOperation(value = "发布部件", response = GeneralResult.class)
-    public Response<GeneralResult> announ(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> announ(@ModelAttribute @ApiParam("请求参数") DraftAnnounEnter enter) {
         return new Response<>(partsRosService.partsAnnoun(enter));
     }
 
@@ -86,7 +88,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/checkAnnounUserSafeCode")
     @ApiOperation(value = "校验发布人的安全码", response = Boolean.class)
-    public Response<Boolean> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCode enter) {
+    public Response<Boolean> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCodeEnter enter) {
         return new Response<>(partsRosService.checkAnnounUserSafeCode(enter));
     }
 
@@ -103,4 +105,19 @@ public class PartsRosController {
     public Response<GeneralResult> partsDisable(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(partsRosService.partsDisable(enter));
     }
+
+
+    @PostMapping(value = "/listCount")
+    @ApiOperation(value = "列表统计", response = GeneralResult.class)
+    public Response<Map<String,Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response(partsRosService.listCount(enter));
+    }
+
+
+    @GetMapping(value = "/export")
+    @ApiOperation(value = "导出", response = GeneralResult.class)
+    public Response<GeneralResult> partsExport(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
+        return new Response(partsRosService.partsExport(id,response));
+    }
+
 }

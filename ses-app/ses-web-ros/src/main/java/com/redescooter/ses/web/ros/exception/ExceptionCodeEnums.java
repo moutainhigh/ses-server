@@ -382,9 +382,11 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
-    COMBINATION_IS_NOT_EXIST(10183, "组合产品不存在"),
+    PLEASE_COMPLETE_MSG(10183, "请完善信息"),
 
-    COMBINATION_DRAFT_IS_NOT_EXIST(10184, "组合产品草稿不存在"),
+    DRAFT_NOT_EXIST(10184, "草稿不存在"),
+
+    COMBINATION_IS_NOT_EXIST(10183, "组合产品不存在"),
 
     SCOOTER_BOM_IS_NOT_EXIST(10185, "车辆BOM不存在"),
 

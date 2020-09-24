@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Version V1.0
  **/
 @Data
-public class RosCheckAnnounSafeCode extends GeneralEnter {
+public class RosCheckAnnounSafeCodeEnter extends GeneralEnter {
 
     @ApiModelProperty("发布人id")
     private Long principal;

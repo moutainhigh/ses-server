@@ -36,4 +36,7 @@ public interface StaffServiceMapper {
      * @return
      **/
      List<OpeSysRoleData> roleDatas(@Param("id") Long id);
+
+
+    List<StaffDataResult> announUser(@Param("tenantId") Long tenantId);
 }

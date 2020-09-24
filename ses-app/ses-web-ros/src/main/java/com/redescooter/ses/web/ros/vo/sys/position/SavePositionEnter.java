@@ -30,7 +30,7 @@ public class SavePositionEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "所属部门id")
     @NotNull(code = ValidationExceptionCode.PLEASE_SELECT_DEPARTMENT, message = "请选择所属部门")
-    private long deptId;
+    private Long deptId;
 
     @ApiModelProperty(value = "岗位排序")
     private Integer sort;

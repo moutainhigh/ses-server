@@ -1,17 +1,17 @@
 package com.redescooter.ses.web.ros.service.restproduction;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCode;
+import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNamePartsRosService
@@ -23,20 +23,20 @@ import java.util.List;
 public interface PartsRosService {
 
 
-    GeneralResult partsSave(List<RosPartsSaveOrUpdateEnter> enter);
+    GeneralResult partsSave(StringEnter enter);
 
 
     GeneralResult partsDelete(IdEnter enter);
 
 
-    GeneralResult partsEdit(List<RosPartsSaveOrUpdateEnter> enter);
+    GeneralResult partsEdit(StringEnter enter);
 
 
 
     PageResult<RosPartsListResult> partsList(RosPartsListEnter enter);
 
 
-    GeneralResult partsAnnoun(IdEnter enter);
+    GeneralResult partsAnnoun(DraftAnnounEnter enter);
 
 
     ImportExcelPartsResult importParts(ImportPartsEnter enter);
@@ -45,11 +45,19 @@ public interface PartsRosService {
     List<StaffDataResult> announUser(Long tenantId);
 
 
-    Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCode enter);
+    Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter);
 
 
     GeneralResult partsCopy(IdEnter enter);
 
 
     GeneralResult partsDisable(IdEnter enter);
+
+
+    Map<String,Integer> listCount(GeneralEnter enter);
+
+
+    GeneralResult partsExport(String id, HttpServletResponse response);
+
+
 }
