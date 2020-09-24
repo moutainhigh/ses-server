@@ -28,7 +28,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Service
-public class PartsRosServiceImpl implements PartsRosService {
+public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
