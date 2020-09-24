@@ -3,10 +3,7 @@ package com.redescooter.ses.web.ros.service.restproduction;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +23,7 @@ public interface PartsRosService {
     GeneralResult partsSave(StringEnter enter);
 
 
-    GeneralResult partsDelete(IdEnter enter);
+    GeneralResult partsDelete(RosPartsBatchOpEnter enter);
 
 
     GeneralResult partsEdit(StringEnter enter);
@@ -51,7 +48,7 @@ public interface PartsRosService {
     GeneralResult partsCopy(IdEnter enter);
 
 
-    GeneralResult partsDisable(IdEnter enter);
+    GeneralResult partsDisable(RosPartsBatchOpEnter enter);
 
 
     Map<String,Integer> listCount(GeneralEnter enter);

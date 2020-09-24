@@ -4,10 +4,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,7 +43,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除部件", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosPartsBatchOpEnter enter) {
         return new Response<>(partsRosService.partsDelete(enter));
     }
 
@@ -102,7 +99,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/partsDisable")
     @ApiOperation(value = "禁用部件", response = GeneralResult.class)
-    public Response<GeneralResult> partsDisable(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> partsDisable(@ModelAttribute @ApiParam("请求参数") RosPartsBatchOpEnter enter) {
         return new Response<>(partsRosService.partsDisable(enter));
     }
 
@@ -114,6 +111,7 @@ public class PartsRosController {
     }
 
 
+    // 未完成
     @GetMapping(value = "/export")
     @ApiOperation(value = "导出", response = GeneralResult.class)
     public Response<GeneralResult> partsExport(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
