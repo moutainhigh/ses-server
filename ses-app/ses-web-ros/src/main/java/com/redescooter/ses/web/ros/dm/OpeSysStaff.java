@@ -1,22 +1,25 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 用户员工表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
-@Data
 @TableName(value = "ope_sys_staff")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +35,6 @@ public class OpeSysStaff implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -212,6 +214,20 @@ public class OpeSysStaff implements Serializable {
     private Long sysUserId;
 
     /**
+     * 是否开启安全码（0：否，1：是）
+     */
+    @TableField(value = "if_safe_code")
+    @ApiModelProperty(value = "是否开启安全码（0：否，1：是）")
+    private Integer ifSafeCode;
+
+    /**
+     * 安全码
+     */
+    @TableField(value = "safe_code")
+    @ApiModelProperty(value = "安全码")
+    private String safeCode;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -329,6 +345,10 @@ public class OpeSysStaff implements Serializable {
     public static final String COL_GENDER = "gender";
 
     public static final String COL_SYS_USER_ID = "sys_user_id";
+
+    public static final String COL_IF_SAFE_CODE = "if_safe_code";
+
+    public static final String COL_SAFE_CODE = "safe_code";
 
     public static final String COL_CREATED_BY = "created_by";
 

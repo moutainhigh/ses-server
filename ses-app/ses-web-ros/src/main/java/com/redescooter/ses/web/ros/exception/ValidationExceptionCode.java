@@ -230,4 +230,19 @@ public interface ValidationExceptionCode {
     int SORT_ILLEGAL = 10134;
     // 请选择部门
     int PLEASE_SELECT_DEPARTMENT = 10135;
+
+    // 名称为空
+    int NAME_IS_EMPTY = 10136;
+
+    // 分组id 为空
+    int GROUP_ID_IS_EMPTY = 10137;
+
+    // key值为空
+    int KEY_IS_EMPTY = 10138;
+
+    // value 为空
+    int VALUE_IS_EMPTY = 10139;
+
+    // 启用按钮为空
+    int ENABLE_IS_EMPTY = 10140;
 }

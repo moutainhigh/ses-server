@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.roledata.RoleDataService;
 import com.redescooter.ses.web.ros.service.salearea.SaleAreaService;
@@ -84,6 +85,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleSave")
     @ApiOperation(value = "新增角色--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> roleSave(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleSave(enter));
     }
@@ -91,6 +93,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleEdit")
     @ApiOperation(value = "修改角色--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> roleEdit(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleEdit(enter));
     }
@@ -98,6 +101,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleDelete")
     @ApiOperation(value = "删除角色--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> roleDelete(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
         return new Response(roleService.roleDelete(enter));
     }
@@ -105,6 +109,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleDetail")
     @ApiOperation(value = "角色详情--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<RoleDetailResult> roleDetail(@ModelAttribute @ApiParam("请求参数") RoleOpEnter enter) {
         return new Response(roleService.roleDetail(enter));
     }
@@ -112,6 +117,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleList")
     @ApiOperation(value = "角色列表--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<PageResult<RoleListResult>> roleList(@ModelAttribute @ApiParam("请求参数") RoleQueryListEnter enter) {
         return new Response(roleService.roleList(enter));
     }
@@ -119,6 +125,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleMenuEdit")
     @ApiOperation(value = "角色菜单权限修改--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> roleMenu(@ModelAttribute @ApiParam("请求参数") RoleMenuEditEnter enter) {
         return new Response(roleService.roleMenuEdit(enter));
     }
@@ -154,6 +161,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/roleAreaAuth")
     @ApiOperation(value = "保存或角色的销售区域--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> roleAreaAuth(@ModelAttribute @ApiParam("请求参数") RoleAreaEnter enter) {
         return new Response(saleAreaService.roleAreaAuth(enter));
     }
@@ -168,6 +176,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/saveRoleData")
     @ApiOperation(value = "保存角色的数据权限--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> saveRoleData(@ModelAttribute @ApiParam("请求参数") RoleDataSaveEnter enter) {
         return new Response(roleDataService.saveRoleData(enter));
     }

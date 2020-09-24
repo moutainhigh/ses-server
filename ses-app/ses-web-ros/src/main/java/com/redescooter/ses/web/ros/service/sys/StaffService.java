@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.sys;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.springframework.scheduling.annotation.Async;
@@ -53,6 +52,36 @@ public interface StaffService {
 
 
     GeneralResult openAccount(StaffOpEnter enter);
+
+
+    Boolean checkLoginPsd(UserPsdEnter enter);
+
+
+    GeneralResult editSafeCode(UserPsdEnter enter);
+
+
+    GeneralResult editUserPsd(WebResetPasswordEnter enter);
+
+
+    GeneralResult firstLoginEditPsd(UserPsdEnter enter);
+
+
+    GeneralResult userMsgEdit(UserMsgEditEnter enter);
+
+
+    SafeCodeResult getSafeCode(GeneralEnter enter);
+
+    StaffResult userMsgDetail(GeneralEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过员工的id找到员工对应的销售区域（销售区域是绑定在员工对应的角色上的）
+     * @Date  2020/9/17 13:41
+     * @Param [enter]
+     * @return
+     **/
+    List<StaffSaleAreaResult> staffSaleArea(GeneralEnter enter);
 
 
     /**

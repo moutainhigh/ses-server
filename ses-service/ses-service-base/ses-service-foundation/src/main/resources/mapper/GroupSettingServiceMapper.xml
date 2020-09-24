@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.GroupSettingServiceMapper">
+
+    <select id="groupList" resultType="com.redescooter.ses.api.foundation.vo.setting.GroupResult">
+        select id as id,
+       `desc` as 'desc',
+       group_name as groupName,
+       if(enable,1,0) as enable,
+       created_by as createdById,
+       created_time as createdTime,
+       updated_time as updatedTime,
+       updated_by as updatedById
+        from pla_sys_group_setting gup
+        where dr=0
+        and system_type=#{systemType}
+        <if test="keyword != null and keyword != ''">
+            and group_name like concat('%',#{keyword},'%')
+        </if>
+        order by created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+</mapper>

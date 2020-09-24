@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysLogMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysLog">
+    <!--@mbg.generated-->
+    <!--@Table ope_sys_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="op_modul" jdbcType="VARCHAR" property="opModul" />
+    <result column="op_user_name" jdbcType="VARCHAR" property="opUserName" />
+    <result column="op_user_code" jdbcType="VARCHAR" property="opUserCode" />
+    <result column="op_user_dept_name" jdbcType="VARCHAR" property="opUserDeptName" />
+    <result column="op_method" jdbcType="VARCHAR" property="opMethod" />
+    <result column="login_ip" jdbcType="VARCHAR" property="loginIp" />
+    <result column="request_address" jdbcType="VARCHAR" property="requestAddress" />
+    <result column="request_param" jdbcType="VARCHAR" property="requestParam" />
+    <result column="request_type" jdbcType="VARCHAR" property="requestType" />
+    <result column="response_param" jdbcType="VARCHAR" property="responseParam" />
+    <result column="exp_msg" jdbcType="VARCHAR" property="expMsg" />
+    <result column="log_type" jdbcType="INTEGER" property="logType" />
+    <result column="if_success" jdbcType="INTEGER" property="ifSuccess" />
+    <result column="time_consum" jdbcType="BIGINT" property="timeConsum" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="DECIMAL" property="def4" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, op_method, login_ip, 
+    request_address, request_param, request_type, response_param, exp_msg, log_type, 
+    if_success, time_consum, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_log
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="op_modul = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opModul,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="op_user_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opUserName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="op_user_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opUserCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="op_user_dept_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opUserDeptName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="op_method = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opMethod,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="login_ip = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.loginIp,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="request_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.requestAddress,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="request_param = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.requestParam,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="request_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.requestType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="response_param = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.responseParam,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="exp_msg = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.expMsg,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="log_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.logType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="if_success = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.ifSuccess,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="time_consum = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.timeConsum,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_sys_log
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_modul = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opModul != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opModul,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_user_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opUserName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opUserName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_user_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opUserCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opUserCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_user_dept_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opUserDeptName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opUserDeptName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="op_method = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.opMethod != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.opMethod,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="login_ip = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.loginIp != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.loginIp,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="request_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.requestAddress != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.requestAddress,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="request_param = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.requestParam != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.requestParam,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="request_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.requestType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.requestType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="response_param = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.responseParam != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.responseParam,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="exp_msg = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.expMsg != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.expMsg,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="log_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.logType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.logType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="if_success = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.ifSuccess != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.ifSuccess,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="time_consum = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.timeConsum != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.timeConsum,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def4 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_sys_log
+    (id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, op_method, login_ip, 
+      request_address, request_param, request_type, response_param, exp_msg, log_type, 
+      if_success, time_consum, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.opModul,jdbcType=VARCHAR}, 
+        #{item.opUserName,jdbcType=VARCHAR}, #{item.opUserCode,jdbcType=VARCHAR}, #{item.opUserDeptName,jdbcType=VARCHAR}, 
+        #{item.opMethod,jdbcType=VARCHAR}, #{item.loginIp,jdbcType=VARCHAR}, #{item.requestAddress,jdbcType=VARCHAR}, 
+        #{item.requestParam,jdbcType=VARCHAR}, #{item.requestType,jdbcType=VARCHAR}, #{item.responseParam,jdbcType=VARCHAR}, 
+        #{item.expMsg,jdbcType=VARCHAR}, #{item.logType,jdbcType=INTEGER}, #{item.ifSuccess,jdbcType=INTEGER}, 
+        #{item.timeConsum,jdbcType=BIGINT}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=DECIMAL}, 
+        #{item.def5,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysLog">
+    <!--@mbg.generated-->
+    insert into ope_sys_log
+    (id, dr, op_modul, op_user_name, op_user_code, op_user_dept_name, op_method, login_ip, 
+      request_address, request_param, request_type, response_param, exp_msg, log_type, 
+      if_success, time_consum, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{opModul,jdbcType=VARCHAR}, #{opUserName,jdbcType=VARCHAR}, 
+      #{opUserCode,jdbcType=VARCHAR}, #{opUserDeptName,jdbcType=VARCHAR}, #{opMethod,jdbcType=VARCHAR}, 
+      #{loginIp,jdbcType=VARCHAR}, #{requestAddress,jdbcType=VARCHAR}, #{requestParam,jdbcType=VARCHAR}, 
+      #{requestType,jdbcType=VARCHAR}, #{responseParam,jdbcType=VARCHAR}, #{expMsg,jdbcType=VARCHAR}, 
+      #{logType,jdbcType=INTEGER}, #{ifSuccess,jdbcType=INTEGER}, #{timeConsum,jdbcType=BIGINT}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=DECIMAL}, #{def5,jdbcType=VARCHAR})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    op_modul = #{opModul,jdbcType=VARCHAR}, 
+    op_user_name = #{opUserName,jdbcType=VARCHAR}, 
+    op_user_code = #{opUserCode,jdbcType=VARCHAR}, 
+    op_user_dept_name = #{opUserDeptName,jdbcType=VARCHAR}, 
+    op_method = #{opMethod,jdbcType=VARCHAR}, 
+    login_ip = #{loginIp,jdbcType=VARCHAR}, 
+    request_address = #{requestAddress,jdbcType=VARCHAR}, 
+    request_param = #{requestParam,jdbcType=VARCHAR}, 
+    request_type = #{requestType,jdbcType=VARCHAR}, 
+    response_param = #{responseParam,jdbcType=VARCHAR}, 
+    exp_msg = #{expMsg,jdbcType=VARCHAR}, 
+    log_type = #{logType,jdbcType=INTEGER}, 
+    if_success = #{ifSuccess,jdbcType=INTEGER}, 
+    time_consum = #{timeConsum,jdbcType=BIGINT}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=DECIMAL}, 
+    def5 = #{def5,jdbcType=VARCHAR}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysLog">
+    <!--@mbg.generated-->
+    insert into ope_sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="opModul != null">
+        op_modul,
+      </if>
+      <if test="opUserName != null">
+        op_user_name,
+      </if>
+      <if test="opUserCode != null">
+        op_user_code,
+      </if>
+      <if test="opUserDeptName != null">
+        op_user_dept_name,
+      </if>
+      <if test="opMethod != null">
+        op_method,
+      </if>
+      <if test="loginIp != null">
+        login_ip,
+      </if>
+      <if test="requestAddress != null">
+        request_address,
+      </if>
+      <if test="requestParam != null">
+        request_param,
+      </if>
+      <if test="requestType != null">
+        request_type,
+      </if>
+      <if test="responseParam != null">
+        response_param,
+      </if>
+      <if test="expMsg != null">
+        exp_msg,
+      </if>
+      <if test="logType != null">
+        log_type,
+      </if>
+      <if test="ifSuccess != null">
+        if_success,
+      </if>
+      <if test="timeConsum != null">
+        time_consum,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="opModul != null">
+        #{opModul,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserName != null">
+        #{opUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserCode != null">
+        #{opUserCode,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserDeptName != null">
+        #{opUserDeptName,jdbcType=VARCHAR},
+      </if>
+      <if test="opMethod != null">
+        #{opMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loginIp != null">
+        #{loginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="requestAddress != null">
+        #{requestAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="requestParam != null">
+        #{requestParam,jdbcType=VARCHAR},
+      </if>
+      <if test="requestType != null">
+        #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="responseParam != null">
+        #{responseParam,jdbcType=VARCHAR},
+      </if>
+      <if test="expMsg != null">
+        #{expMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="logType != null">
+        #{logType,jdbcType=INTEGER},
+      </if>
+      <if test="ifSuccess != null">
+        #{ifSuccess,jdbcType=INTEGER},
+      </if>
+      <if test="timeConsum != null">
+        #{timeConsum,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=DECIMAL},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="opModul != null">
+        op_modul = #{opModul,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserName != null">
+        op_user_name = #{opUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserCode != null">
+        op_user_code = #{opUserCode,jdbcType=VARCHAR},
+      </if>
+      <if test="opUserDeptName != null">
+        op_user_dept_name = #{opUserDeptName,jdbcType=VARCHAR},
+      </if>
+      <if test="opMethod != null">
+        op_method = #{opMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="loginIp != null">
+        login_ip = #{loginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="requestAddress != null">
+        request_address = #{requestAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="requestParam != null">
+        request_param = #{requestParam,jdbcType=VARCHAR},
+      </if>
+      <if test="requestType != null">
+        request_type = #{requestType,jdbcType=VARCHAR},
+      </if>
+      <if test="responseParam != null">
+        response_param = #{responseParam,jdbcType=VARCHAR},
+      </if>
+      <if test="expMsg != null">
+        exp_msg = #{expMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="logType != null">
+        log_type = #{logType,jdbcType=INTEGER},
+      </if>
+      <if test="ifSuccess != null">
+        if_success = #{ifSuccess,jdbcType=INTEGER},
+      </if>
+      <if test="timeConsum != null">
+        time_consum = #{timeConsum,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=DECIMAL},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

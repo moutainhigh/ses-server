@@ -376,6 +376,12 @@ public enum ExceptionCodeEnums {
 
     ASSEMBLY_PRODUCT_IS_EMPTY(10179, "组装产品为空"),
 
+    PSD_LENGTH_ERROR(10180, "密码长度不对"),
+
+    SAFE_CODE_NOT_OPEN(10181, "未开通安全码"),
+
+    OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
+
     ;
 
 

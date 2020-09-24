@@ -31,6 +31,8 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="gender" jdbcType="INTEGER" property="gender" />
     <result column="sys_user_id" jdbcType="BIGINT" property="sysUserId" />
+    <result column="if_safe_code" jdbcType="INTEGER" property="ifSafeCode" />
+    <result column="safe_code" jdbcType="VARCHAR" property="safeCode" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -46,8 +48,8 @@
     id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
     email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
     certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
-    first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def5, def6
+    first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -181,6 +183,16 @@
       <trim prefix="sys_user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.sysUserId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="if_safe_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.ifSafeCode,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="safe_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.safeCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -420,6 +432,20 @@
           </if>
         </foreach>
       </trim>
+      <trim prefix="if_safe_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.ifSafeCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.ifSafeCode,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="safe_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.safeCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.safeCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.createdBy != null">
@@ -495,8 +521,9 @@
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
-      first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+      first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
@@ -508,10 +535,11 @@
         #{item.certificatPicture2,jdbcType=VARCHAR}, #{item.openAccount,jdbcType=CHAR}, 
         #{item.remark,jdbcType=VARCHAR}, #{item.employeePicture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
         #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR}, 
-        #{item.gender,jdbcType=INTEGER}, #{item.sysUserId,jdbcType=BIGINT}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.gender,jdbcType=INTEGER}, #{item.sysUserId,jdbcType=BIGINT}, #{item.ifSafeCode,jdbcType=INTEGER}, 
+        #{item.safeCode,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
+        #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
@@ -520,8 +548,9 @@
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
-      first_name, last_name, full_name, code, gender, sys_user_id, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+      first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{deptId,jdbcType=BIGINT}, #{positionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
@@ -532,9 +561,10 @@
       #{openAccount,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{employeePicture,jdbcType=VARCHAR}, 
       #{firstName,jdbcType=VARCHAR}, #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{sysUserId,jdbcType=BIGINT}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{ifSafeCode,jdbcType=INTEGER}, #{safeCode,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -563,6 +593,8 @@
     code = #{code,jdbcType=VARCHAR}, 
     gender = #{gender,jdbcType=INTEGER}, 
     sys_user_id = #{sysUserId,jdbcType=BIGINT}, 
+    if_safe_code = #{ifSafeCode,jdbcType=INTEGER}, 
+    safe_code = #{safeCode,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
@@ -657,6 +689,12 @@
       </if>
       <if test="sysUserId != null">
         sys_user_id,
+      </if>
+      <if test="ifSafeCode != null">
+        if_safe_code,
+      </if>
+      <if test="safeCode != null">
+        safe_code,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -769,6 +807,12 @@
       <if test="sysUserId != null">
         #{sysUserId,jdbcType=BIGINT},
       </if>
+      <if test="ifSafeCode != null">
+        #{ifSafeCode,jdbcType=INTEGER},
+      </if>
+      <if test="safeCode != null">
+        #{safeCode,jdbcType=VARCHAR},
+      </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
       </if>
@@ -879,6 +923,12 @@
       </if>
       <if test="sysUserId != null">
         sys_user_id = #{sysUserId,jdbcType=BIGINT},
+      </if>
+      <if test="ifSafeCode != null">
+        if_safe_code = #{ifSafeCode,jdbcType=INTEGER},
+      </if>
+      <if test="safeCode != null">
+        safe_code = #{safeCode,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},

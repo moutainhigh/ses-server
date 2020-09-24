@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
@@ -41,6 +42,7 @@ public class SysPositionController {
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "岗位列表", response = PositionResult.class)
+    @LogAnnotation
     public Response<PageResult<PositionResult>> list(@ModelAttribute @ApiParam("请求参数") PositionEnter enter) {
         return new Response<>(sysPositionService.list(enter));
     }
@@ -53,18 +55,21 @@ public class SysPositionController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新建岗位", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePositionEnter enter) {
         return new Response<>(sysPositionService.save(enter));
     }
 
     @PostMapping(value = "/editPosition")
     @ApiOperation(value = "岗位编辑", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") EditPositionEnter enter) {
         return new Response<>(sysPositionService.positionEdit(enter));
     }
 
     @PostMapping(value = "/positionDetails")
     @ApiOperation(value = "岗位详情", response = DeptDetailsResult.class)
+    @LogAnnotation
     public Response<PositionDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysPositionService.positionDetails(enter));
     }
@@ -77,6 +82,7 @@ public class SysPositionController {
 
     @PostMapping(value = "/deletePosition")
     @ApiOperation(value = "岗位删除", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> deletePosition(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(sysPositionService.deletePosition(enter));
     }

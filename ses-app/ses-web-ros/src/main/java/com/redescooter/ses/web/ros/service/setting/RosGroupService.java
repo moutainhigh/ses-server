@@ -4,24 +4,19 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.setting.GroupListEnter;
-import com.redescooter.ses.web.ros.vo.setting.GroupResult;
-import com.redescooter.ses.web.ros.vo.setting.SaveGroupEnter;
+import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
+import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
+import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
 
-/**
- *  @author: alex
- *  @Date: 2020/9/16 18:26
- *  @version：V 1.2
- *  @Description:
- */
+import javax.servlet.http.HttpServletResponse;
 
-public interface GroupSettingService {
+public interface RosGroupService {
     /**
      * 分组列表
      * @param enter
      * @return
      */
-    PageResult<GroupResult> list(GroupListEnter enter);
+    PageResult<GroupResult> list(RosGroupListEnter enter);
 
     /**
      * 详情
@@ -35,7 +30,7 @@ public interface GroupSettingService {
      * @param enter
      * @return
      */
-    GeneralResult save(SaveGroupEnter enter);
+    GeneralResult save(RosSaveGroupEnter enter);
 
     /**
      * 删除分组
@@ -46,10 +41,10 @@ public interface GroupSettingService {
 
     /**
      * 导出
-     * @param enter
+     * @param
      * @return
      */
-    GeneralResult export(GeneralEnter enter);
+    GeneralResult export(String id, HttpServletResponse response);
 
     /**
      * 导入
