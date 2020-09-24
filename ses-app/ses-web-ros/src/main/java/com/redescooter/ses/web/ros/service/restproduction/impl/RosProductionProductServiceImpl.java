@@ -465,7 +465,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionProductId = opeProductionScooterBomDraft.getId();
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue();
 
-                RosProductionProductDetailResult.builder().id(opeProductionScooterBomDraft.getId())
+                result = RosProductionProductDetailResult.builder().id(opeProductionScooterBomDraft.getId())
                     .productN(opeProductionScooterBomDraft.getBomNo())
                     .groupId(opeProductionScooterBomDraft.getGroupId())
                     .groupName(ProductionScooterGroupEnums
