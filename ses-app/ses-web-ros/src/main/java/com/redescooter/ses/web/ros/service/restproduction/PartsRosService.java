@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.restproduction;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCode;
@@ -23,13 +24,13 @@ import java.util.List;
 public interface PartsRosService {
 
 
-    GeneralResult partsSave(List<RosPartsSaveOrUpdateEnter> enter);
+    GeneralResult partsSave(StringEnter enter);
 
 
     GeneralResult partsDelete(IdEnter enter);
 
 
-    GeneralResult partsEdit(List<RosPartsSaveOrUpdateEnter> enter);
+    GeneralResult partsEdit(StringEnter enter);
 
 
 

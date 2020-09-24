@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
@@ -38,7 +39,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Override
     @Transactional
-    public GeneralResult partsSave(List<RosPartsSaveOrUpdateEnter> enter) {
+    public GeneralResult partsSave(StringEnter enter) {
 
         return new GeneralResult();
     }
@@ -50,7 +51,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }
 
     @Override
-    public GeneralResult partsEdit(List<RosPartsSaveOrUpdateEnter> enter) {
+    public GeneralResult partsEdit(StringEnter enter) {
         return new GeneralResult();
     }
 

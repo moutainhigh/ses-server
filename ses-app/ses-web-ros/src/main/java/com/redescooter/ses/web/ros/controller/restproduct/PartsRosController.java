@@ -36,7 +36,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增部件", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") List<RosPartsSaveOrUpdateEnter> enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         // 可能是保存并发布
         return new Response<>(partsRosService.partsSave(enter));
     }
@@ -51,7 +51,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑部件", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") List<RosPartsSaveOrUpdateEnter> enter) {
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(partsRosService.partsEdit(enter));
     }
 
