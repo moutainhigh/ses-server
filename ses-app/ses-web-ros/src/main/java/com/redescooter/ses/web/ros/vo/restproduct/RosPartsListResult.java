@@ -21,7 +21,10 @@ public class RosPartsListResult extends GeneralResult {
     private String partsNo;
 
     @ApiModelProperty("sec")
-    private String partsSec;
+    private Long partsSec;
+
+    @ApiModelProperty("sec名称")
+    private String partsSecName;
 
     @ApiModelProperty("部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
     private Integer partsType;
@@ -44,16 +47,22 @@ public class RosPartsListResult extends GeneralResult {
     @ApiModelProperty(value = "法文名称")
     private String frName;
 
+    @ApiModelProperty(value = "供应商id")
+    private Long supplierId;
+
     @ApiModelProperty(value = "供应商名称")
     private String supplierName;
 
-    @ApiModelProperty(value = "生产周期")
-    private Integer productionCycle;
+    @ApiModelProperty(value = "采购周期")
+    private Integer procurementCycle;
 
     @ApiModelProperty(value = "图纸url")
     private String dwgUrl;
 
     @ApiModelProperty(value = "页面类型,1:草稿，2：部件")
     private Integer classType;
+
+    @ApiModelProperty("是否禁用，0：否，1：是")
+    private Integer disable = 0;
 
 }
