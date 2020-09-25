@@ -354,6 +354,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             } else {
                 // 编辑
                 opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
+                opeProductionScooterBomDraft.setId(enter.getId());
             }
             productionProductId = opeProductionScooterBomDraft.getId();
             productionProducType = ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue();
@@ -370,6 +371,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             } else {
                 // 编辑
                 productionCombinBomDraft = buildProductionCombinBom(enter, partQty);
+                productionCombinBomDraft.setId(enter.getId());
             }
             productionProductId = productionCombinBomDraft.getId();
             productionProducType = ProductionPartsRelationTypeEnums.COMBINATION_DRAFT.getValue();
@@ -703,6 +705,50 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
             // 信息校验
             checkOpeProductionOpeProductionCombinBom(enter, opeProductionCombinBomDraft);
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 删除草稿
+     * 
+     * @param enter
+     * @return
+     */
+    @Transactional
+    @Override
+    public GeneralResult delete(RosProuductionTypeEnter enter) {
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
+            OpeProductionScooterBomDraft opeProductionScooterBomDraft =
+                opeProductionScooterBomDraftService.getById(enter.getId());
+            if (opeProductionScooterBomDraft == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+            }
+            // 删除部件
+            opeProductionScooterBomDraftService.removeById(opeProductionScooterBomDraft.getId());
+            if (opeProductionScooterBomDraft.getPartsQty() > 0) {
+                opeProductionPartsRelationService.remove(new LambdaQueryWrapper<OpeProductionPartsRelation>()
+                    .eq(OpeProductionPartsRelation::getProductionId, opeProductionScooterBomDraft.getId())
+                    .eq(OpeProductionPartsRelation::getProductionType,
+                        ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue()));
+            }
+        }
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
+            OpeProductionCombinBomDraft opeProductionCombinBomDraft =
+                opeProductionCombinBomDraftService.getById(enter.getId());
+            if (opeProductionCombinBomDraft == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+            }
+            opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft.getId());
+            if (opeProductionCombinBomDraft.getPartsQty() > 0) {
+                opeProductionPartsRelationService.remove(new LambdaQueryWrapper<OpeProductionPartsRelation>()
+                    .eq(OpeProductionPartsRelation::getProductionId, opeProductionCombinBomDraft.getId())
+                    .eq(OpeProductionPartsRelation::getProductionType,
+                        ProductionPartsRelationTypeEnums.COMBINATION_DRAFT.getValue()));
+            }
+
         }
         return new GeneralResult(enter.getRequestId());
     }
