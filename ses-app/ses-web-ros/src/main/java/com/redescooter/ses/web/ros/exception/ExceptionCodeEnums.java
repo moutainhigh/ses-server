@@ -396,6 +396,8 @@ public enum ExceptionCodeEnums {
 
     BOM_HAS_DUPLICATE_EFFECTIVE_DATE(10189, "bom有重复的日期"),
 
+    BOM_NUM_REPEAT(10190, "bom编号已重复"),
+
     ;
 
 
