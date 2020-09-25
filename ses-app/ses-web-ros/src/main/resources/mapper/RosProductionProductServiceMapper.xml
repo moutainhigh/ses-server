@@ -86,7 +86,7 @@
         from ope_production_scooter_bom_draft draft
        <include refid="where_scooterDraftList"/>
         order by draft.created_time desc
-        limit #{startRow},#{pageNo}
+        limit #{startRow},#{pageSize}
     </select>
 
     <select id="scooterBomListCount" resultType="int">
@@ -94,7 +94,7 @@
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
         order by bom.created_time desc
-        limit #{startRow},#{pageNo}
+        limit #{startRow},#{pageSize}
     </select>
 
     <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
@@ -111,7 +111,7 @@
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
         order by bom.created_time desc
-        limit #{startRow},#{pageNo}
+        limit #{startRow},#{pageSize}
     </select>
 
     <select id="combinationDraftListCount" resultType="int">
