@@ -394,6 +394,8 @@ public enum ExceptionCodeEnums {
 
     PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
 
+    BOM_HAS_DUPLICATE_EFFECTIVE_DATE(10189, "bom有重复的日期"),
+
     ;
 
 
