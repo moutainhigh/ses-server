@@ -500,7 +500,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
                 // 其他版本列表
                 versionList =
-                    rosProductionProductServiceMapper.productionScooterVersionList(opeProductionCombinBom.getBomNo());
+                    rosProductionProductServiceMapper.productionCombinBomVersionList(opeProductionCombinBom.getBomNo());
                 // 部件列表信息
                 productionProductId = opeProductionCombinBom.getId();
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue();

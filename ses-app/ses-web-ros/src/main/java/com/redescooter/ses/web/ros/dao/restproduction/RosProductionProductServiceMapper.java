@@ -97,6 +97,14 @@ public interface RosProductionProductServiceMapper {
     List<RosProductionProdductVersionResult> productionScooterVersionList(String bomNo);
 
     /**
+     * 查询组合版本号
+     * 
+     * @param bomNo
+     * @return
+     */
+    List<RosProductionProdductVersionResult> productionCombinBomVersionList(String bomNo);
+
+    /**
      * 产品部件列表
      * 
      * @param id
@@ -105,4 +113,5 @@ public interface RosProductionProductServiceMapper {
      */
     List<RosProductionProductPartListResult> rosProductionProductPartsList(@Param("id") Long id,
         @Param("productTypeId") Integer productTypeId);
+
 }

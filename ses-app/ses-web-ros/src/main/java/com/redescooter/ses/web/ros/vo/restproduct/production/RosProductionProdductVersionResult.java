@@ -14,11 +14,14 @@ import io.swagger.annotations.*;
 public class RosProductionProdductVersionResult extends GeneralResult {
 
     @ApiModelProperty(value = "版本Id")
-    private Long versionId;
+    private Long id;
 
     @ApiModelProperty(value = "版本状态名称")
-    private String versionName;
+    private String name;
 
     @ApiModelProperty(value = "版本状态状态")
-    private String versionStatus;
+    private String status;
+
+    @ApiModelProperty(value = "激活版本")
+    private Boolean activate;
 }
