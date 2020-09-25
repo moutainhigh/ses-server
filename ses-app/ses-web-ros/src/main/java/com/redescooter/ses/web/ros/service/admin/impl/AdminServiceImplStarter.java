@@ -202,7 +202,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      */
     @Transactional
     @Override
-//    @PostConstruct
+    @PostConstruct
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
