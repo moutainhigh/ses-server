@@ -19,6 +19,6 @@ public interface RunPoductionTaskExecutorServiceJob {
      * @param enter
      * @return
      */
-    public JobResult poductionScooterTask(GeneralEnter enter);
+    public JobResult productionScooterTask(GeneralEnter enter);
 
 }

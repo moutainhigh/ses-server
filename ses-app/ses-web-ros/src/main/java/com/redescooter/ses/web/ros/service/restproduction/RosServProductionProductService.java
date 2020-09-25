@@ -121,4 +121,12 @@ public interface RosServProductionProductService {
      */
     GeneralResult release(RosProuductionTypeEnter enter);
 
+    /**
+     * 删除草稿
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(RosProuductionTypeEnter enter);
+
 }

@@ -109,4 +109,9 @@ public class RosScooterController {
         return new Response<>(rosServProductionProductService.release(enter));
     }
 
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "删除", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+        return new Response<>(rosServProductionProductService.delete(enter));
+    }
 }

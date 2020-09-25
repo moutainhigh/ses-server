@@ -90,7 +90,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
      */
     @Transactional
     @Override
-    public JobResult poductionScooterTask(GeneralEnter enter) {
+    public JobResult productionScooterTask(GeneralEnter enter) {
         List<OpeProductionScooterBom> productionScooterBomList =
             opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
                 .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue()));
