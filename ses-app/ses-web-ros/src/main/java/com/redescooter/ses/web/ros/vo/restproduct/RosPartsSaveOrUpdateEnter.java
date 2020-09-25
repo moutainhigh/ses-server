@@ -23,7 +23,7 @@ public class RosPartsSaveOrUpdateEnter extends GeneralEnter {
     private String partsNo;
 
     @ApiModelProperty("sec")
-    private Long partsSecId;
+    private Long partsSec;
 
     @ApiModelProperty(value = "1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
     private Integer partsType;

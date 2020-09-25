@@ -57,4 +57,7 @@ public interface PartsRosService {
     GeneralResult partsExport(String id, HttpServletResponse response);
 
 
+    List<RosRepeatResult> saveAnnounCheck(StringEnter enter);
+
+
 }

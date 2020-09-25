@@ -394,6 +394,8 @@ public enum ExceptionCodeEnums {
 
     PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
 
+    PARTS_NO_REPEAT(10189, "部件号重复"),
+
     ;
 
 

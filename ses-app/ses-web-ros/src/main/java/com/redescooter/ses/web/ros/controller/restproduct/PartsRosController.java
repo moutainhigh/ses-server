@@ -111,11 +111,17 @@ public class PartsRosController {
     }
 
 
-    // 未完成
     @GetMapping(value = "/export")
     @ApiOperation(value = "导出", response = GeneralResult.class)
     public Response<GeneralResult> partsExport(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
         return new Response(partsRosService.partsExport(id,response));
+    }
+
+
+    @PostMapping(value = "/saveAnnounCheck")
+    @ApiOperation(value = "保存发布校验", response = GeneralResult.class)
+    public Response<List<RosRepeatResult>> saveAnnounCheck(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response(partsRosService.saveAnnounCheck(enter));
     }
 
 }

@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     private StaffService staffService;
     @Autowired
     private OpeSysStaffService opeSysStaffService;
-    @Autowired
+    @Reference
     private IdAppService idAppService;
     @Autowired
     private SysDeptService sysDeptService;

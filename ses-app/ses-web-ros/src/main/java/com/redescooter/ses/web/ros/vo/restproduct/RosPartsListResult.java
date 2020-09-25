@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -64,5 +65,9 @@ public class RosPartsListResult extends GeneralResult {
 
     @ApiModelProperty("是否禁用，0：否，1：是")
     private Integer disable = 0;
+
+    @TableField(value = "id_calss")
+    @ApiModelProperty(value = "是否有序列号，0：否，1：是")
+    private Integer idCalss;
 
 }
