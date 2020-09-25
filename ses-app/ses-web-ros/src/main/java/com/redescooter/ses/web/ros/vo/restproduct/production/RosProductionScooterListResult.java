@@ -31,7 +31,7 @@ public class RosProductionScooterListResult extends GeneralResult {
     private String colorName;
 
     @ApiModelProperty(value = "Bom状态")
-    private String status;
+    private Integer status;
 
     @ApiModelProperty(value = "产品名称")
     private String enName;

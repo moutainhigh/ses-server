@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
@@ -10,6 +11,7 @@ import com.redescooter.ses.api.common.enums.bom.ProductionScooterGroupEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
@@ -61,6 +63,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private OpeProductionPartsService opeProductionPartsService;
 
     @Autowired
+    private JedisService jedisService;
+
+    @Autowired
     private IdAppService idAppService;
 
     /**
@@ -75,19 +80,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 整车
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionScooterBomDraftService.count());
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
-                opeProductionScooterBomService
-                    .count(new LambdaQueryWrapper<OpeProductionScooterBom>().in(OpeProductionScooterBom::getBomStatus,
-                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionScooterBomService.count());
         }
 
         // 组合
         if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionCombinBomDraftService.count());
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
-                opeProductionCombinBomService
-                    .count(new LambdaQueryWrapper<OpeProductionCombinBom>().in(OpeProductionCombinBom::getBomStatus,
-                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionCombinBomService.count());
         }
         return result;
     }
@@ -269,7 +268,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @return
      */
     @Override
-    public ImportExcelPartsResult saveScooterImportExcel(GeneralEnter enter) {
+    public ImportExcelPartsResult saveScooterImportExcel(StringEnter enter) {
         return null;
     }
 
@@ -540,6 +539,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
@@ -613,6 +620,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
@@ -656,6 +671,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public GeneralResult release(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
             OpeProductionScooterBomDraft opeProductionScooterBomDraft =
                 opeProductionScooterBomDraftService.getById(enter.getId());

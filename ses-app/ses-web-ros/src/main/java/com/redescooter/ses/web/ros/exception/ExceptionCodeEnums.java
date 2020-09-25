@@ -398,7 +398,9 @@ public enum ExceptionCodeEnums {
 
     BOM_NUM_REPEAT(10190, "bom编号已重复"),
 
-    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom 信息不完整"),
+    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom信息不完整"),
+
+    SAFE_CODE_FAILURE(10192, "安全码失效，请重新给校验"),
 
     ;
 
