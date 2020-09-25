@@ -2,11 +2,14 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -15,17 +18,14 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsDraftServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeProductionParts;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsDraftService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
+import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
@@ -82,6 +82,17 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private ImportExcelService importExcelService;
+
+    @Autowired
+    private OpeSupplierService opeSupplierService;
+
+    @Autowired
+    private OpePartsSecService opePartsSecService;
+
+
 
     @Override
     @Transactional
@@ -292,7 +303,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             partsList.add(parts);
         }
         opeProductionPartsDraftService.removeByIds(Arrays.asList(draftIds));
-        opeProductionPartsService.updateBatchById(partsList);
+        opeProductionPartsService.saveOrUpdateBatch(partsList);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -321,11 +332,120 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }
 
     @Override
-    public ImportExcelPartsResult importParts(ImportPartsEnter enter) {
-        ImportExcelPartsResult result = new ImportExcelPartsResult();
+    @Transactional
+    public GeneralResult importParts(ImportPartsEnter enter) {
         // 逻辑需要调整
-        return excelService.readExcelDataByParts(enter);
+        ExcelImportResult<RosParseExcelData> excelImportResult = importExcelService.setiExcelVerifyHandler(new RosExcelParse()).importOssExcel(enter.getUrl(), RosParseExcelData.class, new ImportParams());
+        if (excelImportResult == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        // 拿到需要导入的数据
+        List<RosParseExcelData> successList = excelImportResult.getList();
+        if(CollectionUtils.isEmpty(successList)){
+            // 如果没有成功的数据  直接抛异常
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        // 拿到成功的数据 保存到草稿
+        excelDataToDraft(successList,enter);
+        return new GeneralResult(enter.getRequestId());
     }
+
+
+    public void excelDataToDraft(List<RosParseExcelData> dataList,ImportPartsEnter enter){
+        // 部分字段需要转换一下才能保存到草稿
+        // 找到需要转换的东西 供应商 sec
+        List<OpeSupplier> supplierList = opeSupplierService.list();
+        List<OpePartsSec> secList = opePartsSecService.list();
+        List<OpeProductionPartsDraft> saveList = new ArrayList<>();
+        for (RosParseExcelData data : dataList) {
+            OpeProductionPartsDraft draft = new OpeProductionPartsDraft();
+            draft.setPartsNo(data.getPartsNo());
+            draft.setMainDrawing(data.getMainDrawing());
+            draft.setCnName(data.getChineseName());
+            draft.setEnName(data.getEnglishName());
+            draft.setItem(data.getItem());
+            draft.setEcnNumber(data.getEcnNumber());
+            draft.setDrawingSize(data.getDrawingSize());
+            draft.setWeight(Double.parseDouble(data.getWeight()));
+            draft.setPartsQty(data.getQuantity()==null?0:Integer.parseInt(data.getQuantity()));
+            draft.setRateTyp(data.getRateTyp());
+            draft.setSellCalss(data.getSellClass());
+            // sec转化的
+            draft.setPartsSec(getSecId(data.getSec(),secList));
+            // 供应商转化
+            draft.setSupplierId(getSupplierId(data.getSupplier1(),supplierList));
+            draft.setSupplierId2(getSupplierId(data.getSupplier2(),supplierList));
+            // 类型转化
+            draft.setPartsType(getPartsType(data.getType()));
+            draft.setTenantId(enter.getTenantId());
+//            draft.setDeptId();
+            draft.setSnClass(0);
+            draft.setIdCalss(0);
+            draft.setPartsIsAssembly(0);
+            draft.setPartsIsForAssembly(0);
+            draft.setPerfectFlag(false);
+            draft.setCreatedBy(enter.getUserId());
+            draft.setCreatedTime(new Date());
+            draft.setUpdatedBy(enter.getUserId());
+            draft.setUpdatedTime(new Date());
+            draft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
+            saveList.add(draft);
+        }
+        opeProductionPartsDraftService.saveOrUpdateBatch(saveList);
+    }
+
+
+    // 通过secName匹配到id
+    public Long getSecId(String secName,List<OpePartsSec> secList){
+        if(CollectionUtils.isEmpty(secList)){
+            return null;
+        }
+        Long secId = 0L;
+        for (OpePartsSec sec : secList) {
+            if (sec.getName().equals(secName)){
+                secId = sec.getId();
+                break;
+            }
+        }
+        return secId;
+    }
+
+
+    // 通过供应商name匹配到id
+    public Long getSupplierId(String name,List<OpeSupplier> supplierList){
+        if (CollectionUtils.isEmpty(supplierList)){
+            return null;
+        }
+        Long supplierId = 0L;
+        for (OpeSupplier supplier : supplierList) {
+            if(supplier.getSupplierName().equals(name)){
+                supplierId = supplier.getId();
+                break;
+            }
+        }
+        return supplierId;
+    }
+
+
+    public Integer getPartsType(String partsTypeName){
+        if (Strings.isNullOrEmpty(partsTypeName)){
+            return 1;
+        }
+        Integer type = 1;
+        if("Parts".equals(partsTypeName)){
+            type = 1;
+        }else if("Accessory".equals(partsTypeName)){
+            type = 2;
+        }else if("Battery".equals(partsTypeName)){
+            type = 3;
+        }else if("Scooter".equals(partsTypeName)){
+            type = 4;
+        }else if("Combination".equals(partsTypeName)){
+            type = 5;
+        }
+        return type;
+    }
+
 
     @Override
     public List<StaffDataResult> announUser(Long tenantId) {
@@ -497,7 +617,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 List<RosPartsSaveOrUpdateEnter> repeatList = map.get(key);
                 for (RosPartsSaveOrUpdateEnter repeat : repeatList) {
                     RosRepeatResult  result = new RosRepeatResult();
-                    BeanUtils.copyProperties(repeat,repeat);
+                    result.setPartsNo(repeat.getPartsNo());
+                    result.setCnName(repeat.getCnName());
+                    result.setEnName(repeat.getEnName());
+                    result.setFrName(repeat.getFrName());
                     list.add(result);
                 }
             }

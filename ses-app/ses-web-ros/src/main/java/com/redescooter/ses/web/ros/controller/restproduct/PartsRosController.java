@@ -71,7 +71,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/importParts")
     @ApiOperation(value = "表格导入", response = ImportExcelPartsResult.class)
-    public Response<ImportExcelPartsResult> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
+    public Response<GeneralResult> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
         return new Response<>(partsRosService.importParts(enter));
     }
 

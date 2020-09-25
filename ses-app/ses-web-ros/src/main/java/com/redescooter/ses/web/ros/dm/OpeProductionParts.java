@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -36,6 +33,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -225,7 +223,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "weight")
     @ApiModelProperty(value = "重量")
-    private Long weight;
+    private Double weight;
 
     /**
      * 供应商2

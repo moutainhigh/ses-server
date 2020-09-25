@@ -36,7 +36,7 @@ public interface PartsRosService {
     GeneralResult partsAnnoun(DraftAnnounEnter enter);
 
 
-    ImportExcelPartsResult importParts(ImportPartsEnter enter);
+    GeneralResult importParts(ImportPartsEnter enter);
 
 
     List<StaffDataResult> announUser(Long tenantId);

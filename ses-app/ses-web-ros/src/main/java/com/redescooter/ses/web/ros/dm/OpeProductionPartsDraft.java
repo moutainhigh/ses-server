@@ -1,18 +1,16 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 部件的草稿表
@@ -29,6 +27,7 @@ public class OpeProductionPartsDraft implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键id")
+    @TableLogic
     private Long id;
 
     /**
@@ -211,7 +210,7 @@ public class OpeProductionPartsDraft implements Serializable {
      */
     @TableField(value = "weight")
     @ApiModelProperty(value = "重量")
-    private Long weight;
+    private Double weight;
 
     /**
      * 供应商2
