@@ -16,7 +16,10 @@ import java.util.List;
 public interface RosProductionPartsServiceMapper {
 
    int partsTotal(@Param("enter") RosPartsListEnter enter);
+
    List<RosPartsListResult> partsList(@Param("enter") RosPartsListEnter enter);
 
+
+   List<RosPartsListResult> partsExport(@Param("ids") List<Long> ids);
 
 }

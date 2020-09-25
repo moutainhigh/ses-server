@@ -402,6 +402,8 @@ public enum ExceptionCodeEnums {
 
     SAFE_CODE_FAILURE(10192, "安全码失效，请重新给校验"),
 
+    PARTS_NO_REPEAT(10193, "部件号重复"),
+
     ;
 
 

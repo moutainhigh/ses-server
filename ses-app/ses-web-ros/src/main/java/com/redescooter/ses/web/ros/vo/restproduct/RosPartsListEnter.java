@@ -18,7 +18,7 @@ public class RosPartsListEnter  extends PageEnter {
     private Integer classType;
 
     @ApiModelProperty(value = "sec的id")
-    private Long partsSecId;
+    private Long partsSec;
 
     @ApiModelProperty(value = "1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
     private Integer partsType;

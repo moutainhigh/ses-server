@@ -12,8 +12,8 @@
 
 
     <sql id="partsDraftListCondition">
-        <if test="enter.partsSecId != null">
-            and draft.parts_sec = #{enter.partsSecId}
+        <if test="enter.partsSec != null">
+            and draft.parts_sec = #{enter.partsSec}
         </if>
         <if test="enter.partsType != null">
             and draft.parts_type=#{enter.partsType}
@@ -49,7 +49,8 @@
        draft.procurement_cycle,
        draft.dwg as dwgUrl,
        draft.supplier_id,
-       supplier.supplier_name
+       supplier.supplier_name,
+       draft.id_calss
      from ope_production_parts_draft draft
      left join ope_parts_sec sec on draft.parts_sec = sec.id
      left join ope_supplier supplier on  draft.supplier_id = supplier.id

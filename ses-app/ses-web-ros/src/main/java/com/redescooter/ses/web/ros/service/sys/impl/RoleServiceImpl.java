@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
     @Reference
     private CityBaseService ctiyBaseService;
