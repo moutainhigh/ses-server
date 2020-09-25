@@ -20,7 +20,7 @@ public class RosProductionProdductVersionResult extends GeneralResult {
     private String name;
 
     @ApiModelProperty(value = "版本状态状态")
-    private String status;
+    private Integer status;
 
     @ApiModelProperty(value = "激活版本")
     private Boolean activate;

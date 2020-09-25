@@ -52,6 +52,9 @@ public class RosProductionProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "产品状态")
     private Integer status;
 
+    @ApiModelProperty(value = "数量")
+    private Integer qty;
+
     @ApiModelProperty(value = "产品状态")
     private String version;
 

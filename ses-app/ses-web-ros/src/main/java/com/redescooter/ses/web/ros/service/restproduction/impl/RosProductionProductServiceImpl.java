@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
@@ -433,6 +432,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue();
 
                 result = RosProductionProductDetailResult.builder().id(opeProductionScooterBomDraft.getId())
+                    .qty(opeProductionScooterBomDraft.getPartsQty())
                     .productN(opeProductionScooterBomDraft.getBomNo())
                     .groupId(opeProductionScooterBomDraft.getGroupId())
                     .groupName(ProductionScooterGroupEnums
@@ -441,6 +441,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .colorName(ProductColorEnums
                         .getProductColorEnumsByValue(String.valueOf(opeProductionScooterBomDraft.getColorId()))
                         .getCode())
+                    .qty(opeProductionScooterBomDraft.getPartsQty())
                     .procurementCycle(opeProductionScooterBomDraft.getProcurementCycle())
                     .enName(opeProductionScooterBomDraft.getEnName())
                     .createTime(opeProductionScooterBomDraft.getCreatedTime())
@@ -460,6 +461,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue();
 
                 result = RosProductionProductDetailResult.builder().id(opeProductionScooterBom.getId())
+                    .qty(opeProductionScooterBom.getPartsQty())
                     .productN(opeProductionScooterBom.getBomNo()).groupId(opeProductionScooterBom.getGroupId())
                     .groupName(ProductionScooterGroupEnums
                         .getEnumByValue(opeProductionScooterBom.getGroupId().intValue()).getCode())
@@ -487,6 +489,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.COMBINATION_DRAFT.getValue();
 
                 result = RosProductionProductDetailResult.builder().id(opeProductionCombinBomDraft.getId())
+                    .qty(opeProductionCombinBomDraft.getPartsQty())
                     .productN(opeProductionCombinBomDraft.getBomNo())
                     .procurementCycle(opeProductionCombinBomDraft.getProcurementCycle())
                     .enName(opeProductionCombinBomDraft.getEnName())
@@ -507,6 +510,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
                 result = RosProductionProductDetailResult.builder().id(opeProductionCombinBom.getId())
                     .productN(opeProductionCombinBom.getBomNo())
+                    .qty(opeProductionCombinBom.getPartsQty())
                     .procurementCycle(opeProductionCombinBom.getProcurementCycle())
                     .enName(opeProductionCombinBom.getEnName()).version(opeProductionCombinBom.getVersoin())
                     .status(opeProductionCombinBom.getBomStatus())
@@ -539,14 +543,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
-        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-
+        */
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
@@ -620,14 +624,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
-        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-
+        */
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
@@ -671,14 +675,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public GeneralResult release(RosProuductionTypeEnter enter) {
-        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-
+        */
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
             OpeProductionScooterBomDraft opeProductionScooterBomDraft =
                 opeProductionScooterBomDraftService.getById(enter.getId());

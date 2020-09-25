@@ -198,9 +198,9 @@
     </select>
 
     <select id="productionScooterVersionList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult">
-        select bom.id                              as versionId,
-                bom.versoin                         as versionName,
-                bom.bom_status                      as versionStatus,
+        select bom.id                              as id,
+                bom.versoin                         as name,
+                bom.bom_status                      as status,
                 if(bom.bom_status = 1, true, false) as activate
             from ope_production_scooter_bom bom
             where bom.dr=0
@@ -208,9 +208,9 @@
     </select>
 
     <select id="productionCombinBomVersionList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult">
-            select bom.id                              as versionId,
-                   bom.versoin                         as versionName,
-                   bom.bom_status                      as versionStatus,
+            select bom.id                              as id,
+                   bom.versoin                         as name,
+                   bom.bom_status                      as status,
                    if(bom.bom_status = 1, true, false) as activate
             from ope_production_combin_bom bom
             where bom.dr = 0
