@@ -1,13 +1,14 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.*;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +36,6 @@ public class OpeProductionPartsDraft implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -165,6 +165,69 @@ public class OpeProductionPartsDraft implements Serializable {
     private String frName;
 
     /**
+     * 级别
+     */
+    @TableField(value = "`level`")
+    @ApiModelProperty(value = "级别")
+    private Integer level;
+
+    /**
+     * 母图纸
+     */
+    @TableField(value = "main_drawing")
+    @ApiModelProperty(value = "母图纸")
+    private String mainDrawing;
+
+    /**
+     * 设变号
+     */
+    @TableField(value = "ecn_number")
+    @ApiModelProperty(value = "设变号")
+    private String ecnNumber;
+
+    /**
+     * 品目
+     */
+    @TableField(value = "item")
+    @ApiModelProperty(value = "品目")
+    private String item;
+
+    /**
+     * 销售分区
+     */
+    @TableField(value = "sell_calss")
+    @ApiModelProperty(value = "销售分区")
+    private String sellCalss;
+
+    /**
+     * 图纸尺寸
+     */
+    @TableField(value = "drawing_size")
+    @ApiModelProperty(value = "图纸尺寸")
+    private String drawingSize;
+
+    /**
+     * 重量
+     */
+    @TableField(value = "weight")
+    @ApiModelProperty(value = "重量")
+    private Long weight;
+
+    /**
+     * 供应商2
+     */
+    @TableField(value = "supplier_id_2")
+    @ApiModelProperty(value = "供应商2")
+    private Long supplierId2;
+
+    /**
+     * 依存度区分
+     */
+    @TableField(value = "rate_typ")
+    @ApiModelProperty(value = "依存度区分")
+    private String rateTyp;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -268,6 +331,24 @@ public class OpeProductionPartsDraft implements Serializable {
     public static final String COL_EN_NAME = "en_name";
 
     public static final String COL_FR_NAME = "fr_name";
+
+    public static final String COL_LEVEL = "level";
+
+    public static final String COL_MAIN_DRAWING = "main_drawing";
+
+    public static final String COL_ECN_NUMBER = "ecn_number";
+
+    public static final String COL_ITEM = "item";
+
+    public static final String COL_SELL_CALSS = "sell_calss";
+
+    public static final String COL_DRAWING_SIZE = "drawing_size";
+
+    public static final String COL_WEIGHT = "weight";
+
+    public static final String COL_SUPPLIER_ID_2 = "supplier_id_2";
+
+    public static final String COL_RATE_TYP = "rate_typ";
 
     public static final String COL_CREATED_BY = "created_by";
 

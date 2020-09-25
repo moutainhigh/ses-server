@@ -24,6 +24,15 @@
     <result column="cn_name" property="cnName" />
     <result column="en_name" property="enName" />
     <result column="fr_name" property="frName" />
+    <result column="level" property="level" />
+    <result column="main_drawing" property="mainDrawing" />
+    <result column="ecn_number" property="ecnNumber" />
+    <result column="item" property="item" />
+    <result column="sell_calss" property="sellCalss" />
+    <result column="drawing_size" property="drawingSize" />
+    <result column="weight" property="weight" />
+    <result column="supplier_id_2" property="supplierId2" />
+    <result column="rate_typ" property="rateTyp" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
@@ -38,8 +47,9 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, sn_class, id_calss, 
     parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-    perfect_flag, dwg, remark, cn_name, en_name, fr_name, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def4, def5
+    perfect_flag, dwg, remark, cn_name, en_name, fr_name, `level`, main_drawing, ecn_number, 
+    item, sell_calss, drawing_size, weight, supplier_id_2, rate_typ, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -140,6 +150,51 @@
           when id = #{item.id} then #{item.frName}
         </foreach>
       </trim>
+      <trim prefix="`level` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.level}
+        </foreach>
+      </trim>
+      <trim prefix="main_drawing = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.mainDrawing}
+        </foreach>
+      </trim>
+      <trim prefix="ecn_number = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.ecnNumber}
+        </foreach>
+      </trim>
+      <trim prefix="item = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.item}
+        </foreach>
+      </trim>
+      <trim prefix="sell_calss = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.sellCalss}
+        </foreach>
+      </trim>
+      <trim prefix="drawing_size = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.drawingSize}
+        </foreach>
+      </trim>
+      <trim prefix="weight = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.weight}
+        </foreach>
+      </trim>
+      <trim prefix="supplier_id_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.supplierId2}
+        </foreach>
+      </trim>
+      <trim prefix="rate_typ = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.rateTyp}
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.createdBy}
@@ -196,16 +251,19 @@
     insert into ope_production_parts_draft
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, sn_class, id_calss, 
       parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      perfect_flag, dwg, remark, cn_name, en_name, fr_name, created_by, created_time, 
+      perfect_flag, dwg, remark, cn_name, en_name, fr_name, `level`, main_drawing, ecn_number, 
+      item, sell_calss, drawing_size, weight, supplier_id_2, rate_typ, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.partsNo}, #{item.partsType}, 
         #{item.partsSec}, #{item.snClass}, #{item.idCalss}, #{item.partsIsAssembly}, #{item.partsIsForAssembly}, 
         #{item.partsQty}, #{item.supplierId}, #{item.procurementCycle}, #{item.perfectFlag}, 
-        #{item.dwg}, #{item.remark}, #{item.cnName}, #{item.enName}, #{item.frName}, #{item.createdBy}, 
-        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
-        #{item.def3}, #{item.def4}, #{item.def5})
+        #{item.dwg}, #{item.remark}, #{item.cnName}, #{item.enName}, #{item.frName}, #{item.level}, 
+        #{item.mainDrawing}, #{item.ecnNumber}, #{item.item}, #{item.sellCalss}, #{item.drawingSize}, 
+        #{item.weight}, #{item.supplierId2}, #{item.rateTyp}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def4}, #{item.def5})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft">
@@ -213,14 +271,16 @@
     insert into ope_production_parts_draft
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, sn_class, id_calss, 
       parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      perfect_flag, dwg, remark, cn_name, en_name, fr_name, created_by, created_time, 
+      perfect_flag, dwg, remark, cn_name, en_name, fr_name, `level`, main_drawing, ecn_number, 
+      item, sell_calss, drawing_size, weight, supplier_id_2, rate_typ, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     (#{id}, #{dr}, #{tenantId}, #{deptId}, #{partsNo}, #{partsType}, #{partsSec}, #{snClass}, 
       #{idCalss}, #{partsIsAssembly}, #{partsIsForAssembly}, #{partsQty}, #{supplierId}, 
       #{procurementCycle}, #{perfectFlag}, #{dwg}, #{remark}, #{cnName}, #{enName}, #{frName}, 
-      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
-      #{def4}, #{def5})
+      #{level}, #{mainDrawing}, #{ecnNumber}, #{item}, #{sellCalss}, #{drawingSize}, 
+      #{weight}, #{supplierId2}, #{rateTyp}, #{createdBy}, #{createdTime}, #{updatedBy}, 
+      #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -242,6 +302,15 @@
     cn_name = #{cnName}, 
     en_name = #{enName}, 
     fr_name = #{frName}, 
+    `level` = #{level}, 
+    main_drawing = #{mainDrawing}, 
+    ecn_number = #{ecnNumber}, 
+    item = #{item}, 
+    sell_calss = #{sellCalss}, 
+    drawing_size = #{drawingSize}, 
+    weight = #{weight}, 
+    supplier_id_2 = #{supplierId2}, 
+    rate_typ = #{rateTyp}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
@@ -315,6 +384,33 @@
       </if>
       <if test="frName != null">
         fr_name,
+      </if>
+      <if test="level != null">
+        `level`,
+      </if>
+      <if test="mainDrawing != null">
+        main_drawing,
+      </if>
+      <if test="ecnNumber != null">
+        ecn_number,
+      </if>
+      <if test="item != null">
+        item,
+      </if>
+      <if test="sellCalss != null">
+        sell_calss,
+      </if>
+      <if test="drawingSize != null">
+        drawing_size,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="supplierId2 != null">
+        supplier_id_2,
+      </if>
+      <if test="rateTyp != null">
+        rate_typ,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -406,6 +502,33 @@
       <if test="frName != null">
         #{frName},
       </if>
+      <if test="level != null">
+        #{level},
+      </if>
+      <if test="mainDrawing != null">
+        #{mainDrawing},
+      </if>
+      <if test="ecnNumber != null">
+        #{ecnNumber},
+      </if>
+      <if test="item != null">
+        #{item},
+      </if>
+      <if test="sellCalss != null">
+        #{sellCalss},
+      </if>
+      <if test="drawingSize != null">
+        #{drawingSize},
+      </if>
+      <if test="weight != null">
+        #{weight},
+      </if>
+      <if test="supplierId2 != null">
+        #{supplierId2},
+      </if>
+      <if test="rateTyp != null">
+        #{rateTyp},
+      </if>
       <if test="createdBy != null">
         #{createdBy},
       </if>
@@ -495,6 +618,33 @@
       </if>
       <if test="frName != null">
         fr_name = #{frName},
+      </if>
+      <if test="level != null">
+        `level` = #{level},
+      </if>
+      <if test="mainDrawing != null">
+        main_drawing = #{mainDrawing},
+      </if>
+      <if test="ecnNumber != null">
+        ecn_number = #{ecnNumber},
+      </if>
+      <if test="item != null">
+        item = #{item},
+      </if>
+      <if test="sellCalss != null">
+        sell_calss = #{sellCalss},
+      </if>
+      <if test="drawingSize != null">
+        drawing_size = #{drawingSize},
+      </if>
+      <if test="weight != null">
+        weight = #{weight},
+      </if>
+      <if test="supplierId2 != null">
+        supplier_id_2 = #{supplierId2},
+      </if>
+      <if test="rateTyp != null">
+        rate_typ = #{rateTyp},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},
