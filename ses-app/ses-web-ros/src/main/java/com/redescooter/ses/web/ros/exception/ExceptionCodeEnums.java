@@ -394,7 +394,15 @@ public enum ExceptionCodeEnums {
 
     PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
 
-    PARTS_NO_REPEAT(10189, "部件号重复"),
+    BOM_HAS_DUPLICATE_EFFECTIVE_DATE(10189, "bom有重复的日期"),
+
+    BOM_NUM_REPEAT(10190, "bom编号已重复"),
+
+    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom信息不完整"),
+
+    SAFE_CODE_FAILURE(10192, "安全码失效，请重新给校验"),
+
+    PARTS_NO_REPEAT(10193, "部件号重复"),
 
     ;
 

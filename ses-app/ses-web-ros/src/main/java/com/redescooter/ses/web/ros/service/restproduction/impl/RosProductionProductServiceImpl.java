@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
@@ -10,6 +11,7 @@ import com.redescooter.ses.api.common.enums.bom.ProductionScooterGroupEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
@@ -61,6 +63,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private OpeProductionPartsService opeProductionPartsService;
 
     @Autowired
+    private JedisService jedisService;
+
+    @Autowired
     private IdAppService idAppService;
 
     /**
@@ -75,19 +80,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 整车
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionScooterBomDraftService.count());
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
-                opeProductionScooterBomService
-                    .count(new LambdaQueryWrapper<OpeProductionScooterBom>().in(OpeProductionScooterBom::getBomStatus,
-                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionScooterBomService.count());
         }
 
         // 组合
         if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), String.valueOf(enter.getId()))) {
             result.put(ClassTypeEnums.TYPE_ONE.getValue(), opeProductionCombinBomDraftService.count());
-            result.put(ClassTypeEnums.TYPE_TWO.getValue(),
-                opeProductionCombinBomService
-                    .count(new LambdaQueryWrapper<OpeProductionCombinBom>().in(OpeProductionCombinBom::getBomStatus,
-                        ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())));
+            result.put(ClassTypeEnums.TYPE_TWO.getValue(), opeProductionCombinBomService.count());
         }
         return result;
     }
@@ -143,11 +142,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
             count = rosProductionProductServiceMapper.scooterBomListCount(enter);
             if (count == 0) {
-                if (count == 0) {
-                    return PageResult.createZeroRowResult(enter);
-                }
-                rosProductionScooterListResults = rosProductionProductServiceMapper.scooterBomList(enter);
+                return PageResult.createZeroRowResult(enter);
             }
+            rosProductionScooterListResults = rosProductionProductServiceMapper.scooterBomList(enter);
         }
 
         for (RosProductionScooterListResult item : rosProductionScooterListResults) {
@@ -195,6 +192,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public BooleanResult checkEffectiveDate(RosProductionTimeParmEnter enter) {
+        // 整车时间校验
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(), String.valueOf(enter.getProductionType()))) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
             if (opeProductionScooterBom == null) {
@@ -204,85 +202,56 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             List<OpeProductionScooterBom> opeProductionScooterBomList =
                     opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
                     .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
+                    .eq(OpeProductionScooterBom::getVersionIdentificat, opeProductionScooterBom.getVersionIdentificat())
                     .in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
                         ProductionBomStatusEnums.ACTIVE.getValue()));
-            if (CollectionUtils.isEmpty(opeProductionScooterBomList)) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-            }
 
-            if (opeProductionScooterBomList.size() == 1) {
-                return new BooleanResult(Boolean.TRUE);
-            }
-            if (opeProductionScooterBomList.size() > 1) {
+            if (CollectionUtils.isNotEmpty(opeProductionScooterBomList)) {
+                if (opeProductionScooterBomList.size() == 1) {
+                    return new BooleanResult(Boolean.TRUE);
+                }
+                // 移除当前对象
                 opeProductionScooterBomList.remove(opeProductionScooterBom);
-
-                String timeDate = DateUtil.getDateTime(enter.getDateTime(), DateUtil.DEFAULT_DATE_FORMAT);
-                for (OpeProductionScooterBom item : opeProductionScooterBomList) {
-                    if (StringUtils.equals(
-                            DateUtil.getDateTime(item.getEffectiveDate(), DateUtil.DEFAULT_DATE_FORMAT), timeDate)) {
+                if (opeProductionScooterBomList.size() > 1) {
+                    if (DateUtil.diffDay(enter.getDateTime(), opeProductionScooterBom.getEffectiveDate()) == 0) {
                         return new BooleanResult(Boolean.FALSE);
                     }
-                }
+                    for (OpeProductionScooterBom item : opeProductionScooterBomList) {
+                        if (DateUtil.diffDay(enter.getDateTime(), item.getEffectiveDate()) == 0) {
+                            return new BooleanResult(Boolean.FALSE);
+                        }
+                    }
 
+                }
             }
         }
 
+        // 组合产品校验
         if (StringUtils.equals(BomCommonTypeEnums.COMBINATION.getValue(), String.valueOf(enter.getProductionType()))) {
-            if (ClassTypeEnums.TYPE_ONE.getValue().equals(enter.getClasstype())) {
-                /*OpeProductionCombinBomDraft opeProductionCombinBomDraft = opeProductionCombinBomDraftService.getById(enter.getId());
-                if (opeProductionCombinBomDraft==null){
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getMessage());
-                }
-                List<OpeProductionCombinBomDraft> opeProductionCombinBomDraftList = opeProductionCombinBomDraftService.list(new LambdaQueryWrapper<OpeProductionCombinBomDraft>()
-                        .eq(OpeProductionCombinBomDraft::getBomNo,opeProductionCombinBomDraft.getBomNo());
-                if (CollectionUtils.isEmpty(opeProductionCombinBomDraftList)){
-                    throw new SesWebRosException(ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.COMBINATION_DRAFT_IS_NOT_EXIST.getMessage());
-                }
-                
-                if (opeProductionCombinBomDraftList.size()==1){
-                    return new BooleanResult(Boolean.TRUE);
-                }
-                if(opeProductionCombinBomDraftList.size()>1){
-                    //移除当前对象
-                    opeProductionCombinBomDraftList.remove(opeProductionCombinBomDraft);
-                
-                    String timeDate=DateUtil.getDateTime(enter.getDateTime(),DateUtil.DEFAULT_DATE_FORMAT);
-                    for (OpeProductionCombinBomDraft item : opeProductionCombinBomDraftList) {
-                        if (StringUtils.equals(DateUtil.getDateTime(item.get(), DateUtil.DEFAULT_DATE_FORMAT), timeDate)) {
-                            return new BooleanResult(Boolean.TRUE);
-                        }
-                    }
-                }*/
-
-            }
-            if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClasstype())) {
-                OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
-                if (opeProductionCombinBom == null) {
-                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+            OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
+            if (opeProductionCombinBom == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
-                }
-                List<OpeProductionCombinBom> opeProductionCombinBomList =
+            }
+            List<OpeProductionCombinBom> opeProductionCombinBomList =
                     opeProductionCombinBomService.list(new LambdaQueryWrapper<OpeProductionCombinBom>()
-                        .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBom.getBomNo())
-                        .in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
-                            ProductionBomStatusEnums.ACTIVE.getValue()));
-                if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
-                    throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-                }
+                    .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBom.getBomNo())
+                    .eq(OpeProductionCombinBom::getVersionIdentificat, opeProductionCombinBom.getVersionIdentificat())
+                    .in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue(),
+                        ProductionBomStatusEnums.ACTIVE.getValue()));
 
+            if (CollectionUtils.isNotEmpty(opeProductionCombinBomList)) {
                 if (opeProductionCombinBomList.size() == 1) {
                     return new BooleanResult(Boolean.TRUE);
                 }
+                // 移除当前对象
+                opeProductionCombinBomList.remove(opeProductionCombinBom);
                 if (opeProductionCombinBomList.size() > 1) {
-                    // 移除当前对象
-                    opeProductionCombinBomList.remove(opeProductionCombinBom);
-
-                    String timeDate = DateUtil.getDateTime(enter.getDateTime(), DateUtil.DEFAULT_DATE_FORMAT);
+                    if (DateUtil.diffDay(enter.getDateTime(), opeProductionCombinBom.getEffectiveDate()) == 0) {
+                        return new BooleanResult(Boolean.FALSE);
+                    }
                     for (OpeProductionCombinBom item : opeProductionCombinBomList) {
-                        if (StringUtils.equals(
-                            DateUtil.getDateTime(item.getEffectiveDate(), DateUtil.DEFAULT_DATE_FORMAT), timeDate)) {
+                        if (DateUtil.diffDay(enter.getDateTime(), item.getEffectiveDate()) == 0) {
                             return new BooleanResult(Boolean.FALSE);
                         }
                     }
@@ -299,7 +268,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @return
      */
     @Override
-    public ImportExcelPartsResult saveScooterImportExcel(GeneralEnter enter) {
+    public ImportExcelPartsResult saveScooterImportExcel(StringEnter enter) {
         return null;
     }
 
@@ -570,6 +539,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
@@ -585,14 +562,16 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
-            // 校验信息是否完整
-            // 部件数量至少大于1
-            List<RosProductionProductPartListResult> rosProductionProductPartListResultList =
-                rosProductionProductServiceMapper.rosProductionProductPartsList(opeProductionScooterBom.getId(),
-                    ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
-            if (rosProductionProductPartListResultList.size() > 1) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getCode(),
-                    ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getMessage());
+
+            // 查询当前是否有生效中的Bomn 有的话 更新状态
+            OpeProductionScooterBom avticeScooterBom =
+                opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
+                    .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
+            if (avticeScooterBom != null) {
+                avticeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                avticeScooterBom.setUpdatedBy(enter.getId());
+                avticeScooterBom.setUpdatedTime(new Date());
+                opeProductionScooterBomService.updateById(avticeScooterBom);
             }
             opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
             opeProductionScooterBom.setUpdatedBy(enter.getId());
@@ -614,14 +593,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
-            // 校验信息是否完整
-            // 部件数量至少大于1
-            List<RosProductionProductPartListResult> rosProductionProductPartListResultList =
-                rosProductionProductServiceMapper.rosProductionProductPartsList(opeProductionCombinBom.getId(),
-                    ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
-            if (rosProductionProductPartListResultList.size() > 1) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getCode(),
-                    ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getMessage());
+
+            OpeProductionCombinBom avticeCombinBom =
+                opeProductionCombinBomService.getOne(new LambdaQueryWrapper<OpeProductionCombinBom>()
+                    .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
+            if (avticeCombinBom != null) {
+                avticeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                avticeCombinBom.setUpdatedBy(enter.getId());
+                avticeCombinBom.setUpdatedTime(new Date());
+                opeProductionCombinBomService.updateById(avticeCombinBom);
             }
             opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
             opeProductionCombinBom.setUpdatedBy(enter.getId());
@@ -640,6 +620,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
@@ -647,10 +635,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-            }
+            // if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+            // throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+            // ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            // }
             opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionCombinBom.setUpdatedBy(enter.getId());
             opeProductionCombinBom.setUpdatedTime(new Date());
@@ -663,10 +651,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-            }
+            // if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+            // throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+            // ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            // }
             opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionScooterBom.setUpdatedBy(enter.getId());
             opeProductionScooterBom.setUpdatedTime(new Date());
@@ -683,19 +671,212 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public GeneralResult release(RosProuductionTypeEnter enter) {
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
+                ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
+
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
+            OpeProductionScooterBomDraft opeProductionScooterBomDraft =
+                opeProductionScooterBomDraftService.getById(enter.getId());
+            if (opeProductionScooterBomDraft == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+            }
+            // 校验车辆
+            checkOpeProductionScooter(enter, opeProductionScooterBomDraft);
+        }
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
+            OpeProductionCombinBomDraft opeProductionCombinBomDraft =
+                opeProductionCombinBomDraftService.getById(enter.getId());
+            if (opeProductionCombinBomDraft == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+            }
+
+            // 信息校验
+            checkOpeProductionOpeProductionCombinBom(enter, opeProductionCombinBomDraft);
+        }
         return new GeneralResult(enter.getRequestId());
     }
+
+    private void checkOpeProductionScooter(RosProuductionTypeEnter enter,
+        OpeProductionScooterBomDraft opeProductionScooterBomDraft) {
+        // 数据完整性校验
+        int count = 7;
+        if (StringUtils.isNotBlank(opeProductionScooterBomDraft.getBomNo())) {
+            count--;
+        }
+        if (opeProductionScooterBomDraft.getGroupId() != null || opeProductionScooterBomDraft.getGroupId() != 0) {
+            count--;
+        }
+        if (opeProductionScooterBomDraft.getColorId() != null || opeProductionScooterBomDraft.getColorId() != 0) {
+            count--;
+        }
+        if (opeProductionScooterBomDraft.getProcurementCycle() != null
+            || opeProductionScooterBomDraft.getProcurementCycle() != 0) {
+            count--;
+        }
+        if (opeProductionScooterBomDraft.getPartsQty() != null || opeProductionScooterBomDraft.getPartsQty() != 0) {
+            count--;
+        }
+        if (opeProductionScooterBomDraft.getEffectiveDate() != null) {
+            count--;
+        }
+        if (StringUtils.isNotBlank(opeProductionScooterBomDraft.getEnName())) {
+            count--;
+        }
+        if (count != 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
+                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
+        }
+
+        if (!new Date().before(opeProductionScooterBomDraft.getEffectiveDate())) {
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getCode(),
+                ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getMessage());
+        }
+
+        // 编号校验
+        List<OpeProductionScooterBom> opeProductionScooterBomList =
+            opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
+                .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBomDraft.getBomNo()));
+        String versionIdentificat = null;
+        String versionNum = null;
+        if (CollectionUtils.isEmpty(opeProductionScooterBomList)) {
+            versionIdentificat = String.valueOf(DateUtil.Start);
+            versionNum = getVersionNum(null);
+        } else {
+            versionIdentificat = opeProductionScooterBomList.get(0).getVersionIdentificat();
+            versionNum = getVersionNum(opeProductionScooterBomList.get(0).getVersoin());
+        }
+
+        OpeProductionScooterBom productionScooterBom = OpeProductionScooterBom.builder()
+            .id(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM)).dr(0)
+            .versionIdentificat(versionIdentificat).versoin(versionNum).bomNo(opeProductionScooterBomDraft.getBomNo())
+            .procurementCycle(opeProductionScooterBomDraft.getProcurementCycle())
+            .effectiveDate(opeProductionScooterBomDraft.getEffectiveDate())
+            .groupId(opeProductionScooterBomDraft.getGroupId()).colorId(opeProductionScooterBomDraft.getColorId())
+            .bomStatus(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue()).announUserId(enter.getUserId())
+            .opAnnounUserId(enter.getUserId()).partsQty(opeProductionScooterBomDraft.getPartsQty())
+            .cnName(StringUtils.isBlank(opeProductionScooterBomDraft.getCnName()) ? null
+                : opeProductionScooterBomDraft.getCnName())
+            .enName(StringUtils.isBlank(opeProductionScooterBomDraft.getEnName()) ? null
+                : opeProductionScooterBomDraft.getEnName())
+            .frName(StringUtils.isBlank(opeProductionScooterBomDraft.getFrName()) ? null
+                : opeProductionScooterBomDraft.getFrName())
+            .createdBy(enter.getUserId()).updatedBy(enter.getUserId()).createdTime(new Date()).updatedTime(new Date())
+            .build();
+
+        opeProductionScooterBomService.save(productionScooterBom);
+        // 删除草稿
+        opeProductionScooterBomDraftService.removeById(opeProductionScooterBomDraft);
+    }
+
+    private void checkOpeProductionOpeProductionCombinBom(RosProuductionTypeEnter enter,
+        OpeProductionCombinBomDraft opeProductionCombinBomDraft) {
+        // 数据完整性校验
+        int count = 7;
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getBomNo())) {
+            count--;
+        }
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getCnName())) {
+            count--;
+        }
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getFrName())) {
+            count--;
+        }
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getEnName())) {
+            count--;
+        }
+        if (opeProductionCombinBomDraft.getProcurementCycle() != null
+            || opeProductionCombinBomDraft.getProcurementCycle() != 0) {
+            count--;
+        }
+        if (opeProductionCombinBomDraft.getPartsQty() != null || opeProductionCombinBomDraft.getPartsQty() != 0) {
+            count--;
+        }
+        if (opeProductionCombinBomDraft.getEffectiveDate() != null) {
+            count--;
+        }
+        if (count != 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
+                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
+        }
+
+        if (!new Date().before(opeProductionCombinBomDraft.getEffectiveDate())) {
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getCode(),
+                ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getMessage());
+        }
+        // 编号校验
+        List<OpeProductionCombinBom> opeProductionCombinBomList =
+            opeProductionCombinBomService.list(new LambdaQueryWrapper<OpeProductionCombinBom>()
+                .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBomDraft.getBomNo()));
+        String versionIdentificat = null;
+        String versionNum = null;
+        if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
+            versionIdentificat = String.valueOf(DateUtil.Start);
+            versionNum = getVersionNum(null);
+        } else {
+            versionIdentificat = opeProductionCombinBomList.get(0).getVersionIdentificat();
+            versionNum = getVersionNum(opeProductionCombinBomList.get(0).getVersoin());
+        }
+
+        OpeProductionCombinBom opeProductionCombinBom = OpeProductionCombinBom.builder()
+            .id(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM)).dr(0)
+            .versionIdentificat(versionIdentificat).versoin(versionNum).bomNo(opeProductionCombinBomDraft.getBomNo())
+            .procurementCycle(opeProductionCombinBomDraft.getProcurementCycle())
+            .effectiveDate(opeProductionCombinBomDraft.getEffectiveDate())
+            .groupId(opeProductionCombinBomDraft.getGroupId()).colorId(opeProductionCombinBomDraft.getColorId())
+            .bomStatus(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue()).announUserId(enter.getUserId())
+            .opAnnounUserId(enter.getUserId()).partsQty(opeProductionCombinBomDraft.getPartsQty())
+            .cnName(StringUtils.isBlank(opeProductionCombinBomDraft.getCnName()) ? null
+                : opeProductionCombinBomDraft.getCnName())
+            .enName(StringUtils.isBlank(opeProductionCombinBomDraft.getEnName()) ? null
+                : opeProductionCombinBomDraft.getEnName())
+            .frName(StringUtils.isBlank(opeProductionCombinBomDraft.getFrName()) ? null
+                : opeProductionCombinBomDraft.getFrName())
+            .createdBy(enter.getUserId()).updatedBy(enter.getUserId()).createdTime(new Date()).updatedTime(new Date())
+            .build();
+
+        opeProductionCombinBomService.save(opeProductionCombinBom);
+        // 删除草稿
+        opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft);
+    }
+
 
     private OpeProductionCombinBomDraft buildProductionCombinBom(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionCombinBomDraft.builder().dr(0).bomNo(enter.getProductN())
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
-            .enName(enter.getEnName()).cnName(enter.getCnName()).frName(enter.getFrName()).partsQty(qty)
-            .updatedBy(enter.getUserId()).updatedTime(new Date()).build();
+            .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiveDate())
+            .frName(enter.getFrName()).partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
     }
 
     private OpeProductionScooterBomDraft buildOpeProductionScooterDraft(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionScooterBomDraft.builder().dr(0).bomNo(enter.getProductN())
-            .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
-            .enName(enter.getEnName()).partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
+            .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
+            .effectiveDate(enter.getEffectiveDate()).colorId(enter.getColorId()).enName(enter.getEnName()).partsQty(qty)
+            .updatedBy(enter.getUserId()).updatedTime(new Date()).build();
+    }
+
+    private String getVersionNum(String version) {
+        String versionNum = null;
+        if (StringUtils.isBlank(version)) {
+            // 新版本
+            versionNum = String.valueOf((char)(int)((Math.random() * 26) + 65)) + "01";
+        } else {
+            // 版本号累加
+            char[] versionChar = version.toCharArray();
+            String versionString = Character.toString(versionChar[versionChar.length - 2])
+                + Character.toString(versionChar[versionChar.length - 1]);
+            Integer versionInteger = Integer.valueOf(versionString) + 1;
+            if (versionInteger < 9) {
+                versionNum = Character.toString(versionChar[0]) + String.valueOf(versionInteger);
+            }
+            versionNum = Character.toString(versionChar[0]) + "0" + String.valueOf(versionInteger);
+        }
+        return versionNum;
     }
 }

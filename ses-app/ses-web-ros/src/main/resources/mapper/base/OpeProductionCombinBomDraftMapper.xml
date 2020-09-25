@@ -16,6 +16,7 @@
     <result column="cn_name" property="cnName" />
     <result column="en_name" property="enName" />
     <result column="fr_name" property="frName" />
+    <result column="effective_date" property="effectiveDate" />
     <result column="created_by" property="createdBy" />
     <result column="created_time" property="createdTime" />
     <result column="updated_by" property="updatedBy" />
@@ -29,8 +30,8 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, parts_qty, 
-    cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, def1, 
-    def2, def3, def4, def5
+    cn_name, en_name, fr_name, effective_date, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -91,6 +92,11 @@
           when id = #{item.id} then #{item.frName}
         </foreach>
       </trim>
+      <trim prefix="effective_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.effectiveDate}
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.createdBy}
@@ -146,26 +152,28 @@
     <!--@mbg.generated-->
     insert into ope_production_combin_bom_draft
     (id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, parts_qty, 
-      cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      cn_name, en_name, fr_name, effective_date, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.bomNo}, #{item.procurementCycle}, 
         #{item.groupId}, #{item.colorId}, #{item.partsQty}, #{item.cnName}, #{item.enName}, 
-        #{item.frName}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
-        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
+        #{item.frName}, #{item.effectiveDate}, #{item.createdBy}, #{item.createdTime}, 
+        #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, 
+        #{item.def4}, #{item.def5})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft">
     <!--@mbg.generated-->
     insert into ope_production_combin_bom_draft
     (id, dr, tenant_id, dept_id, bom_no, procurement_cycle, group_id, color_id, parts_qty, 
-      cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      cn_name, en_name, fr_name, effective_date, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     (#{id}, #{dr}, #{tenantId}, #{deptId}, #{bomNo}, #{procurementCycle}, #{groupId}, 
-      #{colorId}, #{partsQty}, #{cnName}, #{enName}, #{frName}, #{createdBy}, #{createdTime}, 
-      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+      #{colorId}, #{partsQty}, #{cnName}, #{enName}, #{frName}, #{effectiveDate}, #{createdBy}, 
+      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, 
+      #{def5})
     on duplicate key update 
     id = #{id}, 
     dr = #{dr}, 
@@ -179,6 +187,7 @@
     cn_name = #{cnName}, 
     en_name = #{enName}, 
     fr_name = #{frName}, 
+    effective_date = #{effectiveDate}, 
     created_by = #{createdBy}, 
     created_time = #{createdTime}, 
     updated_by = #{updatedBy}, 
@@ -228,6 +237,9 @@
       </if>
       <if test="frName != null">
         fr_name,
+      </if>
+      <if test="effectiveDate != null">
+        effective_date,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -295,6 +307,9 @@
       <if test="frName != null">
         #{frName},
       </if>
+      <if test="effectiveDate != null">
+        #{effectiveDate},
+      </if>
       <if test="createdBy != null">
         #{createdBy},
       </if>
@@ -360,6 +375,9 @@
       </if>
       <if test="frName != null">
         fr_name = #{frName},
+      </if>
+      <if test="effectiveDate != null">
+        effective_date = #{effectiveDate},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy},

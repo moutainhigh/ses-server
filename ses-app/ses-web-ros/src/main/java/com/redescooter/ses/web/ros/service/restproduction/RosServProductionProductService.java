@@ -63,7 +63,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    ImportExcelPartsResult saveScooterImportExcel(GeneralEnter enter);
+    ImportExcelPartsResult saveScooterImportExcel(StringEnter enter);
 
     /**
      * 区域列表

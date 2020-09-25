@@ -59,7 +59,7 @@ public class RosCombinationController {
 
     @PostMapping(value = "/saveScooterImportExcel")
     @ApiOperation(value = "导入部件列表", response = GeneralResult.class)
-    public Response<GeneralResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(rosServProductionProductService.saveScooterImportExcel(enter));
     }
 

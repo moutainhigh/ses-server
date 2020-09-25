@@ -1,17 +1,16 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 组装bom的草稿表
@@ -109,6 +108,13 @@ public class OpeProductionCombinBomDraft implements Serializable {
     private String frName;
 
     /**
+     * 激活时间
+     */
+    @TableField(value = "effective_date")
+    @ApiModelProperty(value = "激活时间")
+    private Date effectiveDate;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -196,6 +202,8 @@ public class OpeProductionCombinBomDraft implements Serializable {
     public static final String COL_EN_NAME = "en_name";
 
     public static final String COL_FR_NAME = "fr_name";
+
+    public static final String COL_EFFECTIVE_DATE = "effective_date";
 
     public static final String COL_CREATED_BY = "created_by";
 

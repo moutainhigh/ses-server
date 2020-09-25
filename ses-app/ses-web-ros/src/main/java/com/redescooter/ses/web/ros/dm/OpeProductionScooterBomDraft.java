@@ -108,6 +108,13 @@ public class OpeProductionScooterBomDraft implements Serializable {
     private String frName;
 
     /**
+     * 激活时间
+     */
+    @TableField(value = "effective_date")
+    @ApiModelProperty(value = "激活时间")
+    private Date effectiveDate;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -195,6 +202,8 @@ public class OpeProductionScooterBomDraft implements Serializable {
     public static final String COL_EN_NAME = "en_name";
 
     public static final String COL_FR_NAME = "fr_name";
+
+    public static final String COL_EFFECTIVE_DATE = "effective_date";
 
     public static final String COL_CREATED_BY = "created_by";
 
