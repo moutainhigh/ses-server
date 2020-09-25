@@ -59,6 +59,8 @@ public class RosProductionProductDetailResult extends GeneralResult {
     private List<RosProductionProdductVersionResult> versionList;
 
     @ApiModelProperty(value = "生效时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date effectiverDate;
 
     @ApiModelProperty(value = "创建时间")

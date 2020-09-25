@@ -398,6 +398,8 @@ public enum ExceptionCodeEnums {
 
     BOM_NUM_REPEAT(10190, "bom编号已重复"),
 
+    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom 信息不完整"),
+
     ;
 
 

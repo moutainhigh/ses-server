@@ -1,12 +1,15 @@
 package com.redescooter.ses.web.ros.vo.restproduct.production;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * @ClassName:SaveScooterEnter
@@ -52,4 +55,9 @@ public class RosSaveProductionProductEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "颜色Id", required = true)
     private Long colorId;
+
+    @ApiModelProperty(value = "生效日期", required = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date effectiveDate;
 }
