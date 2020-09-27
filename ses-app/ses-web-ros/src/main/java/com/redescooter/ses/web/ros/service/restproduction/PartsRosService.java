@@ -21,43 +21,127 @@ import java.util.Map;
 public interface PartsRosService {
 
 
+    /**
+     * @Author Aleks
+     * @Description  草稿部件的新增
+     * @Date  2020/9/27 13:01
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult partsSave(StringEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  草稿删除
+     * @Date  2020/9/27 13:01
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult partsDelete(RosPartsBatchOpEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  草稿修改
+     * @Date  2020/9/27 13:02
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult partsEdit(StringEnter enter);
 
 
 
+    /**
+     * @Author Aleks
+     * @Description  部件  草稿列表接口
+     * @Date  2020/9/27 13:02
+     * @Param [enter] classType为1的时候是草稿  为2的时候是部件
+     * @return
+     **/
     PageResult<RosPartsListResult> partsList(RosPartsListEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  草稿发布
+     * @Date  2020/9/27 13:02
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult partsAnnoun(DraftAnnounEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  新增时导入
+     * @Date  2020/9/27 13:03
+     * @Param [enter]
+     * @return
+     **/
     List<OpeProductionPartsDraft> importParts(ImportPartsEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  获取发布人的下拉数据源接口
+     * @Date  2020/9/27 13:03
+     * @Param [tenantId]
+     * @return
+     **/
     List<StaffDataResult> announUser(Long tenantId);
 
 
+    /**
+     * @Author Aleks
+     * @Description  校验发布人的安全码
+     * @Date  2020/9/27 13:03
+     * @Param [enter]
+     * @return
+     **/
     Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter);
 
 
     GeneralResult partsCopy(IdEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  部件禁用
+     * @Date  2020/9/27 13:03
+     * @Param [enter]
+     * @return
+     **/
     GeneralResult partsDisable(RosPartsBatchOpEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  草稿  部件的列表统计
+     * @Date  2020/9/27 13:03
+     * @Param [enter]
+     * @return
+     **/
     Map<String,Integer> listCount(GeneralEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  部件的导出
+     * @Date  2020/9/27 13:04
+     * @Param [id, response]
+     * @return
+     **/
     GeneralResult partsExport(String id, HttpServletResponse response);
 
 
+    /**
+     * @Author Aleks
+     * @Description  发布的校验（是否有重复的部件号）
+     * @Date  2020/9/27 13:04
+     * @Param [enter]
+     * @return
+     **/
     List<RosRepeatResult> saveAnnounCheck(StringEnter enter);
 
 
