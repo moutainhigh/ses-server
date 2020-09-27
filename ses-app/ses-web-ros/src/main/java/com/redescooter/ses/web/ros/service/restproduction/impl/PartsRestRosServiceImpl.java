@@ -332,7 +332,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Override
     @Transactional
-    public GeneralResult importParts(ImportPartsEnter enter) {
+    public List<OpeProductionPartsDraft> importParts(ImportPartsEnter enter) {
         // 逻辑需要调整
         ExcelImportResult<RosParseExcelData> excelImportResult = importExcelService.setiExcelVerifyHandler(new RosExcelParse()).importOssExcel(enter.getUrl(), RosParseExcelData.class, new ImportParams());
         if (excelImportResult == null) {
@@ -344,17 +344,17 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             // 如果没有成功的数据  直接抛异常
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
         }
-        // 拿到成功的数据 保存到草稿
-        excelDataToDraft(successList,enter);
-        return new GeneralResult(enter.getRequestId());
+        // 拿到成功的数据 直接返回
+        return excelDataToDraft(successList,enter);
     }
 
-    public void excelDataToDraft(List<RosParseExcelData> dataList, ImportPartsEnter enter) {
+
+    public List<OpeProductionPartsDraft>  excelDataToDraft(List<RosParseExcelData> dataList,ImportPartsEnter enter){
         // 部分字段需要转换一下才能保存到草稿
         // 找到需要转换的东西 供应商 sec
         List<OpeSupplier> supplierList = opeSupplierService.list();
         List<OpePartsSec> secList = opePartsSecService.list();
-        List<OpeProductionPartsDraft> saveList = new ArrayList<>();
+        List<OpeProductionPartsDraft> retureList = new ArrayList<>();
         for (RosParseExcelData data : dataList) {
             OpeProductionPartsDraft draft = new OpeProductionPartsDraft();
             draft.setPartsNo(data.getPartsNo());
@@ -386,10 +386,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             draft.setCreatedTime(new Date());
             draft.setUpdatedBy(enter.getUserId());
             draft.setUpdatedTime(new Date());
-            draft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
-            saveList.add(draft);
+//            draft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
+            retureList.add(draft);
         }
-        opeProductionPartsDraftService.saveOrUpdateBatch(saveList);
+        return retureList;
     }
 
 
@@ -561,8 +561,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         for (RosPartsListResult list : lists) {
             RosPartsExportEnter exportEnter = new RosPartsExportEnter();
             BeanUtils.copyProperties(list,exportEnter);
-            exportEnter.setAssembly(list.getPartsIsAssembly()==null?"No":(list.getPartsIsAssembly()==1?"Yes":"No"));
-            exportEnter.setForAssembly(list.getPartsIsForAssembly()==null?"No":(list.getPartsIsForAssembly()==1?"Yes":"No"));
+//            exportEnter.setAssembly(list.getPartsIsAssembly()==null?"No":(list.getPartsIsAssembly()==1?"Yes":"No"));
+//            exportEnter.setForAssembly(list.getPartsIsForAssembly()==null?"No":(list.getPartsIsForAssembly()==1?"Yes":"No"));
             exportEnter.setPartsSecName(list.getPartsSecName());
             String type = "--";
             if(list.getPartsType() != null){
@@ -575,10 +575,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
             exportEnter.setType(type);
-            exportEnter.setSnClass(list.getSnClass()==null?"No":(list.getSnClass()==1?"Yes":"No"));
+            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==1?"SC":"SSC"));
             exportEnter.setCnName(list.getCnName());
             exportEnter.setEnName(list.getEnName());
-            exportEnter.setFrName(list.getFrName());
+//            exportEnter.setFrName(list.getFrName());
             exportEnter.setSupplierName(list.getSupplierName());
             exportEnter.setProcurementCycle(list.getProcurementCycle() == null?"0":list.getProcurementCycle().toString());
             exportList.add(exportEnter);

@@ -35,10 +35,10 @@ public class RosPartsSaveOrUpdateEnter extends GeneralEnter {
     private Integer idCalss;
 
     @ApiModelProperty("是否是组装件，0：否，1：是")
-    private Integer partsIsAssembly;
+    private Integer partsIsAssembly = 1;
 
     @ApiModelProperty("是否可用于组装件，0：否，1：是")
-    private Integer partsIsForAssembly;
+    private Integer partsIsForAssembly = 1;
 
     @ApiModelProperty(value = "英文名称")
     private String enName;
