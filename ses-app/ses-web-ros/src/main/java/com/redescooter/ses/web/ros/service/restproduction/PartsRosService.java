@@ -136,12 +136,22 @@ public interface PartsRosService {
 
     /**
      * @Author Aleks
-     * @Description  发布的校验（是否有重复的部件号）
+     * @Description  发布的校验（当前数据是否有重复的部件号）
      * @Date  2020/9/27 13:04
      * @Param [enter]
      * @return
      **/
     List<RosRepeatResult> saveAnnounCheck(StringEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  发布的校验（跟真实数据是否有重复的部件号）
+     * @Date  2020/9/27 13:04
+     * @Param [enter]
+     * @return
+     **/
+    List<RosRepeatResult> saveAnnounCheck2(StringEnter enter);
 
 
     /**

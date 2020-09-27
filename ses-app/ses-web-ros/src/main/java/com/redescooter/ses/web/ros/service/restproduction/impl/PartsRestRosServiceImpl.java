@@ -122,7 +122,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     OpeProductionPartsDraft draft = new OpeProductionPartsDraft();
                     BeanUtils.copyProperties(rosPartsSaveOrUpdateEnter, draft);
                     draft.setPartsSec(rosPartsSaveOrUpdateEnter.getPartsSec());
-                    draft.setDwg(rosPartsSaveOrUpdateEnter.getDwgUrl());
+                    draft.setDwg(rosPartsSaveOrUpdateEnter.getDwg());
                     draft.setCreatedBy(enter.getUserId());
                     draft.setUpdatedBy(enter.getUserId());
                     draft.setCreatedTime(new Date());
@@ -155,7 +155,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     parts.setUpdatedBy(enter.getUserId());
                     parts.setCreatedTime(new Date());
                     parts.setUpdatedTime(new Date());
-                    parts.setDwg(rosPartsSaveOrUpdateEnter.getDwgUrl());
+                    parts.setDwg(rosPartsSaveOrUpdateEnter.getDwg());
                     parts.setAnnounUserId(enter.getUserId());
                     parts.setOpAnnounUserId(enter.getUserId());
                     parts.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
@@ -232,7 +232,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                          partsDraft.setSupplierId(partsSaveOrUpdateEnter.getSupplierId());
                          partsDraft.setProcurementCycle(partsSaveOrUpdateEnter.getProcurementCycle());
                          partsDraft.setUpdatedTime(new Date());
-                         partsDraft.setDwg(partsSaveOrUpdateEnter.getDwgUrl());
+                         partsDraft.setDwg(partsSaveOrUpdateEnter.getDwg());
                          // 判断信息是否完善
                          RosPartsSaveOrUpdateEnter rosPartsSaveOrUpdateEnter = new RosPartsSaveOrUpdateEnter();
                          BeanUtils.copyProperties(partsDraft,rosPartsSaveOrUpdateEnter);
@@ -324,13 +324,13 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());
         }
         // 再校验当前要发布的草稿的部件号是否在部件中已经存在
-        List<String> partsNos = draftList.stream().map(OpeProductionPartsDraft::getPartsNo).collect(Collectors.toList());
-        QueryWrapper<OpeProductionParts> qw = new QueryWrapper<>();
-        qw.in(OpeProductionParts.COL_PARTS_NO,partsNos);
-        List<OpeProductionParts> list = opeProductionPartsService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)){
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
-        }
+//        List<String> partsNos = draftList.stream().map(OpeProductionPartsDraft::getPartsNo).collect(Collectors.toList());
+//        QueryWrapper<OpeProductionParts> qw = new QueryWrapper<>();
+//        qw.in(OpeProductionParts.COL_PARTS_NO,partsNos);
+//        List<OpeProductionParts> list = opeProductionPartsService.list(qw);
+//        if (CollectionUtils.isNotEmpty(list)){
+//            throw new SesWebRosException(ExceptionCodeEnums.PARTS_NUMBER_EXIST.getCode(), ExceptionCodeEnums.PARTS_NUMBER_EXIST.getMessage());
+//        }
     }
 
     @Override
@@ -367,7 +367,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             draft.setItem(data.getItem());
             draft.setEcnNumber(data.getEcnNumber());
             draft.setDrawingSize(data.getDrawingSize());
-            draft.setWeight(Double.parseDouble(data.getWeight()));
+            draft.setWeight(Double.parseDouble(Strings.isNullOrEmpty(data.getWeight())?"0":data.getWeight()));
             draft.setPartsQty(data.getQuantity()==null?0:Integer.parseInt(data.getQuantity()));
             draft.setRateTyp(data.getRateTyp());
             draft.setSellCalss(data.getSellClass());
@@ -380,7 +380,15 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             draft.setPartsType(getPartsType(data.getType()));
             draft.setTenantId(enter.getTenantId());
 //            draft.setDeptId();
-            draft.setSnClass(0);
+            if(!Strings.isNullOrEmpty(draft.getSellCalss())){
+                Integer snClass = null;
+                if(draft.getSellCalss().equals("SC")){
+                    snClass = 0;
+                }else if(draft.getSellCalss().equals("SSC")){
+                    snClass = 1;
+                }
+                draft.setSnClass(snClass);
+            }
             draft.setIdCalss(0);
             draft.setPartsIsAssembly(0);
             draft.setPartsIsForAssembly(0);
@@ -632,7 +640,21 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
         }
-        // 2020 9 27 追加  如果是部件号在真实数据里存在了 也不能保存‘
+//        // 2020 9 27 追加  如果是部件号在真实数据里存在了 也不能保存‘
+//        list.addAll(findRepeat(enters));
+        return list;
+    }
+
+
+    @Override
+    public List<RosRepeatResult> saveAnnounCheck2(StringEnter enter) {
+        List<RosRepeatResult> list = new ArrayList<>();
+        List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
+        try {
+            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
         list.addAll(findRepeat(enters));
         return list;
     }
@@ -693,6 +715,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             for (RosPartsSaveOrUpdateEnter enter : enters) {
                 for (OpeProductionParts part : parts) {
                     if(enter.getPartsNo().equals(part.getPartsNo())){
+                        if(Strings.isNullOrEmpty(enter.getPartsNo())){
+                            throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(), ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getMessage());
+                        }
                         RosRepeatResult repeatResult = new RosRepeatResult();
                         repeatResult.setPartsNo(enter.getPartsNo());
                         repeatResult.setCnName(enter.getCnName());
