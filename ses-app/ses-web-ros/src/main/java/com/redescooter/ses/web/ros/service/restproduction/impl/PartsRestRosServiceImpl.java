@@ -91,6 +91,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     @Autowired
     private OpePartsSecService opePartsSecService;
 
+    @Autowired
+    private OpeProductionPartsRelationService opeProductionPartsRelationService;
 
 
     @Override
@@ -627,6 +629,43 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         // 2020 9 27 追加  如果是部件号在真实数据里存在了 也不能保存‘
         list.addAll(findRepeat(enters));
         return list;
+    }
+
+
+    @Override
+    public List<RosRepeatResult> partsDisableCheck(RosPartsBatchOpEnter enter) {
+        List<RosRepeatResult> resultList = new ArrayList<>();
+        if(Strings.isNullOrEmpty(enter.getId())){
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        QueryWrapper<OpeProductionParts> qw = new QueryWrapper<>();
+        qw.in(OpeProductionParts.COL_ID,enter.getId().split(","));
+        List<OpeProductionParts> parts = opeProductionPartsService.list(qw);
+        if(CollectionUtils.isEmpty(parts)){
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getMessage());
+        }
+        List<Long> partsIds = parts.stream().map(OpeProductionParts::getId).collect(Collectors.toList());
+        QueryWrapper<OpeProductionPartsRelation> relationQueryWrapper = new QueryWrapper<>();
+        relationQueryWrapper.in(OpeProductionPartsRelation.COL_PARTS_ID,partsIds);
+        // 通过部件id查找被使用的部件
+        List<OpeProductionPartsRelation>  relationList = opeProductionPartsRelationService.list(relationQueryWrapper);
+        if(CollectionUtils.isNotEmpty(relationList)){
+            // 有部件被使用
+            for (OpeProductionParts part : parts) {
+                for (OpeProductionPartsRelation relation :relationList){
+                    if (part.getId().equals(relation.getPartsId())){
+                        RosRepeatResult result = new RosRepeatResult();
+                        result.setPartsNo(part.getPartsNo());
+                        result.setCnName(part.getCnName());
+                        result.setEnName(part.getEnName());
+                        result.setFrName(part.getFrName());
+                        resultList.add(result);
+                        break;
+                    }
+                }
+            }
+        }
+        return resultList;
     }
 
 
