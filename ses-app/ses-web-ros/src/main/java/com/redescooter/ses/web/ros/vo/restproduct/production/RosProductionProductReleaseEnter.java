@@ -37,7 +37,7 @@ public class RosProductionProductReleaseEnter extends GeneralEnter {
     private String cnName;
 
     @ApiModelProperty(value = "生产周期", required = true)
-    private Integer productionCycle;
+    private Integer procurementCycle;
 
     @ApiModelProperty(value = "Json配件列表，如[{\"id\":\"已选主键\",\"qty\":\"数量\"}]", required = true)
     private String partList;
