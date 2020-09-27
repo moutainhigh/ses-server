@@ -147,9 +147,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         for (RosProductionScooterListResult item : rosProductionScooterListResults) {
-            item.setGroupName(ProductionScooterGroupEnums.getEnumByValue(item.getGroupId().intValue()).getCode());
-            item.setColorName(
-                ProductColorEnums.getProductColorEnumsByValue(String.valueOf(item.getColorId())).getCode());
+            ProductionScooterGroupEnums groupName =
+                ProductionScooterGroupEnums.getEnumByValue(item.getGroupId().intValue());
+            ProductColorEnums colorEnum =
+                ProductColorEnums.getProductColorEnumsByValue(String.valueOf(item.getColorId()));
+            item.setGroupName(groupName == null ? null : groupName.getCode());
+            item.setColorName(colorEnum == null ? null : colorEnum.getCode());
         }
         return PageResult.create(enter, count, rosProductionScooterListResults);
     }
@@ -433,16 +436,17 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionProductId = opeProductionScooterBomDraft.getId();
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue();
 
+                ProductColorEnums colorEnum = ProductColorEnums
+                    .getProductColorEnumsByValue(String.valueOf(opeProductionScooterBomDraft.getColorId()));
+                ProductionScooterGroupEnums groupEnum =
+                    ProductionScooterGroupEnums.getEnumByValue(opeProductionScooterBomDraft.getGroupId().intValue());
                 result = RosProductionProductDetailResult.builder().id(opeProductionScooterBomDraft.getId())
                     .qty(opeProductionScooterBomDraft.getPartsQty())
                     .productN(opeProductionScooterBomDraft.getBomNo())
                     .groupId(opeProductionScooterBomDraft.getGroupId())
-                    .groupName(ProductionScooterGroupEnums
-                        .getEnumByValue(opeProductionScooterBomDraft.getGroupId().intValue()).getCode())
+                    .groupName(groupEnum == null ? null : groupEnum.getCode())
                     .colorId(opeProductionScooterBomDraft.getColorId())
-                    .colorName(ProductColorEnums
-                        .getProductColorEnumsByValue(String.valueOf(opeProductionScooterBomDraft.getColorId()))
-                        .getCode())
+                    .colorName(colorEnum == null ? null : colorEnum.getCode())
                     .qty(opeProductionScooterBomDraft.getPartsQty())
                     .procurementCycle(opeProductionScooterBomDraft.getProcurementCycle())
                     .enName(opeProductionScooterBomDraft.getEnName())
@@ -462,14 +466,17 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionProductId = opeProductionScooterBom.getId();
                 productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue();
 
+                ProductColorEnums colorEnum =
+                    ProductColorEnums.getProductColorEnumsByValue(String.valueOf(opeProductionScooterBom.getColorId()));
+                ProductionScooterGroupEnums groupEnum =
+                    ProductionScooterGroupEnums.getEnumByValue(opeProductionScooterBom.getGroupId().intValue());
+
                 result = RosProductionProductDetailResult.builder().id(opeProductionScooterBom.getId())
                     .qty(opeProductionScooterBom.getPartsQty())
                     .productN(opeProductionScooterBom.getBomNo()).groupId(opeProductionScooterBom.getGroupId())
-                    .groupName(ProductionScooterGroupEnums
-                        .getEnumByValue(opeProductionScooterBom.getGroupId().intValue()).getCode())
+                    .groupName(groupEnum == null ? null : groupEnum.getCode())
                     .colorId(opeProductionScooterBom.getColorId())
-                    .colorName(ProductColorEnums
-                        .getProductColorEnumsByValue(String.valueOf(opeProductionScooterBom.getColorId())).getCode())
+                    .colorName(colorEnum == null ? null : colorEnum.getCode())
                     .procurementCycle(opeProductionScooterBom.getProcurementCycle())
                     .enName(opeProductionScooterBom.getEnName()).version(opeProductionScooterBom.getVersoin())
                     .status(opeProductionScooterBom.getBomStatus())
