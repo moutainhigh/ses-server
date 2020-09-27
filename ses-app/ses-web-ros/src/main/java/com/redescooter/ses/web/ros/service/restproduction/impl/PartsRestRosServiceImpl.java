@@ -613,9 +613,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         Set<String> set = enters.stream().map(RosPartsSaveOrUpdateEnter::getPartsNo).collect(Collectors.toSet());
-        if(set.size() == enters.size()){
-            return list;
-        }
+//        if(set.size() == enters.size()){
+//            return list;
+//        }
         // 进行到这里 说明有重复的 需要把重复的数据找出来
         Map<String, List<RosPartsSaveOrUpdateEnter>> map = enters.stream().collect(Collectors.groupingBy(RosPartsSaveOrUpdateEnter::getPartsNo));
         for (String key : map.keySet()) {
