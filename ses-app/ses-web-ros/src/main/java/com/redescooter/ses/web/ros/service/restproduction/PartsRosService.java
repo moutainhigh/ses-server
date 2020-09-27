@@ -145,4 +145,14 @@ public interface PartsRosService {
     List<RosRepeatResult> saveAnnounCheck(StringEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  禁用部件时校验  被使用的部件不能禁用
+     * @Date  2020/9/27 14:39
+     * @Param [enter]
+     * @return
+     **/
+    List<RosRepeatResult> partsDisableCheck(RosPartsBatchOpEnter enter);
+
+
 }

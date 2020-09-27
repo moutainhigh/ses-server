@@ -125,4 +125,11 @@ public class PartsRosController {
         return new Response(partsRosService.saveAnnounCheck(enter));
     }
 
+
+    @PostMapping(value = "/partsDisableCheck")
+    @ApiOperation(value = "禁用部件的校验", response = GeneralResult.class)
+    public Response<List<RosRepeatResult>> partsDisableCheck(@ModelAttribute @ApiParam("请求参数") RosPartsBatchOpEnter enter) {
+        return new Response<>(partsRosService.partsDisableCheck(enter));
+    }
+
 }
