@@ -500,6 +500,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .colorId(opeProductionScooterBomDraft.getColorId()).qty(opeProductionScooterBomDraft.getPartsQty())
                     .procurementCycle(opeProductionScooterBomDraft.getProcurementCycle())
                     .enName(opeProductionScooterBomDraft.getEnName())
+                    .effectiverDate(opeProductionScooterBomDraft.getEffectiveDate())
                     .createTime(opeProductionScooterBomDraft.getCreatedTime())
                     .createById(opeProductionScooterBomDraft.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
@@ -563,6 +564,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .qty(opeProductionCombinBomDraft.getPartsQty()).productN(opeProductionCombinBomDraft.getBomNo())
                     .procurementCycle(opeProductionCombinBomDraft.getProcurementCycle())
                     .enName(opeProductionCombinBomDraft.getEnName())
+                    .effectiverDate(opeProductionCombinBomDraft.getEffectiveDate())
                     .createById(opeProductionCombinBomDraft.getCreatedBy()).build();
             }
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
