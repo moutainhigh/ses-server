@@ -60,5 +60,5 @@ public class RosSaveProductionProductEnter extends GeneralEnter {
     @ApiModelProperty(value = "生效日期", required = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private Date effectiveDate;
+    private Date effectiverDate;
 }
