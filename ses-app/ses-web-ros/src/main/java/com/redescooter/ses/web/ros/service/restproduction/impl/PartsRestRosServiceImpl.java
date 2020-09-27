@@ -562,8 +562,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         for (RosPartsListResult list : lists) {
             RosPartsExportEnter exportEnter = new RosPartsExportEnter();
             BeanUtils.copyProperties(list,exportEnter);
-            exportEnter.setAssembly(list.getPartsIsAssembly()==null?"No":(list.getPartsIsAssembly()==1?"Yes":"No"));
-            exportEnter.setForAssembly(list.getPartsIsForAssembly()==null?"No":(list.getPartsIsForAssembly()==1?"Yes":"No"));
+//            exportEnter.setAssembly(list.getPartsIsAssembly()==null?"No":(list.getPartsIsAssembly()==1?"Yes":"No"));
+//            exportEnter.setForAssembly(list.getPartsIsForAssembly()==null?"No":(list.getPartsIsForAssembly()==1?"Yes":"No"));
             exportEnter.setPartsSecName(list.getPartsSecName());
             String type = "--";
             if(list.getPartsType() != null){
@@ -576,10 +576,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
             exportEnter.setType(type);
-            exportEnter.setSnClass(list.getSnClass()==null?"No":(list.getSnClass()==1?"Yes":"No"));
+            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==1?"SC":"SSC"));
             exportEnter.setCnName(list.getCnName());
             exportEnter.setEnName(list.getEnName());
-            exportEnter.setFrName(list.getFrName());
+//            exportEnter.setFrName(list.getFrName());
             exportEnter.setSupplierName(list.getSupplierName());
             exportEnter.setProcurementCycle(list.getProcurementCycle() == null?"0":list.getProcurementCycle().toString());
             exportList.add(exportEnter);

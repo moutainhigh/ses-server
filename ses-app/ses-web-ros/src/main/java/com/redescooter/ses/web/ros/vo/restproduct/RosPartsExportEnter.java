@@ -27,11 +27,11 @@ public class RosPartsExportEnter implements Serializable {
     @Excel(name = "SN CLASS",width = 20)
     private String snClass;
 
-    @Excel(name = "ASSEMBLY",width = 20)
-    private String assembly;
-
-    @Excel(name = "FOR ASSEMBLY",width = 20)
-    private String forAssembly;
+//    @Excel(name = "ASSEMBLY",width = 20)
+//    private String assembly;
+//
+//    @Excel(name = "FOR ASSEMBLY",width = 20)
+//    private String forAssembly;
 
     @Excel(name = "CN NAME",width = 20)
     private String cnName;
@@ -39,8 +39,8 @@ public class RosPartsExportEnter implements Serializable {
     @Excel(name = "EN NAME",width = 20)
     private String enName;
 
-    @Excel(name = "FR NAME",width = 20)
-    private String frName;
+//    @Excel(name = "FR NAME",width = 20)
+//    private String frName;
 
     @Excel(name = "SUPPLIER",width = 20)
     private String supplierName;
