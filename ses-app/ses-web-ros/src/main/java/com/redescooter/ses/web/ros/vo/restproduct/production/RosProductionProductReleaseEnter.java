@@ -16,7 +16,7 @@ import java.util.Date;
 public class RosProductionProductReleaseEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "直接发布", required = true)
-    private Boolean directRelease;
+    private Boolean directRelease = Boolean.FALSE;
 
     @ApiModelProperty(value = "产品类型", required = true)
     private Integer productionProductType;
