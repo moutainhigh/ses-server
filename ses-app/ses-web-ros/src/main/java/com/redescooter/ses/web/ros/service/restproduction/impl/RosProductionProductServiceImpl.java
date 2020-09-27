@@ -316,6 +316,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
         importProductionProductResult.setSuccessProductPartListResult(successProductPartListResult);
+        importProductionProductResult
+            .setSuccess(CollectionUtils.isEmpty(failProductPartListResult) ? Boolean.TRUE : Boolean.FALSE);
         return importProductionProductResult;
     }
 
@@ -848,7 +850,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
         }
 
-        if (!new Date().before(opeProductionScooterBomDraft.getEffectiveDate())) {
+        if (opeProductionScooterBomDraft.getEffectiveDate().before(new Date())) {
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getCode(),
                 ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getMessage());
         }

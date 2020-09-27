@@ -14,6 +14,9 @@ import java.util.List;
 @Builder
 public class ImportProductionProductResult extends GeneralResult {
 
+    @ApiModelProperty(value = "是否成功")
+    private Boolean success;
+
     @ApiModelProperty(value = "成功的部件")
     private List<RosProductionProductPartListResult> successProductPartListResult;
 
