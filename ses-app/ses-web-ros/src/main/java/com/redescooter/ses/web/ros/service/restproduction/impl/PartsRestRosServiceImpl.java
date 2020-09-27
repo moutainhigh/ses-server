@@ -230,6 +230,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                          partsDraft.setSupplierId(partsSaveOrUpdateEnter.getSupplierId());
                          partsDraft.setProcurementCycle(partsSaveOrUpdateEnter.getProcurementCycle());
                          partsDraft.setUpdatedTime(new Date());
+                         partsDraft.setDwg(partsSaveOrUpdateEnter.getDwgUrl());
                          // 判断信息是否完善
                          RosPartsSaveOrUpdateEnter rosPartsSaveOrUpdateEnter = new RosPartsSaveOrUpdateEnter();
                          BeanUtils.copyProperties(partsDraft,rosPartsSaveOrUpdateEnter);
