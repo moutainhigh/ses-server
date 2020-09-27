@@ -183,7 +183,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         boolean falg = false;
         if(!Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getPartsNo()) && rosPartsSaveOrUpdateEnter.getPartsSec() != null && rosPartsSaveOrUpdateEnter.getPartsType() != null && rosPartsSaveOrUpdateEnter.getSnClass() != null &&
                 rosPartsSaveOrUpdateEnter.getIdCalss() != null && rosPartsSaveOrUpdateEnter.getSupplierId() != null && rosPartsSaveOrUpdateEnter.getProcurementCycle() != null && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getCnName()) &&
-                !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getEnName()) && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getFrName())){
+                !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getEnName())){
             // 上面这些都不为空的时候  才是true
             falg = true;
         }
