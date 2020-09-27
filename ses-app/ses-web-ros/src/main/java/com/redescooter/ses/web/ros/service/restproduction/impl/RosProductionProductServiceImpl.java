@@ -769,6 +769,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
                 checkOpeProductionOpeProductionCombinBom(enter, null, partList);
             }
+            return new GeneralResult(enter.getRequestId());
         }
 
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
@@ -842,6 +843,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private void checkOpeProductionScooter(RosProductionProductReleaseEnter enter,
         OpeProductionScooterBomDraft opeProductionScooterBomDraft, List<ProductionProductEnter> partList) {
 
+        Long opeProductionBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM);
+
         List<OpeProductionParts> opeProductionPartsList = null;
         int partQty = 0;
         if (enter.getDirectRelease()) {
@@ -902,7 +905,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBomDraft.getBomNo()));
 
         // 子记录 保存
-        List<OpeProductionPartsRelation> opeProductionPartsRelationList = null;
+        List<OpeProductionPartsRelation> opeProductionPartsRelationList = new ArrayList<>();
         if (!enter.getDirectRelease()) {
             // 查询关系表
             opeProductionPartsRelationList =
@@ -916,7 +919,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             for (OpeProductionPartsRelation item : opeProductionPartsRelationList) {
                 item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION));
-                item.setProductionId(opeProductionScooterBomDraft.getId());
+                item.setProductionId(opeProductionBomId);
                 item.setProductionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
                 item.setCreatedBy(enter.getUserId());
                 item.setCreatedTime(new Date());
@@ -926,12 +929,16 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         } else {
             for (OpeProductionParts item : opeProductionPartsList) {
                 opeProductionPartsRelationList.add(OpeProductionPartsRelation.builder()
-                    .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0).productionId(item.getId())
+                    .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0)
+                    .productionId(opeProductionBomId)
                     .productionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue()).partsId(item.getId())
                     .partsNo(item.getPartsNo()).partsSec(item.getPartsSec())
-                    .procurementCycle(item.getProcurementCycle()).partsQty(partQty).cnName(item.getCnName())
-                    .frName(item.getFrName()).enName(item.getEnName()).createdBy(enter.getUserId())
-                    .createdTime(new Date()).updatedBy(enter.getUserId()).updatedTime(new Date()).build());
+                    .procurementCycle(item.getProcurementCycle()).partsQty(partQty)
+                    .cnName(StringUtils.isBlank(item.getCnName()) ? null : item.getCnName())
+                    .frName(StringUtils.isBlank(item.getFrName()) ? null : item.getFrName())
+                    .enName(StringUtils.isBlank(item.getEnName()) ? null : item.getEnName())
+                    .createdBy(enter.getUserId()).createdTime(new Date()).updatedBy(enter.getUserId())
+                    .updatedTime(new Date()).build());
             }
         }
 
@@ -946,8 +953,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         OpeProductionScooterBom productionScooterBom = OpeProductionScooterBom.builder()
-            .id(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM)).dr(0)
-            .versionIdentificat(versionIdentificat).versoin(versionNum).bomNo(opeProductionScooterBomDraft.getBomNo())
+            .id(opeProductionBomId).dr(0).versionIdentificat(versionIdentificat).versoin(versionNum)
+            .bomNo(opeProductionScooterBomDraft.getBomNo())
             .procurementCycle(opeProductionScooterBomDraft.getProcurementCycle())
             .effectiveDate(opeProductionScooterBomDraft.getEffectiveDate())
             .groupId(opeProductionScooterBomDraft.getGroupId()).colorId(opeProductionScooterBomDraft.getColorId())
@@ -975,6 +982,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
         OpeProductionCombinBomDraft opeProductionCombinBomDraft, List<ProductionProductEnter> partList) {
+
+        Long combinBomBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM);
 
         List<OpeProductionParts> opeProductionPartsList = null;
         int partQty = 0;
@@ -1031,7 +1040,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         // 子记录 保存
-        List<OpeProductionPartsRelation> opeProductionPartsRelationList = null;
+        List<OpeProductionPartsRelation> opeProductionPartsRelationList = new ArrayList<>();
         if (!enter.getDirectRelease()) {
             // 查询关系表
             opeProductionPartsRelationList =
@@ -1045,7 +1054,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             for (OpeProductionPartsRelation item : opeProductionPartsRelationList) {
                 item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION));
-                item.setProductionId(opeProductionCombinBomDraft.getId());
+                item.setProductionId(combinBomBomId);
                 item.setProductionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
                 item.setCreatedBy(enter.getUserId());
                 item.setCreatedTime(new Date());
@@ -1055,11 +1064,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         } else {
             for (OpeProductionParts item : opeProductionPartsList) {
                 opeProductionPartsRelationList.add(OpeProductionPartsRelation.builder()
-                    .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0).productionId(item.getId())
+                    .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0)
+                    .productionId(combinBomBomId)
                     .productionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue()).partsId(item.getId())
                     .partsNo(item.getPartsNo()).partsSec(item.getPartsSec())
-                    .procurementCycle(item.getProcurementCycle()).partsQty(partQty).cnName(item.getCnName())
-                    .frName(item.getFrName()).enName(item.getEnName()).createdBy(enter.getUserId())
+                    .procurementCycle(item.getProcurementCycle()).partsQty(partQty)
+                    .cnName(StringUtils.isBlank(item.getCnName()) ? null : item.getCnName())
+                    .frName(StringUtils.isBlank(item.getFrName()) ? null : item.getFrName())
+                    .enName(StringUtils.isBlank(item.getEnName()) ? null : item.getEnName())
+                    .createdBy(enter.getUserId())
                     .createdTime(new Date()).updatedBy(enter.getUserId()).updatedTime(new Date()).build());
             }
         }
@@ -1079,7 +1092,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         OpeProductionCombinBom opeProductionCombinBom = OpeProductionCombinBom.builder()
-            .id(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM)).dr(0)
+            .id(combinBomBomId).dr(0)
             .versionIdentificat(versionIdentificat).versoin(versionNum).bomNo(opeProductionCombinBomDraft.getBomNo())
             .procurementCycle(opeProductionCombinBomDraft.getProcurementCycle())
             .effectiveDate(opeProductionCombinBomDraft.getEffectiveDate())
@@ -1096,6 +1109,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             .build();
 
         opeProductionCombinBomService.save(opeProductionCombinBom);
+
+        // 自己记录保存
+        opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
         if (!enter.getDirectRelease()) {
             // 删除草稿
             opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft);
