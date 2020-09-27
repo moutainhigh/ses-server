@@ -624,6 +624,42 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
         }
+        // 2020 9 27 追加  如果是部件号在真实数据里存在了 也不能保存‘
+        list.addAll(findRepeat(enters));
         return list;
     }
+
+
+    /*
+     * @Author Aleks
+     * @Description  找出本次新增的部件号 在真实数据里是否存在
+     * @Date  2020/9/27 14:09
+     * @Param [enters]
+     * @return
+     **/
+    public List<RosRepeatResult> findRepeat(List<RosPartsSaveOrUpdateEnter> enters){
+        List<RosRepeatResult> list = new ArrayList<>();
+        Set<String> set = enters.stream().map(RosPartsSaveOrUpdateEnter::getPartsNo).collect(Collectors.toSet());
+        QueryWrapper<OpeProductionParts> qw =  new QueryWrapper<>();
+        qw.in(OpeProductionParts.COL_PARTS_NO,set);
+        List<OpeProductionParts> parts = opeProductionPartsService.list(qw);
+        if (CollectionUtils.isNotEmpty(parts)){
+            // 部件号已经存在了  需要找出存在的部件号
+            for (RosPartsSaveOrUpdateEnter enter : enters) {
+                for (OpeProductionParts part : parts) {
+                    if(enter.getPartsNo().equals(part.getPartsNo())){
+                        RosRepeatResult repeatResult = new RosRepeatResult();
+                        repeatResult.setPartsNo(enter.getPartsNo());
+                        repeatResult.setCnName(enter.getCnName());
+                        repeatResult.setEnName(enter.getEnName());
+                        repeatResult.setFrName(enter.getFrName());
+                        list.add(repeatResult);
+                        break;
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
 }
