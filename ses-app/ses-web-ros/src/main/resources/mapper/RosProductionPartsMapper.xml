@@ -89,6 +89,7 @@
         #{item}
       </foreach>
     </if>
+    order by parts.created_time desc
   </select>
 
 

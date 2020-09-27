@@ -509,6 +509,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         List<OpeProductionParts> list = opeProductionPartsService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (OpeProductionParts parts : list) {
+                if(parts.getDisable().equals(1)){
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
                 parts.setDisable(1);
             }
             opeProductionPartsService.updateBatchById(list);
