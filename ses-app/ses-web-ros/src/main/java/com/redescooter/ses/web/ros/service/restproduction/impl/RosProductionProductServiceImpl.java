@@ -896,7 +896,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         if (count != 0) {
             throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
-                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
+                ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getMessage());
         }
 
         if (!opeProductionScooterBomDraft.getEffectiveDate().before(new Date())) {
