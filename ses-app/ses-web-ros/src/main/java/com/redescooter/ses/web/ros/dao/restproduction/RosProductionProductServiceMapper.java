@@ -114,4 +114,11 @@ public interface RosProductionProductServiceMapper {
     List<RosProductionProductPartListResult> rosProductionProductPartsList(@Param("id") Long id,
         @Param("productTypeId") Integer productTypeId);
 
+    /**
+     * 导入成功后查询部件信息
+     * 
+     * @param collect
+     * @return
+     */
+    List<RosProductionProductPartListResult> rosImportProductionProductPartsList(List<String> collect);
 }

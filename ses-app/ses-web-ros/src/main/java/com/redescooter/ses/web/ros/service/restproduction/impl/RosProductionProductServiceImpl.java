@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
@@ -277,6 +278,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public ImportProductionProductResult importProductionProduct(ImportPartsEnter enter) {
+        ImportProductionProductResult importProductionProductResult = new ImportProductionProductResult();
+        List<RosProductionProductPartListResult> successProductPartListResult = new ArrayList<>();
+        List<RosProductionProductPartListResult> failProductPartListResult = new ArrayList<>();
         // 逻辑需要调整
         ExcelImportResult<RosParseExcelData> excelImportResult =
             importExcelService.setiExcelVerifyHandler(new RosExcelParse()).importOssExcel(enter.getUrl(),
@@ -293,27 +297,26 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
         }
         List<RosParseExcelData> failList = excelImportResult.getFailList();
-
-        // 正式部件过滤
-        List<OpeProductionParts> productionPartsList = opeProductionPartsService
-            .list(new LambdaQueryWrapper<OpeProductionParts>().eq(OpeProductionParts::getPartsNo,
-                successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList())));
-
-        if (CollectionUtils.isEmpty(productionPartsList)) {
-            failList.addAll(successList);
+        if (CollectionUtils.isNotEmpty(failList)) {
+            failList.forEach(item -> {
+                failProductPartListResult.add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
+                    .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
+            });
         }
-
-        List<String> partNoList = successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList());
-        successList.forEach(item -> {
-            if (!partNoList.contains(item.getPartsNo())) {
-                successList.remove(item);
-                failList.add(item);
+        if (CollectionUtils.isNotEmpty(successList)) {
+            successProductPartListResult = rosProductionProductServiceMapper.rosImportProductionProductPartsList(
+                successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
+            if (CollectionUtils.isEmpty(successProductPartListResult)) {
+                successList.forEach(item -> {
+                    failProductPartListResult
+                        .add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
+                            .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
+                });
             }
-        });
-
-        // return
-        // ImportProductionProductResult.builder().successProductPartListResult(successList).failProductPartListResult(failList).build();
-        return null;
+        }
+        importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
+        importProductionProductResult.setSuccessProductPartListResult(successProductPartListResult);
+        return importProductionProductResult;
     }
 
     /**
@@ -614,14 +617,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
-        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-        */
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.SCOOTER.getValue())) {
             OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
@@ -695,14 +698,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Transactional
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
-        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-        */
+
         if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
             BomCommonTypeEnums.COMBINATION.getValue())) {
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
@@ -710,10 +713,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            // if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-            // throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-            // ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-            // }
             opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionCombinBom.setUpdatedBy(enter.getId());
             opeProductionCombinBom.setUpdatedTime(new Date());
@@ -726,10 +725,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            // if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-            // throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-            // ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-            // }
             opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionScooterBom.setUpdatedBy(enter.getId());
             opeProductionScooterBom.setUpdatedTime(new Date());
@@ -746,14 +741,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public GeneralResult release(RosProuductionTypeEnter enter) {
-        /*String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
                 ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-        */
+
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
             OpeProductionScooterBomDraft opeProductionScooterBomDraft =
                 opeProductionScooterBomDraftService.getById(enter.getId());
