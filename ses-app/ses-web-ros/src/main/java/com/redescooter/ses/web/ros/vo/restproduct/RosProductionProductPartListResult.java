@@ -47,5 +47,5 @@ public class RosProductionProductPartListResult extends GeneralResult {
     private Integer qty;
 
     @ApiModelProperty(value = "图纸url")
-    private String dwgUrl;
+    private String dwg;
 }

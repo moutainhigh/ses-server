@@ -58,7 +58,7 @@ public class RosPartsListResult extends GeneralResult {
     private Integer procurementCycle;
 
     @ApiModelProperty(value = "图纸url")
-    private String dwgUrl;
+    private String dwg;
 
     @ApiModelProperty(value = "页面类型,1:草稿，2：部件")
     private Integer classType;

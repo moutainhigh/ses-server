@@ -56,7 +56,7 @@ public class RosPartsSaveOrUpdateEnter extends GeneralEnter {
     private Integer procurementCycle;
 
     @ApiModelProperty(value = "图纸")
-    private String dwgUrl;;
+    private String dwg;;
 
     @ApiModelProperty(value = "是否发布，0：否，1：是")
     private Integer isAnnoun = 0;

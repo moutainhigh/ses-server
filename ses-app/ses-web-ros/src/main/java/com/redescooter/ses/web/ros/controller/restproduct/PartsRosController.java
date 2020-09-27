@@ -120,9 +120,16 @@ public class PartsRosController {
 
 
     @PostMapping(value = "/saveAnnounCheck")
-    @ApiOperation(value = "保存发布校验", response = GeneralResult.class)
+    @ApiOperation(value = "保存发布校验（校验当前的数据有没有重复的）", response = GeneralResult.class)
     public Response<List<RosRepeatResult>> saveAnnounCheck(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response(partsRosService.saveAnnounCheck(enter));
+    }
+
+
+    @PostMapping(value = "/saveAnnounCheck2")
+    @ApiOperation(value = "保存发布校验（校验有没有跟真实数据重复）", response = GeneralResult.class)
+    public Response<List<RosRepeatResult>> saveAnnounCheck2(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response(partsRosService.saveAnnounCheck2(enter));
     }
 
 
