@@ -455,7 +455,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }
 
     @Override
-    public Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter) {
+    public BooleanResult checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getPrincipal());
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
@@ -482,7 +482,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         jedisCluster.set(key, String.valueOf(flag));
         jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
-        return flag;
+        BooleanResult result = new BooleanResult();
+        result.setSuccess(flag);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     @Override
