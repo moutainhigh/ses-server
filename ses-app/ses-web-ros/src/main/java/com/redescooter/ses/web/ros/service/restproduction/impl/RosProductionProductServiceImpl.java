@@ -485,6 +485,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         Long productionProductId = null;
         Integer productionPartsRelationType = null;
 
+        if (enter.getClassType() == null || enter.getClassType() == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.TYPE_IS_NULL.getCode(),
+                ExceptionCodeEnums.TYPE_IS_NULL.getMessage());
+        }
+
         if (StringUtils.equals(BomCommonTypeEnums.SCOOTER.getValue(),
             String.valueOf(enter.getProductionProductType()))) {
             if (ClassTypeEnums.TYPE_ONE.getValue().equals(enter.getClassType())) {
