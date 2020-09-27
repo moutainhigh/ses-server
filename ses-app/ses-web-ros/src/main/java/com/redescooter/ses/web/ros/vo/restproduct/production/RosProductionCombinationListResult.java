@@ -38,6 +38,9 @@ public class RosProductionCombinationListResult extends GeneralResult {
     @ApiModelProperty(value = "数量")
     private Integer qty;
 
+    @ApiModelProperty(value = "状态")
+    private Integer status;
+
     @ApiModelProperty(value = "部件列表")
     private List<RosProductionCombinationPartsResult> partsList;
 }

@@ -1129,10 +1129,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft);
         }
         if (null != enter.getId() && enter.getId() != 0) {
-            OpeProductionScooterBomDraft productionScooterBomDraft =
-                opeProductionScooterBomDraftService.getById(enter.getId());
-            if (productionScooterBomDraft != null) {
-                opeProductionScooterBomDraftService.removeById(productionScooterBomDraft.getId());
+            OpeProductionCombinBomDraft productionCombinBomDraft =
+                opeProductionCombinBomDraftService.getById(enter.getId());
+            if (productionCombinBomDraft != null) {
+                opeProductionCombinBomDraftService.removeById(productionCombinBomDraft.getId());
             }
         }
     }
