@@ -398,7 +398,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 opeProductionScooterBomDraft.setCreatedTime(new Date());
             } else {
                 // 编辑
+                OpeProductionScooterBomDraft queryProductionScooterBomDraft =
+                    opeProductionScooterBomDraftService.getById(enter.getId());
+                if (queryProductionScooterBomDraft == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+                }
                 opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
+                opeProductionScooterBomDraft.setCreatedBy(queryProductionScooterBomDraft.getCreatedBy());
+                opeProductionScooterBomDraft.setCreatedTime(queryProductionScooterBomDraft.getCreatedTime());
                 opeProductionScooterBomDraft.setId(enter.getId());
             }
             productionProductId = opeProductionScooterBomDraft.getId();
@@ -415,7 +423,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 productionCombinBomDraft.setCreatedTime(new Date());
             } else {
                 // 编辑
+                OpeProductionCombinBomDraft queryProductionCombinBomDraft =
+                    opeProductionCombinBomDraftService.getById(enter.getId());
+                if (queryProductionCombinBomDraft == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
+                }
                 productionCombinBomDraft = buildProductionCombinBom(enter, partQty);
+                productionCombinBomDraft.setCreatedBy(queryProductionCombinBomDraft.getCreatedBy());
+                productionCombinBomDraft.setCreatedTime(queryProductionCombinBomDraft.getCreatedTime());
                 productionCombinBomDraft.setId(enter.getId());
             }
             productionProductId = productionCombinBomDraft.getId();
