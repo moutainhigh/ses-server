@@ -18,7 +18,7 @@ public class RosProductionCombinationListResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "产品编号")
-    private String productN;
+    private String productNum;
 
     @ApiModelProperty(value = "部件区域")
     private String sec;

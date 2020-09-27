@@ -130,7 +130,7 @@
 
     <select id="combinationDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult">
         select draft.id as id,
-               draft.bom_no as  productN,
+               draft.bom_no as  productNum,
                draft.procurement_cycle as productionCycle,
                draft.cn_name as enName,
                draft.en_name as cnName,

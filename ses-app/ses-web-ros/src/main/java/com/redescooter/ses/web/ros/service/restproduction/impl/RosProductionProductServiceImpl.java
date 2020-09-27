@@ -1046,7 +1046,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
         }
 
-        if (opeProductionCombinBomDraft.getEffectiveDate().before(new Date())) {
+        if (!opeProductionCombinBomDraft.getEffectiveDate().before(new Date())) {
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getCode(),
                 ExceptionCodeEnums.BOM_HAS_DUPLICATE_EFFECTIVE_DATE.getMessage());
         }
