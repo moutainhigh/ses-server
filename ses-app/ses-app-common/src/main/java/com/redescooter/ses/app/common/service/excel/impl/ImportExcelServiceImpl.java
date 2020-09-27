@@ -65,9 +65,8 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
                     if(!isAllFieldNull(t)){
                         failList.add(t);
                     }
-                    excelImportResult.setFailList(null);
-                    excelImportResult.setFailList(failList);
                 }
+                excelImportResult.setFailList(failList);
                 log.info("解析不合法数据为{}", excelImportResult.getFailList().toString());
                 log.info("本次解析Excel不合法数据共计{}条数据", excelImportResult.getFailList().size());
             } else {

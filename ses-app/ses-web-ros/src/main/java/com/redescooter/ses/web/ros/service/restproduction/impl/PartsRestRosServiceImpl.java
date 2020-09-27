@@ -24,7 +24,6 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
-import com.redescooter.ses.web.ros.verifyhandler.PartsExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
@@ -350,8 +349,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
-    public void excelDataToDraft(List<RosParseExcelData> dataList,ImportPartsEnter enter){
+    public void excelDataToDraft(List<RosParseExcelData> dataList, ImportPartsEnter enter) {
         // 部分字段需要转换一下才能保存到草稿
         // 找到需要转换的东西 供应商 sec
         List<OpeSupplier> supplierList = opeSupplierService.list();

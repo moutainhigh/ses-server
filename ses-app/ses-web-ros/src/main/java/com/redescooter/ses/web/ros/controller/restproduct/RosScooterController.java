@@ -2,11 +2,9 @@ package com.redescooter.ses.web.ros.controller.restproduct;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductionProductEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -58,9 +56,10 @@ public class RosScooterController {
     }
 
     @PostMapping(value = "/saveScooterImportExcel")
-    @ApiOperation(value = "导入部件列表", response = GeneralResult.class)
-    public Response<GeneralResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
-        return new Response<>(rosServProductionProductService.saveScooterImportExcel(enter));
+    @ApiOperation(value = "导入部件列表", response = ImportProductionProductResult.class)
+    public Response<ImportProductionProductResult>
+        saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
+        return new Response<>(rosServProductionProductService.importProductionProduct(enter));
     }
 
     @PostMapping(value = "/secList")
