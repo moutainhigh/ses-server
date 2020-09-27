@@ -104,7 +104,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/release")
     @ApiOperation(value = "发布", response = GeneralResult.class)
-    public Response<GeneralResult> release(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+    public Response<GeneralResult> release(@ModelAttribute @ApiParam("请求参数") RosProductionProductReleaseEnter enter) {
         return new Response<>(rosServProductionProductService.release(enter));
     }
 
