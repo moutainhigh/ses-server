@@ -27,6 +27,7 @@ import java.util.Date;
 public class RosSaveProductionProductEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品类型", required = true)
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型为空")
     private Integer productionProductType;
 
     @ApiModelProperty(value = "id", required = false)
