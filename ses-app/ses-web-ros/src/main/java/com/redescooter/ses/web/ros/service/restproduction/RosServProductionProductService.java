@@ -119,7 +119,7 @@ public interface RosServProductionProductService {
      * @param enter
      * @return
      */
-    GeneralResult release(RosProuductionTypeEnter enter);
+    GeneralResult release(RosProductionProductReleaseEnter enter);
 
     /**
      * 删除草稿
