@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
@@ -71,7 +72,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/importParts")
     @ApiOperation(value = "表格导入", response = ImportExcelPartsResult.class)
-    public Response<GeneralResult> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
+    public Response<List<OpeProductionPartsDraft>> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
         return new Response<>(partsRosService.importParts(enter));
     }
 

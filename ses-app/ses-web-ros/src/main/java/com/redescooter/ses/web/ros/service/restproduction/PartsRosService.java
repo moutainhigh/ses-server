@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproduction;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
@@ -36,7 +37,7 @@ public interface PartsRosService {
     GeneralResult partsAnnoun(DraftAnnounEnter enter);
 
 
-    GeneralResult importParts(ImportPartsEnter enter);
+    List<OpeProductionPartsDraft> importParts(ImportPartsEnter enter);
 
 
     List<StaffDataResult> announUser(Long tenantId);
