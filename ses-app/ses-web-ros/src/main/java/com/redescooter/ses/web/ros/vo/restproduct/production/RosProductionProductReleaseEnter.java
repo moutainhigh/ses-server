@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.vo.restproduct.production;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +21,7 @@ public class RosProductionProductReleaseEnter extends GeneralEnter {
     private Boolean directRelease = Boolean.FALSE;
 
     @ApiModelProperty(value = "产品类型", required = true)
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "产品类型为空")
     private Integer productionProductType;
 
     @ApiModelProperty(value = "id", required = false)
