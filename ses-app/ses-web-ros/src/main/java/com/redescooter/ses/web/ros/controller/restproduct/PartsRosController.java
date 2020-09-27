@@ -86,7 +86,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/checkAnnounUserSafeCode")
     @ApiOperation(value = "校验发布人的安全码", response = Boolean.class)
-    public Response<Boolean> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCodeEnter enter) {
+    public Response<BooleanResult> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCodeEnter enter) {
         return new Response<>(partsRosService.checkAnnounUserSafeCode(enter));
     }
 

@@ -98,7 +98,7 @@ public interface PartsRosService {
      * @Param [enter]
      * @return
      **/
-    Boolean checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter);
+    BooleanResult checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter);
 
 
     GeneralResult partsCopy(IdEnter enter);
