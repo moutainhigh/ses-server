@@ -978,6 +978,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             // 删除草稿
             opeProductionScooterBomDraftService.removeById(opeProductionScooterBomDraft);
         }
+        if (enter.getId() != null || enter.getId() != 0) {
+            OpeProductionScooterBomDraft productionScooterBomDraft =
+                opeProductionScooterBomDraftService.getById(enter.getId());
+            if (productionScooterBomDraft != null) {
+                opeProductionScooterBomDraftService.removeById(productionScooterBomDraft.getId());
+            }
+        }
     }
 
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
@@ -1115,6 +1122,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (!enter.getDirectRelease()) {
             // 删除草稿
             opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft);
+        }
+        if (enter.getId() != null || enter.getId() != 0) {
+            OpeProductionCombinBomDraft productionCombinBomDraft =
+                opeProductionCombinBomDraftService.getById(enter.getId());
+            if (productionCombinBomDraft != null) {
+                opeProductionCombinBomDraftService.removeById(productionCombinBomDraft);
+            }
         }
     }
 
