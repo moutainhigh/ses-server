@@ -860,8 +860,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             opeProductionScooterBomDraft = OpeProductionScooterBomDraft.builder()
                 .id(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM_DRAFT)).dr(0).bomNo(enter.getProductN())
-                .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
-                .effectiveDate(enter.getEffectiveDate()).colorId(enter.getColorId()).enName(enter.getEnName())
+                .procurementCycle(enter.getProductionCycle()).groupId(enter.getGroupId())
+                .effectiveDate(enter.getEffectiverDate()).colorId(enter.getColorId()).enName(enter.getEnName())
                 .partsQty(partQty).updatedBy(enter.getUserId()).updatedTime(new Date()).createdBy(enter.getUserId())
                 .createdTime(new Date()).build();
         }
@@ -1007,8 +1007,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             opeProductionCombinBomDraft = OpeProductionCombinBomDraft.builder()
                 .id(idAppService.getId(SequenceName.OPE_PRODUCTION_COMBIN_BOM_DRAFT)).dr(0).bomNo(enter.getProductN())
-                .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
-                .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiveDate())
+                .procurementCycle(enter.getProductionCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
+                .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiverDate())
                 .frName(enter.getFrName()).partsQty(partQty).updatedBy(enter.getUserId()).updatedTime(new Date())
                 .createdBy(enter.getUserId()).createdTime(new Date()).build();
         }
@@ -1135,15 +1135,16 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     private OpeProductionCombinBomDraft buildProductionCombinBom(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionCombinBomDraft.builder().dr(0).bomNo(enter.getProductN())
-            .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
-            .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiveDate())
+            .procurementCycle(enter.getProductionCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
+            .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiverDate())
             .frName(enter.getFrName()).partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
     }
 
     private OpeProductionScooterBomDraft buildOpeProductionScooterDraft(RosSaveProductionProductEnter enter, int qty) {
         return OpeProductionScooterBomDraft.builder().dr(0).bomNo(enter.getProductN())
-            .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
-            .effectiveDate(enter.getEffectiveDate()).colorId(enter.getColorId()).enName(enter.getEnName()).partsQty(qty)
+            .procurementCycle(enter.getProductionCycle()).groupId(enter.getGroupId())
+            .effectiveDate(enter.getEffectiverDate()).colorId(enter.getColorId()).enName(enter.getEnName())
+            .partsQty(qty)
             .updatedBy(enter.getUserId()).updatedTime(new Date()).build();
     }
 

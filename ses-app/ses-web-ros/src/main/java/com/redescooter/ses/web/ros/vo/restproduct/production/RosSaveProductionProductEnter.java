@@ -46,7 +46,7 @@ public class RosSaveProductionProductEnter extends GeneralEnter {
     private String cnName;
 
     @ApiModelProperty(value = "生产周期", required = true)
-    private Integer procurementCycle;
+    private Integer productionCycle;
 
     @ApiModelProperty(value = "Json配件列表，如[{\"id\":\"已选主键\",\"qty\":\"数量\"}]", required = true)
     private String partList;
@@ -60,5 +60,5 @@ public class RosSaveProductionProductEnter extends GeneralEnter {
     @ApiModelProperty(value = "生效日期", required = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private Date effectiveDate;
+    private Date effectiverDate;
 }
