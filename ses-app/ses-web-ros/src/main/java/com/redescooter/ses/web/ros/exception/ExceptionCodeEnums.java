@@ -404,6 +404,8 @@ public enum ExceptionCodeEnums {
 
     PARTS_NO_REPEAT(10193, "部件号重复"),
 
+    PARTS_IS_DISABLE(10194, "部件已被禁用"),
+
     ;
 
 
