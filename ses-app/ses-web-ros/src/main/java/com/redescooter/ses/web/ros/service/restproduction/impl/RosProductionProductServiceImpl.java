@@ -650,6 +650,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             // 查询当前是否有生效中的Bomn 有的话 更新状态
             OpeProductionScooterBom avticeScooterBom =
                 opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
+                    .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
                     .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
             if (avticeScooterBom != null) {
                 avticeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
@@ -680,6 +681,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
             OpeProductionCombinBom avticeCombinBom =
                 opeProductionCombinBomService.getOne(new LambdaQueryWrapper<OpeProductionCombinBom>()
+                    .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBom.getBomNo())
                     .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
             if (avticeCombinBom != null) {
                 avticeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());

@@ -75,7 +75,7 @@ public class ParameterSettingController {
 
     @ApiOperation(value = "分组列表", response = ParameterGroupResultList.class)
     @PostMapping(value = "/groupList")
-    public Response<List<ParameterGroupResultList>> groupList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<ParameterGroupResultList>> groupList(@ModelAttribute @ApiParam("请求参数") BooleanEnter enter) {
         return new Response<>(rosParameterService.groupList(enter));
     }
 }

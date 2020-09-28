@@ -164,7 +164,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
      * @return
      */
     @Override
-    public List<ParameterGroupResultList> groupList(GeneralEnter enter) {
-        return parameterSettingService.groupList(new StringEnter(SystemTypeEnums.REDE_ROS.getValue()));
+    public List<ParameterGroupResultList> groupList(BooleanEnter enter) {
+        return parameterSettingService.groupList(enter);
     }
 }
