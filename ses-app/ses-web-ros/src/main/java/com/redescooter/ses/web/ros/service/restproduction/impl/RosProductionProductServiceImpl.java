@@ -1164,6 +1164,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
         int versionNum = 0;
         for (String item : stringList) {
+            if (StringUtils.isEmpty(item)) {
+                continue;
+            }
             // 版本号累加
             char[] versionChar = item.toCharArray();
             String versionString = Character.toString(versionChar[versionChar.length - 2])
