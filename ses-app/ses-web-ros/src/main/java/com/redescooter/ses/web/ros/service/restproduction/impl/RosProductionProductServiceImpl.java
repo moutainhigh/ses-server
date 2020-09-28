@@ -956,7 +956,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             versionNum = getVersionNum(null);
         } else {
             versionIdentificat = opeProductionScooterBomList.get(0).getVersionIdentificat();
-            versionNum = getVersionNum(opeProductionScooterBomList.get(0).getVersoin());
+            versionNum = getVersionNum(getMaxVersionNum(opeProductionScooterBomList.stream()
+                .map(OpeProductionScooterBom::getVersoin).collect(Collectors.toList())));
         }
 
         OpeProductionScooterBom productionScooterBom = OpeProductionScooterBom.builder()
@@ -1102,7 +1103,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             versionNum = getVersionNum(null);
         } else {
             versionIdentificat = opeProductionCombinBomList.get(0).getVersionIdentificat();
-            versionNum = getVersionNum(opeProductionCombinBomList.get(0).getVersoin());
+            versionNum = getVersionNum(getMaxVersionNum(opeProductionCombinBomList.stream()
+                .map(OpeProductionCombinBom::getVersoin).collect(Collectors.toList())));
         }
 
         OpeProductionCombinBom opeProductionCombinBom = OpeProductionCombinBom.builder()
@@ -1152,6 +1154,26 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
             .effectiveDate(enter.getEffectiverDate()).colorId(enter.getColorId()).enName(enter.getEnName())
             .partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
+    }
+
+    private String getMaxVersionNum(List<String> stringList) {
+
+        if (CollectionUtils.isEmpty(stringList)) {
+            return null;
+        }
+
+        int versionNum = 0;
+        for (String item : stringList) {
+            // 版本号累加
+            char[] versionChar = item.toCharArray();
+            String versionString = Character.toString(versionChar[versionChar.length - 2])
+                + Character.toString(versionChar[versionChar.length - 1]);
+            Integer versionInteger = Integer.valueOf(versionString);
+            if (versionNum == 0 || versionNum < versionInteger) {
+                versionNum = versionInteger;
+            }
+        }
+        return String.valueOf(versionNum);
     }
 
     private String getVersionNum(String version) {
