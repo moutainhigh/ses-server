@@ -125,8 +125,8 @@ public class WebsiteOrderFormController {
 
   @IgnoreLoginCheck
   @PostMapping(value = "/payAgainCheck")
-  @ApiOperation(value = "再次支付", response = GeneralResult.class)
-  public Response<GeneralResult> payAgainCheck(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+  @ApiOperation(value = "再次支付", response = BooleanResult.class)
+  public Response<BooleanResult> payAgainCheck(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
       return new Response<>(websiteOrderFormService.payAgainCheck(enter));
   }
 }
