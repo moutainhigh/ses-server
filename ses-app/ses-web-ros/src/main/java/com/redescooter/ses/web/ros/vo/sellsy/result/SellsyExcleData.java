@@ -53,6 +53,9 @@ public class SellsyExcleData implements Serializable, IExcelModel, IExcelDataMod
 
     @Excel(name = "PDF", width = 25)
     private String url;
+
+    @Excel(name = "Référence", width = 25)
+    private String remark;
     /**
      * 解析错误信息
      */

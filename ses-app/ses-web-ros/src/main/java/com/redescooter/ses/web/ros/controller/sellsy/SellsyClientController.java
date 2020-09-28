@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.controller.sellsy;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyClientService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.SellsyClientListEnter;
@@ -36,6 +38,14 @@ public class SellsyClientController {
     @PostMapping(value = "/queryClientList")
     public Response<List<SellsyClientResult>> queryClientList(@ModelAttribute @ApiParam("请求参数") SellsyClientListEnter enter) {
         return new Response<>(sellsyClientService.queryClientList(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "clientChick", response = GeneralResult.class)
+    @PostMapping(value = "/clientChick")
+    public Response<GeneralResult> clientChick(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        sellsyClientService.clientChick(enter);
+        return new Response<>(new GeneralResult());
     }
 
 }

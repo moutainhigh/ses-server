@@ -281,6 +281,9 @@ sellsy:
   #  consumer-secret: 7972a8d6219516b07ecfae6c274c5143e27508d1
   #  user-token: 7b2168ac4ffacd9a1f97c2590a3dd5f8c1073c50
   #  user-secret: 21719bf05462311a3e9da0b6809e281403396b4e
+  #  unit: 3497479 #计量单位 个
+  #  tax-id: 3497473 #增值税税率
+  #  doc-layout: Facture pro # 发票布局
 
   #rental 密钥
   consumer-token: 968c60d765a8b39202c7a1ef3f29b3cd892a422b
@@ -291,8 +294,8 @@ sellsy:
   rate-category: Tarif TTC #增值税 百分比
   currency-unit: 1 # 货币单位 Id 货币单位列表有系统生成不会改变
   lang: cn #"flag": "cn" 翻译语言默认中文
-  doc-layout: Facture pro # 发票布局
+  doc-layout: Apparence par défaut # 发票布局
   subject: DS-NS-2 scooters # 发票主题
-  unit: 3497479 #计量单位 个
-  tax-id: 3497473 #增值税税率
+  unit: 3534693 #计量单位 个
+  tax-id: 3534687 #增值税税率
   download-url: /root/pdf/

@@ -61,6 +61,10 @@ public class SellsyInvoiceTotal implements Serializable {
     @ApiModelProperty(value = "开具发票的时间")
     private Date invoiceTime;
 
+    @TableField(value = "`type`")
+    @ApiModelProperty(value = "")
+    private Integer type;
+
     /**
      * 不含税价格
      */
@@ -109,6 +113,27 @@ public class SellsyInvoiceTotal implements Serializable {
     @TableField(value = "product_name")
     @ApiModelProperty(value = "电动摩托车及其配件")
     private String productName;
+
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    @ApiModelProperty(value = "备注")
+    private String remark;
+
+    /**
+     * 支付Id
+     */
+    @TableField(value = "pay_id")
+    @ApiModelProperty(value = "支付Id")
+    private String payId;
+
+    /**
+     * 支付Id
+     */
+    @TableField(value = "payrel_id")
+    @ApiModelProperty(value = "支付Id")
+    private Integer payrelId;
 
     /**
      * 创建人
@@ -160,17 +185,17 @@ public class SellsyInvoiceTotal implements Serializable {
     private String def3;
 
     /**
-     * 冗余字段
+     * 单据Id
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value = "单据Id")
     private String def2;
 
     /**
-     * 冗余字段
+     * 附件Id
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value = "冗余字段")
+    @ApiModelProperty(value = "附件Id")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -187,6 +212,8 @@ public class SellsyInvoiceTotal implements Serializable {
 
     public static final String COL_INVOICE_TIME = "invoice_time";
 
+    public static final String COL_TYPE = "type";
+
     public static final String COL_HT = "ht";
 
     public static final String COL_TTC = "ttc";
@@ -200,6 +227,12 @@ public class SellsyInvoiceTotal implements Serializable {
     public static final String COL_PAY_TIME = "pay_time";
 
     public static final String COL_PRODUCT_NAME = "product_name";
+
+    public static final String COL_REMARK = "remark";
+
+    public static final String COL_PAY_ID = "pay_id";
+
+    public static final String COL_PAYREL_ID = "payrel_id";
 
     public static final String COL_CREATED_BY = "created_by";
 

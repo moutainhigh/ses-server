@@ -449,25 +449,48 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void  createclient(){
-        SellsyCreateClientThirdEnter third = new SellsyCreateClientThirdEnter();
-        third.setName("alex");
-        third.setType(SellsyClientTypeEnums.corporation.getValue());
-        third.setEmail("alex@redescooter.com");
 
+        List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list(new LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getUpdatedBy, 0));
+        sellsyInvoiceTotalList.forEach(item -> {
 
-        SellsyCreateClientAddressEnter address = SellsyCreateClientAddressEnter
-                .builder()
-                .name("中国上海")
-                .part1("中国上海")
-                .build();
-
-        SellsyCreateClientEnter sellsyCreateClientEnter = SellsyCreateClientEnter.builder()
-                .third(third)
-                .address(address)
-                .contact(null)
-                .build();
-        SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
-        log.info("-----------取到返回值{}---------", client.getId());
+            // 客户校验
+            SellsyClientListEnter sellsyClientListEnter = new SellsyClientListEnter();
+            SellsyClientListSearchEnter sellsyClientSerach = new SellsyClientListSearchEnter();
+            sellsyClientSerach.setName(item.getClientName());
+            sellsyClientListEnter.setSearch(sellsyClientSerach);
+            List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList(sellsyClientListEnter);
+            SellsyClientResult sellsyClientResult = sellsyClientResults.stream()
+                    .filter(client -> StringUtils.equals(client.getName().trim(), item.getClientName().trim())).findFirst()
+                    .orElse(null);
+            if (sellsyClientResult != null) {
+                SellsyCreateClientThirdEnter third = new SellsyCreateClientThirdEnter();
+                third.setName(item.getClientName());
+                third.setType(SellsyClientTypeEnums.corporation.getValue());
+                SellsyCreateClientEnter sellsyCreateClientEnter = SellsyCreateClientEnter.builder()
+                        .third(third)
+                        .address(null)
+                        .contact(null)
+                        .build();
+                SellsyIdResult client = sellsyClientService.createClient(sellsyCreateClientEnter);
+                log.info("-----------取到返回值{}---------", client.getId());
+                //保存客户
+                SellsyCustomer sellsyCustomer = SellsyCustomer
+                        .builder()
+                        .id(idAppService.getId("SELLSY_CUSTOMER"))
+                        .dr(0)
+                        .name(item.getClientName())
+                        .address(null)
+                        .status(String.valueOf(Boolean.TRUE))
+                        .remark(null)
+                        .createdBy(0L)
+                        .createdTime(new Date())
+                        .updatedBy(0L)
+                        .updatedTime(new Date())
+                        .def1(String.valueOf(client.getId()))
+                        .build();
+                sellsyCustomerService.save(sellsyCustomer);
+            }
+        });
     }
 
     @Autowired
@@ -477,16 +500,17 @@ public class SesWebRosApplicationTests {
     public void deleteclient() {
 
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq(SellsyCustomer.COL_DEF2, "1");
+        queryWrapper.isNull(SellsyCustomer.COL_TYPE);
         List<SellsyCustomer> list = sellsyCustomerService.list(queryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
         list.forEach(item -> {
             SellsyDeleteClientEnter sellsyDeleteClientEnter = SellsyDeleteClientEnter.builder()
-                    .clientid(item.getDef2())
+                    .clientid(item.getDef1())
                     .build();
             sellsyClientService.deleteClient(sellsyDeleteClientEnter);
+            sellsyCustomerService.removeById(item.getId());
         });
 
         //SellsyGeneralResult(error=null, status=null, result={"client_id":25918711}, sellsyResponseInfo=null)
@@ -564,15 +588,17 @@ public class SesWebRosApplicationTests {
 
     @Test
     public void createPayment() {
+
+        SellsyInvoiceTotal sellsyInvoiceTotal = sellsyInvoiceTotalService.getById(1020016);
         SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
                 .builder()
-                .date(new Timestamp(new Date().getTime() / 1000))
-                .amount("372")
+                .date(new Timestamp(sellsyInvoiceTotal.getPayTime().getTime() / 1000))
+                .amount(sellsyInvoiceTotal.getTtc())
                 .medium(3497466)
-                .ident("FAC00001444")
+                .ident(sellsyInvoiceTotal.getInvoiceNum())
                 .notes("测试")
                 .doctype(SellsyDocmentTypeEnums.invoice.getCode())
-                .docid("20109028")
+                .docid(sellsyInvoiceTotal.getDef2())
                 .build();
         sellsyDocumentService.createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
     }

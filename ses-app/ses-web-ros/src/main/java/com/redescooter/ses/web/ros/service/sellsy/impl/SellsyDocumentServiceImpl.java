@@ -352,7 +352,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 .doclayout(enter.getDoclayout() == null || enter.getDoclayout() == 0 ? null : enter.getDoclayout())
                 .doclang(enter.getDoclang() == null || enter.getDoclang() == 0 ? null : enter.getDoclang())
                 .payMediums(null)
-                .docspeakerStaffId(Integer.valueOf(165489))
+                .docspeakerStaffId(null)
                 .useServiceDates(SellsyBooleanEnums.N)
                 .serviceDateStart(null)
                 .serviceDateStop(null)
@@ -447,6 +447,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     .payStatus(item.getPayStatus())
                     .payType(item.getPayType())
                     .payTime(StringUtils.isBlank(item.getPayTime()) ? null : DateUtil.formatDate(item.getPayTime()))
+                    .remark(StringUtils.isBlank(item.getRemark()) ? null : item.getRemark())
                     .def1(SellsyBooleanEnums.N.getValue())
                     .def5(item.getUrl())
                     .build());
@@ -678,7 +679,10 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public List<SellsyIdResult> createDcumentTotalList(IdEnter enter) {
         // 查询发票数据
         List<SellsyInvoiceTotal> sellsyInvoiceList = sellsyInvoiceTotalService.list(new
-                LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.N.getValue()).last("limit " + String.valueOf(enter.getId())));
+                LambdaQueryWrapper<SellsyInvoiceTotal>()
+                .eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.N.getValue())
+                .eq(SellsyInvoiceTotal::getType, "2")
+                .last("limit " + String.valueOf(enter.getId())));
         if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
             return new ArrayList<>();
         }
@@ -767,7 +771,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyClientServiceCreateDocumentEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
             sellsyClientServiceCreateDocumentEnter.setThirdid(Integer.valueOf(sellsyClientResult.getId()));
             sellsyClientServiceCreateDocumentEnter.setIdent(item.getInvoiceNum());
-            sellsyClientServiceCreateDocumentEnter.setSubject(sellsyConfig.getSubject());
+            sellsyClientServiceCreateDocumentEnter.setSubject(StringUtils.isEmpty(item.getRemark()) ? "   " : item.getRemark());
             sellsyClientServiceCreateDocumentEnter.setNotes("Statut de paiement:" + item.getPayStatus() + ".  " + "Payment Types:" + item.getPayType() + ". " + "Payment time:" + (item.getPayTime() == null ? " " :
                     DateUtil.getTimeStr(item.getPayTime(), DateUtil.DEFAULT_DATE_FORMAT2)));
             sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
@@ -835,7 +839,6 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         return null;
     }
 
-    @Transactional
     @Override
     public List<SellsyIdResult> createDcumentTotalOne(IdEnter enter) {
         // 查询发票数据
@@ -930,7 +933,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyClientServiceCreateDocumentEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
             sellsyClientServiceCreateDocumentEnter.setThirdid(Integer.valueOf(sellsyClientResult.getId()));
             sellsyClientServiceCreateDocumentEnter.setIdent(item.getInvoiceNum());
-            sellsyClientServiceCreateDocumentEnter.setSubject(sellsyConfig.getSubject());
+            sellsyClientServiceCreateDocumentEnter.setSubject(StringUtils.isEmpty(item.getRemark()) ? " " : item.getRemark());
             sellsyClientServiceCreateDocumentEnter.setNotes("Statut de paiement:" + item.getPayStatus() + ".  " + "Payment Types:" + item.getPayType() + ". " + "Payment time:" + (item.getPayTime() == null ? " " :
                     DateUtil.getTimeStr(item.getPayTime(), DateUtil.DEFAULT_DATE_FORMAT2)));
             sellsyClientServiceCreateDocumentEnter.setDisplayShipAddress(SellsyBooleanEnums.Y);
@@ -1059,8 +1062,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             SellsyClientListSearchEnter sellsyClientSerach = new SellsyClientListSearchEnter();
             sellsyClientSerach.setName(name);
             sellsyClientListEnter.setSearch(sellsyClientSerach);
-            List<SellsyClientResult> sellsyClientResults =
-                    sellsyClientService.queryClientList(sellsyClientListEnter);
+            List<SellsyClientResult> sellsyClientResults = sellsyClientService.queryClientList(sellsyClientListEnter);
 
             if (CollectionUtils.isEmpty(sellsyClientResults)) {
                 //客户不存在
@@ -1299,7 +1301,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 //        }
         if (sellsyCatalogueResult == null) {
             SellsyQueryCatalogueOneEnter sellsyQueryCatalogueOneEnter = SellsyQueryCatalogueOneEnter.builder()
-                    .id(Integer.valueOf(8495410))
+                    .id(Integer.valueOf(8529813))
                     .type(SellsyCatalogueTypeEnums.item)
                     .build();
             sellsyCatalogueResult = sellsyCatalogueService.queryCatalogueOne(sellsyQueryCatalogueOneEnter);

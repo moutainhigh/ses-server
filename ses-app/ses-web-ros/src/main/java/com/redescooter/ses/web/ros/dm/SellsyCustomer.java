@@ -1,19 +1,17 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-SellsyCustomer")
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-SellsyCustomer")
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,105 +22,113 @@ public class SellsyCustomer implements Serializable {
      * id
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="id")
+    @ApiModelProperty(value = "id")
     private Long id;
 
     /**
      * 删除标识
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="删除标识")
+    @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
      * 客户姓名
      */
     @TableField(value = "`name`")
-    @ApiModelProperty(value="客户姓名")
+    @ApiModelProperty(value = "客户姓名")
     private String name;
 
     /**
      * 客户地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="客户地址")
+    @ApiModelProperty(value = "客户地址")
     private String address;
 
     /**
      * 状态
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value="状态")
+    @ApiModelProperty(value = "状态")
     private String status;
+
+    /**
+     * 系统类型
+     */
+    @TableField(value = "`type`")
+    @ApiModelProperty(value = "系统类型")
+    private Integer type;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -136,6 +142,8 @@ public class SellsyCustomer implements Serializable {
     public static final String COL_ADDRESS = "address";
 
     public static final String COL_STATUS = "status";
+
+    public static final String COL_TYPE = "type";
 
     public static final String COL_REMARK = "remark";
 

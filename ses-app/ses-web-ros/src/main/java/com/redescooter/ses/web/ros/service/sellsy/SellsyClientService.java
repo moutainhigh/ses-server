@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.sellsy;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientAddressDetailResult;
@@ -42,6 +43,8 @@ public interface SellsyClientService {
      * @param enter
      */
     public void deleteClient(SellsyDeleteClientEnter enter);
+
+    public void clientChick(IdEnter enter);
 
 
     /**

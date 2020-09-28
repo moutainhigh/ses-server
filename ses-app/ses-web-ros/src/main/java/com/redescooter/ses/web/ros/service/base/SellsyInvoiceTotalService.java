@@ -21,3 +21,5 @@ public interface SellsyInvoiceTotalService extends IService<SellsyInvoiceTotal> 
 
 
 
+
+
