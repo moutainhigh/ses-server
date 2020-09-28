@@ -75,6 +75,8 @@ public interface SellsyMethodConstant {
 
     String Document_DeletePayment = "Document.deletePayment";
 
+    String Document_GetPaymentList = "Document.getPaymentList";
+
 
     // 获取货币列表
     String AccountPrefs_GetCurrencies = "AccountPrefs.getCurrencies";

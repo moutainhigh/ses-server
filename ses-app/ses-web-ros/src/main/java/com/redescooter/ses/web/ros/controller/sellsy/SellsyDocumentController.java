@@ -7,10 +7,9 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyDocumentService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -99,5 +98,33 @@ public class SellsyDocumentController {
         return new Response<>(documentService.importSellsyDocument(file));
     }
 
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "创建付款记录", response = SellsyCreateDocumentPaymentResult.class)
+    @PostMapping(value = "/createDocumentPayment")
+    public Response<SellsyCreateDocumentPaymentResult> createDocumentPayment(@ModelAttribute @ApiParam("请求参数") SellsyCreateDocumentPaymentEnter enter) {
+        return new Response<>(documentService.createDocumentPayment(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "删除付款记录", response = DeleteDocumentPaymentReuslt.class)
+    @PostMapping(value = "/deleteDocumentPayment")
+    public Response<DeleteDocumentPaymentReuslt> deleteDocumentPayment(@ModelAttribute @ApiParam("请求参数") SellsyDeleteDocumentPaymentEnter enter) {
+        return new Response<>(documentService.deleteDocumentPayment(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "查询指定付款记录", response = SellsyQueryDocumentPaymentOneResult.class)
+    @PostMapping(value = "/queryDocumentPaymentOne")
+    public Response<SellsyQueryDocumentPaymentOneResult> queryDocumentPaymentOne(@ModelAttribute @ApiParam("请求参数") SellsyQueryDocumentPaymentEnter enter) {
+        return new Response<>(documentService.queryDocumentPaymentOne(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "查询付款记录列表", response = SellsyQueryDocumentPaymentListEnter.class)
+    @PostMapping(value = "/queryDocumentPaymentList")
+    public Response<List<SellsyQueryDocumentPaymentListEnter>> queryDocumentPaymentList(@ModelAttribute @ApiParam("请求参数") QueryDocumentPaymentListEnter enter) {
+        return new Response<>(documentService.queryDocumentPaymentList(enter));
+    }
 
 }

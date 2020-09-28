@@ -25,7 +25,6 @@ import com.sellsy.coreConnector.SellsyApiRequest;
 import com.sellsy.coreConnector.SellsyApiResponse;
 import com.sellsy.coreConnector.SellsySpringRestExecutor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName:SellsyServiceImpl
@@ -248,14 +244,19 @@ public class SellsyServiceImpl implements SellsyService {
         }
         try {
             Map<String, Map<String, T>> objMap =
-                JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+                    JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
             if (CollectionUtil.isEmpty(objMap)) {
                 return resultList;
             }
-            objMap.keySet().forEach(item -> {
-                if (!StringUtils.equals(SellsyConstant.DEFAULT, item)) {
+            Set<String> defaultSet = new HashSet<>();
+            defaultSet.add(SellsyConstant.DEFAULT);
+            defaultSet.add(SellsyConstant.DUEAMOUNT);
+            defaultSet.add(SellsyConstant.FORMATTED_DUEAMOUNT);
 
-                    List<T> targetMap = (List<T>)JSON.parseArray(objMap.get(item).values().toString(), t.getClass());
+            objMap.keySet().forEach(item -> {
+                if (!defaultSet.contains(item)) {
+
+                    List<T> targetMap = (List<T>) JSON.parseArray(objMap.get(item).values().toString(), t.getClass());
                     resultList.addAll(targetMap);
                 }
             });
@@ -283,7 +284,6 @@ public class SellsyServiceImpl implements SellsyService {
         }
 
         try {
-
             List<Map<String, T>> mapList =
                 (List<Map<String, T>>)JSONArray.parse(sellsyGeneralResult.getResult().extractResponseList().toString());
             for (Map<String, T> item : mapList) {
@@ -322,14 +322,26 @@ public class SellsyServiceImpl implements SellsyService {
             t = JSON.parseObject(sellsyGeneralResult.getResult().toString(), (Type) t.getClass());
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return t;
     }
 
     /**
+     *  处理 {"payment":{"payid":10476396,"doctype":"invoice","docid":20109028}} 结构
+     * @param sellsyGeneralResult
+     * @param t
+     * @return
+     */
+    @Override
+    public <T> T jsontoMapJavaObj(SellsyGeneralResult sellsyGeneralResult, T t) {
+        Map<String, String> map = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
+        return JSON.parseObject(map.get(0).toString(), (Type) t.getClass());
+    }
+
+    /**
      * 格式化 创建业务 返回的Id 问题
-     * 
+     *
      * @param sellsyGeneralResult
      * @return
      */
@@ -343,7 +355,7 @@ public class SellsyServiceImpl implements SellsyService {
             result = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return new SellsyIdResult(new ArrayList<>(result.values()).get(0));
     }

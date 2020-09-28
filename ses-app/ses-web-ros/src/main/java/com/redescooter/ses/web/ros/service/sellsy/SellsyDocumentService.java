@@ -8,9 +8,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyCreateDocumentPaymentResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryDocumentPaymentOneResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -55,7 +53,7 @@ public interface SellsyDocumentService {
      * @param enter
      * @return
      */
-    public SellsyIdResult deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter);
+    public DeleteDocumentPaymentReuslt deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter);
 
     /**
      * 获取指定付款记录
@@ -63,6 +61,13 @@ public interface SellsyDocumentService {
      * @return
      */
     public SellsyQueryDocumentPaymentOneResult queryDocumentPaymentOne(SellsyQueryDocumentPaymentEnter enter);
+
+    /**
+     * 付款记录 查询
+     * @param enter
+     * @return
+     */
+    public List<SellsyQueryDocumentPaymentListEnter> queryDocumentPaymentList(QueryDocumentPaymentListEnter enter);
 
 
     /**

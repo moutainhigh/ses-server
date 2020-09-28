@@ -9,11 +9,15 @@ package com.redescooter.ses.web.ros.constant;
  */
 public interface SellsyConstant {
 
-    String status="status";
+    String status = "status";
 
     String DEFAULT = "default";
 
+    String DUEAMOUNT = "dueAmount";
+
+    String FORMATTED_DUEAMOUNT = "formatted_dueAmount";
+
     String NO_PARAMETER = "";
-  
-    
+
+
 }

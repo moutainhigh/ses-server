@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyCreateDocumentPaymentResult;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
 import lombok.extern.log4j.Log4j2;
@@ -600,7 +601,8 @@ public class SesWebRosApplicationTests {
                 .doctype(SellsyDocmentTypeEnums.invoice.getCode())
                 .docid(sellsyInvoiceTotal.getDef2())
                 .build();
-        sellsyDocumentService.createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+        SellsyCreateDocumentPaymentResult documentPayment = sellsyDocumentService.createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+        System.out.println(documentPayment);
     }
 
     @Test

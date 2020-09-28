@@ -30,9 +30,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyCreateDocumentPaymentResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
-import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryDocumentPaymentOneResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -651,13 +649,13 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
      * @return
      */
     @Override
-    public SellsyIdResult deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter) {
+    public DeleteDocumentPaymentReuslt deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
                 SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_DeletePayment).params(enter)
                         .SellsyMethodType(SellsyMethodTypeEnums.DELETE.getValue()).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
 
-        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
+        return sellsyService.jsontoMapJavaObj(sellsyGeneralResult, new DeleteDocumentPaymentReuslt());
     }
 
     /**
@@ -671,8 +669,21 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetPayment).params(enter)
                         .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-
         return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyQueryDocumentPaymentOneResult());
+    }
+
+    /**
+     * 付款记录 查询
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SellsyQueryDocumentPaymentListEnter> queryDocumentPaymentList(QueryDocumentPaymentListEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetPaymentList).params(enter)
+                        .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyQueryDocumentPaymentListEnter());
     }
 
     @Override
@@ -1002,7 +1013,10 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public GeneralResult checkDocumentExist(IdEnter enter) {
         // 查询发票数据
         List<SellsyInvoiceTotal> sellsyInvoiceList = sellsyInvoiceTotalService.list(new
-                LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.Y.getValue()).last("limit " + String.valueOf(enter.getId())));
+                LambdaQueryWrapper<SellsyInvoiceTotal>()
+                .eq(SellsyInvoiceTotal::getDef1, SellsyBooleanEnums.Y.getValue())
+                .eq(SellsyInvoiceTotal::getType, "2")
+                .last("limit " + String.valueOf(enter.getId())));
         if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
             log.info("------------无新发票 无需校验-------------");
             return null;
@@ -1015,7 +1029,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     .builder()
                     .search(SellsyDocumentSearchListEnter.builder().ident(item.getInvoiceNum()).build())
                     .doctype(SellsyDocmentTypeEnums.invoice)
-                    .pagination(new SellsyCommonPaginationEnter(1, 1))
+                    .pagination(new SellsyCommonPaginationEnter(1, 3))
                     .build();
 
             List<SellsyDocumentListResult> sellsyDocumentListResults = queryDocumentList(sellsyDocumentListEnter);
@@ -1028,21 +1042,23 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     item.setDef1("1");
                     item.setDef2(sellsyDocumentListResultList.get(0).getId());
                 }
+                if (sellsyDocumentListResultList.size() > 1) {
+                    item.setDef1("6");
+                }
+            } else {
+                SellsyDocumentOneEnter sellsyDocumentOneEnter = new SellsyDocumentOneEnter();
+                sellsyDocumentOneEnter.setDoctype(SellsyDocmentTypeEnums.invoice.getCode());
+                sellsyDocumentOneEnter.setDocid(Integer.valueOf(item.getDef2()));
+                JSONObject jsonObject = queryDocumentOne(sellsyDocumentOneEnter);
+                if (!StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
+                    item.setDef1("N");
+                }
+                if (StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
+                    item.setDef1("1");
+                    //item.setDef2();
+                }
+
             }
-//            else {
-//                SellsyDocumentOneEnter sellsyDocumentOneEnter = new SellsyDocumentOneEnter();
-//                sellsyDocumentOneEnter.setDoctype(SellsyDocmentTypeEnums.invoice.getCode());
-//                sellsyDocumentOneEnter.setDocid(Integer.valueOf(item.getDef2()));
-//                JSONObject jsonObject = queryDocumentOne(sellsyDocumentOneEnter);
-//                if (!StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
-//                    item.setDef1("N");
-//                }
-//                if (StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
-//                    item.setDef1("1");
-//                    //item.setDef2();
-//                }
-//
-//            }
             sellsyInvoiceTotalService.updateById(item);
             log.info("--------------单据号{}--休眠一秒-------", item.getInvoiceNum());
         });
@@ -1147,7 +1163,10 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public GeneralResult checkDocumentTTCFile(IdEnter enter) {
         // 查询发票数据
         List<SellsyInvoiceTotal> sellsyInvoiceList = sellsyInvoiceTotalService.list(new
-                LambdaQueryWrapper<SellsyInvoiceTotal>().eq(SellsyInvoiceTotal::getDef1, '1').last("limit " + String.valueOf(enter.getId())));
+                LambdaQueryWrapper<SellsyInvoiceTotal>()
+                .eq(SellsyInvoiceTotal::getDef1, 'Y')
+                .eq(SellsyInvoiceTotal::getType, "2")
+                .last("limit " + String.valueOf(enter.getId())));
         if (CollectionUtils.isEmpty(sellsyInvoiceList)) {
             log.info("------------无新发票 无需校验-------------");
             return null;

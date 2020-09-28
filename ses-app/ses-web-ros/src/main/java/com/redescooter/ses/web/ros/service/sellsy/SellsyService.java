@@ -78,6 +78,16 @@ public interface SellsyService {
     public <T> T jsontoJavaObj(SellsyGeneralResult sellsyGeneralResult, T t);
 
     /**
+     *  处理 {"payment":{"payid":10476396,"doctype":"invoice","docid":20109028}} 结构
+     * @param sellsyGeneralResult
+     * @param t
+     * @param <T>
+     * @return
+     */
+    public <T> T jsontoMapJavaObj(SellsyGeneralResult sellsyGeneralResult, T t);
+
+
+    /**
      *  格式化 创建业务 返回的Id 问题
      * @param sellsyGeneralResult
      * @return
