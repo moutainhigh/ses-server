@@ -76,7 +76,15 @@ public interface ThirdValidationExceptionCode extends ValidationExceptionCode{
     int SELLSY_BRIEFCASES_MODEL_IS_EMPTY = 11021;
 
     //产品价格单位
-    int SELLSY_PRODUCT_UNIT_IS_EMPTY=11022;
+    int SELLSY_PRODUCT_UNIT_IS_EMPTY = 11022;
 
+    //文档类型为空
+    int SELLSY_DOCUMENT_PAY_TIME_IS_EMPTY = 11023;
+
+    //订单编号为空
+    int SELLSY_DOCUMENT_IDENT_IS_EMPTY = 11024;
+
+    //支付Id 为空
+    int SELLSY_DOCUMENT_PAYMENT_ID_IS_EMPTY = 11025;
 
 }

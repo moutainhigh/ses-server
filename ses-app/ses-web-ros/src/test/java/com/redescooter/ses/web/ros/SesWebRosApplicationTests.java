@@ -22,9 +22,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.briefcase.SellsyBriefcasesUploadFileEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.catalogue.*;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.client.*;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyRowEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentInvoidSatusEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
@@ -46,6 +44,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -561,6 +560,43 @@ public class SesWebRosApplicationTests {
                         .build();
         SellsyBriefcaseUploadFileResult sellsyBriefcaseUploadFileResult = briefcasesService.briefcasesUploadFile(enter, null);
         log.info(sellsyBriefcaseUploadFileResult);
+    }
+
+    @Test
+    public void createPayment() {
+        SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
+                .builder()
+                .date(new Timestamp(new Date().getTime() / 1000))
+                .amount("372")
+                .medium(3497466)
+                .ident("FAC00001444")
+                .notes("测试")
+                .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                .docid("20109028")
+                .build();
+        sellsyDocumentService.createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+    }
+
+    @Test
+    public void deletePayment() {
+        SellsyDeletePaymentEnter deletePaymentEnter = SellsyDeletePaymentEnter
+                .builder()
+                .docid(20109028)
+                .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                .payid(10173692)
+                .build();
+        sellsyDocumentService.deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(deletePaymentEnter));
+    }
+
+    @Test
+    public void queryPayment() {
+        SellsyQueryDocumentPaymentEnter deletePaymentEnter = SellsyQueryDocumentPaymentEnter
+                .builder()
+                .docid(20109028)
+                .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                .payid(10173692)
+                .build();
+        sellsyDocumentService.queryDocumentPaymentOne(deletePaymentEnter);
     }
 }
 

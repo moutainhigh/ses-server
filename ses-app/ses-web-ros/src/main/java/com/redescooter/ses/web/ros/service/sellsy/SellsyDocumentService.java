@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyClientServiceCreateDocumentEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyImportExcelResult;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentListEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyDocumentOneEnter;
-import com.redescooter.ses.web.ros.vo.sellsy.enter.document.SellsyUpdateDocumentStatusEnter;
+import com.redescooter.ses.web.ros.vo.sellsy.enter.document.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyExcleData;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyIdResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyCreateDocumentPaymentResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryDocumentPaymentOneResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -43,15 +42,28 @@ public interface SellsyDocumentService {
      */
     public SellsyIdResult createDocument(SellsyClientServiceCreateDocumentEnter enter);
 
+
     /**
-     * 文件更新
+     * 创建付款
      * @param enter
      * @return
      */
-    public SellsyIdResult updateDocument(SellsyExecutionEnter enter);
+    public SellsyCreateDocumentPaymentResult createDocumentPayment(SellsyCreateDocumentPaymentEnter enter);
 
+    /**
+     * 创建文档付款状态
+     * @param enter
+     * @return
+     */
+    public SellsyIdResult deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter);
 
-    //public void deleteDocument()；
+    /**
+     * 获取指定付款记录
+     * @param enter
+     * @return
+     */
+    public SellsyQueryDocumentPaymentOneResult queryDocumentPaymentOne(SellsyQueryDocumentPaymentEnter enter);
+
 
     /**
      * 更新单据状态

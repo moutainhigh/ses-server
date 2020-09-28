@@ -95,8 +95,8 @@ public class SellsyServiceImpl implements SellsyService {
             // 异常处理
             log.info("--------------出错了-----------");
 //            sellsyExceptionService(enter, e);
-//            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
-//                    ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
+            throw new SesWebRosException(ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getCode(),
+                    ThirdExceptionCodeEnums.SELLSY_CALL_FAILED.getMessage());
         }
         return sellsyGeneralResult;
     }

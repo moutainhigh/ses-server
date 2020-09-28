@@ -30,7 +30,9 @@ import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
 import com.redescooter.ses.web.ros.vo.sellsy.result.briefcases.SellsyBriefcaseUploadFileResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.catalogue.SellsyCatalogueResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.client.SellsyClientResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyCreateDocumentPaymentResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyDocumentListResult;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryDocumentPaymentOneResult;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -125,12 +127,13 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public JSONObject queryDocumentOne(SellsyDocumentOneEnter enter) {
         SellsyExecutionEnter sellsyExecutionEnter =
                 SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetOne).params(enter)
-                        .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue()).build();
+                        .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         log.info("-------------result结果返回值{}--------------------", sellsyGeneralResult.getResult().toString());
 
         return JSONObject.parseObject(sellsyGeneralResult.getResult().toString());
     }
+
 
     /**
      * 发票创建
@@ -303,21 +306,6 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
 
         return sellsyService.jsonCreateResut(sellsyGeneralResult);
     }
-
-    /**
-     * 文件更新
-     * @param enter
-     * @return
-     */
-    @Transactional
-    @Override
-    public SellsyIdResult updateDocument(SellsyExecutionEnter enter) {
-
-        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(enter);
-
-        return sellsyService.jsonCreateResut(sellsyGeneralResult);
-    }
-
     /**
      * 产品行 封装
      *
@@ -644,6 +632,46 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
         });
         return result;
+    }
+
+    @Override
+    public SellsyCreateDocumentPaymentResult createDocumentPayment(SellsyCreateDocumentPaymentEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_CreatePayment).params(enter)
+                        .SellsyMethodType(SellsyMethodTypeEnums.ADD.getValue()).build();
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyCreateDocumentPaymentResult());
+    }
+
+    /**
+     * 创建文档付款状态
+     * @param enter
+     * @return
+     */
+    @Override
+    public SellsyIdResult deleteDocumentPayment(SellsyDeleteDocumentPaymentEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_DeletePayment).params(enter)
+                        .SellsyMethodType(SellsyMethodTypeEnums.DELETE.getValue()).build();
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyIdResult());
+    }
+
+    /**
+     * 获取指定付款记录
+     * @param enter
+     * @return
+     */
+    @Override
+    public SellsyQueryDocumentPaymentOneResult queryDocumentPaymentOne(SellsyQueryDocumentPaymentEnter enter) {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetPayment).params(enter)
+                        .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+
+        return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyQueryDocumentPaymentOneResult());
     }
 
     @Override
@@ -980,24 +1008,11 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         sellsyInvoiceList.forEach(item -> {
 
             log.info("---------单据号{}----------", item.getInvoiceNum());
-
-//            if (StringUtils.isNotBlank(item.getDef2())){
-//                SellsyDocumentOneEnter sellsyDocumentOneEnter = new SellsyDocumentOneEnter();
-//                sellsyDocumentOneEnter.setDoctype(SellsyDocmentTypeEnums.invoice.getCode());
-//                sellsyDocumentOneEnter.setDocid(Integer.valueOf(item.getDef2()));
-//                JSONObject jsonObject = queryDocumentOne(sellsyDocumentOneEnter);
-//                if (!StringUtils.equals((String)jsonObject.get("ident"),item.getInvoiceNum())){
-//                    item.setDef1("2");
-//                    //createDcumentTotalOne(new IdEnter(enter.getId()));
-//                }
-//                if (StringUtils.equals((String)jsonObject.get("ident"),item.getInvoiceNum())){
-//                    item.setDef1("1");
-//                }
-//            }
             SellsyDocumentListEnter sellsyDocumentListEnter = SellsyDocumentListEnter
                     .builder()
                     .search(SellsyDocumentSearchListEnter.builder().ident(item.getInvoiceNum()).build())
                     .doctype(SellsyDocmentTypeEnums.invoice)
+                    .pagination(new SellsyCommonPaginationEnter(1, 1))
                     .build();
 
             List<SellsyDocumentListResult> sellsyDocumentListResults = queryDocumentList(sellsyDocumentListEnter);
@@ -1006,27 +1021,25 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                     sellsyDocumentListResults.stream().filter(doc -> StringUtils.equals(doc.getIdent(), item.getInvoiceNum())).collect(Collectors.toList());
 
             if (CollectionUtils.isNotEmpty(sellsyDocumentListResultList)) {
-                if (sellsyDocumentListResultList.size() == 2) {
-                    log.info("--------------单据重复{}-------", item.getInvoiceNum());
-                    item.setDef1("6");
-                }
                 if (sellsyDocumentListResultList.size() == 1 && StringUtils.equals(sellsyDocumentListResultList.get(0).getIdent(), item.getInvoiceNum())) {
                     item.setDef1("1");
                     item.setDef2(sellsyDocumentListResultList.get(0).getId());
                 }
-            } else {
-                SellsyDocumentOneEnter sellsyDocumentOneEnter = new SellsyDocumentOneEnter();
-                sellsyDocumentOneEnter.setDoctype(SellsyDocmentTypeEnums.invoice.getCode());
-                sellsyDocumentOneEnter.setDocid(Integer.valueOf(item.getDef2()));
-                JSONObject jsonObject = queryDocumentOne(sellsyDocumentOneEnter);
-                if (!StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
-                    item.setDef1("N");
-                }
-                if (StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
-                    item.setDef1("1");
-                }
-
             }
+//            else {
+//                SellsyDocumentOneEnter sellsyDocumentOneEnter = new SellsyDocumentOneEnter();
+//                sellsyDocumentOneEnter.setDoctype(SellsyDocmentTypeEnums.invoice.getCode());
+//                sellsyDocumentOneEnter.setDocid(Integer.valueOf(item.getDef2()));
+//                JSONObject jsonObject = queryDocumentOne(sellsyDocumentOneEnter);
+//                if (!StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
+//                    item.setDef1("N");
+//                }
+//                if (StringUtils.equals((String) jsonObject.get("ident"), item.getInvoiceNum())) {
+//                    item.setDef1("1");
+//                    //item.setDef2();
+//                }
+//
+//            }
             sellsyInvoiceTotalService.updateById(item);
             log.info("--------------单据号{}--休眠一秒-------", item.getInvoiceNum());
         });
