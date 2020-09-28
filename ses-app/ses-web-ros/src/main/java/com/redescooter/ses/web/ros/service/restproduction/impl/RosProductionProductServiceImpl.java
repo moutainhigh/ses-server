@@ -642,7 +642,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
                     ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
-            if (!opeProductionScooterBom.getEffectiveDate().before(new Date())) {
+            if (opeProductionScooterBom.getEffectiveDate().before(new Date())) {
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
