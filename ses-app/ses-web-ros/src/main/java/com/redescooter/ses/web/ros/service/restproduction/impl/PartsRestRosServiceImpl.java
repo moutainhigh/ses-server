@@ -183,7 +183,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     public boolean checkMsgPer(RosPartsSaveOrUpdateEnter rosPartsSaveOrUpdateEnter){
         boolean falg = false;
         if(!Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getPartsNo()) && rosPartsSaveOrUpdateEnter.getPartsSec() != null && rosPartsSaveOrUpdateEnter.getPartsType() != null && rosPartsSaveOrUpdateEnter.getSnClass() != null &&
-                rosPartsSaveOrUpdateEnter.getIdCalss() != null && rosPartsSaveOrUpdateEnter.getSupplierId() != null && rosPartsSaveOrUpdateEnter.getProcurementCycle() != null && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getCnName()) &&
+                rosPartsSaveOrUpdateEnter.getIdCalss() != null && rosPartsSaveOrUpdateEnter.getSupplierId() != null  && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getCnName()) &&
                 !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getEnName())){
             // 上面这些都不为空的时候  才是true
             falg = true;
@@ -216,9 +216,15 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             if(CollectionUtils.isEmpty(updateList)){
                 throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
+            // 要发布的
+            List<OpeProductionParts> partsList = new ArrayList<>();
+            // 要删除的草稿
+            List<Long> deleteList = new ArrayList<>();
             for (OpeProductionPartsDraft partsDraft : updateList) {
                 for (RosPartsSaveOrUpdateEnter partsSaveOrUpdateEnter : enters) {
-                     if (partsDraft.getId().equals(partsSaveOrUpdateEnter.getId())){
+                    // 如果是传空  也认为是修改
+                    Integer isAnnoun = partsSaveOrUpdateEnter.getIsAnnoun()== null?0:partsSaveOrUpdateEnter.getIsAnnoun();
+                     if (partsDraft.getId().equals(partsSaveOrUpdateEnter.getId()) && isAnnoun.equals(0)){
                          partsDraft.setPartsNo(partsSaveOrUpdateEnter.getPartsNo());
                          partsDraft.setPartsSec(partsSaveOrUpdateEnter.getPartsSec());
                          partsDraft.setPartsType(partsSaveOrUpdateEnter.getPartsType());
@@ -242,10 +248,43 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                              partsDraft.setPerfectFlag(false);
                          }
                          partsDraft.setUpdatedBy(enter.getUserId());
+                         break;
+                     }else if (partsDraft.getId().equals(partsSaveOrUpdateEnter.getId()) && isAnnoun.equals(1)){
+                         // 这个时候是修改完发布
+                         if (!checkMsgPer(partsSaveOrUpdateEnter)) {
+                             throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());
+                         }
+                         // 如果是发布 判断这次的部件号是否重复
+                         Set<String> partsNos = enters.stream().map(RosPartsSaveOrUpdateEnter::getPartsNo).collect(Collectors.toSet());
+                         // 如果部件编号的list长度不等于传进来的数组长度  说明部件号有重复的
+                         if(partsNos.size() != enters.size()){
+                             throw new SesWebRosException(ExceptionCodeEnums.PARTS_NO_REPEAT.getCode(), ExceptionCodeEnums.PARTS_NO_REPEAT.getMessage());
+                         }
+                         OpeProductionParts parts = new OpeProductionParts();
+                         BeanUtils.copyProperties(partsSaveOrUpdateEnter, parts);
+                         parts.setAnnounUserId(enter.getUserId());
+                         parts.setCreatedBy(enter.getUserId());
+                         parts.setUpdatedBy(enter.getUserId());
+                         parts.setCreatedTime(new Date());
+                         parts.setUpdatedTime(new Date());
+                         parts.setDwg(partsSaveOrUpdateEnter.getDwg());
+                         parts.setAnnounUserId(enter.getUserId());
+                         parts.setOpAnnounUserId(enter.getUserId());
+                         parts.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
+                         partsList.add(parts);
+                         // 发布之后 草稿要删除
+                         deleteList.add(partsDraft.getId());
+                         break;
                      }
                 }
             }
             opeProductionPartsDraftService.updateBatchById(updateList);
+            if(CollectionUtils.isNotEmpty(partsList)){
+                opeProductionPartsService.saveOrUpdateBatch(partsList);
+            }
+            if(CollectionUtils.isNotEmpty(deleteList)){
+                opeProductionPartsDraftService.removeByIds(deleteList);
+            }
         }
         return new GeneralResult(enter.getRequestId());
     }
