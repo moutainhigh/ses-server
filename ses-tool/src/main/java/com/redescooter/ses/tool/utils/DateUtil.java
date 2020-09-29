@@ -927,12 +927,4 @@ public class DateUtil {
     }
 
 
-    public static void main(String[] args) {
-        String code = "RT20201213012";
-        Integer i = Integer.parseInt(code.substring(code.length() - 3));
-        i ++;
-        code = "RT"+DateUtil.getSimpleDateStamp()+ String.format("%3d", i).replace(" ", "0");
-        System.out.println(code);
-    }
-
 }
