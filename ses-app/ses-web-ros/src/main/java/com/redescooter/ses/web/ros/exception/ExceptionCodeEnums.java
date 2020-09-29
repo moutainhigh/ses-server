@@ -382,6 +382,16 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
+    GROUP_NOT_EXIST(10183, "分组不存在"),
+
+    GROUP_BE_USED(10184, "分组已经被使用，不能删除"),
+
+    DEF_NOT_NULL(10185, "自定义项不能为空"),
+
+    DEF_NUM_ERROR(10186, "自定义项最多8个"),
+
+    SPECIFICAT_TYPE_NOT_EXIST(10187, "规格类型不存在"),
+
     ;
 
 

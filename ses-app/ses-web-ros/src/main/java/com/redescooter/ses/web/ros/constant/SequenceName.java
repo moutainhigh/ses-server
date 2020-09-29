@@ -124,4 +124,12 @@ public interface SequenceName {
     String OPE_SALE_AREA = "OPE_SALE_AREA";
 
     String OPE_SYS_POSITION = "OPE_SYS_POSITION";
+
+    String OPE_SPECIFICAT_TYPE = "OPE_SPECIFICAT_TYPE";
+
+    String OPE_SPECIFICAT_GROUP = "OPE_SPECIFICAT_GROUP";
+
+    String OPE_COLOR = "OPE_COLOR";
+
+    String OPE_SPECIFICAT_DEF = "OPE_SPECIFICAT_DEF";
 }

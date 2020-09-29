@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper">
+
+
+    <select id="listNum" resultType="int">
+        select count(*) from ope_specificat_type tp where tp.dr = 0
+        <include refid="groupListCondition">
+        </include>
+    </select>
+
+    <sql id="groupListCondition">
+        <if test="enter.groupId != null">
+            and tp.group_id = #{enter.groupId}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and tp.specificat_name like concat('%', #{enter.keyword}, '%') or
+            tp.specificat_code like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="specificatTypeList" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListResult">
+       select
+        tp.id,
+        tp.specificat_name,
+        tp.specificat_code,
+        tp.created_time,
+        tp.updated_time,
+        gp.group_name,
+        staff1.full_name as createdName,
+        staff2.full_name as updatedName
+       from ope_specificat_type tp
+       left join ope_sys_staff staff1 on tp.created_by = staff1.id
+       left join ope_sys_staff staff2 on tp.updated_by = staff2.id
+       left join ope_specificat_group gp on gp.id = tp.group_id
+       where tp.dr = 0
+        <include refid="groupListCondition">
+        </include>
+        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <select id="specificatTypeDetail" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult">
+        select
+         tp.id,
+         tp.specificat_name,
+         tp.specificat_code,
+         tp.created_time,
+         tp.updated_time,
+         tp.group_id,
+         gp.group_name,
+         staff1.full_name as createdName,
+         staff2.full_name as updatedName
+        from ope_specificat_type tp
+       left join ope_sys_staff staff1 on tp.created_by = staff1.id
+       left join ope_sys_staff staff2 on tp.updated_by = staff2.id
+       left join ope_specificat_group gp on gp.id = tp.group_id
+       where tp.id = #{id}
+    </select>
+
+</mapper>
