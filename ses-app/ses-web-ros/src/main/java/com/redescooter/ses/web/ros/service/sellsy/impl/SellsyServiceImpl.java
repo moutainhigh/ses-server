@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.config.SellsyConfig;
-import com.redescooter.ses.web.ros.constant.SellsyConstant;
 import com.redescooter.ses.web.ros.dm.SellsyException;
 import com.redescooter.ses.web.ros.enums.sellsy.DefultFiledEnums;
 import com.redescooter.ses.web.ros.enums.sellsy.SellsyBooleanEnums;
@@ -35,7 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:SellsyServiceImpl
@@ -248,17 +250,9 @@ public class SellsyServiceImpl implements SellsyService {
             if (CollectionUtil.isEmpty(objMap)) {
                 return resultList;
             }
-            Set<String> defaultSet = new HashSet<>();
-            defaultSet.add(SellsyConstant.DEFAULT);
-            defaultSet.add(SellsyConstant.DUEAMOUNT);
-            defaultSet.add(SellsyConstant.FORMATTED_DUEAMOUNT);
-
             objMap.keySet().forEach(item -> {
-                if (!defaultSet.contains(item)) {
-
                     List<T> targetMap = (List<T>) JSON.parseArray(objMap.get(item).values().toString(), t.getClass());
                     resultList.addAll(targetMap);
-                }
             });
 
         } catch (Exception e) {

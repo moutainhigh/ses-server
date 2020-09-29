@@ -118,4 +118,11 @@ public interface SellsyDocumentService {
      * @return
      */
     GeneralResult checkDocumentTTCFile(IdEnter enter);
+
+    /**
+     * 发票状态
+     * @param enter
+     * @return
+     */
+    GeneralResult checkDocumentStatus(IdEnter enter);
 }

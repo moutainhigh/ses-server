@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sellsy.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -683,7 +684,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 SellsyExecutionEnter.builder().method(SellsyMethodConstant.Document_GetPaymentList).params(enter)
                         .SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue()).build();
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
-        return sellsyService.jsonChildFormatting(sellsyGeneralResult, new SellsyQueryDocumentPaymentListEnter());
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyQueryDocumentPaymentListEnter());
     }
 
     @Override
@@ -1183,6 +1184,52 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyInvoiceTotalService.updateById(item);
 
         });
+        return null;
+    }
+
+    /**
+     * 发票状态
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult checkDocumentStatus(IdEnter enter) {
+        QueryWrapper<SellsyInvoiceTotal> sellsyInvoiceTotalQueryWrapper = new QueryWrapper<>();
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_TYPE, '2');
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_DEF1, '1');
+        sellsyInvoiceTotalQueryWrapper.last("limit " + enter.getId());
+        List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list(sellsyInvoiceTotalQueryWrapper);
+        if (CollectionUtils.isEmpty(sellsyInvoiceTotalList)) {
+            log.info("---------无新订单无需更新-----------");
+            return null;
+        }
+        for (SellsyInvoiceTotal item : sellsyInvoiceTotalList) {
+
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
+
+            }
+            if () {
+
+            }
+            if () {
+
+            }
+            /**
+             * Annulée 取消
+             * Réglée 已付款
+             * Validée 未付款 已确定
+             *
+             * A régler 未付款 已确定
+             * Annulé 取消
+             * Payé 已付款
+             *
+             * brouillon=proforma
+             * annulee=Annule
+             * a regler=validee
+             * paye=reglee
+             */
+
+        }
         return null;
     }
 
