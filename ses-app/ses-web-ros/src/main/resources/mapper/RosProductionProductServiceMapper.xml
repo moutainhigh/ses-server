@@ -40,7 +40,7 @@
 
     <sql id="where_combinationList">
         where bom.dr=0
-        and  bom.bom_status in (#{active},#{toBeActiveValue}})
+        and  bom.bom_status in (#{active},#{toBeActiveValue})
         <if test="enter.status != null">
             and  bom.bom_status=#{enter.status}
         </if>
