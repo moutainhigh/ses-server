@@ -39,7 +39,7 @@
         select
            gp.id,
            gp.group_name,
-           gp.production_type,
+           gp.production_type
         from ope_specificat_group gp
         where gp.dr = 0
     </select>
