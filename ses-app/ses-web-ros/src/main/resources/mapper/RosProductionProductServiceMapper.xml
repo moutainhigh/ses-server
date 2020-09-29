@@ -20,7 +20,7 @@
 
     <sql id="where_scooterBomList">
         where bom.dr=0
-        and  bom.bom_status in (#{activeStatus},#{toBeActive}})
+        and  bom.bom_status in (#{activeStatus},#{toBeActive})
         <if test="enter.status != null">
             and bom.bom_status=#{enter.status}
         </if>
