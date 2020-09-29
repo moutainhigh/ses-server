@@ -1163,7 +1163,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
 
         int versionNum = 0;
+        String result = null;
         for (String item : stringList) {
+            if (StringUtils.isEmpty(item)) {
+                continue;
+            }
             // 版本号累加
             char[] versionChar = item.toCharArray();
             String versionString = Character.toString(versionChar[versionChar.length - 2])
@@ -1171,9 +1175,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             Integer versionInteger = Integer.valueOf(versionString);
             if (versionNum == 0 || versionNum < versionInteger) {
                 versionNum = versionInteger;
+                result = item;
             }
         }
-        return String.valueOf(versionNum);
+        return result;
     }
 
     private String getVersionNum(String version) {
