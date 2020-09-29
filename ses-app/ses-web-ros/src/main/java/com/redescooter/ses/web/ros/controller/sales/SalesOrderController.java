@@ -41,13 +41,13 @@ public class SalesOrderController {
     }
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "订单列表", response = GeneralResult.class)
+    @ApiOperation(value = "订单列表", response = SalesOrderListResult.class)
     public Response<PageResult<SalesOrderListResult>> list(@ModelAttribute @ApiParam("请求参数") SalesOrderEnter enter) {
         return new Response<>(salesOrderServer.list(enter));
     }
 
     @PostMapping(value = "/details/{id}")
-    @ApiOperation(value = "订单详情", response = GeneralResult.class)
+    @ApiOperation(value = "订单详情", response = SalesOrderDetailsResult.class)
     public Response<SalesOrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter, @PathVariable("id") Long id) {
         return new Response<>(salesOrderServer.details(enter, id));
     }
