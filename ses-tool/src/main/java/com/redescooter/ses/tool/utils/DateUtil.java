@@ -914,4 +914,25 @@ public class DateUtil {
 
     }
 
+
+    /**
+     * @Author Aleks
+     * @Description  返回YYMMDD
+     * @Date  2020/9/29 12:03
+     * @Param []
+     * @return
+     **/
+    public static String getSimpleDateStamp() {
+        return getSimpleTimeStamp().replaceAll("-","");
+    }
+
+
+    public static void main(String[] args) {
+        String code = "RT20201213012";
+        Integer i = Integer.parseInt(code.substring(code.length() - 3));
+        i ++;
+        code = "RT"+DateUtil.getSimpleDateStamp()+ String.format("%3d", i).replace(" ", "0");
+        System.out.println(code);
+    }
+
 }

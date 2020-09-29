@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper;
@@ -71,7 +72,9 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setSpecificatName(enter.getSpecificatName());
         specificatType.setDr(0);
-        specificatType.setSpecificatCode("");
+        // 生成编码
+        String code = createTypeCode();
+        specificatType.setSpecificatCode(code);
         specificatType.setCreatedBy(enter.getUserId());
         specificatType.setCreatedTime(new Date());
         specificatType.setUpdatedBy(enter.getUserId());
@@ -84,6 +87,29 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         specificatDefService.saveSpecificatDef(enters,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  生成规格类型的编码 RTYYYYMMDD000
+     * @Date  2020/9/29 11:39
+     * @Param []
+     * @return
+     **/
+    public String createTypeCode(){
+        String code = "RT"+DateUtil.getSimpleDateStamp()+"000";
+        QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
+        qw.orderByDesc(OpeSpecificatType.COL_SPECIFICAT_CODE);
+        qw.last("limit 1");
+        OpeSpecificatType specificatType = opeSpecificatTypeService.getOne(qw);
+        if(specificatType != null && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())){
+            String oldCode = specificatType.getSpecificatCode();
+            Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 6));
+            i ++;
+            code = "RT"+DateUtil.getSimpleDateStamp()+String.format("%3d", i).replace(" ", "0");
+        }
+        return code;
     }
 
 
