@@ -650,6 +650,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             // 查询当前是否有生效中的Bomn 有的话 更新状态
             OpeProductionScooterBom avticeScooterBom =
                 opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
+                    .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
                     .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
             if (avticeScooterBom != null) {
                 avticeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
@@ -673,13 +674,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
                     ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
-            if (opeProductionCombinBom.getEffectiveDate().before(new Date())) {
+            if (!opeProductionCombinBom.getEffectiveDate().before(new Date())) {
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
 
             OpeProductionCombinBom avticeCombinBom =
                 opeProductionCombinBomService.getOne(new LambdaQueryWrapper<OpeProductionCombinBom>()
+                    .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBom.getBomNo())
                     .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
             if (avticeCombinBom != null) {
                 avticeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
@@ -954,7 +956,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             versionNum = getVersionNum(null);
         } else {
             versionIdentificat = opeProductionScooterBomList.get(0).getVersionIdentificat();
-            versionNum = getVersionNum(opeProductionScooterBomList.get(0).getVersoin());
+            versionNum = getVersionNum(getMaxVersionNum(opeProductionScooterBomList.stream()
+                .map(OpeProductionScooterBom::getVersoin).collect(Collectors.toList())));
         }
 
         OpeProductionScooterBom productionScooterBom = OpeProductionScooterBom.builder()
@@ -1100,7 +1103,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             versionNum = getVersionNum(null);
         } else {
             versionIdentificat = opeProductionCombinBomList.get(0).getVersionIdentificat();
-            versionNum = getVersionNum(opeProductionCombinBomList.get(0).getVersoin());
+            versionNum = getVersionNum(getMaxVersionNum(opeProductionCombinBomList.stream()
+                .map(OpeProductionCombinBom::getVersoin).collect(Collectors.toList())));
         }
 
         OpeProductionCombinBom opeProductionCombinBom = OpeProductionCombinBom.builder()
@@ -1150,6 +1154,26 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
             .effectiveDate(enter.getEffectiverDate()).colorId(enter.getColorId()).enName(enter.getEnName())
             .partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
+    }
+
+    private String getMaxVersionNum(List<String> stringList) {
+
+        if (CollectionUtils.isEmpty(stringList)) {
+            return null;
+        }
+
+        int versionNum = 0;
+        for (String item : stringList) {
+            // 版本号累加
+            char[] versionChar = item.toCharArray();
+            String versionString = Character.toString(versionChar[versionChar.length - 2])
+                + Character.toString(versionChar[versionChar.length - 1]);
+            Integer versionInteger = Integer.valueOf(versionString);
+            if (versionNum == 0 || versionNum < versionInteger) {
+                versionNum = versionInteger;
+            }
+        }
+        return String.valueOf(versionNum);
     }
 
     private String getVersionNum(String version) {

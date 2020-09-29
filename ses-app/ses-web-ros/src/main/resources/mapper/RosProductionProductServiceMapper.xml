@@ -13,7 +13,7 @@
         <if test="keyword != null and keyword != ''">
             and(
             draft.bom_no like concat ('%',#{keyword},'%') or
-            draft.enName like concat ('%',#{keyword},'%')
+            draft.en_name like concat ('%',#{keyword},'%')
             )
         </if>
     </sql>

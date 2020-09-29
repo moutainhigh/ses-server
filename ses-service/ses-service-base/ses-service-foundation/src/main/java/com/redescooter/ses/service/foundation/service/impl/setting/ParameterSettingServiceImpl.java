@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl.setting;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
@@ -169,12 +170,19 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      * @return
      */
     @Override
-    public List<ParameterGroupResultList> groupList(StringEnter enter) {
+    public List<ParameterGroupResultList> groupList(BooleanEnter enter) {
         List<ParameterGroupResultList> result = new ArrayList<>();
+        SystemTypeEnums systemTypeEnumsByCode = SystemTypeEnums.getSystemTypeEnumsByCode(enter.getSystemId());
+        if (systemTypeEnumsByCode == null) {
+            return result;
+        }
+
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSt());
-        queryWrapper.eq(PlaSysGroupSetting.COL_ENABLE, Boolean.TRUE);
-        List<PlaSysGroupSetting> list = plaSysGroupSettingService.list();
+        queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, systemTypeEnumsByCode.getValue());
+        if (enter.getDisable()) {
+            queryWrapper.eq(PlaSysGroupSetting.COL_ENABLE, Boolean.TRUE);
+        }
+        List<PlaSysGroupSetting> list = plaSysGroupSettingService.list(queryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             return result;
         }

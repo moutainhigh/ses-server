@@ -63,5 +63,5 @@ public interface RosParameterService {
      * @param enter
      * @return
      */
-    List<ParameterGroupResultList> groupList(GeneralEnter enter);
+    List<ParameterGroupResultList> groupList(BooleanEnter enter);
 }
