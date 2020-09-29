@@ -10,7 +10,7 @@ import java.util.List;
 public interface RosProductionProductServiceMapper {
     /**
      * 草稿列表统计
-     * 
+     *
      * @param enter
      * @return
      */
@@ -26,23 +26,29 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 车辆bom 列表
-     * 
+     *
      * @param enter
+     * @param activeStatus
+     * @param toBeActive
      * @return
      */
-    int scooterBomListCount(RosProductionScooterListEnter enter);
+    int scooterBomListCount(@Param("enter") RosProductionScooterListEnter enter,
+        @Param("activeStatus") Integer activeStatus, @Param("toBeActive") Integer toBeActive);
 
     /**
      * 车辆列表
      *
      * @param enter
+     * @param active
+     * @param toBeActiveValue
      * @return
      */
-    List<RosProductionScooterListResult> scooterBomList(RosProductionScooterListEnter enter);
+    List<RosProductionScooterListResult> scooterBomList(@Param("enter") RosProductionScooterListEnter enter,
+        @Param("active") Integer active, @Param("toBeActiveValue") Integer toBeActiveValue);
 
     /**
      * 组合草稿列表
-     * 
+     *
      * @param enter
      * @return
      */
@@ -50,7 +56,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 组合草稿列表
-     * 
+     *
      * @param enter
      * @return
      */
@@ -58,23 +64,29 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 组合列表统计
-     * 
+     *
      * @param enter
+     * @param active
+     * @param toBeActiveValue
      * @return
      */
-    int combinationListCount(RosProductionCombinationListEnter enter);
+    int combinationListCount(@Param("enter") RosProductionCombinationListEnter enter, @Param("active") Integer active,
+        @Param("toBeActiveValue") Integer toBeActiveValue);
 
     /**
      * 组合列表
-     * 
+     *
      * @param enter
+     * @param active
+     * @param toBeActiveValue
      * @return
      */
-    List<RosProductionCombinationListResult> combinationList(RosProductionCombinationListEnter enter);
+    List<RosProductionCombinationListResult> combinationList(@Param("enter") RosProductionCombinationListEnter enter,
+        @Param("active") Integer active, @Param("toBeActiveValue") Integer toBeActiveValue);
 
     /**
      * 部件查询统计
-     * 
+     *
      * @param enter
      * @return
      */
@@ -82,7 +94,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 部件查询列表
-     * 
+     *
      * @param enter
      * @return
      */
@@ -90,7 +102,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 车辆BOM版本列表
-     * 
+     *
      * @param bomNo
      * @return
      */
@@ -98,7 +110,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 查询组合版本号
-     * 
+     *
      * @param bomNo
      * @return
      */
@@ -106,7 +118,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 产品部件列表
-     * 
+     *
      * @param id
      * @param productTypeId
      * @return
@@ -116,7 +128,7 @@ public interface RosProductionProductServiceMapper {
 
     /**
      * 导入成功后查询部件信息
-     * 
+     *
      * @param collect
      * @return
      */

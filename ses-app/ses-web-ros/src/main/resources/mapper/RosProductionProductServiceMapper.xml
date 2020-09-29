@@ -20,34 +20,36 @@
 
     <sql id="where_scooterBomList">
         where bom.dr=0
-        <if test="status != null">
-            and bom.bom_status=#{status}
+        and  bom.bom_status in (#{activeStatus},#{toBeActive}})
+        <if test="enter.status != null">
+            and bom.bom_status=#{enter.status}
         </if>
-        <if test="groupId != null">
-            and  bom.group_id=#{groupId}
+        <if test="enter.groupId != null">
+            and  bom.group_id=#{enter.groupId}
         </if>
-        <if test="colorId != null">
-            and bom.color_id=#{colorId}
+        <if test="enter.colorId != null">
+            and bom.color_id=#{enter.colorId}
         </if>
-        <if test="keyword != null and keyword != ''">
+        <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            bom.bom_no like  concat ('%',#{keyword},'%') or
-            bom.en_name like  concat ('%',#{keyword},'%')
+            bom.bom_no like  concat ('%',#{enter.keyword},'%') or
+            bom.en_name like  concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
 
     <sql id="where_combinationList">
         where bom.dr=0
-        <if test="status != null">
-            and  bom.bom_status=#{status}
+        and  bom.bom_status in (#{active},#{toBeActiveValue}})
+        <if test="enter.status != null">
+            and  bom.bom_status=#{enter.status}
         </if>
-        <if test="keyword != null and keyword != ''">
+        <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            bom.bom_no like concat ('%',#{keyword},'%') or
-            bom.en_name like concat ('%',#{keyword},'%') or
-            bom.fr_name like concat ('%',#{keyword},'%') or
-            bom.cn_name like concat ('%',#{keyword},'%')
+            bom.bom_no like concat ('%',#{enter.keyword},'%') or
+            bom.en_name like concat ('%',#{enter.keyword},'%') or
+            bom.fr_name like concat ('%',#{enter.keyword},'%') or
+            bom.cn_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -94,7 +96,7 @@
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
         order by bom.created_time desc
-        limit #{startRow},#{pageSize}
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
@@ -111,7 +113,7 @@
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
         order by bom.created_time desc
-        limit #{startRow},#{pageSize}
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="combinationDraftListCount" resultType="int">
@@ -169,7 +171,7 @@
         from ope_production_combin_bom bom
        <include refid="where_combinationList" />
         order by bom.created_time desc
-        limit #{startRow},#{pageSize}
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="productionProductPartListCount" resultType="int">
