@@ -298,4 +298,5 @@ sellsy:
   subject: DS-NS-2 scooters # 发票主题
   unit: 3534693 #计量单位 个
   tax-id: 3534687 #增值税税率
+  mediumId: 3534684 #现金支付
   download-url: /root/pdf/
