@@ -44,7 +44,7 @@ public interface RosProductionProductServiceMapper {
      * @return
      */
     List<RosProductionScooterListResult> scooterBomList(@Param("enter") RosProductionScooterListEnter enter,
-        @Param("active") Integer active, @Param("toBeActiveValue") Integer toBeActiveValue);
+        @Param("activeStatus") Integer active, @Param("toBeActive") Integer toBeActiveValue);
 
     /**
      * 组合草稿列表

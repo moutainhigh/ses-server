@@ -96,7 +96,6 @@
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
         order by bom.created_time desc
-        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
@@ -134,8 +133,8 @@
         select draft.id as id,
                draft.bom_no as  productNum,
                draft.procurement_cycle as productionCycle,
-               draft.cn_name as enName,
-               draft.en_name as cnName,
+               draft.cn_name as cnName,
+               draft.en_name as enName,
                draft.fr_name as frName,
                 draft.parts_qty as qty
         from ope_production_combin_bom_draft draft
