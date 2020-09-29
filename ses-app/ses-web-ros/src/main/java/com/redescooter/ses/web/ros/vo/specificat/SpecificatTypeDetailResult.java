@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.vo.specificat;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -47,7 +46,7 @@ public class SpecificatTypeDetailResult extends GeneralResult {
     private Date updatedTime;
 
     @ApiModelProperty("自定义项")
-    private List<SpecificatDefEnter> def;
+    private List<SpecificatDefResult> def;
 
 
 

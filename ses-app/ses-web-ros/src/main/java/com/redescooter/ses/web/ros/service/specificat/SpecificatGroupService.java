@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
@@ -66,7 +67,7 @@ public interface SpecificatGroupService {
      * @Param [enter]
      * @return
      **/
-    List<SpecificatGroupSaveOrEditEnter> specificatGroupData(GeneralEnter enter);
+    List<SpecificatGroupDataResult> specificatGroupData(GeneralEnter enter);
 
 
 }

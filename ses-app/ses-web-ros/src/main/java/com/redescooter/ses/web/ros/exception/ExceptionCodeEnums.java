@@ -392,6 +392,10 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_NOT_EXIST(10187, "规格类型不存在"),
 
+    COLOR_VALUE_NOT_NULL(10188, "色值不能为空"),
+
+    COLOR_VALUE_LENGTH_ERROR(10189, "色值长度错误"),
+
     ;
 
 

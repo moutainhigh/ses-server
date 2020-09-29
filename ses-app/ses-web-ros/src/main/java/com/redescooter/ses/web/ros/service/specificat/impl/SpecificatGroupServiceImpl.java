@@ -16,6 +16,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatGroupService;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
@@ -112,8 +113,8 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
 
 
     @Override
-    public List<SpecificatGroupSaveOrEditEnter> specificatGroupData(GeneralEnter enter) {
-        List<SpecificatGroupSaveOrEditEnter> result = new ArrayList<>();
+    public List<SpecificatGroupDataResult> specificatGroupData(GeneralEnter enter) {
+        List<SpecificatGroupDataResult> result = new ArrayList<>();
         result = specificatGroupServiceMapper.specificatGroupData();
         return result;
     }

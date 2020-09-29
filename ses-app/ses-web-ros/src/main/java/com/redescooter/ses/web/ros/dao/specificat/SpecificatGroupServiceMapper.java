@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.dao.specificat;
 
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,6 +20,6 @@ public interface SpecificatGroupServiceMapper {
 
     List<SpecificatGroupListResult> groupList(@Param("enter") SpecificatGroupListEnter enter);
 
-  List<SpecificatGroupSaveOrEditEnter> specificatGroupData();
+  List<SpecificatGroupDataResult> specificatGroupData();
 
 }

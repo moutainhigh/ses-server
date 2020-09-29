@@ -35,9 +35,9 @@
 
 
     <select id="specificatGroupData"
-            resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter">
+            resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
         select
-           gp.id,
+           gp.id as groupId,
            gp.group_name,
            gp.production_type
         from ope_specificat_group gp

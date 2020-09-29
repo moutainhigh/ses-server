@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.specificat;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatGroupService;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
@@ -58,8 +59,8 @@ public class SpecificatGroupController {
 
 
     @PostMapping(value = "/specificatGroupData")
-    @ApiOperation(value = "规格分组下拉数据源接口", response = SpecificatGroupSaveOrEditEnter.class)
-    public Response<List<SpecificatGroupSaveOrEditEnter>> specificatGroupData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @ApiOperation(value = "规格分组下拉数据源接口", response = SpecificatGroupDataResult.class)
+    public Response<List<SpecificatGroupDataResult>> specificatGroupData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(specificatGroupService.specificatGroupData(enter));
     }
 

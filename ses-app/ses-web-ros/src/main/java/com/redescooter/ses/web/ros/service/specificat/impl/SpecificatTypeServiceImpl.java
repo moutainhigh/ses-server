@@ -155,11 +155,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         result = specificatTypeServiceMapper.specificatTypeDetail(enter.getId());
         // 再找规格类型的自定义项
         List<OpeSpecificatDef> defs = specificatDefService.getDef(enter.getId());
-        List<SpecificatDefEnter> resultDefs = new ArrayList<>();
+        List<SpecificatDefResult> resultDefs = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(defs)){
             for (OpeSpecificatDef def : defs) {
-                SpecificatDefEnter specificatDefEnter = new SpecificatDefEnter();
+                SpecificatDefResult specificatDefEnter = new SpecificatDefResult();
                 BeanUtils.copyProperties(def,specificatDefEnter);
+                resultDefs.add(specificatDefEnter);
             }
         }
         result.setDef(resultDefs);
