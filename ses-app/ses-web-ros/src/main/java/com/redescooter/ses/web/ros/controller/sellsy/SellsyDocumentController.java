@@ -89,6 +89,13 @@ public class SellsyDocumentController {
         return new Response<>(documentService.checkDocumentStatus(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "checkDocumentPayment", response = GeneralResult.class)
+    @PostMapping(value = "/checkDocumentPayment")
+    public Response<GeneralResult> checkDocumentPayment(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(documentService.checkDocumentPayment(enter));
+    }
+
 
     @IgnoreLoginCheck
     @ApiOperation(value = "根据导入到数据库的数据批量创建发票", response = SellsyIdResult.class)

@@ -125,4 +125,18 @@ public interface SellsyDocumentService {
      * @return
      */
     GeneralResult checkDocumentStatus(IdEnter enter);
+
+    /**
+     * 校验付款记录
+     * @param enter
+     * @return
+     */
+    GeneralResult checkDocumentPayment(IdEnter enter);
+
+//    /**
+//     * 补全取消状态下的单据
+//     * @param enter
+//     * @return
+//     */
+//    GeneralResult checkCancelPayment(IdEnter enter);
 }
