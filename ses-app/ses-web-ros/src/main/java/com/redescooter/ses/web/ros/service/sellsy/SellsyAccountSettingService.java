@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.sellsy;
 
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryPayMediumListResult;
 
 import java.util.List;
 
@@ -119,4 +120,9 @@ public interface SellsyAccountSettingService {
      * @return
      */
     public SellsyCorpInfoResult queryCorpInfos();
+
+    /**
+     * 查询支付类型
+     */
+    public List<SellsyQueryPayMediumListResult> queryPayMediums();
 }

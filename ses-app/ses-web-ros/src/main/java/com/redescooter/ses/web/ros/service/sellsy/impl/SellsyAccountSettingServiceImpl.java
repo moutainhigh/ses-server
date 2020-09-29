@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyExecutionEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.SellsyGeneralResult;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryPayMediumListResult;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -294,5 +295,15 @@ public class SellsyAccountSettingServiceImpl implements SellsyAccountSettingServ
 
         SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
         return sellsyService.jsontoJavaObj(sellsyGeneralResult, new SellsyCorpInfoResult());
+    }
+
+    @Override
+    public List<SellsyQueryPayMediumListResult> queryPayMediums() {
+        SellsyExecutionEnter sellsyExecutionEnter =
+                SellsyExecutionEnter.builder().SellsyMethodType(SellsyMethodTypeEnums.QUERY.getValue())
+                        .method(SellsyMethodConstant.Accountdatas_GetPayMediums).params(SellsyConstant.NO_PARAMETER).build();
+
+        SellsyGeneralResult sellsyGeneralResult = sellsyService.sellsyExecution(sellsyExecutionEnter);
+        return sellsyService.jsonArrayFormatting(sellsyGeneralResult, new SellsyQueryPayMediumListResult());
     }
 }

@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sellsy.SellsyAccountSettingService;
 import com.redescooter.ses.web.ros.vo.sellsy.enter.SellsyIdEnter;
 import com.redescooter.ses.web.ros.vo.sellsy.result.account.*;
+import com.redescooter.ses.web.ros.vo.sellsy.result.document.SellsyQueryPayMediumListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -141,6 +142,14 @@ public class SellsyAccountController {
     @PostMapping(value = "/queryPackagingOne")
     public Response<SellsyPackagingResult> queryPackagingOne(@ModelAttribute @ApiParam("请求参数") SellsyIdEnter enter) {
         return new Response<>(sellsyAccountSettingService.queryPackagingOne(enter));
+    }
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "支付方式列表", response = SellsyQueryPayMediumListResult.class)
+    @PostMapping(value = "/queryPayMediums")
+    public Response<List<SellsyQueryPayMediumListResult>> queryPayMediums() {
+        return new Response<>(sellsyAccountSettingService.queryPayMediums());
     }
 
 }

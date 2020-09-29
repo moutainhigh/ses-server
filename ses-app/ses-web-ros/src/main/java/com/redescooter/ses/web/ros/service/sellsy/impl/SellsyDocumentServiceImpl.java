@@ -1192,6 +1192,23 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
      * @param enter
      * @return
      */
+
+    //查询指定发票
+
+    /**
+     * Annulée 取消
+     * Réglée 已付款
+     * Validée 未付款 已确定
+     *
+     * A régler 未付款 已确定
+     * Annulé 取消
+     * Payé 已付款
+     *
+     * brouillon=proforma
+     * annulee=Annule
+     * a regler=validee
+     * paye=reglee
+     */
     @Override
     public GeneralResult checkDocumentStatus(IdEnter enter) {
         QueryWrapper<SellsyInvoiceTotal> sellsyInvoiceTotalQueryWrapper = new QueryWrapper<>();
@@ -1205,30 +1222,90 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
         }
         for (SellsyInvoiceTotal item : sellsyInvoiceTotalList) {
 
+            //查询指定发票 先校验发票状态
+            JSONObject queryDocumentOne = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+            String status = String.valueOf(queryDocumentOne.get("step").toString());
+
+            SellsyUpdateDocumentStatusEnter sellsyUpdateDocumentStatusEnter = new SellsyUpdateDocumentStatusEnter();
+            sellsyUpdateDocumentStatusEnter.setDocid(Integer.valueOf(item.getDef2()));
+            SellsyUpdateDocumentInvoidSatusEnter sellsyUpdateDocumentInvoidSatusEnter = new SellsyUpdateDocumentInvoidSatusEnter();
+            sellsyUpdateDocumentInvoidSatusEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
             if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
-
+                if (!StringUtils.equals(SellsyDocumentInvoiceStatusEnums.cancelled.getCode(), status)) {
+                    sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.cancelled);
+                }
             }
-            if () {
-
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.NOT_RECEIVED.getCode())) {
+                if (!StringUtils.equals(SellsyDocumentInvoiceStatusEnums.due.getCode(), status)) {
+                    sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.due);
+                }
             }
-            if () {
-
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.RECEIVED.getCode())) {
+                //创建付款记录
+                if (StringUtils.equals(SellsyDocumentInvoiceStatusEnums.paid.getCode(), status)) {
+                    log.info("---------已付款 删除付款记录-----------");
+                    //查询付款记录
+                    List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentListEnterList =
+                            queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                    if (CollectionUtils.isNotEmpty(sellsyQueryDocumentPaymentListEnterList)) {
+                        //删除已存在的付款记录
+                        sellsyQueryDocumentPaymentListEnterList.forEach(payment -> {
+                            deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(new SellsyDeletePaymentEnter(Integer.valueOf(payment.getRelatedId()), payment.getDoctype(),
+                                    Integer.valueOf(payment.getDocid()))));
+                        });
+                    }
+                }
+                //查询付款方式
+                List<SellsyQueryPayMediumListResult> sellsyQueryPayMediumListResultList = sellsyAccountSettingService.queryPayMediums();
+                String mediumId =
+                        sellsyQueryPayMediumListResultList.stream().filter(medium -> StringUtils.equals(item.getPayType(), medium.getValue())).findFirst().orElse(null).getId();
+                if (StringUtils.isEmpty(mediumId)) {
+                    mediumId = sellsyConfig.getMediumId();
+                }
+                //重新生成付款
+                SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
+                        .builder()
+                        .docid(item.getDef2())
+                        .amount(item.getTtc())
+                        .date(new Timestamp(item.getInvoiceTime().getTime() / 1000))
+                        .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                        .ident(item.getInvoiceNum())
+                        .medium(Integer.valueOf(mediumId))
+                        .build();
+                log.info("-----------生成付款记录------------");
+                SellsyCreateDocumentPaymentResult documentPayment = createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+                item.setPayId(documentPayment.getPayid());
+                item.setPayrelId(Integer.valueOf(documentPayment.getPayrelid()));
+                sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.paid);
             }
-            /**
-             * Annulée 取消
-             * Réglée 已付款
-             * Validée 未付款 已确定
-             *
-             * A régler 未付款 已确定
-             * Annulé 取消
-             * Payé 已付款
-             *
-             * brouillon=proforma
-             * annulee=Annule
-             * a regler=validee
-             * paye=reglee
-             */
+            if (!SellsyDocumentInvoiceStatusEnums.paid.equals(sellsyUpdateDocumentInvoidSatusEnter.getStep())) {
+                sellsyUpdateDocumentStatusEnter.setDocument(sellsyUpdateDocumentInvoidSatusEnter);
+                //修改状态
+                upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
+            }
 
+            //查询指定发票
+            JSONObject checkDocumentStatus = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+            String checkStatus = String.valueOf(checkDocumentStatus.get("step").toString());
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
+                if (!StringUtils.equals(checkStatus, SellsyDocumentInvoiceStatusEnums.cancelled.getCode())) {
+                    item.setDef1("5");
+                }
+                item.setDef1("4");
+            }
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.NOT_RECEIVED.getCode())) {
+                if (!StringUtils.equals(checkStatus, SellsyDocumentInvoiceStatusEnums.due.getCode())) {
+                    item.setDef1("5");
+                }
+                item.setDef1("4");
+            }
+            if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.RECEIVED.getCode())) {
+                if (!StringUtils.equals(checkStatus, SellsyDocumentInvoiceStatusEnums.paid.getCode())) {
+                    item.setDef1("5");
+                }
+                item.setDef1("4");
+            }
+            sellsyInvoiceTotalService.updateById(item);
         }
         return null;
     }

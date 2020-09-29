@@ -53,4 +53,7 @@ public class SellsyConfig {
 
     //文件下载路径
     private String downloadUrl;
+
+    //支付方式Id
+    private String mediumId;
 }

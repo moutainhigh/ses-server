@@ -117,6 +117,9 @@ public interface SellsyMethodConstant {
     // 计量单位
     String Accountdatas_GetUnit = "Accountdatas.getUnit";
 
+    //支付类型
+    String Accountdatas_GetPayMediums = "Accountdatas.getPayMediums";
+
     /**
      * 物流供应商
      *
