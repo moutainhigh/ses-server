@@ -46,7 +46,7 @@
        draft.en_name,
        draft.fr_name,
        draft.procurement_cycle,
-       draft.dwg as dwgUrl,
+       draft.dwg,
        draft.supplier_id,
        supplier.supplier_name,
        draft.id_calss

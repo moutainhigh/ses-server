@@ -46,7 +46,7 @@
     parts.en_name,
     parts.fr_name,
     parts.procurement_cycle,
-    parts.dwg as dwgUrl,
+    parts.dwg,
     parts.supplier_id,
     supplier.supplier_name,
     parts.disable,
