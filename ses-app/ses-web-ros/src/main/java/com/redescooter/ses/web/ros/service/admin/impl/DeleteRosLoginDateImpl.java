@@ -13,7 +13,9 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.SysUserProfileService;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -21,6 +23,8 @@ import java.beans.Transient;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j
+@Service
 public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
 
     @Autowired
@@ -37,7 +41,7 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
 
     /**
      * 删除和当前 邮箱相关的所有数据 包含：sysUser、customer、inquiry
-     * 
+     *
      * @param enter
      */
     @Transient
@@ -50,12 +54,12 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
         if (!StringUtils.equals(opeSysUser.getLoginName(), Constant.ADMIN_USER_NAME)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         // 不可删除超管数据
         if (StringUtils.equals(opeSysUser.getLoginName(), enter.getSt())) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
-                ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
         // 账户删除
@@ -72,17 +76,17 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
         List<OpeCustomer> opeCustomerList = opeCustomerService.list(opeCustomerQueryWrapper);
         if (!CollectionUtils.isEmpty(opeCustomerList)) {
             opeCustomerService
-                .removeByIds(opeCustomerList.stream().map(OpeCustomer::getId).collect(Collectors.toList()));
+                    .removeByIds(opeCustomerList.stream().map(OpeCustomer::getId).collect(Collectors.toList()));
         }
 
         // 询价单删除
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
         opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_EMAIL, enter.getSt());
         List<OpeCustomerInquiry> opeCustomerInquiryList =
-            opeCustomerInquiryService.list(opeCustomerInquiryQueryWrapper);
+                opeCustomerInquiryService.list(opeCustomerInquiryQueryWrapper);
         if (!CollectionUtils.isEmpty(opeCustomerInquiryList)) {
             opeCustomerInquiryService.removeByIds(
-                opeCustomerInquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList()));
+                    opeCustomerInquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList()));
         }
 
     }

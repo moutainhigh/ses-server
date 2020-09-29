@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@Component
 public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunDriverActivationStatusTaskExecutorServiceJob {
 
     @Autowired

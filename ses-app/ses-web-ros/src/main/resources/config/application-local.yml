@@ -6,17 +6,10 @@ log:
     max-history: 180
 
 dubbo:                                                                                                                  ##DUBBO配置
+  reference:
+    check: false
   registry:                                                                                                             #注册中心
     address: zookeeper://192.168.2.200:42181
-#  metadata-report:
-#    address:  zookeeper://192.168.2.110:62181
-
-#jasypt:
-#  encryptor:
-#    property:
-#      prefix: RedE(   # 加密前缀
-#      suffix: )            # 加密后缀
-#    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
