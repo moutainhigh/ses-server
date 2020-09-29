@@ -341,6 +341,10 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         for (OpeProductionPartsDraft draft : draftList) {
             OpeProductionParts parts = new OpeProductionParts();
             BeanUtils.copyProperties(draft,parts);
+            parts.setCreatedBy(enter.getUserId());
+            parts.setCreatedTime(new Date());
+            parts.setUpdatedBy(enter.getUserId());
+            parts.setUpdatedTime(new Date());
             partsList.add(parts);
         }
         opeProductionPartsDraftService.removeByIds(Arrays.asList(draftIds));
