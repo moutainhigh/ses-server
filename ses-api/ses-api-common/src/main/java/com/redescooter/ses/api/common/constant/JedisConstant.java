@@ -20,6 +20,9 @@ public interface JedisConstant {
 
     String LOGIN_ROLE_DATA = "login:role:data:";
 
+    // 校验安全码的结果放缓存
+    String CHECK_SAFE_CODE_RESULT = "check:safe:code:result:";
+
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
 }

@@ -1,12 +1,9 @@
 package com.redescooter.ses.web.ros.vo.wms.cn;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-
-import java.util.List;
 
 /**
  * @ClassNameWmsInWhDetailsResult

@@ -646,6 +646,29 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 在次支付校验
+     * 
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult payAgainCheck(IdEnter enter) {
+        OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (customerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(customerInquiry.getStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+                ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        if (!StringUtils.equals(customerInquiry.getPayStatus(), InquiryStatusEnums.UNPAY_DEPOSIT.getValue())) {
+
+        }
+        return new BooleanResult(Boolean.TRUE);
+    }
+
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {
         OpeCustomerInquiryB opeCustomerInquiryB = new OpeCustomerInquiryB();
         opeCustomerInquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));

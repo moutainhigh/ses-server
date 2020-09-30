@@ -382,6 +382,30 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
+    PLEASE_COMPLETE_MSG(10183, "请完善信息"),
+
+    DRAFT_NOT_EXIST(10184, "草稿不存在"),
+
+    BOM_IS_NOT_EXIST(10185, "BOM不存在"),
+
+    BOM_HAS_REACHED_EFFECTIVE_TIME(10186, "Bom未到生效时间"),
+
+    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少又一个部件"),
+
+    PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
+
+    BOM_HAS_DUPLICATE_EFFECTIVE_DATE(10189, "bom有重复的日期"),
+
+    BOM_NUM_REPEAT(10190, "bom编号已重复"),
+
+    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom信息不完整"),
+
+    SAFE_CODE_FAILURE(10192, "安全码失效，请重新给校验"),
+
+    PARTS_NO_REPEAT(10193, "部件号重复"),
+
+    PARTS_IS_DISABLE(10194, "部件已被禁用"),
+
     ;
 
 

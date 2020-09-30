@@ -64,5 +64,5 @@ public interface ParameterSettingService {
      * @param enter
      * @return
      */
-    List<ParameterGroupResultList> groupList(StringEnter enter);
+    List<ParameterGroupResultList> groupList(BooleanEnter enter);
 }

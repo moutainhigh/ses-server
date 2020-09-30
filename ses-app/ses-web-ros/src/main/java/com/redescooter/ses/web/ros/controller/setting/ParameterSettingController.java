@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
-import com.redescooter.ses.web.ros.service.setting.ParameterService;
+import com.redescooter.ses.web.ros.service.setting.RosParameterService;
 import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import io.swagger.annotations.Api;
@@ -30,53 +30,53 @@ import java.util.List;
 public class ParameterSettingController {
 
     @Autowired
-    private ParameterService parameterService;
+    private RosParameterService rosParameterService;
 
     @ApiOperation(value = "参数列表", response = ParameterResult.class)
     @PostMapping(value = "/list")
     public Response<PageResult<ParameterResult>> list(@ModelAttribute @ApiParam("请求参数") RosParameterListEnter enter) {
-        return new Response<>(parameterService.list(enter));
+        return new Response<>(rosParameterService.list(enter));
     }
 
     @ApiOperation(value = "详情", response = ParameterResult.class)
     @PostMapping(value = "/detail")
     public Response<ParameterResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(parameterService.detail(enter));
+        return new Response<>(rosParameterService.detail(enter));
     }
 
     @ApiOperation(value = "删除", response = GeneralResult.class)
     @PostMapping(value = "/delete")
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(parameterService.delete(enter));
+        return new Response<>(rosParameterService.delete(enter));
     }
 
     @ApiOperation(value = "导出", response = GeneralResult.class)
     @PostMapping(value = "/export")
     public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(parameterService.export(enter));
+        return new Response<>(rosParameterService.export(enter));
     }
 
     @ApiOperation(value = "导入", response = GeneralResult.class)
     @PostMapping(value = "/importParament")
     public Response<GeneralResult> importParament(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(parameterService.importParament(enter));
+        return new Response<>(rosParameterService.importParament(enter));
     }
 
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveParamentEnter enter) {
-        return new Response<>(parameterService.save(enter));
+        return new Response<>(rosParameterService.save(enter));
     }
 
     @ApiOperation(value = "模版下载", response = StringResult.class)
     @PostMapping(value = "/downloadExcel")
     public Response<StringResult> downloadExcel(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(parameterService.downloadExcel(enter));
+        return new Response<>(rosParameterService.downloadExcel(enter));
     }
 
     @ApiOperation(value = "分组列表", response = ParameterGroupResultList.class)
     @PostMapping(value = "/groupList")
-    public Response<List<ParameterGroupResultList>> groupList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(parameterService.groupList(enter));
+    public Response<List<ParameterGroupResultList>> groupList(@ModelAttribute @ApiParam("请求参数") BooleanEnter enter) {
+        return new Response<>(rosParameterService.groupList(enter));
     }
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsDraftServiceMapper">
+    <select id="partsDraftTotal" resultType="int">
+
+    select
+       count(*)
+    from ope_production_parts_draft draft
+    where draft.dr = 0
+    <include refid="partsDraftListCondition"></include>
+    </select>
+
+
+    <sql id="partsDraftListCondition">
+        <if test="enter.partsSec != null">
+            and draft.parts_sec = #{enter.partsSec}
+        </if>
+        <if test="enter.partsType != null">
+            and draft.parts_type=#{enter.partsType}
+        </if>
+        <if test="enter.snClass != null">
+            and draft.sn_class=#{enter.snClass}
+        </if>
+        <if test="enter.keyword != '' and enter.keyword != null">
+            and (
+            draft.parts_no like concat ("%",#{enter.keyword},"%") or
+            draft.cn_name like concat ("%",#{enter.keyword},"%") or
+            draft.en_name like concat ("%",#{enter.keyword},"%")
+            )
+        </if>
+    </sql>
+
+
+    <select id="partsDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult">
+     select
+       draft.id,
+       draft.parts_no,
+       draft.parts_sec,
+       sec.name as  partsSecName,
+       draft.parts_type,
+       draft.sn_class,
+       draft.id_calss,
+       draft.parts_is_assembly,
+       draft.parts_is_for_assembly,
+       draft.cn_name,
+       draft.en_name,
+       draft.fr_name,
+       draft.procurement_cycle,
+       draft.dwg,
+       draft.supplier_id,
+       supplier.supplier_name,
+       draft.id_calss
+     from ope_production_parts_draft draft
+     left join ope_parts_sec sec on draft.parts_sec = sec.id
+     left join ope_supplier supplier on  draft.supplier_id = supplier.id
+     where draft.dr = 0
+     <include refid="partsDraftListCondition"></include>
+     order by draft.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+</mapper>

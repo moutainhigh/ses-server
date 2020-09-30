@@ -1,0 +1,19 @@
+package com.redescooter.ses.service.hub.source.operation.dao.base;
+
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeProductionScooterBomDraft;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+@DS("operation")
+public interface OpeProductionScooterBomDraftMapper extends BaseMapper<OpeProductionScooterBomDraft> {
+    int updateBatch(List<OpeProductionScooterBomDraft> list);
+
+    int batchInsert(@Param("list") List<OpeProductionScooterBomDraft> list);
+
+    int insertOrUpdate(OpeProductionScooterBomDraft record);
+
+    int insertOrUpdateSelective(OpeProductionScooterBomDraft record);
+}
