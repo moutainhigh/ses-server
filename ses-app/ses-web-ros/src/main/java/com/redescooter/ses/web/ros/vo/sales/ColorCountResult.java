@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sales;
 
-import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel(value = "颜色列表", description = "颜色列表")
 @Data
-public class ColorCountResult extends GroupResult {
+public class ColorCountResult extends GeneralResult {
 
     @ApiModelProperty(value = "颜色key")
     private int id;
