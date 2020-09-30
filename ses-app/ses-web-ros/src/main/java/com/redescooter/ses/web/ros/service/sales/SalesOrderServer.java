@@ -4,10 +4,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +34,7 @@ public interface SalesOrderServer {
      * @param enter
      * @return
      */
-    Map<String, Integer> colorCount(GeneralEnter enter);
+    List<ColorCountResult> colorCount(GeneralEnter enter);
 
     /**
      * 支付状态统计

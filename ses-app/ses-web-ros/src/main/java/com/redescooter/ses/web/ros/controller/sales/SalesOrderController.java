@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.sales;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.sales.SalesOrderServer;
+import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
@@ -13,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,8 +37,8 @@ public class SalesOrderController {
     private InquiryService inquiryService;
 
     @PostMapping(value = "/colorCount")
-    @ApiOperation(value = "颜色列表", response = Map.class)
-    public Response<Map<String, Integer>> colorCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @ApiOperation(value = "颜色列表", response = ColorCountResult.class)
+    public Response<List<ColorCountResult>> colorCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(salesOrderServer.colorCount(enter));
     }
 

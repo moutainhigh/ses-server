@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.sales.SalesOrderServerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.service.sales.SalesOrderServer;
+import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,14 +72,24 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
-    public Map<String, Integer> colorCount(GeneralEnter enter) {
+    public List<ColorCountResult> colorCount(GeneralEnter enter) {
         Map<String, Integer> map = new HashMap<String, Integer>();
+
+        List<ColorCountResult> countResultList = new ArrayList<>();
+        ColorCountResult colorResult = null;
+
         for (ProductColorEnums item : ProductColorEnums.values()) {
             if (!map.containsKey(item.getCode())) {
                 map.put(item.getCode(), Integer.parseInt(item.getValue()));
+
+                colorResult = new ColorCountResult();
+                colorResult.setId(Integer.parseInt(item.getValue()));
+                colorResult.setName(item.getCode());
+                countResultList.add(colorResult);
             }
         }
-        return map;
+
+        return countResultList;
     }
 
     /**
