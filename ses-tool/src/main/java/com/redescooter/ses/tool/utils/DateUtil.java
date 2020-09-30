@@ -914,4 +914,17 @@ public class DateUtil {
 
     }
 
+
+    /**
+     * @Author Aleks
+     * @Description  返回YYMMDD
+     * @Date  2020/9/29 12:03
+     * @Param []
+     * @return
+     **/
+    public static String getSimpleDateStamp() {
+        return getSimpleTimeStamp().replaceAll("-","");
+    }
+
+
 }

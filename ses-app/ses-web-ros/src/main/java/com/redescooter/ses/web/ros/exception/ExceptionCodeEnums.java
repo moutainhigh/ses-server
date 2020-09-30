@@ -406,6 +406,20 @@ public enum ExceptionCodeEnums {
 
     PARTS_IS_DISABLE(10194, "部件已被禁用"),
 
+    GROUP_NOT_EXIST(10195, "分组不存在"),
+
+    GROUP_BE_USED(10196, "分组已经被使用，不能删除"),
+
+    DEF_NOT_NULL(10197, "自定义项不能为空"),
+
+    DEF_NUM_ERROR(10198, "自定义项最多8个"),
+
+    SPECIFICAT_TYPE_NOT_EXIST(10199, "规格类型不存在"),
+
+    COLOR_VALUE_NOT_NULL(10200, "色值不能为空"),
+
+    COLOR_VALUE_LENGTH_ERROR(10201, "色值长度错误"),
+
     ;
 
 
