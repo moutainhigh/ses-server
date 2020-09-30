@@ -16,13 +16,13 @@ public class RosProductionExport {
     @Excel(name = "NANE",width = 20)
     private String name;
 
-    @Excel(name = "BOM N",width = 20)
+    @Excel(name = "BOM N°",width = 20)
     private String productN;
 
     @Excel(name = "VERSION",width = 20)
     private String version;
 
-    @Excel(name = "PARTS N",width = 20)
+    @Excel(name = "PARTS N°",width = 20)
     private String partsNo;
 
     @Excel(name = "SEC",width = 20)
