@@ -21,7 +21,7 @@
                 and opp.color = #{color}
             </if>
             <if test="startCreatedTime != null and endCreatedTime != null">
-                and (inquiry.updated_time between #{startCreatedTime} and #{endCreatedTime})
+                and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
