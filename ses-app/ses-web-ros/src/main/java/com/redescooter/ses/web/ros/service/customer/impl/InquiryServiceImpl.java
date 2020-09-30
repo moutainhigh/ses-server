@@ -36,6 +36,7 @@ import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
@@ -417,16 +418,17 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
-        List<InquiryResult> list = inquiryServiceMapper.exportInquiry(enter);
+        List<InquiryExportResult> list = inquiryServiceMapper.exportInquiry(enter);
         log.info("总共的数据量："+list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
-            for (InquiryResult inquiry : list) {
+            for (InquiryExportResult inquiry : list) {
+                Integer i = 1;
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(),8));
-                dataMap.add(toMap(inquiry));
+                dataMap.add(toMap(inquiry,i));
             }
-            String sheetName = "询价单";
-            String[] headers = {"NAME", "SURNAME", "EMAIL", "TELEPHONE", "CODE POSTAL", "VOTER MESSAGE", "CITY NAME", "CREATE TIME"};
+            String sheetName = "Inquiry";
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color","batteryQty","lastPrice","totalPrice","time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
@@ -457,16 +459,20 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
 
-    private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
+    private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry,Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName()) ? "--" : opeCustomerInquiry.getCustomerFirstName());
-        map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
-        map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
-        map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
-        map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
-        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
-        map.put("CREATE TIME", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
+        map.put("ID",i);
+        map.put("fullName",opeCustomerInquiry.getCustomerFullName());
+        map.put("email",opeCustomerInquiry.getEmail());
+        map.put("bankCardname",opeCustomerInquiry.getBankCardName());
+        map.put("district",opeCustomerInquiry.getPostcode());
+        map.put("address",opeCustomerInquiry.getAddress());
+        map.put("productName",opeCustomerInquiry.getProductName());
+        map.put("color",opeCustomerInquiry.getColorName());
+        map.put("batteryQty",opeCustomerInquiry.getBatteryQty());
+        map.put("lastPrice",opeCustomerInquiry.getBalance());
+        map.put("totalPrice",opeCustomerInquiry.getAmount());
+        map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
         return map;
     }
 
