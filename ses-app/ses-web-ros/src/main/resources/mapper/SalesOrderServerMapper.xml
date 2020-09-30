@@ -57,17 +57,17 @@
        opp.en_name                                 as enName,
        opp.color,
        case
-           when (opp.color = 1) then 'red'
-           when (opp.color = 2) then 'blue'
-           when (opp.color = 3) then 'champagne'
-           when (opp.color = 4) then 'carbon'
-           when (opp.color = 5) then 'black' end   as colorName,
+           when (opp.color = 1) then 'RED'
+           when (opp.color = 2) then 'BLUE'
+           when (opp.color = 3) then 'CHAMPAGNE'
+           when (opp.color = 4) then 'CARBON'
+           when (opp.color = 5) then 'BLACK' end   as colorName,
        case
-           when (opp.color = 1) then '#d71345'
-           when (opp.color = 2) then '#145b7d'
-           when (opp.color = 3) then '#F1AF00'
-           when (opp.color = 4) then '#77787b'
-           when (opp.color = 5) then '#130c0e' end as colorValue,
+           when (opp.color = 1) then '#BB404A'
+           when (opp.color = 2) then '#4C7DB7'
+           when (opp.color = 3) then '#C4B792'
+           when (opp.color = 4) then '#A9AAAC'
+           when (opp.color = 5) then '#000000' end as colorValue,
        ifnull(opi.def5,'false')                    as labelFlag,
        case
            when ifnull(opi.def6, '-1.0') = '-1.0' then true
@@ -98,18 +98,19 @@
        opp.en_name                                 as enName,
        opp.color,
        case
-           when (opp.color = 1) then 'red'
-           when (opp.color = 2) then 'blue'
-           when (opp.color = 3) then 'champagne'
-           when (opp.color = 4) then 'carbon'
-           when (opp.color = 5) then 'black' end   as colorName,
+           when (opp.color = 1) then 'RED'
+           when (opp.color = 2) then 'BLUE'
+           when (opp.color = 3) then 'CHAMPAGNE'
+           when (opp.color = 4) then 'CARBON'
+           when (opp.color = 5) then 'BLACK' end   as colorName,
        case
-           when (opp.color = 1) then '#d71345'
-           when (opp.color = 2) then '#145b7d'
-           when (opp.color = 3) then '#F1AF00'
-           when (opp.color = 4) then '#77787b'
-           when (opp.color = 5) then '#130c0e' end as colorValue,
+           when (opp.color = 1) then '#BB404A'
+           when (opp.color = 2) then '#4C7DB7'
+           when (opp.color = 3) then '#C4B792'
+           when (opp.color = 4) then '#A9AAAC'
+           when (opp.color = 5) then '#000000' end as colorValue,
        1                                           as qty,
+       ocib.product_qty                            as batteryQty,
        opi.total_price + 690                       as amount,
        '190.00'                                    as paid,
        opi.total_price                             as balance,
@@ -128,6 +129,7 @@
         from ope_customer_inquiry opi
         inner join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
         inner join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left  join ope_customer_inquiry_b ocib on opi.id = ocib.inquiry_id and ocib.dr = 0
         where opi.dr = 0
         and opi.id=#{id}
         limit 1

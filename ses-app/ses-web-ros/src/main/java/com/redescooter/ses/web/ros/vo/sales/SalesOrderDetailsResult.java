@@ -53,6 +53,9 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "车辆数量")
     private int qty;
 
+    @ApiModelProperty(value = "电池数量")
+    private int batteryQty;
+
     @ApiModelProperty(value = "订单总金额")
     private Double amount;
 
