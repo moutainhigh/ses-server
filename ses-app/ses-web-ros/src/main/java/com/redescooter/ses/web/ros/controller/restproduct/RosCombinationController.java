@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -114,4 +115,10 @@ public class RosCombinationController {
         return new Response<>(rosServProductionProductService.productionProductDisable(enter));
     }
 
+
+    @GetMapping(value = "/bomExport")
+    @ApiOperation(value = "部件导出", response = GeneralResult.class)
+    public Response<GeneralResult> bomExport(@ApiParam("请求参数 id") Long id,@ApiParam("类型，4是整车，5是组装") Integer productionProductType,HttpServletResponse response) {
+        return new Response(rosServProductionProductService.bomExport(id,productionProductType,response));
+    }
 }

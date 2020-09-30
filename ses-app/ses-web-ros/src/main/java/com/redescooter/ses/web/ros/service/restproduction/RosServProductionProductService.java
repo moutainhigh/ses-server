@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -128,5 +129,15 @@ public interface RosServProductionProductService {
      * @return
      */
     GeneralResult delete(RosProuductionTypeEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  部件导出
+     * @Date  2020/9/30 12:03
+     * @Param [enter]productionProductType 类型，4是整车，5是组装
+     * @return
+     **/
+    GeneralResult bomExport(Long id,Integer productionProductType, HttpServletResponse response);
 
 }

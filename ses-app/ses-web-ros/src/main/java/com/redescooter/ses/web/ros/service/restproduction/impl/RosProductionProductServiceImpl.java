@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
@@ -29,10 +32,12 @@ import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import spark.utils.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1229,5 +1234,131 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             versionNum = Character.toString(versionChar[0]) + "0" + String.valueOf(versionInteger);
         }
         return versionNum;
+    }
+
+
+    @Override
+    public GeneralResult bomExport(Long id, Integer productionProductType, HttpServletResponse response) {
+        List<RosProductionExport> exportList = new ArrayList<>();
+        switch (productionProductType){
+            case 4:
+                exportList = scooterExport(id);
+                default:
+                break;
+            case 5:
+                exportList = combinationExport(id);
+                break;
+        }
+        try {
+            // 设置响应输出的头类型
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            // 下载文件的默认名称
+            response.setHeader("Content-Disposition", "attachment;filename=" + System.currentTimeMillis() + ".xls");
+            // =========easypoi部分
+            ExportParams exportParams = new ExportParams();
+            exportParams.setSheetName("log");
+            // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, RosProductionExport.class, exportList);
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println("+++++++++++++++++++");
+        }
+        return new GeneralResult();
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  封装需要导出的整车数据
+     * @Date  2020/9/30 13:32
+     * @Param
+     * @return
+     **/
+    public List<RosProductionExport> scooterExport(Long id){
+        List<RosProductionExport> resultList = new ArrayList<>();
+        // 这个时候id为整车的id
+        OpeProductionScooterBom scooterBom = opeProductionScooterBomService.getById(id);
+        if (scooterBom == null){
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+        }
+        // 找到整车的部件
+        List<OpeProductionPartsRelation> relationList = getRrelations(id);
+        if (CollectionUtils.isNotEmpty(relationList)){
+            List<OpePartsSec> secList = opePartsSecService.list();
+            for (OpeProductionPartsRelation relation : relationList) {
+                RosProductionExport export = new RosProductionExport();
+                export.setName(scooterBom.getEnName());
+                export.setProductN(scooterBom.getBomNo());
+                export.setVersion(scooterBom.getVersoin());
+                export.setSec(getSecName(relation.getPartsSec(),secList));
+                export.setPartsNo(relation.getPartsNo());
+                export.setEnName(relation.getEnName());
+                export.setCnName(relation.getCnName());
+                export.setProcurementCycle(relation.getProcurementCycle());
+                export.setQty(relation.getPartsQty());
+                resultList.add(export);
+            }
+        }
+        return resultList;
+    }
+
+
+    // 通过secId匹配到name
+    public String getSecName(Long secid,List<OpePartsSec> secList){
+        if(org.apache.dubbo.common.utils.CollectionUtils.isEmpty(secList)){
+            return null;
+        }
+        String secName = "";
+        for (OpePartsSec sec : secList) {
+            if (sec.getId().equals(secid)){
+                secName = sec.getName();
+                break;
+            }
+        }
+        return secName;
+    }
+
+
+    private List<OpeProductionPartsRelation> getRrelations(Long id) {
+        QueryWrapper<OpeProductionPartsRelation> qw = new QueryWrapper<>();
+        qw.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID,id);
+        List<OpeProductionPartsRelation> relationList = opeProductionPartsRelationService.list(qw);
+        return relationList;
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  封装需要导出的组装数据
+     * @Date  2020/9/30 13:32
+     * @Param
+     * @return
+     **/
+    public List<RosProductionExport> combinationExport(Long id){
+        List<RosProductionExport> resultList = new ArrayList<>();
+        // 这个时候传的是组装的id
+        OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(id);
+        if (combinBom == null){
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+        }
+        // 找到组装的部件
+        List<OpeProductionPartsRelation> relationList = getRrelations(id);
+        if (CollectionUtils.isNotEmpty(relationList)){
+            List<OpePartsSec> secList = opePartsSecService.list();
+            for (OpeProductionPartsRelation relation : relationList) {
+                RosProductionExport export = new RosProductionExport();
+                export.setName(combinBom.getEnName());
+                export.setProductN(combinBom.getBomNo());
+                export.setVersion(combinBom.getVersoin());
+                export.setSec(getSecName(relation.getPartsSec(),secList));
+                export.setPartsNo(relation.getPartsNo());
+                export.setEnName(relation.getEnName());
+                export.setCnName(relation.getCnName());
+                export.setProcurementCycle(relation.getProcurementCycle());
+                export.setQty(relation.getPartsQty());
+                resultList.add(export);
+            }
+        }
+        return resultList;
     }
 }
