@@ -27,6 +27,22 @@ public interface SalesOrderServer {
     Map<String, Integer> countStatus(GeneralEnter enter);
 
     /**
+     * 颜色统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> colorCount(GeneralEnter enter);
+
+    /**
+     * 支付状态统计
+     *
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> payStatusCount(GeneralEnter enter);
+
+    /**
      * 销售单列表
      *
      * @param enter
@@ -60,4 +76,5 @@ public interface SalesOrderServer {
      * @return
      */
     GeneralResult cancelWarn(IdEnter enter, Long id);
+
 }

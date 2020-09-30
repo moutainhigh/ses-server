@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.sales.impl;
 
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -58,6 +60,40 @@ public class SalesOrderServerImpl implements SalesOrderServer {
         }
         map.remove(InquiryStatusEnums.PROCESSED.getValue());
         map.remove(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+        return map;
+    }
+
+    /**
+     * 颜色统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> colorCount(GeneralEnter enter) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (ProductColorEnums item : ProductColorEnums.values()) {
+            if (!map.containsKey(item.getCode())) {
+                map.put(item.getCode(), Integer.parseInt(item.getValue()));
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 支付状态统计
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> payStatusCount(GeneralEnter enter) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (InquiryPayStatusEnums item : InquiryPayStatusEnums.values()) {
+            if (!map.containsKey(item.getCode())) {
+                map.put(item.getCode(), Integer.parseInt(item.getValue()));
+            }
+        }
         return map;
     }
 

@@ -34,6 +34,18 @@ public class SalesOrderController {
     @Autowired
     private InquiryService inquiryService;
 
+    @PostMapping(value = "/colorCount")
+    @ApiOperation(value = "颜色列表", response = Map.class)
+    public Response<Map<String, Integer>> colorCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(salesOrderServer.colorCount(enter));
+    }
+
+    @PostMapping(value = "/payStatusCount")
+    @ApiOperation(value = "支付状态列表", response = Map.class)
+    public Response<Map<String, Integer>> payStatusCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(salesOrderServer.payStatusCount(enter));
+    }
+
     @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
