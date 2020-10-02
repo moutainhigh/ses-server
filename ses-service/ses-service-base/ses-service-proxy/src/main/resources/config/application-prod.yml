@@ -40,13 +40,14 @@ spring:
         - 172.31.5.73:7005
   # 邮件配置
   mail:
+    host: smtp.gmail.com
+    port: 465
     from: support@redelectric.fr
     username: support@redelectric.fr
-    host: smtp.gmail.com
     # 谷歌应用专属密码
     password: wxiqpwbypnthkrru!
-    port: 465
-    properties.from: support@redelectric.fr
+    properties:
+      from: support@redelectric.fr
 
 
 

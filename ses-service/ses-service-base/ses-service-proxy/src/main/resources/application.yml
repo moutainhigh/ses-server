@@ -50,13 +50,18 @@ spring:
     time-zone: UTC
   # 邮件配置
   mail:
-    default-encoding: UTF-8
-    test-connection: true
-    properties.mail.smtp.auth: true
-    properties.mail.smtp.port: 465
-    properties.mail.smtp.starttls.enable: true
-    properties.mail.smtp.starttls.required: true
-    properties.mail.smtp.ssl.enable: true
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          auth: true
+          port: 465
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+          starttls:
+            enable: true
+            required: true
 
   # swagger配置
   swagger:
