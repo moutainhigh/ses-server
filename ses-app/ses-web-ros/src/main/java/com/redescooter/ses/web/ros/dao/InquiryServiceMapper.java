@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 
@@ -63,5 +64,5 @@ public interface InquiryServiceMapper {
      * @Param []
      * @return
      **/
-    List<InquiryResult> exportInquiry(InquiryListEnter enter);
+    List<InquiryExportResult> exportInquiry(InquiryListEnter enter);
 }

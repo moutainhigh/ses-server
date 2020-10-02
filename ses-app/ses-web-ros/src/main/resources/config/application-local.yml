@@ -11,6 +11,7 @@ dubbo:                                                                          
   registry:                                                                                                             #注册中心
     address: zookeeper://192.168.0.111:2181
 
+
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -282,6 +283,5 @@ monday:
 constant-us-email:
   sale-principal:
     - alex@redescooter.com
-    - 123@qq.com
 
 

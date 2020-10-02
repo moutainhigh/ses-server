@@ -114,10 +114,52 @@
           and ope_customer.status in (1, 2)
     </select>
 
-    <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
-        select
-        <include refid="InquiryResult"/>
+    <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult">
+        select inquiry.id,
+        inquiry.order_no                                as orderNo,
+        inquiry.status,
+        inquiry.pay_status                              as payStatus,
+        oc.id                                       as customerId,
+        oc.customer_full_name                       as customerFullName,
+        oc.email,
+        inquiry.product_model                           as productModel,
+        case
+        when (inquiry.product_model   = 1) then 'RED E50'
+        when (inquiry.product_model   = 2) then 'RED E100'
+        when (inquiry.product_model   = 3) then 'RED E125' end as productName,
+        opp.en_name                                 as enName,
+        inquiry.bank_card_name            as bankCardName,
+        opp.color,
+        case
+        when (opp.color = 1) then 'red'
+        when (opp.color = 2) then 'blue'
+        when (opp.color = 3) then 'champagne'
+        when (opp.color = 4) then 'carbon'
+        when (opp.color = 5) then 'black' end   as colorName,
+        case
+        when (opp.color = 1) then '#d71345'
+        when (opp.color = 2) then '#145b7d'
+        when (opp.color = 3) then '#F1AF00'
+        when (opp.color = 4) then '#77787b'
+        when (opp.color = 5) then '#130c0e' end as colorValue,
+        1                                           as qty,
+        ocib.product_qty                            as batteryQty,
+        inquiry.total_price + 690                       as amount,
+        '190.00'                                    as paid,
+        '500.00'                                    as discount,
+        inquiry.total_price                             as balance,
+        inquiry.created_time                            as createdTime,
+        oc.country_code,
+        oc.telephone,
+        inquiry.def1                                    as country,
+        inquiry.def2                                    as city,
+        inquiry.def3                                    as postcode,
+        oc.address
         from ope_customer_inquiry inquiry
+        inner join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
+        inner join ope_parts_product opp on inquiry.product_id = opp.id and opp.dr = 0
+        left join ope_customer_inquiry_b ocib on inquiry.id = ocib.inquiry_id and ocib.dr = 0
+        where inquiry.dr = 0
         <include refid="where_inquiryList"/>
         order by inquiry.created_time desc
     </select>
