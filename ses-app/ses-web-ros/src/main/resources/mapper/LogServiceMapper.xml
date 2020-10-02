@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.log.LogServiceMapper">
+
+    <select id="totalRows" resultType="int">
+        select count(*) from ope_sys_log log
+        where log.dr = 0
+        <include refid="logListWhere"></include>
+    </select>
+
+    <sql id="logListWhere">
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (log.op_user_name like concat('%', #{enter.keyword}, '%')
+            or log.op_user_code like concat('%', #{enter.keyword}, '%'))
+        </if>
+        <if test="enter.createStartDateTime != null and enter.createStartDateTime != '' and enter.createEndDateTime != null and enter.createEndDateTime != ''">
+            and (log.created_time between #{enter.createStartDateTime} and #{enter.createEndDateTime})
+        </if>
+        <if test="enter.classType != null and enter.classType != ''">
+            <if test='enter.classType == "1"'>
+                 and log.log_type = 1
+            </if>
+            <if test='enter.classType == "2"'>
+                and log.log_type = 2
+            </if>
+            <if test='enter.classType == "3"'>
+                and log.if_success = 0
+            </if>
+        </if>
+    </sql>
+
+    <select id="logList" resultType="com.redescooter.ses.web.ros.vo.log.LogListResult">
+        select
+        log.id,
+        log.op_user_code,
+        log.op_user_name,
+        log.created_time,
+        log.login_ip,
+        log.time_consum,
+        log.if_success,
+        log.op_modul
+        from ope_sys_log log
+        where log.dr = 0
+        <include refid="logListWhere"></include>
+        order by log.created_time desc
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+</mapper>

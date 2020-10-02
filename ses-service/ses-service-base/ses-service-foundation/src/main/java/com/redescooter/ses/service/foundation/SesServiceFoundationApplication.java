@@ -32,7 +32,7 @@ public class SesServiceFoundationApplication {
 
         //非web启动
         new SpringApplicationBuilder(SesServiceFoundationApplication.class)
-                .web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
+                .web(WebApplicationType.NONE)
                 .run(args);
         log.info("SesServiceFoundationApplication started success ... ");
         synchronized (SesServiceFoundationApplication.class) {

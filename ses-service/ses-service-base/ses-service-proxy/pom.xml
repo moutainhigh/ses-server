@@ -126,13 +126,15 @@
                         <id>copy-lib-src-webapps</id>
                         <phase>package</phase>
                         <configuration>
+                            <target>
+                                <delete dir="${project.build.directory}"/>
+                            </target>
                             <tasks>
                                 <copy todir="${jar.path}/libs">
                                     <fileset dir="${project.build.directory}">
                                         <include name="${project.name}.jar"/>
                                     </fileset>
                                 </copy>
-                                <delete dir="${project.build.directory}"/>
                             </tasks>
                         </configuration>
                         <goals>

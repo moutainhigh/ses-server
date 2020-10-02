@@ -10,15 +10,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SystemTypeEnums {
-  REDE_IOS("REDE_IOS", "1", "ios系统"),
-  REDE_ANDROID("REDE_ANDROID", "2", "android系统"),
+  REDE_ROS("REDE_ROS", "1", "ROS"),
+  REDE_SAAS("REDE_SAAS", "2", "SAAS"),
   ;
   //系统编码
-  private String systemType;
+  private String code;
 
   //编码对应值
   private String value;
 
   //编码备注说明
-  private String remark;
+  private String message;
 }

@@ -10,12 +10,12 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
@@ -25,12 +25,10 @@ import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -40,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,11 +91,24 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Autowired
+    private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
+
+    @Autowired
+    private OpeSaleAreaService opeSaleAreaService;
+
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
     @Reference
     private IdAppService idAppService;
+
+    @Value("${Request.privateKey}")
+    private String privatekey;
+
+    @Value("${Request.publicKey}")
+    private String publicKey;
+
 
     @Override
     @Transactional
@@ -124,6 +136,16 @@ public class StaffServiceImpl implements StaffService {
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         staff.setCode(createCode());
         staff.setSysUserId(staff.getId());
+        if (enter.getIfSafeCode() != null && enter.getIfSafeCode() == 1) {
+            // 产生8位数的随机字符串
+            String code = null;
+            try {
+                code = RsaUtils.encrypt(getRundom(), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            staff.setSafeCode(code);
+        }
         opeSysStaffService.save(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(), enter.getRoleId());
@@ -182,6 +204,7 @@ public class StaffServiceImpl implements StaffService {
     void checkEmail(String email, Long id) {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_EMAIL, email);
+        qw.eq(OpeSysStaff.COL_DR, 0);
         if (id != null) {
             // 员工修改
             qw.ne(OpeSysStaff.COL_ID, id);
@@ -396,6 +419,232 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
+    /**
+     * @return
+     * @Author Aleks
+     * @Description 校验输入的密码是否正确
+     * @Date 2020/9/17 14:56
+     * @Param [enter]
+     **/
+    @Override
+    public Boolean checkLoginPsd(UserPsdEnter enter) {
+        boolean flag = true;
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        String psd = "";
+        try {
+            //密码校验
+            psd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        String password = DigestUtils.md5Hex(psd + user.getSalt());
+        if (!password.equals(user.getPassword())) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public GeneralResult editSafeCode(UserPsdEnter enter) {
+        // 安全码解密 进行长度校验
+        String safeCode = "";
+        try {
+            //密码校验
+            safeCode = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        if (safeCode.length() < 8 || safeCode.length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
+        }
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        staff.setSafeCode(enter.getPassword());
+        opeSysStaffService.updateById(staff);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult editUserPsd(WebResetPasswordEnter enter) {
+        // 前端传过来的密码 都是经过加密的 需要解密
+        String newPassword = null;
+        String confirmDecrypt = null;
+        String oldPsd = "";
+        try {
+            //密码校验
+            newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
+            confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getConfirmPassword()), privatekey);
+            oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        // 老的密码和新的密码  不能一致
+        if (StringUtils.equals(newPassword, oldPsd)) {
+            throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+        if (newPassword.length() > 20 || newPassword.length() < 8) {
+            throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
+        }
+        // 校验两次的的新密码是否一致
+        if (!StringUtils.equals(newPassword, confirmDecrypt)) {
+            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 验证旧密码是否正确
+        String password = DigestUtils.md5Hex(oldPsd + user.getSalt());
+        if (!password.equals(user.getPassword())) {
+            throw new SesWebRosException(ExceptionCodeEnums.OLD_PSD_ERROR.getCode(), ExceptionCodeEnums.OLD_PSD_ERROR.getMessage());
+        }
+        user.setPassword(DigestUtils.md5Hex(newPassword + user.getSalt()));
+        opeSysUserService.updateById(user);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /*
+     * @Author Aleks
+     * @Description  开通账号之后 首次登陆系统 修改密码
+     * @Date  2020/9/17 14:16
+     * @Param [enter]
+     * @return
+     **/
+    @Override
+    public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
+        String psd = "";
+        // 后端接受到的是加密之后的密码 需要解密
+        try {
+            //密码校验
+            psd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getPassword()), privatekey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+        OpeSysUser user = opeSysUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        user.setPassword(DigestUtils.md5Hex(psd + user.getSalt()));
+        opeSysUserService.updateById(user);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult userMsgEdit(UserMsgEditEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+
+        // 校验员工名字的长度
+        if (StringUtils.isNotEmpty(enter.getFirstName())) {
+            if (enter.getFirstName().length() < 2 || enter.getFirstName().length() > 20) {
+                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        if (StringUtils.isNotEmpty(enter.getLastName())) {
+            if (enter.getLastName().length() < 2 || enter.getLastName().length() > 20) {
+                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        checkDeptPos(enter.getDeptId(), enter.getPositionId());
+        checkEmail(enter.getEmail(), enter.getUserId());
+        // 员工状态变化  影响到账号
+        if (enter.getStatus() != staff.getStatus()) {
+            changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
+        }
+        BeanUtils.copyProperties(enter, staff);
+        staff.setFullName(staff.getFirstName() + " " + staff.getLastName());
+        staff.setUpdatedBy(enter.getUserId());
+        staff.setUpdatedTime(new Date());
+        if (!Strings.isNullOrEmpty(enter.getBirthday())) {
+            staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
+        }
+        if (!Strings.isNullOrEmpty(enter.getEntryDate())) {
+            staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
+        opeSysStaffService.updateById(staff);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public SafeCodeResult getSafeCode(GeneralEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        if (staff.getIfSafeCode() == null || staff.getIfSafeCode() == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getCode(), ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getMessage());
+        }
+        SafeCodeResult result = new SafeCodeResult();
+        result.setSafeCode(staff.getSafeCode());
+        return result;
+    }
+
+    @Override
+    public StaffResult userMsgDetail(GeneralEnter enter) {
+        OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
+        if (staff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        StaffResult staffDetail = staffServiceMapper.staffDetail(staff.getId());
+        // 查找员工的角色信息
+        StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
+        if (staffRoleResult != null) {
+            staffDetail.setRoleId(staffRoleResult.getRoleId());
+            staffDetail.setRoleName(staffRoleResult.getRoleName());
+        }
+        return staffDetail;
+    }
+
+
+    /**
+     * @return
+     * @Author Aleks
+     * @Description 员工的销售区域
+     * @Date 2020/9/17 15:19
+     * @Param [enter]
+     **/
+    @Override
+    public List<StaffSaleAreaResult> staffSaleArea(GeneralEnter enter) {
+        List<StaffSaleAreaResult> results = new ArrayList<>();
+        // 先找到员工有哪些角色
+        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysUserRole.COL_USER_ID, enter.getUserId());
+        List<OpeSysUserRole> list = opeSysUserRoleService.list(qw);
+        if (!CollectionUtils.isEmpty(list)) {
+            // 找到角色对应的销售区域
+            QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
+            queryWrapper.in(OpeSysRoleSalesCidy.COL_ROLE_ID, list.stream().map(OpeSysUserRole::getRoleId).collect(Collectors.toList()));
+            List<OpeSysRoleSalesCidy> areaList = opeSysRoleSalesCidyService.list(queryWrapper);
+            if (!CollectionUtils.isEmpty(areaList)) {
+                // 如果角色有销售区域  找到这些销售区域 然后转为树结构
+                QueryWrapper<OpeSaleArea> wrapper = new QueryWrapper<>();
+                wrapper.in(OpeSaleArea.COL_ID, areaList.stream().map(OpeSysRoleSalesCidy::getCityId).collect(Collectors.toList()));
+                List<OpeSaleArea> saleAreas = opeSaleAreaService.list(wrapper);
+                if (!CollectionUtils.isEmpty(saleAreas)) {
+                    for (OpeSaleArea area : saleAreas) {
+                        StaffSaleAreaResult result = new StaffSaleAreaResult();
+                        result.setAreaCode(area.getAreaCode());
+                        result.setAreaName(area.getAreaName());
+                        result.setSaleCityId(area.getId());
+                        result.setId(area.getId());
+                        result.setPId(area.getPId());
+                        results.add(result);
+                    }
+                }
+            }
+        }
+        return TreeUtil.build(results, Constant.AREA_TREE_ROOT_ID);
+    }
+
+
     // 给员工发邮件，这个方法作为异步执行
     @Override
     @Async
@@ -522,5 +771,33 @@ public class StaffServiceImpl implements StaffService {
             }
         }
         return ids;
+    }
+
+
+    // 生成8位随机数
+    public static String getRundom() {
+//         48-57 65-90 97-122
+        StringBuffer id = new StringBuffer();
+        Random random = new Random();
+        for (int i = 0; i < 8; i++) {
+            char s = 0;
+            int j = random.nextInt(3) % 4;
+            switch (j) {
+                case 0:
+                    //随机生成数字
+                    s = (char) (random.nextInt(57) % (57 - 48 + 1) + 48);
+                    break;
+                case 1:
+                    //随机生成大写字母
+                    s = (char) (random.nextInt(90) % (90 - 65 + 1) + 65);
+                    break;
+                case 2:
+                    //随机生成小写字母
+                    s = (char) (random.nextInt(122) % (122 - 97 + 1) + 97);
+                    break;
+            }
+            id.append(s);
+        }
+        return id.toString();
     }
 }

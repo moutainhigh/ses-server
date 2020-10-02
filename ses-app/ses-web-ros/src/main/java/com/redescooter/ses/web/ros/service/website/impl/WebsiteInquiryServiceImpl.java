@@ -321,18 +321,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-//        if (enter.getPhone() != null) {
-//            if (enter.getPhone() != null) {
-//                String decrypt = null;
-//                try {
-//
-//                    decrypt = RsaUtils.decrypt(enter.getPhone(), privatekey);
-//                } catch (Exception e) {
-//                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-//                }
-//                enter.setPhone(decrypt);
-//            }
-//        }
 
         //电池要求过滤
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
@@ -503,13 +491,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (CollectionUtils.isEmpty(inquiryBList)) {
             return null;
         }
-    /*  String decryptTelephone =null;
-      try {
-
-         decryptTelephone = RsaUtils.encryptByPrivateKey(customerInquiry.getTelephone(), privatekey);
-      }catch (Exception e){
-        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }*/
 
         //todo 实际优惠了690 欧元
         BigDecimal price = new BigDecimal("690");
@@ -531,7 +512,8 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .remainingPrice(customerInquiry.getTotalPrice())
                 .color(opePartsProduct.getColor())
                 .status(customerInquiry.getStatus())
-                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(), customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().add(price) : customerInquiry.getTotalPrice())
+                .totalPrice(StringUtils.equals(InquiryStatusEnums.PAY_DEPOSIT.getValue(),
+                        customerInquiry.getStatus()) ? customerInquiry.getTotalPrice().add(price) : customerInquiry.getTotalPrice())
                 .build();
 
         //封装配件数量
@@ -623,13 +605,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-     /* String decrypt =null;
-      try {
 
-        decrypt = RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey);
-      }catch (Exception e){
-        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }*/
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
                 .email(opeCustomer.getEmail())

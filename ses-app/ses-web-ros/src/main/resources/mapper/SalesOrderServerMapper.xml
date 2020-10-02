@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.sales.SalesOrderServerMapper">
+    <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+       select inquiry.status as status,
+              count(*) as totalCount
+       from ope_customer_inquiry inquiry
+         where inquiry.dr=0
+         group by inquiry.status
+    </select>
+    <sql id="where_list">
+        <where>
+            and opi.dr =0
+            <if test="status != null and status != ''">
+                and opi.status = #{status}
+            </if>
+            <if test="status == null or status == ''">
+                and opi.status in ('1','3','4','5')
+            </if>
+            <if test="color != null and color != ''">
+                and opp.color = #{color}
+            </if>
+            <if test="startCreatedTime != null and endCreatedTime != null">
+                and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                opi.order_no like concat("%",#{keyword},"%")
+                or opi.email like concat("%",#{keyword},"%")
+                or oc.customer_full_name like concat("%",#{keyword},"%")
+                or oc.customer_first_name like concat("%",#{keyword},"%")
+                or oc.customer_last_name like concat("%",#{keyword},"%")
+                or oc.email like concat("%",#{keyword},"%")
+                or opp.en_name like concat("%",#{keyword},"%")
+                or opp.fr_name like concat("%",#{keyword},"%")
+                or opp.cn_name like concat("%",#{keyword},"%")
+                )
+            </if>
+        </where>
+    </sql>
+    <select id="listCount" resultType="int">
+        select count(opi.id)
+        from ope_customer_inquiry opi
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        <include refid="where_list"/>
+    </select>
+
+    <sql id="list_column">
+       opi.id,
+       opi.order_no                                as orderNo,
+       opi.status,
+       opi.pay_status                              as payStatus,
+       oc.customer_full_name                       as customerFullName,
+       oc.email,
+       opi.product_model                           as productModel,
+       opp.en_name                                 as enName,
+       opp.color,
+       case
+           when (opp.color = 1) then 'RED'
+           when (opp.color = 2) then 'BLUE'
+           when (opp.color = 3) then 'CHAMPAGNE'
+           when (opp.color = 4) then 'CARBON'
+           when (opp.color = 5) then 'BLACK' end   as colorName,
+       case
+           when (opp.color = 1) then '#BB404A'
+           when (opp.color = 2) then '#4C7DB7'
+           when (opp.color = 3) then '#C4B792'
+           when (opp.color = 4) then '#A9AAAC'
+           when (opp.color = 5) then '#000000' end as colorValue,
+       ifnull(opi.def5,'false')                    as labelFlag,
+       case
+           when ifnull(opi.def6, '-1.0') = '-1.0' then true
+           else false end                          as warnFlag,
+       1                                           as qty,
+       opi.total_price + 690                       as amount,
+       '190.00'                                    as paid,
+       opi.total_price                             as balance,
+       opi.created_time                            as createdTime
+    </sql>
+    <select id="list" resultType="com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult">
+        select
+        <include refid="list_column"/>
+        from ope_customer_inquiry opi
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        <include refid="where_list"/>
+        order by opi.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+   <sql id="details_column">
+       opi.id,
+       opi.order_no                                as orderNo,
+       opi.status,
+       opi.pay_status                              as payStatus,
+       oc.customer_full_name                       as customerFullName,
+       oc.email,
+       opi.product_model                           as productModel,
+       opp.en_name                                 as enName,
+       opp.color,
+       case
+           when (opp.color = 1) then 'RED'
+           when (opp.color = 2) then 'BLUE'
+           when (opp.color = 3) then 'CHAMPAGNE'
+           when (opp.color = 4) then 'CARBON'
+           when (opp.color = 5) then 'BLACK' end   as colorName,
+       case
+           when (opp.color = 1) then '#BB404A'
+           when (opp.color = 2) then '#4C7DB7'
+           when (opp.color = 3) then '#C4B792'
+           when (opp.color = 4) then '#A9AAAC'
+           when (opp.color = 5) then '#000000' end as colorValue,
+       1                                           as qty,
+       ocib.product_qty                            as batteryQty,
+       opi.total_price + 690                       as amount,
+       '190.00'                                    as paid,
+       opi.total_price                             as balance,
+       opi.created_time                            as createdTime,
+       '500.00'                                    as discount,
+       oc.country_code                             as countryCode,
+       oc.telephone,
+       opi.def1                                    as country,
+       opi.def2                                    as city,
+       opi.def3                                    as postcode,
+       opi.address
+   </sql>
+    <select id="details" resultType="com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult">
+        select
+        <include refid="details_column"/>
+        from ope_customer_inquiry opi
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left  join ope_customer_inquiry_b ocib on opi.id = ocib.inquiry_id and ocib.dr = 0
+        where opi.dr = 0
+        and opi.id=#{id}
+        limit 1
+    </select>
+</mapper>

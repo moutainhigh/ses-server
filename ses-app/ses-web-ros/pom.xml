@@ -21,6 +21,30 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-stripe</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!--环境配置-->
@@ -111,13 +135,15 @@
                         <id>copy-lib-src-webapps</id>
                         <phase>package</phase>
                         <configuration>
+                            <target>
+                                <delete dir="${project.build.directory}"/>
+                            </target>
                             <tasks>
                                 <copy todir="${jar.path}/libs">
                                     <fileset dir="${project.build.directory}">
                                         <include name="${project.name}.jar"/>
                                     </fileset>
                                 </copy>
-                                <delete dir="${project.build.directory}"/>
                             </tasks>
                         </configuration>
                         <goals>

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
@@ -51,6 +52,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/saveDept")
     @ApiOperation(value = "新建部门--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
@@ -64,6 +66,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/deptDetails")
     @ApiOperation(value = "部门详情--reseat", response = DeptDetailsResult.class)
+    @LogAnnotation
     public Response<DeptDetailsResult> deptDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deptDetails(enter));
     }
@@ -76,6 +79,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/deleteDept")
     @ApiOperation(value = "部门删除--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> deleteDept(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(deptService.deleteDept(enter));
     }
@@ -94,6 +98,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/editDept")
     @ApiOperation(value = "部门编辑--reseat", response = GeneralResult.class)
+    @LogAnnotation
     public Response<GeneralResult> editDept(@ModelAttribute @ApiParam("请求参数") UpdateDeptEnter enter) {
         return new Response<>(deptService.editDept(enter));
     }
@@ -118,7 +123,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/deptTree")
     @ApiOperation(value = "部门列表树--reseat", response = DeptTreeListResult.class)
-//    @IgnoreLoginCheck
+    @LogAnnotation
     public Response<List<DeptTreeListResult>> deptTree(@ModelAttribute @ApiParam("请求参数") DeptListEnter enter) {
         return new Response<>(deptService.deptTrees(enter));
     }

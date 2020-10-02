@@ -7,6 +7,7 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 
@@ -19,6 +20,7 @@ import java.util.Calendar;
  */
 @Slf4j
 @Service
+@Component
 public class RunSendMailTaskExecutorServiceJobImpl implements RunSendMailTaskExecutorServiceJob {
 
     @Reference

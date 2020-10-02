@@ -15,8 +15,7 @@ import java.util.Properties;
  */
 @Configuration
 @MapperScan({"com.redescooter.ses.web.ros.dao",
-        "com.redescooter.ses.web.ros.dao.base",
-        "io.seata.samples.integration.account.mapper"})
+        "com.redescooter.ses.web.ros.dao.base"})
 public class MybatisPlusConfig {
     /**
      * 分页插件
