@@ -382,8 +382,9 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
-    ;
+    DELETE_THE_ORDER_FIRST(10183, "请先删除订单"),
 
+    ;
 
 
     private int code;
