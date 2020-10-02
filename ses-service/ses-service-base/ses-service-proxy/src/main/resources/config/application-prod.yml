@@ -42,10 +42,11 @@ spring:
   mail:
     from: support@redelectric.fr
     username: support@redelectric.fr
-    host: smtp.ionos.fr
-    # 邮箱原密码
-    password: sh80QPSKjhqdou!
+    host: smtp.gmail.com
+    # 谷歌应用专属密码
+    password: wxiqpwbypnthkrru!
     port: 465
+    properties.from: support@redelectric.fr
 
 
 
