@@ -45,7 +45,7 @@ spring:
     from: support@redelectric.fr
     username: support@redelectric.fr
     # 谷歌应用专属密码
-    password: wxiqpwbypnthkrru!
+    password: wxiqpwbypnthkrru
     properties:
       from: support@redelectric.fr
 
