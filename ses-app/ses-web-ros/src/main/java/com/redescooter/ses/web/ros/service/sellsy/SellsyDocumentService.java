@@ -133,10 +133,10 @@ public interface SellsyDocumentService {
      */
     GeneralResult checkDocumentPayment(IdEnter enter);
 
-//    /**
-//     * 补全取消状态下的单据
-//     * @param enter
-//     * @return
-//     */
-//    GeneralResult checkCancelPayment(IdEnter enter);
+    /**
+     * 校验付款记录的付款日期、付款金额
+     * @param enter
+     * @return
+     */
+    GeneralResult checkPaymentDataAmount(IdEnter enter);
 }

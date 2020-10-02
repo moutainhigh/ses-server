@@ -141,4 +141,19 @@ public class SellsyDocumentController {
         return new Response<>(documentService.queryDocumentPaymentList(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "upateDocumentStatus", response = GeneralResult.class)
+    @PostMapping(value = "/upateDocumentStatus")
+    public Response<GeneralResult> upateDocumentStatus(@ModelAttribute @ApiParam("请求参数") SellsyUpdateDocumentStatusEnter enter) {
+        documentService.upateDocumentStatus(enter);
+        return new Response<>(null);
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "checkPaymentDataAmount", response = GeneralResult.class)
+    @PostMapping(value = "/checkPaymentDataAmount")
+    public Response<GeneralResult> checkPaymentDataAmount(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(documentService.checkPaymentDataAmount(enter));
+    }
+
 }

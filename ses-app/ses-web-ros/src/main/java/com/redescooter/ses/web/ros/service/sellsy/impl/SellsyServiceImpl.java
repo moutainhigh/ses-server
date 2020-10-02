@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sellsy.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.app.common.service.FileAppService;
@@ -330,7 +331,7 @@ public class SellsyServiceImpl implements SellsyService {
     @Override
     public <T> T jsontoMapJavaObj(SellsyGeneralResult sellsyGeneralResult, T t) {
         Map<String, String> map = JSON.parseObject(sellsyGeneralResult.getResult().toString(), Map.class);
-        return JSON.parseObject(map.get(0).toString(), (Type) t.getClass());
+        return JSON.parseObject(JSONObject.toJSONString(new ArrayList<>(map.values()).get(0)), (Type) t.getClass());
     }
 
     /**

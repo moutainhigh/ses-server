@@ -1329,6 +1329,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             return null;
         }
         for (SellsyInvoiceTotal item : sellsyInvoiceTotalList) {
+            Boolean updateStep = Boolean.FALSE;
 
             //查询订单状态
             JSONObject checkDocumentStatus = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
@@ -1359,7 +1360,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                         .builder()
                         .docid(item.getDef2())
                         .amount(item.getTtc())
-                        .date(new Timestamp(item.getInvoiceTime().getTime() / 1000))
+                        .date(new Timestamp(item.getPayTime().getTime() / 1000))
                         .doctype(SellsyDocmentTypeEnums.invoice.getCode())
                         .ident(item.getInvoiceNum())
                         .medium(Integer.valueOf(mediumId))
@@ -1369,23 +1370,283 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 item.setPayId(documentPayment.getPayid());
                 item.setPayrelId(Integer.valueOf(documentPayment.getPayrelid()));
                 item.setDef1("5");
-
                 JSONObject documentStatus = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
                 String checkDocStatus = String.valueOf(documentStatus.get("step").toString());
                 if (!StringUtils.equals(SellsyDocumentInvoiceStatusEnums.cancelled.getCode(), checkDocStatus)) {
-                    SellsyUpdateDocumentStatusEnter sellsyUpdateDocumentStatusEnter = new SellsyUpdateDocumentStatusEnter();
-                    sellsyUpdateDocumentStatusEnter.setDocid(Integer.valueOf(item.getDef2()));
-                    SellsyUpdateDocumentInvoidSatusEnter sellsyUpdateDocumentInvoidSatusEnter = new SellsyUpdateDocumentInvoidSatusEnter();
-                    sellsyUpdateDocumentInvoidSatusEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
-                    sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.cancelled);
-                    sellsyUpdateDocumentStatusEnter.setDocument(sellsyUpdateDocumentInvoidSatusEnter);
-                    upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
+                    updateStep = Boolean.TRUE;
                 }
+            } else {
+                updateStep = Boolean.TRUE;
             }
+            if (updateStep) {
+                SellsyUpdateDocumentStatusEnter sellsyUpdateDocumentStatusEnter = new SellsyUpdateDocumentStatusEnter();
+                sellsyUpdateDocumentStatusEnter.setDocid(Integer.valueOf(item.getDef2()));
+                SellsyUpdateDocumentInvoidSatusEnter sellsyUpdateDocumentInvoidSatusEnter = new SellsyUpdateDocumentInvoidSatusEnter();
+                sellsyUpdateDocumentInvoidSatusEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
+                sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.cancelled);
+                sellsyUpdateDocumentStatusEnter.setDocument(sellsyUpdateDocumentInvoidSatusEnter);
+                upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
+            }
+
 
             sellsyInvoiceTotalService.updateById(item);
         }
         return null;
+    }
+
+    /**
+     * 补全取消状态下的单据
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult checkPaymentDataAmount(IdEnter enter) {
+        QueryWrapper<SellsyInvoiceTotal> sellsyInvoiceTotalQueryWrapper = new QueryWrapper<>();
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_TYPE, '2');
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_DEF1, '4');
+        sellsyInvoiceTotalQueryWrapper.last("limit " + enter.getId());
+        List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list(sellsyInvoiceTotalQueryWrapper);
+
+        if (CollectionUtils.isEmpty(sellsyInvoiceTotalList)) {
+            log.info("-----------没有新发票无需校验------------");
+            return null;
+        }
+
+        for (SellsyInvoiceTotal item : sellsyInvoiceTotalList) {
+            Boolean createDocuPay = Boolean.FALSE;
+            //查询当前发票
+            JSONObject queryDoucment = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+            if (queryDoucment == null) {
+                SellsyDocumentListEnter sellsyDocumentListEnter = SellsyDocumentListEnter.builder().build();
+                SellsyDocumentSearchListEnter sellsyDocumentSearchListEnter = new SellsyDocumentSearchListEnter();
+                sellsyDocumentSearchListEnter.setIdent(item.getInvoiceNum());
+                sellsyDocumentListEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
+                sellsyDocumentListEnter.setSearch(sellsyDocumentSearchListEnter);
+                sellsyDocumentListEnter.setPagination(new SellsyCommonPaginationEnter(1, 3));
+                List<SellsyDocumentListResult> sellsyDocumentListResultList = queryDocumentList(sellsyDocumentListEnter);
+                if (CollectionUtils.isEmpty(sellsyDocumentListResultList)) {
+                    log.info("-------------订单未创建-------------");
+                    item.setDef1("N");
+                    sellsyInvoiceTotalService.updateById(item);
+                    continue;
+                }
+                SellsyDocumentListResult sellsyDocumentListResult =
+                        sellsyDocumentListResultList.stream().filter(docu -> StringUtils.equals(item.getInvoiceNum(), docu.getIdent())).findFirst().orElse(null);
+                if (sellsyDocumentListResult == null) {
+                    log.info("-------------订单未创建-------------");
+                    item.setDef1("N");
+                    sellsyInvoiceTotalService.updateById(item);
+                    continue;
+                }
+
+                queryDoucment = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(sellsyDocumentListResult.getId())));
+            }
+            String step = queryDoucment.get("step").toString();
+            if (StringUtils.equals(step, SellsyDocumentInvoiceStatusEnums.cancelled.getCode())) {
+                //状态校验
+                if (!StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
+                    log.info("-------------取消状态校验-------------");
+                    item.setDef1("2");
+                    sellsyInvoiceTotalService.updateById(item);
+                    continue;
+                }
+                if (item.getPayTime() != null) {
+                    log.info("-------------取消状态付款记录校验-------------");
+                    //校验 付款记录
+                    SellsyQueryDocumentPaymentOneResult sellsyQueryDocumentPaymentOneResult = queryDocumentPaymentOne(new SellsyQueryDocumentPaymentEnter(item.getPayrelId(),
+                            SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                    if (sellsyQueryDocumentPaymentOneResult == null) {
+                        List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentList =
+                                queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                        if (CollectionUtils.isEmpty(sellsyQueryDocumentPaymentList)) {
+                            log.info("-----------付款记录为空------------");
+                            createDocuPay = true;
+                        }
+                    } else {
+                        log.info("-------------取消状态付款金额、时间-------------");
+                        //比对 付款时间 付款金额 付款方式
+                        List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentListEnterList =
+                                queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                        SellsyQueryDocumentPaymentListEnter sellsyQueryDocumentPaymentListEnter = sellsyQueryDocumentPaymentListEnterList.get(0);
+                        Date date = DateUtil.formatDate(sellsyQueryDocumentPaymentListEnter.getFormatted_relatedDate());
+                        if (item.getPayTime().getTime() != date.getTime()) {
+                            if (!createDocuPay) {
+                                //删除付款记录
+                                //生成新的付款记录
+                                createDocuPay = true;
+                                deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(new SellsyDeletePaymentEnter(Integer.valueOf(item.getPayrelId()), SellsyDocmentTypeEnums.invoice.getCode(),
+                                        Integer.valueOf(item.getDef2()))));
+                            }
+                        }
+                        if (new BigDecimal(sellsyQueryDocumentPaymentListEnter.getRelatedAmount()).doubleValue() != new BigDecimal(item.getTtc()).doubleValue()) {
+                            //删除付款记录
+                            //删除付款记录
+                            //生成新的付款记录
+                            if (!createDocuPay) {
+                                createDocuPay = true;
+                                deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(new SellsyDeletePaymentEnter(Integer.valueOf(item.getPayrelId()), SellsyDocmentTypeEnums.invoice.getCode(),
+                                        Integer.valueOf(item.getDef2()))));
+                            }
+                        }
+
+                    }
+                }
+                item.setDef1("1");
+            }
+
+            if (StringUtils.equals(step, SellsyDocumentInvoiceStatusEnums.due.getCode())) {
+                log.info("-------------未付款状态校验-------------");
+                if (!StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.NOT_RECEIVED.getCode())) {
+                    item.setDef1("2");
+                }
+                item.setDef1("1");
+                sellsyInvoiceTotalService.updateById(item);
+                continue;
+            }
+
+            if (StringUtils.equals(step, SellsyDocumentInvoiceStatusEnums.paid.getCode())) {
+                log.info("-------------支付状态校验-------------");
+                if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.RECEIVED.getCode())) {
+                    log.info("-------------支付状态校验-------------");
+                    //校验 付款记录
+                    SellsyQueryDocumentPaymentOneResult sellsyQueryDocumentPaymentOneResult = queryDocumentPaymentOne(new SellsyQueryDocumentPaymentEnter(item.getPayrelId(),
+                            SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                    if (sellsyQueryDocumentPaymentOneResult == null) {
+                        List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentList =
+                                queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                        if (CollectionUtils.isEmpty(sellsyQueryDocumentPaymentList)) {
+                            log.info("-----------付款记录为空------------");
+                            createDocuPay = Boolean.TRUE;
+                        }
+                    } else {
+                        log.info("-------------支付状态付款金额、时间校验-------------");
+
+                        log.info("-------------取消状态付款金额、时间-------------");
+                        //比对 付款时间 付款金额 付款方式
+                        List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentListEnterList =
+                                queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                        SellsyQueryDocumentPaymentListEnter sellsyQueryDocumentPaymentListEnter = sellsyQueryDocumentPaymentListEnterList.get(0);
+                        Date date = DateUtil.formatDate(sellsyQueryDocumentPaymentListEnter.getFormatted_relatedDate());
+                        if (item.getPayTime().getTime() != date.getTime()) {
+                            if (!createDocuPay) {
+                                //删除付款记录
+                                //生成新的付款记录
+                                createDocuPay = true;
+                                deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(new SellsyDeletePaymentEnter(Integer.valueOf(item.getPayrelId()), SellsyDocmentTypeEnums.invoice.getCode(),
+                                        Integer.valueOf(item.getDef2()))));
+                            }
+                        }
+                        if (new BigDecimal(sellsyQueryDocumentPaymentListEnter.getRelatedAmount()).doubleValue() != new BigDecimal(item.getTtc()).doubleValue()) {
+                            //删除付款记录
+                            //删除付款记录
+                            //生成新的付款记录
+                            if (!createDocuPay) {
+                                createDocuPay = true;
+                                deleteDocumentPayment(new SellsyDeleteDocumentPaymentEnter(new SellsyDeletePaymentEnter(Integer.valueOf(item.getPayrelId()), SellsyDocmentTypeEnums.invoice.getCode(),
+                                        Integer.valueOf(item.getDef2()))));
+                            }
+                        }
+                    }
+                } else {
+                    item.setDef1("2");
+                }
+            }
+            if (createDocuPay) {
+
+                //查询付款方式
+                List<SellsyQueryPayMediumListResult> sellsyQueryPayMediumListResultList = sellsyAccountSettingService.queryPayMediums();
+                String mediumId =
+                        sellsyQueryPayMediumListResultList.stream().filter(medium -> StringUtils.equals(item.getPayType(), medium.getValue())).findFirst().orElse(null).getId();
+                if (StringUtils.isEmpty(mediumId)) {
+                    mediumId = sellsyConfig.getMediumId();
+                }
+                //暂无支付记录 创建支付记录
+                SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
+                        .builder()
+                        .docid(item.getDef2())
+                        .amount(item.getTtc())
+                        .date(new Timestamp(item.getInvoiceTime().getTime() / 1000))
+                        .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                        .ident(item.getInvoiceNum())
+                        .medium(Integer.valueOf(mediumId))
+                        .build();
+                log.info("-----------生成付款记录------------");
+                SellsyCreateDocumentPaymentResult createDocumentPayment = createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+                item.setPayId(createDocumentPayment.getPayid());
+                item.setPayrelId(Integer.valueOf(createDocumentPayment.getPayrelid()));
+                item.setDef1("1");
+
+
+                JSONObject createDoucment = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+                String createStatus = createDoucment.get("step").toString();
+
+                SellsyUpdateDocumentStatusEnter sellsyUpdateDocumentStatusEnter = new SellsyUpdateDocumentStatusEnter();
+                sellsyUpdateDocumentStatusEnter.setDocid(Integer.valueOf(item.getDef2()));
+                SellsyUpdateDocumentInvoidSatusEnter sellsyUpdateDocumentInvoidSatusEnter = new SellsyUpdateDocumentInvoidSatusEnter();
+                sellsyUpdateDocumentInvoidSatusEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
+                if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
+                    if (!StringUtils.equals(createStatus, SellsyDocumentInvoiceStatusEnums.cancelled.getCode())) {
+                        //更新
+                        sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.cancelled);
+                    }
+                }
+                if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.RECEIVED.getCode())) {
+                    if (!StringUtils.equals(createStatus, SellsyDocumentInvoiceStatusEnums.paid.getCode())) {
+                        //更新
+                        sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.paid);
+                    }
+                }
+                if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.NOT_RECEIVED.getCode())) {
+                    if (!StringUtils.equals(createStatus, SellsyDocumentInvoiceStatusEnums.due.getCode())) {
+                        //更新
+                        sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.due);
+                    }
+                }
+                if (sellsyUpdateDocumentInvoidSatusEnter != null) {
+                    sellsyUpdateDocumentStatusEnter.setDocument(sellsyUpdateDocumentInvoidSatusEnter);
+                    upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
+                }
+            }
+            sellsyInvoiceTotalService.updateById(item);
+        }
+
+        return null;
+    }
+
+    private void checkPayment(SellsyInvoiceTotal item, String step) {
+        //校验 付款记录
+        SellsyQueryDocumentPaymentOneResult sellsyQueryDocumentPaymentOneResult = queryDocumentPaymentOne(new SellsyQueryDocumentPaymentEnter(item.getPayrelId(),
+                SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+        if (sellsyQueryDocumentPaymentOneResult == null) {
+            List<SellsyQueryDocumentPaymentListEnter> sellsyQueryDocumentPaymentList =
+                    queryDocumentPaymentList(new QueryDocumentPaymentListEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
+            if (CollectionUtils.isEmpty(sellsyQueryDocumentPaymentList)) {
+                log.info("-----------付款记录为空------------");
+
+                //查询付款方式
+                List<SellsyQueryPayMediumListResult> sellsyQueryPayMediumListResultList = sellsyAccountSettingService.queryPayMediums();
+                String mediumId =
+                        sellsyQueryPayMediumListResultList.stream().filter(medium -> StringUtils.equals(item.getPayType(), medium.getValue())).findFirst().orElse(null).getId();
+                if (StringUtils.isEmpty(mediumId)) {
+                    mediumId = sellsyConfig.getMediumId();
+                }
+                //暂无支付记录 创建支付记录
+                SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
+                        .builder()
+                        .docid(item.getDef2())
+                        .amount(item.getTtc())
+                        .date(new Timestamp(item.getInvoiceTime().getTime() / 1000))
+                        .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                        .ident(item.getInvoiceNum())
+                        .medium(Integer.valueOf(mediumId))
+                        .build();
+                log.info("-----------生成付款记录------------");
+                SellsyCreateDocumentPaymentResult createDocumentPayment = createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+                item.setPayId(createDocumentPayment.getPayid());
+                item.setPayrelId(Integer.valueOf(createDocumentPayment.getPayrelid()));
+                item.setDef1("1");
+            }
+        }
     }
 
     /**

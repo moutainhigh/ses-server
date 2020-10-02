@@ -1,19 +1,17 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-SellsyClient")
+import java.io.Serializable;
+import java.util.Date;
+
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-SellsyClient")
 @Data
 @Builder
 @AllArgsConstructor
@@ -31,7 +29,8 @@ public class SellsyClient implements Serializable {
      * 删除标识
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="删除标识")
+    @ApiModelProperty(value = "删除标识")
+    @TableLogic
     private Integer dr;
 
     /**
