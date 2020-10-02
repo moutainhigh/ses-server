@@ -92,7 +92,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
             opeSysUserService.removeById(opeSysUser.getId());
         }
         opeCustomerService.removeById(opeCustomer.getId());
-        return new GeneralResult();
+        return new GeneralResult(email.getRequestId());
     }
 
 

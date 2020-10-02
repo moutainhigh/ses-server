@@ -553,7 +553,6 @@ public class StaffServiceImpl implements StaffService {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getUserId());
         // 员工状态变化  影响到账号
         if (enter.getStatus() != staff.getStatus()) {
@@ -728,7 +727,6 @@ public class StaffServiceImpl implements StaffService {
         Map<String, String> map = new HashMap<>();
         map.put("deptIds", StringUtils.join(list, ","));
         jedisCluster.hmset(key, map);
-//        return userMsg;
     }
 
 
