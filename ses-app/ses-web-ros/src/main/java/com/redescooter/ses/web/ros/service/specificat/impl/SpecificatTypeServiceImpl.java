@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.specificat.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -217,5 +218,29 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         result.setDef(resultDefs);
         return result;
+    }
+
+
+    @Override
+    public BooleanResult specificatNameCheck(SpecificatTypeSaveOrEditEnter enter) {
+        BooleanResult booleanResult = new BooleanResult();
+        boolean flag = true;
+        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
+        if(enter.getId() != null){
+            // 这个时候是修改 需要排除本身去校验
+            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
+        }
+        int count = opeSpecificatTypeService.count(qw);
+        if(count > 0){
+            // 已经存在返回false
+            flag = false;
+        }
+        booleanResult.setSuccess(flag);
+        booleanResult.setRequestId(enter.getRequestId());
+        return booleanResult;
     }
 }

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.specificat;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -65,5 +66,15 @@ public interface SpecificatTypeService {
      * @return
      **/
     SpecificatTypeDetailResult specificatTypeDetail(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  规格类型名称的唯一性校验
+     * @Date  2020/10/9 11:20
+     * @Param [enter]
+     * @return 名称不存在返回true 名称存在返回false
+     **/
+    BooleanResult specificatNameCheck(SpecificatTypeSaveOrEditEnter enter);
 
 }

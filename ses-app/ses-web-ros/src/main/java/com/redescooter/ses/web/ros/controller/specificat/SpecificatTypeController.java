@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.controller.specificat;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListEnter;
@@ -63,6 +60,13 @@ public class SpecificatTypeController {
     @ApiOperation(value = "规格类型详情", response = SpecificatTypeDetailResult.class)
     public Response<SpecificatTypeDetailResult> specificatTypeDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(specificatTypeService.specificatTypeDetail(enter));
+    }
+
+
+    @PostMapping(value = "/specificatNameCheck")
+    @ApiOperation(value = "规格类型名称的校验", response = BooleanResult.class)
+    public Response<BooleanResult> specificatNameCheck(@ModelAttribute @ApiParam("请求参数") SpecificatTypeSaveOrEditEnter enter) {
+        return new Response(specificatTypeService.specificatNameCheck(enter));
     }
 
 }
