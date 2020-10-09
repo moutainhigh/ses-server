@@ -24,10 +24,10 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
             builder.append("PARTS_NO ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
-        if (Strings.isNullOrEmpty(rosParseExcelData.getMainDrawing())) {
-            builder.append("Main_Drawing ,This is  not must null;");
-            return new ExcelVerifyHandlerResult(false, builder.toString());
-        }
+//        if (Strings.isNullOrEmpty(rosParseExcelData.getMainDrawing())) {
+//            builder.append("Main_Drawing ,This is  not must null;");
+//            return new ExcelVerifyHandlerResult(false, builder.toString());
+//        }
         if (Strings.isNullOrEmpty(rosParseExcelData.getChineseName())) {
             builder.append("Chinese_Name ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
