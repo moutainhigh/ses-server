@@ -1,9 +1,15 @@
-server:                                                                                                                 #Springboot 基础配置
+#Springboot 基础配置
+server:
   port: 28190
   servlet:
     context-path: /ses/t/ros/w/api
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
   tomcat:
     uri-encoding: UTF-8
+#基本信息配置
 spring:
   application:
     name: @project.artifactId@
@@ -13,7 +19,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
-  datasource:                                                                                                           #数据库连接
+  #数据库连接
+  datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -43,15 +50,9 @@ spring:
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
-
-  http:                                                                                                                 #编码格式
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
   freemarker:
     check-template-location: false
-                                                                                                                        #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+#Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
     port: 28188
@@ -61,45 +62,57 @@ management:
     enabled-by-default: true
     web:
       base-path: "/monitor"
-      exposure:                                                                                                         #设置暴露所有端点
+      #设置暴露所有端点
+      exposure:
         include: "*"
   endpoint:
-    shutdown:                                                                                                           #设置单个端点（/shutdown）可用
+    shutdown:
+      #设置单个端点（/shutdown）可用
       enabled: true
-
-dubbo:                                                                                                                  #DUBBO 配置
+#DUBBO 配置
+dubbo:
   application:
     id: @project.artifactId@
     name: @project.artifactId@
-    qos-enable: false                                                                                                   #是否启动QoS
-    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    #是否启动QoS
+    qos-enable: false
+    #是否允许远程访问
+    qos-accept-foreign-ip: false
     logger: log4j
+  #注册中心配置
   registry:
-    check: false                                                                                                        #注册中心不存在时，是否报错
+    simplified: true
+    #注册中心不存在时，是否报错
+    check: false
+    register: true
+    subscribe: true
     group: ses
+    protocol: zookeeper
+  # Dubbo服务暴露与发现消费所在的package
   scan:
-    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
-  provider:                                                                                                             #服务提供者缺省值配置
-    timeout: 30000
-    threads: 300
-  consumer:                                                                                                             #服务消费者缺省值配置
-    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
+    base-packages: com.redescooter.ses
+  #服务消费者缺省值配置
+  consumer:
+    #启动时检查提供者是否存在，true报错，false忽略
+    check: false
     timeout: 20000
     filter: dubboAccessLogFilter
   protocol:
+    register: true
     port: -1
     threads: 300
     name: dubbo
-
-mybatis:                                                                                                                #MYBATIS配置
+#MYBATIS配置
+mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
-
-mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
+    #打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybaits-plus配置，此配置 不影响原始的mybatis
+mybatis-plus:
   mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.web.ros.vo,com.redescooter.ses.web.ros.dm
-  global-config:                                                                                                        #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+  global-config: #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 3                                                                                                          #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
     field-strategy: 1                                                                                                   #驼峰下划线转换
     db-column-underline: true                                                                                           #配置逻辑删除字段为1是删除
@@ -109,20 +122,19 @@ mybatis-plus:                                                                   
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
-
 #前端请求私钥
 Request:
   privateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCchHDOG0HP2oE6neIA0Q4Y0BDdbzNCDJdfCk+GxKA/ma2xEya4huuIQ9xKjO0e0E3CqKrCdrc5mOZqfjI2vg0LiDzHmGfRG3JmmHGXocNJlG/EoQerWQqSAN3GsfHnxWiGamHSLbq2+YcBrHxS93z8nOqAEG0u6IHooiNPdVmKasMzPIr4hU7BcYKvZ88485qQBG5ySu4xggg2h6WJy7lphEjRO8qpZlUqvMcnpu+qzELcaV1vEcCPUhPBzUbCbOupdzbBvD/ebzdnjXvoX4NrtC6vmRD+xCSpNLxnP0OOy8T7erv6W7WfXcB9pvukRSBay2zNWDKCDPUQa0/aZTHXAgMBAAECggEAZrmR4+QF1KqfaF5ZB5otu2FLwFmMdcwXyTvWKCiC2Fs/oVllb3S1v1Byk8dclX23m4vhzxHlfXr5t2kuAbnIjAoVghZoBNkTw3xICXIU3wT6Oj5J707YXi0NYaxGjYyF5rqJi02SHyc0UYfobPeb45wFWJnvXvsg0BMiQ7NMWkhjJSRzm1dw2unKcIoEG28azWvoI6ItRGzMBGIIDgAG2nIoTmLI1NakEa72GvPSk1n5ec2iCz9WEl+O+p11Oj+y9VC89nc802ilUpdBupHR4HzNOg0lFv7FxkxHgjVIY9iejxSVvfZobu/kchbAOsxtsn0iYT9BQkw5TdzwrxDRQQKBgQDJCKJUl5LbX5+CvJ9meUAbd1dEGwoVrwspHAeCdDykgNvoHd+g64OYhZ6GHSN8+biXTBI4cghTjOns/SLS728JiRd99VVl0OsQ2VgYq0ju0ATHkAGUIryKgYnMFNNYc+BsZESx4kC7IEHWJg/jnFkP6ltEUxETbvdFJVxPoxp3NwKBgQDHT+FWKvuabdU6vj6coITdE43CzVIvAH82kAEjJkVRO3m0wMrc+SBBDN+w8HUYaNT7aDUgI3Vq1TMz/2+oGYB31EcFTNygxRffhUugkNxk5ceXmc0wYSPZqj3T3TE/v9KdR+jxOw8LAqnKG6AytAFeSaz/P37CviIlfMKsUikqYQKBgQCX2k3EWDo2OyTiPFirrysdlCf26fXUK0Ti6KlDgUnNeQijbO1fQIdGzqfP5nLIFFm671tUB88CTY7l1NBZRUM6kLOOEaNQJV9qesJw3/FXcwopND39B8AjX3YXEiQSzHTZa2P4ek8rClKw0E9wPsmHnB8UnSpo44kkUfRIs4tqQQKBgQC9Jr3/fMNTB7E5EptxIZV2Cbybhyfbm2kfawLpTMS0FvGl7OGZXISTt5gC3/EAvVyDS54/Zedk//ib/GsG6UzWbAsKqKspmGLTqjjfpRrEVp1Y7omgxE+1nq8WhfDbQzyqLziO1zGrjVd9i0I5XEOALAOWKbgvMSpO0VwfFcojgQKBgBXiUun7TpUcAudrPsvhuy819dCL1Xv/deaaf/O31AY6/xJzWd4mZCCUqb6/SVBqKuglHNHzOyYPE5lTkE5Z3NDIWYbEUlUvGYus4XpyCGA1vigxnckXFqt/VUiCDTDmQemPAe1+KeQfMMrCCgxQV+6GcoYUWy/LD7XkSB02qfvi
   publicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnIRwzhtBz9qBOp3iANEOGNAQ3W8zQgyXXwpPhsSgP5mtsRMmuIbriEPcSoztHtBNwqiqwna3OZjman4yNr4NC4g8x5hn0RtyZphxl6HDSZRvxKEHq1kKkgDdxrHx58Vohmph0i26tvmHAax8Uvd8/JzqgBBtLuiB6KIjT3VZimrDMzyK+IVOwXGCr2fPOPOakARuckruMYIINoelicu5aYRI0TvKqWZVKrzHJ6bvqsxC3GldbxHAj1ITwc1GwmzrqXc2wbw/3m83Z4176F+Da7Qur5kQ/sQkqTS8Zz9DjsvE+3q7+lu1n13Afab7pEUgWstszVgyggz1EGtP2mUx1wIDAQAB
-
-oss:                                                                                                                    #阿里oss上传
+#阿里云OSS配置
+oss:
   internalEndpoint: oss-cn-shanghai.aliyuncs.com
   accessKeyId: LTAIDUpZRjkFVCze
   secretAccesskey: lVM6XOqSdrdgJ3brHRcdSUOAVdxcS5
   defaultBucketName: rede
   publicEndpointDomain: oss-cn-shanghai.aliyuncs.com
   maxFileSize: 104857600
-
+#官网订阅邮箱配置
 sendinblue:
   accept: application/json
   contentType: application/json

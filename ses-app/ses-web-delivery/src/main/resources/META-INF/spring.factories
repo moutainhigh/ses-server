@@ -1,1 +1,0 @@
-org.springframework.boot.env.EnvironmentPostProcessor=com.redescooter.ses.web.delivery.config.LocalSettingsEnvironmentPostProcessor

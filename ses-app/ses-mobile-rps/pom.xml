@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-app</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <artifactId>ses-mobile-rps</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <name>ses-mobile-rps</name>
     <description>Demo project for Spring Boot</description>
 
@@ -105,7 +105,11 @@
                 <executions>
                     <execution>
                         <id>copy-lib-src-webapps</id>
+                        <!-- 执行打包操作时执行的任务 -->
                         <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                         <configuration>
                             <target>
                                 <delete dir="${project.build.directory}"/>
@@ -118,9 +122,6 @@
                                 </copy>
                             </tasks>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

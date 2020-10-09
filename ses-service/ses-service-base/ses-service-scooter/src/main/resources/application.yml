@@ -50,31 +50,43 @@ spring:
   # swagger配置
   swagger:
     enabled: false                                       # 是否启用swagger
-
-dubbo:                                                                                                                  #DUBBO 配置
+#DUBBO 配置
+dubbo:
   application:
     id: @project.artifactId@
     name: @project.artifactId@
-    qos-enable: false                                                                                                   #是否启动QoS
-    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    #是否启动QoS
+    qos-enable: false
+    #是否允许远程访问
+    qos-accept-foreign-ip: false
     logger: log4j
+  #注册中心配置
   registry:
-    check: false                                                                                                        #注册中心不存在时，是否报错
+    simplified: true
+    #注册中心不存在时，是否报错
+    check: false
+    register: true
+    subscribe: true
     group: ses
+    protocol: zookeeper
+  # Dubbo服务暴露与发现消费所在的package
   scan:
-    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
-  provider:                                                                                                             #服务提供者缺省值配置
+    base-packages: com.redescooter.ses
+  provider: #服务提供者缺省值配置
+    dynamic: true
     timeout: 30000
     threads: 300
-  consumer:                                                                                                             #服务消费者缺省值配置
-    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
+  #服务消费者缺省值配置
+  consumer:
+    #启动时检查提供者是否存在，true报错，false忽略
+    check: false
     timeout: 20000
     filter: dubboAccessLogFilter
   protocol:
+    register: true
     port: -1
     threads: 300
     name: dubbo
-
 #MYBATIS配置
 mybatis:                                                                                                                #MYBATIS配置
   configuration:

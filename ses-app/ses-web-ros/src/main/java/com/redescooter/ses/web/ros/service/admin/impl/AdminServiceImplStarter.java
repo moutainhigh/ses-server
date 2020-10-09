@@ -59,12 +59,6 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     @Autowired
     private OpeSysDeptService opeSysDeptService;
 
-    @Reference
-    private IdAppService idAppService;
-
-    @Reference
-    private CityBaseService cityBaseService;
-
     @Autowired
     private RolePermissionService rolePermissionService;
 
@@ -97,6 +91,12 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     @Autowired
     private OpeSysPositionService opeSysPositionService;
+
+    @Reference
+    private IdAppService idAppService;
+
+    @Reference
+    private CityBaseService cityBaseService;
 
     /**
      * 检查admin 是否存在
@@ -219,6 +219,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             saveAdmin();
             return new GeneralResult();
         }
+        log.info("---------------------开始验证admin管理员完整性--------------------------");
         OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()).last("limit 1"));
         if(position == null){
             position = createOpeSysPosition(dept, sysUserServiceOne);
@@ -243,27 +244,28 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         if (sysRoleDept == null) {
             opeSysRoleDeptService.save(OpeSysRoleDept.builder().deptId(dept.getId()).roleId(sysRole.getId()).build());
         }
-        //校验role 是否具有 所有页面权限
-        List<OpeSysRoleMenu> sysRoleMenuList = opeSysRoleMenuService.list(new LambdaQueryWrapper<OpeSysRoleMenu>().eq(OpeSysRoleMenu::getRoleId, sysRole.getId()));
-        if (sysRoleMenuList.size() != opeSysMenus.size()) {
-
-            List<OpeSysRoleMenu> saveOpeSysRoleMenu = new ArrayList<>();
-            opeSysMenus.forEach(item -> {
-                sysRoleMenuList.forEach(role -> {
-                    if (!item.getId().equals(role.getMenuId())) {
-                        saveOpeSysRoleMenu.add(OpeSysRoleMenu.builder().menuId(item.getId()).roleId(sysRoleDept.getRoleId()).build());
-                    }
-                });
-            });
-            //更新 页面权限信息
-            opeSysRoleMenuService.saveBatch(saveOpeSysRoleMenu);
-        }
+//        //校验role 是否具有 所有页面权限
+//        List<OpeSysRoleMenu> sysRoleMenuList = opeSysRoleMenuService.list(new LambdaQueryWrapper<OpeSysRoleMenu>().eq(OpeSysRoleMenu::getRoleId, sysRole.getId()));
+//        if (sysRoleMenuList.size() != opeSysMenus.size()) {
+//
+//            List<OpeSysRoleMenu> saveOpeSysRoleMenu = new ArrayList<>();
+//            opeSysMenus.forEach(item -> {
+//                sysRoleMenuList.forEach(role -> {
+//                    if (!item.getId().equals(role.getMenuId())) {
+//                        saveOpeSysRoleMenu.add(OpeSysRoleMenu.builder().menuId(item.getId()).roleId(sysRoleDept.getRoleId()).build());
+//                    }
+//                });
+//            });
+//            //更新 页面权限信息
+//            opeSysRoleMenuService.saveBatch(saveOpeSysRoleMenu);
+//        }
         //校验 员工和角色是否具有绑定关系
         OpeSysUserRole sysUserRole = opeSysUserRoleService.getOne(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getRoleId, sysRole.getId()).eq(OpeSysUserRole::getUserId,
                 sysUserServiceOne.getId()).last("limit 1"));
         if (sysUserRole == null) {
             opeSysUserRoleService.save(OpeSysUserRole.builder().roleId(sysRole.getId()).userId(sysUserServiceOne.getId()).build());
         }
+        log.info("---------------------结束验证admin管理员完整性--------------------------");
 
         return new GeneralResult();
     }

@@ -5,6 +5,11 @@ log:
     max-size: 128MB
     max-history: 180
 
+# DUBBO 配置
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:2181
+
 spring:
   #数据库连接
   datasource:
@@ -35,13 +40,6 @@ spring:
     # 邮箱原密码
     password: sh80QPSKjhqdou!
     port: 465
-
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
-
-
 
 # 多注册中心配置
 #    reg2:
