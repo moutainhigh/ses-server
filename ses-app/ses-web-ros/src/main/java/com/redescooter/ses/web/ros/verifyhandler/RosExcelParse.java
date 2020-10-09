@@ -44,10 +44,10 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
             builder.append("SEC ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
-        if (Strings.isNullOrEmpty(rosParseExcelData.getItem())) {
-            builder.append("ITEM ,This is  not must null;");
-            return new ExcelVerifyHandlerResult(false, builder.toString());
-        }
+//        if (Strings.isNullOrEmpty(rosParseExcelData.getItem())) {
+//            builder.append("ITEM ,This is  not must null;");
+//            return new ExcelVerifyHandlerResult(false, builder.toString());
+//        }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSellClass())) {
             builder.append("Sell_Class ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
