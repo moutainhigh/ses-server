@@ -69,5 +69,11 @@ public interface RosParameterService {
      */
     List<ParameterGroupResultList> groupList(BooleanEnter enter);
 
+    /**
+     * 参数批量保存
+     * @param enter
+     * @param successList
+     * @return
+     */
     GeneralResult saveParameterBatch(ImportParameterEnter enter, List<ImportParameterExcleData> successList);
 }

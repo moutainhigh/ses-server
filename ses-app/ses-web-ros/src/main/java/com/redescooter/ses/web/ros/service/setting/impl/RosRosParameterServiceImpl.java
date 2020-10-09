@@ -216,6 +216,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
      */
     @Override
     public List<ParameterGroupResultList> groupList(BooleanEnter enter) {
+        enter.setSystemId(SystemTypeEnums.REDE_ROS.getCode());
         return parameterSettingService.groupList(enter);
     }
 

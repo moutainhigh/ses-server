@@ -111,7 +111,7 @@
         bom.parts_qty as qty
         from ope_production_scooter_bom bom
         <include refid="where_scooterBomList"/>
-        order by bom.created_time desc
+        order by bom.created_time desc,bom.effective_date asc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
@@ -169,7 +169,7 @@
                bom.fr_name as frName
         from ope_production_combin_bom bom
        <include refid="where_combinationList" />
-        order by bom.created_time desc
+        order by bom.created_time desc,bom.effective_date asc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 

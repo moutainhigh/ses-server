@@ -998,22 +998,29 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             .createdBy(enter.getUserId()).updatedBy(enter.getUserId()).createdTime(new Date()).updatedTime(new Date())
             .build();
 
-        opeProductionScooterBomService.save(productionScooterBom);
-
-        // 自己记录保存
-        opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
-
         if (!enter.getDirectRelease()) {
             // 删除草稿
             opeProductionScooterBomDraftService.removeById(opeProductionScooterBomDraft);
         }
         if (null != enter.getId() && enter.getId() != 0) {
             OpeProductionScooterBomDraft productionScooterBomDraft =
-                opeProductionScooterBomDraftService.getById(enter.getId());
+                    opeProductionScooterBomDraftService.getById(enter.getId());
             if (productionScooterBomDraft != null) {
                 opeProductionScooterBomDraftService.removeById(productionScooterBomDraft.getId());
             }
+            //若当前版本为待激活 发布后 删除当前版本
+            OpeProductionScooterBom queryOpeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
+            if (queryOpeProductionScooterBom != null) {
+                if (queryOpeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+                    opeProductionScooterBomService.removeById(queryOpeProductionScooterBom.getId());
+                }
+            }
         }
+
+        opeProductionScooterBomService.save(productionScooterBom);
+
+        // 自己记录保存
+        opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
     }
 
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
@@ -1168,9 +1175,16 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         if (null != enter.getId() && enter.getId() != 0) {
             OpeProductionCombinBomDraft productionCombinBomDraft =
-                opeProductionCombinBomDraftService.getById(enter.getId());
+                    opeProductionCombinBomDraftService.getById(enter.getId());
             if (productionCombinBomDraft != null) {
                 opeProductionCombinBomDraftService.removeById(productionCombinBomDraft.getId());
+            }
+            //若当前版本为待激活 发布后 删除当前版本
+            OpeProductionCombinBom queryOpeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
+            if (queryOpeProductionCombinBom != null) {
+                if (queryOpeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+                    opeProductionCombinBomService.removeById(queryOpeProductionCombinBom.getId());
+                }
             }
         }
     }
