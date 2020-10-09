@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.specificat.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -68,6 +69,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if (enters.size() > 8){
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NUM_ERROR.getCode(), ExceptionCodeEnums.DEF_NUM_ERROR.getMessage());
         }
+        checkSpecificatName(enter);
         OpeSpecificatType specificatType = new OpeSpecificatType();
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setSpecificatName(enter.getSpecificatName());
@@ -87,6 +89,30 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         specificatDefService.saveSpecificatDef(enters,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  校验规格类型的名称是否重复
+     * @Date  2020/10/9 10:34
+     * @Param
+     * @return
+     **/
+    public void checkSpecificatName(SpecificatTypeSaveOrEditEnter enter){
+        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
+        if(enter.getId() != null){
+            // 这个时候是修改 需要排除本身去校验
+            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
+        }
+        int count = opeSpecificatTypeService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
+        }
     }
 
 
@@ -143,6 +169,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if(specificatType == null){
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
+        checkSpecificatName(enter);
         specificatType.setSpecificatName(enter.getSpecificatName());
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setUpdatedBy(enter.getUserId());
@@ -191,5 +218,29 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         result.setDef(resultDefs);
         return result;
+    }
+
+
+    @Override
+    public BooleanResult specificatNameCheck(SpecificatTypeSaveOrEditEnter enter) {
+        BooleanResult booleanResult = new BooleanResult();
+        boolean flag = true;
+        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
+        if(enter.getId() != null){
+            // 这个时候是修改 需要排除本身去校验
+            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
+        }
+        int count = opeSpecificatTypeService.count(qw);
+        if(count > 0){
+            // 已经存在返回false
+            flag = false;
+        }
+        booleanResult.setSuccess(flag);
+        booleanResult.setRequestId(enter.getRequestId());
+        return booleanResult;
     }
 }

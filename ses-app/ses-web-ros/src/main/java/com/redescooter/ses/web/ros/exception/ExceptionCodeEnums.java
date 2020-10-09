@@ -420,6 +420,10 @@ public enum ExceptionCodeEnums {
 
     COLOR_VALUE_LENGTH_ERROR(10201, "色值长度错误"),
 
+    SPECIFICAT_TYPE_NAME_NOT_NULL(10202, "规格类型名称不能为空"),
+
+    SPECIFICAT_TYPE_NAME_EXIST(10203, "规格类型名称已经存在"),
+
     ;
 
 
