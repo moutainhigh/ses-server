@@ -22,6 +22,6 @@ public class RosProductionTimeParmEnter extends GeneralEnter {
     @ApiModelProperty(value = "产品类型")
     private Integer productionType;
 
-    @ApiModelProperty(value = "id")
-    private Long id;
+    @ApiModelProperty(value = "productN")
+    private String productN;
 }
