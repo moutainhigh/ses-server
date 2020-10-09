@@ -1212,8 +1212,9 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     @Override
     public GeneralResult checkDocumentStatus(IdEnter enter) {
         QueryWrapper<SellsyInvoiceTotal> sellsyInvoiceTotalQueryWrapper = new QueryWrapper<>();
-        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_TYPE, '2');
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_TYPE, '1');
         sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_DEF1, '1');
+//        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_ID,1020056);
         sellsyInvoiceTotalQueryWrapper.last("limit " + enter.getId());
         List<SellsyInvoiceTotal> sellsyInvoiceTotalList = sellsyInvoiceTotalService.list(sellsyInvoiceTotalQueryWrapper);
         if (CollectionUtils.isEmpty(sellsyInvoiceTotalList)) {
@@ -1232,6 +1233,31 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
             sellsyUpdateDocumentInvoidSatusEnter.setDoctype(SellsyDocmentTypeEnums.invoice);
             if (StringUtils.equals(item.getStatus(), OldInvoiceStatusEnums.CANCELED.getCode())) {
                 if (!StringUtils.equals(SellsyDocumentInvoiceStatusEnums.cancelled.getCode(), status)) {
+
+                    if (item.getPayTime() != null) {
+                        //查询付款方式
+                        List<SellsyQueryPayMediumListResult> sellsyQueryPayMediumListResultList = sellsyAccountSettingService.queryPayMediums();
+                        String mediumId =
+                                sellsyQueryPayMediumListResultList.stream().filter(medium -> StringUtils.equals(item.getPayType(), medium.getValue())).findFirst().orElse(null).getId();
+                        if (StringUtils.isEmpty(mediumId)) {
+                            mediumId = sellsyConfig.getMediumId();
+                        }
+                        //重新生成付款
+                        SellsyDocumentPaymentEnter documentPaymentEnter = SellsyDocumentPaymentEnter
+                                .builder()
+                                .docid(item.getDef2())
+                                .amount(item.getTtc())
+                                .date(new Timestamp(item.getInvoiceTime().getTime() / 1000))
+                                .doctype(SellsyDocmentTypeEnums.invoice.getCode())
+                                .ident(item.getInvoiceNum())
+                                .medium(Integer.valueOf(mediumId))
+                                .build();
+                        log.info("-----------生成付款记录------------");
+                        SellsyCreateDocumentPaymentResult documentPayment = createDocumentPayment(new SellsyCreateDocumentPaymentEnter(documentPaymentEnter));
+                        item.setPayId(documentPayment.getPayid());
+                        item.setPayrelId(Integer.valueOf(documentPayment.getPayrelid()));
+                    }
+
                     sellsyUpdateDocumentInvoidSatusEnter.setStep(SellsyDocumentInvoiceStatusEnums.cancelled);
                 }
             }
@@ -1284,6 +1310,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                 upateDocumentStatus(sellsyUpdateDocumentStatusEnter);
             }
 
+
             //查询指定发票
             JSONObject checkDocumentStatus = queryDocumentOne(new SellsyDocumentOneEnter(SellsyDocmentTypeEnums.invoice.getCode(), Integer.valueOf(item.getDef2())));
             String checkStatus = String.valueOf(checkDocumentStatus.get("step").toString());
@@ -1319,7 +1346,7 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
     public GeneralResult checkDocumentPayment(IdEnter enter) {
         QueryWrapper<SellsyInvoiceTotal> sellsyInvoiceTotalQueryWrapper = new QueryWrapper<>();
         sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_TYPE, '2');
-        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_DEF1, '4');
+        sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_DEF1, '1');
         sellsyInvoiceTotalQueryWrapper.eq(SellsyInvoiceTotal.COL_STATUS, "Annulée");
         sellsyInvoiceTotalQueryWrapper.isNotNull(SellsyInvoiceTotal.COL_PAY_TIME);
         sellsyInvoiceTotalQueryWrapper.last("limit " + enter.getId());
@@ -1548,8 +1575,8 @@ public class SellsyDocumentServiceImpl implements SellsyDocumentService {
                         }
                     }
                 } else {
-                    item.setDef1("2");
                 }
+                item.setDef1("1");
             }
             if (createDocuPay) {
 
