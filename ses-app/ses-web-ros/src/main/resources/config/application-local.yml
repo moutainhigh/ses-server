@@ -9,7 +9,7 @@ dubbo:                                                                          
   reference:
     check: false
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://localhost:22181
 
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置

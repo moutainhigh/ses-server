@@ -54,12 +54,6 @@ public class GroupSettingController {
         return new Response<>(rosGroupService.export(id,response));
     }
 
-    @ApiOperation(value = "导入", response = GeneralResult.class)
-    @PostMapping(value = "/importParament")
-    public Response<GeneralResult> importParament(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(rosGroupService.importGroup(enter));
-    }
-
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveGroupEnter enter) {

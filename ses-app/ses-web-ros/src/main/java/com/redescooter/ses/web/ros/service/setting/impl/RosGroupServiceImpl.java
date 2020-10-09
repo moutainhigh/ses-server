@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -226,14 +225,5 @@ public class RosGroupServiceImpl implements RosGroupService {
                 }
             }
         }
-    }
-
-    /**
-     * 导入
-     * @param enter
-     */
-    @Override
-    public GeneralResult importGroup(GeneralEnter enter) {
-        return groupSettingService.importGroup(enter);
     }
 }

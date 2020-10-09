@@ -322,11 +322,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             successProductPartListResult = rosProductionProductServiceMapper.rosImportProductionProductPartsList(
                 successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
             if (CollectionUtils.isEmpty(successProductPartListResult)) {
-                successList.forEach(item -> {
-                    failProductPartListResult
-                        .add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
-                            .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
-                });
+                for (RosParseExcelData item : successList) {
+                    successProductPartListResult.add(RosProductionProductPartListResult
+                            .builder()
+                            .partsNum(item.getPartsNo())
+                            .enName(item.getEnglishName())
+                            .cnName(item.getChineseName())
+                            .build());
+                }
             }
         }
         importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
