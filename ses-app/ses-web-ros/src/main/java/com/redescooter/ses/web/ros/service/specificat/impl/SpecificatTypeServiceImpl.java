@@ -68,6 +68,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if (enters.size() > 8){
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NUM_ERROR.getCode(), ExceptionCodeEnums.DEF_NUM_ERROR.getMessage());
         }
+        checkSpecificatName(enter);
         OpeSpecificatType specificatType = new OpeSpecificatType();
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setSpecificatName(enter.getSpecificatName());
@@ -92,6 +93,30 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     /**
      * @Author Aleks
+     * @Description  校验规格类型的名称是否重复
+     * @Date  2020/10/9 10:34
+     * @Param
+     * @return
+     **/
+    public void checkSpecificatName(SpecificatTypeSaveOrEditEnter enter){
+        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
+        if(enter.getId() != null){
+            // 这个时候是修改 需要排除本身去校验
+            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
+        }
+        int count = opeSpecificatTypeService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
+        }
+    }
+
+
+    /**
+     * @Author Aleks
      * @Description  生成规格类型的编码 RTYYYYMMDD000
      * @Date  2020/9/29 11:39
      * @Param []
@@ -105,7 +130,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         OpeSpecificatType specificatType = opeSpecificatTypeService.getOne(qw);
         if(specificatType != null && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())){
             String oldCode = specificatType.getSpecificatCode();
-            Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 6));
+            Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
             i ++;
             code = "RT"+DateUtil.getSimpleDateStamp()+String.format("%3d", i).replace(" ", "0");
         }
@@ -143,6 +168,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if(specificatType == null){
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
+        checkSpecificatName(enter);
         specificatType.setSpecificatName(enter.getSpecificatName());
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setUpdatedBy(enter.getUserId());
