@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.web.ros.service.setting.RosParameterService;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import io.swagger.annotations.Api;
@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -51,14 +52,14 @@ public class ParameterSettingController {
     }
 
     @ApiOperation(value = "导出", response = GeneralResult.class)
-    @PostMapping(value = "/export")
-    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(rosParameterService.export(enter));
+    @GetMapping(value = "/export")
+    public Response<GeneralResult> export(@ApiParam("请求参数") String ids, HttpServletResponse response) {
+        return new Response<>(rosParameterService.export(ids, response));
     }
 
     @ApiOperation(value = "导入", response = GeneralResult.class)
     @PostMapping(value = "/importParament")
-    public Response<GeneralResult> importParament(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> importParament(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) {
         return new Response<>(rosParameterService.importParament(enter));
     }
 

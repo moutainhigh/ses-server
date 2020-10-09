@@ -49,4 +49,50 @@
         where param.dr=0
         and  param.id=#{id}
     </select>
+
+    <select id="export" resultType="com.redescooter.ses.api.foundation.vo.setting.ParameterResult">
+        select param.id             as id,
+        param.group_id       as groupId,
+        gup.group_name       as groupName,
+        param.parameter_name as parameterName,
+        param.param_key as 'key',
+        param.param_value as value,
+        if(param.enable,1,0) as enable,
+        param.`desc` as 'desc',
+        param.created_by as createdById,
+        param.created_time as createdTime,
+        param.updated_time as updatedTime,
+        param.updated_by as upadtedById
+        from pla_sys_param_setting param
+        left join pla_sys_group_setting gup on param.group_id = gup.id and gup.dr = 0
+        where param.dr=0
+        and  param.system_type=#{systemType}
+        and param.id in
+        <foreach collection="ids" open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="checkParameterName" resultType="com.redescooter.ses.api.foundation.vo.setting.ParameterResult">
+        select param.id             as id,
+        param.group_id       as groupId,
+        gup.group_name       as groupName,
+        param.parameter_name as parameterName,
+        param.param_key as 'key',
+        param.param_value as value,
+        if(param.enable,1,0) as enable,
+        param.`desc` as 'desc',
+        param.created_by as createdById,
+        param.created_time as createdTime,
+        param.updated_time as updatedTime,
+        param.updated_by as upadtedById
+        from pla_sys_param_setting param
+        left join pla_sys_group_setting gup on param.group_id = gup.id and gup.dr = 0
+        where param.dr=0
+        and  param.system_type=#{systemType}
+        and param.parameter_name in
+        <foreach collection="parameterNames" item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

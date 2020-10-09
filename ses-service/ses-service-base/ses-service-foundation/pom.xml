@@ -93,30 +93,30 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-lib-src-webapps</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <delete dir="${project.build.directory}"/>
-                            </target>
-                            <tasks>
-                                <copy todir="${jar.path}/libs">
-                                    <fileset dir="${project.build.directory}">
-                                        <include name="${project.name}.jar"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-antrun-plugin</artifactId>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>copy-lib-src-webapps</id>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <configuration>-->
+            <!--&lt;!&ndash;                            <target>&ndash;&gt;-->
+            <!--&lt;!&ndash;                                <delete dir="${project.build.directory}"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            </target>&ndash;&gt;-->
+            <!--                            <tasks>-->
+            <!--                                <copy todir="${jar.path}/libs">-->
+            <!--                                    <fileset dir="${project.build.directory}">-->
+            <!--                                        <include name="${project.name}.jar"/>-->
+            <!--                                    </fileset>-->
+            <!--                                </copy>-->
+            <!--                            </tasks>-->
+            <!--                        </configuration>-->
+            <!--                        <goals>-->
+            <!--                            <goal>run</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.setting;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -45,9 +44,4 @@ public interface RosGroupService {
      * @return
      */
     GeneralResult export(String id, HttpServletResponse response);
-
-    /**
-     * 导入
-     */
-    GeneralResult importGroup(GeneralEnter enter);
 }
