@@ -10,6 +10,8 @@ server:
   tomcat:
     uri-encoding: UTF-8
   shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 #基本信息配置
 spring:
   application:
@@ -80,6 +82,9 @@ dubbo:
     #是否允许远程访问
     qos-accept-foreign-ip: false
     logger: log4j
+  #Dubbo服务暴露与发现消费所在的package
+  scan:
+    base-packages: com.redescooter.ses
   #注册中心配置
   registry:
     simplified: true
@@ -87,15 +92,21 @@ dubbo:
     check: false
     register: true
     subscribe: true
+    dynamic: true
     group: ses
     protocol: zookeeper
-  # Dubbo服务暴露与发现消费所在的package
-  scan:
-    base-packages: com.redescooter.ses
+    timeout: 15000
+    session: 60000
+  #元数据配置
+  metadata-report:
+    group: ses
+    cycle-report: true
+    timeout: 60000
   #服务消费者缺省值配置
   consumer:
     #启动时检查提供者是否存在，true报错，false忽略
     check: false
+    lazy: true
     timeout: 20000
     threads: 200
     filter: dubboAccessLogFilter
@@ -104,6 +115,8 @@ dubbo:
     port: -1
     threads: 400
     name: dubbo
+  reference:
+    check: false
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml

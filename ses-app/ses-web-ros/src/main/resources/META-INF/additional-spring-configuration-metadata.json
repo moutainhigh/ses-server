@@ -9,5 +9,10 @@
       "name": "Request.publicKey",
       "type": "java.lang.String",
       "description": "Description for Request.publicKey."
+    },
+    {
+      "name": "dubbo.reference.check",
+      "type": "java.lang.String",
+      "description": "Description for dubbo.reference.check."
     }
   ] }
