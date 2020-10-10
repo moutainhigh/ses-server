@@ -334,7 +334,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (CollectionUtils.isNotEmpty(successList)) {
             successProductPartListResult = rosProductionProductServiceMapper.rosImportProductionProductPartsList(
                 successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
-            if (CollectionUtils.isEmpty(successProductPartListResult)) {
+            if (CollectionUtils.isNotEmpty(successProductPartListResult)) {
                 for (RosParseExcelData item : successList) {
 
                     RosProductionProductPartListResult rosProductionProductPartListResult = successProductPartListResult
@@ -349,11 +349,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                                 .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
                         successProductPartListResult
                             .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
-                    } else {
-                        successProductPartListResult.add(RosProductionProductPartListResult.builder()
-                            .id(rosProductionProductPartListResult.getId()).partsNum(item.getPartsNo())
-                            .qty(Integer.valueOf(item.getQuantity())).enName(item.getEnglishName())
-                            .sec(rosProductionProductPartListResult.getSec()).cnName(item.getChineseName()).build());
                     }
                 }
             }
@@ -1136,7 +1131,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (queryOpeProductionScooterBom != null) {
                 if (queryOpeProductionScooterBom.getBomStatus()
                     .equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                    opeProductionScooterBomService.removeById(queryOpeProductionScooterBom.getId());
+                    queryOpeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
+                    opeProductionScooterBomService.updateById(queryOpeProductionScooterBom);
                 }
             }
         }
@@ -1306,7 +1302,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (queryOpeProductionCombinBom != null) {
                 if (queryOpeProductionCombinBom.getBomStatus()
                     .equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                    opeProductionCombinBomService.removeById(queryOpeProductionCombinBom.getId());
+                    queryOpeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
+                    opeProductionCombinBomService.updateById(queryOpeProductionCombinBom);
                 }
             }
         }
