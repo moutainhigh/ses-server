@@ -4,7 +4,6 @@ import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -39,7 +38,7 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -128,7 +127,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     /**
-     * @param saveInquiryEnter
+     * @param saveAboutUsEnter
      * @desc: 保存询价单
      * @param: enter
      * @retrn: GeneralResult
@@ -138,9 +137,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Transactional
     @Override
-    public GeneralResult saveInquiry(SaveInquiryEnter saveInquiryEnter) {
+    public GeneralResult saveAboutUs(SaveAboutUsEnter saveAboutUsEnter) {
         //入参去空格
-        SaveInquiryEnter enter = SesStringUtils.objStringTrim(saveInquiryEnter);
+        SaveAboutUsEnter enter = SesStringUtils.objStringTrim(saveAboutUsEnter);
         //邮箱解密
         //电话解密
         if (!StringUtils.isAllBlank(enter.getTelephone(), enter.getEmail())) {

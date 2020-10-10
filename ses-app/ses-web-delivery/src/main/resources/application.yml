@@ -93,11 +93,12 @@ dubbo:
     #启动时检查提供者是否存在，true报错，false忽略
     check: false
     timeout: 20000
+    threads: 200
     filter: dubboAccessLogFilter
   protocol:
     register: true
     port: -1
-    threads: 300
+    threads: 400
     name: dubbo
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:

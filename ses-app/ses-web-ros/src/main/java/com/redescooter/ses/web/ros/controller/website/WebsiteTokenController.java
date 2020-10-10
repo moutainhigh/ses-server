@@ -28,10 +28,10 @@ import java.util.List;
  * @create: 2020/05/12 11:58
  */
 @Log4j2
-@Api(tags = {"官网登录模块"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/website")
+@Api(tags = {"Official Website Authentication"})
 public class WebsiteTokenController {
 
     @Autowired
@@ -42,77 +42,67 @@ public class WebsiteTokenController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/login")
-    @ApiOperation(value = "官网登录", response = TokenResult.class)
-    public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+    @ApiOperation(value = "Login", response = TokenResult.class)
+    public Response<TokenResult> login(@ModelAttribute @ApiParam("Parameter") LoginEnter enter) {
         return new Response<>(webSiteService.login(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/logout")
-    @ApiOperation(value = "官网登出", response = GeneralResult.class)
-    public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @ApiOperation(value = "Logout", response = GeneralResult.class)
+    public Response<GeneralResult> logout(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(webSiteService.logout(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/signUp")
-    @ApiOperation(value = "官网注册", response = GeneralResult.class)
-    public Response<GeneralResult> signUp(@ModelAttribute @ApiParam("请求参数") SignUpEnter enter) {
+    @ApiOperation(value = "Sign Up", response = GeneralResult.class)
+    public Response<GeneralResult> signUp(@ModelAttribute @ApiParam("Parameter") SignUpEnter enter) {
         return new Response<>(webSiteService.signUp(enter));
     }
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "邮件发送", response = GeneralResult.class)
     @PostMapping(value = "/sendEmail")
+    @ApiOperation(value = "Send mail", response = GeneralResult.class)
     public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(webSiteService.sendEmail(enter));
     }
 
-
     @IgnoreLoginCheck
     @PostMapping(value = "/forgetPassword")
-    @ApiOperation(value = "官网上面忘记密码", response = GeneralResult.class)
-    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
+    @ApiOperation(value = "Forget the password", response = GeneralResult.class)
+    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("Parameter") WebResetPasswordEnter enter) {
         return new Response<>(webSiteService.forgetPassword(enter));
     }
 
-
     @WebsiteSignIn
     @PostMapping(value = "/resetPassword")
-    @ApiOperation(value = "官网上面修改密码", response = GeneralResult.class)
-    public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("请求参数") WebResetPasswordEnter enter) {
+    @ApiOperation(value = "Change Password", response = GeneralResult.class)
+    public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("Parameter") WebResetPasswordEnter enter) {
         return new Response<>(webSiteService.resetPassword(enter));
     }
 
-
     @WebsiteSignIn
     @PostMapping(value = "/editCustomer")
-    @ApiOperation(value = "官网上面修改用户信息", response = GeneralResult.class)
-    public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("请求参数") WebEditCustomerEnter enter) {
+    @ApiOperation(value = "Edit Customer information", response = GeneralResult.class)
+    public Response<GeneralResult> editCustomer(@ModelAttribute @ApiParam("Parameter") WebEditCustomerEnter enter) {
         return new Response<>(webSiteService.editCustomer(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping("/countryAndCity")
-    @ApiOperation(value = "获取国家和城市，这个接口前端只调一次，数据保存到本地")
+    @ApiOperation(value = "To obtain the country and city", notes = "the front end of this interface is called only once, and the data is saved to the cache")
     public Response<List<CountryCityResult>> countryAndCity() {
         return new Response<>(webSiteService.countryAndCity());
     }
 
-
-//    @IgnoreLoginCheck
-//    @GetMapping("/cityPostCode")
-//    @ApiOperation(value = "根据城市获取区域的邮政编码")
-//    public Response<List<CityPostResult>> cityPostCode(@ModelAttribute @ApiParam("参数") CityNameEnter cityNameEnter) {
-//        return new Response<>(webSiteService.cityPostCode(cityNameEnter.getCityName()));
-//    }
-
-
     @IgnoreLoginCheck
     @PostMapping("/countryCityPostCode")
-    @ApiOperation(value = "获取国家城市区域的邮政编码")
-    public Response<List<CountryCityResult>> countryCityPostCode(@ModelAttribute @ApiParam("参数") CityNameEnter cityNameEnter) {
+    @ApiOperation(value = "Get PostCode")
+    public Response<List<CountryCityResult>> countryCityPostCode(@ModelAttribute @ApiParam("Parameter") CityNameEnter cityNameEnter) {
         return new Response<>(webSiteService.countryCityPostCode(cityNameEnter));
     }
 
 }
+
+

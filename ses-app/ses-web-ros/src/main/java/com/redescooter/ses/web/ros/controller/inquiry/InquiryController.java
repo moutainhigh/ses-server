@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.controller;
+package com.redescooter.ses.web.ros.controller.inquiry;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -9,7 +9,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,8 +48,8 @@ public class InquiryController {
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存询价单", response = GeneralResult.class)
-    public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveInquiryEnter enter) {
-        return new Response<>(inquiryService.saveInquiry(enter));
+    public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveAboutUsEnter enter) {
+        return new Response<>(inquiryService.saveAboutUs(enter));
     }
 
     @PostMapping(value = "/list")

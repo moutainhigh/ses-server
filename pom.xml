@@ -19,7 +19,7 @@
         <encoding>UTF-8</encoding>
         <java.version>1.8</java.version>
         <ses.version>${project.version}</ses.version>
-        <springboot.version>${parent.version}</springboot.version>
+        <springboot.version>${project.parent.version}</springboot.version>
         <!-- 编译跳过单元测试 -->
         <skipTests>true</skipTests>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
@@ -274,7 +274,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--邮件发送模板需要的依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>

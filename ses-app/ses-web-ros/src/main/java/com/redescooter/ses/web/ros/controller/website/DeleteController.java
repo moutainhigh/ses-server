@@ -11,11 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName:DeleteController
@@ -28,21 +24,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Api(tags = {"删除业务"})
 @RestController
-@RequestMapping(value = "/delete", method = RequestMethod.POST)
+@RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
 public class DeleteController {
 
     @Autowired
     private DeleteService deleteService;
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/customer")
+    @DeleteMapping(value = "/customer")
     @ApiOperation(value = "删除客户", response = GeneralResult.class)
     public Response<GeneralResult> deleteCustomer(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
         return new Response<>(deleteService.deleteCustomer(enter));
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/inquiry")
+    @DeleteMapping(value = "/inquiry")
     @ApiOperation(value = "删除询价单", response = GeneralResult.class)
     public Response<GeneralResult> deleteInquiry(@ModelAttribute @ApiParam("请求参数") StorageEamilEnter enter) {
         return new Response<>(deleteService.deleteInquiry(enter));
