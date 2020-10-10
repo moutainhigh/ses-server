@@ -47,6 +47,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.verifyhandler.ProductionProductExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.CheckProductNEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.ProductionProductEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosParseExcelData;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
@@ -311,8 +312,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 逻辑需要调整
         ExcelImportResult<RosParseExcelData> excelImportResult =
             importExcelService.setiExcelVerifyHandler(new ProductionProductExcelVerifyHandlerImpl())
-                .importOssExcel(enter.getUrl(),
-                RosParseExcelData.class, new ImportParams());
+                .importOssExcel(enter.getUrl(), RosParseExcelData.class, new ImportParams());
         if (excelImportResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(),
                 ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
@@ -909,6 +909,73 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 产品编号校验
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult checkProductN(CheckProductNEnter enter) {
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
+            // 整车
+            if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
+                QueryWrapper queryWrapper = new QueryWrapper();
+                if (enter.getId() != null && enter.getId() != 0) {
+                    queryWrapper.ne(OpeProductionScooterBomDraft.COL_ID, enter.getId());
+                }
+                queryWrapper.eq(OpeProductionScooterBomDraft.COL_BOM_NO, enter.getProductN());
+                List<OpeProductionScooterBomDraft> opeProductionScooterBomDraftList =
+                    opeProductionScooterBomDraftService.list(queryWrapper);
+                if (CollectionUtils.isNotEmpty(opeProductionScooterBomDraftList)) {
+                    return new BooleanResult(Boolean.FALSE);
+                }
+            }
+            if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
+                QueryWrapper queryWrapper = new QueryWrapper();
+                if (enter.getId() != null && enter.getId() != 0) {
+                    queryWrapper.ne(OpeProductionScooterBom.COL_ID, enter.getId());
+                }
+                queryWrapper.eq(OpeProductionScooterBom.COL_BOM_NO, enter.getProductN());
+                List<OpeProductionScooterBom> opeProductionScooterBomList =
+                    opeProductionScooterBomService.list(queryWrapper);
+                if (CollectionUtils.isNotEmpty(opeProductionScooterBomList)) {
+                    return new BooleanResult(Boolean.FALSE);
+                }
+            }
+        }
+        if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
+            // 组合
+            if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
+                QueryWrapper queryWrapper = new QueryWrapper();
+                if (enter.getId() != null && enter.getId() != 0) {
+                    queryWrapper.ne(OpeProductionCombinBomDraft.COL_ID, enter.getId());
+                }
+                queryWrapper.eq(OpeProductionCombinBomDraft.COL_BOM_NO, enter.getProductN());
+                List<OpeProductionCombinBomDraft> opeProductionCombinBomDraftList =
+                    opeProductionCombinBomDraftService.list(queryWrapper);
+                if (CollectionUtils.isNotEmpty(opeProductionCombinBomDraftList)) {
+                    return new BooleanResult(Boolean.FALSE);
+                }
+            }
+            if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
+                if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
+                    QueryWrapper queryWrapper = new QueryWrapper();
+                    if (enter.getId() != null && enter.getId() != 0) {
+                        queryWrapper.ne(OpeProductionCombinBom.COL_ID, enter.getId());
+                    }
+                    queryWrapper.eq(OpeProductionCombinBom.COL_BOM_NO, enter.getProductN());
+                    List<OpeProductionCombinBom> opeProductionCombinBomList =
+                        opeProductionCombinBomService.list(queryWrapper);
+                    if (CollectionUtils.isNotEmpty(opeProductionCombinBomList)) {
+                        return new BooleanResult(Boolean.FALSE);
+                    }
+                }
+            }
+        }
+        return new BooleanResult(Boolean.TRUE);
     }
 
     private void checkOpeProductionScooter(RosProductionProductReleaseEnter enter,

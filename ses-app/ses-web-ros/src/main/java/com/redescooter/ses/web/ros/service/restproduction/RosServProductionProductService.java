@@ -140,4 +140,12 @@ public interface RosServProductionProductService {
      **/
     GeneralResult bomExport(Long id,Integer productionProductType, HttpServletResponse response);
 
+    /**
+     * 产品编号校验
+     * 
+     * @param enter
+     * @return
+     */
+    BooleanResult checkProductN(CheckProductNEnter enter);
+
 }

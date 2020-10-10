@@ -121,4 +121,11 @@ public class RosCombinationController {
     public Response<GeneralResult> bomExport(@ApiParam("请求参数 id") Long id,@ApiParam("类型，4是整车，5是组装") Integer productionProductType,HttpServletResponse response) {
         return new Response(rosServProductionProductService.bomExport(id,productionProductType,response));
     }
+
+    @PostMapping(value = "/checkProductN")
+    @ApiOperation(value = "产品编号", response = BooleanResult.class)
+    public Response<BooleanResult> checkProductN(@ModelAttribute @ApiParam("请求参数") CheckProductNEnter enter) {
+        return new Response<>(rosServProductionProductService.checkProductN(enter));
+    }
+
 }
