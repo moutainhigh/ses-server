@@ -56,8 +56,60 @@ public class RosPartsSaveOrUpdateEnter extends GeneralEnter {
     private Integer procurementCycle;
 
     @ApiModelProperty(value = "图纸")
-    private String dwg;;
+    private String dwg;
 
     @ApiModelProperty(value = "是否发布，0：否，1：是")
     private Integer isAnnoun = 0;
+
+    // 追加
+    @ApiModelProperty(value = "级别")
+    private Integer level;
+
+    /**
+     * 母图纸
+     */
+    @ApiModelProperty(value = "母图纸")
+    private String mainDrawing;
+
+    /**
+     * 设变号
+     */
+    @ApiModelProperty(value = "设变号")
+    private String ecnNumber;
+
+    /**
+     * 品目
+     */
+    @ApiModelProperty(value = "品目")
+    private String item;
+
+    /**
+     * 销售分区
+     */
+    @ApiModelProperty(value = "销售分区")
+    private String sellCalss;
+
+    /**
+     * 图纸尺寸
+     */
+    @ApiModelProperty(value = "图纸尺寸")
+    private String drawingSize;
+
+    /**
+     * 重量
+     */
+    @ApiModelProperty(value = "重量")
+    private Double weight;
+
+    /**
+     * 供应商2
+     */
+    @ApiModelProperty(value = "供应商2")
+    private Long supplierId2;
+
+    /**
+     * 依存度区分
+     */
+    @ApiModelProperty(value = "依存度区分")
+    private String rateTyp;
 }

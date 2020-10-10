@@ -424,6 +424,12 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_NAME_EXIST(10203, "规格类型名称已经存在"),
 
+    DEF_NAME_NOT_NULL(10204, "自定义名称不能为空"),
+
+    DEF_NAME_ILLEGAL(10205, "自定义名称非法"),
+
+    DEF_VALUE_ILLEGAL(10206, "自定义值非法"),
+
     ;
 
 

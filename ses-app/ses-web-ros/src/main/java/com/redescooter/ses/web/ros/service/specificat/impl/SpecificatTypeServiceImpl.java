@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.specificat.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -30,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ClassNameSpecificatTypeServiceImpl
@@ -69,7 +73,10 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if (enters.size() > 8){
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NUM_ERROR.getCode(), ExceptionCodeEnums.DEF_NUM_ERROR.getMessage());
         }
+        // 校验名称的唯一性
         checkSpecificatName(enter);
+        // 校验自定义项的名称和value
+        checkDef(enters);
         OpeSpecificatType specificatType = new OpeSpecificatType();
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setSpecificatName(enter.getSpecificatName());
@@ -89,6 +96,40 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         specificatDefService.saveSpecificatDef(enters,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  校验自定义项的名称和value值
+     * @Date  2020/10/10 14:31
+     * @Param [lists]
+     * @return
+     **/
+    public void checkDef(List<SpecificatDefEnter> lists){
+        for (SpecificatDefEnter list : lists) {
+            // 先校验名称：长度20位，不能有特殊字符
+            if (Strings.isNullOrEmpty(list.getDefName())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
+            }
+            if (list.getDefName().length() > 20){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            }
+            // 校验正则
+            Pattern p= Pattern.compile(RegexpConstant.specialCharacters);
+            Matcher m=p.matcher(list.getDefName());
+            if (!m.matches()){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            }
+            // 再校验value值，长度10位，仅数值和小数点
+            if (Objects.isNull(list.getDefValue())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+            String defValue = String.valueOf(list.getDefValue());
+            if (defValue.length() > 10){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+        }
     }
 
 
@@ -170,6 +211,8 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         checkSpecificatName(enter);
+        // 校验自定义项的名称和value
+        checkDef(enters);
         specificatType.setSpecificatName(enter.getSpecificatName());
         specificatType.setGroupId(enter.getGroupId());
         specificatType.setUpdatedBy(enter.getUserId());
