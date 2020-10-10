@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "Request.privateKey",
+      "type": "java.lang.String",
+      "description": "Description for Request.privateKey."
+    },
+    {
+      "name": "Request.publicKey",
+      "type": "java.lang.String",
+      "description": "Description for Request.publicKey."
+    }
+  ] }

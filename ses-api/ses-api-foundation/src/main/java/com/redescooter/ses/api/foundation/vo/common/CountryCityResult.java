@@ -1,7 +1,8 @@
 package com.redescooter.ses.api.foundation.vo.common;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,22 +14,17 @@ import java.util.List;
  * @Date2020/7/27 19:56
  * @Version V1.0
  **/
-@Data
+@ApiModel(value = "Country City Result", description = "Country City Result")
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@Builder
+@EqualsAndHashCode(callSuper = false)
 public class CountryCityResult implements Serializable {
 
-    @ApiModelProperty("主键id")
+    @ApiModelProperty("id")
     private Long id;
 
-//    @ApiModelProperty("编码")
-//    private String code;
-
-    @ApiModelProperty("名称")
+    @ApiModelProperty("name")
     private String name;
-
-//    @ApiModelProperty("等级")
-//    private Integer level;
-
-//    @ApiModelProperty("国家包含的城市")
-//    private List<CityNameResult> children;
-
 }

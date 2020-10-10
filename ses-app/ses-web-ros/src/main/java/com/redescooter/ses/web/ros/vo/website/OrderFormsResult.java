@@ -21,7 +21,7 @@ import java.util.Date;
  * @Version：1.3
  * @create: 2020/05/14 14:53
  */
-@ApiModel(value = "", description = "")
+@ApiModel(value = "Order Result", description = "Order Result")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -32,19 +32,19 @@ public class OrderFormsResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "产品型号")
+    @ApiModelProperty(value = "product Model")
     private String productModel;
 
-    @ApiModelProperty(value = "订单编号")
+    @ApiModelProperty(value = "Order number")
     private String orderNo;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "status")
     private String status;
 
-    @ApiModelProperty(value = "颜色")
+    @ApiModelProperty(value = "color")
     private String color;
 
-    @ApiModelProperty(value = "下单时间")
+    @ApiModelProperty(value = "Order time")
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date orderTime;

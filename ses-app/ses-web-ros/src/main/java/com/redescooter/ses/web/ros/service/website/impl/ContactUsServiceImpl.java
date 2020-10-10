@@ -9,7 +9,6 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -31,7 +30,7 @@ import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.customer.*;
-import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -167,7 +166,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Override
     @Transactional
-    public void websiteContactUs(SaveInquiryEnter enter) {
+    public void websiteContactUs(SaveAboutUsEnter enter) {
         // 先看这个邮箱是否已存在
         QueryWrapper<OpeContactUs> qw = new QueryWrapper<>();
         qw.eq(OpeContactUs.COL_EMAIL, enter.getEmail());
@@ -179,7 +178,7 @@ public class ContactUsServiceImpl implements ContactUsService {
     }
 
 
-    public OpeContactUs createContactUsEntity(SaveInquiryEnter enter, OpeContactUs opeContactUs) {
+    public OpeContactUs createContactUsEntity(SaveAboutUsEnter enter, OpeContactUs opeContactUs) {
         if (opeContactUs != null) {
             // 说明这个邮箱已经存在
             opeContactUs.setFrequency(opeContactUs.getFrequency() + 1);

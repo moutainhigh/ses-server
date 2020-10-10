@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-service-base</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ses-service-proxy</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <name>ses-service-proxy</name>
     <description>Base Server Application Service</description>
 
@@ -19,10 +19,10 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <!--邮件发送模板需要的依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+        <!--        </dependency>-->
         <!--密码加密-->
         <!--http客户端协议-->
         <dependency>
@@ -124,7 +124,11 @@
                 <executions>
                     <execution>
                         <id>copy-lib-src-webapps</id>
+                        <!-- 执行打包操作时执行的任务 -->
                         <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                         <configuration>
                             <target>
                                 <delete dir="${project.build.directory}"/>
@@ -137,9 +141,6 @@
                                 </copy>
                             </tasks>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
