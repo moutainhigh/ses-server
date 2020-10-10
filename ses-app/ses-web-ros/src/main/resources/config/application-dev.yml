@@ -283,7 +283,7 @@ spring:                                                                         
         path-regex: /production/parts/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -305,7 +305,7 @@ spring:                                                                         
         path-regex: /color/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -326,7 +326,7 @@ spring:                                                                         
         path-regex: /specificat/group/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -347,7 +347,7 @@ spring:                                                                         
         path-regex: /specificat/type/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址

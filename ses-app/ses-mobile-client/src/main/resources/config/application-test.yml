@@ -67,7 +67,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /delivery/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -82,7 +82,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /scooter/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -97,7 +97,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /userProfile/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -112,7 +112,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /data/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -127,7 +127,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /version/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -142,7 +142,7 @@ spring:                                                                         
               base-package: com.redescooter.ses
               path-regex: /base/.*
               path-mapping: /
-              version: 1.2.0
+              version: 1.2.1
               license: RedE 公司内部传阅
               license-url: '#'
               contact:

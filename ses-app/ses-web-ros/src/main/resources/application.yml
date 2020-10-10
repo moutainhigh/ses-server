@@ -95,7 +95,7 @@ dubbo:
     dynamic: true
     group: ses
     protocol: zookeeper
-    timeout: 15000
+    timeout: 60000
     session: 60000
   #元数据配置
   metadata-report:
@@ -107,8 +107,8 @@ dubbo:
     #启动时检查提供者是否存在，true报错，false忽略
     check: false
     lazy: true
-    timeout: 20000
-    threads: 200
+    timeout: 60000
+    threads: 600
     filter: dubboAccessLogFilter
   protocol:
     register: true
