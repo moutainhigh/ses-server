@@ -76,7 +76,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <!-- dubbo 元数据 -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-metadata-report-zookeeper</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -1,13 +1,8 @@
 {
   "properties": [
     {
-      "name": "spring.swagger.enabled",
-      "type": "java.lang.String",
-      "description": "Description for spring.swagger.enabled."
-    },
-    {
       "name": "dubbo.reference.check",
       "type": "java.lang.String",
       "description": "Description for dubbo.reference.check."
-    }
-  ] }
+  }
+] }

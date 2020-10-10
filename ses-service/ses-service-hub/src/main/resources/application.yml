@@ -53,9 +53,10 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-  # swagger配置
+  #swagger配置
   swagger:
-    enabled: false                                       # 是否启用swagger
+    #是否启用swagger
+    enabled: false
   #REDIS集群配置
   redis:
     cluster:
@@ -77,6 +78,9 @@ dubbo:
     #是否允许远程访问
     qos-accept-foreign-ip: false
     logger: log4j
+  #Dubbo服务暴露与发现消费所在的package
+  scan:
+    base-packages: com.redescooter.ses
   #注册中心配置
   registry:
     simplified: true
@@ -84,19 +88,27 @@ dubbo:
     check: false
     register: true
     subscribe: true
+    dynamic: true
     group: ses
     protocol: zookeeper
-  # Dubbo服务暴露与发现消费所在的package
-  scan:
-    base-packages: com.redescooter.ses
-  provider: #服务提供者缺省值配置
-    dynamic: false
+    timeout: 15000
+    session: 60000
+  #元数据配置
+  metadata-report:
+    group: ses
+    cycle-report: true
+    timeout: 60000
+  #服务提供者缺省值配置
+  provider:
+    dynamic: true
+    deprecated: true
     timeout: 40000
     threads: 400
   #服务消费者缺省值配置
   consumer:
     #启动时检查提供者是否存在，true报错，false忽略
     check: false
+    lazy: true
     timeout: 20000
     filter: dubboAccessLogFilter
     threads: 200
@@ -105,6 +117,8 @@ dubbo:
     port: -1
     threads: 400
     name: dubbo
+  reference:
+    check: false
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml

@@ -1,9 +1,9 @@
 {
   "properties": [
     {
-      "name": "spring.swagger.enabled",
+      "name": "spring.datasource.p6spy",
       "type": "java.lang.String",
-      "description": "Description for spring.swagger.enabled."
+      "description": "Description for spring.datasource.p6spy."
     },
     {
       "name": "dubbo.reference.check",

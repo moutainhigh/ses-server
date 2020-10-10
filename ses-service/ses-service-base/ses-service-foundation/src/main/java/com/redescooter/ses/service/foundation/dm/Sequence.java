@@ -3,8 +3,10 @@ package com.redescooter.ses.service.foundation.dm;
 
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ToString
-public class Sequence {
+public class Sequence implements Serializable {
 
     private long offset = 0;
 
