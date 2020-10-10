@@ -349,7 +349,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                             .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
                         successProductPartListResult
                             .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
+                        continue;
                     }
+                    rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
                 }
             }
             if (CollectionUtils.isNotEmpty(successList) && CollectionUtils.isEmpty(successProductPartListResult)) {
@@ -808,6 +810,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
+            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
             opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionCombinBom.setUpdatedBy(enter.getId());
             opeProductionCombinBom.setUpdatedTime(new Date());
@@ -819,6 +825,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (opeProductionScooterBom == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+            }
+            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
             opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionScooterBom.setUpdatedBy(enter.getId());
