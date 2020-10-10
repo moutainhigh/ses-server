@@ -113,4 +113,11 @@ public class RosScooterController {
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.delete(enter));
     }
+
+    @PostMapping(value = "/checkProductN")
+    @ApiOperation(value = "产品编号", response = BooleanResult.class)
+    public Response<BooleanResult> checkProductN(@ModelAttribute @ApiParam("请求参数") CheckProductNEnter enter) {
+        return new Response<>(rosServProductionProductService.checkProductN(enter));
+    }
+
 }
