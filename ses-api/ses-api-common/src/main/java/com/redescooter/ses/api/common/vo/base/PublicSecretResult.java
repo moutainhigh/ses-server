@@ -1,7 +1,8 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @ClassNamePublicSecretResult
@@ -10,14 +11,15 @@ import lombok.Data;
  * @Date2020/7/20 18:42
  * @Version V1.0
  **/
+@ApiModel(value = "PublicSecret Result", description = "PublicSecret Result")
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class PublicSecretResult extends GeneralResult {
 
-    @ApiModelProperty("前半段加密公钥")
+    @ApiModelProperty("First half encrypted public key")
     private String front;
 
-
-    @ApiModelProperty("后半段加密公钥")
+    @ApiModelProperty("Second half encrypted public key")
     private String behind;
 
 

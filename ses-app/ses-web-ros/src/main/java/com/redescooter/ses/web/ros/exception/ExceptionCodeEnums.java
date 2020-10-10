@@ -432,8 +432,9 @@ public enum ExceptionCodeEnums {
 
     THE_NUMBER_OF_PARTS_LEAST_GREATER_THAN_ONE(10207, "部件数量至少大于1"),
 
-    ;
+    DELETE_THE_ORDER_FIRST(10208, "请先删除订单"),
 
+    ;
 
 
     private int code;

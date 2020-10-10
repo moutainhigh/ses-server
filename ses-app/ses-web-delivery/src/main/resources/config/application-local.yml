@@ -4,11 +4,9 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.110:22181
-
+    address: zookeeper://192.168.2.200:2181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -34,12 +32,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.110:7000
-        - 192.168.2.110:7001
-        - 192.168.2.110:7002
-        - 192.168.2.110:7003
-        - 192.168.2.110:7004
-        - 192.168.2.110:7005
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
 
   swagger:                                                                                                              #swagger在线文档配置
     enabled: true                                                                                                       #是否启用swagger
@@ -51,7 +49,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -67,7 +65,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /ed/driver/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -83,7 +81,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /ed/scooter/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -99,7 +97,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /ed/orders/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -115,7 +113,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /ed/task/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -131,7 +129,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /ed/dashboard/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -147,7 +145,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /common/setting/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址
@@ -163,7 +161,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.delivery
         path-regex: /common/message/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.0                                                                                                 #Api版本
+        version: v1.2.1                                                                                                 #Api版本
         license: RedE 公司内部传阅                                                                                        #授权协议
         license-url: '#'                                                                                                #授权协议地址
         terms-of-service-url:                                                                                           #服务条款地址

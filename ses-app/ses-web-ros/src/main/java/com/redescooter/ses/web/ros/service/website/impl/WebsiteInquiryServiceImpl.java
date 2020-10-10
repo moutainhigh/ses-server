@@ -605,13 +605,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-     /* String decrypt =null;
-      try {
 
-        decrypt = RsaUtils.encryptByPrivateKey(opeCustomer.getEmail(),privatekey);
-      }catch (Exception e){
-        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-      }*/
         return CustomerInfoResult.builder()
                 .id(opeCustomer.getId())
                 .email(opeCustomer.getEmail())

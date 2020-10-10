@@ -18,7 +18,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/05/13 15:47
  */
-@ApiModel(value = "车辆列表入参", description = "车辆列表入参")
+@ApiModel(value = "Vehicle list input", description = "Vehicle list input")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -26,7 +26,7 @@ import io.swagger.annotations.*;
 @Builder
 public class ScootersEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "车辆型号")
+    @ApiModelProperty(value = "Vehicle model")
     @NotNull(code = ValidationExceptionCode.MODEL_IS_EMPTY, message = "型号为空")
     private String modelCode;
 }

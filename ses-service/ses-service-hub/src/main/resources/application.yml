@@ -1,6 +1,14 @@
 #Springboot 基础配置
 server:
   port: ${random.int[10000,19999]}
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+  shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
 spring:
   application:
     name: @project.artifactId@
@@ -48,11 +56,6 @@ spring:
   # swagger配置
   swagger:
     enabled: false                                       # 是否启用swagger
-  http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
   #REDIS集群配置
   redis:
     cluster:
@@ -64,73 +67,61 @@ spring:
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
-
-dubbo:                                                                                                                  #DUBBO 配置
+#DUBBO 配置
+dubbo:
   application:
     id: @project.artifactId@
     name: @project.artifactId@
-    qos-enable: false                                                                                                   #是否启动QoS
-    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问
+    #是否启动QoS
+    qos-enable: false
+    #是否允许远程访问
+    qos-accept-foreign-ip: false
     logger: log4j
+  #注册中心配置
   registry:
-    check: false                                                                                                        #注册中心不存在时，是否报错
+    simplified: true
+    #注册中心不存在时，是否报错
+    check: false
+    register: true
+    subscribe: true
     group: ses
+    protocol: zookeeper
+  # Dubbo服务暴露与发现消费所在的package
   scan:
-    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
-  provider:                                                                                                             #服务提供者缺省值配置
-    timeout: 30000
-    threads: 300
-  consumer:                                                                                                             #服务消费者缺省值配置
-    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
+    base-packages: com.redescooter.ses
+  provider: #服务提供者缺省值配置
+    dynamic: false
+    timeout: 40000
+    threads: 400
+  #服务消费者缺省值配置
+  consumer:
+    #启动时检查提供者是否存在，true报错，false忽略
+    check: false
     timeout: 20000
     filter: dubboAccessLogFilter
+    threads: 200
   protocol:
+    register: true
     port: -1
-    threads: 300
+    threads: 400
     name: dubbo
-
-#REDIS配置
-redis:
-  max-total: 10000
-  max-idle: 200
-  min-Idle: 50
-  timeout: 3000
-  max-attempts: 5
-
-#MYBATIS配置
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-    #打印sql
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
-  mapper-locations: classpath:mapper/**/*.xml
+  mapper-locations: classpath*:/mapper/**/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.service.hub.source.consumer.dm,com.redescooter.ses.service.hub.source.corporate.dm,com.redescooter.ses.service.hub.source.operation.dm
-  check-config-location: true
   global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-    id-type: 3
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 1
-    #驼峰下划线转换
-    db-column-underline: true
-    #配置逻辑删除字段为1是删除
-    logic-delete-value: 1
-    #配置逻辑删除字段为0是未删除
-    logic-not-delete-value: 0
-    #刷新mapper 调试神器
-    refresh-mapper: true
-    #数据库大写下划线转换
-    capital-mode: true
+    banner: true
+    db-config:
+      id-type: uuid
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      table-underline: true
+      capital-mode: true
   configuration:
-    #是否开启自动驼峰命名规则（camel case）映射
     map-underscore-to-camel-case: true
-    #全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存
-    cache-enabled: false
-    call-setters-on-nulls: true
-    #配置JdbcTypeForNull, oracle数据库必须配置
-    jdbc-type-for-null: 'null'
-    #MyBatis 自动映射时未知列或未知属性处理策略 NONE：不做任何处理 (默认值), WARNING：以日志的形式打印相关警告信息, FAILING：当作映射失败处理，并抛出异常和详细信息
+    cache-enabled: true
+    aggressive-lazy-loading: true
+    lazy-loading-enabled: true
     auto-mapping-unknown-column-behavior: warning
+    local-cache-scope: session
+    call-setters-on-nulls: false

@@ -16,7 +16,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/05/13 15:42
  */
-@ApiModel(value = "产品型号", description = "产品型号")
+@ApiModel(value = "Product model", description = "Product model")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -24,9 +24,9 @@ import io.swagger.annotations.*;
 @Builder
 public class ProductModelResult extends GeneralResult {
 
-    @ApiModelProperty(value = "型号编号")
+    @ApiModelProperty(value = "model Code")
     private String modelCode;
 
-    @ApiModelProperty(value = "型号名称")
+    @ApiModelProperty(value = "name")
     private String name;
 }
