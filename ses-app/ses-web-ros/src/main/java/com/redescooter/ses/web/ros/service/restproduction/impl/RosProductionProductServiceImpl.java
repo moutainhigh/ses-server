@@ -1041,17 +1041,17 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (StringUtils.isNotBlank(opeProductionScooterBomDraft.getBomNo())) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getGroupId() != null || opeProductionScooterBomDraft.getGroupId() != 0) {
+        if (opeProductionScooterBomDraft.getGroupId() != null && opeProductionScooterBomDraft.getGroupId() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getColorId() != null || opeProductionScooterBomDraft.getColorId() != 0) {
+        if (opeProductionScooterBomDraft.getColorId() != null && opeProductionScooterBomDraft.getColorId() != 0) {
             count--;
         }
         if (opeProductionScooterBomDraft.getProcurementCycle() != null
             || opeProductionScooterBomDraft.getProcurementCycle() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getPartsQty() != null || opeProductionScooterBomDraft.getPartsQty() != 0) {
+        if (opeProductionScooterBomDraft.getPartsQty() != null && opeProductionScooterBomDraft.getPartsQty() != 0) {
             count--;
         }
         if (opeProductionScooterBomDraft.getEffectiveDate() != null) {
@@ -1226,10 +1226,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             count--;
         }
         if (opeProductionCombinBomDraft.getProcurementCycle() != null
-            || opeProductionCombinBomDraft.getProcurementCycle() != 0) {
+            && opeProductionCombinBomDraft.getProcurementCycle() != 0) {
             count--;
         }
-        if (opeProductionCombinBomDraft.getPartsQty() != null || opeProductionCombinBomDraft.getPartsQty() != 0) {
+        if (opeProductionCombinBomDraft.getPartsQty() != null && opeProductionCombinBomDraft.getPartsQty() != 0) {
             count--;
         }
         if (opeProductionCombinBomDraft.getEffectiveDate() != null) {
