@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
-@Api(tags = {"Stripe支付"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/stripe", method = RequestMethod.POST)
+@Api(tags = {"Stripe Payment"})
 public class StripeController {
 
     @Autowired
@@ -24,21 +24,21 @@ public class StripeController {
 
     @WebsiteSignIn
     @PostMapping(value = "/paymentIntent")
-    @ApiOperation(value = "获取client_secret", response = StringResult.class)
+    @ApiOperation(value = "Get [client_secret]", response = StringResult.class)
     public Response<StringResult> paymentIntent(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(stripeService.paymentIntent(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
-    @ApiOperation(value = "成功钩子")
+    @ApiOperation(value = "Succee Hooks")
     public Response<GeneralResult> succeeHooks(@RequestBody  String enter) {
         return new Response<>(stripeService.succeeHooks(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
-    @ApiOperation(value = "失败钩子")
+    @ApiOperation(value = "Fail Hooks")
     @ResponseBody
     public Response<GeneralResult> failHooks(@RequestBody String enter) {
         return new Response<>(stripeService.failHooks(enter));
@@ -46,16 +46,15 @@ public class StripeController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/canceledHooks")
-    @ApiOperation(value = "取消钩子")
+    @ApiOperation(value = "Canceled Hooks")
     @ResponseBody
     public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
         return new Response<>(stripeService.cancelledPaymentIntent(enter));
     }
 
-
     @WebsiteSignIn
     @PostMapping(value = "/publicSecret")
-    @ApiOperation(value = "获取加密之后的公钥", response = StringResult.class)
+    @ApiOperation(value = "Get public key", response = StringResult.class)
     public Response<PublicSecretResult> publicSecret() {
         return new Response(stripeService.publicSecret());
     }

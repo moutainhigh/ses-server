@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.service.website;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.customer.*;
-import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public interface ContactUsService {
    * @Param [enter]
    * @return
    **/
-  void websiteContactUs(SaveInquiryEnter enter);
+  void websiteContactUs(SaveAboutUsEnter enter);
 
     /**
      * @return

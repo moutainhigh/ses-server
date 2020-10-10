@@ -41,8 +41,8 @@
     <select id="listCount" resultType="int">
         select count(opi.id)
         from ope_customer_inquiry opi
-                 inner join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-                 inner join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
         <include refid="where_list"/>
     </select>
 
@@ -82,10 +82,11 @@
         select
         <include refid="list_column"/>
         from ope_customer_inquiry opi
-        inner join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-        inner join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
         <include refid="where_list"/>
         order by opi.created_time desc
+        limit #{startRow},#{pageSize}
     </select>
    <sql id="details_column">
        opi.id,
@@ -127,8 +128,8 @@
         select
         <include refid="details_column"/>
         from ope_customer_inquiry opi
-        inner join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-        inner join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
         left  join ope_customer_inquiry_b ocib on opi.id = ocib.inquiry_id and ocib.dr = 0
         where opi.dr = 0
         and opi.id=#{id}

@@ -5,6 +5,11 @@ log:
     max-size: 128MB
     max-history: 180
 
+# DUBBO 配置
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.200:2181
+
 spring:
   #数据库连接
   datasource:
@@ -27,11 +32,8 @@ spring:
         - 192.168.2.200:7004
         - 192.168.2.200:7005
 
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
-
+iot:
+  address: 192.168.2.200:7332
 
 # 多注册中心配置
 #    reg2:
@@ -48,6 +50,5 @@ dubbo:                                                                          
 #  system-dataid: @project.artifactId@-sys
 
 #35.180.46.199:7332;35.180.46.199:7332
-iot:
-  address: 192.168.2.200:7332
+
 
