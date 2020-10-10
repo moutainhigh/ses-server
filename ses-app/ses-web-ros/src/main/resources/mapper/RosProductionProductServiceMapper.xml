@@ -136,7 +136,7 @@
                draft.cn_name as cnName,
                draft.en_name as enName,
                draft.fr_name as frName,
-                draft.parts_qty as qty
+               draft.parts_qty as qty
         from ope_production_combin_bom_draft draft
         where draft.dr=0
         <if test="keyword != null and keyword != ''">
@@ -166,7 +166,8 @@
                bom.bom_status as status,
                bom.cn_name as cnName,
                bom.en_name as enName,
-               bom.fr_name as frName
+               bom.fr_name as frName,
+               bom.qty as qty
         from ope_production_combin_bom bom
        <include refid="where_combinationList" />
         order by status asc,bom.effective_date asc
