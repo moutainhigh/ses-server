@@ -236,7 +236,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                          partsDraft.setCnName(partsSaveOrUpdateEnter.getCnName());
                          partsDraft.setFrName(partsSaveOrUpdateEnter.getFrName());
                          partsDraft.setSupplierId(partsSaveOrUpdateEnter.getSupplierId());
-                         partsDraft.setProcurementCycle(partsSaveOrUpdateEnter.getProcurementCycle());
+                         partsDraft.setProcurementCycle(Objects.isNull(partsSaveOrUpdateEnter.getProcurementCycle())?0:partsSaveOrUpdateEnter.getProcurementCycle());
                          partsDraft.setUpdatedTime(new Date());
                          partsDraft.setDwg(partsSaveOrUpdateEnter.getDwg());
                          // 判断信息是否完善
