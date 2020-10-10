@@ -167,7 +167,7 @@
                bom.cn_name as cnName,
                bom.en_name as enName,
                bom.fr_name as frName,
-               bom.qty as qty
+               bom.parts_qty as qty
         from ope_production_combin_bom bom
        <include refid="where_combinationList" />
         order by status asc,bom.effective_date asc
