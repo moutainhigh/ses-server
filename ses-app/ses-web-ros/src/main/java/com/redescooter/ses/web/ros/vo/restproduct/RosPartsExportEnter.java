@@ -45,7 +45,7 @@ public class RosPartsExportEnter implements Serializable {
     @Excel(name = "SUPPLIER",width = 20)
     private String supplierName;
 
-    @Excel(name = "LEAD TIME",width = 20)
+    @Excel(name = "PROCUREMENT CYCLE",width = 20)
     private String procurementCycle;
 
 

@@ -603,7 +603,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 // =========easypoi部分
                 ExportParams exportParams = new ExportParams();
                 exportParams.setSheetName("Parts");
-               exportParams.setCreateHeadRows(true);
+                exportParams.setCreateHeadRows(true);
                 exportParams.setHeaderColor(Short.valueOf("1"));
                 // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
                 Workbook workbook = ExcelExportUtil.exportExcel(exportParams, RosPartsExportEnter.class, exportList);
