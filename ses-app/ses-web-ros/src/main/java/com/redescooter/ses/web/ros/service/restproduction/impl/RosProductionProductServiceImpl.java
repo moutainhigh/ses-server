@@ -938,8 +938,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             opeProductionPartsRelationList =
                 opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>()
                     .eq(OpeProductionPartsRelation::getProductionId, opeProductionScooterBomDraft.getId())
-                    .eq(OpeProductionPartsRelation::getProductionType,
-                        ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue()));
+                   );
             if (CollectionUtils.isEmpty(opeProductionPartsRelationList)) {
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getCode(),
                     ExceptionCodeEnums.BOM_PART_HAVE_LAST_ONE.getMessage());
