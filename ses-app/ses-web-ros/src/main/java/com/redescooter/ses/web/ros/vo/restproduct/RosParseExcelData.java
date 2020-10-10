@@ -91,11 +91,11 @@ public class RosParseExcelData implements Serializable, IExcelModel, IExcelDataM
 
     @Override
     public String getErrorMsg() {
-        return null;
+        return this.errorMsg;
     }
 
     @Override
-    public void setErrorMsg(String s) {
-
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

@@ -342,8 +342,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         .orElse(null);
                     // 非空 和信息校验
                     if (rosProductionProductPartListResult == null
-                        || StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
-                        || StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
+                        || !StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
+                        || !StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
                         failProductPartListResult.add(RosProductionProductPartListResult.builder()
                             .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
                             .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
@@ -351,6 +351,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                             .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
                     }
                 }
+            }
+            if (CollectionUtils.isNotEmpty(successList) && CollectionUtils.isEmpty(successProductPartListResult)) {
+                successList.forEach(item -> {
+                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                        .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                        .sec(item.getSec()).cnName(item.getChineseName()).errMsg("This part does not exist.").build());
+                });
             }
         }
         // 判断失败的部件，是否存在正式部件，如果存在 部件部件信息不完整异常《 部件不存在异常 （不存在异常会覆盖 信息不完整异常）
