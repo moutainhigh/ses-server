@@ -41,7 +41,7 @@
 		<maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>2.2.17</maven-gpg-plugin.version>
 		<maven-war-plugin.version>3.2.3</maven-war-plugin.version>
-		<ses-app.version>1.2.0</ses-app.version>
+		<ses-app.version>1.2.1</ses-app.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<commons-lang3.version>3.9</commons-lang3.version>
 		<commons-validator.version>1.6</commons-validator.version>

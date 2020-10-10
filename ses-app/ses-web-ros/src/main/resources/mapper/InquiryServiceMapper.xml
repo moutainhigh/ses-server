@@ -1,166 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.InquiryServiceMapper">
-
     <sql id="where_inquiryList">
-        where inquiry.dr=0
-        <if test="status != null and status != ''">
-            and inquiry.status= #{status}
-        </if>
-        <if test="status == null or status == ''">
-            and inquiry.status in ('1','3','4','5')
-        </if>
-         <if test="countryName != null and countryName != ''">
-            and inquiry.def1 =#{countryName}
-        </if>
-        <if test="cityName != null and cityName != ''">
-            and inquiry.def2 =#{cityName}
-        </if>
-        <if test="districtName != null and districtName != ''">
-            and inquiry.def3 = #{districtName}
-        </if>
-        <if test="industyType != null and industyType != ''">
-            and inquiry.industry = #{industyType}
-        </if>
-        <if test="customerType != null and customerType != ''">
-            and inquiry.customer_type = #{customerType}
-        </if>
-        <if test="acceptanceStartTime != null and acceptanceEndTime != null">
-            and inquiry.status = 3
-            and (inquiry.updated_time between #{acceptanceStartTime} and #{acceptanceEndTime})
-        </if>
-        <if test="keyword != null and keyword != ''">
-            and (
-            inquiry.first_name like concat("%",#{keyword},"%")
-            or inquiry.last_name like concat("%",#{keyword},"%")
-            or inquiry.full_name like concat("%",#{keyword},"%")
-            or inquiry.contant_full_name like concat("%",#{keyword},"%")
-            or inquiry.first_name like concat("%",#{keyword},"%")
-            or inquiry.last_name like concat("%",#{keyword},"%")
-            )
-        </if>
-        <if test="source != null and source != ''">
-            and inquiry.source = #{source}
-        </if>
+        <where>
+             inquiry.dr=0
+            <if test="status != null and status != ''">
+                and inquiry.status= #{status}
+            </if>
+            <if test="status == null or status == ''">
+                and inquiry.status in ('1','3','4','5')
+            </if>
+            <if test="countryName != null and countryName != ''">
+                and inquiry.def1 =#{countryName}
+            </if>
+            <if test="cityName != null and cityName != ''">
+                and inquiry.def2 =#{cityName}
+            </if>
+            <if test="districtName != null and districtName != ''">
+                and inquiry.def3 = #{districtName}
+            </if>
+            <if test="industyType != null and industyType != ''">
+                and inquiry.industry = #{industyType}
+            </if>
+            <if test="customerType != null and customerType != ''">
+                and inquiry.customer_type = #{customerType}
+            </if>
+            <if test="acceptanceStartTime != null and acceptanceEndTime != null">
+                and inquiry.status = 3
+                and (inquiry.updated_time between #{acceptanceStartTime} and #{acceptanceEndTime})
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                inquiry.first_name like concat("%",#{keyword},"%")
+                or inquiry.last_name like concat("%",#{keyword},"%")
+                or inquiry.full_name like concat("%",#{keyword},"%")
+                or inquiry.contant_full_name like concat("%",#{keyword},"%")
+                or inquiry.first_name like concat("%",#{keyword},"%")
+                or inquiry.last_name like concat("%",#{keyword},"%")
+                )
+            </if>
+            <if test="source != null and source != ''">
+                and inquiry.source = #{source}
+            </if>
+        </where>
     </sql>
 
     <sql id="InquiryResult">
-            inquiry.id                                         as id,
-           inquiry.first_name                                 as customerFirstName,
-           inquiry.last_name                                  as customerLastName,
-           inquiry.full_name                                  as customerFullName,
-           inquiry.contact_first                              as contactFirstName,
-           inquiry.contact_last                               as contactLastName,
-           inquiry.contant_full_name                          as contactFullName,
-           inquiry.email                                      as email,
-           inquiry.telephone                                  as telephone,
-           inquiry.city                                       as cityId,
-           inquiry.district                                   as distrustId,
-           inquiry.status                                     as status,
-           inquiry.customer_type                              as customerType,
-           inquiry.industry                                   as industryType,
-           inquiry.scooter_quantity                           as scooterQty,
-           inquiry.remarks                                    as remark,
-           if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,
-           inquiry.company_name                               as companyName,
-           inquiry.country_code                               as countryCode,
-           inquiry.source                                     as source,
-           inquiry.address                                    as address,
-           inquiry.def1                                       as countryName,
-           inquiry.def2                                       as cityName,
-           inquiry.def3                                       as districtName,
-           inquiry.created_time                                as createdTime
+
+                   inquiry.id                                         as id,
+                   inquiry.first_name                                 as customerFirstName,
+                   inquiry.last_name                                  as customerLastName,
+                   inquiry.full_name                                  as customerFullName,
+                   inquiry.contact_first                              as contactFirstName,
+                   inquiry.contact_last                               as contactLastName,
+                   inquiry.contant_full_name                          as contactFullName,
+                   inquiry.email                                      as email,
+                   inquiry.telephone                                  as telephone,
+                   inquiry.city                                       as cityId,
+                   inquiry.district                                   as distrustId,
+                   inquiry.status                                     as status,
+                   inquiry.customer_type                              as customerType,
+                   inquiry.industry                                   as industryType,
+                   inquiry.scooter_quantity                           as scooterQty,
+                   inquiry.remarks                                    as remark,
+                   if(inquiry.status = 3, inquiry.updated_time, null) as acceptanceTime,
+                   inquiry.company_name                               as companyName,
+                   inquiry.country_code                               as countryCode,
+                   inquiry.source                                     as source,
+                   inquiry.address                                    as address,
+                   inquiry.def1                                       as countryName,
+                   inquiry.def2                                       as cityName,
+                   inquiry.def3                                       as districtName,
+                   inquiry.created_time                                as createdTime
+
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-        select inquiry.status as status, count(*) as totalCount
-        from ope_customer_inquiry inquiry
-        where inquiry.dr=0
-        group by inquiry.status
+
+                select inquiry.status as status, count(*) as totalCount
+                from ope_customer_inquiry inquiry
+                where inquiry.dr=0
+                group by inquiry.status
+
     </select>
 
 
     <select id="inquiryListCount" resultType="int">
-        select count(*)
-        from ope_customer_inquiry inquiry
+
+                select count(*)
+                from ope_customer_inquiry inquiry
+
         <include refid="where_inquiryList"/>
     </select>
     <select id="inquiryList" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
-        select
+
+                select
+
         <include refid="InquiryResult"/>
-        from ope_customer_inquiry inquiry
+
+                from ope_customer_inquiry inquiry
+
         <include refid="where_inquiryList"/>
-        order by inquiry.created_time desc
-        limit #{startRow},#{pageSize}
+
+                order by inquiry.created_time desc
+                limit #{startRow},#{pageSize}
+
     </select>
 
     <select id="inquiryDetail" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryResult">
-        select
+
+                select
+
         <include refid="InquiryResult"/>
-        from ope_customer_inquiry inquiry
-        where inquiry.dr=0
-        and inquiry.id=#{id}
+
+                from ope_customer_inquiry inquiry
+                where inquiry.dr=0
+                and inquiry.id=#{id}
+
     </select>
 
     <select id="usingEmailList" resultType="java.lang.String">
-        select email
-        from ope_customer_inquiry
-        where dr = 0
-        where status != 3
-        union
-        select email
-        from ope_customer
-        where dr = 0
-          and ope_customer.status in (1, 2)
+
+                select email
+                from ope_customer_inquiry
+                where dr = 0
+                where status != 3
+                union
+                select email
+                from ope_customer
+                where dr = 0
+                  and ope_customer.status in (1, 2)
+
     </select>
 
     <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult">
-        select inquiry.id,
-        inquiry.order_no                                as orderNo,
-        inquiry.status,
-        inquiry.pay_status                              as payStatus,
-        oc.id                                       as customerId,
-        oc.customer_full_name                       as customerFullName,
-        oc.email,
-        inquiry.product_model                           as productModel,
-        case
-        when (inquiry.product_model   = 1) then 'RED E50'
-        when (inquiry.product_model   = 2) then 'RED E100'
-        when (inquiry.product_model   = 3) then 'RED E125' end as productName,
-        opp.en_name                                 as enName,
-        inquiry.bank_card_name            as bankCardName,
-        opp.color,
-        case
-        when (opp.color = 1) then 'red'
-        when (opp.color = 2) then 'blue'
-        when (opp.color = 3) then 'champagne'
-        when (opp.color = 4) then 'carbon'
-        when (opp.color = 5) then 'black' end   as colorName,
-        case
-        when (opp.color = 1) then '#d71345'
-        when (opp.color = 2) then '#145b7d'
-        when (opp.color = 3) then '#F1AF00'
-        when (opp.color = 4) then '#77787b'
-        when (opp.color = 5) then '#130c0e' end as colorValue,
-        1                                           as qty,
-        ocib.product_qty                            as batteryQty,
-        inquiry.total_price + 690                       as amount,
-        '190.00'                                    as paid,
-        '500.00'                                    as discount,
-        inquiry.total_price                             as balance,
-        inquiry.created_time                            as createdTime,
-        oc.country_code,
-        oc.telephone,
-        inquiry.def1                                    as country,
-        inquiry.def2                                    as city,
-        inquiry.def3                                    as postcode,
-        oc.address
-        from ope_customer_inquiry inquiry
-        inner join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
-        inner join ope_parts_product opp on inquiry.product_id = opp.id and opp.dr = 0
-        left join ope_customer_inquiry_b ocib on inquiry.id = ocib.inquiry_id and ocib.dr = 0
-        where inquiry.dr = 0
+
+                select inquiry.id,
+                inquiry.order_no                                as orderNo,
+                inquiry.status,
+                inquiry.pay_status                              as payStatus,
+                oc.id                                       as customerId,
+                oc.customer_full_name                       as customerFullName,
+                oc.email,
+                inquiry.product_model                           as productModel,
+                case
+                when (inquiry.product_model   = 1) then 'RED E50'
+                when (inquiry.product_model   = 2) then 'RED E100'
+                when (inquiry.product_model   = 3) then 'RED E125' end as productName,
+                opp.en_name                                 as enName,
+                inquiry.bank_card_name            as bankCardName,
+                opp.color,
+                case
+                when (opp.color = 1) then 'red'
+                when (opp.color = 2) then 'blue'
+                when (opp.color = 3) then 'champagne'
+                when (opp.color = 4) then 'carbon'
+                when (opp.color = 5) then 'black' end   as colorName,
+                case
+                when (opp.color = 1) then '#d71345'
+                when (opp.color = 2) then '#145b7d'
+                when (opp.color = 3) then '#F1AF00'
+                when (opp.color = 4) then '#77787b'
+                when (opp.color = 5) then '#130c0e' end as colorValue,
+                1                                           as qty,
+                ocib.product_qty                            as batteryQty,
+                inquiry.total_price + 690                       as amount,
+                '190.00'                                    as paid,
+                '500.00'                                    as discount,
+                inquiry.total_price                             as balance,
+                inquiry.created_time                            as createdTime,
+                oc.country_code,
+                oc.telephone,
+                inquiry.def1                                    as country,
+                inquiry.def2                                    as city,
+                inquiry.def3                                    as postcode,
+                oc.address
+                from ope_customer_inquiry inquiry
+                inner join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
+                inner join ope_parts_product opp on inquiry.product_id = opp.id and opp.dr = 0
+                left join ope_customer_inquiry_b ocib on inquiry.id = ocib.inquiry_id and ocib.dr = 0
+
         <include refid="where_inquiryList"/>
-        order by inquiry.created_time desc
+
+                order by inquiry.created_time desc
+
     </select>
 </mapper>

@@ -177,9 +177,9 @@ public class InquiryServiceImpl implements InquiryService {
         }
         // 官网联系我们
         contactUsService.websiteContactUs(enter);
-    
+
         //Monday 同步数据
-        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(enter.getFirstName());
         mondayGeneralEnter.setLastName(enter.getLastName());
         mondayGeneralEnter.setTelephone(enter.getTelephone());
@@ -419,19 +419,23 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
         List<InquiryExportResult> list = inquiryServiceMapper.exportInquiry(enter);
-        log.info("总共的数据量："+list.size());
+        log.info("总共的数据量：" + list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryExportResult inquiry : list) {
                 Integer i = 1;
-                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(),8));
-                dataMap.add(toMap(inquiry,i));
+                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
+                dataMap.add(toMap(inquiry, i));
             }
             String sheetName = "Inquiry";
-            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color","batteryQty","lastPrice","totalPrice","time"};
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+                /**文件夹不存在，则进行创建**/
+                if (!new File(excelFolder).exists()) {
+                    new File(excelFolder).mkdir();
+                }
                 log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
@@ -459,20 +463,20 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
 
-    private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry,Integer i) {
+    private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry, Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("ID",i);
-        map.put("fullName",opeCustomerInquiry.getCustomerFullName());
-        map.put("email",opeCustomerInquiry.getEmail());
-        map.put("bankCardname",opeCustomerInquiry.getBankCardName());
-        map.put("district",opeCustomerInquiry.getPostcode());
-        map.put("address",opeCustomerInquiry.getAddress());
-        map.put("productName",opeCustomerInquiry.getProductName());
-        map.put("color",opeCustomerInquiry.getColorName());
-        map.put("batteryQty",opeCustomerInquiry.getBatteryQty());
-        map.put("lastPrice",opeCustomerInquiry.getBalance());
-        map.put("totalPrice",opeCustomerInquiry.getAmount());
-        map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
+        map.put("ID", i);
+        map.put("fullName", opeCustomerInquiry.getCustomerFullName());
+        map.put("email", opeCustomerInquiry.getEmail());
+        map.put("bankCardname", opeCustomerInquiry.getBankCardName());
+        map.put("district", opeCustomerInquiry.getPostcode());
+        map.put("address", opeCustomerInquiry.getAddress());
+        map.put("productName", opeCustomerInquiry.getProductName());
+        map.put("color", opeCustomerInquiry.getColorName());
+        map.put("batteryQty", opeCustomerInquiry.getBatteryQty());
+        map.put("lastPrice", opeCustomerInquiry.getBalance());
+        map.put("totalPrice", opeCustomerInquiry.getAmount());
+        map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }
 
