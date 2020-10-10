@@ -67,7 +67,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /ed/dashboard/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:

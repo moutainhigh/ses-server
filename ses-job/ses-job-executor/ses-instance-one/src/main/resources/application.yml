@@ -38,7 +38,7 @@ dubbo:                                                                          
     threads: 300
   consumer:                                                                                                             #服务消费者缺省值配置
     check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
-    timeout: 20000
+    timeout: 60000
     filter: dubboAccessLogFilter
   protocol:
     port: -1

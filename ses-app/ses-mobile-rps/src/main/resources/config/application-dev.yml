@@ -68,7 +68,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /consumer/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -83,7 +83,7 @@ spring:                                                                         
         base-package: com.redescooter.ses
         path-regex: /account/consumer/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -98,7 +98,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.ros
         path-regex: /factory/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
@@ -113,7 +113,7 @@ spring:                                                                         
         base-package: com.redescooter.ses.web.ros
         path-regex: /supplier/.*
         path-mapping: /
-        version: 1.2.0
+        version: 1.2.1
         license: RedE 公司内部传阅
         license-url: '#'
         contact:
