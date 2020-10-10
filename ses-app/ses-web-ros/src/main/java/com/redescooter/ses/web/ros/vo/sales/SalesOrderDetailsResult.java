@@ -89,5 +89,8 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "客户地址")
     private String address;
 
+    @ApiModelProperty(value = "倒计时")
+    private Long ttl = 180L;
+
 
 }
