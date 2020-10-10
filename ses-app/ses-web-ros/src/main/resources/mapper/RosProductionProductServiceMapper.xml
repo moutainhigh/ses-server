@@ -245,7 +245,8 @@
         parts.cn_name           as cnName,
         parts.en_name           as enName,
         parts.fr_name           as frName,
-        sec.name                as sec
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle
         from ope_production_parts parts
         left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
         where parts.dr=0

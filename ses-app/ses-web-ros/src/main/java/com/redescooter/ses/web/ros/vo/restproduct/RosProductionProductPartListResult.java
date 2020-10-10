@@ -48,4 +48,10 @@ public class RosProductionProductPartListResult extends GeneralResult {
 
     @ApiModelProperty(value = "图纸url")
     private String dwg;
+
+    @ApiModelProperty(value = "错误信息")
+    private String errMsg;
+
+    @ApiModelProperty(value = "行号 出现异常信息时才会赋值")
+    private Integer rowNum;
 }

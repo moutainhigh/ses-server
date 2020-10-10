@@ -328,7 +328,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (CollectionUtils.isNotEmpty(failList)) {
             failList.forEach(item -> {
                 failProductPartListResult.add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
-                    .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
+                    .sec(item.getSec()).enName(item.getEnglishName()).cnName(item.getChineseName())
+                    .errMsg(item.getErrorMsg()).rowNum(item.getRowNum()).build());
             });
         }
         if (CollectionUtils.isNotEmpty(successList)) {
@@ -336,7 +337,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
             if (CollectionUtils.isNotEmpty(successProductPartListResult)) {
                 for (RosParseExcelData item : successList) {
-
                     RosProductionProductPartListResult rosProductionProductPartListResult = successProductPartListResult
                         .stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).findFirst()
                         .orElse(null);
@@ -344,13 +344,34 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     if (rosProductionProductPartListResult == null
                         || StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
                         || StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
-                        failProductPartListResult
-                            .add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
-                                .enName(item.getEnglishName()).cnName(item.getChineseName()).build());
+                        failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
                         successProductPartListResult
                             .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
                     }
                 }
+            }
+        }
+        // 判断失败的部件，是否存在正式部件，如果存在 部件部件信息不完整异常《 部件不存在异常 （不存在异常会覆盖 信息不完整异常）
+        if (CollectionUtils.isNotEmpty(failProductPartListResult)) {
+            List<RosProductionProductPartListResult> failPartProductionList =
+                rosProductionProductServiceMapper.rosImportProductionProductPartsList(failProductPartListResult.stream()
+                    .map(RosProductionProductPartListResult::getPartsNum).collect(Collectors.toList()));
+            if (CollectionUtils.isEmpty(failPartProductionList)) {
+                failPartProductionList.forEach(item -> {
+                    item.setErrMsg("This part does not exist.");
+                });
+            }
+            if (CollectionUtils.isNotEmpty(failPartProductionList)) {
+                failProductPartListResult.forEach(item -> {
+                    RosProductionProductPartListResult failRosProductionProductPartListResult = failPartProductionList
+                        .stream().filter(part -> StringUtils.equals(item.getPartsNum(), part.getPartsNum())).findFirst()
+                        .orElse(null);
+                    if (failRosProductionProductPartListResult == null) {
+                        item.setErrMsg("This part does not exist.");
+                    }
+                });
             }
         }
         importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
@@ -1139,6 +1160,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
         opeProductionScooterBomService.save(productionScooterBom);
 
+        if (opeProductionPartsRelationList.stream().filter(item -> item.getPartsQty() < 0).findFirst()
+            .orElse(null) != null) {
+            throw new SesWebRosException(ExceptionCodeEnums.THE_NUMBER_OF_PARTS_LEAST_GREATER_THAN_ONE.getCode(),
+                ExceptionCodeEnums.THE_NUMBER_OF_PARTS_LEAST_GREATER_THAN_ONE.getMessage());
+        }
         // 自己记录保存
         opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
     }

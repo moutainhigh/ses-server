@@ -18,7 +18,7 @@ public class ProductionProductExcelVerifyHandlerImpl implements IExcelVerifyHand
     /**
      * 导入校验方法
      *
-     * @param obj
+     * @param rosParseExcelData
      *            当前对象
      * @return
      */
@@ -44,6 +44,11 @@ public class ProductionProductExcelVerifyHandlerImpl implements IExcelVerifyHand
         if (Strings.isNullOrEmpty(rosParseExcelData.getQuantity())) {
             builder.append("Quantity ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
+        } else {
+            if (Integer.valueOf(rosParseExcelData.getQuantity()) < 1) {
+                builder.append("Quantity , Must be greater than 1;");
+                return new ExcelVerifyHandlerResult(false, builder.toString());
+            }
         }
         return new ExcelVerifyHandlerResult(true, builder.toString());
     }

@@ -1,11 +1,9 @@
 package com.redescooter.ses.web.ros;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
@@ -25,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -430,6 +430,8 @@ public enum ExceptionCodeEnums {
 
     DEF_VALUE_ILLEGAL(10206, "自定义值非法"),
 
+    THE_NUMBER_OF_PARTS_LEAST_GREATER_THAN_ONE(10207, "部件数量至少大于1"),
+
     ;
 
 
