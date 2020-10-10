@@ -342,15 +342,24 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         .orElse(null);
                     // 非空 和信息校验
                     if (rosProductionProductPartListResult == null
-                        || StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
-                        || StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
+                        || !StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
+                        || !StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
                         failProductPartListResult.add(RosProductionProductPartListResult.builder()
                             .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
                             .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
                         successProductPartListResult
                             .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
+                        continue;
                     }
+                    rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
                 }
+            }
+            if (CollectionUtils.isNotEmpty(successList) && CollectionUtils.isEmpty(successProductPartListResult)) {
+                successList.forEach(item -> {
+                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                        .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                        .sec(item.getSec()).cnName(item.getChineseName()).errMsg("This part does not exist.").build());
+                });
             }
         }
         // 判断失败的部件，是否存在正式部件，如果存在 部件部件信息不完整异常《 部件不存在异常 （不存在异常会覆盖 信息不完整异常）
@@ -801,6 +810,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
+            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
             opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionCombinBom.setUpdatedBy(enter.getId());
             opeProductionCombinBom.setUpdatedTime(new Date());
@@ -812,6 +825,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             if (opeProductionScooterBom == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+            }
+            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
+                    ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
             opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ABOLISHED.getValue());
             opeProductionScooterBom.setUpdatedBy(enter.getId());
