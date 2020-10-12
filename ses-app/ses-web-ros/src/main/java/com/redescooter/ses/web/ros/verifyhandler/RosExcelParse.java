@@ -20,7 +20,7 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
         StringBuilder builder = new StringBuilder();
         if (Strings.isNullOrEmpty(rosParseExcelData.getLevel())) {
             builder.append("level ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getPartsNo())) {
             builder.append("PARTS_NO ,This is  not must null;");
@@ -28,15 +28,15 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getChineseName())) {
             builder.append("Chinese_Name ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getEnglishName())) {
             builder.append("English_Name ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getEcnNumber())) {
             builder.append("ECN_Number ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSec())) {
             builder.append("SEC ,This is  not must null;");
@@ -44,23 +44,23 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSellClass())) {
             builder.append("Sell_Class ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getType())) {
             builder.append("TYPE ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getDrawingSize())) {
             builder.append("Drawing_Size ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getWeight())) {
             builder.append("Weight ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getQuantity())) {
             builder.append("Quantity ,This is  not must null;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         return new ExcelVerifyHandlerResult(true, builder.toString());
     }

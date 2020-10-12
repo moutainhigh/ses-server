@@ -434,6 +434,8 @@ public enum ExceptionCodeEnums {
 
     DELETE_THE_ORDER_FIRST(10208, "请先删除订单"),
 
+    PARTS_MSG_NOT_PERFECT(10209, "部品信息不完善，请完善信息"),
+
     ;
 
 

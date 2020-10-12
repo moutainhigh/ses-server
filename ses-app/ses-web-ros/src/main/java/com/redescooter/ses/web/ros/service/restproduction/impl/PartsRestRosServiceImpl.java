@@ -386,6 +386,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         }
         // 拿到需要导入的数据
         List<RosParseExcelData> successList = excelImportResult.getList();
+        if(CollectionUtils.isNotEmpty(excelImportResult.getFailList())){
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_MSG_NOT_PERFECT.getCode(), ExceptionCodeEnums.PARTS_MSG_NOT_PERFECT.getMessage());
+        }
         if(CollectionUtils.isEmpty(successList)){
             // 如果没有成功的数据  直接抛异常
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
