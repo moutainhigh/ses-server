@@ -3,13 +3,21 @@ package com.redescooter.ses.web.ros.controller.website;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
-import com.redescooter.ses.web.ros.vo.website.*;
+import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
+import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
+import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -117,4 +125,10 @@ public class WebsiteOrderController {
         return new Response<>(websiteOrderFormService.customerInfo(enter));
     }
 
+    @IgnoreLoginCheck
+    @PostMapping(value = "/payAgainCheck")
+    @ApiOperation(value = "再次支付", response = BooleanResult.class)
+    public Response<BooleanResult> payAgainCheck(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(websiteOrderFormService.payAgainCheck(enter));
+    }
 }
