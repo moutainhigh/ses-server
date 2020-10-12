@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.specificat;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
 
 /**
  * @ClassNameSpecificatDefEnter
@@ -12,6 +14,7 @@ import lombok.Data;
  * @Date2020/9/28 17:40
  * @Version V1.0
  **/
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SpecificatDefEnter extends GeneralEnter {
 
@@ -21,7 +24,8 @@ public class SpecificatDefEnter extends GeneralEnter {
     @ApiModelProperty(value="自定义名称")
     private String defName;
 
+    // 整数部分超过7位数时 会自动转为科学计数法，为避免科学计数法的出现 类型由double换成BigDecimal
     @ApiModelProperty(value="自定义的值")
-    private double defValue;
+    private BigDecimal defValue;
 
 }

@@ -40,7 +40,7 @@ public class SpecificatDefServiceImpl implements SpecificatDefService {
         for (SpecificatDefEnter defEnter : defEnterList) {
             OpeSpecificatDef def = new OpeSpecificatDef();
             def.setDefName(defEnter.getDefName());
-            def.setDefValue(defEnter.getDefValue());
+            def.setDefValue(defEnter.getDefValue().doubleValue());
             def.setSpecificatId(defEnter.getSpecificatId());
             def.setCreatedBy(userId);
             def.setCreatedTime(new Date());

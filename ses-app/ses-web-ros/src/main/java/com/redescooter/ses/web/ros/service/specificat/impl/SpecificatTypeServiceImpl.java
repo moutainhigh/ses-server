@@ -106,7 +106,8 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
      * @Param [lists]
      * @return
      **/
-    public void checkDef(List<SpecificatDefEnter> lists){
+    public void
+    checkDef(List<SpecificatDefEnter> lists){
         for (SpecificatDefEnter list : lists) {
             // 先校验名称：长度20位，不能有特殊字符
             if (Strings.isNullOrEmpty(list.getDefName())){
