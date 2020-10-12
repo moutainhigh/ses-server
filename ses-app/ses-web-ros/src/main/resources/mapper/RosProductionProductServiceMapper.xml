@@ -76,16 +76,20 @@
     </select>
 
     <select id="scooterDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
-        select draft.id as id,
-               draft.bom_no as productNum,
-               draft.procurement_cycle as productionCycle,
-               draft.group_id as groupId,
-               draft.color_id as colorId,
-               draft.cn_name as cnName,
-               draft.en_name as enName,
-               draft.fr_name as frName,
-                draft.parts_qty as qty
+        select draft.id                as id,
+        draft.bom_no            as productNum,
+        draft.procurement_cycle as productionCycle,
+        draft.group_id          as groupId,
+        draft.color_id          as colorId,
+        draft.cn_name           as cnName,
+        draft.en_name           as enName,
+        draft.fr_name           as frName,
+        draft.parts_qty         as qty,
+        sgroup.group_name     as groupName,
+        color.color_name      as colorName
         from ope_production_scooter_bom_draft draft
+        left join ope_specificat_group sgroup on draft.group_id = sgroup.id and sgroup.dr = 0
+        left join ope_color color on color.id = draft.color_id and color.dr = 0
        <include refid="where_scooterDraftList"/>
         order by draft.created_time desc
         limit #{startRow},#{pageSize}
@@ -99,17 +103,21 @@
     </select>
 
     <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
-        select bom.id as id,
-        bom.bom_no as productNum,
+        select bom.id                as id,
+        bom.bom_no            as productNum,
         bom.procurement_cycle as productionCycle,
-        bom.group_id as groupId,
-        bom.color_id as colorId,
-        bom.bom_status as status,
-        bom.cn_name as cnName,
-        bom.en_name as enName,
-        bom.fr_name as frName,
-        bom.parts_qty as qty
+        bom.group_id          as groupId,
+        bom.color_id          as colorId,
+        bom.bom_status        as status,
+        bom.cn_name           as cnName,
+        bom.en_name           as enName,
+        bom.fr_name           as frName,
+        bom.parts_qty         as qty,
+        sgroup.group_name     as groupName,
+        color.color_name      as colorName
         from ope_production_scooter_bom bom
+        left join ope_specificat_group sgroup on bom.group_id = sgroup.id and sgroup.dr = 0
+        left join ope_color color on color.id = bom.color_id and color.dr = 0
         <include refid="where_scooterBomList"/>
         order by status asc,bom.effective_date asc
         limit #{enter.startRow},#{enter.pageSize}
@@ -256,5 +264,19 @@
                  #{item}
             </foreach>
         </if>
+    </select>
+
+    <select id="groupList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">
+        select sgroup.id         as id,
+               sgroup.group_name as name
+        from ope_specificat_group sgroup
+        where dr = 0
+    </select>
+
+    <select id="colorList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">
+        select color.id         as id,
+               color.color_name as name
+        from ope_color color
+        where dr = 0
     </select>
 </mapper>

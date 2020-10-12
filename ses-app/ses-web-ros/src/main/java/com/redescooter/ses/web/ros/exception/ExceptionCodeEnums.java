@@ -436,6 +436,8 @@ public enum ExceptionCodeEnums {
 
     PARTS_MSG_NOT_PERFECT(10209, "部品信息不完善，请完善信息"),
 
+    COLOR_NOT_EXIST(10210, "颜色不存在");
+
     ;
 
 

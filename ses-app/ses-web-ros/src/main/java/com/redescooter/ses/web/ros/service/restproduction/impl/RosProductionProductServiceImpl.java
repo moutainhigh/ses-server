@@ -12,8 +12,6 @@ import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
-import com.redescooter.ses.api.common.enums.bom.ProductionScooterGroupEnums;
-import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.base.BaseNameResult;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -26,6 +24,7 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpePartsSec;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft;
@@ -33,9 +32,11 @@ import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBomDraft;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.base.OpePartsSecService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
@@ -43,6 +44,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationServic
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomDraftService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.verifyhandler.ProductionProductExcelVerifyHandlerImpl;
@@ -118,6 +120,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private JedisService jedisService;
 
     @Autowired
+    private OpeColorService opeColorService;
+
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
+    @Autowired
     private IdAppService idAppService;
 
     /**
@@ -157,11 +165,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public List<BaseNameResult> groupList(GeneralEnter generalEnter) {
-        List<BaseNameResult> result = new ArrayList<>();
-        for (ProductionScooterGroupEnums item : ProductionScooterGroupEnums.values()) {
-            result.add(new BaseNameResult(Long.valueOf(item.getValue()), item.getCode()));
-        }
-        return result;
+        return rosProductionProductServiceMapper.groupList(generalEnter);
     }
 
     /**
@@ -172,11 +176,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public List<BaseNameResult> colorList(GeneralEnter enter) {
-        List<BaseNameResult> result = new ArrayList<>();
-        for (ProductColorEnums item : ProductColorEnums.values()) {
-            result.add(BaseNameResult.builder().id(Long.valueOf(item.getValue())).name(item.getCode()).build());
-        }
-        return result;
+        return rosProductionProductServiceMapper.colorList(enter);
     }
 
     /**
@@ -205,19 +205,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             rosProductionScooterListResults = rosProductionProductServiceMapper.scooterBomList(enter,
                 ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
-        }
-
-        for (RosProductionScooterListResult item : rosProductionScooterListResults) {
-            if (item.getGroupId() != null && item.getGroupId() != 0) {
-                ProductionScooterGroupEnums groupName =
-                    ProductionScooterGroupEnums.getEnumByValue(item.getGroupId().intValue());
-                item.setGroupName(groupName == null ? null : groupName.getCode());
-            }
-            if (item.getColorId() != null && item.getColorId() != 0) {
-                ProductColorEnums colorEnum =
-                    ProductColorEnums.getProductColorEnumsByValue(String.valueOf(item.getColorId()));
-                item.setColorName(colorEnum == null ? null : colorEnum.getCode());
-            }
         }
         return PageResult.create(enter, count, rosProductionScooterListResults);
     }
@@ -588,14 +575,20 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .createTime(opeProductionScooterBomDraft.getCreatedTime())
                     .createById(opeProductionScooterBomDraft.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
-                    ProductionScooterGroupEnums groupName =
-                        ProductionScooterGroupEnums.getEnumByValue(result.getGroupId().intValue());
-                    result.setGroupName(groupName == null ? null : groupName.getCode());
+                    OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
+                    if (opeSpecificatGroup == null) {
+                        throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(),
+                            ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+                    }
+                    result.setGroupName(opeSpecificatGroup.getGroupName());
                 }
                 if (result.getColorId() != null && result.getColorId() != 0) {
-                    ProductColorEnums colorEnum =
-                        ProductColorEnums.getProductColorEnumsByValue(String.valueOf(result.getColorId()));
-                    result.setColorName(colorEnum == null ? null : colorEnum.getCode());
+                    OpeColor opeColor = opeColorService.getById(result.getColorId());
+                    if (opeColor == null) {
+                        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(),
+                            ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                    }
+                    result.setColorName(opeColor.getColorName());
                 }
             }
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
@@ -625,14 +618,20 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .effectiverDate(opeProductionScooterBom.getEffectiveDate())
                     .createById(opeProductionScooterBom.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
-                    ProductionScooterGroupEnums groupName =
-                        ProductionScooterGroupEnums.getEnumByValue(result.getGroupId().intValue());
-                    result.setGroupName(groupName == null ? null : groupName.getCode());
+                    OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
+                    if (opeSpecificatGroup == null) {
+                        throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(),
+                            ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+                    }
+                    result.setGroupName(opeSpecificatGroup.getGroupName());
                 }
                 if (result.getColorId() != null && result.getColorId() != 0) {
-                    ProductColorEnums colorEnum =
-                        ProductColorEnums.getProductColorEnumsByValue(String.valueOf(result.getColorId()));
-                    result.setColorName(colorEnum == null ? null : colorEnum.getCode());
+                    OpeColor opeColor = opeColorService.getById(result.getColorId());
+                    if (opeColor == null) {
+                        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(),
+                            ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                    }
+                    result.setColorName(opeColor.getColorName());
                 }
             }
         }
