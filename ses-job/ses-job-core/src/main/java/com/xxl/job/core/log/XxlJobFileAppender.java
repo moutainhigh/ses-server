@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,11 +14,6 @@ import java.util.Date;
  */
 public class XxlJobFileAppender {
 	private static Logger logger = LoggerFactory.getLogger(XxlJobFileAppender.class);
-	
-	// for JobThread (support log for child thread of job handler)
-	//public static ThreadLocal<String> contextHolder = new ThreadLocal<String>();
-	public static final InheritableThreadLocal<String> contextHolder = new InheritableThreadLocal<String>();
-
 
 	/**
 	 * log base path
@@ -119,7 +113,7 @@ public class XxlJobFileAppender {
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(logFile, true);
-			fos.write(appendLog.getBytes(StandardCharsets.UTF_8));
+			fos.write(appendLog.getBytes("utf-8"));
 			fos.flush();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -159,7 +153,7 @@ public class XxlJobFileAppender {
 		LineNumberReader reader = null;
 		try {
 			//reader = new LineNumberReader(new FileReader(logFile));
-			reader = new LineNumberReader(new InputStreamReader(new FileInputStream(logFile), StandardCharsets.UTF_8));
+			reader = new LineNumberReader(new InputStreamReader(new FileInputStream(logFile), "utf-8"));
 			String line = null;
 
 			while ((line = reader.readLine())!=null) {
@@ -200,7 +194,7 @@ public class XxlJobFileAppender {
 	public static String readLines(File logFile){
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile), StandardCharsets.UTF_8));
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile), "utf-8"));
 			if (reader != null) {
 				StringBuilder sb = new StringBuilder();
 				String line = null;

@@ -14,13 +14,13 @@ import java.util.List;
 @Mapper
 public interface XxlJobLogReportDao {
 
-	int save(XxlJobLogReport xxlJobLogReport);
+	public int save(XxlJobLogReport xxlJobLogReport);
 
-	int update(XxlJobLogReport xxlJobLogReport);
+	public int update(XxlJobLogReport xxlJobLogReport);
 
-	List<XxlJobLogReport> queryLogReport(@Param("triggerDayFrom") Date triggerDayFrom,
-                                         @Param("triggerDayTo") Date triggerDayTo);
+	public List<XxlJobLogReport> queryLogReport(@Param("triggerDayFrom") Date triggerDayFrom,
+												@Param("triggerDayTo") Date triggerDayTo);
 
-	XxlJobLogReport queryLogReportTotal();
+	public XxlJobLogReport queryLogReportTotal();
 
 }
