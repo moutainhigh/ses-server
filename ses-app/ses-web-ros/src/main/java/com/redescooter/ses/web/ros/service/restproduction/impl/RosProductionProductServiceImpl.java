@@ -78,6 +78,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -810,7 +811,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
                     ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
@@ -826,7 +827,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.ABOLISHED.getValue())) {
+            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
                     ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
@@ -1041,20 +1042,23 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (StringUtils.isNotBlank(opeProductionScooterBomDraft.getBomNo())) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getGroupId() != null && opeProductionScooterBomDraft.getGroupId() != 0) {
+        if (!Objects.equals(null, opeProductionScooterBomDraft.getGroupId())
+            && opeProductionScooterBomDraft.getGroupId() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getColorId() != null && opeProductionScooterBomDraft.getColorId() != 0) {
+        if (!Objects.equals(null, opeProductionScooterBomDraft.getColorId())
+            && opeProductionScooterBomDraft.getColorId() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getProcurementCycle() != null
-            || opeProductionScooterBomDraft.getProcurementCycle() != 0) {
+        if (!Objects.equals(null, opeProductionScooterBomDraft.getProcurementCycle())
+            && opeProductionScooterBomDraft.getProcurementCycle() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getPartsQty() != null && opeProductionScooterBomDraft.getPartsQty() != 0) {
+        if (!Objects.equals(null, opeProductionScooterBomDraft.getPartsQty())
+            && opeProductionScooterBomDraft.getPartsQty() != 0) {
             count--;
         }
-        if (opeProductionScooterBomDraft.getEffectiveDate() != null) {
+        if (null != opeProductionScooterBomDraft.getEffectiveDate()) {
             count--;
         }
         if (StringUtils.isNotBlank(opeProductionScooterBomDraft.getEnName())) {
@@ -1225,14 +1229,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getEnName())) {
             count--;
         }
-        if (opeProductionCombinBomDraft.getProcurementCycle() != null
+        if (!Objects.equals(null, opeProductionCombinBomDraft.getProcurementCycle())
             && opeProductionCombinBomDraft.getProcurementCycle() != 0) {
             count--;
         }
-        if (opeProductionCombinBomDraft.getPartsQty() != null && opeProductionCombinBomDraft.getPartsQty() != 0) {
+        if (!Objects.equals(null, opeProductionCombinBomDraft.getPartsQty())
+            && opeProductionCombinBomDraft.getPartsQty() != 0) {
             count--;
         }
-        if (opeProductionCombinBomDraft.getEffectiveDate() != null) {
+        if (!Objects.equals(null, opeProductionCombinBomDraft.getEffectiveDate())) {
             count--;
         }
         if (count != 0) {
