@@ -50,7 +50,7 @@
        opi.id,
        opi.order_no                                as orderNo,
        opi.status,
-       opi.pay_status                              as payStatus,
+       IFNULL(OPI.pay_status, '1')                            as payStatus,
        oc.customer_full_name                       as customerFullName,
        oc.email,
        opi.product_model                           as productModel,
@@ -68,13 +68,20 @@
            when (opp.color = 3) then '#C4B792'
            when (opp.color = 4) then '#A9AAAC'
            when (opp.color = 5) then '#000000' end as colorValue,
-       ifnull(opi.def5,'false')                    as labelFlag,
+       ifnull(opi.def5, 'false')                   as labelFlag,
        case
            when ifnull(opi.def6, '-1.0') = '-1.0' then true
            else false end                          as warnFlag,
        1                                           as qty,
-       opi.total_price + 690                       as amount,
-       '190.00'                                    as paid,
+       case
+           when (IFNULL(OPI.pay_status, '1') = 1) then opi.total_price
+           else
+               opi.total_price + 690 end           as amount,
+
+       case
+           when (IFNULL(OPI.pay_status, '1') = 1) then '0.00'
+           else
+               '190.00' end                        as paid,
        opi.total_price                             as balance,
        opi.created_time                            as createdTime
     </sql>
@@ -92,7 +99,7 @@
        opi.id,
        opi.order_no                                as orderNo,
        opi.status,
-       opi.pay_status                              as payStatus,
+       IFNULL(OPI.pay_status, '1')                 as payStatus,
        oc.customer_full_name                       as customerFullName,
        oc.email,
        opi.product_model                           as productModel,
@@ -112,8 +119,15 @@
            when (opp.color = 5) then '#000000' end as colorValue,
        1                                           as qty,
        ocib.product_qty                            as batteryQty,
-       opi.total_price + 690                       as amount,
-       '190.00'                                    as paid,
+       case
+           when (IFNULL(OPI.pay_status, '1') = 1) then opi.total_price
+           else
+               opi.total_price + 690 end           as amount,
+
+       case
+           when (IFNULL(OPI.pay_status, '1') = 1) then '0.00'
+           else
+               '190.00' end                        as paid,
        opi.total_price                             as balance,
        opi.created_time                            as createdTime,
        '500.00'                                    as discount,

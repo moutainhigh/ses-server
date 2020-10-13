@@ -210,12 +210,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
-        //电池要求过滤
+        //电池价格计算
         BigDecimal totalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-        //总价格计算
+
+        //后备箱价格计算
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
         }
@@ -392,6 +393,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             .setTelephone(StringUtils.isNotBlank(opeCustomer.getTelephone()) ? opeCustomer.getTelephone() : null);
         opeCustomerInquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
         opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setProductId(enter.getProductId());
         opeCustomerInquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiry.setProductPrice(product.getPrice());
@@ -430,7 +432,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setDef3(opeCustomer.getDef3());
 
         opeCustomerInquiry.setScooterQuantity(1);
-        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         opeCustomerInquiry.setCountryCode(null);
         opeCustomerInquiry.setTelephone(opeCustomer.getTelephone());
         opeCustomerInquiry.setBankCardName(enter.getBankCardName());
@@ -714,8 +715,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 qty = enter.getAccessoryBatteryQty() - 4;
                 break;
         }
-
-        //todo 目前是优惠价 减500欧元
         return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
     }
 
