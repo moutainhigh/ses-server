@@ -958,6 +958,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 queryWrapper.ne(OpeProductionScooterBom.COL_ID, enter.getId());
             }
             queryWrapper.eq(OpeProductionScooterBom.COL_BOM_NO, enter.getProductN());
+            queryWrapper.in(OpeProductionScooterBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue(),
+                ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
             List<OpeProductionScooterBom> opeProductionScooterBomList =
                 opeProductionScooterBomService.list(queryWrapper);
             if (CollectionUtils.isNotEmpty(opeProductionScooterBomList)) {
@@ -970,6 +972,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 queryWrapper.ne(OpeProductionCombinBom.COL_ID, enter.getId());
             }
             queryWrapper.eq(OpeProductionCombinBom.COL_BOM_NO, enter.getProductN());
+            queryWrapper.in(OpeProductionScooterBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue(),
+                ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
             List<OpeProductionCombinBom> opeProductionCombinBomList = opeProductionCombinBomService.list(queryWrapper);
             if (CollectionUtils.isNotEmpty(opeProductionCombinBomList)) {
                 return new BooleanResult(Boolean.FALSE);
