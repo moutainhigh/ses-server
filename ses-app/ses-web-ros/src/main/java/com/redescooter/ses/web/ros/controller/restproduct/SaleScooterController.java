@@ -22,4 +22,8 @@ public class SaleScooterController {
     @Autowired
     private SaleScooterService saleScooterService;
 
+
+
+
+
 }
