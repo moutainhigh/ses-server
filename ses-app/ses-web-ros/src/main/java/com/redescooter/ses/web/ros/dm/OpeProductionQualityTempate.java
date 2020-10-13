@@ -59,9 +59,9 @@ public class OpeProductionQualityTempate implements Serializable {
     /**
      * 关联类型,(0：部件草稿，1：部件，2：整车草稿，3：整车，4：组装草稿，5：组装件)
      */
-    @TableField(value = "relation_type")
+    @TableField(value = "production_type")
     @ApiModelProperty(value = "关联类型,(0：部件草稿，1：部件，2：整车草稿，3：整车，4：组装草稿，5：组装件)")
-    private Integer relationType;
+    private Integer productionType;
 
     /**
      * 质检项名称
@@ -152,7 +152,7 @@ public class OpeProductionQualityTempate implements Serializable {
 
     public static final String COL_SOURCE_TYPE = "source_type";
 
-    public static final String COL_RELATION_TYPE = "relation_type";
+    public static final String COL_PRODUCTION_TYPE = "production_type";
 
     public static final String COL_QC_ITEM_NAME = "qc_item_name";
 

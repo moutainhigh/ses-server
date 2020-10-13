@@ -30,6 +30,7 @@ import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBomDraft;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
@@ -42,13 +43,16 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftServi
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomDraftService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.verifyhandler.ProductionProductExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CheckProductNEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.ProductionProductEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosParseExcelData;
@@ -124,6 +128,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     @Autowired
     private OpeSpecificatGroupService opeSpecificatGroupService;
+
+    @Autowired
+    private ProductionQcTmepleteService productionQcTmepleteService;
+
+    @Autowired
+    private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
     @Autowired
     private IdAppService idAppService;
@@ -688,6 +698,17 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
         }
 
+        // 设置整车详情中 质检模板
+        if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
+            OpeProductionQualityTempate opeProductionQualityTempate =
+                opeProductionQualityTempateService.getOne(new LambdaQueryWrapper<OpeProductionQualityTempate>()
+                    .eq(OpeProductionQualityTempate::getProductionId, enter.getId())
+                    .eq(OpeProductionQualityTempate::getProductionType, enter.getProductionProductType()));
+            if (opeProductionQualityTempate == null) {
+                result.setQcTempletePromptIcon(Boolean.TRUE);
+            }
+        }
+
         // 创建人
         OpeSysUserProfile opeSysUserProfile = opeSysUserProfileService.getOne(
             new LambdaQueryWrapper<OpeSysUserProfile>().eq(OpeSysUserProfile::getSysUserId, result.getCreateById()));
@@ -972,7 +993,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 queryWrapper.ne(OpeProductionCombinBom.COL_ID, enter.getId());
             }
             queryWrapper.eq(OpeProductionCombinBom.COL_BOM_NO, enter.getProductN());
-            queryWrapper.in(OpeProductionScooterBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue(),
+            queryWrapper.in(OpeProductionCombinBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue(),
                 ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
             List<OpeProductionCombinBom> opeProductionCombinBomList = opeProductionCombinBomService.list(queryWrapper);
             if (CollectionUtils.isNotEmpty(opeProductionCombinBomList)) {
@@ -1158,6 +1179,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         // 自己记录保存
         opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
+
+        // 保存 质检模板
+        productionQcTmepleteService.saveByCopyId(
+            new SaveByCopyIdEnter(productionScooterBom.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()),
+                enter.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue())));
+
     }
 
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
@@ -1305,6 +1332,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
         // 自己记录保存
         opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
+
+        // 保存 质检模板
+        productionQcTmepleteService.saveByCopyId(new SaveByCopyIdEnter(opeProductionCombinBom.getId(),
+            Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()), enter.getId(),
+            Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue())));
+
         if (!enter.getDirectRelease()) {
             // 删除草稿
             opeProductionCombinBomDraftService.removeById(opeProductionCombinBomDraft);
@@ -1507,4 +1540,5 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         return resultList;
     }
+
 }

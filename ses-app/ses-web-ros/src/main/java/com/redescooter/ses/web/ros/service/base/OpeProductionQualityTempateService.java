@@ -18,3 +18,4 @@ public interface OpeProductionQualityTempateService extends IService<OpeProducti
     int insertOrUpdateSelective(OpeProductionQualityTempate record);
 
 }
+

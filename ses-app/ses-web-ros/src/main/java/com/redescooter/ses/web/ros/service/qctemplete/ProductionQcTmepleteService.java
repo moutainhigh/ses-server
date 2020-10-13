@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.service.qctemplete;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
+import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
+import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public interface ProductionQcTmepleteService {
 
     /**
-     * 部件质检模板保存
+     * 产品 质检模板保存
      *
      * @param enter
      * @return
@@ -24,10 +25,18 @@ public interface ProductionQcTmepleteService {
     GeneralResult save(SaveQcTemplateEnter enter);
 
     /**
-     * 质检模板详情
+     * 产品质检模板详情
      * 
      * @param enter
      * @return
      */
-    List<QcTemplateDetailResult> detail(IdEnter enter);
+    List<QcTemplateDetailResult> detail(QcTempleteDetailEnter enter);
+
+    /**
+     * 产品 质检模板复制 快速保存
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult saveByCopyId(SaveByCopyIdEnter enter);
 }

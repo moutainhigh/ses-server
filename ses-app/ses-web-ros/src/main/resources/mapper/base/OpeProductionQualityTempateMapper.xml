@@ -9,7 +9,7 @@
     <result column="production_id" jdbcType="BIGINT" property="productionId" />
     <result column="import_excel_batch_no" jdbcType="VARCHAR" property="importExcelBatchNo" />
     <result column="source_type" jdbcType="INTEGER" property="sourceType" />
-    <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+    <result column="production_type" jdbcType="INTEGER" property="productionType" />
     <result column="qc_item_name" jdbcType="VARCHAR" property="qcItemName" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -24,7 +24,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, production_id, import_excel_batch_no, source_type, relation_type, qc_item_name, 
+    id, dr, production_id, import_excel_batch_no, source_type, production_type, qc_item_name, 
     revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
     def5
   </sql>
@@ -52,9 +52,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.sourceType,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="relation_type = case" suffix="end,">
+      <trim prefix="production_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.relationType,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productionType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="qc_item_name = case" suffix="end,">
@@ -121,14 +121,14 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_production_quality_tempate
-    (id, dr, production_id, import_excel_batch_no, source_type, relation_type, qc_item_name, 
+    (id, dr, production_id, import_excel_batch_no, source_type, production_type, qc_item_name, 
       revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.productionId,jdbcType=BIGINT}, 
         #{item.importExcelBatchNo,jdbcType=VARCHAR}, #{item.sourceType,jdbcType=INTEGER}, 
-        #{item.relationType,jdbcType=INTEGER}, #{item.qcItemName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.productionType,jdbcType=INTEGER}, #{item.qcItemName,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
         #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
         #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
@@ -138,12 +138,12 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate">
     <!--@mbg.generated-->
     insert into ope_production_quality_tempate
-    (id, dr, production_id, import_excel_batch_no, source_type, relation_type, qc_item_name, 
+    (id, dr, production_id, import_excel_batch_no, source_type, production_type, qc_item_name, 
       revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{productionId,jdbcType=BIGINT}, 
-      #{importExcelBatchNo,jdbcType=VARCHAR}, #{sourceType,jdbcType=INTEGER}, #{relationType,jdbcType=INTEGER}, 
+      #{importExcelBatchNo,jdbcType=VARCHAR}, #{sourceType,jdbcType=INTEGER}, #{productionType,jdbcType=INTEGER}, 
       #{qcItemName,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
@@ -154,7 +154,7 @@
     production_id = #{productionId,jdbcType=BIGINT}, 
     import_excel_batch_no = #{importExcelBatchNo,jdbcType=VARCHAR}, 
     source_type = #{sourceType,jdbcType=INTEGER}, 
-    relation_type = #{relationType,jdbcType=INTEGER}, 
+    production_type = #{productionType,jdbcType=INTEGER}, 
     qc_item_name = #{qcItemName,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -186,8 +186,8 @@
       <if test="sourceType != null">
         source_type,
       </if>
-      <if test="relationType != null">
-        relation_type,
+      <if test="productionType != null">
+        production_type,
       </if>
       <if test="qcItemName != null">
         qc_item_name,
@@ -240,8 +240,8 @@
       <if test="sourceType != null">
         #{sourceType,jdbcType=INTEGER},
       </if>
-      <if test="relationType != null">
-        #{relationType,jdbcType=INTEGER},
+      <if test="productionType != null">
+        #{productionType,jdbcType=INTEGER},
       </if>
       <if test="qcItemName != null">
         #{qcItemName,jdbcType=VARCHAR},
@@ -294,8 +294,8 @@
       <if test="sourceType != null">
         source_type = #{sourceType,jdbcType=INTEGER},
       </if>
-      <if test="relationType != null">
-        relation_type = #{relationType,jdbcType=INTEGER},
+      <if test="productionType != null">
+        production_type = #{productionType,jdbcType=INTEGER},
       </if>
       <if test="qcItemName != null">
         qc_item_name = #{qcItemName,jdbcType=VARCHAR},

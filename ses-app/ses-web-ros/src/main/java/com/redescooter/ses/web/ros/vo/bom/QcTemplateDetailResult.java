@@ -26,6 +26,9 @@ public class QcTemplateDetailResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "产品类型Id")
+    private Integer productionProductType;
+
     @ApiModelProperty(value = "质检名称")
     private String qcItemName;
 
