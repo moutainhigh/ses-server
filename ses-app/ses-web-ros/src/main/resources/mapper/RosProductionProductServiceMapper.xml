@@ -201,7 +201,8 @@
                 parts.fr_name           as frName,
                 1 as qty
                 from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_production_part_price_sheet sheet on sheet.production_id = parts.id
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
         <include refid="where_productionProductPartList" />
         order by parts.created_time desc
         limit #{startRow},#{pageSize}

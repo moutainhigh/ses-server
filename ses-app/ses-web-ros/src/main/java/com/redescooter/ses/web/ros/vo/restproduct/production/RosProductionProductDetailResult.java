@@ -81,7 +81,7 @@ public class RosProductionProductDetailResult extends GeneralResult {
     private String createByLastName;
 
     @ApiModelProperty(value = "QC模板提示Icon,true 表示 不存在质检模板 展示提示Icon，false 存在 质检模板 无需展示")
-    private Boolean qcTempletePromptIcon = Boolean.FALSE;
+    private Boolean qcTempletePromptIcon = Boolean.TRUE;
 
     @ApiModelProperty(value = "部件列表")
     private List<RosProductionProductPartListResult> rosProductPartListResult;

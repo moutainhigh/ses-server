@@ -583,6 +583,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         : opeProductionScooterBomDraft.getFrName())
                     .effectiverDate(opeProductionScooterBomDraft.getEffectiveDate())
                     .createTime(opeProductionScooterBomDraft.getCreatedTime())
+                    .qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionScooterBomDraft.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
                     OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
@@ -626,6 +627,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         : opeProductionScooterBom.getFrName())
                     .version(opeProductionScooterBom.getVersoin()).status(opeProductionScooterBom.getBomStatus())
                     .effectiverDate(opeProductionScooterBom.getEffectiveDate())
+                    .qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionScooterBom.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
                     OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
@@ -668,6 +670,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .frName(StringUtils.isBlank(opeProductionCombinBomDraft.getFrName()) ? null
                         : opeProductionCombinBomDraft.getFrName())
                     .effectiverDate(opeProductionCombinBomDraft.getEffectiveDate())
+                    .qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionCombinBomDraft.getCreatedBy()).build();
             }
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
@@ -694,6 +697,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         : opeProductionCombinBom.getFrName())
                     .version(opeProductionCombinBom.getVersoin()).status(opeProductionCombinBom.getBomStatus())
                     .effectiverDate(opeProductionCombinBom.getEffectiveDate())
+                    .qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionCombinBom.getCreatedBy()).build();
             }
         }
@@ -704,8 +708,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 opeProductionQualityTempateService.getOne(new LambdaQueryWrapper<OpeProductionQualityTempate>()
                     .eq(OpeProductionQualityTempate::getProductionId, enter.getId())
                     .eq(OpeProductionQualityTempate::getProductionType, enter.getProductionProductType()));
-            if (opeProductionQualityTempate == null) {
-                result.setQcTempletePromptIcon(Boolean.TRUE);
+            if (opeProductionQualityTempate != null) {
+                result.setQcTempletePromptIcon(Boolean.FALSE);
             }
         }
 
