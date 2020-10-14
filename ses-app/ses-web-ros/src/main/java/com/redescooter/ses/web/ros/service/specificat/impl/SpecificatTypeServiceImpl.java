@@ -134,6 +134,21 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     }
 
 
+    public static void main(String[] args) {
+        String test ="^[0-9A-Z-]+$";
+        String str = "xWSX-";
+        Pattern p= Pattern.compile(test);
+        Matcher m = p.matcher(str);
+        if (!m.matches()){
+            System.out.println("false");
+        }else {
+            System.out.println("true");
+        }
+
+    }
+
+
+
     /**
      * @Author Aleks
      * @Description  校验规格类型的名称是否重复
@@ -144,6 +159,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     public void checkSpecificatName(SpecificatTypeSaveOrEditEnter enter){
         if(Strings.isNullOrEmpty(enter.getSpecificatName())){
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        // 先对名称进行正则校验
+        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
+        Matcher m = p.matcher(enter.getSpecificatName());
+        if (!m.matches()){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
         }
         QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
@@ -271,6 +292,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         boolean flag = true;
         if(Strings.isNullOrEmpty(enter.getSpecificatName())){
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        // 先对名称进行正则校验
+        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
+        Matcher m = p.matcher(enter.getSpecificatName());
+        if (!m.matches()){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
         }
         QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());

@@ -670,6 +670,14 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 //        if(set.size() == enters.size()){
 //            return list;
 //        }
+        for (RosPartsSaveOrUpdateEnter saveOrUpdateEnter : enters) {
+            if(Strings.isNullOrEmpty(saveOrUpdateEnter.getPartsNo()) || saveOrUpdateEnter.getPartsSec() == null || saveOrUpdateEnter.getPartsType() == null || saveOrUpdateEnter.getSnClass() == null ||
+                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
+                    Strings.isNullOrEmpty(saveOrUpdateEnter.getEnName())){
+                // 上面这些都不为空的时候  信息才是完善的
+                throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());
+            }
+        }
         // 进行到这里 说明有重复的 需要把重复的数据找出来
         Map<String, List<RosPartsSaveOrUpdateEnter>> map = enters.stream().collect(Collectors.groupingBy(RosPartsSaveOrUpdateEnter::getPartsNo));
         for (String key : map.keySet()) {
