@@ -185,9 +185,9 @@ public class SalesOrderServerImpl implements SalesOrderServer {
         /*提示标记*/
         Double warnDouble = inquiry.getDef6();
         if (warnDouble == null) {
-            warnDouble = Double.POSITIVE_INFINITY;
-        } else if (warnDouble < 0) {
-            warnDouble = Double.POSITIVE_INFINITY;
+            warnDouble = new Double("0");
+        } else if (warnDouble <= 0) {
+            warnDouble = new Double("1");
         } else {
             return new GeneralResult(enter.getRequestId());
         }
