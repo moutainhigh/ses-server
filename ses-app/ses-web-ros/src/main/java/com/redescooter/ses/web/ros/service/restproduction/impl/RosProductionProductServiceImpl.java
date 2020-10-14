@@ -627,11 +627,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
                 if (result.getColorId() != null && result.getColorId() != 0) {
                     OpeColor opeColor = opeColorService.getById(result.getColorId());
-                    if (opeColor == null) {
-                        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(),
-                            ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                    if (opeColor != null) {
+                        result.setColorName(opeColor.getColorName());
                     }
-                    result.setColorName(opeColor.getColorName());
                 }
             }
         }

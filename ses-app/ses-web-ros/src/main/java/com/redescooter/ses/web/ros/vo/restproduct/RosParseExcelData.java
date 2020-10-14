@@ -23,7 +23,7 @@ public class RosParseExcelData implements Serializable, IExcelModel, IExcelDataM
     @Excel(name = "Level", width = 20)
     private String level;
 
-    @Excel(name = "PARTS_NO", width = 20)
+    @Excel(name = "PARTS N°", width = 20)
     private String partsNo;
 
     @Excel(name = "Main_Drawing", width = 20)
