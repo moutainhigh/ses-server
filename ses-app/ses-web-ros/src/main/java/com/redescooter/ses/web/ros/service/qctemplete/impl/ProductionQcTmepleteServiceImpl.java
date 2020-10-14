@@ -287,7 +287,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
 
         } else {
             qcResultEnterMap.forEach((key, value) -> {
-                Long templateId = idAppService.getId(SequenceName.OPE_PRODUCT_QC_TEMPLATE);
+                Long templateId = idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE);
                 saveProductionQualityTempateList.add(buildProductionQcTemplate(enter, templateId, key.getQcItemName(),
                     null, Integer.valueOf(QcSourceTypeEnums.MANUAL_ENTRY.getValue()))
 

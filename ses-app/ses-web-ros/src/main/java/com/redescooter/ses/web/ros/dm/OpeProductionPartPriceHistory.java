@@ -1,0 +1,220 @@
+package com.redescooter.ses.web.ros.dm;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import lombok.Data;
+
+/**
+ * 报价列表历史记录
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionPartPriceHistory")
+@Data
+@TableName(value = "ope_production_part_price_history")
+public class OpeProductionPartPriceHistory implements Serializable {
+    /**
+     * 主键 主键
+     */
+    @TableId(value = "id", type = IdType.INPUT)
+    @ApiModelProperty(value = "主键 主键")
+    private Long id;
+
+    /**
+     * 逻辑删除 逻辑删除
+     */
+    @TableField(value = "dr")
+    @ApiModelProperty(value = "逻辑删除 逻辑删除")
+    private Integer dr;
+
+    /**
+     * 部门id（做数据权限用）
+     */
+    @TableField(value = "dept_id")
+    @ApiModelProperty(value = "部门id（做数据权限用）")
+    private Long deptId;
+
+    /**
+     * 租户ID
+     */
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
+
+    /**
+     * 部品主键 用于关联部品
+     */
+    @TableField(value = "production_id")
+    @ApiModelProperty(value = "部品主键 用于关联部品")
+    private Long productionId;
+
+    /**
+     * 产品类型
+     */
+    @TableField(value = "production_type")
+    @ApiModelProperty(value = "产品类型")
+    private Integer productionType;
+
+    /**
+     * 报价表主键 用于关联报价表
+     */
+    @TableField(value = "price_sheet_id")
+    @ApiModelProperty(value = "报价表主键 用于关联报价表")
+    private Long priceSheetId;
+
+    /**
+     * 价格 浮点型价格
+     */
+    @TableField(value = "price")
+    @ApiModelProperty(value = "价格 浮点型价格")
+    private BigDecimal price;
+
+    /**
+     * 货币类型 如英镑，美元，人民币
+     */
+    @TableField(value = "currency_type")
+    @ApiModelProperty(value = "货币类型 如英镑，美元，人民币")
+    private String currencyType;
+
+    /**
+     * 货币单位 如¥，$，€， ￡
+     */
+    @TableField(value = "currency_unit")
+    @ApiModelProperty(value = "货币单位 如¥，$，€，	￡")
+    private String currencyUnit;
+
+    /**
+     * 标准货币 用户货币转换
+     */
+    @TableField(value = "standard_currency")
+    @ApiModelProperty(value = "标准货币 用户货币转换")
+    private String standardCurrency;
+
+    /**
+     * 汇率 用于汇率转换
+     */
+    @TableField(value = "exchange_rate")
+    @ApiModelProperty(value = "汇率 用于汇率转换")
+    private String exchangeRate;
+
+    /**
+     * 乐观锁
+     */
+    @TableField(value = "revision")
+    @ApiModelProperty(value = "乐观锁")
+    private Integer revision;
+
+    /**
+     * 创建人
+     */
+    @TableField(value = "created_by")
+    @ApiModelProperty(value = "创建人")
+    private Long createdBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "created_time")
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(value = "updated_by")
+    @ApiModelProperty(value = "更新人")
+    private Long updatedBy;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "updated_time")
+    @ApiModelProperty(value = "更新时间")
+    private Date updatedTime;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def1")
+    @ApiModelProperty(value = "冗余字段")
+    private String def1;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def2")
+    @ApiModelProperty(value = "冗余字段")
+    private String def2;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def3")
+    @ApiModelProperty(value = "冗余字段")
+    private String def3;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def5")
+    @ApiModelProperty(value = "冗余字段")
+    private String def5;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def6")
+    @ApiModelProperty(value = "冗余字段")
+    private BigDecimal def6;
+
+    private static final long serialVersionUID = 1L;
+
+    public static final String COL_ID = "id";
+
+    public static final String COL_DR = "dr";
+
+    public static final String COL_DEPT_ID = "dept_id";
+
+    public static final String COL_TENANT_ID = "tenant_id";
+
+    public static final String COL_PRODUCTION_ID = "production_id";
+
+    public static final String COL_PRODUCTION_TYPE = "production_type";
+
+    public static final String COL_PRICE_SHEET_ID = "price_sheet_id";
+
+    public static final String COL_PRICE = "price";
+
+    public static final String COL_CURRENCY_TYPE = "currency_type";
+
+    public static final String COL_CURRENCY_UNIT = "currency_unit";
+
+    public static final String COL_STANDARD_CURRENCY = "standard_currency";
+
+    public static final String COL_EXCHANGE_RATE = "exchange_rate";
+
+    public static final String COL_REVISION = "revision";
+
+    public static final String COL_CREATED_BY = "created_by";
+
+    public static final String COL_CREATED_TIME = "created_time";
+
+    public static final String COL_UPDATED_BY = "updated_by";
+
+    public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_DEF1 = "def1";
+
+    public static final String COL_DEF2 = "def2";
+
+    public static final String COL_DEF3 = "def3";
+
+    public static final String COL_DEF5 = "def5";
+
+    public static final String COL_DEF6 = "def6";
+}
