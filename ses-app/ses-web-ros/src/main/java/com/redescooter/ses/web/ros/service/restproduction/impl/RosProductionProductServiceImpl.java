@@ -356,19 +356,13 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 rosProductionProductServiceMapper.rosImportProductionProductPartsList(failProductPartListResult.stream()
                     .map(RosProductionProductPartListResult::getPartsNum).collect(Collectors.toList()));
             if (CollectionUtils.isEmpty(failPartProductionList)) {
-                failPartProductionList.forEach(item -> {
-                    item.setErrMsg("This part does not exist.");
-                });
+                failPartProductionList.stream().forEach(item -> item.setErrMsg("This part does not exist."));
             }
             if (CollectionUtils.isNotEmpty(failPartProductionList)) {
-                failProductPartListResult.forEach(item -> {
-                    RosProductionProductPartListResult failRosProductionProductPartListResult = failPartProductionList
-                        .stream().filter(part -> StringUtils.equals(item.getPartsNum(), part.getPartsNum())).findFirst()
-                        .orElse(null);
-                    if (failRosProductionProductPartListResult == null) {
-                        item.setErrMsg("This part does not exist.");
-                    }
-                });
+                failProductPartListResult.stream()
+                    .filter(item -> failPartProductionList.stream()
+                        .noneMatch(part -> StringUtils.equals(item.getPartsNum(), part.getPartsNum())))
+                    .forEach(item -> item.setErrMsg("This part does not exist."));
             }
         }
         importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
