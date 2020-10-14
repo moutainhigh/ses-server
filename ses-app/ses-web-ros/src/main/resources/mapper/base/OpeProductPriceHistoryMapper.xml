@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionPartPriceHistoryMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionPartPriceHistory">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductPriceHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductPriceHistory">
     <!--@mbg.generated-->
-    <!--@Table ope_production_part_price_history-->
+    <!--@Table ope_product_price_history-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-    <result column="production_id" jdbcType="BIGINT" property="productionId" />
-    <result column="production_type" jdbcType="INTEGER" property="productionType" />
-    <result column="price_sheet_id" jdbcType="BIGINT" property="priceSheetId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="product_price_id" jdbcType="BIGINT" property="productPriceId" />
     <result column="price" jdbcType="DECIMAL" property="price" />
-    <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
-    <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
-    <result column="standard_currency" jdbcType="VARCHAR" property="standardCurrency" />
+    <result column="price_type" jdbcType="INTEGER" property="priceType" />
+    <result column="currency_type" jdbcType="INTEGER" property="currencyType" />
+    <result column="standard_currency" jdbcType="INTEGER" property="standardCurrency" />
     <result column="exchange_rate" jdbcType="VARCHAR" property="exchangeRate" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_price_type" jdbcType="INTEGER" property="productPriceType" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -24,27 +24,22 @@
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
     <result column="def3" jdbcType="VARCHAR" property="def3" />
-    <result column="def5" jdbcType="VARCHAR" property="def5" />
-    <result column="def6" jdbcType="DECIMAL" property="def6" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, dept_id, tenant_id, production_id, production_type, price_sheet_id, price, 
-    currency_type, currency_unit, standard_currency, exchange_rate, revision, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    id, dr, tenant_id, user_id, product_price_id, price, price_type, currency_type, standard_currency, 
+    exchange_rate, product_id, product_price_type, revision, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_production_part_price_history
+    update ope_product_price_history
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="dept_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
@@ -52,19 +47,14 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="production_id = case" suffix="end,">
+      <trim prefix="user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productionId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.userId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="production_type = case" suffix="end,">
+      <trim prefix="product_price_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productionType,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="price_sheet_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.priceSheetId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productPriceId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="price = case" suffix="end,">
@@ -72,24 +62,34 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.price,jdbcType=DECIMAL}
         </foreach>
       </trim>
-      <trim prefix="currency_type = case" suffix="end,">
+      <trim prefix="price_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.currencyType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="currency_unit = case" suffix="end,">
+      <trim prefix="currency_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.currencyUnit,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.currencyType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="standard_currency = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.standardCurrency,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.standardCurrency,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="exchange_rate = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.exchangeRate,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="product_price_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productPriceType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="revision = case" suffix="end,">
@@ -132,14 +132,14 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="def5 = case" suffix="end,">
+      <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="def6 = case" suffix="end,">
+      <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DECIMAL}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
         </foreach>
       </trim>
     </trim>
@@ -150,49 +150,49 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_production_part_price_history
-    (id, dr, dept_id, tenant_id, production_id, production_type, price_sheet_id, price, 
-      currency_type, currency_unit, standard_currency, exchange_rate, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    insert into ope_product_price_history
+    (id, dr, tenant_id, user_id, product_price_id, price, price_type, currency_type, 
+      standard_currency, exchange_rate, product_id, product_price_type, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.deptId,jdbcType=BIGINT}, 
-        #{item.tenantId,jdbcType=BIGINT}, #{item.productionId,jdbcType=BIGINT}, #{item.productionType,jdbcType=INTEGER}, 
-        #{item.priceSheetId,jdbcType=BIGINT}, #{item.price,jdbcType=DECIMAL}, #{item.currencyType,jdbcType=VARCHAR}, 
-        #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
-        #{item.exchangeRate,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.userId,jdbcType=BIGINT}, #{item.productPriceId,jdbcType=BIGINT}, #{item.price,jdbcType=DECIMAL}, 
+        #{item.priceType,jdbcType=INTEGER}, #{item.currencyType,jdbcType=INTEGER}, #{item.standardCurrency,jdbcType=INTEGER}, 
+        #{item.exchangeRate,jdbcType=VARCHAR}, #{item.productId,jdbcType=BIGINT}, #{item.productPriceType,jdbcType=INTEGER}, 
+        #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartPriceHistory">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductPriceHistory">
     <!--@mbg.generated-->
-    insert into ope_production_part_price_history
-    (id, dr, dept_id, tenant_id, production_id, production_type, price_sheet_id, price, 
-      currency_type, currency_unit, standard_currency, exchange_rate, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    insert into ope_product_price_history
+    (id, dr, tenant_id, user_id, product_price_id, price, price_type, currency_type, 
+      standard_currency, exchange_rate, product_id, product_price_type, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{deptId,jdbcType=BIGINT}, #{tenantId,jdbcType=BIGINT}, 
-      #{productionId,jdbcType=BIGINT}, #{productionType,jdbcType=INTEGER}, #{priceSheetId,jdbcType=BIGINT}, 
-      #{price,jdbcType=DECIMAL}, #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, 
-      #{standardCurrency,jdbcType=VARCHAR}, #{exchangeRate,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{productPriceId,jdbcType=BIGINT}, #{price,jdbcType=DECIMAL}, #{priceType,jdbcType=INTEGER}, 
+      #{currencyType,jdbcType=INTEGER}, #{standardCurrency,jdbcType=INTEGER}, #{exchangeRate,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=BIGINT}, #{productPriceType,jdbcType=INTEGER}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    dept_id = #{deptId,jdbcType=BIGINT}, 
     tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    production_id = #{productionId,jdbcType=BIGINT}, 
-    production_type = #{productionType,jdbcType=INTEGER}, 
-    price_sheet_id = #{priceSheetId,jdbcType=BIGINT}, 
+    user_id = #{userId,jdbcType=BIGINT}, 
+    product_price_id = #{productPriceId,jdbcType=BIGINT}, 
     price = #{price,jdbcType=DECIMAL}, 
-    currency_type = #{currencyType,jdbcType=VARCHAR}, 
-    currency_unit = #{currencyUnit,jdbcType=VARCHAR}, 
-    standard_currency = #{standardCurrency,jdbcType=VARCHAR}, 
+    price_type = #{priceType,jdbcType=INTEGER}, 
+    currency_type = #{currencyType,jdbcType=INTEGER}, 
+    standard_currency = #{standardCurrency,jdbcType=INTEGER}, 
     exchange_rate = #{exchangeRate,jdbcType=VARCHAR}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
+    product_price_type = #{productPriceType,jdbcType=INTEGER}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
@@ -201,12 +201,12 @@
     def1 = #{def1,jdbcType=VARCHAR}, 
     def2 = #{def2,jdbcType=VARCHAR}, 
     def3 = #{def3,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=VARCHAR}, 
-    def6 = #{def6,jdbcType=DECIMAL}
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPartPriceHistory">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductPriceHistory">
     <!--@mbg.generated-->
-    insert into ope_production_part_price_history
+    insert into ope_product_price_history
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -214,35 +214,35 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="deptId != null">
-        dept_id,
-      </if>
       <if test="tenantId != null">
         tenant_id,
       </if>
-      <if test="productionId != null">
-        production_id,
+      <if test="userId != null">
+        user_id,
       </if>
-      <if test="productionType != null">
-        production_type,
-      </if>
-      <if test="priceSheetId != null">
-        price_sheet_id,
+      <if test="productPriceId != null">
+        product_price_id,
       </if>
       <if test="price != null">
         price,
       </if>
+      <if test="priceType != null">
+        price_type,
+      </if>
       <if test="currencyType != null">
         currency_type,
-      </if>
-      <if test="currencyUnit != null">
-        currency_unit,
       </if>
       <if test="standardCurrency != null">
         standard_currency,
       </if>
       <if test="exchangeRate != null">
         exchange_rate,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productPriceType != null">
+        product_price_type,
       </if>
       <if test="revision != null">
         revision,
@@ -268,11 +268,11 @@
       <if test="def3 != null">
         def3,
       </if>
+      <if test="def4 != null">
+        def4,
+      </if>
       <if test="def5 != null">
         def5,
-      </if>
-      <if test="def6 != null">
-        def6,
       </if>
     </trim>
     values
@@ -283,35 +283,35 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="deptId != null">
-        #{deptId,jdbcType=BIGINT},
-      </if>
       <if test="tenantId != null">
         #{tenantId,jdbcType=BIGINT},
       </if>
-      <if test="productionId != null">
-        #{productionId,jdbcType=BIGINT},
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
       </if>
-      <if test="productionType != null">
-        #{productionType,jdbcType=INTEGER},
-      </if>
-      <if test="priceSheetId != null">
-        #{priceSheetId,jdbcType=BIGINT},
+      <if test="productPriceId != null">
+        #{productPriceId,jdbcType=BIGINT},
       </if>
       <if test="price != null">
         #{price,jdbcType=DECIMAL},
       </if>
-      <if test="currencyType != null">
-        #{currencyType,jdbcType=VARCHAR},
+      <if test="priceType != null">
+        #{priceType,jdbcType=INTEGER},
       </if>
-      <if test="currencyUnit != null">
-        #{currencyUnit,jdbcType=VARCHAR},
+      <if test="currencyType != null">
+        #{currencyType,jdbcType=INTEGER},
       </if>
       <if test="standardCurrency != null">
-        #{standardCurrency,jdbcType=VARCHAR},
+        #{standardCurrency,jdbcType=INTEGER},
       </if>
       <if test="exchangeRate != null">
         #{exchangeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productPriceType != null">
+        #{productPriceType,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         #{revision,jdbcType=INTEGER},
@@ -337,11 +337,11 @@
       <if test="def3 != null">
         #{def3,jdbcType=VARCHAR},
       </if>
-      <if test="def5 != null">
-        #{def5,jdbcType=VARCHAR},
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
       </if>
-      <if test="def6 != null">
-        #{def6,jdbcType=DECIMAL},
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
     on duplicate key update 
@@ -352,35 +352,35 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="deptId != null">
-        dept_id = #{deptId,jdbcType=BIGINT},
-      </if>
       <if test="tenantId != null">
         tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
-      <if test="productionId != null">
-        production_id = #{productionId,jdbcType=BIGINT},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="productionType != null">
-        production_type = #{productionType,jdbcType=INTEGER},
-      </if>
-      <if test="priceSheetId != null">
-        price_sheet_id = #{priceSheetId,jdbcType=BIGINT},
+      <if test="productPriceId != null">
+        product_price_id = #{productPriceId,jdbcType=BIGINT},
       </if>
       <if test="price != null">
         price = #{price,jdbcType=DECIMAL},
       </if>
-      <if test="currencyType != null">
-        currency_type = #{currencyType,jdbcType=VARCHAR},
+      <if test="priceType != null">
+        price_type = #{priceType,jdbcType=INTEGER},
       </if>
-      <if test="currencyUnit != null">
-        currency_unit = #{currencyUnit,jdbcType=VARCHAR},
+      <if test="currencyType != null">
+        currency_type = #{currencyType,jdbcType=INTEGER},
       </if>
       <if test="standardCurrency != null">
-        standard_currency = #{standardCurrency,jdbcType=VARCHAR},
+        standard_currency = #{standardCurrency,jdbcType=INTEGER},
       </if>
       <if test="exchangeRate != null">
         exchange_rate = #{exchangeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productPriceType != null">
+        product_price_type = #{productPriceType,jdbcType=INTEGER},
       </if>
       <if test="revision != null">
         revision = #{revision,jdbcType=INTEGER},
@@ -406,11 +406,11 @@
       <if test="def3 != null">
         def3 = #{def3,jdbcType=VARCHAR},
       </if>
-      <if test="def5 != null">
-        def5 = #{def5,jdbcType=VARCHAR},
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
       </if>
-      <if test="def6 != null">
-        def6 = #{def6,jdbcType=DECIMAL},
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>

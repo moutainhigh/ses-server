@@ -190,7 +190,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         OpeExcleImport excleImport = new OpeExcleImport();
         excleImport.setId(idAppService.getId(SequenceName.OPE_EXCLE_IMPORT));
         excleImport.setDr(0);
-        excleImport.setStatus(BomStatusEnums.NORMAL.getValue());
+        excleImport.setStatus(String.valueOf(BomStatusEnums.NORMAL.getValue()));
         excleImport.setBatchNo(lot);
         excleImport.setCount(saveList.size());
         excleImport.setAttachment(enter.getUrl());
@@ -890,7 +890,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .partsProductId(productId)
                 .partsId(partId)
                 .partsQty(1)
@@ -938,7 +938,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         record.setDr(0);
         record.setTenantId(0L);
         record.setUserId(userId);
-        record.setStatus(BomStatusEnums.NORMAL.getValue());
+        record.setStatus(String.valueOf(BomStatusEnums.NORMAL.getValue()));
         record.setPartsNumber(partNum);
         record.setImportLot(partsDraft.getImportLot());
         record.setPartsDraftId(partsDraft.getId());
@@ -970,7 +970,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             parts.setDr(0);
             parts.setTenantId(0L);
             parts.setUserId(userId);
-            parts.setStatus(BomStatusEnums.NORMAL.getValue());
+            parts.setStatus(String.valueOf(BomStatusEnums.NORMAL.getValue()));
             parts.setCreatedBy(userId);
             parts.setCreatedTime(new Date());
             parts.setImportLot(lot);
@@ -1004,7 +1004,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsDraft.setDr(0);
             partsDraft.setTenantId(0L);
             partsDraft.setUserId(userId);
-            partsDraft.setStatus(BomStatusEnums.NORMAL.getValue());
+            partsDraft.setStatus(String.valueOf(BomStatusEnums.NORMAL.getValue()));
             partsDraft.setCreatedBy(userId);
             partsDraft.setCreatedTime(new Date());
             partsDraft.setImportLot(lot);

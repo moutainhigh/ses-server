@@ -12,12 +12,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 报价列表历史记录
+ * 产品价格历史记录表
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionPartPriceHistory")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductPriceHistory")
 @Data
-@TableName(value = "ope_production_part_price_history")
-public class OpeProductionPartPriceHistory implements Serializable {
+@TableName(value = "ope_product_price_history")
+public class OpeProductPriceHistory implements Serializable {
     /**
      * 主键 主键
      */
@@ -33,39 +33,25 @@ public class OpeProductionPartPriceHistory implements Serializable {
     private Integer dr;
 
     /**
-     * 部门id（做数据权限用）
-     */
-    @TableField(value = "dept_id")
-    @ApiModelProperty(value = "部门id（做数据权限用）")
-    private Long deptId;
-
-    /**
-     * 租户ID
+     * 租户ID 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
+    @ApiModelProperty(value = "租户ID 租户ID")
     private Long tenantId;
 
     /**
-     * 部品主键 用于关联部品
+     * 用户ID 用户ID
      */
-    @TableField(value = "production_id")
-    @ApiModelProperty(value = "部品主键 用于关联部品")
-    private Long productionId;
-
-    /**
-     * 产品类型
-     */
-    @TableField(value = "production_type")
-    @ApiModelProperty(value = "产品类型")
-    private Integer productionType;
+    @TableField(value = "user_id")
+    @ApiModelProperty(value = "用户ID 用户ID")
+    private Long userId;
 
     /**
      * 报价表主键 用于关联报价表
      */
-    @TableField(value = "price_sheet_id")
+    @TableField(value = "product_price_id")
     @ApiModelProperty(value = "报价表主键 用于关联报价表")
-    private Long priceSheetId;
+    private Long productPriceId;
 
     /**
      * 价格 浮点型价格
@@ -75,25 +61,25 @@ public class OpeProductionPartPriceHistory implements Serializable {
     private BigDecimal price;
 
     /**
-     * 货币类型 如英镑，美元，人民币
+     * 价格类型，0：采购价，1：销售价
+     */
+    @TableField(value = "price_type")
+    @ApiModelProperty(value = "价格类型，0：采购价，1：销售价")
+    private Integer priceType;
+
+    /**
+     * 币种，0：人民币（¥），1：美元（$），2：欧元（€），3：英镑（￡）
      */
     @TableField(value = "currency_type")
-    @ApiModelProperty(value = "货币类型 如英镑，美元，人民币")
-    private String currencyType;
+    @ApiModelProperty(value = "币种，0：人民币（¥），1：美元（$），2：欧元（€），3：英镑（￡）")
+    private Integer currencyType;
 
     /**
-     * 货币单位 如¥，$，€， ￡
-     */
-    @TableField(value = "currency_unit")
-    @ApiModelProperty(value = "货币单位 如¥，$，€，	￡")
-    private String currencyUnit;
-
-    /**
-     * 标准货币 用户货币转换
+     * 标准货币 用户货币转换 0：人民币（¥），1：美元（$），2：欧元（€），3：英镑（￡）
      */
     @TableField(value = "standard_currency")
-    @ApiModelProperty(value = "标准货币 用户货币转换")
-    private String standardCurrency;
+    @ApiModelProperty(value = "标准货币 用户货币转换 0：人民币（¥），1：美元（$），2：欧元（€），3：英镑（￡）")
+    private Integer standardCurrency;
 
     /**
      * 汇率 用于汇率转换
@@ -101,6 +87,20 @@ public class OpeProductionPartPriceHistory implements Serializable {
     @TableField(value = "exchange_rate")
     @ApiModelProperty(value = "汇率 用于汇率转换")
     private String exchangeRate;
+
+    /**
+     * 部品主键(采购价时关联的是部件id，销售价时关联的是销售产品的id)
+     */
+    @TableField(value = "product_id")
+    @ApiModelProperty(value = "部品主键(采购价时关联的是部件id，销售价时关联的是销售产品的id)")
+    private Long productId;
+
+    /**
+     * 类型，1：采购部件，2：整车，3：组装，4：销售部件
+     */
+    @TableField(value = "product_price_type")
+    @ApiModelProperty(value = "类型，1：采购部件，2：整车，3：组装，4：销售部件")
+    private Integer productPriceType;
 
     /**
      * 乐观锁
@@ -161,16 +161,16 @@ public class OpeProductionPartPriceHistory implements Serializable {
     /**
      * 冗余字段
      */
-    @TableField(value = "def5")
+    @TableField(value = "def4")
     @ApiModelProperty(value = "冗余字段")
-    private String def5;
+    private String def4;
 
     /**
      * 冗余字段
      */
-    @TableField(value = "def6")
+    @TableField(value = "def5")
     @ApiModelProperty(value = "冗余字段")
-    private BigDecimal def6;
+    private BigDecimal def5;
 
     private static final long serialVersionUID = 1L;
 
@@ -178,25 +178,25 @@ public class OpeProductionPartPriceHistory implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_DEPT_ID = "dept_id";
-
     public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_PRODUCTION_ID = "production_id";
+    public static final String COL_USER_ID = "user_id";
 
-    public static final String COL_PRODUCTION_TYPE = "production_type";
-
-    public static final String COL_PRICE_SHEET_ID = "price_sheet_id";
+    public static final String COL_PRODUCT_PRICE_ID = "product_price_id";
 
     public static final String COL_PRICE = "price";
 
-    public static final String COL_CURRENCY_TYPE = "currency_type";
+    public static final String COL_PRICE_TYPE = "price_type";
 
-    public static final String COL_CURRENCY_UNIT = "currency_unit";
+    public static final String COL_CURRENCY_TYPE = "currency_type";
 
     public static final String COL_STANDARD_CURRENCY = "standard_currency";
 
     public static final String COL_EXCHANGE_RATE = "exchange_rate";
+
+    public static final String COL_PRODUCT_ID = "product_id";
+
+    public static final String COL_PRODUCT_PRICE_TYPE = "product_price_type";
 
     public static final String COL_REVISION = "revision";
 
@@ -214,7 +214,7 @@ public class OpeProductionPartPriceHistory implements Serializable {
 
     public static final String COL_DEF3 = "def3";
 
-    public static final String COL_DEF5 = "def5";
+    public static final String COL_DEF4 = "def4";
 
-    public static final String COL_DEF6 = "def6";
+    public static final String COL_DEF5 = "def5";
 }

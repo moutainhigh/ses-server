@@ -33,45 +33,47 @@
     <select id="supplierChaimListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_production_parts part
-        left join ope_production_part_price_sheet sheet
-        on part.id = sheet.production_id and sheet.dr = 0 and sheet.production_type = part.parts_type
+        left join ope_product_price sheet
+        on part.id = sheet.product_id and sheet.dr = 0 and product_price_type=1
         <include refid="where_SupplierChaimList"/>
     </select>
 
     <select id="supplierChaimList"
             resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult">
-        select part.id             as id,
-        part.parts_no       as productN,
-        part.cn_name        as productCnName,
-        part.en_name        as productEnName,
-        part.fr_name        as productFrName,
-        part.parts_type     as type,
-        part.updated_time   as refuseTime,
-        sheet.price         as productPrice,
-        sheet.currency_unit as unit
+        select part.id                 as id,
+        part.parts_no           as productN,
+        part.cn_name            as productCnName,
+        part.en_name            as productEnName,
+        part.fr_name            as productFrName,
+        part.parts_type         as type,
+        part.updated_time       as refuseTime,
+        sheet.price             as productPrice,
+        sheet.standard_currency as unit
         from ope_production_parts part
-        left join ope_production_part_price_sheet sheet
-        on part.id = sheet.production_id and sheet.dr = 0 and sheet.production_type = part.parts_type
+        left join ope_product_price sheet
+        on part.id = sheet.product_id and sheet.dr = 0 and product_price_type=1
         <include refid="where_SupplierChaimList"/>
         limit #{startRow},#{pageSize}
     </select>
 
     <select id="scPriceHistroyCount" resultType="java.lang.Integer">
         select count(*)
-        from ope_production_part_price_history histroy
+        from ope_product_price_history histroy
         where histroy.created_by =#{userId}
         and histroy.dr = 0
-        and histroy.production_id =#{id}
+        and histroy.product_id =#{id}
+        and histroy.product_price_type=1
     </select>
     <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
-        select histroy.id as id,
-        histroy.price as productFrPrice,
-        histroy.currency_unit as productFrUnit,
-        histroy.updated_time as refuseTime
-        from ope_production_part_price_history histroy
-        where histroy.dr=0
-        and histroy.created_by=#{userId}
-        and histroy.production_id=#{id}
+        select histroy.id            as id,
+        histroy.price         as productFrPrice,
+        histroy.currency_type as productFrUnit,
+        histroy.updated_time  as refuseTime
+        from ope_product_price_history histroy
+        where histroy.dr = 0
+        and histroy.created_by =#{userId}
+        and histroy.product_id =#{id}
+        and histroy.product_price_type = 1
         order by histroy.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -80,21 +82,22 @@
             resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult">
         select ifnull(avg(histroy.price), 0) as avg,
         ifnull(max(histroy.price), 0) as max
-        from ope_production_part_price_history histroy
-        where histroy.dr=0
-        and histroy.created_by=#{userId}
-        and histroy.production_id=#{id}
+        from ope_product_price_history histroy
+        where histroy.dr = 0
+        and histroy.created_by =#{userId}
+        and histroy.product_id =#{id}
+        and histroy.product_price_type = 1
         order by histroy.updated_time desc
     </select>
     <select id="productPriceHistroyChartList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
         select histroy.id            as id,
         histroy.price         as productFrPrice,
-        histroy.currency_unit as productFrUnit,
+        histroy.currency_type as productFrUnit,
         histroy.updated_time  as refuseTime
-        from ope_production_part_price_history histroy
+        from ope_product_price_history histroy
         where histroy.dr = 0
         and histroy.created_by =#{userId}
-        and histroy.production_id =#{id}
+        and histroy.product_id =#{id}
         order by histroy.created_time asc
     </select>
 </mapper>
