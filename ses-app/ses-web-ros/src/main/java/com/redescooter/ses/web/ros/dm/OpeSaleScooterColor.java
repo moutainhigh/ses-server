@@ -6,13 +6,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
     * 销售车辆颜色表
     */
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSaleScooterColor")
 @Data
 @TableName(value = "operation.ope_sale_scooter_color")
-public class OpeSaleScooterColor {
+public class OpeSaleScooterColor implements Serializable {
     /**
      * 销售车辆id
      */

@@ -10,6 +10,7 @@
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="specificat_id" jdbcType="BIGINT" property="specificatId" />
     <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="color_id" jdbcType="BIGINT" property="colorId" />
     <result column="sale_stutas" jdbcType="INTEGER" property="saleStutas" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -24,8 +25,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, product_name, product_code, specificat_id, group_id, sale_stutas, remark, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, product_name, product_code, specificat_id, group_id, color_id, sale_stutas, 
+    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -54,6 +56,11 @@
       <trim prefix="group_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.groupId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.colorId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="sale_stutas = case" suffix="end,">
@@ -120,32 +127,33 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into operation.ope_sale_scooter
-    (id, dr, product_name, product_code, specificat_id, group_id, sale_stutas, remark, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
-      )
+    (id, dr, product_name, product_code, specificat_id, group_id, color_id, sale_stutas, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.productName,jdbcType=VARCHAR}, 
         #{item.productCode,jdbcType=VARCHAR}, #{item.specificatId,jdbcType=BIGINT}, #{item.groupId,jdbcType=BIGINT}, 
-        #{item.saleStutas,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
+        #{item.colorId,jdbcType=BIGINT}, #{item.saleStutas,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
+        )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSaleScooter">
     <!--@mbg.generated-->
     insert into operation.ope_sale_scooter
-    (id, dr, product_name, product_code, specificat_id, group_id, sale_stutas, remark, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
-      )
+    (id, dr, product_name, product_code, specificat_id, group_id, color_id, sale_stutas, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
       #{productCode,jdbcType=VARCHAR}, #{specificatId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, 
-      #{saleStutas,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
-      #{def5,jdbcType=DECIMAL})
+      #{colorId,jdbcType=BIGINT}, #{saleStutas,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -153,6 +161,7 @@
     product_code = #{productCode,jdbcType=VARCHAR}, 
     specificat_id = #{specificatId,jdbcType=BIGINT}, 
     group_id = #{groupId,jdbcType=BIGINT}, 
+    color_id = #{colorId,jdbcType=BIGINT}, 
     sale_stutas = #{saleStutas,jdbcType=INTEGER}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -186,6 +195,9 @@
       </if>
       <if test="groupId != null">
         group_id,
+      </if>
+      <if test="colorId != null">
+        color_id,
       </if>
       <if test="saleStutas != null">
         sale_stutas,
@@ -241,6 +253,9 @@
       <if test="groupId != null">
         #{groupId,jdbcType=BIGINT},
       </if>
+      <if test="colorId != null">
+        #{colorId,jdbcType=BIGINT},
+      </if>
       <if test="saleStutas != null">
         #{saleStutas,jdbcType=INTEGER},
       </if>
@@ -294,6 +309,9 @@
       </if>
       <if test="groupId != null">
         group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId,jdbcType=BIGINT},
       </if>
       <if test="saleStutas != null">
         sale_stutas = #{saleStutas,jdbcType=INTEGER},

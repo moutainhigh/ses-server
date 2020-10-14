@@ -436,6 +436,8 @@ public enum ExceptionCodeEnums {
 
     PARTS_MSG_NOT_PERFECT(10209, "部品信息不完善，请完善信息"),
 
+    PRODUCT_CODE_NOT_NULL(10210, "产品编码不能为空"),
+
     ;
 
 

@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -286,5 +283,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         booleanResult.setSuccess(flag);
         booleanResult.setRequestId(enter.getRequestId());
         return booleanResult;
+    }
+
+
+    @Override
+    public List<SpecificatTypeDataResult> specificatTypeData(GeneralEnter enter) {
+        List<SpecificatTypeDataResult> resultList = specificatTypeServiceMapper.specificatTypeData();
+        return resultList;
     }
 }

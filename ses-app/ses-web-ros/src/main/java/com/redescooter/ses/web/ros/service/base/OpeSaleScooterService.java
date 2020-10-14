@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 
 import java.util.List;
+
 public interface OpeSaleScooterService extends IService<OpeSaleScooter> {
 
 

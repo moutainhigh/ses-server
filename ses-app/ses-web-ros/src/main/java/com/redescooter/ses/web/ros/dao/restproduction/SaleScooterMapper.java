@@ -1,6 +1,11 @@
 package com.redescooter.ses.web.ros.dao.restproduction;
 
+import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @ClassNameOpeSaleScooterMapper
@@ -12,6 +17,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SaleScooterMapper {
 
+   int saleScooterTotal(@Param("enter") SaleScooterListEnter enter);
 
+
+    List<SaleScooterListResult> saleScooterList(@Param("enter") SaleScooterListEnter enter);
 
 }
