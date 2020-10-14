@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 public class RosPartsExportEnter implements Serializable {
 
-    @Excel(name = "PARTS NO",width = 20,needMerge = false)
+    @Excel(name = "PARTS N°",width = 20,needMerge = false)
     private String partsNo;
 
     @Excel(name = "SEC",width = 20)
