@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 /**
  * @ClassName:SaveScooterPartListResult
  * @description: SaveScooterPartListResult
@@ -45,6 +47,9 @@ public class RosProductionProductPartListResult extends GeneralResult {
 
     @ApiModelProperty(value = "数量")
     private Integer qty;
+
+    @ApiModelProperty(value = "采购价格")
+    private BigDecimal price;
 
     @ApiModelProperty(value = "图纸url")
     private String dwg;

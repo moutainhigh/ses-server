@@ -39,6 +39,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.base.OpePartsSecService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
@@ -79,6 +80,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spark.utils.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -134,6 +136,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
+
+    @Autowired
+    private OpeProductPriceService opeProductPriceService;
 
     @Autowired
     private IdAppService idAppService;
@@ -330,51 +335,8 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .errMsg(item.getErrorMsg()).rowNum(item.getRowNum()).build());
             });
         }
-        if (CollectionUtils.isNotEmpty(successList)) {
-            successProductPartListResult = rosProductionProductServiceMapper.rosImportProductionProductPartsList(
-                successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
-            if (CollectionUtils.isNotEmpty(successProductPartListResult)) {
-                for (RosParseExcelData item : successList) {
-                    RosProductionProductPartListResult rosProductionProductPartListResult = successProductPartListResult
-                        .stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).findFirst()
-                        .orElse(null);
-                    // 非空 和信息校验
-                    if (rosProductionProductPartListResult == null
-                        || !StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
-                        || !StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
-                        failProductPartListResult.add(RosProductionProductPartListResult.builder()
-                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
-                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
-                        successProductPartListResult
-                            .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
-                        continue;
-                    }
-                    rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
-                }
-            }
-            if (CollectionUtils.isNotEmpty(successList) && CollectionUtils.isEmpty(successProductPartListResult)) {
-                successList.forEach(item -> {
-                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
-                        .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
-                        .sec(item.getSec()).cnName(item.getChineseName()).errMsg("This part does not exist.").build());
-                });
-            }
-        }
-        // 判断失败的部件，是否存在正式部件，如果存在 部件部件信息不完整异常《 部件不存在异常 （不存在异常会覆盖 信息不完整异常）
-        if (CollectionUtils.isNotEmpty(failProductPartListResult)) {
-            List<RosProductionProductPartListResult> failPartProductionList =
-                rosProductionProductServiceMapper.rosImportProductionProductPartsList(failProductPartListResult.stream()
-                    .map(RosProductionProductPartListResult::getPartsNum).collect(Collectors.toList()));
-            if (CollectionUtils.isEmpty(failPartProductionList)) {
-                failPartProductionList.stream().forEach(item -> item.setErrMsg("This part does not exist."));
-            }
-            if (CollectionUtils.isNotEmpty(failPartProductionList)) {
-                failProductPartListResult.stream()
-                    .filter(item -> failPartProductionList.stream()
-                        .noneMatch(part -> StringUtils.equals(item.getPartsNum(), part.getPartsNum())))
-                    .forEach(item -> item.setErrMsg("This part does not exist."));
-            }
-        }
+        successProductPartListResult = checkRosProductionProductPartListResults(successProductPartListResult,
+            failProductPartListResult, successList);
         importProductionProductResult.setFailProductPartListResult(failProductPartListResult);
         importProductionProductResult.setSuccessProductPartListResult(successProductPartListResult);
         importProductionProductResult
@@ -576,8 +538,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .frName(StringUtils.isBlank(opeProductionScooterBomDraft.getFrName()) ? null
                         : opeProductionScooterBomDraft.getFrName())
                     .effectiverDate(opeProductionScooterBomDraft.getEffectiveDate())
-                    .createTime(opeProductionScooterBomDraft.getCreatedTime())
-                    .qcTempletePromptIcon(Boolean.TRUE)
+                    .createTime(opeProductionScooterBomDraft.getCreatedTime()).qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionScooterBomDraft.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
                     OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
@@ -620,8 +581,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .frName(StringUtils.isBlank(opeProductionScooterBom.getFrName()) ? null
                         : opeProductionScooterBom.getFrName())
                     .version(opeProductionScooterBom.getVersoin()).status(opeProductionScooterBom.getBomStatus())
-                    .effectiverDate(opeProductionScooterBom.getEffectiveDate())
-                    .qcTempletePromptIcon(Boolean.TRUE)
+                    .effectiverDate(opeProductionScooterBom.getEffectiveDate()).qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionScooterBom.getCreatedBy()).build();
                 if (result.getGroupId() != null && result.getGroupId() != 0) {
                     OpeSpecificatGroup opeSpecificatGroup = opeSpecificatGroupService.getById(result.getGroupId());
@@ -661,8 +621,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         : opeProductionCombinBomDraft.getCnName())
                     .frName(StringUtils.isBlank(opeProductionCombinBomDraft.getFrName()) ? null
                         : opeProductionCombinBomDraft.getFrName())
-                    .effectiverDate(opeProductionCombinBomDraft.getEffectiveDate())
-                    .qcTempletePromptIcon(Boolean.TRUE)
+                    .effectiverDate(opeProductionCombinBomDraft.getEffectiveDate()).qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionCombinBomDraft.getCreatedBy()).build();
             }
             if (ClassTypeEnums.TYPE_TWO.getValue().equals(enter.getClassType())) {
@@ -688,8 +647,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     .frName(StringUtils.isBlank(opeProductionCombinBom.getFrName()) ? null
                         : opeProductionCombinBom.getFrName())
                     .version(opeProductionCombinBom.getVersoin()).status(opeProductionCombinBom.getBomStatus())
-                    .effectiverDate(opeProductionCombinBom.getEffectiveDate())
-                    .qcTempletePromptIcon(Boolean.TRUE)
+                    .effectiverDate(opeProductionCombinBom.getEffectiveDate()).qcTempletePromptIcon(Boolean.TRUE)
                     .createById(opeProductionCombinBom.getCreatedBy()).build();
             }
         }
@@ -1535,6 +1493,77 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
         }
         return resultList;
+    }
+
+    /**
+     * 校验导入的list 数据
+     * 
+     * @param successProductPartListResult
+     * @param failProductPartListResult
+     * @param successList
+     * @return
+     */
+    private List<RosProductionProductPartListResult> checkRosProductionProductPartListResults(
+        List<RosProductionProductPartListResult> successProductPartListResult,
+        List<RosProductionProductPartListResult> failProductPartListResult, List<RosParseExcelData> successList) {
+        if (CollectionUtils.isNotEmpty(successList)) {
+            successProductPartListResult = rosProductionProductServiceMapper.rosImportProductionProductPartsList(
+                successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toList()));
+            if (CollectionUtils.isNotEmpty(successProductPartListResult)) {
+                for (RosParseExcelData item : successList) {
+                    RosProductionProductPartListResult rosProductionProductPartListResult = successProductPartListResult
+                        .stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).findFirst()
+                        .orElse(null);
+                    // 非空 和信息校验
+                    if (rosProductionProductPartListResult == null
+                        || !StringUtils.equals(item.getChineseName(), rosProductionProductPartListResult.getCnName())
+                        || !StringUtils.equals(item.getEnglishName(), rosProductionProductPartListResult.getEnName())) {
+                        failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
+                        successProductPartListResult
+                            .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
+                        continue;
+                    }
+                    rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
+                }
+            }
+            if (CollectionUtils.isNotEmpty(successList)) {
+                if (CollectionUtils.isEmpty(successProductPartListResult)) {
+                    successList.forEach(item -> {
+                        failProductPartListResult
+                            .add(RosProductionProductPartListResult.builder().partsNum(item.getPartsNo())
+                                .rowNum(item.getRowNum()).enName(item.getEnglishName()).sec(item.getSec())
+                                .cnName(item.getChineseName()).errMsg("This part does not exist.").build());
+                    });
+                } else {
+                    // 采购价过滤
+                    successProductPartListResult.stream().filter(price -> (Objects.equals(null, price.getPrice())
+                        || Objects.equals(BigDecimal.ZERO, price.getPrice()))).forEach(item -> {
+                            failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                                .partsNum(item.getPartsNum()).rowNum(item.getRowNum()).enName(item.getEnName())
+                                .sec(item.getSec()).cnName(item.getCnName())
+                                .errMsg("There is no purchase price set for this part.").build());
+                        });
+                }
+            }
+        }
+        // 判断失败的部件，是否存在正式部件，如果存在 部件部件信息不完整异常《 部件不存在异常 （不存在异常会覆盖 信息不完整异常）
+        if (CollectionUtils.isNotEmpty(failProductPartListResult)) {
+            List<RosProductionProductPartListResult> failPartProductionList =
+                rosProductionProductServiceMapper.rosImportProductionProductPartsList(failProductPartListResult.stream()
+                    .map(RosProductionProductPartListResult::getPartsNum).collect(Collectors.toList()));
+            if (CollectionUtils.isEmpty(failPartProductionList)) {
+                failPartProductionList.stream().forEach(item -> item.setErrMsg("This part does not exist."));
+            }
+            if (CollectionUtils.isNotEmpty(failPartProductionList)) {
+                failProductPartListResult.stream()
+                    .filter(item -> failPartProductionList.stream()
+                        .noneMatch(part -> StringUtils.equals(item.getPartsNum(), part.getPartsNum())))
+                    .forEach(item -> item.setErrMsg("This part does not exist."));
+            }
+        }
+        return successProductPartListResult;
     }
 
 }

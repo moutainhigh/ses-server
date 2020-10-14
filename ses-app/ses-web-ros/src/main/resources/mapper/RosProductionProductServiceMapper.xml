@@ -247,7 +247,7 @@
     </select>
 
     <select id="rosImportProductionProductPartsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
-        select parts.id          as id,
+        select parts.id                as id,
         parts.parts_no          as partsNum,
         parts.parts_sec         as secId,
         parts.procurement_cycle as productionCycle,
@@ -256,9 +256,11 @@
         parts.en_name           as enName,
         parts.fr_name           as frName,
         sec.name                as sec,
-        parts.procurement_cycle as productionCycle
+        parts.procurement_cycle as productionCycle,
+        price.price             as price
         from ope_production_parts parts
         left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
+        left join ope_product_price price on price.product_id = parts.id and product_price_type = 1
         where parts.dr=0
         <if test="collection != null and collection.size() != 0">
             and parts_no in
