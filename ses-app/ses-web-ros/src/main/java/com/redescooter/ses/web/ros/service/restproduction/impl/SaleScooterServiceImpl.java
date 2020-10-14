@@ -22,12 +22,15 @@ import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.statement.select.Wait;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +59,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Autowired
     private OpeSpecificatTypeService specificatTypeService;
 
-    @Reference
+    @Autowired
     private JedisService jedisService;
 
 
@@ -136,12 +139,12 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Override
     public GeneralResult editSaleScooterStatus(IdEnter enter) {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
-//        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
-//        String checkResut = jedisService.get(key);
-//        if (!Boolean.valueOf(checkResut)) {
-//            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
-//        }
-//        jedisService.delKey(key);
+        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
+        String checkResut = jedisService.get(key);
+        if (!Boolean.valueOf(checkResut)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        }
+        jedisService.delKey(key);
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
         if (saleScooter == null){
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
@@ -152,6 +155,17 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+//    @SneakyThrows
+//    public static void main(String[] args) {
+//        long timeMillis = System.currentTimeMillis();
+//        System.out.println("111111111");
+//        System.out.println("222222222");
+//        System.out.println("333333333");
+//        System.out.println(timeMillis);
+////        Thread.sleep(10);
+//        System.out.println(System.currentTimeMillis());
+//    }
 
     @Override
     public PageResult<SaleScooterListResult> saleScooterList(SaleScooterListEnter enter) {
