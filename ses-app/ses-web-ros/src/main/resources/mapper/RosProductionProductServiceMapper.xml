@@ -185,23 +185,24 @@
     <select id="productionProductPartListCount" resultType="int">
         select count(1)
         from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
         <include refid="where_productionProductPartList" />
     </select>
 
     <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
         select parts.id                as id,
-                parts.parts_no          as partsNum,
-                parts.parts_sec         as secId,
-                sec.name                as sec,
-                parts.procurement_cycle as productionCycle,
-                parts.dwg               as dwgUrl,
-                parts.cn_name           as cnName,
-                parts.en_name           as enName,
-                parts.fr_name           as frName,
-                1 as qty
-                from ope_production_parts parts
-        inner join ope_production_part_price_sheet sheet on sheet.production_id = parts.id
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        parts.dwg               as dwgUrl,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        1                       as qty
+        from ope_production_parts parts
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
         inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
         <include refid="where_productionProductPartList" />
         order by parts.created_time desc
