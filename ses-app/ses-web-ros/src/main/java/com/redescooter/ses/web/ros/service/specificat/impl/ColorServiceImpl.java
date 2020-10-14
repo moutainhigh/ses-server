@@ -1,15 +1,19 @@
 package com.redescooter.ses.web.ros.service.specificat.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.ColorServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomDraftService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.specificat.ColorService;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorListResult;
@@ -39,6 +43,15 @@ public class ColorServiceImpl implements ColorService {
 
     @Autowired
     private ColorServiceMapper colorServiceMapper;
+
+    @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
+
+    @Autowired
+    private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private OpeProductionScooterBomDraftService opeProductionScooterBomDraftService;
 
     @Override
     public GeneralResult colorSave(ColorSaveOrEditEnter enter) {
@@ -91,6 +104,27 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public GeneralResult colorDelete(IdEnter enter) {
         // todo 后期加校验  判断颜色是否被使用
+        // 2020 10 14追加校验 判断颜色是否被使用（销售整车）
+        QueryWrapper<OpeSaleScooter> qw = new QueryWrapper<>();
+        qw.eq(OpeSaleScooter.COL_COLOR_ID,enter.getId());
+        int count = opeSaleScooterService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
+        }
+        // 2020 10 14追加校验 判断颜色是否被使用（整车）
+        QueryWrapper<OpeProductionScooterBom> scooterBomQueryWrapper = new QueryWrapper<>();
+        scooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_COLOR_ID,enter.getId());
+        int count1 = opeProductionScooterBomService.count(scooterBomQueryWrapper);
+        if(count1 > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
+        }
+        // 2020 10 14追加校验 判断颜色是否被使用（整车草稿）
+        QueryWrapper<OpeProductionScooterBomDraft> scooterBomDraftQueryWrapper = new QueryWrapper<>();
+        scooterBomDraftQueryWrapper.eq(OpeProductionScooterBomDraft.COL_COLOR_ID,enter.getId());
+        int count2 = opeProductionScooterBomDraftService.count(scooterBomDraftQueryWrapper);
+        if(count2 > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
+        }
         opeColorService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }

@@ -438,6 +438,8 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_CODE_NOT_NULL(10210, "产品编码不能为空"),
 
+    COLOR_IS_USED(10211, "颜色已被使用，不能删除"),
+
     ;
 
 
