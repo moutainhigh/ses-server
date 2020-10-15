@@ -1,7 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.material.impl;
 
-import java.util.HashMap;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,19 +13,61 @@ import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.QcTypeEnums;
 import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.material.MaterialServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionQualityTempate;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionQualityTempateB;
+import com.redescooter.ses.mobile.rps.dm.OpePurchas;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasPayment;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasQcTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateBService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartQcTemplateService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcItemService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasPaymentService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasQcTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeProductionPartsService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeProductionQualityTempateBService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeProductionQualityTempateService;
 import com.redescooter.ses.mobile.rps.service.material.MaterialService;
 import com.redescooter.ses.mobile.rps.vo.bo.ReturnCompletePartDto;
 import com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto;
-import com.redescooter.ses.mobile.rps.vo.materialqc.*;
+import com.redescooter.ses.mobile.rps.vo.materialqc.CheckPartQcBySerilaNEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.CheckPartQcBySerilaNResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.ContinueQcEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcDetailEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcListResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.MaterialQcTemplateDetailResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.PartQcResultResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.PartTemplateEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.PartTemplateResult;
+import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
+import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +78,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -98,6 +143,15 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Autowired
     private OpeStockService opeStockService;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeProductionQualityTempateService opeProductionQualityTempateService;
+
+    @Autowired
+    private OpeProductionQualityTempateBService opeProductionQualityTempateBService;
 
     @Reference
     private IdAppService idAppService;
@@ -572,39 +626,46 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
 
-        OpeParts opeParts = opePartsService.getById(opePurchasB.getPartId());
-        if (opeParts == null) {
+        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (opeProductionParts == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
         //模板质检项 查询
-        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, opePurchasB.getPartId());
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_DR, 0);
-        List<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
-        if (CollectionUtils.isEmpty(opePartQcTemplateList)) {
+        QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+            opeProductionParts.getId());
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,
+            opeProductionParts.getPartsType());
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_DR, 0);
+        List<OpeProductionQualityTempate> opeProductionQualityTempateList =
+            opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+        if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
 
         //质检项 结果集查询
-        QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateBQueryWrapper.eq(OpePartQcTemplateB.COL_DR, 0);
-        opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, opePartQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList()));
-        List<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-        if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
+        QueryWrapper<OpeProductionQualityTempateB> opeProductionQualityTempateBQueryWrapper = new QueryWrapper<>();
+        opeProductionQualityTempateBQueryWrapper.eq(OpeProductionQualityTempateB.COL_DR, 0);
+        opeProductionQualityTempateBQueryWrapper.in(OpeProductionQualityTempateB.COL_PRODUCT_QUALITY_TEMPATE_ID,
+            opeProductionQualityTempateList.stream().map(OpeProductionQualityTempate::getId)
+                .collect(Collectors.toList()));
+        List<OpeProductionQualityTempateB> opeProductionQualityTempateBList =
+            opeProductionQualityTempateBService.list(opeProductionQualityTempateBQueryWrapper);
+        if (CollectionUtils.isEmpty(opeProductionQualityTempateBList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
 
         //封装质检模板
         List<PartTemplateResult> partTemplateList = Lists.newArrayList();
-        opePartQcTemplateList.forEach(item -> {
+        opeProductionQualityTempateList.forEach(item -> {
             List<PartQcResultResult> partQcResultList = Lists.newArrayList();
-            opePartQcTemplateBList.forEach(templateB -> {
-                if (item.getId().equals(templateB.getPartQcTemplateId())) {
+            opeProductionQualityTempateBList.forEach(templateB -> {
+                if (item.getId().equals(templateB.getProductQualityTempateId())) {
                     partQcResultList.add(
                             PartQcResultResult.builder()
                                     .id(templateB.getId())
-                                    .partQcTemplateId(templateB.getPartQcTemplateId())
+                            .partQcTemplateId(templateB.getProductQualityTempateId())
                                     .qcResult(templateB.getQcResult())
                                     .uploadFlag(templateB.getUploadFlag())
                                     .resultsSequence(templateB.getResultsSequence())
@@ -624,9 +685,8 @@ public class MaterialServiceImpl implements MaterialService {
 
         return MaterialQcTemplateDetailResult.builder()
                 .id(opePurchasB.getId())
-                .partCnName(opeParts.getCnName())
-                .partN(opeParts.getPartsNumber())
-                .partId(opeParts.getId())
+            .partCnName(opeProductionParts.getCnName()).partN(opeProductionParts.getPartsNo())
+            .partId(opeProductionParts.getId())
                 .partTemplateList(partTemplateList)
                 .build();
     }
@@ -644,19 +704,19 @@ public class MaterialServiceImpl implements MaterialService {
         //设置 模板、模板结果 之间关系
         Map<PartTemplateEnter, Long> templateMap = Maps.newHashMap();
         //质检通过模板
-        Map<OpePartQcTemplate, OpePartQcTemplateB> passTemplateMap = Maps.newHashMap();
+        Map<OpeProductionQualityTempate, OpeProductionQualityTempateB> passTemplateMap = Maps.newHashMap();
         //质检项结果保存
         List<OpePurchasQcTrace> opePurchasQcTraceList = new ArrayList<>();
 
         //对入参数据做校验
         OpePurchasB opePurchasB = checkSaveMaterialEnter(enter, partQcResultList, templateMap, passTemplateMap);
 
-        OpeParts opeParts = opePartsService.getById(opePurchasB.getPartId());
-        if (opeParts == null) {
+        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (opeProductionParts == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
         //根据质检类型校验质检数量
-        if (opeParts.getIdClass().equals(Boolean.TRUE)) {
+        if (opeProductionParts.getIdCalss().equals(1)) {
 
             //序列号不能为空
             if (StringUtils.isBlank(enter.getSerialNum())) {
@@ -679,7 +739,7 @@ public class MaterialServiceImpl implements MaterialService {
             }
         }
         //没有IdClas 校验质检数量
-        if (!opeParts.getIdClass()) {
+        if (opeProductionParts.getIdCalss() == 0) {
             if (enter.getQty() == null || enter.getQty() == 0) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_QC_QTY_IS_EMPTY.getMessage());
             }
@@ -696,7 +756,7 @@ public class MaterialServiceImpl implements MaterialService {
 
             //质检项 是否存在判断
             Boolean qcItem = Boolean.FALSE;
-            for (OpePartQcTemplate item : passTemplateMap.keySet()) {
+            for (OpeProductionQualityTempate item : passTemplateMap.keySet()) {
                 if (item.getId().equals(partTemplateEnter.getId())) {
                     qcItem = Boolean.TRUE;
                     break;
@@ -706,9 +766,9 @@ public class MaterialServiceImpl implements MaterialService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
             }
             // 判断 质检项 是否 质检通过的模板要求
-            for (Map.Entry<OpePartQcTemplate, OpePartQcTemplateB> e : passTemplateMap.entrySet()) {
-                OpePartQcTemplate key = e.getKey();
-                OpePartQcTemplateB passValue = e.getValue();
+            for (Map.Entry<OpeProductionQualityTempate, OpeProductionQualityTempateB> e : passTemplateMap.entrySet()) {
+                OpeProductionQualityTempate key = e.getKey();
+                OpeProductionQualityTempateB passValue = e.getValue();
                 // 判断同一个质检项 的质检结果
                 if (key.getId().equals(partTemplateEnter.getId()) && !passValue.getId().equals(value)) {
                     qcResult = Boolean.FALSE;
@@ -729,7 +789,7 @@ public class MaterialServiceImpl implements MaterialService {
         //根据质检方式减库存
         int initLaveWaitQcQty = opePurchasB.getLaveWaitQcQty();
         //质检成功、质检失败 都要待备料数量递减
-        if (opeParts.getIdClass()) {
+        if (opeProductionParts.getIdCalss() == 0) {
             opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - 1);
             opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - 1);
         } else {
@@ -744,16 +804,18 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         //查询 前端传过来的质检结果 如果符合 pass模板跳过查询 不符合 重新查询
-        Map<OpePartQcTemplate, OpePartQcTemplateB> opePartQcTemplateMap = new HashMap<>();
+        Map<OpeProductionQualityTempate, OpeProductionQualityTempateB> opePartQcTemplateMap = new HashMap<>();
         if (qcResult) {
             opePartQcTemplateMap.putAll(passTemplateMap);
         } else {
             //前端 传参的质检结果集 判断做处理
-            Collection<OpePartQcTemplate> opePartQcTemplateList = opePartQcTemplateService.listByIds(templateMap.keySet().stream().map(PartTemplateEnter::getId).collect(Collectors.toList()));
+            Collection<OpeProductionQualityTempate> opePartQcTemplateList = opeProductionQualityTempateService
+                .listByIds(templateMap.keySet().stream().map(PartTemplateEnter::getId).collect(Collectors.toList()));
             if (CollectionUtils.isEmpty(opePartQcTemplateList)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
             }
-            Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.listByIds(templateMap.values());
+            Collection<OpeProductionQualityTempateB> opePartQcTemplateBList =
+                opeProductionQualityTempateBService.listByIds(templateMap.values());
             if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(), ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
             }
@@ -761,7 +823,7 @@ public class MaterialServiceImpl implements MaterialService {
             //封装Map
             opePartQcTemplateList.forEach(template -> {
                 opePartQcTemplateBList.forEach(templateB -> {
-                    if (template.getId().equals(templateB.getPartQcTemplateId())) {
+                    if (template.getId().equals(templateB.getProductQualityTempateId())) {
                         opePartQcTemplateMap.put(template, templateB);
                     }
                 });
@@ -782,15 +844,18 @@ public class MaterialServiceImpl implements MaterialService {
         String batchNo = bussinessNumberService.materialQcBatchNo(batchNoEnter);
 
         //保存质检结果
-        OpePurchasBQc purchasBQc = buildOpePurchasBQc(enter, opeParts, opePurchasB.getId(), qcResult, batchNo, initLaveWaitQcQty);
+        OpePurchasBQc purchasBQc =
+            buildOpePurchasBQc(enter, opeProductionParts, opePurchasB.getId(), qcResult, batchNo, initLaveWaitQcQty);
         opePurchasBQcService.saveOrUpdate(purchasBQc);
 
         //保存批次号的质检记录
-        OpePurchasLotTrace opePurchasLotTrace = buildOpepurchasLotTraceSingle(enter, opeParts, qcResult, opePurchas, batchNo);
+        OpePurchasLotTrace opePurchasLotTrace =
+            buildOpepurchasLotTraceSingle(enter, opeProductionParts, qcResult, opePurchas, batchNo);
         opePurchasLotTraceService.saveOrUpdate(opePurchasLotTrace);
 
         //保存质检条目
-        OpePurchasBQcItem purchasBQcItem = buildOpePurchasBQcItem(enter, opeParts, purchasBQc, qcResult, batchNo, opePurchasLotTrace.getId());
+        OpePurchasBQcItem purchasBQcItem = buildOpePurchasBQcItem(enter, opeProductionParts, purchasBQc, qcResult,
+            batchNo, opePurchasLotTrace.getId());
         opePurchasBQcItemService.save(purchasBQcItem);
 
         //保存质检项记录
@@ -850,10 +915,10 @@ public class MaterialServiceImpl implements MaterialService {
         opePurchasService.updateById(opePurchas);
 
         return SaveMaterialQcResult.builder()
-                .partCnName(opeParts.getCnName())
+            .partCnName(opeProductionParts.getCnName())
                 .laveWaitQcQty(opePurchasB.getLaveWaitQcQty())
                 .batchN(batchNo)
-                .partN(opeParts.getPartsNumber())
+            .partN(opeProductionParts.getPartsNo())
                 .qcResult(qcResult)
                 .laveQcTotal(opePurchas.getLaveWaitQcTotal())
                 .build();
@@ -867,13 +932,13 @@ public class MaterialServiceImpl implements MaterialService {
      */
     @Override
     public CheckPartQcBySerilaNResult checkPartQcBySerilaN(CheckPartQcBySerilaNEnter enter) {
-        OpeParts parts = opePartsService.getById(enter.getPartId());
-        if (parts == null) {
+        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(enter.getPartId());
+        if (opeProductionParts == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
         //有Id 校验序列号
-        if (parts.getIdClass()) {
+        if (opeProductionParts.getIdCalss() == 1) {
             OpePurchasBQcItem purchasBQcItem = opePurchasBQcItemService.getOne(new LambdaQueryWrapper<OpePurchasBQcItem>()
                     .eq(OpePurchasBQcItem::getPartId, enter.getPartId())
                     .eq(OpePurchasBQcItem::getBatchNo, enter.getSerialN())
@@ -888,7 +953,8 @@ public class MaterialServiceImpl implements MaterialService {
         return CheckPartQcBySerilaNResult.builder().whetherQc(Boolean.FALSE).build();
     }
 
-    private OpePurchasLotTrace buildOpepurchasLotTraceSingle(SaveMaterialQcEnter enter, OpeParts opeParts, Boolean qcResult, OpePurchas opePurchas, String batchNo) {
+    private OpePurchasLotTrace buildOpepurchasLotTraceSingle(SaveMaterialQcEnter enter, OpeProductionParts opeParts,
+        Boolean qcResult, OpePurchas opePurchas, String batchNo) {
         OpePurchasLotTrace opePurchasLotTrace = opePurchasLotTraceService.getOne(new LambdaQueryWrapper<OpePurchasLotTrace>().eq(OpePurchasLotTrace::getBatchNo, batchNo));
         if (opePurchasLotTrace == null) {
             opePurchasLotTrace = OpePurchasLotTrace.builder()
@@ -907,7 +973,7 @@ public class MaterialServiceImpl implements MaterialService {
                     .updatedTime(new Date())
                     .build();
             if (qcResult) {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasLotTrace.setTotalQualityInspected(1);
                     opePurchasLotTrace.setPassCount(1);
                 } else {
@@ -916,7 +982,7 @@ public class MaterialServiceImpl implements MaterialService {
                 }
                 opePurchasLotTrace.setFailCount(0);
             } else {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasLotTrace.setTotalQualityInspected(1);
                     opePurchasLotTrace.setFailCount(1);
                 } else {
@@ -927,7 +993,7 @@ public class MaterialServiceImpl implements MaterialService {
             }
         } else {
             if (qcResult) {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasLotTrace.setTotalQualityInspected(opePurchasLotTrace.getTotalQualityInspected() + 1);
                     opePurchasLotTrace.setPassCount(opePurchasLotTrace.getPassCount() + 1);
                 } else {
@@ -936,7 +1002,7 @@ public class MaterialServiceImpl implements MaterialService {
                 }
                 opePurchasLotTrace.setFailCount(opePurchasLotTrace.getFailCount());
             } else {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasLotTrace.setTotalQualityInspected(opePurchasLotTrace.getTotalQualityInspected() + 1);
                     opePurchasLotTrace.setFailCount(opePurchasLotTrace.getFailCount() + 1);
                 } else {
@@ -950,7 +1016,8 @@ public class MaterialServiceImpl implements MaterialService {
         return opePurchasLotTrace;
     }
 
-    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeParts opeParts, Long opePurchasBId, Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
+    private OpePurchasBQc buildOpePurchasBQc(SaveMaterialQcEnter enter, OpeProductionParts opeParts, Long opePurchasBId,
+        Boolean qcResult, String batchNo, int initLaveWaitQcQty) {
         //查询今天是否 已经质检过
         OpePurchasBQc opePurchasBQc = opePurchasBQcService.getOne(new LambdaQueryWrapper<OpePurchasBQc>().eq(OpePurchasBQc::getPurchasBId, opePurchasBId));
 
@@ -974,7 +1041,7 @@ public class MaterialServiceImpl implements MaterialService {
                     .build();
             if (qcResult) {
                 int count = 0;
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasBQc.setTotalQualityInspected(1);
                     opePurchasBQc.setPassCount(1);
                     count += 1;
@@ -989,7 +1056,7 @@ public class MaterialServiceImpl implements MaterialService {
                 //带生产库存埋点
                 freeProduct(count, opeParts);
             } else {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasBQc.setTotalQualityInspected(1);
                     opePurchasBQc.setFailCount(1);
                 } else {
@@ -1002,7 +1069,7 @@ public class MaterialServiceImpl implements MaterialService {
         } else {
             if (qcResult) {
                 int count = 0;
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
                     opePurchasBQc.setPassCount(opePurchasBQc.getPassCount() + 1);
                     count += 1;
@@ -1016,7 +1083,7 @@ public class MaterialServiceImpl implements MaterialService {
                 //带生产库存埋点
                 freeProduct(count, opeParts);
             } else {
-                if (opeParts.getIdClass()) {
+                if (opeParts.getIdCalss() == 1) {
                     opePurchasBQc.setTotalQualityInspected(opePurchasBQc.getTotalQualityInspected() + 1);
                     opePurchasBQc.setFailCount(opePurchasBQc.getFailCount() + 1);
                 } else {
@@ -1036,7 +1103,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param qty
      * @param parts
      */
-    private void freeProduct(int qty, OpeParts parts) {
+    private void freeProduct(int qty, OpeProductionParts parts) {
         //查询仓库
         OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
         if (opeWhse == null) {
@@ -1046,7 +1113,8 @@ public class MaterialServiceImpl implements MaterialService {
         //查询 库存
         OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>()
                 .eq(OpeStock::getMaterielProductId, parts.getId())
-                .eq(OpeStock::getMaterielProductType, BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
+            .eq(OpeStock::getMaterielProductType,
+                BomCommonTypeEnums.getValueByCode(String.valueOf(parts.getPartsType())))
         .eq(OpeStock::getWhseId,opeWhse.getId()));
         if (opeStock == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
@@ -1056,7 +1124,8 @@ public class MaterialServiceImpl implements MaterialService {
         opeStockService.updateById(opeStock);
     }
 
-    private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeParts opeParts, OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo, Long lotTraceId) {
+    private OpePurchasBQcItem buildOpePurchasBQcItem(SaveMaterialQcEnter enter, OpeProductionParts opeParts,
+        OpePurchasBQc purchasBQc, Boolean qcResult, String batchNo, Long lotTraceId) {
         return OpePurchasBQcItem.builder()
                 .id(idAppService.getId(SequenceName.OPE_PURCHAS_B_QC_ITEM))
                 .dr(0)
@@ -1065,8 +1134,8 @@ public class MaterialServiceImpl implements MaterialService {
                 .purchasBQcId(purchasBQc.getId())
                 .purchasBLotTraceId(lotTraceId)
                 .batchNo(batchNo)
-                .qcBatchTotal(opeParts.getIdClass() == true ? 1 : enter.getQty())
-                .serialNum(opeParts.getIdClass() == true ? enter.getSerialNum() : null)
+            .qcBatchTotal(opeParts.getIdCalss() == 1 ? 1 : enter.getQty())
+            .serialNum(opeParts.getIdCalss() == 0 ? enter.getSerialNum() : null)
                 .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
                 .revision(0)
                 .createdBy(enter.getUserId())
@@ -1088,7 +1157,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @return
      */
     private OpePurchasQcTrace buildOpePurchasQcTrace(SaveMaterialQcEnter enter, Long opePurchasBId, Long purchasBQcId, Long purchasBQcItemId, PartTemplateEnter key,
-                                                     Long value, Map<OpePartQcTemplate, OpePartQcTemplateB> opePartQcTemplateMap) {
+        Long value, Map<OpeProductionQualityTempate, OpeProductionQualityTempateB> opePartQcTemplateMap) {
         String qcItemName = opePartQcTemplateMap.keySet().stream().filter(item -> item.getId().equals(key.getId())).findFirst().get().getQcItemName();
 
         String qcResult = opePartQcTemplateMap.values().stream().filter(item -> item.getId().equals(value)).findFirst().get().getQcResult();
@@ -1122,7 +1191,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param templateMap
      */
     private OpePurchasB checkSaveMaterialEnter(SaveMaterialQcEnter enter, List<PartTemplateEnter> partQcResultList, Map<PartTemplateEnter, Long> templateMap,
-                                               Map<OpePartQcTemplate, OpePartQcTemplateB> passTemplateMap) {
+        Map<OpeProductionQualityTempate, OpeProductionQualityTempateB> passTemplateMap) {
         try {
             partQcResultList.addAll(JSON.parseArray(enter.getPartTemplateListJson(), PartTemplateEnter.class));
             if (CollectionUtils.isEmpty(partQcResultList)) {
@@ -1143,34 +1212,48 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_PART_FINISHED_PREPARATION.getCode(), ExceptionCodeEnums.PURCHAS_PART_FINISHED_PREPARATION.getMessage());
         }
 
-        //查询质检模板
-        QueryWrapper<OpePartQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateQueryWrapper.eq(OpePartQcTemplate.COL_PART_ID, opePurchasB.getPartId());
-        List<OpePartQcTemplate> partQcTemplateList = opePartQcTemplateService.list(opePartQcTemplateQueryWrapper);
-        if (CollectionUtils.isEmpty(partQcTemplateList)) {
+        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (opeProductionParts == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+
+        // 模板质检项 查询
+        QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+            opeProductionParts.getId());
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,
+            opeProductionParts.getPartsType());
+        opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_DR, 0);
+        List<OpeProductionQualityTempate> opeProductionQualityTempateList =
+            opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+        if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
-        if (templateMap.keySet().size() != partQcTemplateList.size()) {
+        if (templateMap.keySet().size() != opeProductionQualityTempateList.size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
         }
 
         //查询模板对应的pass结果集
-        QueryWrapper<OpePartQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
-        opePartQcTemplateBQueryWrapper.eq(OpePartQcTemplateB.COL_DR, 0);
-        opePartQcTemplateBQueryWrapper.in(OpePartQcTemplateB.COL_PART_QC_TEMPLATE_ID, partQcTemplateList.stream().map(OpePartQcTemplate::getId).collect(Collectors.toList()));
-        opePartQcTemplateBQueryWrapper.eq(OpePartQcTemplateB.COL_PASS_FLAG, Boolean.TRUE);
-        Collection<OpePartQcTemplateB> opePartQcTemplateBList = opePartQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
-        if (CollectionUtils.isEmpty(opePartQcTemplateBList)) {
+        QueryWrapper<OpeProductionQualityTempateB> opeProductionQualityTempateBQueryWrapper = new QueryWrapper<>();
+        opeProductionQualityTempateBQueryWrapper.eq(OpeProductionQualityTempateB.COL_DR, 0);
+        opeProductionQualityTempateBQueryWrapper.in(OpeProductionQualityTempateB.COL_PRODUCT_QUALITY_TEMPATE_ID,
+            opeProductionQualityTempateList.stream().map(OpeProductionQualityTempate::getId)
+                .collect(Collectors.toList()));
+        opeProductionQualityTempateBQueryWrapper.eq(OpeProductionQualityTempateB.COL_PASS_FLAG, Boolean.TRUE);
+        List<OpeProductionQualityTempateB> opeProductionQualityTempateBList =
+            opeProductionQualityTempateBService.list(opeProductionQualityTempateBQueryWrapper);
+        if (CollectionUtils.isEmpty(opeProductionQualityTempateBList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getCode(), ExceptionCodeEnums.PART_IS_NOT_HAVE_QC_TEMPLATE.getMessage());
         }
-        if (opePartQcTemplateBList.size() != templateMap.values().size()) {
+        if (opeProductionQualityTempateBList.size() != templateMap.values().size()) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getCode(), ExceptionCodeEnums.PART_TEMPLATE_ITEM_NOT_ARE_COMPLETE.getMessage());
         }
 
         //封装质检pass模板
-        partQcTemplateList.forEach(item -> {
-            opePartQcTemplateBList.forEach(template -> {
-                if (item.getId().equals(template.getPartQcTemplateId())) {
+        opeProductionQualityTempateList.forEach(item -> {
+            opeProductionQualityTempateBList.forEach(template -> {
+                if (item.getId().equals(template.getProductQualityTempateId())) {
                     passTemplateMap.put(item, template);
                 }
             });

@@ -1328,7 +1328,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             .tenantId(0L).whseId(whse.getId()).intTotal(0).availableTotal(0).outTotal(0).wornTotal(0).lockTotal(0)
             .waitProductTotal(item.getTotalCount()).waitStoredTotal(0).materielProductId(item.getPartId())
             .materielProductName(parts.getCnName())
-            .materielProductType(BomCommonTypeEnums.getValueByCode(String.valueOf(parts.getPartsType()))).revision(0)
+            .materielProductType(String.valueOf(parts.getPartsType())).revision(0)
             .updatedBy(0L).updatedTime(new Date()).createdBy(0L).createdTime(new Date()).build();
         return opeStock;
     }
