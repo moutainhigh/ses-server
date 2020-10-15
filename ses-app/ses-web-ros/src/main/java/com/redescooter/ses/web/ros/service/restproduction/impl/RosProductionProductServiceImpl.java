@@ -1341,10 +1341,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getCnName())) {
             count--;
         }
-        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getFrName())) {
+        if (null != opeProductionCombinBomDraft.getColorId() && opeProductionCombinBomDraft.getColorId() != 0) {
             count--;
         }
-        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getEnName())) {
+        if (null != opeProductionCombinBomDraft.getGroupId() && opeProductionCombinBomDraft.getGroupId() != 0) {
             count--;
         }
         if (!Objects.equals(null, opeProductionCombinBomDraft.getProcurementCycle())
@@ -1360,7 +1360,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         if (count != 0) {
             throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
-                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
+                ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getMessage());
         }
         List<OpeProductionPartsRelation> productionPartsRelationList =
             opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>()
