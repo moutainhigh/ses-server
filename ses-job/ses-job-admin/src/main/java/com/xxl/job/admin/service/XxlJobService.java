@@ -25,7 +25,7 @@ public interface XxlJobService {
 	 * @param author
 	 * @return
 	 */
-    Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author);
+	public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author);
 
 	/**
 	 * add job
@@ -33,7 +33,7 @@ public interface XxlJobService {
 	 * @param jobInfo
 	 * @return
 	 */
-    ReturnT<String> add(XxlJobInfo jobInfo);
+	public ReturnT<String> add(XxlJobInfo jobInfo);
 
 	/**
 	 * update job
@@ -41,7 +41,7 @@ public interface XxlJobService {
 	 * @param jobInfo
 	 * @return
 	 */
-    ReturnT<String> update(XxlJobInfo jobInfo);
+	public ReturnT<String> update(XxlJobInfo jobInfo);
 
 	/**
 	 * remove job
@@ -49,7 +49,7 @@ public interface XxlJobService {
 	 * @param id
 	 * @return
 	 */
-    ReturnT<String> remove(int id);
+	public ReturnT<String> remove(int id);
 
 	/**
 	 * start job
@@ -57,7 +57,7 @@ public interface XxlJobService {
 	 * @param id
 	 * @return
 	 */
-    ReturnT<String> start(int id);
+	public ReturnT<String> start(int id);
 
 	/**
 	 * stop job
@@ -65,14 +65,14 @@ public interface XxlJobService {
 	 * @param id
 	 * @return
 	 */
-    ReturnT<String> stop(int id);
+	public ReturnT<String> stop(int id);
 
 	/**
 	 * dashboard info
 	 *
 	 * @return
 	 */
-    Map<String,Object> dashboardInfo();
+	public Map<String,Object> dashboardInfo();
 
 	/**
 	 * chart info
@@ -81,6 +81,6 @@ public interface XxlJobService {
 	 * @param endDate
 	 * @return
 	 */
-    ReturnT<Map<String,Object>> chartInfo(Date startDate, Date endDate);
+	public ReturnT<Map<String,Object>> chartInfo(Date startDate, Date endDate);
 
 }

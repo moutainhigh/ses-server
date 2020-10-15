@@ -26,23 +26,23 @@ public class ProductionProductExcelVerifyHandlerImpl implements IExcelVerifyHand
     public ExcelVerifyHandlerResult verifyHandler(RosParseExcelData rosParseExcelData) {
         StringBuilder builder = new StringBuilder();
         if (Strings.isNullOrEmpty(rosParseExcelData.getPartsNo())) {
-            builder.append("PARTS_NO ,This is  not must null;");
+            builder.append("PARTS N°is empty;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getChineseName())) {
-            builder.append("Chinese_Name ,This is  not must null;");
+            builder.append("Chinese_Name is empty;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getEnglishName())) {
-            builder.append("English_Name ,This is  not must null;");
+            builder.append("English_Name is empty;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSec())) {
-            builder.append("SEC ,This is  not must null;");
+            builder.append("SEC is empty;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getQuantity())) {
-            builder.append("Quantity ,This is  not must null;");
+            builder.append("Quantity is empty;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         } else {
             if (Integer.valueOf(rosParseExcelData.getQuantity()) < 1) {

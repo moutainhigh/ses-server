@@ -6,11 +6,6 @@ import com.xxl.job.core.biz.model.HandleCallbackParam;
 import com.xxl.job.core.biz.model.RegistryParam;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.RegistryConfig;
-import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
-import com.xxl.rpc.remoting.invoker.call.CallType;
-import com.xxl.rpc.remoting.invoker.reference.XxlRpcReferenceBean;
-import com.xxl.rpc.remoting.invoker.route.LoadBalance;
-import com.xxl.rpc.serialize.Serializer;
 import org.junit.Assert;
 import org.junit.Test;
 

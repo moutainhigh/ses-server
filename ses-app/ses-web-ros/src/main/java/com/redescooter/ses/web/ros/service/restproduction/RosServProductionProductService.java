@@ -148,4 +148,11 @@ public interface RosServProductionProductService {
      */
     BooleanResult checkProductN(CheckProductNEnter enter);
 
+    /**
+     * 校验产品信息 是否完整
+     * 
+     * @param enter
+     * @return
+     */
+    GeneralResult checkProductionInfo(RosProuductionTypeEnter enter);
 }

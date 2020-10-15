@@ -120,4 +120,10 @@ public class RosScooterController {
         return new Response<>(rosServProductionProductService.checkProductN(enter));
     }
 
+    @PostMapping(value = "/checkProductionInfo")
+    @ApiOperation(value = "产品信息校验", response = GeneralResult.class)
+    public Response<GeneralResult>
+        checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+        return new Response<>(rosServProductionProductService.checkProductionInfo(enter));
+    }
 }

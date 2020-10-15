@@ -436,9 +436,13 @@ public enum ExceptionCodeEnums {
 
     PARTS_MSG_NOT_PERFECT(10209, "部品信息不完善，请完善信息"),
 
-    PRODUCT_CODE_NOT_NULL(10210, "产品编码不能为空"),
+    COLOR_NOT_EXIST(10210, "颜色不存在"),
 
-    COLOR_IS_USED(10211, "颜色已被使用，不能删除"),
+    SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
+
+    PRODUCT_CODE_NOT_NULL(10212, "产品编码不能为空"),
+
+    COLOR_IS_USED(10213, "颜色已被使用，不能删除"),
 
     ;
 

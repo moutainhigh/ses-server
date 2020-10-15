@@ -67,7 +67,7 @@ public class ColorServiceImpl implements ColorService {
         color.setUpdatedBy(enter.getUserId());
         color.setUpdatedTime(new Date());
         color.setDr(0);
-        color.setId(idAppService.getId(""));
+        color.setId(idAppService.getId(SequenceName.OPE_COLOR));
         opeColorService.insertOrUpdate(color);
         return new GeneralResult(enter.getRequestId());
     }

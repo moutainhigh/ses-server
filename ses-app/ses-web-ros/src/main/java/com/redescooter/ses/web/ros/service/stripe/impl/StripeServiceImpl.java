@@ -307,7 +307,7 @@ public class StripeServiceImpl implements StripeService {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         // 订单数据保存
-        //todo 定金支付成功后优惠500 欧元
+        //TODO  定金支付成功后优惠500欧元
         BigDecimal price = new BigDecimal("690");
         customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
 

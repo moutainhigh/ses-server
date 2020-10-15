@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.dao.restproduction;
 
+import com.redescooter.ses.api.common.vo.base.BaseNameResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
@@ -133,4 +135,20 @@ public interface RosProductionProductServiceMapper {
      * @return
      */
     List<RosProductionProductPartListResult> rosImportProductionProductPartsList(List<String> collect);
+
+    /**
+     * 分组列表
+     *
+     * @param generalEnter
+     * @return
+     */
+    List<BaseNameResult> groupList(GeneralEnter generalEnter);
+
+    /**
+     * 颜色列表
+     * 
+     * @param enter
+     * @return
+     */
+    List<BaseNameResult> colorList(GeneralEnter enter);
 }
