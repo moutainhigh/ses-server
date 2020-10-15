@@ -90,11 +90,11 @@
         supplier.supplier_name    as supplierName,
         product.procurement_cycle as leadTime,
         sheet.price               as price,
-        sheet.currency_unit       as unit
+        sheet.standard_currency   as unit
         from ope_production_parts product
         inner join ope_supplier supplier on supplier.id = product.supplier_id and supplier.dr = 0
-        inner join ope_production_part_price_sheet sheet
-        on sheet.production_id = product.id and sheet.currency_unit = 1
+        inner join ope_product_price sheet
+        on sheet.product_id = product.id and product_price_type = 1
         <where>
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
@@ -204,14 +204,15 @@
         supplier.supplier_name             as supplierName,
         parts.procurement_cycle            as leadTime,
         sheet.price                        as price,
-        sheet.currency_unit                as unit,
+        sheet.standard_currency                as unit,
         purchasb.total_count               as qty,
         purchasb.total_count * sheet.price as subtotal
         from ope_purchas_b purchasb
         inner join ope_production_parts parts
         on purchasb.part_id = parts.id and parts.dr = 0
         inner join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_production_part_price_sheet sheet on sheet.production_id = parts.id and sheet.dr = 0
+        left join ope_product_price sheet
+        on sheet.product_id = parts.id and sheet.dr = 0 and sheet.product_price_type = 1
         where purchasb.dr = 0
         and purchasb.purchas_id =#{id}
         <if test="type != null and type != ''">
@@ -224,7 +225,7 @@
             and (
             parts.cn_name like concat ("%",#{keyword},"%") or
             parts.en_name like concat ("%",#{keyword},"%") or
-            parts.parts_number like concat ("%",#{keyword},"%")
+            parts.parts_no like concat ("%",#{keyword},"%")
             )
         </if>
     </select>
@@ -247,7 +248,7 @@
     </select>
     <select id="queryProductPartItemByProductIds"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select productb.parts_id                           as id,
+        select productb.id                           as id,
         productb.parts_id                           as partId,
         parts.parts_no                              as partsN,
         parts.en_name                               as enName,
@@ -258,12 +259,13 @@
         supplier.supplier_name                      as supplierName,
         parts.procurement_cycle                     as leadTime,
         ifnull(sheet.price, 0) * productb.parts_qty as price,
-        sheet.currency_unit                         as unit,
+        sheet.standard_currency                     as unit,
         productb.parts_qty                          as qty
         from ope_production_parts_relation productb
         inner join ope_production_parts parts on parts.id = productb.parts_id and parts.dr = 0
         inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
-        inner join ope_production_part_price_sheet sheet on sheet.production_id = productb.parts_id and sheet.dr = 0
+        inner join ope_product_price sheet
+        on sheet.product_id = productb.parts_id and sheet.dr = 0 and sheet.product_price_type = 1
         where productb.dr = 0
         <if test="list != null and list.size() != 0">
             and productb.production_type=2
