@@ -444,10 +444,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 部件总数
         int partQty = partList.stream().mapToInt(ProductionProductEnter::getQty).sum();
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
-            OpeProductionScooterBomDraft opeProductionScooterBomDraft = null;
+            OpeProductionScooterBomDraft opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
             if (enter.getId() == null || enter.getId() == 0) {
                 // 保存
-                opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
                 opeProductionScooterBomDraft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM_DRAFT));
                 opeProductionScooterBomDraft.setCreatedBy(enter.getUserId());
                 opeProductionScooterBomDraft.setCreatedTime(new Date());
@@ -459,20 +458,18 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
-                opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
                 opeProductionScooterBomDraft.setCreatedBy(queryProductionScooterBomDraft.getCreatedBy());
                 opeProductionScooterBomDraft.setCreatedTime(queryProductionScooterBomDraft.getCreatedTime());
                 opeProductionScooterBomDraft.setId(enter.getId());
             }
             productionProductId = opeProductionScooterBomDraft.getId();
             productionProducType = ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue();
-            opeProductionScooterBomDraftService.saveOrUpdate(opeProductionScooterBomDraft);
+            opeProductionScooterBomDraftService.insertOrUpdate(opeProductionScooterBomDraft);
         }
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
-            OpeProductionCombinBomDraft productionCombinBomDraft = null;
+            OpeProductionCombinBomDraft productionCombinBomDraft = buildProductionCombinBom(enter, partQty);
             if (enter.getId() == null || enter.getId() == 0) {
                 // 保存
-                productionCombinBomDraft = buildProductionCombinBom(enter, partQty);
                 productionCombinBomDraft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_COMBIN_BOM_DRAFT));
                 productionCombinBomDraft.setCreatedBy(enter.getUserId());
                 productionCombinBomDraft.setCreatedTime(new Date());
@@ -484,7 +481,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
-                productionCombinBomDraft = buildProductionCombinBom(enter, partQty);
                 productionCombinBomDraft.setCreatedBy(queryProductionCombinBomDraft.getCreatedBy());
                 productionCombinBomDraft.setCreatedTime(queryProductionCombinBomDraft.getCreatedTime());
                 productionCombinBomDraft.setId(enter.getId());
@@ -1377,14 +1373,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     }
 
     private OpeProductionCombinBomDraft buildProductionCombinBom(RosSaveProductionProductEnter enter, int qty) {
-        return OpeProductionCombinBomDraft.builder().dr(0).bomNo(enter.getProductN())
+        return OpeProductionCombinBomDraft.builder().dr(0).tenantId(0L).deptId(0L).bomNo(enter.getProductN())
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId()).colorId(enter.getColorId())
             .enName(enter.getEnName()).cnName(enter.getCnName()).effectiveDate(enter.getEffectiverDate())
             .frName(enter.getFrName()).partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
     }
 
     private OpeProductionScooterBomDraft buildOpeProductionScooterDraft(RosSaveProductionProductEnter enter, int qty) {
-        return OpeProductionScooterBomDraft.builder().dr(0).bomNo(enter.getProductN())
+        return OpeProductionScooterBomDraft.builder().tenantId(0L).deptId(0L).dr(0).bomNo(enter.getProductN())
             .procurementCycle(enter.getProcurementCycle()).groupId(enter.getGroupId())
             .effectiveDate(enter.getEffectiverDate()).colorId(enter.getColorId()).enName(enter.getEnName())
             .partsQty(qty).updatedBy(enter.getUserId()).updatedTime(new Date()).build();
