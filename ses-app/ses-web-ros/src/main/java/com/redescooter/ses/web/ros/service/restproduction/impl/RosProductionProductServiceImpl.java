@@ -995,6 +995,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
             }
+            checkCombinInfo(opeProductionCombinBomDraft);
         }
         return null;
     }
