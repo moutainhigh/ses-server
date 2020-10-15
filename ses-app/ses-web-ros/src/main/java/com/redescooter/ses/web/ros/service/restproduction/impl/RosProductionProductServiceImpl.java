@@ -416,10 +416,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 部件总数
         int partQty = partList.stream().mapToInt(ProductionProductEnter::getQty).sum();
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
-            OpeProductionScooterBomDraft opeProductionScooterBomDraft = null;
+            OpeProductionScooterBomDraft opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
             if (enter.getId() == null || enter.getId() == 0) {
                 // 保存
-                opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
                 opeProductionScooterBomDraft.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM_DRAFT));
                 opeProductionScooterBomDraft.setCreatedBy(enter.getUserId());
                 opeProductionScooterBomDraft.setCreatedTime(new Date());
@@ -431,7 +430,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
                 }
-                opeProductionScooterBomDraft = buildOpeProductionScooterDraft(enter, partQty);
                 opeProductionScooterBomDraft.setCreatedBy(queryProductionScooterBomDraft.getCreatedBy());
                 opeProductionScooterBomDraft.setCreatedTime(queryProductionScooterBomDraft.getCreatedTime());
                 opeProductionScooterBomDraft.setId(enter.getId());

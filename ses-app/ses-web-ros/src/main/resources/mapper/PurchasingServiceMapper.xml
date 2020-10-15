@@ -126,7 +126,7 @@
         from ope_production_scooter_bom product
         <where>
             and product.dr=0
-            and product.bom_status=2
+            and product.bom_status=1
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
                 product.bom_no like concat("%",#{enter.keyword},"%")
