@@ -204,8 +204,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 .eq(OpeProductionQualityTempate::getProductionId, enter.getLastProductId())
                 .eq(OpeProductionQualityTempate::getProductionType, enter.getLastProductionProductType()));
         if (opeProductionQualityTempate == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getCode(),
-                ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getMessage());
+            return null;
         }
 
         List<OpeProductionQualityTempateB> productionQualityTempateBList =

@@ -819,6 +819,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public GeneralResult release(RosProductionProductReleaseEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();

@@ -245,4 +245,7 @@ public interface ValidationExceptionCode {
 
     // 启用按钮为空
     int ENABLE_IS_EMPTY = 10140;
+
+    // 日期为空
+    int DATE_IS_EMPTY = 10141;
 }
