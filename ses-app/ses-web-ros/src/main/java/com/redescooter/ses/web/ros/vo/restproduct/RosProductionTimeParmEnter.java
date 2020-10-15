@@ -19,7 +19,7 @@ public class RosProductionTimeParmEnter extends GeneralEnter {
     @ApiModelProperty(value = "日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    @NotNull(code = ValidationExceptionCode.DATE_IS_EMPTY, message = "日期为空")
+    @NotNull(code = ValidationExceptionCode.DATE_IS_NOT_EMPTY, message = "时间不能为空")
     private Date dateTime;
 
     @ApiModelProperty(value = "产品类型")
