@@ -1103,9 +1103,6 @@ public class PurchasingServiceImpl implements PurchasingService {
             productIds.add(item.getId());
             totalqty += item.getQty();
         }
-//        if (!enter.getTotalQty().equals(totalqty)) {
-//            throw new SesWebRosException(ExceptionCodeEnums.PART_TOTAL_QTY_IS_NOT_MATCH.getCode(), ExceptionCodeEnums.PART_TOTAL_QTY_IS_NOT_MATCH.getMessage());
-//        }
         QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
         opePartsProductQueryWrapper.in(OpePartsProduct.COL_ID, new ArrayList<>(productIds));
         List<OpePartsProduct> partsProductList = opePartsProductService.list(opePartsProductQueryWrapper);

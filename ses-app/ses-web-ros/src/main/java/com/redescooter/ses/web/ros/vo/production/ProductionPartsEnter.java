@@ -27,6 +27,9 @@ public class ProductionPartsEnter extends GeneralEnter {
     @ApiModelProperty(value = "产品Id")
     private Long id;
 
+    @ApiModelProperty(value = "产品类型")
+    private String productionProductType;
+
     @ApiModelProperty(value = "数量")
     private Integer qty;
 }
