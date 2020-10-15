@@ -487,7 +487,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
             productionProductId = productionCombinBomDraft.getId();
             productionProducType = ProductionPartsRelationTypeEnums.COMBINATION_DRAFT.getValue();
-            opeProductionCombinBomDraftService.saveOrUpdate(productionCombinBomDraft);
+            opeProductionCombinBomDraftService.insertOrUpdate(productionCombinBomDraft);
         }
 
         // 删除部件建立的绑定关系
