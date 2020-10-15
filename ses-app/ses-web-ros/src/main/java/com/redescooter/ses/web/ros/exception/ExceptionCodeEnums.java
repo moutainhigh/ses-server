@@ -438,7 +438,7 @@ public enum ExceptionCodeEnums {
 
     COLOR_NOT_EXIST(10210, "颜色不存在"),
 
-    SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格类型名称非法"),
+    SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
 
     ;
 
