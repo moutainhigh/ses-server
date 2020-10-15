@@ -4,7 +4,6 @@
 
     <sql id="where_SupplierChaimList">
         where part.dr = 0
-        and part.announ_user_id=#{userId}
         <if test="partType != null and partType != ''">
             and part.parts_type=#{partType}
         </if>
@@ -12,7 +11,7 @@
             and part.updated_time between #{refuseStartTime} and #{refuseEndTime}
         </if>
         <if test="keyword != null and keyword != ''">
-            and ( parts_number like concat('%',#{keyword},'%')
+            and ( parts_no like concat('%',#{keyword},'%')
             or part.cn_name like concat('%',#{keyword},'%')
             or part.fr_name like concat('%',#{keyword},'%')
             or part.en_name like concat('%',#{keyword},'%')
