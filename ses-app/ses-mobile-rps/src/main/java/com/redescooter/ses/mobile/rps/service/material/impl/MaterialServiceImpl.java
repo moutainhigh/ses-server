@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
@@ -1113,9 +1112,8 @@ public class MaterialServiceImpl implements MaterialService {
         //查询 库存
         OpeStock opeStock = opeStockService.getOne(new LambdaQueryWrapper<OpeStock>()
                 .eq(OpeStock::getMaterielProductId, parts.getId())
-            .eq(OpeStock::getMaterielProductType,
-                BomCommonTypeEnums.getValueByCode(String.valueOf(parts.getPartsType())))
-        .eq(OpeStock::getWhseId,opeWhse.getId()));
+            .eq(OpeStock::getMaterielProductType, String.valueOf(parts.getPartsType()))
+            .eq(OpeStock::getWhseId, opeWhse.getId()));
         if (opeStock == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
         }
