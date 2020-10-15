@@ -1096,8 +1096,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param opePurchasProductList
      */
     private OpePurchas buildPurchas(SavePurchasingEnter enter, List<ProductionPartsEnter> productsList, Long purchasId,
-        List<OpePurchasB> opePurchasBList,
-                                    List<OpePurchasProduct> opePurchasProductList) {
+        List<OpePurchasB> opePurchasBList, List<OpePurchasProduct> opePurchasProductList) {
         Set<Long> productIds = Sets.newHashSet();
         Integer totalqty = 0;
         for (ProductionPartsEnter item : productsList) {

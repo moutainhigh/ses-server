@@ -248,7 +248,7 @@
     </select>
     <select id="queryProductPartItemByProductIds"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select productb.id                           as id,
+        select productb.production_id                           as id,
         productb.parts_id                           as partId,
         parts.parts_no                              as partsN,
         parts.en_name                               as enName,
