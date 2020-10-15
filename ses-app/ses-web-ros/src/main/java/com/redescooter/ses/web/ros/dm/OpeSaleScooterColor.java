@@ -13,7 +13,7 @@ import java.io.Serializable;
     */
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSaleScooterColor")
 @Data
-@TableName(value = "operation.ope_sale_scooter_color")
+@TableName(value = "ope_sale_scooter_color")
 public class OpeSaleScooterColor implements Serializable {
     /**
      * 销售车辆id

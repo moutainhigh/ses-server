@@ -17,7 +17,7 @@ import java.util.Date;
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleScooter")
 @Data
-@TableName(value = "operation.ope_sale_scooter")
+@TableName(value = "ope_sale_scooter")
 public class OpeSaleScooter implements Serializable {
     /**
      * 主键

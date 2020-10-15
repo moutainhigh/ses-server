@@ -16,7 +16,7 @@ import java.util.Date;
     */
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeColor")
 @Data
-@TableName(value = "operation.ope_color")
+@TableName(value = "ope_color")
 public class OpeColor {
     /**
      * 主键

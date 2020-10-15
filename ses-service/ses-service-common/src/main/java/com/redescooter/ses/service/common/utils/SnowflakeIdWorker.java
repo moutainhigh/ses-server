@@ -7,6 +7,9 @@ package com.redescooter.ses.service.common.utils;
  * @Date2020/10/15 11:25
  * @Version V1.0
  **/
+
+import java.util.Objects;
+
 /**
  * Twitter_Snowflake<br>
  * SnowFlake的结构如下(每部分用-分开):<br>
@@ -23,13 +26,14 @@ public class SnowflakeIdWorker {
 
     // ==============================Fields===========================================
     /** 开始时间截 (2015-01-01) */
-    private final long twepoch = 1420041600000L;
+    private final long twepoch = 1288834974657L;
 
     /** 机器id所占的位数 */
     private final long workerIdBits = 5L;
 
     /** 数据标识id所占的位数 */
-    private final long datacenterIdBits = 5L;
+    // 由5改为2
+    private final long datacenterIdBits = 2L;
 
     /** 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数) */
     private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
@@ -38,7 +42,8 @@ public class SnowflakeIdWorker {
     private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
 
     /** 序列在id中占的位数 */
-    private final long sequenceBits = 12L;
+    // 由12改为8
+    private final long sequenceBits = 8L;
 
     /** 机器ID向左移12位 */
     private final long workerIdShift = sequenceBits;
@@ -138,6 +143,25 @@ public class SnowflakeIdWorker {
      */
     protected long timeGen() {
         return System.currentTimeMillis();
+    }
+
+    private static SnowflakeIdWorker snowflakeIdWorker;
+
+    private SnowflakeIdWorker() {
+    }
+
+    public static SnowflakeIdWorker getInstance() {
+        if (Objects.isNull(snowflakeIdWorker)) {
+            synchronized (SnowflakeIdWorker.class) {
+                if (Objects.isNull(snowflakeIdWorker)) {
+                    System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+                    snowflakeIdWorker = new SnowflakeIdWorker();
+                    snowflakeIdWorker.datacenterId = 1;
+                    snowflakeIdWorker.workerId = 1;
+                }
+            }
+        }
+        return snowflakeIdWorker;
     }
 
     //==============================Test=============================================

@@ -61,7 +61,7 @@ public class OpeProductionScooterBomDraft implements Serializable {
     /**
      * 采购周期
      */
-    @TableField(value = "procurement_cycle")
+    @TableField(value = "procurement_cycle",updateStrategy = FieldStrategy.IGNORED)
     @ApiModelProperty(value = "采购周期")
     private Integer procurementCycle;
 
