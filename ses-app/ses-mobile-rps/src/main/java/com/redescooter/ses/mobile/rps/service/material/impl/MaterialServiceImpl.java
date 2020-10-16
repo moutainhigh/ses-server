@@ -83,6 +83,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -250,7 +251,7 @@ public class MaterialServiceImpl implements MaterialService {
         QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
         opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID, opePurchasBList.stream().map(OpePurchasB::getId).collect(Collectors.toList()));
         opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
-        opePurchasBQcQueryWrapper.gt(OpePurchasBQc.COL_FAIL_COUNT, 0);
+        // opePurchasBQcQueryWrapper.gt(OpePurchasBQc.COL_FAIL_COUNT, 0);
         List<OpePurchasBQc> purchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
 
         if (CollectionUtils.isEmpty(purchasBQcList)) {
@@ -258,11 +259,16 @@ public class MaterialServiceImpl implements MaterialService {
                     ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
         }
         //查询质检结果 若无质检失败的部件 无需退货
-        purchasBQcList.forEach(item -> {
-            if (item.getFailCount() == 0) {
-                throw new SesMobileRpsException(ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getCode(), ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getMessage());
+        Boolean existQcNg = Boolean.FALSE;
+        for (OpePurchasBQc opePurchasBQc : purchasBQcList) {
+            if (opePurchasBQc.getFailCount() != 0) {
+                existQcNg = Boolean.TRUE;
             }
-        });
+        }
+        if (!existQcNg) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getCode(),
+                ExceptionCodeEnums.QC_PASS_WITHOUT_RETURN.getMessage());
+        }
 
         Map<OpePurchasB, Integer> partMap = Maps.newHashMap();
 
@@ -370,11 +376,13 @@ public class MaterialServiceImpl implements MaterialService {
 
         //QC子表更新
         purchasBQcList.forEach(item -> {
-            item.setFailCount(0);
-            item.setTotalQualityInspected(item.getPassCount());
-            item.setStatus(QcStatusEnums.PASS.getValue());
-            item.setUpdatedBy(enter.getUserId());
-            item.setUpdatedTime(new Date());
+            if (item.getFailCount() != 0) {
+                item.setFailCount(0);
+                item.setTotalQualityInspected(item.getPassCount());
+                item.setStatus(QcStatusEnums.PASS.getValue());
+                item.setUpdatedBy(enter.getUserId());
+                item.setUpdatedTime(new Date());
+            }
         });
 
 
@@ -390,7 +398,7 @@ public class MaterialServiceImpl implements MaterialService {
             });
         });
         //校验主订单是否需要修改状态
-        checkPurchasStatus(enter, opePurchas, purchasBQcList, returnCompletePartDtoMap, checkPurchasList);
+        checkPurchasStatus(enter, opePurchas, returnCompletePartDtoMap, checkPurchasList);
 
         //更新付款价格
         opePurchasPaymentService.updateBatch(opePurchasPaymentList);
@@ -410,27 +418,35 @@ public class MaterialServiceImpl implements MaterialService {
      *
      * @param enter
      * @param opePurchas
-     * @param purchasBQcList
      * @param returnCompletePartDtoMap
      * @param checkPurchasList
      */
-    private void checkPurchasStatus(ReturnedCompletedEnter enter, OpePurchas opePurchas, List<OpePurchasBQc> purchasBQcList, Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap,
+    private void checkPurchasStatus(ReturnedCompletedEnter enter, OpePurchas opePurchas,
+        Map<Long, ReturnCompletePartDto> returnCompletePartDtoMap,
                                     List<OpePurchasB> checkPurchasList) {
         int passTotal = 0;
-        flagOne:
+        int failTotal = 0;
+
+        // 查询qc 信息
+        QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
+        opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID,
+            checkPurchasList.stream().map(OpePurchasB::getId).collect(Collectors.toList()));
+        opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
+        List<OpePurchasBQc> purchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
+
         for (OpePurchasB item : checkPurchasList) {
             //校验质检信息是否能 已经全部质检过
             for (OpePurchasBQc purchasbqc : purchasBQcList) {
                 //同一个主订单下 判断所有子订单 是否 采购所有部件 是否已经通过质检  都通过时 修改主订单状态
-                if (item.getId().equals(purchasbqc.getPurchasBId())) {
+                if (Objects.equals(item.getId(), purchasbqc.getPurchasBId())) {
                     passTotal += purchasbqc.getPassCount();
-                    break flagOne;
+                    failTotal += purchasbqc.getFailCount();
                 }
             }
         }
         //校验每个主订单部件 是否全部通过质检
         Boolean updatePurchasStatus = Boolean.TRUE;
-        if (passTotal != opePurchas.getTotalQty()) {
+        if (passTotal != opePurchas.getTotalQty() - failTotal) {
             updatePurchasStatus = Boolean.FALSE;
         }
 
