@@ -200,41 +200,46 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     @Transactional
     @Override
     public GeneralResult saveByCopyId(SaveByCopyIdEnter enter) {
-        OpeProductionQualityTempate opeProductionQualityTempate =
-            opeProductionQualityTempateService.getOne(new LambdaQueryWrapper<OpeProductionQualityTempate>()
+        List<OpeProductionQualityTempate> opeProductionQualityTempateList =
+            opeProductionQualityTempateService.list(new LambdaQueryWrapper<OpeProductionQualityTempate>()
                 .eq(OpeProductionQualityTempate::getProductionId, enter.getLastProductId())
                 .eq(OpeProductionQualityTempate::getProductionType, enter.getLastProductionProductType()));
-        if (opeProductionQualityTempate == null) {
+        if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
             return null;
         }
-
         List<OpeProductionQualityTempateB> productionQualityTempateBList =
             opeProductionQualityTempateBService.list(new LambdaQueryWrapper<OpeProductionQualityTempateB>()
-                .eq(OpeProductionQualityTempateB::getProductQualityTempateId, opeProductionQualityTempate.getId()));
+                .in(OpeProductionQualityTempateB::getProductQualityTempateId,
+                        opeProductionQualityTempateList.stream().map(OpeProductionQualityTempate::getId).collect(Collectors.toList())));
 
         if (CollectionUtils.isEmpty(productionQualityTempateBList)) {
             throw new SesWebRosException(ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getMessage());
         }
 
-        // 新产品 质检模板
-        opeProductionQualityTempate.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE));
-        opeProductionQualityTempate.setProductionId(enter.getId());
-        opeProductionQualityTempate.setProductionType(enter.getProductionProductType());
-        opeProductionQualityTempate.setCreatedBy(enter.getUserId());
-        opeProductionQualityTempate.setCreatedTime(new Date());
-        opeProductionQualityTempate.setUpdatedBy(enter.getUserId());
-        opeProductionQualityTempate.setUpdatedTime(new Date());
-        opeProductionQualityTempateService.save(opeProductionQualityTempate);
 
-        productionQualityTempateBList.forEach(item -> {
-            item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE_B));
-            item.setProductQualityTempateId(opeProductionQualityTempate.getId());
-            item.setCreatedBy(enter.getUserId());
-            item.setCreatedTime(new Date());
-            item.setUpdatedBy(enter.getUserId());
-            item.setUpdatedTime(new Date());
-        });
+        for (OpeProductionQualityTempate opeProductionQualityTempate : opeProductionQualityTempateList) {
+            opeProductionQualityTempate.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE));
+            opeProductionQualityTempate.setProductionId(enter.getId());
+            opeProductionQualityTempate.setProductionType(enter.getProductionProductType());
+            opeProductionQualityTempate.setCreatedBy(enter.getUserId());
+            opeProductionQualityTempate.setCreatedTime(new Date());
+            opeProductionQualityTempate.setUpdatedBy(enter.getUserId());
+            opeProductionQualityTempate.setUpdatedTime(new Date());
+        }
+        opeProductionQualityTempate.save(opeProductionQualityTempateList);
+
+        for (OpeProductionQualityTempate templete : opeProductionQualityTempateList) {
+            productionQualityTempateBList.forEach(item -> {
+                item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE_B));
+                item.setProductQualityTempateId(templete.getId());
+                item.setCreatedBy(enter.getUserId());
+                item.setCreatedTime(new Date());
+                item.setUpdatedBy(enter.getUserId());
+                item.setUpdatedTime(new Date());
+            });
+        }
+
         opeProductionQualityTempateBService.saveBatch(productionQualityTempateBList);
 
         return new GeneralResult(enter.getRequestId());
