@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -47,6 +48,7 @@ public class StatisticalDataController {
 
     @ApiOperation(value = "订单统计数据")
     @RequestMapping(value = "/mobileBDelivery")
+//    @IgnoreLoginCheck
     public Response<MobileBDeliveryChartResult> mobileBDeliveryChart(@ModelAttribute DateTimeParmEnter enter) {
         return new Response<>(statisticalDataService.mobileBDeliveryChart(enter));
     }
