@@ -48,7 +48,6 @@ public class StatisticalDataController {
 
     @ApiOperation(value = "订单统计数据")
     @RequestMapping(value = "/mobileBDelivery")
-//    @IgnoreLoginCheck
     public Response<MobileBDeliveryChartResult> mobileBDeliveryChart(@ModelAttribute DateTimeParmEnter enter) {
         return new Response<>(statisticalDataService.mobileBDeliveryChart(enter));
     }
