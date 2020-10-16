@@ -11,7 +11,7 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            part.parts_number like concat ("%",#{enter.keyword},"%") or
+            part.parts_no like concat ("%",#{enter.keyword},"%") or
             part.en_name like concat ("%",#{enter.keyword},"%") or
             part.cn_name like concat ("%",#{enter.keyword},"%")
             )
@@ -27,7 +27,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            part.parts_number like concat ("%",#{keyword},"%") or
+            part.parts_no like concat ("%",#{keyword},"%") or
             part.en_name like concat ("%",#{keyword},"%") or
             part.cn_name like concat ("%",#{keyword},"%")
             )
@@ -43,7 +43,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            part.parts_number like concat ("%",#{keyword},"%") or
+            part.parts_no like concat ("%",#{keyword},"%") or
             part.en_name like concat ("%",#{keyword},"%") or
             part.cn_name like concat ("%",#{keyword},"%")
             )
@@ -86,7 +86,7 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            parts.parts_number like concat ("%",#{enter.keyword},"%") or
+            parts.parts_no like concat ("%",#{enter.keyword},"%") or
             parts.en_name like concat ("%",#{enter.keyword},"%") or
             parts.cn_name like concat ("%",#{enter.keyword},"%")
             )
@@ -96,85 +96,85 @@
     <select id="availableListCount" resultType="int">
         select count(*)
         from ope_stock stock
-        left join ope_parts part on part.id = stock.materiel_product_id and part.dr = 0
+        left join ope_production_parts part on part.id = stock.materiel_product_id and part.dr = 0
         <include refid="wher_availableList"/>
     </select>
 
     <select id="availableList" resultType="com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult">
         select stock.materiel_product_id as id,
-        stock.id as stockId,
-        parts_number as partN,
-        part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        stock.available_total as stocks
+        stock.id                  as stockId,
+        parts_no                  as partN,
+        part.parts_type           as type,
+        part.en_name              as enName,
+        part.cn_name              as cnName,
+        stock.available_total     as stocks
         from ope_stock stock
-        left join ope_parts part on part.id = stock.materiel_product_id and part.dr = 0
+        left join ope_production_parts part on part.id = stock.materiel_product_id and part.dr = 0
         <include refid="wher_availableList"/>
         order by part.updated_time desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="qcingListCount" resultType="int">
-        select count(*) from
-        (
-        select part.id as id,
-        part.parts_number as partN,
+        select count(*)
+        from (
+        select part.id         as id,
+        part.parts_no   as partN,
         part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
+        part.en_name    as enName,
+        part.cn_name    as cnName,
+        count(*)        as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
         on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_qcingList"/>
         ) result
     </select>
 
     <select id="qcingList" resultType="com.redescooter.ses.web.ros.vo.production.wh.QcingListResult">
-        select part.id as id,
-        part.parts_number as partN,
+        select part.id         as id,
+        part.parts_no   as partN,
         part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
+        part.en_name    as enName,
+        part.cn_name    as cnName,
+        count(*)        as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
         on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_qcingList"/>
         limit #{startRow},#{pageSize}
     </select>
 
     <select id="tobeStoredListCount" resultType="int">
-        select count(*) from
-        (
-        select part.id as id,
-        part.parts_number as partN,
-        part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
+        select count(*)
+        from (
+        select part.id           as id,
+        part.parts_no as partN,
+        part.parts_type   as type,
+        part.en_name      as enName,
+        part.cn_name      as cnName,
+        count(*)          as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
         on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_tobeStoredList"/>
         ) result
     </select>
 
     <select id="tobeStoredList" resultType="com.redescooter.ses.web.ros.vo.production.wh.TobeStoredResult">
-        select part.id as id,
-        part.parts_number as partN,
+        select part.id         as id,
+        part.parts_no   as partN,
         part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
+        part.en_name    as enName,
+        part.cn_name    as cnName,
+        count(*)        as qty
         from ope_purchas_b purchasb
         left join ope_purchas purchas
         on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
+        left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
         <include refid="where_tobeStoredList"/>
         limit #{startRow},#{pageSize}
     </select>
@@ -227,58 +227,58 @@
     <select id="outWhListAllocateCount" resultType="java.lang.Integer">
         select count(*)
         from ope_stock stock
-        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        inner join ope_production_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         <include refid="where_OutWh_Allocate"/>
     </select>
 
     <select id="outWhListAllocate" resultType="com.redescooter.ses.web.ros.vo.production.wh.OutWhResult">
-        select stock.id as id,
-        parts.parts_number as partN,
-        parts.parts_type as type,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
+        select stock.id              as id,
+        parts.parts_no        as partN,
+        parts.parts_type      as type,
+        parts.en_name         as enName,
+        parts.cn_name         as cnName,
         stock.available_total as qty
         from ope_stock stock
-        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        inner join ope_production_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         <include refid="where_OutWh_Allocate"/>
         order by stock.updated_time desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
     <select id="countByTypeQcCount" resultType="int">
-        select count(*) from
-        (
-        select part.id as id,
-        part.parts_number as partN,
-        part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
-        from ope_purchas_b purchasb
-        left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
-        where purchasb.dr=0
-        and purchas.status=3
-        group by id, partN, type, enName, cnName
-        ) result
+        select count(*)
+from (
+         select part.id         as id,
+                part.parts_no   as partN,
+                part.parts_type as type,
+                part.en_name    as enName,
+                part.cn_name    as cnName,
+                count(*)        as qty
+         from ope_purchas_b purchasb
+                  left join ope_purchas purchas
+                            on purchas.id = purchasb.purchas_id and purchas.dr = 0
+                  left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
+         where purchasb.dr = 0
+           and purchas.status = 3
+         group by id, partN, type, enName, cnName
+     ) result
     </select>
     <select id="countByTypetobeStoredCount" resultType="int">
-        select count(*) from
-        (
-        select part.id as id,
-        part.parts_number as partN,
-        part.parts_type as type,
-        part.en_name as enName,
-        part.cn_name as cnName,
-        count(*) as qty
-        from ope_purchas_b purchasb
-        left join ope_purchas purchas
-        on purchas.id = purchasb.purchas_id and purchas.dr = 0
-        left join ope_parts part on part.id = purchasb.part_id and part.dr = 0
-        where purchasb.dr=0
-        and purchas.status in (4, 5)
-        group by id, partN, type, enName, cnName
-        ) result
+        select count(*)
+from (
+         select part.id         as id,
+                part.parts_no   as partN,
+                part.parts_type as type,
+                part.en_name    as enName,
+                part.cn_name    as cnName,
+                count(*)        as qty
+         from ope_purchas_b purchasb
+                  left join ope_purchas purchas
+                            on purchas.id = purchasb.purchas_id and purchas.dr = 0
+                  left join ope_production_parts part on part.id = purchasb.part_id and part.dr = 0
+         where purchasb.dr = 0
+           and purchas.status in (4, 5)
+         group by id, partN, type, enName, cnName
+     ) result
     </select>
     <select id="countByTypeOutWhCountAssembly" resultType="int">
         select count(*)
@@ -291,7 +291,7 @@
     <select id="countByTypeOutWhCountAllocate" resultType="java.lang.Integer">
         select count(*)
         from ope_stock stock
-        left join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        left join ope_production_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         where stock.dr = 0
         and stock.available_total > 0
         and  stock.whse_id=#{whseId}
@@ -311,14 +311,14 @@
             on stock.materiel_product_id = product.id and product.dr=0
             <include refid="where_assemblyIds"/>
             union
-            (select stock.id as id,
-            parts.parts_number as partN,
-            parts.parts_type as type,
-            parts.en_name as enName,
-            parts.cn_name as cnName,
-            stock.available_total as qty
-            from ope_stock stock
-            inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+            (select stock.id              as id,
+        parts.parts_no        as partN,
+        parts.parts_type      as type,
+        parts.en_name         as enName,
+        parts.cn_name         as cnName,
+        stock.available_total as qty
+        from ope_stock stock
+        inner join ope_production_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
             <include refid="where_allocateIds"/>
             order by stock.updated_time desc)
         ) aa
@@ -338,17 +338,13 @@
         <include refid="where_assemblyIds"/>
         union
         (select stock.id              as id,
-        parts.parts_number            as partN,
-        (case parts.parts_type
-        when 'Parts' then 1
-        when 'Accessory' then 2
-        when 'Battery' then 3
-        end)                  as type,
+        parts.parts_no        as partN,
+        parts.parts_type      as type,
         parts.en_name         as enName,
         parts.cn_name         as cnName,
         stock.available_total as qty
         from ope_stock stock
-        inner join ope_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
+        inner join ope_production_parts parts on stock.materiel_product_id = parts.id and parts.dr = 0
         <include refid="where_allocateIds"/>
         order by stock.updated_time desc)
         limit #{param1.startRow},#{param1.pageSize}
@@ -390,7 +386,7 @@
         </if>
         <if test="param1.keyword != null and param1.keyword != ''">
             and (
-            parts.parts_number like concat ("%",#{param1.keyword},"%") or
+            parts.parts_no like concat ("%",#{param1.keyword},"%") or
             parts.en_name like concat ("%",#{param1.keyword},"%") or
             parts.cn_name like concat ("%",#{param1.keyword},"%")
             )

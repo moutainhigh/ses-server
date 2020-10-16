@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,10 +81,11 @@ public class PurchasingWhController {
         return new Response<>(purchasingWhService.wasteList(enter));
     }
 
-    @PostMapping(value = "/canAssemblyProductList")
-    @ApiOperation(value = "能够组装的商品", response = Map.class)
-    public Response< Map<String, Integer>> canAssemblyProductList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(purchasingWhService.canAssemblyProductList(enter));
-    }
+    // @PostMapping(value = "/canAssemblyProductList")
+    // @ApiOperation(value = "能够组装的商品", response = Map.class)
+    // public Response< Map<String, Integer>> canAssemblyProductList(@ModelAttribute @ApiParam("请求参数") GeneralEnter
+    // enter) {
+    // return new Response<>(purchasingWhService.canAssemblyProductList(enter));
+    // }
 
 }
