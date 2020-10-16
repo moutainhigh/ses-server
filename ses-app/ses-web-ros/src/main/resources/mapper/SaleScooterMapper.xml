@@ -12,7 +12,7 @@
 
     <sql id="saleScooterListCondition">
         <if test="enter.specificatId != null">
-            and scooter.specificat_id = #{enter.specificatId}
+            and scooter.group_id = #{enter.specificatId}
         </if>
         <if test="enter.saleStutas != null">
             and scooter.sale_stutas = #{enter.saleStutas}

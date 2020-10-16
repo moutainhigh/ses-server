@@ -444,6 +444,8 @@ public enum ExceptionCodeEnums {
 
     COLOR_IS_USED(10213, "颜色已被使用，不能删除"),
 
+    SPECIFICAT_TYPE_IS_USED(10214, "规格类型已被使用，不能删除"),
+
     ;
 
 
