@@ -442,6 +442,8 @@ public enum ExceptionCodeEnums {
 
     WEIGHT_ILLEGAL(10212, "重量违法"),
 
+    QUANTITY_ILLEGAL(10213, "数量违法"),
+
     ;
 
 
