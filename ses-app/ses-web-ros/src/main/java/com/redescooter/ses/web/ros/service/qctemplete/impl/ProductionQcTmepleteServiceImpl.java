@@ -227,7 +227,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             opeProductionQualityTempate.setUpdatedBy(enter.getUserId());
             opeProductionQualityTempate.setUpdatedTime(new Date());
         }
-        opeProductionQualityTempate.save(opeProductionQualityTempateList);
+        opeProductionQualityTempateService.saveBatch(opeProductionQualityTempateList);
 
         for (OpeProductionQualityTempate templete : opeProductionQualityTempateList) {
             productionQualityTempateBList.forEach(item -> {
