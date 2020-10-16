@@ -107,8 +107,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         List<OpeProductionQualityTempate> saveOpeProductionQcTemplateList = new ArrayList<>();
 
         List<OpeProductionQualityTempateB> saveOpeProductQcTemplateBList = new ArrayList<>();
-        // 质检结果排序校验
-        int sequence = 0;
+
         // 入参校验
         for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
             QcItemTemplateEnter key = entry.getKey();
@@ -119,6 +118,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                     ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
 
+            int sequence = 0;
             for (QcResultEnter item : value) {
                 if (StringUtils.isBlank(item.getResult())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(),

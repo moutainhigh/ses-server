@@ -43,10 +43,10 @@
         part.cn_name            as productCnName,
         part.en_name            as productEnName,
         part.fr_name            as productFrName,
-        part.parts_type         as type,
+        part.parts_type         as typeId,
         part.updated_time       as refuseTime,
         sheet.price             as productPrice,
-        sheet.standard_currency as unit
+        sheet.currency_type as unitId
         from ope_production_parts part
         left join ope_product_price sheet
         on part.id = sheet.product_id and sheet.dr = 0 and product_price_type=1

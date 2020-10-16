@@ -131,7 +131,16 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, supplierChaimRosServiceMapper.supplierChaimList(enter));
+        List<SupplierChaimListResult> supplierChaimListResultList =
+            supplierChaimRosServiceMapper.supplierChaimList(enter);
+
+        supplierChaimListResultList.forEach(item -> {
+            // 产品类型
+            item.setType(BomCommonTypeEnums.getEnumsByValue(item.getTypeId()).getCode());
+            // 转换货币单位
+            item.setUnit(CurrencyUnitEnums.getEnumByValue(item.getUnitId()).getName());
+        });
+        return PageResult.create(enter, count, supplierChaimListResultList);
     }
 
     /**

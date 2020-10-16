@@ -693,11 +693,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
 
         // 设置整车详情中 质检模板
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
-            OpeProductionQualityTempate opeProductionQualityTempate =
-                opeProductionQualityTempateService.getOne(new LambdaQueryWrapper<OpeProductionQualityTempate>()
+            Integer opeProductionQualityTempateCount =
+                opeProductionQualityTempateService.count(new LambdaQueryWrapper<OpeProductionQualityTempate>()
                     .eq(OpeProductionQualityTempate::getProductionId, enter.getId())
                     .eq(OpeProductionQualityTempate::getProductionType, enter.getProductionProductType()));
-            if (opeProductionQualityTempate != null) {
+            if (opeProductionQualityTempateCount != 0) {
                 result.setQcTempletePromptIcon(Boolean.FALSE);
             }
         }
