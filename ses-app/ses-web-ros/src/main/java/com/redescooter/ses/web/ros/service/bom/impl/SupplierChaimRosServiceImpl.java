@@ -138,7 +138,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             // 产品类型
             item.setType(BomCommonTypeEnums.getEnumsByValue(item.getTypeId()).getCode());
             // 转换货币单位
-            item.setUnit(CurrencyUnitEnums.getEnumByValue(item.getUnitId()).getName());
+            item.setUnit(item.getUnitId());
         });
         return PageResult.create(enter, count, supplierChaimListResultList);
     }
