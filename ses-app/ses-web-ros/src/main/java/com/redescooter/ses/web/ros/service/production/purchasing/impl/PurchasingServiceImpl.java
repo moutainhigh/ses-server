@@ -31,37 +31,10 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeFactory;
-import com.redescooter.ses.web.ros.dm.OpeProductionParts;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpePurchas;
-import com.redescooter.ses.web.ros.dm.OpePurchasB;
-import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
-import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
-import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
-import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
-import com.redescooter.ses.web.ros.dm.OpeStock;
-import com.redescooter.ses.web.ros.dm.OpeSupplier;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
-import com.redescooter.ses.web.ros.service.base.OpePartsService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasBService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasPaymentService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasProductService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasService;
-import com.redescooter.ses.web.ros.service.base.OpePurchasTraceService;
-import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
-import com.redescooter.ses.web.ros.service.base.OpeStockService;
-import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeWhseService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
@@ -154,6 +127,9 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
+
+    @Autowired
+    private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
     @Reference
     private IdAppService idAppService;
@@ -640,6 +616,27 @@ public class PurchasingServiceImpl implements PurchasingService {
                     List<PruchasingItemResult> partList =
                         purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
                     if (CollectionUtils.isNotEmpty(partList)) {
+                        //查询质检模板
+                        QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
+                        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,partList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+                        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.PARTS.getValue(),BomCommonTypeEnums.ACCESSORY.getValue(),BomCommonTypeEnums.BATTERY.getValue());
+                        List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+                        if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
+                            //过滤掉没有质检模板的部件
+                            for (PruchasingItemResult part : partList) {
+                                Boolean existTemplete = Boolean.TRUE;
+                                for (OpeProductionQualityTempate templete : opeProductionQualityTempateList) {
+                                    if (templete.getProductionId().equals(part.getId())) {
+                                        existTemplete = Boolean.FALSE;
+                                        break;
+                                    }
+                                }
+                                if (!existTemplete) {
+                                    partList.remove(part);
+                                }
+                            }
+                        }
+
 
                         for (PruchasingItemResult scooter : scooterProductList) {
                             BigDecimal totalPrice = BigDecimal.ZERO;
