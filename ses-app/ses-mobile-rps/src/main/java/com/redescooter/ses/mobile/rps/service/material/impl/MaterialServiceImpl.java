@@ -715,7 +715,7 @@ public class MaterialServiceImpl implements MaterialService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
         //根据质检类型校验质检数量
-        if (opeProductionParts.getIdCalss().equals(1)) {
+        if (opeProductionParts.getIdCalss() == 1) {
 
             //序列号不能为空
             if (StringUtils.isBlank(enter.getSerialNum())) {
@@ -788,7 +788,7 @@ public class MaterialServiceImpl implements MaterialService {
         //根据质检方式减库存
         int initLaveWaitQcQty = opePurchasB.getLaveWaitQcQty();
         //质检成功、质检失败 都要待备料数量递减
-        if (opeProductionParts.getIdCalss() == 0) {
+        if (opeProductionParts.getIdCalss() == 1) {
             opePurchasB.setLaveWaitQcQty(opePurchasB.getLaveWaitQcQty() - 1);
             opePurchas.setLaveWaitQcTotal(opePurchas.getLaveWaitQcTotal() - 1);
         } else {
