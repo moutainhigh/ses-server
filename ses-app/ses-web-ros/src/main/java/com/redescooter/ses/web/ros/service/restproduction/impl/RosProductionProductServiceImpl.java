@@ -1175,9 +1175,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
 
         // 保存 质检模板
+        SaveByCopyIdEnter saveByCopyIdEnter = new SaveByCopyIdEnter(productionScooterBom.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()),
+                enter.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()));
+        saveByCopyIdEnter.setUserId(enter.getUserId());
         productionQcTmepleteService.saveByCopyId(
-            new SaveByCopyIdEnter(productionScooterBom.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()),
-                enter.getId(), Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue())));
+                saveByCopyIdEnter);
 
     }
 
