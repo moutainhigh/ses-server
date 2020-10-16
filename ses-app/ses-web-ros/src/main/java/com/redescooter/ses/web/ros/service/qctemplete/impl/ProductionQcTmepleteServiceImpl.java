@@ -137,7 +137,8 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 if (sequence == 0) {
                     sequence = item.getResultSequence();
                 } else {
-                    if (!item.getResultSequence().equals(sequence + 1)) {
+                    sequence += 1;
+                    if (!item.getResultSequence().equals(sequence)) {
                         throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                             ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                     }

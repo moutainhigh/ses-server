@@ -1133,7 +1133,7 @@ public class MaterialServiceImpl implements MaterialService {
                 .purchasBLotTraceId(lotTraceId)
                 .batchNo(batchNo)
             .qcBatchTotal(opeParts.getIdCalss() == 1 ? 1 : enter.getQty())
-            .serialNum(opeParts.getIdCalss() == 0 ? enter.getSerialNum() : null)
+            .serialNum(opeParts.getIdCalss() == 1 ? enter.getSerialNum() : null)
                 .qcResult(qcResult == true ? QcStatusEnums.PASS.getValue() : QcStatusEnums.FAIL.getValue())
                 .revision(0)
                 .createdBy(enter.getUserId())
