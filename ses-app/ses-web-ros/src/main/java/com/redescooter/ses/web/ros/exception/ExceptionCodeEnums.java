@@ -440,6 +440,10 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
 
+    WEIGHT_ILLEGAL(10212, "重量违法"),
+
+    QUANTITY_ILLEGAL(10213, "数量违法"),
+
     ;
 
 

@@ -312,7 +312,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
         // 获取指定日期格式向前N天时间集合
         List<String> dayList = new LinkedList();
-        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+//        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         if (list.size() > 0) {
             MobileBScooterChartResult result = null;
 

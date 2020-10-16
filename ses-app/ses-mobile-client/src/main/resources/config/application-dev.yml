@@ -60,10 +60,85 @@ spring:                                                                         
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 
-      Ed-Dashboard-api:
-        group-name: 2.Ed-Dashboard-API
-        title: 快递统计数据
-        description: 快递统计数据
+      delivery-api:
+        group-name: 2.Delivery-API
+        title: 订单相关的操作
+        description: 订单相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /delivery/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      scooter-api:
+        group-name: 3.Scooter-API
+        title: 车辆相关的操作
+        description: 车辆相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /scooter/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      userProfile-api:
+        group-name: 4.UserProfile-API
+        title: 个人信息相关的操作
+        description: 个人信息相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /userProfile/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      Data-api:
+        group-name: 5.Data-API
+        title: 个人信息相关的操作
+        description: 个人信息相关的操作
+        base-package: com.redescooter.ses
+        path-regex: /data/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      ExpressOrder-api:
+        group-name: 6.ExpressOrder-API
+        title: 快递模块接口
+        description: 快递模块的操作
+        base-package: com.redescooter.ses
+        path-regex: /ed/order/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      ExpressOrderDate-api:
+        group-name: 7.ExpressOrderDate-API
+        title: 快递订单统计模块接口
+        description: 快递订单统计模块的操作
         base-package: com.redescooter.ses
         path-regex: /ed/dashboard/.*
         path-mapping: /
@@ -75,6 +150,20 @@ spring:                                                                         
           email: Jerry@redescooter.com
           url: https://github.com/mrjerryli#联系地址
 
+      PersonalDashboard-api:
+        group-name: 8.PersonalDashboard-API
+        title: 个人统计模块接口
+        description: 个人统计模块接口
+        base-package: com.redescooter.ses
+        path-regex: /id/dashboard/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
 
 oss:                                                                                                                    #阿里oss上传
   #oss 使用http、https请求方式
