@@ -25,7 +25,6 @@
         from ope_production_parts part
         where part.dr = 0
           and part.disable = 0
-        and part.announ_user_id=#{userId}
         group by part.parts_type
     </select>
 

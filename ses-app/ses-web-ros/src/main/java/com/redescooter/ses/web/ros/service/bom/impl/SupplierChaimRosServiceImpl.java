@@ -160,7 +160,6 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_ID, enter.getId());
         opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_PRICE_TYPE,
             SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
-        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_CREATED_BY, enter.getUserId());
         opePriceSheetQueryWrapper.last("limit 1");
         OpeProductPrice queryOpePriceSheet = opeProductPriceService.getOne(opePriceSheetQueryWrapper);
         if (queryOpePriceSheet == null) {
