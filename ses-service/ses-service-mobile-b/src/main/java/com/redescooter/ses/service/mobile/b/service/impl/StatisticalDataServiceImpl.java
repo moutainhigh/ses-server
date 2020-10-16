@@ -257,8 +257,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             MonthlyDeliveryChartResult result = null;
             List<String> dayList = new LinkedList();
             // 获取指定日期格式向前N天时间集合
-            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
+//            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+            dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
             for (String str : dayList) {
                 for (MonthlyDeliveryChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {

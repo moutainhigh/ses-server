@@ -62,8 +62,14 @@
         where cdy.dr = 0
         and cdy.tenant_id = #{tenantId}
         and cdy.user_id = #{userId}
-        <if test="startDateTime != null and endDateTime != null">
-           and  updated_time between #{startDateTime} and #{endDateTime}
+        <if test="dateTime == null">
+            and (DATE_FORMAT(updated_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(now(), INTERVAL 1 month), '%Y-%m-%d')
+            and DATE_FORMAT(now(), '%Y-%m-%d'))
+        </if>
+        <if test="dateTime != null">
+            and (DATE_FORMAT(updated_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(#{dateTime} , INTERVAL 1
+            month),'%Y-%m-%d')
+            and DATE_FORMAT(#{dateTime}, '%Y-%m-%d'))
         </if>
         group by times
     </select>
