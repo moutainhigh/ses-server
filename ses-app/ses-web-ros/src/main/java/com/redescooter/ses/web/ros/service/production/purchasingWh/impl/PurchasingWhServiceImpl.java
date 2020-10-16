@@ -275,9 +275,6 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<OutWhResult> outWhList(WhEnter enter) {
-        if (StringUtils.isNotBlank(enter.getType())) {
-            enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
-        }
         List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
         //调拨仓库数据
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
