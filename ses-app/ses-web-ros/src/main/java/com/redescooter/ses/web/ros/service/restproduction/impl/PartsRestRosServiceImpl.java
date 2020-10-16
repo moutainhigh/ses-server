@@ -317,26 +317,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     return PageResult.createZeroRowResult(enter);
                 }
                 resultList = rosProductionPartsServiceMapper.partsList(enter);
-                if (CollectionUtils.isNotEmpty(resultList)) {
-                    QueryWrapper<OpeProductionQualityTempate> queryWrapper = new QueryWrapper<OpeProductionQualityTempate>();
-                    queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
-                            resultList.stream().map(RosPartsListResult::getId).collect(Collectors.toList()));
-                    queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,
-                            Integer.valueOf(BomCommonTypeEnums.PARTS.getValue()),
-                            Integer.valueOf(BomCommonTypeEnums.BATTERY.getValue()),
-                            Integer.valueOf(BomCommonTypeEnums.ACCESSORY.getValue()));
-                    List<OpeProductionQualityTempate> opeProductionQualityTempateList =
-                            opeProductionQualityTempateService.list(queryWrapper);
-                    if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
-                        return PageResult.create(enter, totalNum, resultList);
-                    }
-                    // 如果 部件不存在 质检模板 就展示Icon 进行提示
-                    resultList.stream()
-                            .filter(item -> opeProductionQualityTempateList.stream()
-                                    .anyMatch(qc -> (qc.getProductionId().equals(item.getId())
-                                            && item.getPartsType().equals(qc.getProductionType()))))
-                            .forEach(item -> item.setQcTempletePromptIcon(Boolean.FALSE));
-                }
+                partsQualityTempate(resultList);
                 break;
         }
 
@@ -345,6 +326,31 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             result.setClassType(classType);
         }
         return PageResult.create(enter, totalNum, resultList);
+    }
+
+
+    private List<RosPartsListResult> partsQualityTempate(List<RosPartsListResult> resultList) {
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            QueryWrapper<OpeProductionQualityTempate> queryWrapper = new QueryWrapper<OpeProductionQualityTempate>();
+            queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+                    resultList.stream().map(RosPartsListResult::getId).collect(Collectors.toList()));
+            queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,
+                    Integer.valueOf(BomCommonTypeEnums.PARTS.getValue()),
+                    Integer.valueOf(BomCommonTypeEnums.BATTERY.getValue()),
+                    Integer.valueOf(BomCommonTypeEnums.ACCESSORY.getValue()));
+            List<OpeProductionQualityTempate> opeProductionQualityTempateList =
+                    opeProductionQualityTempateService.list(queryWrapper);
+            if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
+                return resultList;
+            }
+            // 如果 部件不存在 质检模板 就展示Icon 进行提示
+            resultList.stream()
+                    .filter(item -> opeProductionQualityTempateList.stream()
+                            .anyMatch(qc -> (qc.getProductionId().equals(item.getId())
+                                    && item.getPartsType().equals(qc.getProductionType()))))
+                    .forEach(item -> item.setQcTempletePromptIcon(Boolean.FALSE));
+        }
+        return resultList;
     }
 
     @Override
