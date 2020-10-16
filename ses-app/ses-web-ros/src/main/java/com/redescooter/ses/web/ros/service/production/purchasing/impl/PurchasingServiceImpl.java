@@ -643,6 +643,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                             List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
 
                             for (PruchasingItemResult item : partList) {
+                                item.setProductType(
+                                    BomCommonTypeEnums.getEnumsByValue(item.getProductType()).getValue());
                                 if (item.getId().equals(scooter.getId())) {
                                     totalPrice = totalPrice.add(item.getPrice());
                                     scooterPartList.add(item);

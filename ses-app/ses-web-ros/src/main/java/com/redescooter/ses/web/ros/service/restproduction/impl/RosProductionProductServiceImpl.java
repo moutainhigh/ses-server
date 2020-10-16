@@ -1336,10 +1336,12 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         // 自己记录保存
         opeProductionPartsRelationService.saveBatch(opeProductionPartsRelationList);
 
-        // 保存 质检模板
-        productionQcTmepleteService.saveByCopyId(new SaveByCopyIdEnter(opeProductionCombinBom.getId(),
+        SaveByCopyIdEnter saveByCopyIdEnter = new SaveByCopyIdEnter(opeProductionCombinBom.getId(),
             Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()), enter.getId(),
-            Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue())));
+            Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()));
+        saveByCopyIdEnter.setUserId(enter.getUserId());
+        // 保存 质检模板
+        productionQcTmepleteService.saveByCopyId(saveByCopyIdEnter);
 
         if (!enter.getDirectRelease()) {
             // 删除草稿
