@@ -443,7 +443,11 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             draft.setItem(data.getItem());
             draft.setEcnNumber(data.getEcnNumber());
             draft.setDrawingSize(data.getDrawingSize());
-            draft.setWeight(Double.parseDouble(Strings.isNullOrEmpty(data.getWeight())?"0":data.getWeight()));
+            try {
+                draft.setWeight(Double.parseDouble(Strings.isNullOrEmpty(data.getWeight())?"0":data.getWeight()));
+            }catch (Exception e){
+                throw new SesWebRosException(ExceptionCodeEnums.WEIGHT_ILLEGAL.getCode(), ExceptionCodeEnums.WEIGHT_ILLEGAL.getMessage());
+            }
             draft.setPartsQty(data.getQuantity()==null?0:Integer.parseInt(data.getQuantity()));
             draft.setRateTyp(data.getRateTyp());
             draft.setSellCalss(data.getSellClass());
