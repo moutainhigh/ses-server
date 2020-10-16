@@ -895,10 +895,6 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<QcInfoResult> qcList(QcItemListEnter enter) {
-        if (StringUtils.isNotEmpty(enter.getType())) {
-            enter.setStatus(BomCommonTypeEnums.getCodeByValue(enter.getType()));
-        }
-
         checkPurchasRepeatedly(enter.getId(), null);
         List<QcInfoResult> qcPartList = purchasingServiceMapper.qcPartListByPurchasId(enter);
 

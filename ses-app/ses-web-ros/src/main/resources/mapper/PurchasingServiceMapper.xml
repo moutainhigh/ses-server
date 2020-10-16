@@ -279,14 +279,14 @@
 
     <select id="qcPartListByPurchasId"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult">
-        select purchasb.id as id,
-        parts.parts_number as partsN,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
-        parts.parts_type as type,
+        select purchasb.id          as id,
+        parts.parts_no       as partsN,
+        parts.en_name        as enName,
+        parts.cn_name        as cnName,
+        parts.parts_type     as type,
         purchasb.total_count as totalQty
         from ope_purchas_b purchasb
-        inner join ope_parts parts on purchasb.part_id = parts.id and purchasb.dr = 0
+        inner join ope_production_parts parts on purchasb.part_id = parts.id and purchasb.dr = 0
         where purchasb.dr = 0
         and purchasb.purchas_id = #{id}
         <if test="type != null and type != ''">
@@ -294,7 +294,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and(
-            parts.parts_number like concat ("%",#{keyword},"%") or
+            parts.parts_no like concat ("%",#{keyword},"%") or
             parts.en_name like concat ("%",#{keyword},"%") or
             parts.cn_name like concat ("%",#{keyword},"%")
             )
