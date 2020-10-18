@@ -30,34 +30,34 @@ public class WthdrawalSiteController {
     @Autowired
     private WthdrawalSiteServer wthdrawalSiteServer;
 
-    @DeleteMapping(value = "/save")
+    @PostMapping(value = "/save")
     @ApiOperation(value = "Save Wthdrawal Site", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("Parameter") WthdrawalSiteSaveEnter enter) {
         return new Response<>(wthdrawalSiteServer.save(enter));
     }
 
-    @DeleteMapping(value = "/edit/{id}")
+    @PostMapping(value = "/edit/{id}")
     @ApiOperation(value = "Wthdrawal Site Edit", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") WthdrawalSiteEditEnter enter, @PathVariable("id") Long id) {
         return new Response<>(wthdrawalSiteServer.edit(enter, id));
     }
 
     @IgnoreLoginCheck
-    @DeleteMapping(value = "/details/{id}")
+    @PostMapping(value = "/details/{id}")
     @ApiOperation(value = "Wthdrawal Site Details", response = DeliveryOptionSaveResult.class)
     public Response<WthdrawalSiteResult> details(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter, @PathVariable("id") Long id) {
         return new Response<>(wthdrawalSiteServer.details(enter, id));
     }
 
     @IgnoreLoginCheck
-    @DeleteMapping(value = "/list")
+    @PostMapping(value = "/list")
     @ApiOperation(value = "Wthdrawal Site List Table", response = DeliveryOptionSaveResult.class)
     public Response<List<WthdrawalSiteResult>> list(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(wthdrawalSiteServer.list(enter));
     }
 
     @IgnoreLoginCheck
-    @DeleteMapping(value = "/isswitch/{id}")
+    @PostMapping(value = "/isswitch/{id}")
     @ApiOperation(value = "Opening and closing,[0 open, 1 close]", response = DeliveryOptionSaveResult.class)
     public Response<GeneralResult> isSwitch(@ModelAttribute @ApiParam("Parameter") isSwitchEnter enter, @PathVariable("id") Long id) {
         return new Response<>(wthdrawalSiteServer.isSwitch(enter,id));

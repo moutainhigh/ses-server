@@ -27,13 +27,13 @@ public class DeliveryOpionController {
     @Autowired
     private DeliveryOpionServer deliveryOpionServer;
 
-    @DeleteMapping(value = "/save")
+    @PostMapping(value = "/save")
     @ApiOperation(value = "Save Option", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("Parameter") DeliveryOptionSaveEnter enter) {
         return new Response<>(deliveryOpionServer.save(enter));
     }
 
-    @DeleteMapping(value = "/edit/{id}")
+    @PostMapping(value = "/edit/{id}")
     @ApiOperation(value = "Option Edit", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") DeliveryOptionEditEnter enter, @PathVariable("id") Long id) {
         return new Response<>(deliveryOpionServer.edit(enter, id));
@@ -41,14 +41,14 @@ public class DeliveryOpionController {
     }
 
     @IgnoreLoginCheck
-    @DeleteMapping(value = "/details/{id}")
+    @PostMapping(value = "/details/{id}")
     @ApiOperation(value = "Option Details", response = DeliveryOptionSaveResult.class)
     public Response<DeliveryOptionSaveResult> details(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter, @PathVariable("id") Long id) {
         return new Response<>(deliveryOpionServer.details(enter, id));
     }
 
     @IgnoreLoginCheck
-    @DeleteMapping(value = "/list")
+    @PostMapping(value = "/list")
     @ApiOperation(value = "Option List Table", response = DeliveryOptionSaveResult.class)
     public Response<List<DeliveryOptionSaveResult>> list(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(deliveryOpionServer.list(enter));
