@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 @TableName(value = "ope_delivery_option")
 public class OpeDeliveryOption implements Serializable {
+
     /**
      * 主建
      */
