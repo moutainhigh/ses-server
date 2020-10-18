@@ -9,9 +9,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
-    * 取货地址
-    */
-@ApiModel(value="ses-redescooter-com-ros-dm-OpeWithdrawalSite")
+ * 取货地址
+ */
+@ApiModel(value = "ses-redescooter-com-ros-dm-OpeWithdrawalSite")
 @Data
 @TableName(value = "ope_withdrawal_site")
 public class OpeWithdrawalSite implements Serializable {
@@ -19,14 +19,14 @@ public class OpeWithdrawalSite implements Serializable {
      * 主建
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主建")
+    @ApiModelProperty(value = "主建")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     @TableLogic
     private Integer dr;
 
@@ -34,224 +34,224 @@ public class OpeWithdrawalSite implements Serializable {
      * 店铺状态 0正常 1冻结
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value="店铺状态 0正常 1冻结")
+    @ApiModelProperty(value = "店铺状态 0正常 1冻结")
     private Integer status;
 
     /**
      * 租户ID
      */
     @TableField(value = "tenant_id")
-    @ApiModelProperty(value="租户ID")
+    @ApiModelProperty(value = "租户ID")
     private Long tenantId;
 
     /**
      * 用户ID
      */
     @TableField(value = "user_id")
-    @ApiModelProperty(value="用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long userId;
 
     /**
      * 营业状态【0开门，1关门】
      */
     @TableField(value = "business_status")
-    @ApiModelProperty(value="营业状态【0开门，1关门】")
+    @ApiModelProperty(value = "营业状态【0开门，1关门】")
     private Integer businessStatus;
 
     /**
      * 店铺类型【1维修，-1销售，0全部】
      */
     @TableField(value = "`type`")
-    @ApiModelProperty(value="店铺类型【1维修，-1销售，0全部】")
+    @ApiModelProperty(value = "店铺类型【1维修，-1销售，0全部】")
     private Integer type;
 
     /**
      * 街道编号
      */
     @TableField(value = "street_number")
-    @ApiModelProperty(value="街道编号")
+    @ApiModelProperty(value = "街道编号")
     private String streetNumber;
 
     /**
      * 街道名称
      */
     @TableField(value = "street_name")
-    @ApiModelProperty(value="街道名称")
+    @ApiModelProperty(value = "街道名称")
     private String streetName;
 
     /**
      * 联系人姓氏
      */
     @TableField(value = "contact_first")
-    @ApiModelProperty(value="联系人姓氏")
+    @ApiModelProperty(value = "联系人姓氏")
     private String contactFirst;
 
     /**
      * 联系人名字
      */
     @TableField(value = "contact_last")
-    @ApiModelProperty(value="联系人名字")
+    @ApiModelProperty(value = "联系人名字")
     private String contactLast;
 
     /**
      * 联系人全名
      */
     @TableField(value = "contant_full_name")
-    @ApiModelProperty(value="联系人全名")
+    @ApiModelProperty(value = "联系人全名")
     private Integer contantFullName;
 
     /**
      * 店铺邮箱
      */
     @TableField(value = "email")
-    @ApiModelProperty(value="店铺邮箱")
+    @ApiModelProperty(value = "店铺邮箱")
     private String email;
 
     /**
      * 店铺联系电话
      */
     @TableField(value = "phone_number")
-    @ApiModelProperty(value="店铺联系电话")
+    @ApiModelProperty(value = "店铺联系电话")
     private String phoneNumber;
 
     /**
      * 营业开始时间
      */
     @TableField(value = "open_time")
-    @ApiModelProperty(value="营业开始时间")
+    @ApiModelProperty(value = "营业开始时间")
     private Date openTime;
 
     /**
      * 营业结束时间
      */
     @TableField(value = "close_time")
-    @ApiModelProperty(value="营业结束时间")
+    @ApiModelProperty(value = "营业结束时间")
     private Date closeTime;
 
     /**
      * 以json的数据格式，key 和value的方式进行存储
      */
     @TableField(value = "other_params")
-    @ApiModelProperty(value="以json的数据格式，key 和value的方式进行存储")
+    @ApiModelProperty(value = "以json的数据格式，key 和value的方式进行存储")
     private String otherParams;
 
     /**
      * 门店编码
      */
     @TableField(value = "store_code")
-    @ApiModelProperty(value="门店编码")
+    @ApiModelProperty(value = "门店编码")
     private String storeCode;
 
     /**
      * 门店名称
      */
     @TableField(value = "store_name")
-    @ApiModelProperty(value="门店名称")
+    @ApiModelProperty(value = "门店名称")
     private String storeName;
 
     /**
      * 国家
      */
     @TableField(value = "country")
-    @ApiModelProperty(value="国家")
+    @ApiModelProperty(value = "国家")
     private String country;
 
     /**
      * 城市
      */
     @TableField(value = "city")
-    @ApiModelProperty(value="城市")
+    @ApiModelProperty(value = "城市")
     private String city;
 
     /**
      * 区域
      */
     @TableField(value = "area")
-    @ApiModelProperty(value="区域")
+    @ApiModelProperty(value = "区域")
     private String area;
 
     /**
      * 邮政编码
      */
     @TableField(value = "code_postal")
-    @ApiModelProperty(value="邮政编码")
+    @ApiModelProperty(value = "邮政编码")
     private String codePostal;
 
     /**
      * 详细地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="详细地址")
+    @ApiModelProperty(value = "详细地址")
     private String address;
 
     /**
      * 备注
      */
     @TableField(value = "remarks")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remarks;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;

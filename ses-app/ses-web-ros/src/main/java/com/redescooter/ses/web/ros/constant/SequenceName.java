@@ -126,4 +126,7 @@ public interface SequenceName {
     String OPE_SYS_POSITION = "OPE_SYS_POSITION";
 
     String OPE_DELIVERY_OPTION = "OPE_DELIVERY_OPTION";
+
+    String OPE_WITHDRAWAL_SITE = "OPE_WITHDRAWAL_SITE";
+
 }

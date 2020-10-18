@@ -47,23 +47,23 @@ public class DeliveryOpionServerImpl implements DeliveryOpionServer {
     @Override
     public GeneralResult save(DeliveryOptionSaveEnter enter) {
 
-        OpeDeliveryOption save = new OpeDeliveryOption();
-        save.setId(idAppService.getId(SequenceName.OPE_DELIVERY_OPTION));
-        save.setDr(Constant.DR_FALSE);
-        save.setTenantId(new Long("0"));
-        save.setUserId(new Long("0"));
-        save.setStatus(0);
-        save.setOptionCode(SesStringUtils.getlinkNo());
-        save.setOptionNeme(enter.getOptionNeme());
-        save.setPrice(enter.getPrice());
-        save.setMemo(enter.getMemo());
-        save.setCreatedBy(enter.getUserId());
-        save.setCreatedTime(new Date());
-        save.setUpdatedBy(enter.getUserId());
-        save.setUpdatedTime(new Date());
-        save.setDef1(enter.getDef1());
+        OpeDeliveryOption saveVO = new OpeDeliveryOption();
+        saveVO.setId(idAppService.getId(SequenceName.OPE_DELIVERY_OPTION));
+        saveVO.setDr(Constant.DR_FALSE);
+        saveVO.setTenantId(new Long("0"));
+        saveVO.setUserId(new Long("0"));
+        saveVO.setStatus(0);
+        saveVO.setOptionCode(SesStringUtils.getlinkNo());
+        saveVO.setOptionNeme(enter.getOptionNeme());
+        saveVO.setPrice(enter.getPrice());
+        saveVO.setMemo(enter.getMemo());
+        saveVO.setCreatedBy(enter.getUserId());
+        saveVO.setCreatedTime(new Date());
+        saveVO.setUpdatedBy(enter.getUserId());
+        saveVO.setUpdatedTime(new Date());
+        saveVO.setDef1(enter.getDef1());
 
-        deliveryOptionService.save(save);
+        deliveryOptionService.save(saveVO);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -77,15 +77,14 @@ public class DeliveryOpionServerImpl implements DeliveryOpionServer {
     @Override
     public List<DeliveryOptionSaveResult> list(GeneralEnter enter) {
         List<DeliveryOptionSaveResult> results = new ArrayList<>();
-        List<OpeDeliveryOption> list = deliveryOptionService.list(new LambdaQueryWrapper<OpeDeliveryOption>()
+        DeliveryOptionSaveResult optionSaveResult = null;
+
+        List<OpeDeliveryOption> lists = deliveryOptionService.list(new LambdaQueryWrapper<OpeDeliveryOption>()
                 .eq(OpeDeliveryOption::getDr, Constant.DR_FALSE));
 
-        if (CollectionUtils.isEmpty(list)) {
-            return results;
-        } else {
+        if (!CollectionUtils.isEmpty(lists)) {
 
-            DeliveryOptionSaveResult optionSaveResult = null;
-            for (OpeDeliveryOption option : list) {
+            for (OpeDeliveryOption option : lists) {
                 optionSaveResult = new DeliveryOptionSaveResult();
                 optionSaveResult.setId(option.getId());
                 optionSaveResult.setStatus(option.getStatus());
@@ -116,13 +115,15 @@ public class DeliveryOpionServerImpl implements DeliveryOpionServer {
     @Override
     public GeneralResult edit(DeliveryOptionEditEnter enter, Long id) {
 
-        OpeDeliveryOption edit = new OpeDeliveryOption();
-        edit.setId(id);
-        edit.setOptionNeme(edit.getOptionNeme());
-        edit.setPrice(edit.getPrice());
-        edit.setMemo(enter.getMemo());
-        edit.setDef1(enter.getDef1());
-        deliveryOptionService.updateById(edit);
+        OpeDeliveryOption editVO = new OpeDeliveryOption();
+        editVO.setId(id);
+        editVO.setOptionNeme(enter.getOptionNeme());
+        editVO.setPrice(enter.getPrice());
+        editVO.setMemo(enter.getMemo());
+        editVO.setDef1(enter.getDef1());
+        editVO.setUpdatedBy(enter.getUserId());
+        editVO.setUpdatedTime(new Date());
+        deliveryOptionService.updateById(editVO);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -140,11 +141,10 @@ public class DeliveryOpionServerImpl implements DeliveryOpionServer {
 
         OpeDeliveryOption deliveryOption = deliveryOptionService.getOne(new LambdaQueryWrapper<OpeDeliveryOption>()
                 .eq(OpeDeliveryOption::getDr, Constant.DR_FALSE)
-                .eq(OpeDeliveryOption::getId, id));
+                .eq(OpeDeliveryOption::getId, id)
+                .last("limit 1"));
 
-        if (deliveryOption == null) {
-            return result;
-        } else {
+        if (deliveryOption != null) {
             result.setId(deliveryOption.getId());
             result.setStatus(deliveryOption.getStatus());
             result.setOptionNeme(deliveryOption.getOptionNeme());
@@ -154,6 +154,7 @@ public class DeliveryOpionServerImpl implements DeliveryOpionServer {
             result.setCreatedTime(deliveryOption.getCreatedTime());
             result.setRequestId(enter.getRequestId());
         }
+
         return result;
     }
 }

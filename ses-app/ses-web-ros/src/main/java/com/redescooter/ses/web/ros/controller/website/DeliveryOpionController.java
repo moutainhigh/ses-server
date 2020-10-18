@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Api(tags = {"Delivery Option"})
+@Api(tags = {"Delivery Option service"})
 @RestController
 @RequestMapping(value = "/deliveryopion", method = RequestMethod.POST)
 public class DeliveryOpionController {
@@ -49,7 +49,7 @@ public class DeliveryOpionController {
 
     @IgnoreLoginCheck
     @DeleteMapping(value = "/list")
-    @ApiOperation(value = "Option List", response = DeliveryOptionSaveResult.class)
+    @ApiOperation(value = "Option List Table", response = DeliveryOptionSaveResult.class)
     public Response<List<DeliveryOptionSaveResult>> list(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(deliveryOpionServer.list(enter));
     }
