@@ -68,6 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -769,6 +770,7 @@ public class BomRosServiceImpl implements BomRosService {
         //查询质检项
         QueryWrapper<OpePartDraftQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
+        opePartQcTemplateQueryWrapper.orderByAsc(OpePartDraftQcTemplate.COL_CREATED_TIME);
         List<OpePartDraftQcTemplate> partQcTemplateList = opePartDraftQcTemplateService.list(opePartQcTemplateQueryWrapper);
         if (CollectionUtils.isEmpty(partQcTemplateList)) {
             return result;
@@ -781,6 +783,7 @@ public class BomRosServiceImpl implements BomRosService {
         //查询质检项结果
         QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, templateIds);
+        opePartQcTemplateBQueryWrapper.orderByAsc(OpePartDraftQcTemplateB.COL_CREATED_TIME);
         List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
         if (CollectionUtils.isEmpty(templateBList)) {
             partQcTemplateList.forEach(item -> {

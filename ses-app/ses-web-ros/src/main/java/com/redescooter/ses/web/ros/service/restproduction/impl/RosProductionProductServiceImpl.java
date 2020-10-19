@@ -386,20 +386,18 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
                     continue;
                 }
-                if (rosProductionProductPartListResult!=null && rosProductionProductPartListResult.getPrice().equals(BigDecimal.ZERO)){
-                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
-                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
-                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg("No purchase price for this part.").build());
-                    successProductPartListResult
-                            .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
-                    continue;
-                }
-                if (rosProductionProductPartListResult!=null && rosProductionProductPartListResult.getTempleteCount()==0){
-                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
-                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
-                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg("There is no quality inspection template for this part.").build());
-                    successProductPartListResult
-                            .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
+                if (null!=rosProductionProductPartListResult ||
+                        rosProductionProductPartListResult.getPrice()==null ||
+                        rosProductionProductPartListResult.getPrice().equals(BigDecimal.ZERO) ||
+                rosProductionProductPartListResult.getTempleteCount()==0){
+                    long existCount = failProductPartListResult.stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).count();
+                    if (existCount!=0){
+                        failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                                .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                                .sec(item.getSec()).cnName(item.getChineseName()).errMsg("There is no price or quality inspection template for this part.").build());
+                        successProductPartListResult
+                                .removeIf(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum()));
+                    }
                     continue;
                 }
                 rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
