@@ -356,7 +356,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 rosProductionProductServiceMapper.rosImportProductionProductPartsList(failProductPartListResult.stream()
                     .map(RosProductionProductPartListResult::getPartsNum).collect(Collectors.toList()));
             if (CollectionUtils.isEmpty(failPartProductionList)) {
-                failPartProductionList.stream().forEach(item -> item.setErrMsg("This part does not exist."));
+                failProductPartListResult.stream().forEach(item -> item.setErrMsg("This part does not exist."));
             }
             if (CollectionUtils.isNotEmpty(failPartProductionList)) {
                 failProductPartListResult.stream()
@@ -995,6 +995,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.DRAFT_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.DRAFT_NOT_EXIST.getMessage());
             }
+            checkCombinInfo(opeProductionCombinBomDraft);
         }
         return null;
     }
@@ -1180,15 +1181,6 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
                 ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getMessage());
         }
-        List<OpeProductionPartsRelation> productionPartsRelationList =
-            opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>()
-                .eq(OpeProductionPartsRelation::getProductionId, opeProductionScooterBomDraft.getId())
-                .eq(OpeProductionPartsRelation::getProductionType,
-                    ProductionPartsRelationTypeEnums.SCOOTER_DRAFT.getValue()));
-        if (CollectionUtils.isEmpty(productionPartsRelationList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
-                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
-        }
     }
 
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
@@ -1340,10 +1332,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getCnName())) {
             count--;
         }
-        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getFrName())) {
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getEnName())) {
             count--;
         }
-        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getEnName())) {
+        if (StringUtils.isNotBlank(opeProductionCombinBomDraft.getFrName())) {
             count--;
         }
         if (!Objects.equals(null, opeProductionCombinBomDraft.getProcurementCycle())
@@ -1359,16 +1351,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         if (count != 0) {
             throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
-                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
-        }
-        List<OpeProductionPartsRelation> productionPartsRelationList =
-            opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>()
-                .eq(OpeProductionPartsRelation::getProductionId, opeProductionCombinBomDraft.getId())
-                .eq(OpeProductionPartsRelation::getProductionType,
-                    ProductionPartsRelationTypeEnums.COMBINATION_DRAFT.getValue()));
-        if (CollectionUtils.isEmpty(productionPartsRelationList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getCode(),
-                ExceptionCodeEnums.BOM_NUM_REPEAT.getMessage());
+                ExceptionCodeEnums.BOM_MSG_IS_NOT_COMPLETE.getMessage());
         }
     }
 
