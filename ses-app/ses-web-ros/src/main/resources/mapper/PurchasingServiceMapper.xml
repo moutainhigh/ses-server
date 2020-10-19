@@ -81,35 +81,31 @@
 
     <select id="queryPurchasProductList"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select product.id as id,
-        product.product_number as partsN,
-        product.en_name as enName,
-        product.cn_name as cnName,
-        product.product_type as productType,
-        supplier.id as supplierId,
-        supplier.supplier_name as supplierName,
-        product.production_cycle as leadTime,
-        sheet.price as price,
-        sheet.currency_unit as unit
-        from ope_parts_product product
-        inner join ope_parts_product_b productb on product.id = productb.parts_product_id and productb.dr = 0
-        inner join ope_parts part on part.id = productb.parts_id and part.dr = 0
-        inner join ope_supplier supplier on supplier.id = part.supplier_id and supplier.dr = 0
-        inner join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.currency_unit = 1
+        select product.id                as id,
+        product.parts_no          as partsN,
+        product.en_name           as enName,
+        product.cn_name           as cnName,
+        product.parts_type        as productType,
+        supplier.id               as supplierId,
+        supplier.supplier_name    as supplierName,
+        product.procurement_cycle as leadTime,
+        sheet.price               as price,
+        sheet.standard_currency   as unit
+        from ope_production_parts product
+        inner join ope_supplier supplier on supplier.id = product.supplier_id and supplier.dr = 0
+        inner join ope_product_price sheet
+        on sheet.product_id = product.id and product_price_type = 1
         <where>
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
             </if>
-            and product.product_type in
+            and product.parts_type in
             <foreach collection="productTypeList" open="(" separator="," close=")" item="item">
-                #{item}
+               #{item}
             </foreach>
-            <if test="enter.productType !=null and enter.productType !=''">
-                and product.product_type =#{enter.productType}
-            </if>
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
-                product.product_number like concat("%",#{enter.keyword},"%")
+                product.parts_no like concat("%",#{enter.keyword},"%")
                 or product.en_name like concat("%",#{enter.keyword},"%")
                 or product.cn_name like concat("%",#{enter.keyword},"%")
                 )
@@ -118,32 +114,19 @@
     </select>
     <select id="queryPurchasScooter"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select product.id as id,
-        product.product_number as partsN,
-        product.en_name as enName,
-        product.cn_name as cnName,
-        product.product_type as productType,
-        product.production_cycle as leadTime,
-        sheet.sales_price as price,
-        sheet.currency_unit as unit
-        from ope_parts_product product
-        inner join ope_regional_price_sheet sheet on sheet.parts_product_id = product.id and sheet.currency_unit = 1
+        select product.id                as id,
+        product.bom_no            as partsN,
+        product.en_name           as enName,
+        product.cn_name           as cnName,
+        '4'                       as productType,
+        product.procurement_cycle as leadTime
+        from ope_production_scooter_bom product
         <where>
             and product.dr=0
-            <choose>
-                <when test="enter.productType !=null and enter.productType !=''">
-                    and product.product_type =#{enter.productType}
-                </when>
-                <otherwise>
-                    and product.product_type in
-                    <foreach collection="productTypeList" item="item" separator="," open="(" close=")">
-                        #{item}
-                    </foreach>
-                </otherwise>
-            </choose>
+            and product.bom_status=1
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
-                product.product_number like concat("%",#{enter.keyword},"%")
+                product.bom_no like concat("%",#{enter.keyword},"%")
                 or product.en_name like concat("%",#{enter.keyword},"%")
                 or product.cn_name like concat("%",#{enter.keyword},"%")
                 )
@@ -208,24 +191,25 @@
 
     <select id="pruchasingDetailProductList"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select parts.id as id,
-        parts.id as partId,
-        parts.parts_number as partsN,
-        parts.cn_name as cnName,
-        parts.en_name as enName,
-        parts.parts_type as productType,
-        purchasb.supplier_id as supplierId,
-        supplier.supplier_name as supplierName,
-        parts.production_cycle as leadTime,
-        sheet.price as price,
-        sheet.currency_unit as unit,
-        purchasb.total_count as qty,
+        select parts.id                           as id,
+        parts.id                           as partId,
+        parts.parts_no                     as partsN,
+        parts.cn_name                      as cnName,
+        parts.en_name                      as enName,
+        parts.parts_type                   as productType,
+        purchasb.supplier_id               as supplierId,
+        supplier.supplier_name             as supplierName,
+        parts.procurement_cycle            as leadTime,
+        sheet.price                        as price,
+        sheet.standard_currency                as unit,
+        purchasb.total_count               as qty,
         purchasb.total_count * sheet.price as subtotal
         from ope_purchas_b purchasb
-        inner join ope_parts parts
+        inner join ope_production_parts parts
         on purchasb.part_id = parts.id and parts.dr = 0
         inner join ope_supplier supplier on purchasb.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_price_sheet sheet on sheet.parts_id = parts.id and sheet.dr = 0
+        left join ope_product_price sheet
+        on sheet.product_id = parts.id and sheet.dr = 0 and sheet.product_price_type = 1
         where purchasb.dr = 0
         and purchasb.purchas_id =#{id}
         <if test="type != null and type != ''">
@@ -238,20 +222,21 @@
             and (
             parts.cn_name like concat ("%",#{keyword},"%") or
             parts.en_name like concat ("%",#{keyword},"%") or
-            parts.parts_number like concat ("%",#{keyword},"%")
+            parts.parts_no like concat ("%",#{keyword},"%")
             )
         </if>
     </select>
 
     <select id="partDetailById" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">
-        select parts.id as partId,
-        ifnull(sheet.price,0) as price,
-        sheet.currency_unit as unit,
-        supplier_id as supplierId
-        from ope_parts parts
+        select parts.id                as partId,
+        ifnull(sheet.price, 0)  as price,
+        sheet.standard_currency as unit,
+        supplier_id             as supplierId
+        from ope_production_parts parts
         inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
-        where parts.dr=0
+        inner join ope_product_price sheet
+        on parts.id = sheet.product_id and sheet.product_price_type = 1 and sheet.dr = 0
+        where parts.dr = 0
         <if test="collection != null and collection.size() != 0">
             and parts.id in
             <foreach collection="list" item="item" open="(" separator="," close=")">
@@ -261,26 +246,28 @@
     </select>
     <select id="queryProductPartItemByProductIds"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult">
-        select productb.parts_product_id as id,
-        productb.parts_id as partId,
-        parts.parts_number as partsN,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
-        parts.parts_type as productType,
-        parts.supplier_id as supplierId,
-        parts.supplier_id as supplierId,
-        supplier.supplier_name as supplierName,
-        parts.production_cycle as leadTime,
+        select productb.production_id                           as id,
+        productb.parts_id                           as partId,
+        parts.parts_no                              as partsN,
+        parts.en_name                               as enName,
+        parts.cn_name                               as cnName,
+        parts.parts_type                            as productType,
+        parts.supplier_id                           as supplierId,
+        parts.supplier_id                           as supplierId,
+        supplier.supplier_name                      as supplierName,
+        parts.procurement_cycle                     as leadTime,
         ifnull(sheet.price, 0) * productb.parts_qty as price,
-        sheet.currency_unit as unit,
-        productb.parts_qty as qty
-        from ope_parts_product_b productb
-        inner join ope_parts parts on parts.id = productb.parts_id and parts.dr = 0
+        sheet.standard_currency                     as unit,
+        productb.parts_qty                          as qty
+        from ope_production_parts_relation productb
+        inner join ope_production_parts parts on parts.id = productb.parts_id and parts.dr = 0
         inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_price_sheet sheet on sheet.parts_id = productb.parts_id and sheet.dr = 0
+        inner join ope_product_price sheet
+        on sheet.product_id = productb.parts_id and sheet.dr = 0 and sheet.product_price_type = 1
         where productb.dr = 0
         <if test="list != null and list.size() != 0">
-            and productb.parts_product_id in
+            and productb.production_type=2
+            and productb.production_id in
             <foreach collection="list" separator="," open="(" close=")" item="item">
                 #{item}
             </foreach>
@@ -289,14 +276,14 @@
 
     <select id="qcPartListByPurchasId"
             resultType="com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult">
-        select purchasb.id as id,
-        parts.parts_number as partsN,
-        parts.en_name as enName,
-        parts.cn_name as cnName,
-        parts.parts_type as type,
+        select purchasb.id          as id,
+        parts.parts_no       as partsN,
+        parts.en_name        as enName,
+        parts.cn_name        as cnName,
+        parts.parts_type     as type,
         purchasb.total_count as totalQty
         from ope_purchas_b purchasb
-        inner join ope_parts parts on purchasb.part_id = parts.id and purchasb.dr = 0
+        inner join ope_production_parts parts on purchasb.part_id = parts.id and purchasb.dr = 0
         where purchasb.dr = 0
         and purchasb.purchas_id = #{id}
         <if test="type != null and type != ''">
@@ -304,7 +291,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and(
-            parts.parts_number like concat ("%",#{keyword},"%") or
+            parts.parts_no like concat ("%",#{keyword},"%") or
             parts.en_name like concat ("%",#{keyword},"%") or
             parts.cn_name like concat ("%",#{keyword},"%")
             )

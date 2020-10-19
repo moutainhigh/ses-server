@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -59,16 +58,12 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
-import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.hssf.record.PageBreakRecord;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -173,7 +168,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .snClass(BomSnClassEnums.SSC.getValue())
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductName())
@@ -603,7 +598,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .tenantId(0L)
                 .userId(enter.getUserId())
                 .snClass(BomSnClassEnums.SSC.getValue())
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductCnName())
                 .frName(enter.getProductFrName())
@@ -1134,7 +1129,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(userId)
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .partsProductId(ProductId)
                 .partsId(item.getId())
                 .partsQty(item.getQty())

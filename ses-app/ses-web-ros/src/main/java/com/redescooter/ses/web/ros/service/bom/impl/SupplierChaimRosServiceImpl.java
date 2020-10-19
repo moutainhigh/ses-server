@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.CurrencyUnitEnums;
+import com.redescooter.ses.api.common.enums.product.ProductPriceTypeEnums;
+import com.redescooter.ses.api.common.enums.product.SaleProductPriceTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -13,15 +15,19 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.SupplierChaimRosServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpePriceSheet;
-import com.redescooter.ses.web.ros.dm.OpePriceSheetHistory;
+import com.redescooter.ses.web.ros.dm.OpeProductPrice;
+import com.redescooter.ses.web.ros.dm.OpeProductPriceHistory;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.bom.SupplierChaimRosService;
 import com.redescooter.ses.web.ros.service.base.OpePriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpePriceSheetService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceHistoryService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
+import com.redescooter.ses.web.ros.service.bom.SupplierChaimRosService;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
 import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
@@ -30,11 +36,10 @@ import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.dubbo.config.annotation.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -69,6 +74,15 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     @Autowired
     private OpeRegionalPriceSheetHistoryService opeRegionalPriceSheetHistoryService;
 
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeProductPriceService opeProductPriceService;
+
+    @Autowired
+    private OpeProductPriceHistoryService opeProductPriceHistoryService;
+
 
     @Reference
     private IdAppService idAppService;
@@ -90,12 +104,12 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             map.put(item.getStatus(), item.getTotalCount());
         }
         for (BomCommonTypeEnums type : BomCommonTypeEnums.values()) {
-            if (!map.containsKey(type.getCode())) {
-                map.put(type.getCode(), 0);
+            if (!map.containsKey(type.getValue())) {
+                map.put(type.getValue(), 0);
             }
         }
-        map.remove(BomCommonTypeEnums.SCOOTER.getCode());
-        map.remove(BomCommonTypeEnums.COMBINATION.getCode());
+        map.remove(BomCommonTypeEnums.SCOOTER.getValue());
+        map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
 
@@ -117,7 +131,16 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        return PageResult.create(enter, count, supplierChaimRosServiceMapper.supplierChaimList(enter));
+        List<SupplierChaimListResult> supplierChaimListResultList =
+            supplierChaimRosServiceMapper.supplierChaimList(enter);
+
+        supplierChaimListResultList.forEach(item -> {
+            // 产品类型
+            item.setType(BomCommonTypeEnums.getEnumsByValue(item.getTypeId()).getCode());
+            // 转换货币单位
+            item.setUnit(item.getUnitId());
+        });
+        return PageResult.create(enter, count, supplierChaimListResultList);
     }
 
     /**
@@ -132,37 +155,45 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     @Transactional
     @Override
     public GeneralResult editProductPrice(EditProductPriceEnter enter) {
+        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(enter.getId());
+        if (opeProductionParts == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
         //部品价格保存 保存价格日志
-        OpePriceSheet opePriceSheet = buildOpePriceSheetSingle(enter);
+        OpeProductPrice opeProductPrice =
+            buildOpeProductPriceSingle(enter, SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
         //查询是否存在报价
-        QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_DR, 0);
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_PARTS_ID, enter.getId());
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_USER_ID, enter.getUserId());
+        QueryWrapper<OpeProductPrice> opePriceSheetQueryWrapper = new QueryWrapper<>();
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_DR, 0);
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_ID, enter.getId());
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_PRICE_TYPE,
+            SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
         opePriceSheetQueryWrapper.last("limit 1");
-        OpePriceSheet queryOpePriceSheet = opePriceSheetService.getOne(opePriceSheetQueryWrapper);
+        OpeProductPrice queryOpePriceSheet = opeProductPriceService.getOne(opePriceSheetQueryWrapper);
         if (queryOpePriceSheet == null) {
             // 第一次修改直接保存
             if (SesStringUtils.isBlank(enter.getProductFrUnit())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getCode(), ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getMessage());
             }
-            opePriceSheet.setId(idAppService.getId(SequenceName.OPE_PRICE_SHEET));
-            opePriceSheet.setCreatedBy(enter.getUserId());
-            opePriceSheet.setCreatedTime(new Date());
+            opeProductPrice.setId(idAppService.getId(SequenceName.OPE_PRODUCT_PRICE));
+            opeProductPrice.setCreatedBy(enter.getUserId());
+            opeProductPrice.setCreatedTime(new Date());
         } else {
-            opePriceSheet.setId(queryOpePriceSheet.getId());
-            opePriceSheet.setCreatedBy(queryOpePriceSheet.getCreatedBy());
-            opePriceSheet.setCreatedTime(queryOpePriceSheet.getCreatedTime());
+            opeProductPrice.setId(queryOpePriceSheet.getId());
+            opeProductPrice.setCreatedBy(queryOpePriceSheet.getCreatedBy());
+            opeProductPrice.setCreatedTime(queryOpePriceSheet.getCreatedTime());
         }
         if (queryOpePriceSheet != null) {
             if (queryOpePriceSheet.getPrice().equals(new BigDecimal(enter.getProductFrPrice()))) {
                 return new GeneralResult(enter.getRequestId());
             }
         }
-        opePriceSheetService.saveOrUpdate(opePriceSheet);
+        opeProductPriceService.saveOrUpdate(opeProductPrice);
         //生成日志
-        OpePriceSheetHistory opePriceSheetHistory = buildOpePriceSheetHistorySingle(enter, opePriceSheet.getId(), opePriceSheet.getCurrencyUnit());
-        opePriceSheetHistoryService.save(opePriceSheetHistory);
+        OpeProductPriceHistory opeProductionPartPriceHistory =
+            buildOpeProductPriceHistorySingle(enter, opeProductPrice.getId(), opeProductPrice.getCurrencyType());
+        opeProductPriceHistoryService.save(opeProductionPartPriceHistory);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -175,22 +206,26 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     @Override
     public SccPriceResult productPriceDetail(IdEnter enter) {
         // 供应链 产品报价
-        QueryWrapper<OpePriceSheet> opePriceSheetQueryWrapper = new QueryWrapper<>();
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_PARTS_ID, enter.getId());
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_DR, 0);
-        opePriceSheetQueryWrapper.eq(OpePriceSheet.COL_USER_ID, enter.getUserId());
+        QueryWrapper<OpeProductPrice> opePriceSheetQueryWrapper = new QueryWrapper<>();
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_DR, 0);
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_ID, enter.getId());
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_PRODUCT_PRICE_TYPE,
+            SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
+        opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_CREATED_BY, enter.getUserId());
         opePriceSheetQueryWrapper.last("limit 1");
-        OpePriceSheet opePriceSheet = opePriceSheetService.getOne(opePriceSheetQueryWrapper);
-        if (opePriceSheet == null) {
+        OpeProductPrice queryOpePriceSheet = opeProductPriceService.getOne(opePriceSheetQueryWrapper);
+        if (queryOpePriceSheet == null) {
             return new SccPriceResult();
         }
         return SccPriceResult.builder()
-                .id(opePriceSheet.getPartsId())
+            .id(queryOpePriceSheet.getProductId())
                 .productEnPrice(null)
                 .productEnUnit(null)
-                .productFrPrice(opePriceSheet.getPrice())
-                .productFrUnit(opePriceSheet.getCurrencyUnit())
-                .refuseTime(opePriceSheet.getUpdatedTime())
+            .productEnUnitId(0).productFrPrice(queryOpePriceSheet.getPrice())
+            .productFrUnitId(queryOpePriceSheet.getCurrencyType())
+            .productFrUnit(
+                CurrencyUnitEnums.getEnumByValue(String.valueOf(queryOpePriceSheet.getCurrencyType())).getName())
+            .refuseTime(queryOpePriceSheet.getUpdatedTime())
                 .build();
     }
 
@@ -205,10 +240,10 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         List<PriceUnitResult> list = new ArrayList<>();
         PriceUnitResult priceUnitResult = null;
         for (CurrencyUnitEnums item : CurrencyUnitEnums.values()) {
-            if (!StringUtils.equals(item.getValue(),CurrencyUnitEnums.CN.getValue())){
+            if (!item.getValue().equals(CurrencyUnitEnums.CN.getValue())) {
                 priceUnitResult = new PriceUnitResult();
                 priceUnitResult.setCode(item.getCode());
-                priceUnitResult.setVlue(item.getValue());
+                priceUnitResult.setValue(String.valueOf(item.getValue()));
                 priceUnitResult.setUnit(item.getName());
                 list.add(priceUnitResult);
             }
@@ -252,44 +287,47 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         return result;
     }
 
-    private OpePriceSheet buildOpePriceSheetSingle(EditProductPriceEnter enter) {
-        OpePriceSheet saveOpePriceSheet = new OpePriceSheet();
-        saveOpePriceSheet.setDr(0);
-        saveOpePriceSheet.setTenantId(0L);
-        saveOpePriceSheet.setUserId(enter.getUserId());
-        saveOpePriceSheet.setStatus(BomStatusEnums.NORMAL.getValue());
-        saveOpePriceSheet.setPrice(new BigDecimal(enter.getProductFrPrice()));
-        saveOpePriceSheet.setCurrencyType(SesStringUtils.isBlank(CurrencyUnitEnums.checkValue(enter.getProductFrUnit())) == true ? CurrencyUnitEnums.FR.getCode() :
-                CurrencyUnitEnums.getEnumByValue(enter.getProductFrUnit()).getCode());
-        saveOpePriceSheet.setCurrencyUnit(enter.getProductFrUnit());
-        saveOpePriceSheet.setStandardCurrency(CurrencyUnitEnums.CN.getValue());
-        saveOpePriceSheet.setExchangeRate("0");
-        saveOpePriceSheet.setPartsId(enter.getId());
-        saveOpePriceSheet.setRevision(0);
-        saveOpePriceSheet.setUpdatedBy(enter.getUserId());
-        saveOpePriceSheet.setUpdatedTime(new Date());
-        return saveOpePriceSheet;
+    private OpeProductPrice buildOpeProductPriceSingle(EditProductPriceEnter enter, Integer partsType) {
+        OpeProductPrice saveOpeProductPrice = new OpeProductPrice();
+        saveOpeProductPrice.setDr(0);
+        saveOpeProductPrice.setTenantId(0L);
+        saveOpeProductPrice.setStatus(BomStatusEnums.NORMAL.getValue());
+        saveOpeProductPrice.setPrice(new BigDecimal(enter.getProductFrPrice()));
+        saveOpeProductPrice.setCurrencyType(CurrencyUnitEnums.checkValue(enter.getProductFrUnit()) == null
+            ? Integer.valueOf(CurrencyUnitEnums.FR.getValue())
+                :
+                Integer.valueOf(CurrencyUnitEnums.getEnumByValue(enter.getProductFrUnit()).getValue()));
+        saveOpeProductPrice.setStandardCurrency(Integer.valueOf(CurrencyUnitEnums.CN.getValue()));
+        saveOpeProductPrice.setExchangeRate("0");
+        saveOpeProductPrice.setProductId(enter.getId());
+        saveOpeProductPrice.setProductPriceType(partsType);
+        saveOpeProductPrice.setPriceType(ProductPriceTypeEnums.PURCHASE_PRICE.getValue());
+        saveOpeProductPrice.setRevision(0);
+        saveOpeProductPrice.setUpdatedBy(enter.getUserId());
+        saveOpeProductPrice.setUpdatedTime(new Date());
+        return saveOpeProductPrice;
     }
 
-    private OpePriceSheetHistory buildOpePriceSheetHistorySingle(EditProductPriceEnter enter, Long id, String unit) {
-        OpePriceSheetHistory opePriceSheetHistory = new OpePriceSheetHistory();
-        opePriceSheetHistory.setId(idAppService.getId(SequenceName.OPE_PRICE_SHEET_HISTORY));
-        opePriceSheetHistory.setDr(0);
-        opePriceSheetHistory.setTenantId(0L);
-        opePriceSheetHistory.setUserId(enter.getUserId());
-        opePriceSheetHistory.setPrice(new BigDecimal(enter.getProductFrPrice()));
-        opePriceSheetHistory.setPriceSheetId(id);
-        opePriceSheetHistory.setCurrencyType(SesStringUtils.isBlank(CurrencyUnitEnums.checkCode(unit)) == true ? CurrencyUnitEnums.FR.getCode() :
-                CurrencyUnitEnums.checkCode(unit));
-        opePriceSheetHistory.setCurrencyUnit(unit);
-        opePriceSheetHistory.setStandardCurrency(CurrencyUnitEnums.CN.getValue());
-        opePriceSheetHistory.setExchangeRate("0");
-        opePriceSheetHistory.setPartsId(enter.getId());
-        opePriceSheetHistory.setRevision(0);
-        opePriceSheetHistory.setUpdatedBy(enter.getUserId());
-        opePriceSheetHistory.setUpdatedTime(new Date());
-        opePriceSheetHistory.setCreatedBy(enter.getUserId());
-        opePriceSheetHistory.setCreatedTime(new Date());
-        return opePriceSheetHistory;
+    private OpeProductPriceHistory buildOpeProductPriceHistorySingle(EditProductPriceEnter enter, Long id,
+        Integer unit) {
+        OpeProductPriceHistory opeProductPriceHistory = new OpeProductPriceHistory();
+        opeProductPriceHistory.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PART_PRICE_HISTORY));
+        opeProductPriceHistory.setDr(0);
+        opeProductPriceHistory.setTenantId(0L);
+        opeProductPriceHistory.setPrice(new BigDecimal(enter.getProductFrPrice()));
+        opeProductPriceHistory.setProductPriceId(id);
+        opeProductPriceHistory.setCurrencyType(CurrencyUnitEnums.checkValue(String.valueOf(unit)) == null
+            ? Integer.valueOf(CurrencyUnitEnums.FR.getValue()) : unit);
+        opeProductPriceHistory.setStandardCurrency(Integer.valueOf(CurrencyUnitEnums.CN.getValue()));
+        opeProductPriceHistory.setPriceType(ProductPriceTypeEnums.PURCHASE_PRICE.getValue());
+        opeProductPriceHistory.setExchangeRate("0");
+        opeProductPriceHistory.setProductId(enter.getId());
+        opeProductPriceHistory.setProductPriceType(SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
+        opeProductPriceHistory.setRevision(0);
+        opeProductPriceHistory.setUpdatedBy(enter.getUserId());
+        opeProductPriceHistory.setUpdatedTime(new Date());
+        opeProductPriceHistory.setCreatedBy(enter.getUserId());
+        opeProductPriceHistory.setCreatedTime(new Date());
+        return opeProductPriceHistory;
     }
 }

@@ -579,7 +579,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         opeRegionalPrice.setDr(0);
         opeRegionalPrice.setUserId(enter.getUserId());
         opeRegionalPrice.setTenantId(0L);
-        opeRegionalPrice.setStatus(BomStatusEnums.NORMAL.getValue());
+        opeRegionalPrice.setStatus(String.valueOf(BomStatusEnums.NORMAL.getValue()));
         opeRegionalPrice.setPartsProductId(enter.getId());
         opeRegionalPrice.setEffectiveTime(new Date());
         opeRegionalPrice.setValidFlag("1");

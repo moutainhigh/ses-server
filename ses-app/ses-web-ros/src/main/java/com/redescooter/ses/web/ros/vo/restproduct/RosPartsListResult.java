@@ -70,4 +70,6 @@ public class RosPartsListResult extends GeneralResult {
     @ApiModelProperty(value = "是否有序列号，0：否，1：是")
     private Integer idCalss;
 
+    @ApiModelProperty(value = "QC模板提示Icon,true 表示 不存在质检模板 展示提示Icon，false 存在 质检模板 无需展示")
+    private Boolean qcTempletePromptIcon = Boolean.TRUE;
 }

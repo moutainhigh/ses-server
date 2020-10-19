@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -93,6 +94,9 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
+
+    @Autowired
+    private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
 
     @Override
@@ -313,14 +317,40 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     return PageResult.createZeroRowResult(enter);
                 }
                 resultList = rosProductionPartsServiceMapper.partsList(enter);
-
+                partsQualityTempate(resultList);
                 break;
         }
+
         for (RosPartsListResult result : resultList) {
             // classType也返回到列表上去
             result.setClassType(classType);
         }
         return PageResult.create(enter, totalNum, resultList);
+    }
+
+
+    private List<RosPartsListResult> partsQualityTempate(List<RosPartsListResult> resultList) {
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            QueryWrapper<OpeProductionQualityTempate> queryWrapper = new QueryWrapper<OpeProductionQualityTempate>();
+            queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+                    resultList.stream().map(RosPartsListResult::getId).collect(Collectors.toList()));
+            queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,
+                    Integer.valueOf(BomCommonTypeEnums.PARTS.getValue()),
+                    Integer.valueOf(BomCommonTypeEnums.BATTERY.getValue()),
+                    Integer.valueOf(BomCommonTypeEnums.ACCESSORY.getValue()));
+            List<OpeProductionQualityTempate> opeProductionQualityTempateList =
+                    opeProductionQualityTempateService.list(queryWrapper);
+            if (CollectionUtils.isEmpty(opeProductionQualityTempateList)) {
+                return resultList;
+            }
+            // 如果 部件不存在 质检模板 就展示Icon 进行提示
+            resultList.stream()
+                    .filter(item -> opeProductionQualityTempateList.stream()
+                            .anyMatch(qc -> (qc.getProductionId().equals(item.getId())
+                                    && item.getPartsType().equals(qc.getProductionType()))))
+                    .forEach(item -> item.setQcTempletePromptIcon(Boolean.FALSE));
+        }
+        return resultList;
     }
 
     @Override
@@ -413,8 +443,16 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             draft.setItem(data.getItem());
             draft.setEcnNumber(data.getEcnNumber());
             draft.setDrawingSize(data.getDrawingSize());
-            draft.setWeight(Double.parseDouble(Strings.isNullOrEmpty(data.getWeight())?"0":data.getWeight()));
-            draft.setPartsQty(data.getQuantity()==null?0:Integer.parseInt(data.getQuantity()));
+            try {
+                draft.setWeight(Double.parseDouble(Strings.isNullOrEmpty(data.getWeight())?"0":data.getWeight()));
+            }catch (Exception e){
+                throw new SesWebRosException(ExceptionCodeEnums.WEIGHT_ILLEGAL.getCode(), ExceptionCodeEnums.WEIGHT_ILLEGAL.getMessage());
+            }
+            try {
+                draft.setPartsQty(data.getQuantity()==null?0:Integer.parseInt(data.getQuantity()));
+            }catch (Exception e){
+                throw new SesWebRosException(ExceptionCodeEnums.QUANTITY_ILLEGAL.getCode(), ExceptionCodeEnums.QUANTITY_ILLEGAL.getMessage());
+            }
             draft.setRateTyp(data.getRateTyp());
             draft.setSellCalss(data.getSellClass());
             // sec转化的

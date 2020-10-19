@@ -724,6 +724,30 @@ public class DateUtil {
         return pastDaysList;
     }
 
+
+    /**
+     * @Author Aleks
+     * @Description  获取两个日期之间的日期数组（包含起始日期和结束日期）
+     * @Date  2020/10/16 15:52
+     * @Param [start, end]
+     * @return
+     **/
+    public static List<String> getBetweenDates(Date start, Date end) {
+        List<String> result = new ArrayList<String>();
+        Calendar tempStart = Calendar.getInstance();
+        tempStart.setTime(start);
+        tempStart.add(Calendar.DAY_OF_YEAR, 0);
+
+        Calendar tempEnd = Calendar.getInstance();
+        tempEnd.setTime(end);
+        while (tempStart.before(tempEnd)) {
+            result.add(getTimeStr(tempStart.getTime(),DEFAULT_DATE_FORMAT));
+            tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return result;
+    }
+
+
     /**
      * 返回某个日期前几天的日期
      *

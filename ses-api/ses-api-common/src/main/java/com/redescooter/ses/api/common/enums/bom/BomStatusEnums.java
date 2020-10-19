@@ -19,12 +19,12 @@ public enum BomStatusEnums {
     /**
      * 正常
      */
-    NORMAL("NORMAL", "NORMAL", "1"),
+    NORMAL("NORMAL", "NORMAL", 1),
     ;
 
     private String code;
 
     private String message;
 
-    private String value;
+    private Integer value;
 }

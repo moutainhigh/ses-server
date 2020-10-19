@@ -162,6 +162,4 @@ public interface PartsRosService {
      * @return
      **/
     List<RosRepeatResult> partsDisableCheck(RosPartsBatchOpEnter enter);
-
-
 }

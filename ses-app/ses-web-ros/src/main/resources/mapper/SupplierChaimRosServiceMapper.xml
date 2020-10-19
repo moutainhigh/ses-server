@@ -4,7 +4,6 @@
 
     <sql id="where_SupplierChaimList">
         where part.dr = 0
-        and part.user_id=#{userId}
         <if test="partType != null and partType != ''">
             and part.parts_type=#{partType}
         </if>
@@ -12,7 +11,7 @@
             and part.updated_time between #{refuseStartTime} and #{refuseEndTime}
         </if>
         <if test="keyword != null and keyword != ''">
-            and ( parts_number like concat('%',#{keyword},'%')
+            and ( parts_no like concat('%',#{keyword},'%')
             or part.cn_name like concat('%',#{keyword},'%')
             or part.fr_name like concat('%',#{keyword},'%')
             or part.en_name like concat('%',#{keyword},'%')
@@ -22,53 +21,57 @@
 
     <select id="countByPartType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select part.parts_type as status,
-        count(*) as totalCount
-        from ope_parts part
+       count(*)        as totalCount
+        from ope_production_parts part
         where part.dr = 0
-        and part.user_id=#{userId}
+          and part.disable = 0
         group by part.parts_type
     </select>
 
     <select id="supplierChaimListCount" resultType="java.lang.Integer">
         select count(*)
-        from ope_parts part
-        left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
+        from ope_production_parts part
+        left join ope_product_price sheet
+        on part.id = sheet.product_id and sheet.dr = 0 and product_price_type=1
         <include refid="where_SupplierChaimList"/>
     </select>
 
     <select id="supplierChaimList"
             resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult">
-        select part.id as id,
-        part.parts_number as productN,
-        part.cn_name as productCnName,
-        part.en_name as productEnName,
-        part.fr_name as productFrName,
-        part.parts_type as type,
-        part.updated_time as refuseTime,
-        sheet.price as productPrice,
-        sheet.currency_unit as unit
-        from ope_parts part
-        left join ope_price_sheet sheet on part.id = sheet.parts_id and sheet.dr = 0
+        select part.id                 as id,
+        part.parts_no           as productN,
+        part.cn_name            as productCnName,
+        part.en_name            as productEnName,
+        part.fr_name            as productFrName,
+        part.parts_type         as typeId,
+        part.updated_time       as refuseTime,
+        sheet.price             as productPrice,
+        sheet.currency_type as unitId
+        from ope_production_parts part
+        left join ope_product_price sheet
+        on part.id = sheet.product_id and sheet.dr = 0 and product_price_type=1
         <include refid="where_SupplierChaimList"/>
         limit #{startRow},#{pageSize}
     </select>
 
     <select id="scPriceHistroyCount" resultType="java.lang.Integer">
         select count(*)
-        from ope_price_sheet_history histroy
-        where histroy.user_id=#{userId}
-        and histroy.dr=0
-        and histroy.parts_id=#{id}
+        from ope_product_price_history histroy
+        where histroy.created_by =#{userId}
+        and histroy.dr = 0
+        and histroy.product_id =#{id}
+        and histroy.product_price_type=1
     </select>
     <select id="scPriceHistroyList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
-        select histroy.id as id,
-        histroy.price as productFrPrice,
-        histroy.currency_unit as productFrUnit,
-        histroy.updated_time as refuseTime
-        from ope_price_sheet_history histroy
-        where histroy.dr=0
-        and histroy.user_id=#{userId}
-        and histroy.parts_id=#{id}
+        select histroy.id            as id,
+        histroy.price         as productFrPrice,
+        histroy.currency_type as productFrUnit,
+        histroy.updated_time  as refuseTime
+        from ope_product_price_history histroy
+        where histroy.dr = 0
+        and histroy.created_by =#{userId}
+        and histroy.product_id =#{id}
+        and histroy.product_price_type = 1
         order by histroy.updated_time desc
         limit #{startRow},#{pageSize}
     </select>
@@ -77,21 +80,22 @@
             resultType="com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult">
         select ifnull(avg(histroy.price), 0) as avg,
         ifnull(max(histroy.price), 0) as max
-        from ope_price_sheet_history histroy
-        where histroy.dr=0
-        and histroy.user_id=#{userId}
-        and histroy.parts_id=#{id}
+        from ope_product_price_history histroy
+        where histroy.dr = 0
+        and histroy.created_by =#{userId}
+        and histroy.product_id =#{id}
+        and histroy.product_price_type = 1
         order by histroy.updated_time desc
     </select>
     <select id="productPriceHistroyChartList" resultType="com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult">
-        select histroy.id as id,
-        histroy.price as productFrPrice,
-        histroy.currency_unit as productFrUnit,
-        histroy.updated_time as refuseTime
-        from ope_price_sheet_history histroy
-        where histroy.dr=0
-        and histroy.user_id=#{userId}
-        and histroy.parts_id=#{id}
+        select histroy.id            as id,
+        histroy.price         as productFrPrice,
+        histroy.currency_type as productFrUnit,
+        histroy.updated_time  as refuseTime
+        from ope_product_price_history histroy
+        where histroy.dr = 0
+        and histroy.created_by =#{userId}
+        and histroy.product_id =#{id}
         order by histroy.created_time asc
     </select>
 </mapper>

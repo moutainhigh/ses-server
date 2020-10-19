@@ -58,5 +58,14 @@ public enum BomCommonTypeEnums {
         return null;
     }
 
+    public static BomCommonTypeEnums getEnumsByValue(String value) {
+        for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
+            if (item.getValue().equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
 
 }

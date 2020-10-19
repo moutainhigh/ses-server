@@ -239,6 +239,16 @@ public class StaffServiceImpl implements StaffService {
         if (!Strings.isNullOrEmpty(enter.getEntryDate())) {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
         }
+        // 编辑的时候  如果是第一次开启验证码  则需要随机生成
+        if(Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1){
+            String code = null;
+            try {
+                code = RsaUtils.encrypt(getRundom(), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            staff.setSafeCode(code);
+        }
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
         creatRoleStaff(staff.getId(), enter.getRoleId());

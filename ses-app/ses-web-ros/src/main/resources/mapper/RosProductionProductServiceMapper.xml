@@ -185,23 +185,25 @@
     <select id="productionProductPartListCount" resultType="int">
         select count(1)
         from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
         <include refid="where_productionProductPartList" />
     </select>
 
     <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
         select parts.id                as id,
-                parts.parts_no          as partsNum,
-                parts.parts_sec         as secId,
-                sec.name                as sec,
-                parts.procurement_cycle as productionCycle,
-                parts.dwg               as dwgUrl,
-                parts.cn_name           as cnName,
-                parts.en_name           as enName,
-                parts.fr_name           as frName,
-                1 as qty
-                from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        parts.dwg               as dwgUrl,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        1                       as qty
+        from ope_production_parts parts
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
         <include refid="where_productionProductPartList" />
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
@@ -245,7 +247,7 @@
     </select>
 
     <select id="rosImportProductionProductPartsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
-        select parts.id          as id,
+        select parts.id                as id,
         parts.parts_no          as partsNum,
         parts.parts_sec         as secId,
         parts.procurement_cycle as productionCycle,
@@ -254,9 +256,13 @@
         parts.en_name           as enName,
         parts.fr_name           as frName,
         sec.name                as sec,
-        parts.procurement_cycle as productionCycle
+        parts.procurement_cycle as productionCycle,
+        price.price             as price,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
         left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
+        left join ope_product_price price on price.product_id = parts.id and product_price_type = 1
+        left join  ope_production_quality_tempate templete on parts.id=templete.production_id and  parts.parts_type=templete.production_type and templete.dr=1
         where parts.dr=0
         <if test="collection != null and collection.size() != 0">
             and parts_no in
@@ -264,6 +270,7 @@
                  #{item}
             </foreach>
         </if>
+        group by id,partsNum,secId,productionCycle,qty,cnName,enName,frName,sec,productionCycle,price
     </select>
 
     <select id="groupList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">

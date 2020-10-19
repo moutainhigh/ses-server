@@ -446,6 +446,10 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_IS_USED(10214, "规格类型已被使用，不能删除"),
 
+    WEIGHT_ILLEGAL(10215, "重量违法"),
+
+    QUANTITY_ILLEGAL(10216, "数量违法"),
+
     ;
 
 

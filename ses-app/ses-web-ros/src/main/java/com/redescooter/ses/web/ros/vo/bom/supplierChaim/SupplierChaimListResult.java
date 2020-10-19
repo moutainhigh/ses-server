@@ -43,11 +43,17 @@ public class SupplierChaimListResult extends GeneralResult {
     @ApiModelProperty(value = "产品名字")
     private String productFrName;
 
+    @ApiModelProperty(value = "类型Id")
+    private String typeId;
+
     @ApiModelProperty(value = "类型")
     private String type;
 
     @ApiModelProperty(value = "价格")
     private BigDecimal productPrice;
+
+    @ApiModelProperty(value = "货币单位Id")
+    private String unitId;
 
     @ApiModelProperty(value = "货币单位")
     private String unit;
