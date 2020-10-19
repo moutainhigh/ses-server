@@ -53,6 +53,9 @@ public class RosProductionProductPartListResult extends GeneralResult {
 
     @ApiModelProperty(value = "图纸url")
     private String dwg;
+    
+    @ApiModelProperty(value = "模版质检项数量")
+    private int templeteCount;
 
     @ApiModelProperty(value = "错误信息")
     private String errMsg;

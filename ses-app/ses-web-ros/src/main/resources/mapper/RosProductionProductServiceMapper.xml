@@ -257,10 +257,12 @@
         parts.fr_name           as frName,
         sec.name                as sec,
         parts.procurement_cycle as productionCycle,
-        price.price             as price
+        price.price             as price,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
         left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
         left join ope_product_price price on price.product_id = parts.id and product_price_type = 1
+        left join  ope_production_quality_tempate templete on parts.id=templete.production_id and  parts.parts_type=templete.production_type and templete.dr=1
         where parts.dr=0
         <if test="collection != null and collection.size() != 0">
             and parts_no in
@@ -268,6 +270,7 @@
                  #{item}
             </foreach>
         </if>
+        group by id,partsNum,secId,productionCycle,qty,cnName,enName,frName,sec,productionCycle,price
     </select>
 
     <select id="groupList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">

@@ -668,19 +668,19 @@ public class PurchasingServiceImpl implements PurchasingService {
         
         List<PruchasingItemResult> partProductList =
                 purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
-        //查询质检模板
-        QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
-        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
-        List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-        if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)) {
-            partProductList.removeIf(item -> {
-                return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
-            });
+        if (CollectionUtils.isNotEmpty(partProductList)){
+            //查询质检模板
+            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
+            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
+            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+            if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)) {
+                partProductList.removeIf(item -> {
+                    return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
+                });
+            }
+            resultList.addAll(partProductList);
         }
-        resultList.addAll(partProductList);
-        
-        
         return resultList;
     }
     
