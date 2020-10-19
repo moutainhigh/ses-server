@@ -637,25 +637,27 @@ public class PurchasingServiceImpl implements PurchasingService {
                     resultList.addAll(scooterProductList);
                 }
             }
-            //查询质检模板
-            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
-            opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.SCOOTER.getValue());
-            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
-                    scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-            
-            if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
-                scooterProductList.removeIf(item->{
-                    for (OpeProductionQualityTempate tempate : opeProductionQualityTempateList) {
-                        if (tempate.getProductionId().equals(item.getId())) {
-                            return false;
+            if (CollectionUtils.isNotEmpty(scooterProductList)){
+                //查询质检模板
+                QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
+                opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.SCOOTER.getValue());
+                opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+                        scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+                List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+    
+                if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
+                    scooterProductList.removeIf(item->{
+                        for (OpeProductionQualityTempate tempate : opeProductionQualityTempateList) {
+                            if (tempate.getProductionId().equals(item.getId())) {
+                                return false;
+                            }
                         }
-                    }
-                    return true;
-                });
+                        return true;
+                    });
+                }
+                // 移除没有零部件的整车
+                scooterProductList.removeIf(scooter -> CollectionUtils.isEmpty(scooter.getPruchasingItemResultList()));
             }
-            // 移除没有零部件的整车
-            scooterProductList.removeIf(scooter -> CollectionUtils.isEmpty(scooter.getPruchasingItemResultList()));
         }
 
         List<PruchasingItemResult> partProductList =
