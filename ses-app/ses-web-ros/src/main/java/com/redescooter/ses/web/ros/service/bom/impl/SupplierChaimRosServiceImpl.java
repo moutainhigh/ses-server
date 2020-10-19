@@ -243,7 +243,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             if (!item.getValue().equals(CurrencyUnitEnums.CN.getValue())) {
                 priceUnitResult = new PriceUnitResult();
                 priceUnitResult.setCode(item.getCode());
-                priceUnitResult.setVlue(String.valueOf(item.getValue()));
+                priceUnitResult.setValue(String.valueOf(item.getValue()));
                 priceUnitResult.setUnit(item.getName());
                 list.add(priceUnitResult);
             }
