@@ -101,11 +101,8 @@
             </if>
             and product.parts_type in
             <foreach collection="productTypeList" open="(" separator="," close=")" item="item">
-                #{item}
+               #{item}
             </foreach>
-            <if test="enter.productType !=null and enter.productType !=''">
-                and product.parts_type =#{enter.productType}
-            </if>
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
                 product.parts_no like concat("%",#{enter.keyword},"%")
