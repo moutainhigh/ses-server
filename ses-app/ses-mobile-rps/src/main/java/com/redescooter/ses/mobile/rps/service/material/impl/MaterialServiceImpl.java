@@ -79,6 +79,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -673,21 +674,23 @@ public class MaterialServiceImpl implements MaterialService {
 
         //封装质检模板
         List<PartTemplateResult> partTemplateList = Lists.newArrayList();
-        opeProductionQualityTempateList.forEach(item -> {
+        for (OpeProductionQualityTempate item : opeProductionQualityTempateList) {
             List<PartQcResultResult> partQcResultList = Lists.newArrayList();
-            opeProductionQualityTempateBList.forEach(templateB -> {
+            for (OpeProductionQualityTempateB templateB : opeProductionQualityTempateBList) {
                 if (item.getId().equals(templateB.getProductQualityTempateId())) {
                     partQcResultList.add(
                             PartQcResultResult.builder()
                                     .id(templateB.getId())
-                            .partQcTemplateId(templateB.getProductQualityTempateId())
+                                    .partQcTemplateId(templateB.getProductQualityTempateId())
                                     .qcResult(templateB.getQcResult())
                                     .uploadFlag(templateB.getUploadFlag())
                                     .resultsSequence(templateB.getResultsSequence())
                                     .build()
                     );
                 }
-            });
+            }
+            //结果集添加排序
+            partQcResultList = partQcResultList.stream().sorted(Comparator.comparing(PartQcResultResult::getResultsSequence)).collect(Collectors.toList());
             partTemplateList.add(
                     PartTemplateResult.builder()
                             .id(item.getId())
@@ -695,9 +698,9 @@ public class MaterialServiceImpl implements MaterialService {
                             .partQcResultList(partQcResultList)
                             .build()
             );
-
-        });
-
+        
+        }
+    
         return MaterialQcTemplateDetailResult.builder()
                 .id(opePurchasB.getId())
             .partCnName(opeProductionParts.getCnName()).partN(opeProductionParts.getPartsNo())
