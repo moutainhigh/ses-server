@@ -616,28 +616,6 @@ public class PurchasingServiceImpl implements PurchasingService {
                     List<PruchasingItemResult> partList =
                         purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
                     if (CollectionUtils.isNotEmpty(partList)) {
-                        //查询质检模板
-                        QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
-                        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,partList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-                        opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.PARTS.getValue(),BomCommonTypeEnums.ACCESSORY.getValue(),BomCommonTypeEnums.BATTERY.getValue());
-                        List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-                        if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
-                            //过滤掉没有质检模板的部件
-                            for (PruchasingItemResult part : partList) {
-                                Boolean existTemplete = Boolean.TRUE;
-                                for (OpeProductionQualityTempate templete : opeProductionQualityTempateList) {
-                                    if (templete.getProductionId().equals(part.getId())) {
-                                        existTemplete = Boolean.FALSE;
-                                        break;
-                                    }
-                                }
-                                if (!existTemplete) {
-                                    partList.remove(part);
-                                }
-                            }
-                        }
-
-
                         for (PruchasingItemResult scooter : scooterProductList) {
                             BigDecimal totalPrice = BigDecimal.ZERO;
                             List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
@@ -659,13 +637,43 @@ public class PurchasingServiceImpl implements PurchasingService {
                     resultList.addAll(scooterProductList);
                 }
             }
+            //查询质检模板
+            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
+            opeProductionQualityTempateQueryWrapper.eq(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.SCOOTER.getValue());
+            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
+                    scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+            
+            if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
+                scooterProductList.removeIf(item->{
+                    for (OpeProductionQualityTempate tempate : opeProductionQualityTempateList) {
+                        if (tempate.getProductionId().equals(item.getId())) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
             // 移除没有零部件的整车
             scooterProductList.removeIf(scooter -> CollectionUtils.isEmpty(scooter.getPruchasingItemResultList()));
         }
 
         List<PruchasingItemResult> partProductList =
             purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
-        resultList.addAll(partProductList);
+        if (CollectionUtils.isNotEmpty(partProductList)){
+            //查询质检模板
+            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper=new QueryWrapper<>();
+            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE,BomCommonTypeEnums.PARTS.getValue(),BomCommonTypeEnums.ACCESSORY.getValue(),
+                    BomCommonTypeEnums.BATTERY.getValue());
+            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
+            if(CollectionUtils.isNotEmpty(opeProductionQualityTempateList)){
+                partProductList.removeIf(item->{
+                    return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
+                });
+            }
+            resultList.addAll(partProductList);
+        }
 
         return resultList;
     }
