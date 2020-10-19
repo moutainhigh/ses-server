@@ -20,7 +20,7 @@ public class PriceUnitResult extends GeneralResult {
 
     private String code;
 
-    private String vlue;
+    private String value;
 
     private String unit;
 }
