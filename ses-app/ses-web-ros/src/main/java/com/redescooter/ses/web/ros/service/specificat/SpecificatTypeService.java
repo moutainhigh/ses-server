@@ -1,13 +1,9 @@
 package com.redescooter.ses.web.ros.service.specificat;
 
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListEnter;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeSaveOrEditEnter;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.vo.specificat.*;
+
+import java.util.List;
 
 /**
  * @ClassNameSpecificatTypeService
@@ -77,4 +73,13 @@ public interface SpecificatTypeService {
      **/
     BooleanResult specificatNameCheck(SpecificatTypeSaveOrEditEnter enter);
 
+
+    /**
+     * @Author Aleks
+     * @Description  获取规格下拉数据的接口
+     * @Date  2020/10/13 15:26
+     * @Param
+     * @return
+     **/
+    List<SpecificatTypeDataResult> specificatTypeData(GeneralEnter enter);
 }

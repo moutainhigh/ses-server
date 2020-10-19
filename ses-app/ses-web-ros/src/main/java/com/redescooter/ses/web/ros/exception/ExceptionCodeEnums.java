@@ -440,6 +440,12 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
 
+    PRODUCT_CODE_NOT_NULL(10212, "产品编码不能为空"),
+
+    COLOR_IS_USED(10213, "颜色已被使用，不能删除"),
+
+    SPECIFICAT_TYPE_IS_USED(10214, "规格类型已被使用，不能删除"),
+
     ;
 
 

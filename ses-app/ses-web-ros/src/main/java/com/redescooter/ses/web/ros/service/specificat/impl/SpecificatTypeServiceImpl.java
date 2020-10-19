@@ -4,19 +4,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatDef;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatDefService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
@@ -56,6 +55,10 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     @Autowired
     private SpecificatTypeServiceMapper specificatTypeServiceMapper;
+
+
+    @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
 
 
     @Override
@@ -206,6 +209,13 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     @Transactional
     public GeneralResult specificatTypeDelete(IdEnter enter) {
         // todo 校验当前规格是否被使用
+        // 2020 10 16 追加规格类型是否被销售车辆使用了，使用不能删除
+        QueryWrapper<OpeSaleScooter> qw = new QueryWrapper<>();
+        qw.eq(OpeSaleScooter.COL_SPECIFICAT_ID,enter.getId());
+        int count = opeSaleScooterService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getMessage());
+        }
         opeSpecificatTypeService.removeById(enter.getId());
         // 删除规格的自定义项
         specificatDefService.deleSpecificatDef(enter.getId());
@@ -313,5 +323,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         booleanResult.setSuccess(flag);
         booleanResult.setRequestId(enter.getRequestId());
         return booleanResult;
+    }
+
+
+    @Override
+    public List<SpecificatTypeDataResult> specificatTypeData(GeneralEnter enter) {
+        List<SpecificatTypeDataResult> resultList = specificatTypeServiceMapper.specificatTypeData();
+        return resultList;
     }
 }

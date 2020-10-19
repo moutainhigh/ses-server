@@ -146,4 +146,7 @@ public interface SequenceName {
     String OPE_COLOR = "OPE_COLOR";
 
     String OPE_SPECIFICAT_DEF = "OPE_SPECIFICAT_DEF";
+
+    String OPE_SALE_SCOOTER = "OPE_SALE_SCOOTER";
+
 }

@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.dao.specificat;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListResult;
@@ -17,6 +17,7 @@ import java.util.List;
  **/
 public interface SpecificatTypeServiceMapper {
 
+
     int listNum(@Param("enter")SpecificatTypeListEnter enter);
 
 
@@ -24,5 +25,8 @@ public interface SpecificatTypeServiceMapper {
 
 
     SpecificatTypeDetailResult specificatTypeDetail(@Param("id") Long id);
+
+
+    List<SpecificatTypeDataResult> specificatTypeData();
 
 }
