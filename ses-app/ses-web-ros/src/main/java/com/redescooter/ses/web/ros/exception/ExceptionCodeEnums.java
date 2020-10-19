@@ -440,9 +440,15 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
 
-    WEIGHT_ILLEGAL(10212, "重量违法"),
+    PRODUCT_CODE_NOT_NULL(10212, "产品编码不能为空"),
 
-    QUANTITY_ILLEGAL(10213, "数量违法"),
+    COLOR_IS_USED(10213, "颜色已被使用，不能删除"),
+
+    SPECIFICAT_TYPE_IS_USED(10214, "规格类型已被使用，不能删除"),
+
+    WEIGHT_ILLEGAL(10215, "重量违法"),
+
+    QUANTITY_ILLEGAL(10216, "数量违法"),
 
     ;
 

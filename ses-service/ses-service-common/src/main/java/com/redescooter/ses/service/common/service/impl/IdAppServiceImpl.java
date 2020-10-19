@@ -1,8 +1,11 @@
 package com.redescooter.ses.service.common.service.impl;
 
 
+import cn.hutool.core.lang.Snowflake;
 import com.redescooter.ses.api.foundation.service.base.SequenceService;
+import com.redescooter.ses.service.common.utils.SnowflakeIdWorker;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -22,11 +25,33 @@ public class IdAppServiceImpl implements IdAppService {
     @Override
     public long getId(String tableName) {
         try {
-            return sequenceService.get(tableName);
+            // 糊涂工具自带的雪花算法
+//            Snowflake snowflake = new Snowflake(0,0);
+//            return snowflake.nextId();
+            SnowflakeIdWorker snowflakeIdWorker = SnowflakeIdWorker.getInstance();
+            return snowflakeIdWorker.nextId();
+//            return sequenceService.get(tableName);
         } catch (Exception e) {
             log.error("Get id  failure, tableName:" + tableName, e);
             throw new NullPointerException("Get id  failure, tableName:" + tableName);
         }
+    }
+
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        Snowflake snowflake = new Snowflake(0,0);
+//        System.out.println(snowflake.nextId());
+////        Thread.sleep(100);
+//        System.out.println(snowflake.nextId());
+////        Thread.sleep(100);
+//        System.out.println(snowflake.nextId());
+        SnowflakeIdWorker snowflakeIdWorker = SnowflakeIdWorker.getInstance();
+        System.out.println(snowflakeIdWorker.nextId());
+        Thread.sleep(100);
+        System.out.println(snowflakeIdWorker.nextId());
+//        Thread.sleep(100);
+        System.out.println(snowflakeIdWorker.nextId());
     }
 
 }

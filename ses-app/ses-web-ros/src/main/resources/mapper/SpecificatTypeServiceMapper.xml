@@ -57,4 +57,13 @@
        where tp.id = #{id}
     </select>
 
+
+    <select id="specificatTypeData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDataResult">
+        select
+        id as specificatId,
+        specificat_name
+        from ope_specificat_type
+        where dr = 0
+    </select>
+
 </mapper>

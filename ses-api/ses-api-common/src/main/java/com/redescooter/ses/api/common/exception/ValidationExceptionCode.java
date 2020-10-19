@@ -39,4 +39,6 @@ public interface ValidationExceptionCode {
     int PASSWORD_ILLEAGE = 10016;
     //验证码错误
     int VERIFICATION_CODE_ERROR = 10017;
+    // 时间不能为空
+    int TIME_IS_NOT_NULL = 10018;
 }

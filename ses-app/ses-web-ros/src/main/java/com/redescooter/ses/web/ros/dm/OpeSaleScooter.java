@@ -1,32 +1,29 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 整车草稿表
+ * 销售车辆表
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductionScooterBomDraft")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleScooter")
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName(value = "ope_production_scooter_bom_draft")
-public class OpeProductionScooterBomDraft implements Serializable {
+@TableName(value = "ope_sale_scooter")
+public class OpeSaleScooter implements Serializable {
     /**
-     * 主键id
+     * 主键
      */
-    @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键id")
+    @TableId(value = "id")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /**
@@ -38,81 +35,53 @@ public class OpeProductionScooterBomDraft implements Serializable {
     private Integer dr;
 
     /**
-     * 租户ID
+     * 产品名称
      */
-    @TableField(value = "tenant_id")
-    @ApiModelProperty(value = "租户ID")
-    private Long tenantId;
+    @TableField(value = "product_name")
+    @ApiModelProperty(value = "产品名称")
+    private String productName;
 
     /**
-     * 部门id（做数据权限用）
+     * 产品编码
      */
-    @TableField(value = "dept_id")
-    @ApiModelProperty(value = "部门id（做数据权限用）")
-    private Long deptId;
+    @TableField(value = "product_code")
+    @ApiModelProperty(value = "产品编码")
+    private String productCode;
 
     /**
-     * bom编号
+     * 车辆所属规格id
      */
-    @TableField(value = "bom_no")
-    @ApiModelProperty(value = "bom编号")
-    private String bomNo;
+    @TableField(value = "specificat_id")
+    @ApiModelProperty(value = "车辆所属规格id")
+    private Long specificatId;
 
     /**
-     * 采购周期
-     */
-    @TableField(value = "procurement_cycle",updateStrategy = FieldStrategy.IGNORED)
-    @ApiModelProperty(value = "采购周期")
-    private Integer procurementCycle;
-
-    /**
-     * 分组的id
+     * 车辆所属分组id
      */
     @TableField(value = "group_id")
-    @ApiModelProperty(value = "分组的id")
+    @ApiModelProperty(value = "车辆所属分组id")
     private Long groupId;
 
     /**
-     * 颜色的id
+     * 车辆所属颜色id
      */
     @TableField(value = "color_id")
-    @ApiModelProperty(value = "颜色的id")
+    @ApiModelProperty(value = "车辆所属颜色id")
     private Long colorId;
 
     /**
-     * 部件数量
+     * 销售状态，0：不可销售，1：可销售
      */
-    @TableField(value = "parts_qty")
-    @ApiModelProperty(value = "部件数量")
-    private Integer partsQty;
+    @TableField(value = "sale_stutas")
+    @ApiModelProperty(value = "销售状态，0：不可销售，1：可销售")
+    private Integer saleStutas;
 
     /**
-     * 中文名称
+     * 备注
      */
-    @TableField(value = "cn_name")
-    @ApiModelProperty(value = "中文名称")
-    private String cnName;
-
-    /**
-     * 名称
-     */
-    @TableField(value = "en_name")
-    @ApiModelProperty(value = "名称")
-    private String enName;
-
-    /**
-     * 法文名称
-     */
-    @TableField(value = "fr_name")
-    @ApiModelProperty(value = "法文名称")
-    private String frName;
-
-    /**
-     * 激活时间
-     */
-    @TableField(value = "effective_date")
-    @ApiModelProperty(value = "激活时间")
-    private Date effectiveDate;
+    @TableField(value = "remark")
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
     /**
      * 创建人
@@ -177,33 +146,23 @@ public class OpeProductionScooterBomDraft implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_TENANT_ID = "tenant_id";
+    public static final String COL_PRODUCT_NAME = "product_name";
 
-    public static final String COL_DEPT_ID = "dept_id";
+    public static final String COL_PRODUCT_CODE = "product_code";
 
-    public static final String COL_BOM_NO = "bom_no";
-
-    public static final String COL_PROCUREMENT_CYCLE = "procurement_cycle";
+    public static final String COL_SPECIFICAT_ID = "specificat_id";
 
     public static final String COL_GROUP_ID = "group_id";
 
     public static final String COL_COLOR_ID = "color_id";
 
-    public static final String COL_PARTS_QTY = "parts_qty";
+    public static final String COL_SALE_STUTAS = "sale_stutas";
 
-    public static final String COL_CN_NAME = "cn_name";
-
-    public static final String COL_EN_NAME = "en_name";
-
-    public static final String COL_FR_NAME = "fr_name";
-
-    public static final String COL_EFFECTIVE_DATE = "effective_date";
+    public static final String COL_REMARK = "remark";
 
     public static final String COL_CREATED_BY = "created_by";
 

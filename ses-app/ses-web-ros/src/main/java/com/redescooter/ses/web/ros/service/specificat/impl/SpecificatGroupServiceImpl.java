@@ -9,10 +9,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatGroupServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatGroupService;
@@ -49,6 +51,9 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
 
     @Autowired
     private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
 
     @Override
     public GeneralResult specificatGroupSave(SpecificatGroupSaveOrEditEnter enter) {
@@ -105,6 +110,13 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         qw.eq(OpeSpecificatType.COL_GROUP_ID,enter.getId());
         int count = opeSpecificatTypeService.count(qw);
         if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_BE_USED.getCode(), ExceptionCodeEnums.GROUP_BE_USED.getMessage());
+        }
+        // 2020 10 14 追加 分组在销售整车中有使用
+        QueryWrapper<OpeSaleScooter> scooterQueryWrapper = new QueryWrapper<>();
+        scooterQueryWrapper.eq(OpeSaleScooter.COL_COLOR_ID,enter.getId());
+        int count1 = opeSaleScooterService.count(scooterQueryWrapper);
+        if(count1 > 0){
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_BE_USED.getCode(), ExceptionCodeEnums.GROUP_BE_USED.getMessage());
         }
         opeSpecificatGroupService.removeById(enter.getId());
