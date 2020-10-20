@@ -20,7 +20,7 @@ xxl:
       ip:
       port: 48098
       appname: ses-two
-      address: 192.168.2.103/:8082
+      address: 192.168.2.103:8082
       ### xxl-job log path
       logpath: ${log.path}@profile-active@/@project.artifactId@
       ### xxl-job log retention days
