@@ -41,4 +41,6 @@ public interface ValidationExceptionBaseCode {
     int VERIFICATION_CODE_ERROR = 10017;
     //名称不能为空
     int NAME_ILLEAGE = 10017;
+    //时间不能为空
+    int TIME_IS_NOT_NULL = 10018;
 }
