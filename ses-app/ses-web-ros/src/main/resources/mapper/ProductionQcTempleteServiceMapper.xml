@@ -4,8 +4,9 @@
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult">
         select id              as id,
-               production_type as productionProductType,
-               qc_item_name    as qcItemName
+        production_type as productionProductType,
+        qc_item_name    as qcItemName,
+        created_time as createTime
         from ope_production_quality_tempate
         where dr = 0
           and production_type = #{productionProductType}

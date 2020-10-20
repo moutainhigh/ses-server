@@ -86,7 +86,8 @@
         draft.fr_name           as frName,
         draft.parts_qty         as qty,
         sgroup.group_name     as groupName,
-        color.color_name      as colorName
+        color.color_name      as colorName,
+        color.color_value as colorValue
         from ope_production_scooter_bom_draft draft
         left join ope_specificat_group sgroup on draft.group_id = sgroup.id and sgroup.dr = 0
         left join ope_color color on color.id = draft.color_id and color.dr = 0
@@ -114,7 +115,8 @@
         bom.fr_name           as frName,
         bom.parts_qty         as qty,
         sgroup.group_name     as groupName,
-        color.color_name      as colorName
+        color.color_name      as colorName,
+        color.color_value as colorValue
         from ope_production_scooter_bom bom
         left join ope_specificat_group sgroup on bom.group_id = sgroup.id and sgroup.dr = 0
         left join ope_color color on color.id = bom.color_id and color.dr = 0

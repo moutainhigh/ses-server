@@ -391,7 +391,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         rosProductionProductPartListResult.getPrice().equals(BigDecimal.ZERO) ||
                 rosProductionProductPartListResult.getTempleteCount()==0){
                     long existCount = failProductPartListResult.stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).count();
-                    if (existCount!=0){
+                    if (existCount==0){
                         failProductPartListResult.add(RosProductionProductPartListResult.builder()
                                 .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
                                 .sec(item.getSec()).cnName(item.getChineseName()).errMsg("There is no price or quality inspection template for this part.").build());
@@ -406,9 +406,20 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         //部件存在性校验
         if (CollectionUtils.isNotEmpty(successList) && CollectionUtils.isEmpty(successProductPartListResult)) {
             successList.forEach(item -> {
-                failProductPartListResult.add(RosProductionProductPartListResult.builder()
-                    .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
-                    .sec(item.getSec()).cnName(item.getChineseName()).errMsg("This part does not exist.").build());
+                RosProductionProductPartListResult rosProductionProductPartListResult = failProductPartListResult.stream()
+                        .filter(fail -> successProductPartListResult.stream()
+                                .noneMatch(part -> StringUtils.equals(fail.getPartsNum(), part.getPartsNum())))
+                        .findFirst().orElse(null);
+                if(rosProductionProductPartListResult==null){
+                    failProductPartListResult.add(RosProductionProductPartListResult.builder()
+                            .partsNum(item.getPartsNo()).rowNum(item.getRowNum()).enName(item.getEnglishName())
+                            .sec(item.getSec()).cnName(item.getChineseName()).errMsg("This part does not exist.").build());
+                }else {
+                    failProductPartListResult.stream()
+                            .filter(fail -> successProductPartListResult.stream()
+                                    .noneMatch(part -> StringUtils.equals(fail.getPartsNum(), part.getPartsNum())))
+                            .forEach(part->part.setErrMsg("This part does not exist."));
+                }
             });
         }
         
@@ -1095,7 +1106,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
             });
         }
-        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),new Date())>0){
+        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),new Date())>=0){
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
         }
@@ -1285,7 +1296,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
             });
         }
-        if(DateUtil.diffDays(opeProductionCombinBomDraft.getEffectiveDate(),new Date())>0){
+        if(DateUtil.diffDays(opeProductionCombinBomDraft.getEffectiveDate(),new Date())>=0){
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
         }
