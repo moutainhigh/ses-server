@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.vo.deliveryopion;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -19,10 +18,11 @@ import lombok.NoArgsConstructor;
 public class DeliveryOptionEditEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "ID")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 
     @ApiModelProperty(value = "name")
+    @NotNull(code = ValidationExceptionBaseCode.NAME_ILLEAGE, message = "名称不能为空")
     private String optionNeme;
 
     @ApiModelProperty(value = "price")

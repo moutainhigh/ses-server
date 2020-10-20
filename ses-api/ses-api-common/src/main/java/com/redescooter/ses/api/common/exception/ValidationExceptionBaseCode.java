@@ -8,7 +8,7 @@ package com.redescooter.ses.api.common.exception;
  */
 public interface ValidationExceptionBaseCode {
     // 10000-10030 公共异常
-    
+
     // 经度为空
     int LAT_IS_EMPTY = 10001;
     // 纬度为空
@@ -39,4 +39,6 @@ public interface ValidationExceptionBaseCode {
     int PASSWORD_ILLEAGE = 10016;
     //验证码错误
     int VERIFICATION_CODE_ERROR = 10017;
+    //名称不能为空
+    int NAME_ILLEAGE = 10017;
 }

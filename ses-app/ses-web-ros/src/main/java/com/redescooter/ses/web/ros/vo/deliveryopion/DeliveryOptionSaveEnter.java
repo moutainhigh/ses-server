@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.deliveryopion;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class DeliveryOptionSaveEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "name")
+    @NotNull(code = ValidationExceptionBaseCode.NAME_ILLEAGE, message = "名称不能为空")
     private String optionNeme;
 
     @ApiModelProperty(value = "price")

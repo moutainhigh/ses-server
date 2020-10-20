@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.wthdrawalsite;
 
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,9 +21,11 @@ import java.util.Date;
 public class WthdrawalSiteEditEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "ID")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 
     @ApiModelProperty(value = "Store Name")
+    @NotNull(code = ValidationExceptionBaseCode.NAME_ILLEAGE, message = "名称不能为空")
     private String storeName;
 
     @ApiModelProperty(value = "Shop type [1 maintenance, - 1 sales, 0 all]")
