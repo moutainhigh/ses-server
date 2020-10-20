@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.qctemplete;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class QcTempleteDetailEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id为空")
     private Long id;
 
     @ApiModelProperty(value = "产品类型Id")

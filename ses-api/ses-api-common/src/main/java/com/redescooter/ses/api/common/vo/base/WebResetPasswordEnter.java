@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -26,11 +26,11 @@ public class WebResetPasswordEnter extends GeneralEnter {
     private String oldPassword;
 
     @ApiModelProperty(value = "New password")
-    @NotNull(code = ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
+    @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String newPassword;
 
     @ApiModelProperty(value = "Enter again")
-    @NotNull(code = ValidationExceptionCode.PASSWORD_IS_EMPTY,message = "密码为空")
+    @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY,message = "密码为空")
     private String confirmPassword;
 
 }

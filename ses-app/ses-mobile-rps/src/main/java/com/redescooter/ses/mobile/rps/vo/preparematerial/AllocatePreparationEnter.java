@@ -1,7 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.preparematerial;
 
-import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,7 @@ import io.swagger.annotations.*;
 public class AllocatePreparationEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "Id")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id不为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id不为空")
     private Long id;
 
     @ApiModelProperty(value = "部件集合")

@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.scooterqc;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ import io.swagger.annotations.*;
 public class CheckScooterSerilaNEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品Id")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY,message = "Id为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY,message = "Id为空")
     private Long productId;
 
     @ApiModelProperty(value = "序列号")

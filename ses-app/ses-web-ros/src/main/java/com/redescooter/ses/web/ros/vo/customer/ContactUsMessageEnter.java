@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
 import com.redescooter.ses.api.common.annotation.MaximumLength;
-import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -24,7 +24,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class ContactUsMessageEnter extends GeneralEnter {
   @ApiModelProperty("主键id")
-  @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+  @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主键不能为空")
   private Long id;
 
   @ApiModelProperty("消息")
