@@ -286,4 +286,22 @@
         from ope_color color
         where dr = 0
     </select>
+
+
+    <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select
+          distinct
+          bom.en_name as combinName
+        from ope_production_combin_bom bom
+        where bom.dr = 0 and bom.bom_status = 2
+    </select>
+
+
+    <select id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select
+          bom.bom_no,
+          bom.id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where bom.dr = 0 and bom.en_name like concat('%', #{enter.combinName}, '%')
+    </select>
 </mapper>

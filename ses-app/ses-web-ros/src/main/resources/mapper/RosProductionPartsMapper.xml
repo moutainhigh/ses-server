@@ -93,4 +93,21 @@
   </select>
 
 
+  <select id="partsNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.PartsNameData">
+    select
+      distinct
+      parts.en_name as partsName
+    from ope_production_parts parts
+    where parts.dr = 0 and parts.sn_class = 1
+  </select>
+
+  <select id="partsNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.PartsNoData">
+    select
+      parts.parts_no,
+      parts.id as partsId
+    from ope_production_parts parts
+    where parts.dr = 0 and parts.sn_class = 1 and parts.en_name like concat ("%",#{enter.partsName},"%")
+  </select>
+
+
 </mapper>
