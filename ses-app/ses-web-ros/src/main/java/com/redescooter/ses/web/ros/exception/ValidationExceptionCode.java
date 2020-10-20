@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.exception;
 
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
+
 /**
  * @description: ValidationExceptionCode
  * @author: Darren
  * @create: 2019/01/17 10:26
  */
-public interface ValidationExceptionCode {
+public interface ValidationExceptionCode extends ValidationExceptionBaseCode {
 
     // ###############################10001~10030公共入参异常#######################################
     //长度过长，长度为2-20字符

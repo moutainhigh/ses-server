@@ -6,7 +6,7 @@ package com.redescooter.ses.api.common.exception;
  * @author: Darren
  * @create: 2019/01/17 10:26
  */
-public interface ValidationExceptionCode {
+public interface ValidationExceptionBaseCode {
     // 10000-10030 公共异常
     
     // 经度为空

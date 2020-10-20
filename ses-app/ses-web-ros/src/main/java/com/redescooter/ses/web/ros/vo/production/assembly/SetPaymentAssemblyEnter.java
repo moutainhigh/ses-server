@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -35,7 +36,7 @@ import java.util.Date;
 public class SetPaymentAssemblyEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id", required = true)
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id为空")
     private Long id;
 
     @ApiModelProperty(value = "加工费比例 百分数扩大100倍 传值（无需取整后台会自动进行保留两位、四舍五入，详情中也是扩大100倍 回传数据） eg：10.367", required = true)
