@@ -10,7 +10,7 @@
         where dr = 0
           and production_type = #{productionProductType}
           and production_id=#{id}
-          and order by created_time asc
+        order by created_time asc
     </select>
 
     <select id="detailQcResultList" resultType="com.redescooter.ses.web.ros.vo.bom.QcResultResult">
