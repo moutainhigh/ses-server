@@ -1,9 +1,8 @@
 package com.redescooter.ses.api.common.vo.scooter;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,19 +29,19 @@ import java.math.BigDecimal;
 public class IotScooterEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "scooter Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY,message = "Id 不能为空")
     private Long id;
 
     @ApiModelProperty(value = "事件")
-    @NotNull(code = ValidationExceptionCode.EVENT_IS_EMPTY,message = "事件 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.EVENT_IS_EMPTY,message = "事件 不能为空")
     private String event;
 
     @ApiModelProperty(value = "当前用户经度")
-    @NotNull(code = ValidationExceptionCode.LNG_IS_EMPTY,message = "经度 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.LNG_IS_EMPTY,message = "经度 不能为空")
     private BigDecimal longitude;
 
     @ApiModelProperty(value = "当前当前纬度")
-    @NotNull(code = ValidationExceptionCode.LAT_IS_EMPTY,message = "维度 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.LAT_IS_EMPTY,message = "维度 不能为空")
     private BigDecimal latitude;
 
     @ApiModelProperty(value = "是否启用蓝牙")

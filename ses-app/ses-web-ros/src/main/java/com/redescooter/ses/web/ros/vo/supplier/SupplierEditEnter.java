@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.vo.supplier;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class SupplierEditEnter extends SupplierSaveEnter {
 
     @ApiModelProperty(value = "主键")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 }

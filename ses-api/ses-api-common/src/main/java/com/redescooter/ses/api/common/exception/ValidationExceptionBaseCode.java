@@ -6,9 +6,9 @@ package com.redescooter.ses.api.common.exception;
  * @author: Darren
  * @create: 2019/01/17 10:26
  */
-public interface ValidationExceptionCode {
+public interface ValidationExceptionBaseCode {
     // 10000-10030 公共异常
-    
+
     // 经度为空
     int LAT_IS_EMPTY = 10001;
     // 纬度为空
@@ -39,6 +39,6 @@ public interface ValidationExceptionCode {
     int PASSWORD_ILLEAGE = 10016;
     //验证码错误
     int VERIFICATION_CODE_ERROR = 10017;
-    // 时间不能为空
-    int TIME_IS_NOT_NULL = 10018;
+    //名称不能为空
+    int NAME_ILLEAGE = 10017;
 }

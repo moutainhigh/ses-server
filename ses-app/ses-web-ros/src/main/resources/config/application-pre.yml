@@ -72,6 +72,36 @@ spring: #spring config
           name: Jerry
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
+      DeliveryOpion-API:
+        group-name: DeliveryOpion API
+        title: DeliveryOpion Service Support
+        description: DeliveryOpion service support
+        base-package: com.redescooter.ses.web.ros.controller.website.DeliveryOpionController
+        path-regex: /deliveryopion/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+      WthdrawalSite-API:
+        group-name: WthdrawalSite API
+        title: WthdrawalSite Service Support
+        description: WthdrawalSite service support
+        base-package: com.redescooter.ses.web.ros.controller.website.WthdrawalSiteController
+        path-regex: /wthdrawalsite/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
 ## stripe pay
 stripe:
   currency: eur

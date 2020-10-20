@@ -159,4 +159,8 @@ public interface SequenceName {
 
     String OPE_SYS_LOG = "OPE_SYS_LOG";
 
+    String OPE_DELIVERY_OPTION = "OPE_DELIVERY_OPTION";
+
+    String OPE_WITHDRAWAL_SITE = "OPE_WITHDRAWAL_SITE";
+
 }

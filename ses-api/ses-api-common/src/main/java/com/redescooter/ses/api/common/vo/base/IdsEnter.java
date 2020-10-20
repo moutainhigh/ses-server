@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class IdsEnter extends GeneralEnter {
     @ApiModelProperty(value = "主键集合", required = false)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id 不能为空")
     private List<Long> ids;
 }

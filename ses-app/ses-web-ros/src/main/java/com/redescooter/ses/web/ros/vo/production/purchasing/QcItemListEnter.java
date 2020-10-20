@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.production.purchasing;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -32,7 +33,7 @@ import java.util.Date;
 public class QcItemListEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id 采购单id")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
     @ApiModelProperty(value = "状态", required = true)

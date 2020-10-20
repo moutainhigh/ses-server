@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.website;
 import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class SaveAboutUsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "email")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "Country")
