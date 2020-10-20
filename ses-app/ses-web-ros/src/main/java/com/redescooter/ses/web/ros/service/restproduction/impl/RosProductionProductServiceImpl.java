@@ -279,7 +279,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     }
                 }
             }
-            if (enter.getDateTime().before(new Date())) {
+            if (DateUtil.diffDay(enter.getDateTime(),new Date())>=0) {
                 return new BooleanResult(Boolean.FALSE);
             }
         }
