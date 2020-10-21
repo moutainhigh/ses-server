@@ -660,9 +660,9 @@ public class PurchasingServiceImpl implements PurchasingService {
                         }
                         return true;
                     });
+                    // 移除没有零部件的整车
+                    scooterProductList.removeIf(scooter -> CollectionUtils.isEmpty(scooter.getPruchasingItemResultList()));
                 }
-                // 移除没有零部件的整车
-                scooterProductList.removeIf(scooter -> CollectionUtils.isEmpty(scooter.getPruchasingItemResultList()));
             }
         }
         
@@ -678,6 +678,8 @@ public class PurchasingServiceImpl implements PurchasingService {
                 partProductList.removeIf(item -> {
                     return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
                 });
+            }else {
+                return resultList;
             }
             resultList.addAll(partProductList);
         }

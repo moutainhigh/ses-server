@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sys.dept;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import io.swagger.annotations.*;
-import lombok.Value;
 
 /**
  * @ClassName:EmployeeListByDeptIdEnter
@@ -28,7 +27,7 @@ import lombok.Value;
 public class EmployeeListByDeptIdEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "部门Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
     @ApiModelProperty(value = "关键字")

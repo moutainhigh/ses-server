@@ -1,8 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.assembly;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationException;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +27,7 @@ import io.swagger.annotations.*;
 public class SaveFormulaDateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id 子表Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY,message = "Id 不能为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY,message = "Id 不能为空")
     private Long id;
 
     @ApiModelProperty(value = "条码打印结果")

@@ -1,6 +1,6 @@
 package com.redescooter.ses.api.common.annotation;
 
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,7 +12,7 @@ public @interface LonCheck {
 
     String value() default "";
 
-    int code() default ValidationExceptionCode.LON_IS_ILLEGAL;
+    int code() default ValidationExceptionBaseCode.LON_IS_ILLEGAL;
 
     String message() default "";
 }

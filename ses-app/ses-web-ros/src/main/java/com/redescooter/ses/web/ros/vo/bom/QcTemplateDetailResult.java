@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.bom;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +34,11 @@ public class QcTemplateDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检名称")
     private String qcItemName;
+    
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    private Date createTime;
 
     @ApiModelProperty(value = "质检项结果")
     private List<QcResultResult> qcResultResultList;

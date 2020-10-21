@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ import io.swagger.annotations.*;
 public class StartWhOutOrderEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id", required = true)
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id 不存在")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id 不存在")
     private Long id;
 
     @ApiModelProperty(value = "空运方式")
