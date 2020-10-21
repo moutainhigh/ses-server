@@ -295,7 +295,7 @@
           distinct
           bom.en_name as combinName
         from ope_production_combin_bom bom
-        where bom.dr = 0 and bom.bom_status = 2
+        where bom.dr = 0 and bom.bom_status = 1
     </select>
 
 
