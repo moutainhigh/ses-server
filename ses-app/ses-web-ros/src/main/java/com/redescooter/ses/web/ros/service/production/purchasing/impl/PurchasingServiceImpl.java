@@ -628,7 +628,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                             
                             for (PruchasingItemResult item : partList) {
                                 item.setProductType(
-                                        BomCommonTypeEnums.getEnumsByValue(item.getProductType()).getValue());
+                                        BomCommonTypeEnums.getEnumsByValue(item.getProductType()).getCode());
                                 if (item.getId().equals(scooter.getId())) {
                                     totalPrice = totalPrice.add(item.getPrice());
                                     scooterPartList.add(item);
@@ -1147,13 +1147,18 @@ public class PurchasingServiceImpl implements PurchasingService {
         HashMap<Long, Integer> partMap = new HashMap<>();
         if (CollectionUtils.isNotEmpty(partsProductList)) {
             partsProductList.forEach(item -> {
-                if (!partMap.containsKey(item.getId())) {
-                    // 不存在部品id 就重新放入
-                    partMap.put(item.getId(), 1);
-                } else {
-                    // 存在部品id 对数量进行维护
-                    partMap.put(item.getId(), partMap.get(item.getId()) + item.getPartsQty() + 1);
+                ProductionPartsEnter productionPartsEnter = productsList.stream().filter(partQty -> (item.getId().equals(partQty.getId())) && StringUtils.equals(String.valueOf(item.getPartsType()),
+                        partQty.getProductionProductType())).findFirst().orElse(null);
+                if (productionPartsEnter != null) {
+                    if (!partMap.containsKey(item.getId())) {
+                        // 不存在部品id 就重新放入
+                        partMap.put(item.getId(), productionPartsEnter.getQty());
+                    } else {
+                        // 存在部品id 对数量进行维护
+                        partMap.put(item.getId(), partMap.get(item.getId()) + productionPartsEnter.getQty());
+                    }
                 }
+
             });
         }
         if (CollectionUtils.isNotEmpty(opeProductionScooterBomList)) {
