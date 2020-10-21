@@ -279,7 +279,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                     }
                 }
             }
-            if (enter.getDateTime().before(new Date())) {
+            if (DateUtil.diffDay(enter.getDateTime(),new Date())>0) {
                 return new BooleanResult(Boolean.FALSE);
             }
         }
@@ -1106,7 +1106,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
             });
         }
-        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),new Date())>=0){
+        Integer addHour = Integer.valueOf(StringUtils.equals(StringUtils.trim(enter.getTimeZone()).substring(0, 1), "0") ? StringUtils.trim(enter.getTimeZone()).substring(1, 2) :
+                enter.getTimeZone().substring(0, 2));
+        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),DateUtil.dateAddHour(new Date(),addHour))>0){
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
         }
@@ -1296,7 +1298,9 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
             });
         }
-        if(DateUtil.diffDays(opeProductionCombinBomDraft.getEffectiveDate(),new Date())>=0){
+        Integer addHour = Integer.valueOf(StringUtils.equals(StringUtils.trim(enter.getTimeZone()).substring(0, 1), "0") ? StringUtils.trim(enter.getTimeZone()).substring(1, 2) :
+                enter.getTimeZone().substring(0, 2));
+        if(DateUtil.diffDays(opeProductionCombinBomDraft.getEffectiveDate(),DateUtil.dateAddHour(new Date(),addHour))>0){
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
         }
