@@ -9,24 +9,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.qctemplete.ProductionQcTempleteServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
-import com.redescooter.ses.web.ros.dm.OpeProductionParts;
-import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
-import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempateB;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateBService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
-import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
-import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
-import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
-import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
-import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
+import com.redescooter.ses.web.ros.vo.bom.*;
 import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
 import org.apache.commons.collections.CollectionUtils;
@@ -36,11 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -278,6 +262,13 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 if (opeProductionQualityTempate != null) {
                     saveProductionQualityTempateList.add(buildProductionQcTemplate(enter, templateId,
                             key.getQcItemName(), opeProductionQualityTempate.getImportExcelBatchNo(), opeProductionQualityTempate.getSourceType()));
+                    value.forEach(item -> {
+                        saveProductionQualityTempateBList.add(buildProductQcTemplateB(enter, templateId, item));
+                    });
+                } else {
+                    saveProductionQualityTempateList.add(buildProductionQcTemplate(enter, templateId, key.getQcItemName(),
+                            null, Integer.valueOf(QcSourceTypeEnums.MANUAL_ENTRY.getValue()))
+                    );
                     value.forEach(item -> {
                         saveProductionQualityTempateBList.add(buildProductQcTemplateB(enter, templateId, item));
                     });
