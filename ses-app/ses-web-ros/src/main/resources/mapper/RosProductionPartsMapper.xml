@@ -98,7 +98,7 @@
       distinct
       parts.en_name as partsName
     from ope_production_parts parts
-    where parts.dr = 0 and parts.sn_class = 1
+    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0
   </select>
 
   <select id="partsNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.PartsNoData">
@@ -106,7 +106,7 @@
       parts.parts_no,
       parts.id as partsId
     from ope_production_parts parts
-    where parts.dr = 0 and parts.sn_class = 1 and parts.en_name like concat ("%",#{enter.partsName},"%")
+    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0 and parts.en_name like concat ("%",#{enter.partsName},"%")
   </select>
 
 
