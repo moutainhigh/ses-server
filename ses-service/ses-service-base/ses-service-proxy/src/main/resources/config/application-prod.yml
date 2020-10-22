@@ -40,13 +40,12 @@ spring:
         - 172.31.5.73:7005
   # 邮件配置
   mail:
-    from: support@redelectric.fr
-    username: support@redelectric.fr
-    host: smtp.ionos.fr
-    # 邮箱原密码
-    password: sh80QPSKjhqdou!
-    port: 465
-
+    from: support@redescooter.com
+    username: support@redescooter.com
+    host: smtp.exmail.qq.com
+    # 邮箱原密码或者邮箱安全码
+    password: KfVPkLDstGFDkWbK
+    port: 587
 
 
 
