@@ -185,11 +185,23 @@
     </select>
 
     <select id="productionProductPartListCount" resultType="int">
-        select count(1)
+        select count(1) from (select parts.id                as id,
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        parts.dwg               as dwgUrl,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        1                       as qty,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
         inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
         inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
+        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty) as result
     </select>
 
     <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
@@ -202,13 +214,17 @@
         parts.cn_name           as cnName,
         parts.en_name           as enName,
         parts.fr_name           as frName,
-        1                       as qty
+        1                       as qty,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
         inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
         inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
+        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
+
     </select>
 
     <select id="productionScooterVersionList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult">
@@ -264,7 +280,7 @@
         from ope_production_parts parts
         left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
         left join ope_product_price price on price.product_id = parts.id and product_price_type = 1
-        left join  ope_production_quality_tempate templete on parts.id=templete.production_id and  parts.parts_type=templete.production_type and templete.dr=1
+        left join  ope_production_quality_tempate templete on parts.id=templete.production_id and  parts.parts_type=templete.production_type and templete.dr=0
         where parts.dr=0
         <if test="collection != null and collection.size() != 0">
             and parts_no in

@@ -340,10 +340,10 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                             .sec(item.getSec()).cnName(item.getChineseName()).errMsg(item.getErrorMsg()).build());
                     continue;
                 }
-                if (null!=rosProductionProductPartListResult ||
-                        rosProductionProductPartListResult.getPrice()==null ||
-                        rosProductionProductPartListResult.getPrice().equals(BigDecimal.ZERO) ||
-                        rosProductionProductPartListResult.getTempleteCount()==0){
+                if (null != rosProductionProductPartListResult &&
+                        (rosProductionProductPartListResult.getPrice() == null ||
+                                rosProductionProductPartListResult.getPrice().equals(BigDecimal.ZERO) ||
+                                rosProductionProductPartListResult.getTempleteCount() == 0)) {
                     long existCount = failProductPartListResult.stream().filter(part -> StringUtils.equals(item.getPartsNo(), part.getPartsNum())).count();
                     if (existCount == 0) {
                         failProductPartListResult.add(RosProductionProductPartListResult.builder()
