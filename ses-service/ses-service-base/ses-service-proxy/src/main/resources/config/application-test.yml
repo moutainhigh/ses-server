@@ -35,6 +35,6 @@ spring:                                                                         
     from: support@redescooter.com
     username: support@redescooter.com
     host: smtp.exmail.qq.com
-    # 邮箱原密码
-    password: rVaGEDAV6wQdZJtG
-    port: 465
+    # 邮箱原密码或者邮箱安全码
+    password: KfVPkLDstGFDkWbK
+    port: 587
