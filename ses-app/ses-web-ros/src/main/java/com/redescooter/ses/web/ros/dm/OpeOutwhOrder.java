@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,6 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 中国生产仓库出库单
+ */
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeOutwhOrder")
 @Data
 @Builder
@@ -34,7 +36,6 @@ public class OpeOutwhOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除标识 逻辑删除标识")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -138,8 +139,8 @@ public class OpeOutwhOrder implements Serializable {
     /**
      * 状态
      */
-    @TableField(value = "status")
-    @ApiModelProperty(value="状态")
+    @TableField(value = "`status`")
+    @ApiModelProperty(value = "状态")
     private String status;
 
     /**
