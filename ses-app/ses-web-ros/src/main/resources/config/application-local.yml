@@ -104,6 +104,39 @@ spring:                                                                         
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
 
+      Allocate-order-API:
+        group-name: Allocate-order-API
+        title: allocate Service Support
+        description: allocate Service Support
+        base-package: com.redescooter.ses.web.ros.controller.allocateorder
+        path-regex: /sys/allocate/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      Purchase-order-API:
+        group-name: Purchase-order-API
+        title: purchase Service Support
+        description: purchase Service Support
+        base-package: com.redescooter.ses.web.ros.controller.purchaseorder
+        path-regex: /sys/purchase/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+
 ## stripe pay
 stripe:
   currency: eur

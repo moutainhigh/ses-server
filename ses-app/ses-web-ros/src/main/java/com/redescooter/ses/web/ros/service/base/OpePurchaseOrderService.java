@@ -19,3 +19,4 @@ public interface OpePurchaseOrderService extends IService<OpePurchaseOrder> {
     int insertOrUpdateSelective(OpePurchaseOrder record);
 
 }
+
