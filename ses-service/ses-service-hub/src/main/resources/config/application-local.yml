@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://localhost:22181
   metadata-report:
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://localhost:22181
 spring:
   datasource:
     dynamic:
@@ -34,12 +34,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - localhost:7000
+        - localhost:7001
+        - localhost:7002
+        - localhost:7003
+        - localhost:7004
+        - localhost:7005
 
 # 多注册中心配置
 #    reg2:

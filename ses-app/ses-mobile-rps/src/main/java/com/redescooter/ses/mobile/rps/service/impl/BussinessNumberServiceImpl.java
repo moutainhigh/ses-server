@@ -5,12 +5,13 @@ import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.production.ProductContractEnums;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace;
+import com.redescooter.ses.mobile.rps.dm.OpePurchas;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasLotTrace;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasLotTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasService;
 import com.redescooter.ses.tool.utils.DateUtil;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
 
     @Autowired
     private OpeAssemblyLotTraceService opeAssemblyLotTraceService;
+
+    @Autowired
+    private OpePurchasService opePurchasService;
 
     /**
      * 来料质检 OpePurchasBQc 批次号 id为采购单子表Id
@@ -60,7 +64,14 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
             }
         }
         //没有质检记录 返回当前新的批次号
-        return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(new Date(), DateConstant.YMD)).append("001").toString();
+        OpePurchas opePurchas = opePurchasService.getById(enter.getId());
+        Date time = null;
+        if (opePurchas != null) {
+            time = opePurchas.getCreatedTime();
+        } else {
+            time = new Date();
+        }
+        return new StringBuilder(ProductContractEnums.MATERIALQCBATCHNO.getCode()).append(DateUtil.getDateTime(time, DateConstant.YMD)).append("001").toString();
     }
 
     /**
