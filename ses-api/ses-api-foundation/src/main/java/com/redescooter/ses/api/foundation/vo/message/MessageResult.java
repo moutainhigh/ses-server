@@ -2,13 +2,8 @@ package com.redescooter.ses.api.foundation.vo.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -88,7 +83,7 @@ public class MessageResult extends GeneralResult {
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

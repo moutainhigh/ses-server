@@ -11,7 +11,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
 
 @Service
 public class OpeProductPriceServiceImpl extends ServiceImpl<OpeProductPriceMapper, OpeProductPrice>
-    implements OpeProductPriceService {
+        implements OpeProductPriceService {
 
     @Override
     public int updateBatch(List<OpeProductPrice> list) {
@@ -33,3 +33,4 @@ public class OpeProductPriceServiceImpl extends ServiceImpl<OpeProductPriceMappe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
