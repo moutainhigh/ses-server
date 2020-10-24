@@ -16,4 +16,14 @@ public class ShippingListResult extends GeneralResult {
     private Long id;
 
     private String invoiceNo;
+
+    private String invoiceStatus;
+
+    private Integer invoiceType;
+
+    private Integer invoiceQty;
+
+    private String purchaseNo;
+
+    private String
 }

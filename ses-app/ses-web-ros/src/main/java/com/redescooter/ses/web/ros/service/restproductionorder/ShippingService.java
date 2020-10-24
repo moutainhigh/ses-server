@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListResult;
 
 import java.util.Map;
 
@@ -32,5 +34,13 @@ public interface ShippingService {
      */
     Map<String, Integer> statusList(GeneralEnter enter);
 
-    GeneralResult list();
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/23 17:32
+     * @Param: enter
+     * @Return: ShippingListResult
+     * @desc: 发货单列表
+     */
+    PageResult<ShippingListResult> list(ShippingListEnter enter);
 }
