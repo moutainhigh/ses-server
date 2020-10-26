@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.service.restproductionorder;
+package com.redescooter.ses.web.ros.service.restproductionorder.invoice;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;

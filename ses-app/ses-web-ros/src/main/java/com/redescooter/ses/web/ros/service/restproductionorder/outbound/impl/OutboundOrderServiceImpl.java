@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.service.restproductionorder.impl;
+package com.redescooter.ses.web.ros.service.restproductionorder.outbound.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.service.restproductionorder.OutboundOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;

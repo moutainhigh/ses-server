@@ -1,15 +1,12 @@
-package com.redescooter.ses.web.ros.service.restproductionorder.impl;
+package com.redescooter.ses.web.ros.service.restproductionorder.consign;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.service.restproductionorder.ConsignOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
@@ -19,9 +16,7 @@ import java.util.Map;
  *  @version：V ROS 1.8.3
  *  @Description:
  */
-@Slf4j
-@Service
-public class ConsignOrderServiceImpl implements ConsignOrderService {
+public interface ConsignOrderService {
     /**
      * @Description
      * @Author: alex
@@ -29,12 +24,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Param: enter
      * @Return: Map
      * @desc: 出库单产品类型统计
-     * @param enter
      */
-    @Override
-    public Map<String, Integer> countByType(GeneralEnter enter) {
-        return null;
-    }
+    Map<String, Integer> countByType(GeneralEnter enter);
 
     /**
      * @Description
@@ -43,12 +34,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Param: enter
      * @Return: Map
      * @desc: 状态列表
-     * @param enter
      */
-    @Override
-    public Map<String, Integer> statusList(GeneralEnter enter) {
-        return null;
-    }
+    Map<String, Integer> statusList(GeneralEnter enter);
 
     /**
      * @Description
@@ -57,12 +44,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Param: enter
      * @Return: ConsignOrderListResult
      * @desc: 出库单列表
-     * @param enter
      */
-    @Override
-    public PageResult<ConsignOrderListResult> list(ConsignOrderListEnter enter) {
-        return null;
-    }
+    PageResult<ConsignOrderListResult> list(ConsignOrderListEnter enter);
 
     /**
      * @Description
@@ -71,12 +54,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Param: enter
      * @Return: ConsignOrderDetailResult
      * @desc: 详情
-     * @param enter
      */
-    @Override
-    public ConsignOrderDetailResult detail(IdEnter enter) {
-        return null;
-    }
+    ConsignOrderDetailResult detail(IdEnter enter);
 
     /**
      * @Description
@@ -85,10 +64,6 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 委托单签收
-     * @param enter
      */
-    @Override
-    public GeneralResult signFor(IdEnter enter) {
-        return null;
-    }
+    GeneralResult signFor(IdEnter enter);
 }
