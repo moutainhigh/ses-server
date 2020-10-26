@@ -39,4 +39,7 @@ public class PrintEntryOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "序列号")
     private String serialNum;
+
+    @ApiModelProperty(value = "质检数量")
+    private Integer qty;
 }
