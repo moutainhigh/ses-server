@@ -74,7 +74,7 @@ public class PurchaseOrderController {
     }
 
 
-    @PostMapping(value = "/cancelOrder")
+    @PostMapping(value = "/closeOrder")
     @ApiOperation(value = "采购单关闭订单", response = GeneralResult.class)
     public Response<GeneralResult> closeOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(purchaseOrderService.closeOrder(enter));
