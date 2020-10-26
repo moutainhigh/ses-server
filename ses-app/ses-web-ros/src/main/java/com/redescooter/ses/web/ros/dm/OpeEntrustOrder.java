@@ -1,21 +1,32 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 委托单表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeEntrustOrder")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_entrust_order")
 public class OpeEntrustOrder implements Serializable {
+    public static final String COL_NOTIFY_USER = "notify_user";
     /**
      * 主键id
      */
@@ -28,7 +39,6 @@ public class OpeEntrustOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -109,6 +119,13 @@ public class OpeEntrustOrder implements Serializable {
     private Long consigneeUser;
 
     /**
+     * 收货人国家编码如+86
+     */
+    @TableField(value = "consignee_country_code")
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
+
+    /**
      * 收货人电话
      */
     @TableField(value = "consignee_user_telephone")
@@ -144,6 +161,13 @@ public class OpeEntrustOrder implements Serializable {
     private Long consignorUser;
 
     /**
+     * 发货人国家编码如+86
+     */
+    @TableField(value = "consignor_country_code")
+    @ApiModelProperty(value = "发货人国家编码如+86")
+    private String consignorCountryCode;
+
+    /**
      * 发货人电话
      */
     @TableField(value = "consignor_telephone")
@@ -158,11 +182,18 @@ public class OpeEntrustOrder implements Serializable {
     private String consignorMail;
 
     /**
-     * 通知人id
+     * 通知人
      */
-    @TableField(value = "notify_user")
-    @ApiModelProperty(value = "通知人id")
-    private Long notifyUser;
+    @TableField(value = "notify_user_name")
+    @ApiModelProperty(value = "通知人")
+    private Long notifyUserName;
+
+    /**
+     * 通知人国家编码如+86
+     */
+    @TableField(value = "notify_country_code")
+    @ApiModelProperty(value = "通知人国家编码如+86")
+    private String notifyCountryCode;
 
     /**
      * 通知人电话
@@ -276,6 +307,8 @@ public class OpeEntrustOrder implements Serializable {
 
     public static final String COL_CONSIGNEE_USER = "consignee_user";
 
+    public static final String COL_CONSIGNEE_COUNTRY_CODE = "consignee_country_code";
+
     public static final String COL_CONSIGNEE_USER_TELEPHONE = "consignee_user_telephone";
 
     public static final String COL_CONSIGNEE_USER_MAIL = "consignee_user_mail";
@@ -286,11 +319,15 @@ public class OpeEntrustOrder implements Serializable {
 
     public static final String COL_CONSIGNOR_USER = "consignor_user";
 
+    public static final String COL_CONSIGNOR_COUNTRY_CODE = "consignor_country_code";
+
     public static final String COL_CONSIGNOR_TELEPHONE = "consignor_telephone";
 
     public static final String COL_CONSIGNOR_MAIL = "consignor_mail";
 
-    public static final String COL_NOTIFY_USER = "notify_user";
+    public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
+
+    public static final String COL_NOTIFY_COUNTRY_CODE = "notify_country_code";
 
     public static final String COL_NOTIFY_USER_TELEPHONE = "notify_user_telephone";
 

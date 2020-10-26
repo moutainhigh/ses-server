@@ -17,15 +17,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 单据操作记录表
+ * 出库单
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeOpTrace")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeOutWhouseOrder")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "ope_op_trace")
-public class OpeOpTrace implements Serializable {
+@TableName(value = "ope_out_whouse_order")
+public class OpeOutWhouseOrder implements Serializable {
     /**
      * 主键id
      */
@@ -41,18 +41,88 @@ public class OpeOpTrace implements Serializable {
     private Integer dr;
 
     /**
-     * 关联的单据id
+     * 租户ID
      */
-    @TableField(value = "relation_id")
-    @ApiModelProperty(value = "关联的单据id")
-    private Long relationId;
+    @TableField(value = "tenant_id")
+    @ApiModelProperty(value = "租户ID")
+    private Long tenantId;
 
     /**
-     * 操作类型，1：创建，2：编辑，3：下单，4：删除，5：取消订单，6：关闭订单，7：备货，8：装车，9：开始质检，10：提交出库，11：发货，12：签收
+     * 部门id（做数据权限用）
      */
-    @TableField(value = "op_type")
-    @ApiModelProperty(value = "操作类型，1：创建，2：编辑，3：下单，4：删除，5：取消订单，6：关闭订单，7：备货，8：装车，9：开始质检，10：提交出库，11：发货，12：签收")
-    private Integer opType;
+    @TableField(value = "dept_id")
+    @ApiModelProperty(value = "部门id（做数据权限用）")
+    private Long deptId;
+
+    /**
+     * 关联的发货单id
+     */
+    @TableField(value = "invoice_id")
+    @ApiModelProperty(value = "关联的发货单id")
+    private Long invoiceId;
+
+    /**
+     * 发货单号
+     */
+    @TableField(value = "invoice_no")
+    @ApiModelProperty(value = "发货单号")
+    private String invoiceNo;
+
+    /**
+     * 出库单号
+     */
+    @TableField(value = "out_wh_no")
+    @ApiModelProperty(value = "出库单号")
+    private String outWhNo;
+
+    /**
+     * 出库单状态，0：待出库，10：质检中，20：已出库，30：已取消
+     */
+    @TableField(value = "out_wh_status")
+    @ApiModelProperty(value = "出库单状态，0：待出库，10：质检中，20：已出库，30：已取消")
+    private Integer outWhStatus;
+
+    /**
+     * 出库单类型，1：整车，2：组装件，3：部件
+     */
+    @TableField(value = "out_wh_type")
+    @ApiModelProperty(value = "出库单类型，1：整车，2：组装件，3：部件")
+    private Integer outWhType;
+
+    /**
+     * 出库类型，1：销售调拨
+     */
+    @TableField(value = "out_type")
+    @ApiModelProperty(value = "出库类型，1：销售调拨")
+    private Integer outType;
+
+    /**
+     * 出库数量
+     */
+    @TableField(value = "out_wh_qty")
+    @ApiModelProperty(value = "出库数量")
+    private Integer outWhQty;
+
+    /**
+     * 国家编码如+86
+     */
+    @TableField(value = "country_code")
+    @ApiModelProperty(value = "国家编码如+86")
+    private String countryCode;
+
+    /**
+     * 联系人电话
+     */
+    @TableField(value = "telephone")
+    @ApiModelProperty(value = "联系人电话")
+    private String telephone;
+
+    /**
+     * 邮箱
+     */
+    @TableField(value = "mail")
+    @ApiModelProperty(value = "邮箱")
+    private String mail;
 
     /**
      * 备注
@@ -130,9 +200,29 @@ public class OpeOpTrace implements Serializable {
 
     public static final String COL_DR = "dr";
 
-    public static final String COL_RELATION_ID = "relation_id";
+    public static final String COL_TENANT_ID = "tenant_id";
 
-    public static final String COL_OP_TYPE = "op_type";
+    public static final String COL_DEPT_ID = "dept_id";
+
+    public static final String COL_INVOICE_ID = "invoice_id";
+
+    public static final String COL_INVOICE_NO = "invoice_no";
+
+    public static final String COL_OUT_WH_NO = "out_wh_no";
+
+    public static final String COL_OUT_WH_STATUS = "out_wh_status";
+
+    public static final String COL_OUT_WH_TYPE = "out_wh_type";
+
+    public static final String COL_OUT_TYPE = "out_type";
+
+    public static final String COL_OUT_WH_QTY = "out_wh_qty";
+
+    public static final String COL_COUNTRY_CODE = "country_code";
+
+    public static final String COL_TELEPHONE = "telephone";
+
+    public static final String COL_MAIL = "mail";
 
     public static final String COL_REMARK = "remark";
 

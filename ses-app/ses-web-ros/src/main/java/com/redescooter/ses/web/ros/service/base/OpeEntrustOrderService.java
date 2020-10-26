@@ -19,3 +19,4 @@ public interface OpeEntrustOrderService extends IService<OpeEntrustOrder> {
     int insertOrUpdateSelective(OpeEntrustOrder record);
 
 }
+

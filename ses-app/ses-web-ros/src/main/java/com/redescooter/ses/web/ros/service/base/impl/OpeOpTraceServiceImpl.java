@@ -36,3 +36,4 @@ public class OpeOpTraceServiceImpl extends ServiceImpl<OpeOpTraceMapper, OpeOpTr
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

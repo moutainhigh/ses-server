@@ -19,3 +19,4 @@ public interface OpeOpTraceService extends IService<OpeOpTrace> {
     int insertOrUpdateSelective(OpeOpTrace record);
 
 }
+

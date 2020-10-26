@@ -19,3 +19,4 @@ public interface OpeAllocateOrderService extends IService<OpeAllocateOrder> {
     int insertOrUpdateSelective(OpeAllocateOrder record);
 
 }
+

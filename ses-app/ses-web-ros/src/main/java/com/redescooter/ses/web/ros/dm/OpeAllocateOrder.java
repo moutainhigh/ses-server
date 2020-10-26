@@ -1,21 +1,32 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 调拨单表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeAllocateOrder")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_allocate_order")
 public class OpeAllocateOrder implements Serializable {
+    public static final String COL_NOTIFY_USER = "notify_user";
     /**
      * 主键id
      */
@@ -28,7 +39,6 @@ public class OpeAllocateOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -95,6 +105,13 @@ public class OpeAllocateOrder implements Serializable {
     private Long consigneeUser;
 
     /**
+     * 收获人国家编码如+86
+     */
+    @TableField(value = "consignee_country_code")
+    @ApiModelProperty(value = "收获人国家编码如+86")
+    private String consigneeCountryCode;
+
+    /**
      * 收货人电话
      */
     @TableField(value = "consignee_user_telephone")
@@ -123,11 +140,18 @@ public class OpeAllocateOrder implements Serializable {
     private String consigneePostCode;
 
     /**
-     * 通知人id
+     * 通知人
      */
-    @TableField(value = "notify_user")
-    @ApiModelProperty(value = "通知人id")
-    private Long notifyUser;
+    @TableField(value = "notify_user_name")
+    @ApiModelProperty(value = "通知人")
+    private Long notifyUserName;
+
+    /**
+     * 通知人国家编码如+86
+     */
+    @TableField(value = "notify_country_code")
+    @ApiModelProperty(value = "通知人国家编码如+86")
+    private String notifyCountryCode;
 
     /**
      * 通知人电话
@@ -237,6 +261,8 @@ public class OpeAllocateOrder implements Serializable {
 
     public static final String COL_CONSIGNEE_USER = "consignee_user";
 
+    public static final String COL_CONSIGNEE_COUNTRY_CODE = "consignee_country_code";
+
     public static final String COL_CONSIGNEE_USER_TELEPHONE = "consignee_user_telephone";
 
     public static final String COL_CONSIGNEE_USER_MAIL = "consignee_user_mail";
@@ -245,7 +271,9 @@ public class OpeAllocateOrder implements Serializable {
 
     public static final String COL_CONSIGNEE_POST_CODE = "consignee_post_code";
 
-    public static final String COL_NOTIFY_USER = "notify_user";
+    public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
+
+    public static final String COL_NOTIFY_COUNTRY_CODE = "notify_country_code";
 
     public static final String COL_NOTIFY_USER_TELEPHONE = "notify_user_telephone";
 

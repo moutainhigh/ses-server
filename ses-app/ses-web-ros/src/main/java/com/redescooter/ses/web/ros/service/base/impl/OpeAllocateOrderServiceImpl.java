@@ -36,3 +36,4 @@ public class OpeAllocateOrderServiceImpl extends ServiceImpl<OpeAllocateOrderMap
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

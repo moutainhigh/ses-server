@@ -19,3 +19,4 @@ public interface OpeInvoiceOrderService extends IService<OpeInvoiceOrder> {
     int insertOrUpdateSelective(OpeInvoiceOrder record);
 
 }
+

@@ -36,3 +36,4 @@ public class OpeInvoiceOrderServiceImpl extends ServiceImpl<OpeInvoiceOrderMappe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

@@ -36,3 +36,4 @@ public class OpeEntrustOrderServiceImpl extends ServiceImpl<OpeEntrustOrderMappe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
