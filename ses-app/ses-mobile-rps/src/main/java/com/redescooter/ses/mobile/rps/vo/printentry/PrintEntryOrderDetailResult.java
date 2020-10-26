@@ -1,10 +1,14 @@
 package com.redescooter.ses.mobile.rps.vo.printentry;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.*;
-
-import io.swagger.annotations.*;
+import java.util.Date;
 
 /**
  *  @author: alex
@@ -42,4 +46,9 @@ public class PrintEntryOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "质检数量")
     private Integer qty;
+
+    @ApiModelProperty(value = "到货时间")
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    private Date arrivalTime;
 }
