@@ -20,7 +20,7 @@ import lombok.*;
 public class OutboundOrderListEnter extends PageEnter {
 
     @ApiModelProperty(value = "状态")
-    private int status;
+    private Integer status;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;

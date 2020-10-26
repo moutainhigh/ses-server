@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
+package com.redescooter.ses.web.ros.vo.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -17,7 +17,7 @@ import java.util.Date;
 @ApiModel(value = "关联订单的列表", description = "关联订单的列表")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InvoiceOrderDetailAssociatedOrderResult extends GeneralResult {
+public class AssociatedOrderResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
