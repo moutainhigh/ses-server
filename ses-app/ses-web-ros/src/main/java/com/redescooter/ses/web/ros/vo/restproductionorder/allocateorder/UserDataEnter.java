@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "收货人、通知人、发货人下拉入参", description = "收货人、通知人、发货人下拉入参")
 public class UserDataEnter extends GeneralEnter {
 
     @ApiModelProperty("查询条件")

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "采购单列表入参", description = "采购单列表入参")
 public class PuraseListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字")

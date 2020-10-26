@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.controller.allocateorder;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import io.swagger.annotations.Api;
@@ -13,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameAllocateOrderController
@@ -52,7 +50,7 @@ public class AllocateOrderController {
 
 
     @PostMapping(value = "/detail")
-    @ApiOperation(value = "调拨单详情", response = GeneralResult.class)
+    @ApiOperation(value = "调拨单详情", response = AllocateOrderDetailResult.class)
     public Response<AllocateOrderDetailResult> allocateDetail(@ModelAttribute @ApiParam("请求参数")IdEnter enter) {
         return new Response(allocateOrderService.allocateDetail(enter));
     }
@@ -73,11 +71,17 @@ public class AllocateOrderController {
 
 
     @PostMapping(value = "/userData")
-    @ApiOperation(value = "收货人、通知人、发货人下拉数据源接口", response = GeneralResult.class)
+    @ApiOperation(value = "收货人、通知人、发货人下拉数据源接口", response = UserDataResult.class)
     public Response<List<UserDataResult>> userData(@ModelAttribute @ApiParam("请求参数")UserDataEnter enter) {
         return new Response(allocateOrderService.userData(enter));
     }
 
 
+
+    @PostMapping(value = "/listCount")
+    @ApiOperation(value = "列表统计", response = Map.class)
+    public Response<Map<String,Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response(allocateOrderService.listCount(enter));
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "调拨单新增编辑入参", description = "调拨单新增编辑入参")
 public class AllocateOrderOrUpdateSaveEnter extends GeneralEnter {
 
     @ApiModelProperty("主键id")

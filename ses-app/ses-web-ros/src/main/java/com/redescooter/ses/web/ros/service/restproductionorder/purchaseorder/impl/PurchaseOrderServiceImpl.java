@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNamePurchaseOrderServiceImpl
@@ -89,5 +91,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public List<AllocateNoDataResult> allocateNoData(GeneralEnter enter) {
         List<AllocateNoDataResult> resultList = new ArrayList<>();
         return resultList;
+    }
+
+
+    @Override
+    public Map<String, Integer> listCount(GeneralEnter enter) {
+        Map<String, Integer> map = new HashMap<>();
+        // 1 2 3分别对应整车、组装件、部件
+        map.put("1",0);
+        map.put("2",0);
+        map.put("3",0);
+        return map;
     }
 }

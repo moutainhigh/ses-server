@@ -1,17 +1,25 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.ros.dm.OpeAllocateOrder;
+import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
+import com.redescooter.ses.web.ros.service.base.OpeAllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameAllocateOrderServiceImpl
@@ -23,6 +31,9 @@ import java.util.List;
 @Service
 public class AllocateOrderServiceImpl implements AllocateOrderService {
 
+
+    @Autowired
+    private OpeAllocateOrderService opeAllocateOrderService;
 
     @Override
     public PageResult<AllocateOrderListResult> allocateList(AllocateOrderListEnter enter) {
@@ -36,6 +47,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Transactional
     public GeneralResult allocateSave(AllocateOrderOrUpdateSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
+        // 先处理主表数据
+        OpeAllocateOrder allocateOrder = new OpeAllocateOrder();
+        BeanUtils.copyProperties(enter,allocateOrder);
         // todo 操作动态表
         // todo 状态流转表
         // 传参里面有classType 判断是哪个类型 对应的调拨产品为 车辆  组装件  部件
@@ -77,7 +91,22 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Override
     public List<UserDataResult> userData(UserDataEnter enter) {
         List<UserDataResult> resultList = new ArrayList<>();
+        UserDataResult user = new UserDataResult();
+        user.setId(1000L);
+        user.setMail("邮箱");
+        user.setTelephone("电话");
+        resultList.add(user);
         return resultList;
+    }
+
+    @Override
+    public Map<String, Integer> listCount(GeneralEnter enter) {
+        Map<String,Integer> map = new HashMap<>();
+        // 1 2 3分别对应整车、组装件、部件
+        map.put("1",0);
+        map.put("2",0);
+        map.put("3",0);
+        return map;
     }
 
 

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "采购单详情出参", description = "采购详情表出参")
 public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键id")

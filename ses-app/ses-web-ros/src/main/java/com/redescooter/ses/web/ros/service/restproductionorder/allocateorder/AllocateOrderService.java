@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.allocateorder;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameAllocateOrderService
@@ -84,6 +86,16 @@ public interface AllocateOrderService {
      * @return
      **/
     List<UserDataResult> userData(UserDataEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  列表统计
+     * @Date  2020/10/26 10:16
+     * @Param [enter]
+     * @return
+     **/
+    Map<String,Integer>  listCount(GeneralEnter enter);
 
 
 

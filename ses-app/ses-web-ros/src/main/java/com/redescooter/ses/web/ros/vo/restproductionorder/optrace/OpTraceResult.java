@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.optrace;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "调拨单操作动态详情出参", description = "调拨单操作动态详情出参")
 public class OpTraceResult extends GeneralEnter {
 
     @ApiModelProperty("主键id")

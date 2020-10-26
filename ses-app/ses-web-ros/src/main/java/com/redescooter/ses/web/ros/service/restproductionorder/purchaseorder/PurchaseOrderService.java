@@ -11,6 +11,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.Purchase
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseSaveOrUpdateEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNamePurchaseOrderService
@@ -100,6 +101,16 @@ public interface PurchaseOrderService {
      * @return
      **/
     List<AllocateNoDataResult> allocateNoData(GeneralEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  列表统计
+     * @Date  2020/10/26 10:16
+     * @Param [enter]
+     * @return
+     **/
+    Map<String,Integer> listCount(GeneralEnter enter);
 
 
 }

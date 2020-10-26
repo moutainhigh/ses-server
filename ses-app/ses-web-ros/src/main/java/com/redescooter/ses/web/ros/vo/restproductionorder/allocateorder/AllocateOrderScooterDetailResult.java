@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "调拨单车型详情出参", description = "调拨单车型详情出参")
 public class AllocateOrderScooterDetailResult extends GeneralResult {
 
     @ApiModelProperty("主键id")
