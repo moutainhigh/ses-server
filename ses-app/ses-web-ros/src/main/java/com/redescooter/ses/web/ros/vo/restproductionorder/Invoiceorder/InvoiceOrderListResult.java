@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder;
+package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Date;
 @ApiModel(value = "采购单列表", description = "采购单列表")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ShippingListResult extends GeneralResult {
+public class InvoiceOrderListResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
@@ -27,7 +26,7 @@ public class ShippingListResult extends GeneralResult {
     private String invoiceNo;
 
     @ApiModelProperty(value = "采购单状态")
-    private String invoiceStatus;
+    private Integer invoiceStatus;
 
     @ApiModelProperty(value = "采购单类型")
     private Integer invoiceType;
@@ -44,8 +43,6 @@ public class ShippingListResult extends GeneralResult {
     @ApiModelProperty(value = "到期交付时间")
     private Date deliveryDate;
 
-    @ApiModelProperty(value = "订单金额")
-    private BigDecimal invoiceAmount;
 
     @ApiModelProperty(value = "供应商Id")
     private Long supplierId;

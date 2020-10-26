@@ -1,11 +1,12 @@
 package com.redescooter.ses.web.ros.service.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  *  @version：V ROS 1.8.3
  *  @Description:
  */
-public interface ShippingService {
+public interface InvoiceOrderService {
     /**
      * @Description
      * @Author: alex
@@ -24,7 +25,7 @@ public interface ShippingService {
      * @Return: Map
      * @desc: 状态分组
      */
-    Map<String, Integer> countByType(GeneralEnter enter);
+    Map<Integer, Integer> countByType(GeneralEnter enter);
 
     /**
      * @Description
@@ -34,7 +35,7 @@ public interface ShippingService {
      * @Return: Map
      * @desc: 状态列表
      */
-    Map<String, Integer> statusList(GeneralEnter enter);
+    Map<Integer, Integer> statusList(GeneralEnter enter);
 
     /**
      * @Description
@@ -44,7 +45,7 @@ public interface ShippingService {
      * @Return: ShippingListResult
      * @desc: 发货单列表
      */
-    PageResult<ShippingListResult> list(ShippingListEnter enter);
+    PageResult<InvoiceOrderListResult> list(InvoiceOrderListEnter enter);
 
     /**
      * @Description
@@ -54,5 +55,15 @@ public interface ShippingService {
      * @Return: ShippingDetailResult
      * @desc: 详情
      */
-    ShippingDetailResult deatil(IdEnter enter);
+    InvoiceOrderDetailResult detail(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 14:00
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 备货
+     */
+    GeneralResult stockUp(IdEnter enter);
 }

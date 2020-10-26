@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder;
+package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.Data;
@@ -13,7 +13,7 @@ import io.swagger.annotations.*;
  */
 @ApiModel(value = "发货单列表入参", description = "发货单列表入参")
 @Data
-public class ShippingListEnter extends PageEnter {
+public class InvoiceOrderListEnter extends PageEnter {
     @ApiModelProperty(value = "关键字")
     private String keyword;
 
