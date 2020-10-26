@@ -59,6 +59,8 @@ public class ColorServiceImpl implements ColorService {
         SesStringUtils.objStringTrim(enter);
         // 校验字段长度
         checkFiledLength(enter);
+        // 校验色值唯一
+        checkColorValue(enter);
         OpeColor  color = new OpeColor();
         color.setColorName(enter.getColorName());
         color.setColorValue(enter.getColorValue());
@@ -70,6 +72,19 @@ public class ColorServiceImpl implements ColorService {
         color.setId(idAppService.getId(SequenceName.OPE_COLOR));
         opeColorService.insertOrUpdate(color);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    public void checkColorValue(ColorSaveOrEditEnter enter){
+        QueryWrapper<OpeColor>  qw =  new QueryWrapper<>();
+        qw.eq(OpeColor.COL_COLOR_VALUE,enter.getColorValue());
+        if(enter.getId() != null){
+            qw.ne(OpeColor.COL_ID,enter.getId());
+        }
+        Integer count = opeColorService.count(qw);
+        if (count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_EXIST.getCode(), ExceptionCodeEnums.COLOR_VALUE_EXIST.getMessage());
+        }
     }
 
 

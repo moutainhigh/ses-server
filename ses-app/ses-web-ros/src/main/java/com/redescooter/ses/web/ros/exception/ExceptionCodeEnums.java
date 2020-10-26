@@ -450,7 +450,13 @@ public enum ExceptionCodeEnums {
 
     QUANTITY_ILLEGAL(10216, "数量违法"),
 
-    ORDER_NOT_EXIST(10217, "单据不存在"),
+    SELECT_COMBIN_NAME(10217, "请先选择组装件名称"),
+
+    PRODUCT_NAME_NOT_NULL(10218, "产品名称不能为空"),
+
+    COLOR_VALUE_EXIST(10219, "色值已存在"),
+
+    ORDER_NOT_EXIST(10220, "单据不存在"),
 
     ;
 

@@ -17,3 +17,4 @@ public interface OpeSaleScooterService extends IService<OpeSaleScooter> {
     int insertOrUpdateSelective(OpeSaleScooter record);
 
 }
+

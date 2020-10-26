@@ -12,12 +12,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 销售车辆表
+ * 销售组装件表
  */
-@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleScooter")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleCombin")
 @Data
-@TableName(value = "operation.ope_sale_scooter")
-public class OpeSaleScooter {
+@TableName(value = "operation.ope_sale_combin")
+public class OpeSaleCombin {
+    public static final String COL_BOM_NO = "bom_no";
     /**
      * 主键
      */
@@ -55,25 +56,18 @@ public class OpeSaleScooter {
     private String productCode;
 
     /**
-     * 车辆所属规格id
+     * 组装件名称(英文名称)
      */
-    @TableField(value = "specificat_id")
-    @ApiModelProperty(value = "车辆所属规格id")
-    private Long specificatId;
+    @TableField(value = "combin_name")
+    @ApiModelProperty(value = "组装件名称(英文名称)")
+    private String combinName;
 
     /**
-     * 车辆所属分组id
+     * 组装件id
      */
-    @TableField(value = "group_id")
-    @ApiModelProperty(value = "车辆所属分组id")
-    private Long groupId;
-
-    /**
-     * 车辆所属颜色id
-     */
-    @TableField(value = "color_id")
-    @ApiModelProperty(value = "车辆所属颜色id")
-    private Long colorId;
+    @TableField(value = "production_combin_bom_id")
+    @ApiModelProperty(value = "组装件id")
+    private Long productionCombinBomId;
 
     /**
      * 销售状态，0：不可销售，1：可销售
@@ -162,11 +156,9 @@ public class OpeSaleScooter {
 
     public static final String COL_PRODUCT_CODE = "product_code";
 
-    public static final String COL_SPECIFICAT_ID = "specificat_id";
+    public static final String COL_COMBIN_NAME = "combin_name";
 
-    public static final String COL_GROUP_ID = "group_id";
-
-    public static final String COL_COLOR_ID = "color_id";
+    public static final String COL_PRODUCTION_COMBIN_BOM_ID = "production_combin_bom_id";
 
     public static final String COL_SALE_STUTAS = "sale_stutas";
 
