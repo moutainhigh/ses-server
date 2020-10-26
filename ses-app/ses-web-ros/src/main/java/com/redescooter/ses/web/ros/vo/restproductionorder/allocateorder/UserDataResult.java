@@ -19,6 +19,9 @@ public class UserDataResult extends GeneralResult {
     @ApiModelProperty("人员id")
     private Long id;
 
+    @ApiModelProperty("人员名称")
+    private String userName;
+
     @ApiModelProperty("联系电话")
     private String telephone;
 

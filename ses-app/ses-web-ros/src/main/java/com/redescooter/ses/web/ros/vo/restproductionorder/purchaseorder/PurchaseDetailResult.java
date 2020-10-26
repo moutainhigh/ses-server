@@ -41,7 +41,6 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "交货日期")
     private Date deliveryDate;
 
-
     @ApiModelProperty(value = "联系人")
     private String contactUser;
 
@@ -80,6 +79,18 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "收货地邮编")
     private String consigneePostCode;
+
+    @ApiModelProperty(value = "发货人id")
+    private Long consignorUser;
+
+    @ApiModelProperty(value = "发货人名称")
+    private String consignorUserName;
+
+    @ApiModelProperty(value = "发货人电话")
+    private String consignorTelephone;
+
+    @ApiModelProperty(value = "发货人邮箱")
+    private String consignorMail;
 
     @ApiModelProperty("备注")
     private String remark;

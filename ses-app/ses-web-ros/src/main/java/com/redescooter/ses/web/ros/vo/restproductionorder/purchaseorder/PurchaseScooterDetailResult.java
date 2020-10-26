@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "采购单车辆产品详情出参",description = "采购单车辆产品详情出参")
 public class PurchaseScooterDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "主键id")

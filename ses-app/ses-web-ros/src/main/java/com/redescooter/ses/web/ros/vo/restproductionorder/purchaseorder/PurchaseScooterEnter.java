@@ -1,10 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -18,6 +15,7 @@ import java.math.BigDecimal;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "采购单车辆产品新增编辑入参",description = "采购单车辆产品新增编辑入参")
 public class PurchaseScooterEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "主键id")

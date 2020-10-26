@@ -8,24 +8,27 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @ClassNameAllocateOrderScooterEnter
+ * @ClassNameAllocateOrderCombinEnter
  * @Description
  * @Author Aleks
- * @Date2020/10/23 15:27
+ * @Date2020/10/26 11:41
  * @Version V1.0
  **/
+@ApiModel(value = "调拨单组装件产品新增入参",description = "调拨单组装件产品新增入参")
 @Data
-@ApiModel(value = "调拨单车辆产品新增入参",description = "调拨单车辆产品新增入参")
-public class AllocateOrderScooterEnter extends GeneralEnter {
+public class AllocateOrderCombinEnter extends GeneralEnter {
 
     @ApiModelProperty("id")
     private Long id;
 
-    @ApiModelProperty("车型id")
-    private Long groupId;
+    @ApiModelProperty(value = "组装件名称(英文名称)")
+    private String combinName;
 
-    @ApiModelProperty("颜色")
-    private Long colorId;
+    @ApiModelProperty(value = "组装件id")
+    private Long productionCombinBomId;
+
+    @ApiModelProperty("组装件编号")
+    private String bomNo;
 
     @ApiModelProperty("调拨数量")
     private Integer qty;
