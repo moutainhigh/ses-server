@@ -91,7 +91,8 @@ public class AllocateOrderDetailResult extends GeneralResult {
     @ApiModelProperty("操作动态")
     private List<OpTraceResult> opTraces;
 
+    @ApiModelProperty("关联的委托单")
+    private List<AllocateEntrustResult> entrusts;
 
-    // todo 关联的委托单
 
 }

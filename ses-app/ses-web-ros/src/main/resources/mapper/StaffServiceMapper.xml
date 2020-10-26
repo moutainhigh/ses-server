@@ -154,4 +154,18 @@
         from ope_sys_staff
         where dr = 0 and status = 1 and tenant_id = #{tenantId} and if_safe_code = 1
     </select>
+
+    <select id="userData"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult">
+        select
+          id,
+          full_name as userName,
+          telephone as telephone,
+          email as mail
+        from ope_sys_staff
+        where dr = 0 and  status = 1
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and full_name full_name like concat('%', #{enter.keyWord}, '%')
+        </if>
+    </select>
 </mapper>

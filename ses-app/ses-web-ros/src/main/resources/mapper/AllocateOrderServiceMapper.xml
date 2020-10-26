@@ -12,7 +12,7 @@
 
 
     <sql id="listCondition">
-        <if test="enter.saleStutas != null">
+        <if test="enter.allocateStatus != null">
             and allocate.allocate_status = #{enter.allocateStatus}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
@@ -49,6 +49,8 @@
     <select id="whData"
             resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataResult">
         select
+          id as whId,
+          parameter_name as whName
         from platform.pla_sys_param_setting
         where dr = 0
         <if test="enter.type == 1">
@@ -57,6 +59,88 @@
         <if test="enter.type == 2">
             parameter_name != '中国成品库'
         </if>
+    </select>
+
+    <select id="allocateDateil"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderDetailResult">
+        select
+          allocate.id,
+          allocate.allocate_no,
+          allocate.allocate_status,
+          allocate.ship_wh,
+          allocate.receipt_wh,
+          allocate.consignee_user,
+          staff.full_name as consigneeUserName,
+          allocate.consignee_country_code,
+          allocate.consignee_user_telephone,
+          allocate.consignee_user_mail,
+          allocate.created_time,
+          param1.parameter_name as shipWhName,
+          param2.parameter_name as receiptWhName,
+          allocate.consignee_country_code,
+          allocate.notify_user_name,
+          allocate.notify_country_code,
+          allocate.notify_user_telephone,
+          allocate.notify_user_mail
+        from ope_allocate_order allocate
+        left join ope_sys_staff staff on allocate.consignee_user = staff.id
+        left join platform.pla_sys_param_setting param1 on allocate.ship_wh = param1.id
+        left join platform.pla_sys_param_setting param2 on allocate.receipt_wh = param2.id
+        where allocate.dr = 0 and allocate.id = #{id}
+
+    </select>
+
+
+    <select id="allocateScooter"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderScooterDetailResult">
+        select
+          scooter.id as id,
+          scooter.group_id as groupId,
+          scooter.color_id as colorId,
+          scooter.qty as qty,
+          scooter.expect_delivery_date as expectDeliveryDate,
+          scooter.expect_ship_date as expectShipDate,
+          group.group_name as groupName,
+          color.color_name as colorName
+        from ope_allocate_scooter_b scooter
+        left join ope_specificat_group group on group.id = scooter.group_id
+        left join ope_color color on color.id = scooter.color_id
+        where scooter.allocate_id = #{id} and scooter.dr = 0
+    </select>
+
+
+    <select id="allocateCombin"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderCombinDetailResult">
+        select
+        combin.id,
+        combin.combin_name,
+        combin.production_combin_bom_id,
+        combin.qty,
+        combin.expect_delivery_date,
+        combin.expect_ship_date,
+        bom.bom_no
+        from ope_allocate_combin_b combin
+        left join ope_production_combin_bom bom on bom.id = combin.production_combin_bom_id
+        where combin.dr = 0 and  combin.allocate_id = #{id}
+    </select>
+
+
+    <select id="allocateParts" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderPartsDetailResult">
+        select
+         parts.id,
+         parts.parts_id,
+         parts.parts_name,
+         parts.parts_no,
+         parts.parts_type,
+         parts.qty,
+         parts.expect_delivery_date,
+         parts.expect_ship_date
+       from ope_allocate_parts_b parts
+       where parts.dr = 0 and parts.allocate_id = #{id}
+    </select>
+
+    <select id="allocateEntrust" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateEntrustResult">
+
     </select>
 
 

@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
-import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,6 +20,21 @@ public interface AllocateOrderServiceMapper {
     List<AllocateOrderListResult> allocateList(@Param("enter") AllocateOrderListEnter enter);
 
     List<WhDataResult> whData(@Param("enter")WhDataEnter enter);
+
+
+    AllocateOrderDetailResult allocateDateil(@Param("id") Long id);
+
+
+    List<AllocateOrderScooterDetailResult> allocateScooter(@Param("id") Long id);
+
+
+    List<AllocateOrderCombinDetailResult> allocateCombin(@Param("id") Long id);
+
+
+    List<AllocateOrderPartsDetailResult> allocateParts(@Param("id") Long id);
+
+    // todo
+    List<AllocateEntrustResult> allocateEntrust(@Param("id") Long id);
 
 
 }

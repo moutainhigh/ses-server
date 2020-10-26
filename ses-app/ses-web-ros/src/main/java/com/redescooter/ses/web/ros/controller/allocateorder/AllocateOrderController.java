@@ -86,7 +86,7 @@ public class AllocateOrderController {
 
 
     @PostMapping(value = "/whData")
-    @ApiOperation(value = "收货人、发货人下拉数据源接口", response = WhDataResult.class)
+    @ApiOperation(value = "仓库下拉数据源接口", response = WhDataResult.class)
     public Response<List<WhDataResult>> whData(@ModelAttribute @ApiParam("请求参数")WhDataEnter enter) {
         return new Response<>(allocateOrderService.whData(enter));
     }

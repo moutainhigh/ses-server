@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.im
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.AllocateOrderStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -16,6 +15,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -58,6 +58,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private AllocateOrderServiceMapper allocateOrderServiceMapper;
+
+    @Autowired
+    private StaffService staffService;
 
     @Reference
     private IdAppService idAppService;
@@ -285,19 +288,52 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Override
     public AllocateOrderDetailResult allocateDetail(IdEnter enter) {
-        AllocateOrderDetailResult result = new AllocateOrderDetailResult();
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 先找调拨单自己的详情信息
+        AllocateOrderDetailResult result = allocateOrderServiceMapper.allocateDateil(enter.getId());
+        // 再找对应的产品列表信息
+        switch (allocateOrder.getAllocateType()){
+            case 1:
+                result.setScooters(allocateOrderServiceMapper.allocateScooter(enter.getId()));
+                default:
+                    break;
+            case 2:
+                result.setCombins(allocateOrderServiceMapper.allocateCombin(enter.getId()));
+                break;
+            case 3:
+                result.setParts(allocateOrderServiceMapper.allocateParts(enter.getId()));
+                break;
+        }
+        result.setEntrusts(allocateOrderServiceMapper.allocateEntrust(enter.getId()));
         return result;
     }
 
 
     @Override
     public GeneralResult allocateConfirmOrder(IdEnter enter) {
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_HANDLE.getValue());
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
         return new GeneralResult(enter.getRequestId());
     }
 
 
     @Override
+    @Transactional
     public GeneralResult allocateCancelOrder(IdEnter enter) {
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // todo 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
+        allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.CANCEL.getValue());
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -305,11 +341,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Override
     public List<UserDataResult> userData(UserDataEnter enter) {
         List<UserDataResult> resultList = new ArrayList<>();
-        UserDataResult user = new UserDataResult();
-        user.setId(1000L);
-        user.setMail("邮箱");
-        user.setTelephone("电话");
-        resultList.add(user);
+        resultList = staffService.userData(enter);
         return resultList;
     }
 
@@ -317,9 +349,13 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public Map<String, Integer> listCount(GeneralEnter enter) {
         Map<String, Integer> map = new HashMap<>();
         // 1 2 3分别对应整车、组装件、部件
-        map.put("1", 0);
-        map.put("2", 0);
-        map.put("3", 0);
+        QueryWrapper<OpeAllocateOrder> qw = new QueryWrapper<>();
+        qw.eq(OpeAllocateOrder.COL_ALLOCATE_TYPE,1);
+        map.put("1", opeAllocateOrderService.count(qw));
+        qw.eq(OpeAllocateOrder.COL_ALLOCATE_TYPE,2);
+        map.put("2", opeAllocateOrderService.count(qw));
+        qw.eq(OpeAllocateOrder.COL_ALLOCATE_TYPE,3);
+        map.put("3", opeAllocateOrderService.count(qw));
         return map;
     }
 
