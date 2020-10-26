@@ -28,6 +28,9 @@ public class AllocateOrderOrUpdateSaveEnter extends GeneralEnter {
     @ApiModelProperty("收货人id")
     private Long consigneeUser;
 
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
+
     @ApiModelProperty("收货人电话")
     private String consigneeUserTelephone;
 
@@ -40,8 +43,11 @@ public class AllocateOrderOrUpdateSaveEnter extends GeneralEnter {
     @ApiModelProperty("收获邮编")
     private String consigneePostCode;
 
-    @ApiModelProperty("通知人id")
-    private Long notifyUser;
+    @ApiModelProperty("通知人名称")
+    private String  notifyUserName;
+
+    @ApiModelProperty("通知人国家编码如+86")
+    private String notifyCountryCode;
 
     @ApiModelProperty("通知人电话")
     private String notifyUserTelephone;

@@ -13,7 +13,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
-@ApiModel(value = "收货人、通知人、发货人下拉数据", description = "收货人、通知人、发货人下拉数据")
+@ApiModel(value = "收货人、发货人下拉数据", description = "收货人、通知人、发货人下拉数据")
 public class UserDataResult extends GeneralResult {
 
     @ApiModelProperty("人员id")

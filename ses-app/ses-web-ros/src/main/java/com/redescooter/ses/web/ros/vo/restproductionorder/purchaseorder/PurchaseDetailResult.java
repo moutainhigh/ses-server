@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,8 +40,14 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "交货日期")
     private Date deliveryDate;
 
-    @ApiModelProperty(value = "联系人")
-    private String contactUser;
+    @ApiModelProperty(value = "联系人id")
+    private Long contactUser;
+
+    @ApiModelProperty(value = "联系人名称")
+    private String contactUserName;
+
+    @ApiModelProperty(value = "联系人国家编码如+86")
+    private String contactCountryCode;
 
     @ApiModelProperty(value = "联系电话")
     private String contactTelephone;
@@ -50,11 +55,11 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "联系邮箱")
     private String contactMail;
 
-    @ApiModelProperty(value = "通知人id")
-    private Long notifyUser;
-
     @ApiModelProperty(value = "通知人名称")
     private String notifyUserName;
+
+    @ApiModelProperty(value = "通知人国家编码如+86")
+    private String notifyCountryCode;
 
     @ApiModelProperty(value = "通知人电话")
     private String notifyUserTelephone;
@@ -67,6 +72,9 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "收货人名称")
     private String consigneeUserName;
+
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
 
     @ApiModelProperty(value = "收货人电话")
     private String consigneeUserTelephone;

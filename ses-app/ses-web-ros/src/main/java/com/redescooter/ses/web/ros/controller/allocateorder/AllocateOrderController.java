@@ -71,7 +71,7 @@ public class AllocateOrderController {
 
 
     @PostMapping(value = "/userData")
-    @ApiOperation(value = "收货人、通知人、发货人下拉数据源接口", response = UserDataResult.class)
+    @ApiOperation(value = "收货人、发货人下拉数据源接口", response = UserDataResult.class)
     public Response<List<UserDataResult>> userData(@ModelAttribute @ApiParam("请求参数")UserDataEnter enter) {
         return new Response(allocateOrderService.userData(enter));
     }

@@ -52,6 +52,9 @@ public class AllocateOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收货人名称")
     private String consigneeUserName;
 
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
+
     @ApiModelProperty(value = "收货人电话")
     private String consigneeUserTelephone;
 
@@ -61,11 +64,11 @@ public class AllocateOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收货人邮编")
     private String consigneePostCode;
 
-    @ApiModelProperty("通知人id")
-    private Long notifyUser;
-
     @ApiModelProperty("通知人名称")
-    private Long notifyUserName;
+    private String notifyUserName;
+
+    @ApiModelProperty("通知人国家编码如+86")
+    private String notifyCountryCode;
 
     @ApiModelProperty("通知人电话")
     private Long notifyUserTelephone;

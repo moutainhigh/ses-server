@@ -51,6 +51,9 @@ public class AllocateOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "收货人名称")
     private String consigneeUserName;
 
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
+
     @ApiModelProperty(value = "收货人电话")
     private String consigneeUserTelephone;
 
