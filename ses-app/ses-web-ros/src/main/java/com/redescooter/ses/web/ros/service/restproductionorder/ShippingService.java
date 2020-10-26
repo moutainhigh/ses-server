@@ -1,7 +1,9 @@
 package com.redescooter.ses.web.ros.service.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.shippingorder.ShippingListResult;
 
@@ -43,4 +45,14 @@ public interface ShippingService {
      * @desc: 发货单列表
      */
     PageResult<ShippingListResult> list(ShippingListEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 12:28
+     * @Param: enter
+     * @Return: ShippingDetailResult
+     * @desc: 详情
+     */
+    ShippingDetailResult deatil(IdEnter enter);
 }
