@@ -39,7 +39,4 @@ public class PrintEntryOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "序列号")
     private String serialNum;
-
-    @ApiModelProperty(value = "是否具有条码")
-    private int idclass;
 }

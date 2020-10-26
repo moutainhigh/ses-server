@@ -40,11 +40,13 @@ public class PrintEntryServiceImpl implements PrintEntryService {
     public PageResult<PrintEntryResult> list(PrintEnteyEnter enter) {
         //来料质检
         if (StringUtils.equals(enter.getBusinessModule(), ModerTypeEnums.METERIAL.getValue())) {
+
             int count = printEntryServiceMapper.meterialCount(enter);
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            return PageResult.create(enter, count, printEntryServiceMapper.meterialList(enter));
+            List<PrintEntryResult> printEntryResult = printEntryServiceMapper.meterialList(enter);
+            return PageResult.create(enter, count, printEntryResult);
         }
         //生产入库
 //        if (StringUtils.equals(enter.getBusinessModule(), ModerTypeEnums.PURCHASE_WH.getValue())) {
@@ -92,6 +94,9 @@ public class PrintEntryServiceImpl implements PrintEntryService {
                     item.setPartQcDetailList(qcDetailList);
                 });
             }
+            //删除无质检记录的部件
+            printEntryOrderResultList.removeIf(item -> CollectionUtils.isEmpty(item.getPartQcDetailList()));
+
             return PageResult.create(enter, count, printEntryOrderResultList);
         }
         return null;

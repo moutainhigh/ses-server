@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.dao.printentry;
 
 import com.redescooter.ses.mobile.rps.vo.printentry.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface PrintEntryServiceMapper {
      * @Return: int
      * @desc: 来料质检
      */
-    int meterialCount(PrintEnteyEnter enter);
+    int meterialCount(@Param("enter") PrintEnteyEnter enter);
 
     /**
      * @Description
@@ -23,7 +24,7 @@ public interface PrintEntryServiceMapper {
      * @Return: PrintEntryResult
      * @desc: 来料质检列表
      */
-    List<PrintEntryResult> meterialList(PrintEnteyEnter enter);
+    List<PrintEntryResult> meterialList(@Param("enter") PrintEnteyEnter enter);
 
     /**
      * @Description
@@ -74,4 +75,13 @@ public interface PrintEntryServiceMapper {
      * @desc: 订单详情
      */
     List<PrintEntryOrderDetailResult> orderPartDetail(List<Long> purchasIds);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 10:26
+     * @Return: PrintEntryOrderDetailResult
+     * @desc: 部件质检记录
+     */
+    List<PrintEntryOrderDetailResult> partQcDetail();
 }
