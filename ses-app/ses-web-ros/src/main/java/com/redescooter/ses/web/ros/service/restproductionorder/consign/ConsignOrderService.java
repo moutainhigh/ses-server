@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
@@ -25,7 +26,7 @@ public interface ConsignOrderService {
      * @Return: Map
      * @desc: 出库单产品类型统计
      */
-    Map<String, Integer> countByType(GeneralEnter enter);
+    Map<Integer, Integer> countByType(GeneralEnter enter);
 
     /**
      * @Description
@@ -35,7 +36,7 @@ public interface ConsignOrderService {
      * @Return: Map
      * @desc: 状态列表
      */
-    Map<String, Integer> statusList(GeneralEnter enter);
+    Map<Integer, Integer> statusList(GeneralEnter enter);
 
     /**
      * @Description
@@ -66,4 +67,24 @@ public interface ConsignOrderService {
      * @desc: 委托单签收
      */
     GeneralResult signFor(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/26 15:57
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 状态修改
+     */
+    GeneralResult chanageStatus(ChanageStatusEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 16:54
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 保存出库单
+     */
+    GeneralResult save(GeneralEnter enter);
 }

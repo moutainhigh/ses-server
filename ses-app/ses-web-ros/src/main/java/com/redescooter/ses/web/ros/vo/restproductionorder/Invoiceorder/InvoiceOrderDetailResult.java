@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OperatingResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -97,10 +99,10 @@ public class InvoiceOrderDetailResult extends GeneralResult {
     private String address;
 
     @ApiModelProperty(value = "发货产品列表")
-    private List<InvoiceOrderDetailProductResult> invoiceProductList;
+    private List<OrderProductDetailResult> invoiceProductList;
 
     @ApiModelProperty(value = "关联订单")
-    private List<InvoiceOrderDetailAssociatedOrderResult> associatedOrderList;
+    private List<AssociatedOrderResult> associatedOrderList;
 
     @ApiModelProperty(value = "操作动态")
     private List<OperatingResult> orderOperatingList;

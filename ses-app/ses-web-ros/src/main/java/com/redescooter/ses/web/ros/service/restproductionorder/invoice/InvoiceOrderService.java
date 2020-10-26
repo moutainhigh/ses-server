@@ -4,9 +4,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 
 import java.util.Map;
 
@@ -66,4 +68,34 @@ public interface InvoiceOrderService {
      * @desc: 备货
      */
     GeneralResult stockUp(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 15:49
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc:
+     */
+    GeneralResult save(SaveInvoiceEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 16:00
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 装车
+     */
+    GeneralResult loading(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/26 15:57
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 状态修改
+     */
+    GeneralResult chanageStatus(ChanageStatusEnter enter);
 }

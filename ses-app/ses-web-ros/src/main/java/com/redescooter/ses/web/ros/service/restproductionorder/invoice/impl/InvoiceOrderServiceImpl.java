@@ -1,14 +1,17 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 
-import com.redescooter.ses.api.common.enums.production.restproduction.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.production.restproduction.ProductTypeEnums;
-import com.redescooter.ses.api.common.enums.production.restproduction.invoice.InvoiceOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproduction.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproduction.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproduction.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -135,8 +138,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         result.setZipCodeId("32234343423");
         result.setZipCodeName("噶过");
         result.setAddress("法国");
-        List<InvoiceOrderDetailProductResult> invoiceOrderDetailProductResults = new ArrayList<>();
-        InvoiceOrderDetailProductResult invoiceOrderDetailProductResult = new InvoiceOrderDetailProductResult();
+        List<OrderProductDetailResult> invoiceOrderDetailProductResults = new ArrayList<>();
+        OrderProductDetailResult invoiceOrderDetailProductResult = new OrderProductDetailResult();
         invoiceOrderDetailProductResult.setId(242423L);
         invoiceOrderDetailProductResult.setCategoryId(3434234L);
         invoiceOrderDetailProductResult.setCategoryName("高速");
@@ -147,8 +150,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         invoiceOrderDetailProductResult.setSnMap(objectObjectHashMap);
         invoiceOrderDetailProductResult.setQty(1);
         result.setInvoiceProductList(invoiceOrderDetailProductResults);
-        List<InvoiceOrderDetailAssociatedOrderResult> assList = new ArrayList<>();
-        InvoiceOrderDetailAssociatedOrderResult invoiceOrderDetailAssociatedOrderResult = new InvoiceOrderDetailAssociatedOrderResult();
+        List<AssociatedOrderResult> assList = new ArrayList<>();
+        AssociatedOrderResult invoiceOrderDetailAssociatedOrderResult = new AssociatedOrderResult();
         invoiceOrderDetailAssociatedOrderResult.setId(312312L);
         invoiceOrderDetailAssociatedOrderResult.setOrderNo("23123131");
         invoiceOrderDetailAssociatedOrderResult.setCreatedDate(new Date());
@@ -169,6 +172,48 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      */
     @Override
     public GeneralResult stockUp(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 15:49
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc:
+     * @param enter
+     */
+    @Override
+    public GeneralResult save(SaveInvoiceEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 16:00
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 装车
+     * @param enter
+     */
+    @Override
+    public GeneralResult loading(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/26 15:57
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 状态修改
+     * @param enter
+     */
+    @Override
+    public GeneralResult chanageStatus(ChanageStatusEnter enter) {
         return null;
     }
 }

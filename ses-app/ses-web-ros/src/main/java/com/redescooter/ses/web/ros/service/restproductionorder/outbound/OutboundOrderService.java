@@ -1,11 +1,14 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.outbound;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 
 import java.util.Map;
 
@@ -24,7 +27,7 @@ public interface OutboundOrderService {
      * @Return: Map
      * @desc: 出库单产品类型统计
      */
-    Map<String, Integer> countByType(GeneralEnter enter);
+    Map<Integer, Integer> countByType(GeneralEnter enter);
 
     /**
      * @Description
@@ -34,7 +37,7 @@ public interface OutboundOrderService {
      * @Return: Map
      * @desc: 状态列表
      */
-    Map<String, Integer> statusList(GeneralEnter enter);
+    Map<Integer, Integer> statusList(GeneralEnter enter);
 
     /**
      * @Description
@@ -55,4 +58,24 @@ public interface OutboundOrderService {
      * @desc: 出库单列表
      */
     OutboundOrderDetailResult detail(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/26 15:57
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 状态修改
+     */
+    GeneralResult chanageStatus(ChanageStatusEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/26 16:52
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 保存
+     */
+    GeneralResult save(SaveOutboundOrderEnter enter);
 }
