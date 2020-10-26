@@ -450,6 +450,8 @@ public enum ExceptionCodeEnums {
 
     QUANTITY_ILLEGAL(10216, "数量违法"),
 
+    ORDER_NOT_EXIST(10217, "单据不存在"),
+
     ;
 
 

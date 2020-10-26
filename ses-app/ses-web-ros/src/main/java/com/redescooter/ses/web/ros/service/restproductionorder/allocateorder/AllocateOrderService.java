@@ -98,7 +98,14 @@ public interface AllocateOrderService {
     Map<String,Integer>  listCount(GeneralEnter enter);
 
 
-
+    /**
+     * @Author Aleks
+     * @Description  仓库下拉接口数据源
+     * @Date  2020/10/26 19:04
+     * @Param [enter]
+     * @return
+     **/
+    List<WhDataResult> whData(WhDataEnter enter);
 
 
 }

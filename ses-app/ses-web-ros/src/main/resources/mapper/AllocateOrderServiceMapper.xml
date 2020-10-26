@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper">
+
+
+    <select id="allocateTotal" resultType="int">
+        select count(*) from ope_allocate_order allocate
+        left join ope_sys_staff staff on allocate.consignee_user = staff.id
+        where allocate.dr = 0
+        <include refid="listCondition"></include>
+    </select>
+
+
+    <sql id="listCondition">
+        <if test="enter.saleStutas != null">
+            and allocate.allocate_status = #{enter.allocateStatus}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and allocate.allocate_no like concat('%', #{enter.keyword}, '%') or
+            staff.full_name like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="allocateList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderListResult">
+        select
+          allocate.id,
+          allocate.allocate_no,
+          allocate.allocate_status,
+          allocate.allocate_qty,
+          allocate.ship_wh,
+          allocate.receipt_wh,
+          allocate.consignee_user,
+          staff.full_name as consigneeUserName,
+          allocate.consignee_country_code,
+          allocate.consignee_user_telephone,
+          allocate.consignee_user_mail,
+          allocate.created_time,
+          param1.parameter_name as shipWhName,
+          param2.parameter_name as receiptWhName
+        from ope_allocate_order allocate
+        left join ope_sys_staff staff on allocate.consignee_user = staff.id
+        left join platform.pla_sys_param_setting param1 on allocate.ship_wh = param1.id
+        left join platform.pla_sys_param_setting param2 on allocate.receipt_wh = param2.id
+        where allocate.dr = 0
+        <include refid="listCondition"></include>
+        order by allocate.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <select id="whData"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataResult">
+        select
+        from platform.pla_sys_param_setting
+        where dr = 0
+        <if test="enter.type == 1">
+            parameter_name = '中国成品库'
+        </if>
+        <if test="enter.type == 2">
+            parameter_name != '中国成品库'
+        </if>
+    </select>
+
+
+</mapper>

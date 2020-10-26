@@ -90,6 +90,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public List<AllocateNoDataResult> allocateNoData(GeneralEnter enter) {
         List<AllocateNoDataResult> resultList = new ArrayList<>();
+        // todo  加状态过滤
         return resultList;
     }
 
