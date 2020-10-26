@@ -376,6 +376,38 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
+      Allocate-order-API:
+        group-name: Allocate-order-API
+        title: 调拨单
+        description: 调拨单
+        base-package: com.redescooter.ses.web.ros.controller.allocateorder
+        path-regex: /sys/allocate/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      Purchase-order-API:
+        group-name: Purchase-order-API
+        title: 采购单
+        description: 采购单
+        base-package: com.redescooter.ses.web.ros.controller.purchaseorder
+        path-regex: /sys/purchase/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
 ## stripe pay
 stripe:
   currency: eur

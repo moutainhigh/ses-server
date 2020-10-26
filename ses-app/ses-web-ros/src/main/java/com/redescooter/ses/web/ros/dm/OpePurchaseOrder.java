@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,7 +14,8 @@ import java.util.Date;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpePurchaseOrder")
 @Data
 @TableName(value = "ope_purchase_order")
-public class OpePurchaseOrder implements Serializable {
+public class OpePurchaseOrder {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
@@ -58,6 +58,13 @@ public class OpePurchaseOrder implements Serializable {
     @TableField(value = "allocate_id")
     @ApiModelProperty(value = "关联的调拨单id")
     private Long allocateId;
+
+    /**
+     * 采购单号
+     */
+    @TableField(value = "purchase_no")
+    @ApiModelProperty(value = "采购单号")
+    private String purchaseNo;
 
     /**
      * 采购单状态，0：草稿，10：待备货，20：备货中，30：待发货，40：待签收，50：已签收，60：已完成，70：已取消
@@ -318,8 +325,6 @@ public class OpePurchaseOrder implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -331,6 +336,8 @@ public class OpePurchaseOrder implements Serializable {
     public static final String COL_ALLOCATE_NO = "allocate_no";
 
     public static final String COL_ALLOCATE_ID = "allocate_id";
+
+    public static final String COL_PURCHASE_NO = "purchase_no";
 
     public static final String COL_PURCHASE_STATUS = "purchase_status";
 
