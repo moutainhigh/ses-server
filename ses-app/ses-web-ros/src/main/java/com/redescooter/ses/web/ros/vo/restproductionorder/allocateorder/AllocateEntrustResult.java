@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.Date;
  **/
 @ApiModel(value = "调拨单关联的委托单",description = "调拨单关联的委托单")
 @Data
-public class AllocateEntrustResult extends GeneralResult {
+public class AllocateEntrustResult {
 
     @ApiModelProperty("委托单id")
     private Long id;

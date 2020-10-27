@@ -458,6 +458,9 @@ public enum ExceptionCodeEnums {
 
     ORDER_NOT_EXIST(10220, "单据不存在"),
 
+    ORDER_STATUS_ERROR(10221, "单据状态的不满足"),
+
+
     ;
 
 

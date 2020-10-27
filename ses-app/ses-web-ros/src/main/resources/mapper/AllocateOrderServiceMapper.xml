@@ -6,7 +6,7 @@
     <select id="allocateTotal" resultType="int">
         select count(*) from ope_allocate_order allocate
         left join ope_sys_staff staff on allocate.consignee_user = staff.id
-        where allocate.dr = 0
+        where allocate.dr = 0 and allocate.allocate_type = #{enter.classType}
         <include refid="listCondition"></include>
     </select>
 
@@ -27,6 +27,7 @@
           allocate.allocate_no,
           allocate.allocate_status,
           allocate.allocate_qty,
+          allocate.allocate_type,
           allocate.ship_wh,
           allocate.receipt_wh,
           allocate.consignee_user,
@@ -41,7 +42,7 @@
         left join ope_sys_staff staff on allocate.consignee_user = staff.id
         left join platform.pla_sys_param_setting param1 on allocate.ship_wh = param1.id
         left join platform.pla_sys_param_setting param2 on allocate.receipt_wh = param2.id
-        where allocate.dr = 0
+        where allocate.dr = 0 and allocate.allocate_type = #{enter.classType}
         <include refid="listCondition"></include>
         order by allocate.created_time desc limit #{enter.startRow},#{enter.pageSize}
     </select>
@@ -74,6 +75,8 @@
           allocate.consignee_country_code,
           allocate.consignee_user_telephone,
           allocate.consignee_user_mail,
+          allocate.consignee_post_code,
+          allocate.consignee_address,
           allocate.created_time,
           param1.parameter_name as shipWhName,
           param2.parameter_name as receiptWhName,
@@ -100,10 +103,11 @@
           scooter.qty as qty,
           scooter.expect_delivery_date as expectDeliveryDate,
           scooter.expect_ship_date as expectShipDate,
-          group.group_name as groupName,
+          group1.group_name as groupName,
+          color.color_value as colorValue,
           color.color_name as colorName
         from ope_allocate_scooter_b scooter
-        left join ope_specificat_group group on group.id = scooter.group_id
+        left join ope_specificat_group group1 on group1.id = scooter.group_id
         left join ope_color color on color.id = scooter.color_id
         where scooter.allocate_id = #{id} and scooter.dr = 0
     </select>
@@ -141,6 +145,20 @@
 
     <select id="allocateEntrust" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateEntrustResult">
 
+    </select>
+
+    <select id="allocateTrace" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult">
+        select
+          trace.id,
+          trace.relation_id,
+          trace.op_type,
+          trace.remark,
+          trace.created_time,
+          staff.full_name as createdByName
+        from ope_op_trace trace
+        left join ope_sys_staff staff on trace.created_by = staff.id
+        where trace.dr = 0 and trace.relation_id = #{id}
+        order by trace.created_time desc
     </select>
 
 
