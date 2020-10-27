@@ -43,13 +43,6 @@ public class InvoiceOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "到期交付时间")
     private Date deliveryDate;
 
-
-    @ApiModelProperty(value = "供应商Id")
-    private Long supplierId;
-
-    @ApiModelProperty(value = "供应商名字")
-    private String supplierName;
-
     @ApiModelProperty(value = "收货人Id")
     private Long receiverId;
 

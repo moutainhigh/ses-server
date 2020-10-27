@@ -8,12 +8,17 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +32,10 @@ import java.util.*;
 @Service
 @Slf4j
 public class InvoiceOrderServiceImpl implements InvoiceOrderService {
+
+    @Autowired
+    private InvoiceOrderServiceMapper invoiceOrderServiceMapper;
+
     /**
      * @Description
      * @Author: alex
@@ -39,8 +48,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public Map<Integer, Integer> countByType(GeneralEnter enter) {
         Map<Integer, Integer> result = new HashMap<>();
+        Map<Integer, Integer> map = invoiceOrderServiceMapper.countByType(enter);
+
         for (ProductTypeEnums item : ProductTypeEnums.values()) {
-            if (!result.containsKey(item.getValue())) {
+            if (!map.containsKey(item.getValue())) {
                 result.put(item.getValue(), 0);
             }
         }
@@ -78,27 +89,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      */
     @Override
     public PageResult<InvoiceOrderListResult> list(InvoiceOrderListEnter enter) {
-        InvoiceOrderListResult invoiceOrderListResult = new InvoiceOrderListResult();
-        List<InvoiceOrderListResult> list = new ArrayList<>();
-        invoiceOrderListResult.setId(1L);
-        invoiceOrderListResult.setInvoiceNo("你猜");
-        invoiceOrderListResult.setInvoiceStatus(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue());
-        invoiceOrderListResult.setInvoiceType(ProductTypeEnums.PARTS.getValue());
-        invoiceOrderListResult.setInvoiceQty(1);
-        invoiceOrderListResult.setPurchaseId(1L);
-        invoiceOrderListResult.setPurchaseNo("你才");
-        invoiceOrderListResult.setDeliveryDate(new Date());
-        invoiceOrderListResult.setSupplierId(1L);
-        invoiceOrderListResult.setSupplierName("你才");
-        invoiceOrderListResult.setReceiverId(1231L);
-        invoiceOrderListResult.setReceiverFirstName("你才");
-        invoiceOrderListResult.setReceiverLastName("你才");
-        invoiceOrderListResult.setCreateById(2312L);
-        invoiceOrderListResult.setCreateByFirstName("dadad");
-        invoiceOrderListResult.setCreateByLastName("dasdsada");
-        invoiceOrderListResult.setCreateByDate(new Date());
-        list.add(invoiceOrderListResult);
-        return PageResult.create(enter, 1, list);
+        int count = invoiceOrderServiceMapper.listCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, invoiceOrderServiceMapper.list(enter));
     }
 
     /**
