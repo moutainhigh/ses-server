@@ -52,6 +52,15 @@ public class InvoiceOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "收货人名称")
     private String receiverLastName;
 
+    @ApiModelProperty(value = "收货人电话国家代码")
+    private String receiverCountryCode;
+
+    @ApiModelProperty(value = "收货人电话")
+    private String receiverTelephone;
+
+    @ApiModelProperty(value = "收货人邮箱")
+    private String receiverMail;
+
     @ApiModelProperty(value = "创建人Id")
     private Long createById;
 

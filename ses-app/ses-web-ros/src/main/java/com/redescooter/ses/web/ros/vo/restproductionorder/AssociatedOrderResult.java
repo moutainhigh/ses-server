@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.restproductionorder;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +17,7 @@ import java.util.Date;
  */
 @ApiModel(value = "关联订单的列表", description = "关联订单的列表")
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class AssociatedOrderResult extends GeneralResult {
     @ApiModelProperty(value = "id")

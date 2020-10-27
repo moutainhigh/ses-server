@@ -14,4 +14,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class SaveInvoiceEnter extends GeneralEnter {
 
+    private Long id;
 }

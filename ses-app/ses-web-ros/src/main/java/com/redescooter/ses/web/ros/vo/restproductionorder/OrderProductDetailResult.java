@@ -33,8 +33,20 @@ public class OrderProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
 
-    @ApiModelProperty(value = "数量")
+    @ApiModelProperty(value = "组合、部件名称")
+    private String name;
+
+    @ApiModelProperty(value = "序列号")
+    private String serialN;
+
+    @ApiModelProperty(value = "部品类型")
+    private Integer partType;
+
+    @ApiModelProperty(value = "已发货数量")
     private Integer qty;
+
+    @ApiModelProperty(value = "应发货总数量")
+    private Integer totalQty;
 
     @ApiModelProperty(value = "SN集合")
     private Map<Long, String> snMap;

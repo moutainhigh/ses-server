@@ -2,11 +2,12 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.consignorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.OperatingResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
@@ -116,5 +117,5 @@ public class ConsignOrderDetailResult extends GeneralResult {
     private List<AssociatedOrderResult> associatedOrderList;
 
     @ApiModelProperty(value = "操作动态")
-    private List<OperatingResult> orderOperatingList;
+    private List<OpTraceResult> orderOperatingList;
 }

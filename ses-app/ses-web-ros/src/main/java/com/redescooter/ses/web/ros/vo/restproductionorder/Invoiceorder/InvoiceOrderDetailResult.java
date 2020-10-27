@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.OperatingResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,6 +34,12 @@ public class InvoiceOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "交货时间")
     private Date deliveryDate;
+
+    @ApiModelProperty(value = "发票类型")
+    private Integer invoiceType;
+
+    @ApiModelProperty(value = "运输方式")
+    private Integer transportType;
 
     @ApiModelProperty(value = "发货人")
     private Long consignorUserId;
@@ -71,14 +77,8 @@ public class InvoiceOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收获人邮箱")
     private String consigneeUserEmail;
 
-    @ApiModelProperty(value = "通知人")
-    private Long notifyUserId;
-
     @ApiModelProperty(value = "通知人名称")
-    private String notifyUserFistName;
-
-    @ApiModelProperty(value = "通知人名称")
-    private String notifyUserLastName;
+    private String notifyUserName;
 
     @ApiModelProperty(value = "通知人国家编码")
     private String notifyUserCountryCode;
@@ -88,9 +88,6 @@ public class InvoiceOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "通知人邮箱")
     private String notifyUserEmail;
-
-    @ApiModelProperty(value = "区域编码Id")
-    private String zipCodeId;
 
     @ApiModelProperty(value = "区域编码")
     private String zipCodeName;
@@ -105,5 +102,5 @@ public class InvoiceOrderDetailResult extends GeneralResult {
     private List<AssociatedOrderResult> associatedOrderList;
 
     @ApiModelProperty(value = "操作动态")
-    private List<OperatingResult> orderOperatingList;
+    private List<OpTraceResult> orderOperatingList;
 }

@@ -2,8 +2,8 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.OperatingResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -62,5 +62,5 @@ public class OutboundOrderDetailResult extends GeneralResult {
     private List<AssociatedOrderResult> associatedOrderList;
 
     @ApiModelProperty(value = "订单操作日志")
-    private List<OperatingResult> orderOperatingList;
+    private List<OpTraceResult> orderOperatingList;
 }

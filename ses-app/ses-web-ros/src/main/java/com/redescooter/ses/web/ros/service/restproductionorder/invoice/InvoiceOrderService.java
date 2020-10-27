@@ -4,12 +4,15 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,6 +65,26 @@ public interface InvoiceOrderService {
     /**
      * @Description
      * @Author: alex
+     * @Date: 2020/10/27 17:37
+     * @Param: enter
+     * @Return: OrderProductDetailResult
+     * @desc: 查询发货单产品列表
+     */
+    List<OrderProductDetailResult> productListById(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/27 18:14
+     * @Param: enter
+     * @Return: AssociatedOrderResult
+     * @desc: 关联订单列表
+     */
+    List<AssociatedOrderResult> associatedOrderList(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
      * @Date: 2020/10/26 14:00
      * @Param: enter
      * @Return: GeneralResult
@@ -78,16 +101,6 @@ public interface InvoiceOrderService {
      * @desc:
      */
     GeneralResult save(SaveInvoiceEnter enter);
-
-    /**
-     * @Description
-     * @Author: alex
-     * @Date: 2020/10/26 16:00
-     * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 装车
-     */
-    GeneralResult loading(IdEnter enter);
 
     /**
      * @Description

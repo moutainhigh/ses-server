@@ -1,9 +1,9 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.consign.impl;
 
-import com.redescooter.ses.api.common.enums.restproduction.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.restproduction.ProductTypeEnums;
-import com.redescooter.ses.api.common.enums.restproduction.consign.ConsignOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproduction.invoice.InvoiceOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.consign.ConsignOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
