@@ -54,10 +54,10 @@
         from platform.pla_sys_param_setting
         where dr = 0
         <if test="enter.type == 1">
-            parameter_name = '中国成品库'
+           and  parameter_name = '中国成品库'
         </if>
         <if test="enter.type == 2">
-            parameter_name != '中国成品库'
+           and  parameter_name != '中国成品库'
         </if>
     </select>
 
