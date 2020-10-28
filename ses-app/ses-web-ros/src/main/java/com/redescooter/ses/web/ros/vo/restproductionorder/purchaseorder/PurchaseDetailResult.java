@@ -28,6 +28,12 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "采购单状态，0：草稿，10：待备货，20：备货中，30：待发货，40：待签收，50：已签收，60：已完成，70：已取消")
     private Integer purchaseStatus;
 
+    @ApiModelProperty(value = "关联的调拨单号")
+    private String allocateNo;
+
+    @ApiModelProperty(value = "关联的调拨单id")
+    private Long allocateId;
+
     @ApiModelProperty(value = "运输方式，1：海运，2：陆运，3：空运")
     private Integer transType;
 
@@ -54,6 +60,9 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "联系邮箱")
     private String contactMail;
+
+    @ApiModelProperty(value = "通知人id")
+    private Long notifyUser;
 
     @ApiModelProperty(value = "通知人名称")
     private String notifyUserName;

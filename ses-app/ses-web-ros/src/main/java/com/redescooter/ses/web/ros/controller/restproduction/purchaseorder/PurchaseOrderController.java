@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.controller.purchaseorder;
+package com.redescooter.ses.web.ros.controller.restproduction.purchaseorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
@@ -67,7 +67,7 @@ public class PurchaseOrderController {
 
     @PostMapping(value = "/cancelOrder")
     @ApiOperation(value = "采购单取消订单", response = GeneralResult.class)
-    public Response<GeneralResult> cancelOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<GeneralResult> cancelOrder(@ModelAttribute @ApiParam("请求参数") CancelOrderEnter enter) {
         return new Response<>(purchaseOrderService.cancelOrder(enter));
     }
 
@@ -98,4 +98,13 @@ public class PurchaseOrderController {
     public Response<GeneralResult> deleteOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(purchaseOrderService.deleteOrder(enter));
     }
+
+    @PostMapping(value = "/purchaseCalendar")
+    @ApiOperation(value = "采购单日历", response = PurchaseCalendarResult.class)
+    public Response<List<PurchaseCalendarResult>> purchaseCalendar(@ModelAttribute @ApiParam("请求参数") PurchaseCalendarEnter enter) {
+        return new Response<>(purchaseOrderService.purchaseCalendar(enter));
+    }
+
+
+
 }

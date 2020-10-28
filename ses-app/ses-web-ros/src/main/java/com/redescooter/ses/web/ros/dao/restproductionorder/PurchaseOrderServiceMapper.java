@@ -29,4 +29,6 @@ public interface PurchaseOrderServiceMapper {
 
     List<AllocateNoDataResult> allocateNoData(@Param("enter") KeywordEnter enter);
 
+    List<PurchaseCalendarResult> purchaseCalendar(@Param("enter")PurchaseCalendarEnter enter);
+
 }

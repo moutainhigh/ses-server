@@ -88,6 +88,9 @@ public class PurchaseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "发货人邮箱")
     private String consignorMail;
 
+    @ApiModelProperty(value = "通知人id")
+    private Long notifyUser;
+
     @ApiModelProperty(value = "通知人名称")
     private String notifyUserName;
 

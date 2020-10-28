@@ -81,6 +81,7 @@
           param1.parameter_name as shipWhName,
           param2.parameter_name as receiptWhName,
           allocate.consignee_country_code,
+          allocate.notify_user,
           allocate.notify_user_name,
           allocate.notify_country_code,
           allocate.notify_user_telephone,

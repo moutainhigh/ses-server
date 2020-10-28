@@ -18,7 +18,6 @@ import java.util.Date;
 @Data
 @TableName(value = "ope_purchase_order")
 public class OpePurchaseOrder {
-    public static final String COL_NOTIFY_USER = "notify_user";
     private static final long serialVersionUID = 1L;
     /**
      * 主键id
@@ -225,6 +224,13 @@ public class OpePurchaseOrder {
     private String consignorMail;
 
     /**
+     * 通知人id
+     */
+    @TableField(value = "notify_user")
+    @ApiModelProperty(value = "通知人id")
+    private Long notifyUser;
+
+    /**
      * 通知人名称
      */
     @TableField(value = "notify_user_name")
@@ -421,6 +427,8 @@ public class OpePurchaseOrder {
     public static final String COL_CONSIGNOR_TELEPHONE = "consignor_telephone";
 
     public static final String COL_CONSIGNOR_MAIL = "consignor_mail";
+
+    public static final String COL_NOTIFY_USER = "notify_user";
 
     public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
 

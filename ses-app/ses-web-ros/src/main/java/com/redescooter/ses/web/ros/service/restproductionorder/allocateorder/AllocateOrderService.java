@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
 
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public interface AllocateOrderService {
      * @Param [enter]
      * @return
      **/
-    GeneralResult allocateCancelOrder(IdEnter enter);
+    GeneralResult allocateCancelOrder(CancelOrderEnter enter);
 
 
     /**

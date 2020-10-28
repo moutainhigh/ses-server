@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.All
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -108,6 +109,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         OpeOpTrace opTrace = new OpeOpTrace();
         opTrace.setRelationId(allocateOrder.getId());
         opTrace.setOpType(1);
+        opTrace.setOrderType(1);
         opTrace.setCreatedBy(enter.getUserId());
         opTrace.setCreatedTime(new Date());
         opTrace.setUpdatedBy(enter.getUserId());
@@ -117,6 +119,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         // 状态流转表
         OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
         statusFlow.setRelationId(allocateOrder.getId());
+        statusFlow.setOrderType(1);
         statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
         statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
         statusFlow.setCreatedBy(enter.getUserId());
@@ -275,6 +278,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         OpeOpTrace opTrace = new OpeOpTrace();
         opTrace.setRelationId(allocateOrder.getId());
         opTrace.setOpType(2);
+        opTrace.setOrderType(1);
         opTrace.setCreatedBy(enter.getUserId());
         opTrace.setCreatedTime(new Date());
         opTrace.setUpdatedBy(enter.getUserId());
@@ -365,13 +369,34 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_HANDLE.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(allocateOrder.getId());
+        opTrace.setOpType(3);
+        opTrace.setOrderType(1);
+        opTrace.setCreatedBy(enter.getUserId());
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(enter.getUserId());
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+        // 状态流转表
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(allocateOrder.getId());
+        statusFlow.setOrderType(1);
+        statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(enter.getUserId());
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(enter.getUserId());
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
         return new GeneralResult(enter.getRequestId());
     }
 
 
     @Override
     @Transactional
-    public GeneralResult allocateCancelOrder(IdEnter enter) {
+    public GeneralResult allocateCancelOrder(CancelOrderEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
         if (allocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
@@ -379,6 +404,30 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         // todo 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.CANCEL.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        // 操作记录
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(allocateOrder.getId());
+        opTrace.setOpType(5);
+        opTrace.setOrderType(1);
+        opTrace.setRemark(enter.getRemark());
+        opTrace.setCreatedBy(enter.getUserId());
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(enter.getUserId());
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+        // 状态流转表
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(allocateOrder.getId());
+        statusFlow.setRemark(enter.getRemark());
+        statusFlow.setOrderType(1);
+        statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(enter.getUserId());
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(enter.getUserId());
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -392,6 +441,17 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeAllocateOrderService.removeById(enter.getId());
+        // 操作记录
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(allocateOrder.getId());
+        opTrace.setOpType(4);
+        opTrace.setOrderType(1);
+        opTrace.setCreatedBy(enter.getUserId());
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(enter.getUserId());
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
         return new GeneralResult(enter.getRequestId());
     }
 
