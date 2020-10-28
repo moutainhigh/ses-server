@@ -145,6 +145,16 @@
     </select>
 
     <select id="allocateEntrust" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateEntrustResult">
+       select
+        entrust.id,
+        entrust.entrust_no,
+        entrust.entrust_status,
+        entrust.created_time
+       from ope_entrust_order entrust
+       left join ope_invoice_order invoice on invoice.id = entrust.invoice_id
+       left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
+       left join ope_allocate_order allocate on allocate.id = purchase.allocate_id
+       where entrust.dr = 0 and allocate.id = #{id}
 
     </select>
 
@@ -162,6 +172,7 @@
         order by trace.created_time desc
     </select>
 
+
     <select id="allocateOutWh" resultType="java.lang.Integer">
         SELECT
           count(*)
@@ -170,6 +181,17 @@
         LEFT JOIN ope_purchase_order purchase on purchase.id = invoice.purchase_id
         LEFT JOIN ope_allocate_order allocate on  allocate.id = purchase.allocate_id
         where wh.dr = 0 and allocate.id = #{id}  and wh.out_wh_status in (10,20)
+    </select>
+
+
+    <select id="purchaseAllocate" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult">
+        select
+            id,
+            allocate_no as orderNo,
+            created_time
+        from ope_allocate_order
+        where dr = 0 and id = #{id}
+
     </select>
 
 

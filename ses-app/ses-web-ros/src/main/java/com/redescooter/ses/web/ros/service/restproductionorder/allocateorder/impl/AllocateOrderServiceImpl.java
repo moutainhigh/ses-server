@@ -4,6 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.restproductionorder.AllocateOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -66,6 +69,15 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private StaffService staffService;
+
+    @Autowired
+    private OpePurchaseOrderService opePurchaseOrderService;
+
+    @Autowired
+    private OpeInvoiceOrderService opeInvoiceOrderService;
+
+    @Autowired
+    private OpeOutWhouseOrderService opeOutWhouseOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -319,15 +331,8 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 result.setParts(allocateOrderServiceMapper.allocateParts(enter.getId()));
                 break;
         }
-//        result.setEntrusts(allocateOrderServiceMapper.allocateEntrust(enter.getId()));
-        List<AllocateEntrustResult> list = new ArrayList<>();
-        AllocateEntrustResult entrustResult = new AllocateEntrustResult();
-        entrustResult.setId(5254124L);
-        entrustResult.setEntrustNo("委托单号");
-        entrustResult.setEntrustStatus(0);
-        entrustResult.setCreatedTime(new Date());
-        list.add(entrustResult);
-        result.setEntrusts(list);
+         // 关联的委托单
+        result.setEntrusts(allocateOrderServiceMapper.allocateEntrust(enter.getId()));
         // 操作动态
         List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId());
         result.setOpTraces(traces);
@@ -359,7 +364,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         if (allocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        // todo 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
+        // 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
         Integer num = allocateOrderServiceMapper.allocateOutWh(allocateOrder.getId());
         if(num > 0){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
@@ -367,6 +372,43 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.CANCEL.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
         // 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
+        // 采购单
+        QueryWrapper<OpePurchaseOrder> purchaseOrderQueryWrapper = new QueryWrapper<>();
+        purchaseOrderQueryWrapper.eq(OpePurchaseOrder.COL_ALLOCATE_ID,allocateOrder.getId());
+        List<OpePurchaseOrder> purchaseOrderList = opePurchaseOrderService.list(purchaseOrderQueryWrapper);
+        if(CollectionUtils.isNotEmpty(purchaseOrderList)){
+            // 采购单的id
+            List<Long> purchaseIds = new ArrayList<>();
+            for (OpePurchaseOrder purchaseOrder : purchaseOrderList) {
+                purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.CANCEL.getValue());
+                purchaseIds.add(purchaseOrder.getId());
+            }
+            opePurchaseOrderService.saveOrUpdateBatch(purchaseOrderList);
+            // 找到采购单的发货单
+            QueryWrapper<OpeInvoiceOrder> invoiceOrderQueryWrapper = new QueryWrapper<>();
+            invoiceOrderQueryWrapper.in(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseIds);
+            List<OpeInvoiceOrder> invoiceOrderList = opeInvoiceOrderService.list(invoiceOrderQueryWrapper);
+            if (CollectionUtils.isNotEmpty(invoiceOrderList)){
+                // f发货单id
+                List<Long> invoiceIds = new ArrayList<>();
+                for (OpeInvoiceOrder invoiceOrder : invoiceOrderList) {
+                    invoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.CANCEL.getValue());
+                    invoiceIds.add(invoiceOrder.getId());
+                }
+                opeInvoiceOrderService.saveOrUpdateBatch(invoiceOrderList);
+                // 找到发货单的出库单
+                QueryWrapper<OpeOutWhouseOrder> opeOutWhouseOrderQueryWrapper = new QueryWrapper<>();
+                opeOutWhouseOrderQueryWrapper.in(OpeOutWhouseOrder.COL_INVOICE_ID,invoiceIds);
+                List<OpeOutWhouseOrder> whouseOrderList = opeOutWhouseOrderService.list(opeOutWhouseOrderQueryWrapper);
+                if (CollectionUtils.isNotEmpty(whouseOrderList)){
+                    for (OpeOutWhouseOrder outWhouseOrder : whouseOrderList) {
+                        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
+                    }
+                    opeOutWhouseOrderService.saveOrUpdateBatch(whouseOrderList);
+                }
+            }
+        }
+
         // 操作记录
         createOpTrace(allocateOrder.getId(),enter.getUserId(),5,1,enter.getRemark());
         // 状态流转表

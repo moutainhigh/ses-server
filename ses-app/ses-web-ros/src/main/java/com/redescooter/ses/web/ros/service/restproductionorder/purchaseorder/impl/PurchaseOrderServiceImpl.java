@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -12,12 +13,17 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
@@ -63,6 +69,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private PurchaseOrderServiceMapper purchaseOrderServiceMapper;
 
+    @Autowired
+    private AllocateOrderServiceMapper allocateOrderServiceMapper;
+
+    @Autowired
+    private InvoiceOrderServiceMapper invoiceOrderServiceMapper;
+
+    @Autowired
+    private OpeEntrustOrderService opeEntrustOrderService;
+
+    @Autowired
+    private InvoiceOrderService invoiceOrderService;
+
 
     @Reference
     private IdAppService idAppService;
@@ -90,27 +108,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 处理子表
         createPurchaseB(enter,purchaseOrder);
         // 操作动态表
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(purchaseOrder.getId());
-        opTrace.setOpType(1);
-        opTrace.setOrderType(2);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),1,2,enter.getRemark());
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(purchaseOrder.getId());
-        statusFlow.setOrderType(2);
-        statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+        createStatusFlow(purchaseOrder.getId(),enter.getUserId(),purchaseOrder.getPurchaseStatus(),2,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -289,16 +289,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 处理子表
         createPurchaseB(enter,purchaseOrder);
         // 操作动态表
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(purchaseOrder.getId());
-        opTrace.setOpType(2);
-        opTrace.setOrderType(2);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),2,2,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -377,6 +368,43 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 操作动态
         List<OpTraceResult> traces = purchaseOrderServiceMapper.purchaseTrace(enter.getId());
         result.setOpTraces(traces);
+        // 关联的单据
+        List<PurchaseRelationOrderResult> relationOrders = new ArrayList<>();
+        // 调拨单
+        List<PurchaseRelationOrderResult> allocates = allocateOrderServiceMapper.purchaseAllocate(purchaseOrder.getAllocateId());
+        if(CollectionUtils.isNotEmpty(allocates)){
+            for (PurchaseRelationOrderResult allocate : allocates) {
+                allocate.setOrderType(1);
+            }
+            relationOrders.addAll(allocates);
+        }
+        // 发货单
+        List<PurchaseRelationOrderResult> invoices = invoiceOrderServiceMapper.purchaseInvoice(purchaseOrder.getId());
+        if (CollectionUtils.isNotEmpty(invoices)){
+            List<Long> invoiceIds = new ArrayList<>();
+            for (PurchaseRelationOrderResult invoice : invoices) {
+                invoice.setOrderType(2);
+                invoiceIds.add(invoice.getId());
+            }
+            relationOrders.addAll(invoices);
+            // 委托单
+            QueryWrapper<OpeEntrustOrder> wrapper = new QueryWrapper<>();
+            wrapper.in(OpeEntrustOrder.COL_INVOICE_ID,invoiceIds);
+            List<OpeEntrustOrder> entrustOrders = opeEntrustOrderService.list(wrapper);
+            if(CollectionUtils.isNotEmpty(entrustOrders)){
+                List<PurchaseRelationOrderResult> entrusts = new ArrayList<>();
+                for (OpeEntrustOrder entrustOrder : entrustOrders) {
+                    PurchaseRelationOrderResult entrust = new PurchaseRelationOrderResult();
+                    entrust.setOrderType(3);
+                    entrust.setCreatedTime(entrustOrder.getCreatedTime());
+                    entrust.setId(entrustOrder.getId());
+                    entrust.setOrderNo(entrustOrder.getEntrustNo());
+                    entrusts.add(entrust);
+                }
+                relationOrders.addAll(entrusts);
+            }
+        }
+        result.setRelationOrders(relationOrders);
         return result;
     }
 
@@ -391,30 +419,90 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 操作动态表
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(purchaseOrder.getId());
-        opTrace.setOpType(3);
-        opTrace.setOrderType(2);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(purchaseOrder.getId());
-        statusFlow.setOrderType(2);
-        statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
-
-        // todo 调用发货单那边的接口 生成一个发货单
+        createStatusFlow(purchaseOrder.getId(),enter.getUserId(),purchaseOrder.getPurchaseStatus(),2,"");
+        // todo 调用发货单那边的接口 生成一个发货单（缺 组装件和部件的产品表数据）
+        createInvoice(purchaseOrder);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private void createInvoice(OpePurchaseOrder purchaseOrder) {
+        SaveInvoiceEnter invoiceEnter = new SaveInvoiceEnter();
+        invoiceEnter.setPurchaseId(purchaseOrder.getId());
+        invoiceEnter.setPurchaseNo(purchaseOrder.getPurchaseNo());
+        invoiceEnter.setInvoiceStatus(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue());
+        invoiceEnter.setInvoiceType(purchaseOrder.getPurchaseType());
+        invoiceEnter.setTransType(purchaseOrder.getTransType());
+        invoiceEnter.setInvoiceQty(purchaseOrder.getPurchaseQty());
+        invoiceEnter.setConsigneeUser(purchaseOrder.getConsigneeUser());
+        invoiceEnter.setConsigneeCountryCode(purchaseOrder.getConsigneeCountryCode());
+        invoiceEnter.setConsigneeUserTelephone(purchaseOrder.getConsigneeUserTelephone());
+        invoiceEnter.setConsigneeUserMail(purchaseOrder.getConsigneeUserMail());
+        invoiceEnter.setConsigneeAddress(purchaseOrder.getConsigneeAddress());
+        invoiceEnter.setConsigneePostCode(purchaseOrder.getConsigneePostCode());
+        invoiceEnter.setFactoryId(purchaseOrder.getFactoryId());
+        invoiceEnter.setDeliveryDate(purchaseOrder.getDeliveryDate());
+        invoiceEnter.setConsignorUser(purchaseOrder.getConsignorUser());
+        invoiceEnter.setConsignorCountryCode(purchaseOrder.getConsignorCountryCode());
+        invoiceEnter.setConsignorTelephone(purchaseOrder.getConsignorTelephone());
+        invoiceEnter.setConsignorMail(purchaseOrder.getConsignorMail());
+        invoiceEnter.setNotifyUser(purchaseOrder.getNotifyUser());
+        invoiceEnter.setNotifyUserName(purchaseOrder.getNotifyUserName());
+        invoiceEnter.setNotifyCountryCode(purchaseOrder.getNotifyCountryCode());
+        invoiceEnter.setNotifyUserTelephone(purchaseOrder.getNotifyUserTelephone());
+        invoiceEnter.setNotifyUserMail(purchaseOrder.getNotifyUserMail());
+        invoiceEnter.setRemark(purchaseOrder.getRemark());
+
+        // 处理发货单的产品表（子表）
+        List<ProductEnter> productEnters = new ArrayList<>();
+        switch (purchaseOrder.getPurchaseType()){
+            case 1:
+                // scooter 找到采购单的车辆产品表 给到发货单的车辆产品表
+                QueryWrapper<OpePurchaseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpePurchaseScooterB.COL_PURCHASE_ID,purchaseOrder.getId());
+                List<OpePurchaseScooterB> scooterBS = opePurchaseScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    for (OpePurchaseScooterB scooterB : scooterBS) {
+                        ProductEnter productEnter = new ProductEnter();
+                        BeanUtils.copyProperties(scooterB,productEnter);
+//                        productEnter.setProductId(scooterB.getId());
+                        productEnters.add(productEnter);
+                    }
+                }
+            default:
+                    break;
+            case 2:
+                // combin
+                QueryWrapper<OpePurchaseCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpePurchaseCombinB.COL_PURCHASE_ID,purchaseOrder.getId());
+                List<OpePurchaseCombinB> combinBS = opePurchaseCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    for (OpePurchaseCombinB combinB : combinBS) {
+                        ProductEnter productEnter = new ProductEnter();
+                        BeanUtils.copyProperties(combinB,productEnter);
+                        productEnter.setProductId(combinB.getProductionCombinBomId());
+                        productEnters.add(productEnter);
+                    }
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpePurchasePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpePurchasePartsB.COL_PURCHASE_ID,purchaseOrder.getId());
+                List<OpePurchasePartsB> partsBS = opePurchasePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    for (OpePurchasePartsB partsB : partsBS) {
+                        ProductEnter productEnter = new ProductEnter();
+                        BeanUtils.copyProperties(partsB,productEnter);
+                        productEnter.setProductId(partsB.getPartsId());
+                        productEnters.add(productEnter);
+                    }
+                }
+                break;
+        }
+        invoiceEnter.setProductEnterList(productEnters);
+        invoiceOrderService.save(invoiceEnter);
     }
 
 
@@ -430,30 +518,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
 
         // 操作动态表
-//        createOpTrace();
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(purchaseOrder.getId());
-        opTrace.setOpType(5);
-        opTrace.setOrderType(2);
-        opTrace.setRemark(enter.getRemark());
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),5,2,enter.getRemark());
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(purchaseOrder.getId());
-        statusFlow.setOrderType(2);
-        statusFlow.setRemark(enter.getRemark());
-        statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+        createStatusFlow(purchaseOrder.getId(),enter.getUserId(),purchaseOrder.getPurchaseStatus(),2,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -552,7 +619,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
         statusFlow.setRelationId(purchaseId);
         statusFlow.setRemark(remark);
-        statusFlow.setOrderType(2);
+        statusFlow.setOrderType(orderType);
         statusFlow.setOrderStatus(orderStatus);
         statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
         statusFlow.setCreatedBy(userId);
