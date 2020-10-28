@@ -350,6 +350,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
             saveOpTraceEnter.setUserId(enter.getUserId());
             productionOrderTraceService.save(saveOpTraceEnter);
         }
+        opeInvoiceOrder.setPurchaseId(opePurchaseOrder.getId());
+        opeInvoiceOrder.setPurchaseNo(opePurchaseOrder.getPurchaseNo());
         opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
 
         return new GeneralResult(enter.getRequestId());
