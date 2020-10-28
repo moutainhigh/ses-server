@@ -23,12 +23,14 @@ import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
 import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -74,6 +76,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private OpeSysStaffService opeSysStaffService;
+
+    @Autowired
+    private OrderNumberService orderNumberService;
 
     @Reference
     private IdAppService idAppService;
@@ -283,12 +288,12 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         opeInvoiceOrderService.updateById(opeInvoiceOrder);
 
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderOperationTypeEnums.STOCK_UP.getValue(), null);
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.STOCK_UP.getValue(), null);
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), opeInvoiceOrder.getId(), null);
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
@@ -321,24 +326,27 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (enter.getId() == null || enter.getId() == 0) {
             opeInvoiceOrder.setId(idAppService.getId(""));
             opeInvoiceOrder.setDr(0);
+            opeInvoiceOrder.setInvoiceNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.INVOICE.getValue())).getValue());
             opeInvoiceOrder.setCreatedBy(enter.getUserId());
             opeInvoiceOrder.setCreatedTime(new Date());
             opeInvoiceOrder.setUpdatedBy(enter.getUserId());
             opeInvoiceOrder.setUpdatedTime(new Date());
             //操作动态
-            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderOperationTypeEnums.CREATE.getValue(), opeInvoiceOrder.getRemark());
+            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.CREATE.getValue(),
+                    opeInvoiceOrder.getRemark());
             saveOpTraceEnter.setUserId(enter.getUserId());
             productionOrderTraceService.save(saveOpTraceEnter);
 
             //订单节点
-            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), opeInvoiceOrder.getId(), opeInvoiceOrder.getRemark());
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), opeInvoiceOrder.getRemark());
             orderStatusFlowEnter.setUserId(enter.getUserId());
             orderStatusFlowService.save(orderStatusFlowEnter);
         } else {
             opeInvoiceOrder.setUpdatedBy(enter.getUserId());
             opeInvoiceOrder.setUpdatedTime(new Date());
             //操作动态
-            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderOperationTypeEnums.EDIT.getValue(), opeInvoiceOrder.getRemark());
+            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.EDIT.getValue(),
+                    opeInvoiceOrder.getRemark());
             saveOpTraceEnter.setUserId(enter.getUserId());
             productionOrderTraceService.save(saveOpTraceEnter);
         }

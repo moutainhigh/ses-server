@@ -26,6 +26,10 @@ public class SaveOpTraceEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "关联单据Id不为空")
     private Long relationId;
 
+    @ApiModelProperty(value = "订单类型")
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "订单类型为空")
+    private Integer orderType;
+
     @ApiModelProperty("操作类型，1：创建，2：编辑，3：下单，4：删除，5：取消订单，6：关闭订单，7：备货，8：装车，9：开始质检，10：提交出库，11：发货，12：签收")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "单据类型不为空")
     private Integer opType;

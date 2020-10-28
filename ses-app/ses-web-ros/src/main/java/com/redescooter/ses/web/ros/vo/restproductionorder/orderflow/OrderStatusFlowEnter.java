@@ -25,6 +25,10 @@ public class OrderStatusFlowEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "状态为空")
     private Integer orderStatus;
 
+    @ApiModelProperty(value = "订单类型")
+    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "订单类型为空")
+    private Integer orderType;
+
     @ApiModelProperty(value = "关联订单")
     @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id为空")
     private Long relationId;

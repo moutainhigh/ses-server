@@ -5,8 +5,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  *  @author: alex
@@ -16,6 +18,8 @@ import lombok.EqualsAndHashCode;
  */
 @ApiModel(value = "单据编号入参", description = "单据编号入参")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class OrderNumberEnter extends GeneralEnter {
 

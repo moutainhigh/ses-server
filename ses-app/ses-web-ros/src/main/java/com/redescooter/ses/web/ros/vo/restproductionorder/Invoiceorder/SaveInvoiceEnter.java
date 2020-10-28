@@ -27,9 +27,6 @@ public class SaveInvoiceEnter extends GeneralEnter {
     @ApiModelProperty(value = "关联的采购单id")
     private Long purchaseId;
 
-    @ApiModelProperty(value = "发货单号")
-    private String invoiceNo;
-
     @ApiModelProperty(value = "发货单状态，0：待备货，10：备货中，20：待装车，30：待发货，40：待签收，50：已签收，60：已取消")
     private Integer invoiceStatus;
 
