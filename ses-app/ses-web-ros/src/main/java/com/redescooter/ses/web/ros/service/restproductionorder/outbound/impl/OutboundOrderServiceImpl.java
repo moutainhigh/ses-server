@@ -17,10 +17,7 @@ import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeAllocateOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
@@ -72,6 +69,15 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private OpeAllocateOrderService opeAllocateOrderService;
+
+    @Autowired
+    private OpeOutWhScooterBService opeOutWhScooterBService;
+
+    @Autowired
+    private OpeOutWhCombinBService opeOutWhCombinBService;
+
+    @Autowired
+    private OpeOutWhPartsBService opeOutWhPartsBService;
 
     @Reference
     private IdAppService idAppService;
@@ -171,7 +177,21 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      */
     @Override
     public List<OrderProductDetailResult> productListById(IdEnter enter) {
-        return null;
+        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+        if (opeOutWhouseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<OrderProductDetailResult> resultList = null;
+        switch (opeOutWhouseOrder.getOutWhType()) {
+            case 1:
+                resultList = outboundOrderServiceMapper.productionScooterByBussId(enter.getId());
+            case 2:
+                resultList = outboundOrderServiceMapper.productionCombinByBussId(enter.getId());
+            default:
+                resultList = outboundOrderServiceMapper.productionPartByBussId(enter.getId());
+                break;
+        }
+        return resultList;
     }
 
     /**
@@ -201,7 +221,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeAllocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        //associatedOrderList.addAll();
+
+        associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime()));
+        associatedOrderList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getPurchaseNo(), OrderTypeEnums.SHIPPING.getValue(), opePurchaseOrder.getCreatedTime()));
+        associatedOrderList.add(new AssociatedOrderResult(opeAllocateOrder.getId(), opeAllocateOrder.getAllocateNo(), OrderTypeEnums.ALLOCATE.getValue(), opeAllocateOrder.getCreatedTime()));
         return associatedOrderList;
     }
 
