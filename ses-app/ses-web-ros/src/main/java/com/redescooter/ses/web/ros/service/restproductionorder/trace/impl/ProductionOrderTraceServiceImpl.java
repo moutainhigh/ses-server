@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeOpTraceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import lombok.extern.slf4j.Slf4j;
@@ -80,9 +81,9 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
      * @param enter
      */
     @Override
-    public List<OpTraceResult> listByBussId(IdEnter enter) {
+    public List<OpTraceResult> listByBussId(ListByBussIdEnter enter) {
         List<OpTraceResult> resultList = new ArrayList<>();
-        List<OpeOpTrace> opTraceList = opeOpTraceService.list(new LambdaQueryWrapper<OpeOpTrace>().eq(OpeOpTrace::getRelationId, enter.getId()));
+        List<OpeOpTrace> opTraceList = opeOpTraceService.list(new LambdaQueryWrapper<OpeOpTrace>().eq(OpeOpTrace::getRelationId, enter.getId()).eq(OpeOpTrace::getOrderType, enter.getOrderType()));
         if (CollectionUtils.isNotEmpty(opTraceList)) {
             List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(new LambdaQueryWrapper<OpeSysStaff>().in(OpeSysStaff::getId,
                     opTraceList.stream().map(OpeOpTrace::getCreatedBy).collect(Collectors.toSet())));

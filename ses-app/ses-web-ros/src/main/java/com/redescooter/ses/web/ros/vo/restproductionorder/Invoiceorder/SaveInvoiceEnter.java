@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *  @author: alex
@@ -91,4 +92,7 @@ public class SaveInvoiceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "产品列表")
+    List<ProductEnter> productEnterList;
 }

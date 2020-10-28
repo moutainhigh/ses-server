@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum OutBoundOrdrStatusEnums {
+public enum OutBoundOrderStatusEnums {
 
 
     BE_OUTBOUND("BE_OUTBOUND", "待出库", 0),

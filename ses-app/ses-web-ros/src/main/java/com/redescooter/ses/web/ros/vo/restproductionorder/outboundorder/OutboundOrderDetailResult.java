@@ -34,6 +34,9 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "出库单类型")
     private Integer outWhType;
 
+    @ApiModelProperty(value = "出库单类型 参考 ")
+    private Integer outType;
+
     @ApiModelProperty(value = "创建人")
     private Long createById;
 
@@ -44,16 +47,13 @@ public class OutboundOrderDetailResult extends GeneralResult {
     private String createByLastName;
 
     @ApiModelProperty(value = "创建人国家代码")
-    private Long createByCountryCodeId;
-
-    @ApiModelProperty(value = "创建人国家代码")
-    private String createByCountryCode;
+    private String countryCode;
 
     @ApiModelProperty(value = "创建人电话")
-    private String createByTelephone;
+    private String telephone;
 
     @ApiModelProperty(value = "创建人邮箱")
-    private String createByMail;
+    private String mail;
 
     @ApiModelProperty(value = "产品列表")
     private List<OrderProductDetailResult> invoiceProductList;
