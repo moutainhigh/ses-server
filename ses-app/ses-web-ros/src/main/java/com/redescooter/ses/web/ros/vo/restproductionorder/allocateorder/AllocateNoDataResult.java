@@ -31,6 +31,12 @@ public class AllocateNoDataResult extends GeneralResult {
     @ApiModelProperty(value = "收货人地址")
     private String consigneeAddress;
 
+    @ApiModelProperty(value = "收货人国家编码如+86")
+    private String consigneeCountryCode;
+
+    @ApiModelProperty(value = "收货人邮编")
+    private String consigneePostCode;
+
     @ApiModelProperty(value = "收货人电话")
     private String consigneeUserTelephone;
 

@@ -47,11 +47,8 @@
         left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
         left join ope_supplier supp on supp.id = purchase.factory_id
         where purchase.dr = 0
-
-        <include refid="listCondition">
-        </include>
-
-        order by allocate.created_time desc limit #{enter.startRow},#{enter.pageSize}
+        <include refid="listCondition"> </include>
+        order by purchase.created_time desc limit #{enter.startRow},#{enter.pageSize}
 
     </select>
 
@@ -167,6 +164,9 @@
         from ope_allocate_order allocate
         left join ope_sys_staff staff on staff.id = allocate.consignee_user
         where allocate.dr = 0 and allocate.allocate_status not in (0,60,70)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and allocate.allocate_no like concat('%', #{enter.keyword}, '%')
+        </if>
 
     </select>
 </mapper>

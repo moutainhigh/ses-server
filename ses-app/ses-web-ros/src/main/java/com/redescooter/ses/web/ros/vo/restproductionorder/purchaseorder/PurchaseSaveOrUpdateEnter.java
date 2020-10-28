@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -55,13 +57,15 @@ public class PurchaseSaveOrUpdateEnter extends GeneralEnter {
     private Long factoryId;
 
     @ApiModelProperty(value = "交货日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "联系人")
     private Long contactUser;
 
     @ApiModelProperty(value = "联系人名称")
-    private Long contactUserName;
+    private String contactUserName;
 
     @ApiModelProperty(value = "联系人国家编码如+86")
     private String contactCountryCode;
@@ -103,12 +107,16 @@ public class PurchaseSaveOrUpdateEnter extends GeneralEnter {
     private Integer paymentType;
 
     @ApiModelProperty(value = "预计付款时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date plannedPaymentTime;
 
     @ApiModelProperty(value = "付款周期")
     private Integer paymentDay;
 
     @ApiModelProperty(value = "实际付款时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date paymentTime;
 
     @ApiModelProperty(value = "支付状态,1:未支付，2:已支付")
