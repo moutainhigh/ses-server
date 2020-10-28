@@ -3,15 +3,14 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 发货单表
@@ -23,7 +22,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_invoice_order")
 public class OpeInvoiceOrder implements Serializable {
-    public static final String COL_NOTIFY_USER = "notify_user";
     /**
      * 主键id
      */
@@ -35,8 +33,8 @@ public class OpeInvoiceOrder implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除")
     @TableLogic
+    @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
     /**
@@ -191,7 +189,7 @@ public class OpeInvoiceOrder implements Serializable {
      */
     @TableField(value = "notify_user_name")
     @ApiModelProperty(value = "通知人")
-    private Long notifyUserName;
+    private String notifyUserName;
 
     /**
      * 通知人国家编码如+86

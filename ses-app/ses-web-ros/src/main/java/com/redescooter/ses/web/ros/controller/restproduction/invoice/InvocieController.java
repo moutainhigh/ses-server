@@ -5,12 +5,15 @@ import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOr
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = {"发货单"})
@@ -52,6 +55,18 @@ public class InvocieController {
     @ApiOperation(value = "备料", response = Map.class)
     public Response<GeneralResult> stockUp(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(invoiceOrderService.stockUp(enter));
+    }
+
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存发货单", response = Map.class)
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveInvoiceEnter enter) {
+        return new Response<>(invoiceOrderService.save(enter));
+    }
+
+    @PostMapping(value = "/staffList")
+    @ApiOperation(value = "员工选择列表", response = QueryStaffResult.class)
+    public Response<List<QueryStaffResult>> staffList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(invoiceOrderService.staffList(enter));
     }
 
 }

@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -41,14 +43,9 @@ public class InvoiceOrderListResult extends GeneralResult {
     private String purchaseNo;
 
     @ApiModelProperty(value = "到期交付时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
-
-
-    @ApiModelProperty(value = "供应商Id")
-    private Long supplierId;
-
-    @ApiModelProperty(value = "供应商名字")
-    private String supplierName;
 
     @ApiModelProperty(value = "收货人Id")
     private Long receiverId;
@@ -58,6 +55,15 @@ public class InvoiceOrderListResult extends GeneralResult {
 
     @ApiModelProperty(value = "收货人名称")
     private String receiverLastName;
+
+    @ApiModelProperty(value = "收货人电话国家代码")
+    private String receiverCountryCode;
+
+    @ApiModelProperty(value = "收货人电话")
+    private String receiverTelephone;
+
+    @ApiModelProperty(value = "收货人邮箱")
+    private String receiverMail;
 
     @ApiModelProperty(value = "创建人Id")
     private Long createById;

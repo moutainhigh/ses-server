@@ -1,4 +1,4 @@
-package com.redescooter.ses.api.common.enums.restproduction.consign;
+package com.redescooter.ses.api.common.enums.restproductionorder.consign;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

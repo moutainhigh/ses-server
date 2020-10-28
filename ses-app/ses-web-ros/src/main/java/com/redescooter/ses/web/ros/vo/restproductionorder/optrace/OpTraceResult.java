@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.optrace;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -15,7 +18,7 @@ import java.util.Date;
  **/
 @Data
 @ApiModel(value = "调拨单操作动态详情出参", description = "调拨单操作动态详情出参")
-public class OpTraceResult {
+public class OpTraceResult extends GeneralResult {
 
     @ApiModelProperty("主键id")
     private Long id;
@@ -30,8 +33,13 @@ public class OpTraceResult {
     private String remark;
 
     @ApiModelProperty("操作人")
+    private Long createdById;
+
+    @ApiModelProperty("操作人")
     private String createdByName;
 
     @ApiModelProperty("操作时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
 }
