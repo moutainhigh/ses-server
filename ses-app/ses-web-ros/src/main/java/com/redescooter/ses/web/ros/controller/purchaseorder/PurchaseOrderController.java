@@ -3,10 +3,7 @@ package com.redescooter.ses.web.ros.controller.purchaseorder;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -84,7 +81,7 @@ public class PurchaseOrderController {
 
     @PostMapping(value = "/allocateNoData")
     @ApiOperation(value = "关联调拨单号下拉数据源接口", response = GeneralResult.class)
-    public Response<List<AllocateNoDataResult>> allocateNoData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<AllocateNoDataResult>> allocateNoData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
         return new Response<>(purchaseOrderService.allocateNoData(enter));
     }
 
@@ -95,4 +92,10 @@ public class PurchaseOrderController {
         return new Response<>(purchaseOrderService.listCount(enter));
     }
 
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "采购单删除", response = GeneralResult.class)
+    public Response<GeneralResult> deleteOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(purchaseOrderService.deleteOrder(enter));
+    }
 }

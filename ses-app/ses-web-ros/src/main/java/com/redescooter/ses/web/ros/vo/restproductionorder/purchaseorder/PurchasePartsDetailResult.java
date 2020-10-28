@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * @ClassNameAllocateOrderPartsDetailResult
@@ -17,7 +15,7 @@ import java.util.Date;
  **/
 @Data
 @ApiModel(value = "采购单部件详情出参",description = "采购单部件详情出参")
-public class PurchasePartsDetailResult extends GeneralResult {
+public class PurchasePartsDetailResult {
 
     @ApiModelProperty(value = "主键id")
     private Long id;

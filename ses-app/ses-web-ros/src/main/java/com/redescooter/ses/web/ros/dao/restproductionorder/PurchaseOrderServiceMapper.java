@@ -27,6 +27,6 @@ public interface PurchaseOrderServiceMapper {
 
     List<PurchasePartsDetailResult> purchaseParts(@Param("id") Long id);
 
-    List<AllocateNoDataResult> allocateNoData();
+    List<AllocateNoDataResult> allocateNoData(@Param("enter") KeywordEnter enter);
 
 }

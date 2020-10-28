@@ -75,7 +75,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         BeanUtils.copyProperties(enter,purchaseOrder);
         purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
         purchaseOrder.setPurchaseType(enter.getClassType());
-        purchaseOrder.setUpdatedBy(enter.getUserId());
+        purchaseOrder.setCreatedBy(enter.getUserId());
         purchaseOrder.setCreatedTime(new Date());
         purchaseOrder.setUpdatedBy(enter.getUserId());
         purchaseOrder.setUpdatedTime(new Date());
@@ -224,7 +224,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 // 统计采购数量
                 purchaseOrder.setPurchaseQty(scooterEnters.stream().mapToInt(PurchaseScooterEnter::getQty).sum());
                 for (PurchaseScooterEnter scooterEnter : scooterEnters) {
-                    BigDecimal multiply = scooterEnter.getUnitPrice().multiply(new BigDecimal(0));
+                    BigDecimal multiply = scooterEnter.getUnitPrice().multiply(new BigDecimal(scooterEnter.getQty()));
                     amount = multiply.add(amount);
                 }
                 purchaseOrder.setPurchaseAmount(amount);
@@ -241,7 +241,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 // 统计采购数量
                 purchaseOrder.setPurchaseQty(combinEnters.stream().mapToInt(PurchaseCombinEnter::getQty).sum());
                 for (PurchaseCombinEnter combinEnter : combinEnters) {
-                    BigDecimal multiply = combinEnter.getUnitPrice().multiply(new BigDecimal(0));
+                    BigDecimal multiply = combinEnter.getUnitPrice().multiply(new BigDecimal(combinEnter.getQty()));
                     amount = multiply.add(amount);
                 }
                 purchaseOrder.setPurchaseAmount(amount);
@@ -256,8 +256,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 }
                 // 统计采购数量
                 purchaseOrder.setPurchaseQty(partsEnters.stream().mapToInt(PurchasePartsEnter::getQty).sum());
-                for (PurchasePartsEnter combinEnter : partsEnters) {
-                    BigDecimal multiply = combinEnter.getUnitPrice().multiply(new BigDecimal(0));
+                for (PurchasePartsEnter partsEnter : partsEnters) {
+                    BigDecimal multiply = partsEnter.getUnitPrice().multiply(new BigDecimal(partsEnter.getQty()));
                     amount = multiply.add(amount);
                 }
                 purchaseOrder.setPurchaseAmount(amount);
@@ -414,10 +414,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Override
+    public GeneralResult deleteOrder(IdEnter enter) {
+        OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
+        if (purchaseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     @Override
-    public List<AllocateNoDataResult> allocateNoData(GeneralEnter enter) {
-        List<AllocateNoDataResult> resultList = purchaseOrderServiceMapper.allocateNoData();
+    public List<AllocateNoDataResult> allocateNoData(KeywordEnter enter) {
+        List<AllocateNoDataResult> resultList = purchaseOrderServiceMapper.allocateNoData(enter);
         return resultList;
     }
 

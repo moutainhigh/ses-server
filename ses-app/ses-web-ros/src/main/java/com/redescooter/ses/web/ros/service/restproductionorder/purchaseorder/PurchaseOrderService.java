@@ -5,10 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 
 import java.util.List;
 import java.util.Map;
@@ -95,12 +92,22 @@ public interface PurchaseOrderService {
 
     /**
      * @Author Aleks
+     * @Description  删除采购单
+     * @Date  2020/10/28 9:52
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult deleteOrder(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
      * @Description  关闭订单
      * @Date  2020/10/23 20:32
      * @Param [enter]
      * @return
      **/
-    List<AllocateNoDataResult> allocateNoData(GeneralEnter enter);
+    List<AllocateNoDataResult> allocateNoData(KeywordEnter enter);
 
 
     /**
