@@ -76,6 +76,12 @@ public class AllocateOrderController {
         return new Response<>(allocateOrderService.userData(enter));
     }
 
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "调拨单删除", response = GeneralResult.class)
+    public Response<GeneralResult> allocateDelete(@ModelAttribute @ApiParam("请求参数")IdEnter enter) {
+        return new Response<>(allocateOrderService.allocateDelete(enter));
+    }
+
 
 
     @PostMapping(value = "/listCount")

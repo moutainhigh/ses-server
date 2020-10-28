@@ -746,7 +746,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public List<UserDataResult> userData(UserDataEnter enter) {
         List<UserDataResult> list = staffServiceMapper.userData(enter);
-        return null;
+        return list;
     }
 
 

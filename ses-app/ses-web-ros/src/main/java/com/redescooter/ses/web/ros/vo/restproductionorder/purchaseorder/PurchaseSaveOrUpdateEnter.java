@@ -60,6 +60,9 @@ public class PurchaseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "联系人")
     private Long contactUser;
 
+    @ApiModelProperty(value = "联系人名称")
+    private Long contactUserName;
+
     @ApiModelProperty(value = "联系人国家编码如+86")
     private String contactCountryCode;
 

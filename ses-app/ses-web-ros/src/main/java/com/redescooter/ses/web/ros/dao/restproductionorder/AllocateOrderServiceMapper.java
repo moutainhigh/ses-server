@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -35,6 +36,9 @@ public interface AllocateOrderServiceMapper {
 
     // todo
     List<AllocateEntrustResult> allocateEntrust(@Param("id") Long id);
+
+
+    List<OpTraceResult> allocateTrace(@Param("id") Long id);
 
 
 }

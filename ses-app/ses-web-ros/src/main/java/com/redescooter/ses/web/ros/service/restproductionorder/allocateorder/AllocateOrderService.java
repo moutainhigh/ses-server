@@ -80,6 +80,16 @@ public interface AllocateOrderService {
 
     /**
      * @Author Aleks
+     * @Description  调拨单删除
+     * @Date  2020/10/27 20:37
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult allocateDelete(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
      * @Description 人员下拉数据
      * @Date  2020/10/23 17:50
      * @Param [enter]

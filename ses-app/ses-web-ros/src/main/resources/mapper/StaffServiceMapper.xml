@@ -165,7 +165,7 @@
         from ope_sys_staff
         where dr = 0 and  status = 1
         <if test="enter.keyword != null and enter.keyword != ''">
-            and full_name full_name like concat('%', #{enter.keyWord}, '%')
+            and full_name like concat('%', #{enter.keyword}, '%')
         </if>
     </select>
 </mapper>

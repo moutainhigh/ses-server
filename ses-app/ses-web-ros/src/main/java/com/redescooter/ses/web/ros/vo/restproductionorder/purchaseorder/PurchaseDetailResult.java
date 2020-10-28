@@ -94,6 +94,9 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货人名称")
     private String consignorUserName;
 
+    @ApiModelProperty(value = "发货人国家编码+86")
+    private String consignorCountryCode;
+
     @ApiModelProperty(value = "发货人电话")
     private String consignorTelephone;
 
@@ -115,6 +118,8 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "采购合同")
     private String purchaseContract;
 
+    @ApiModelProperty(value = "采购单类型，1：整车，2：组装件，3：部件")
+    private Integer purchaseType;
 
     @ApiModelProperty("车辆采购产品详情")
     private List<PurchaseScooterDetailResult> scooters;

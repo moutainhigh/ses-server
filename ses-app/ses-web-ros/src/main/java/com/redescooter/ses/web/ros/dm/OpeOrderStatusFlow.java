@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,11 +17,12 @@ import java.util.Date;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeOrderStatusFlow")
 @Data
 @TableName(value = "ope_order_status_flow")
-public class OpeOrderStatusFlow implements Serializable {
+public class OpeOrderStatusFlow {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键id")
     private Long id;
 
@@ -37,6 +40,13 @@ public class OpeOrderStatusFlow implements Serializable {
     @TableField(value = "relation_id")
     @ApiModelProperty(value = "关联的单据id")
     private Long relationId;
+
+    /**
+     * 单据类型，1：调拨单，2：采购单，3：发货单，4：出库单，5：委托单
+     */
+    @TableField(value = "order_type")
+    @ApiModelProperty(value = "单据类型，1：调拨单，2：采购单，3：发货单，4：出库单，5：委托单")
+    private Integer orderType;
 
     /**
      * 单据状态
@@ -115,13 +125,13 @@ public class OpeOrderStatusFlow implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
 
     public static final String COL_RELATION_ID = "relation_id";
+
+    public static final String COL_ORDER_TYPE = "order_type";
 
     public static final String COL_ORDER_STATUS = "order_status";
 

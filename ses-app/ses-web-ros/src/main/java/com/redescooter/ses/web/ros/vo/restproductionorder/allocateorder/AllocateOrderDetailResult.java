@@ -64,6 +64,9 @@ public class AllocateOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收货人邮编")
     private String consigneePostCode;
 
+    @ApiModelProperty(value = "收货人地址")
+    private String consigneeAddress;
+
     @ApiModelProperty("通知人名称")
     private String notifyUserName;
 
@@ -71,10 +74,10 @@ public class AllocateOrderDetailResult extends GeneralResult {
     private String notifyCountryCode;
 
     @ApiModelProperty("通知人电话")
-    private Long notifyUserTelephone;
+    private String notifyUserTelephone;
 
     @ApiModelProperty("通知人邮箱")
-    private Long notifyUserMail;
+    private String notifyUserMail;
 
     @ApiModelProperty(value = "备注")
     private String remark;

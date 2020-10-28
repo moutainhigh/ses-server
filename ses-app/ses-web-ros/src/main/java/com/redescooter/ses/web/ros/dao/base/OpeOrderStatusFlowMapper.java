@@ -2,11 +2,12 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
+@Mapper
 public interface OpeOrderStatusFlowMapper extends BaseMapper<OpeOrderStatusFlow> {
     int updateBatch(List<OpeOrderStatusFlow> list);
 

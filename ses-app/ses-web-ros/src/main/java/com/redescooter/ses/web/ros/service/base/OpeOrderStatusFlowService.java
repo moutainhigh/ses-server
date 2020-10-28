@@ -19,3 +19,4 @@ public interface OpeOrderStatusFlowService extends IService<OpeOrderStatusFlow> 
     int insertOrUpdateSelective(OpeOrderStatusFlow record);
 
 }
+

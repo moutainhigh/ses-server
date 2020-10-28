@@ -30,6 +30,9 @@ public class PurchaseScooterDetailResult extends GeneralResult {
     @ApiModelProperty(value = "颜色id")
     private Long colorId;
 
+    @ApiModelProperty(value = "色值")
+    private String colorValue;
+
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
 
