@@ -422,7 +422,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),enter.getUserId(),purchaseOrder.getPurchaseStatus(),2,"");
-        // todo 调用发货单那边的接口 生成一个发货单（缺 组装件和部件的产品表数据）
         createInvoice(purchaseOrder);
         return new GeneralResult(enter.getRequestId());
     }
