@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.trace;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 
@@ -27,7 +28,7 @@ public interface ProductionOrderTraceService {
      * @Return: OpeOpTrace
      * @desc: 根据业务查询操作记录
      */
-    List<OpTraceResult> listByBussId(IdEnter enter);
+    List<OpTraceResult> listByBussId(ListByBussIdEnter enter);
 
     /**
      * @Description

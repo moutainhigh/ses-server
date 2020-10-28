@@ -4,12 +4,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,15 +61,26 @@ public interface OutboundOrderService {
      */
     OutboundOrderDetailResult detail(IdEnter enter);
 
+
     /**
      * @Description
-     * @Author: enter
-     * @Date: 2020/10/26 15:57
+     * @Author: alex
+     * @Date: 2020/10/27 17:37
      * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 状态修改
+     * @Return: OrderProductDetailResult
+     * @desc: 查询发货单产品列表
      */
-    GeneralResult chanageStatus(ChanageStatusEnter enter);
+    List<OrderProductDetailResult> productListById(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/27 18:14
+     * @Param: enter
+     * @Return: AssociatedOrderResult
+     * @desc: 关联订单列表
+     */
+    List<AssociatedOrderResult> associatedOrderList(IdEnter enter);
 
     /**
      * @Description

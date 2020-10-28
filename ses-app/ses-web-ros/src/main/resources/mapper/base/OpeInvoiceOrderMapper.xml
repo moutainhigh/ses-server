@@ -3,346 +3,327 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeInvoiceOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeInvoiceOrder">
     <!--@mbg.generated-->
-    <!--@Table ros-1.8.3.ope_invoice_order-->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
-    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
-    <result column="purchase_no" jdbcType="VARCHAR" property="purchaseNo" />
-    <result column="purchase_id" jdbcType="BIGINT" property="purchaseId" />
-    <result column="invoice_no" jdbcType="VARCHAR" property="invoiceNo" />
-    <result column="invoice_status" jdbcType="INTEGER" property="invoiceStatus" />
-    <result column="invoice_type" jdbcType="INTEGER" property="invoiceType" />
-    <result column="invoice_qty" jdbcType="INTEGER" property="invoiceQty" />
-    <result column="trans_type" jdbcType="INTEGER" property="transType" />
-    <result column="consignee_user" jdbcType="BIGINT" property="consigneeUser" />
-    <result column="consignee_country_code" jdbcType="VARCHAR" property="consigneeCountryCode" />
-    <result column="consignee_user_telephone" jdbcType="VARCHAR" property="consigneeUserTelephone" />
-    <result column="consignee_user_mail" jdbcType="VARCHAR" property="consigneeUserMail" />
-    <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
-    <result column="consignee_post_code" jdbcType="VARCHAR" property="consigneePostCode" />
-    <result column="factory_id" jdbcType="BIGINT" property="factoryId" />
-    <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
-    <result column="consignor_user" jdbcType="BIGINT" property="consignorUser" />
-    <result column="consignor_country_code" jdbcType="VARCHAR" property="consignorCountryCode" />
-    <result column="consignor_telephone" jdbcType="VARCHAR" property="consignorTelephone" />
-    <result column="consignor_mail" jdbcType="VARCHAR" property="consignorMail" />
-    <result column="notify_user" jdbcType="BIGINT" property="notifyUser" />
-    <result column="notify_user_name" jdbcType="VARCHAR" property="notifyUserName" />
-    <result column="notify_country_code" jdbcType="VARCHAR" property="notifyCountryCode" />
-    <result column="notify_user_telephone" jdbcType="VARCHAR" property="notifyUserTelephone" />
-    <result column="notify_user_mail" jdbcType="VARCHAR" property="notifyUserMail" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-    <result column="def1" jdbcType="VARCHAR" property="def1" />
-    <result column="def2" jdbcType="VARCHAR" property="def2" />
-    <result column="def3" jdbcType="VARCHAR" property="def3" />
-    <result column="def4" jdbcType="VARCHAR" property="def4" />
-    <result column="def5" jdbcType="DECIMAL" property="def5" />
+    <!--@Table ope_invoice_order-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="dept_id" property="deptId" />
+    <result column="purchase_no" property="purchaseNo" />
+    <result column="purchase_id" property="purchaseId" />
+    <result column="invoice_no" property="invoiceNo" />
+    <result column="invoice_status" property="invoiceStatus" />
+    <result column="invoice_type" property="invoiceType" />
+    <result column="invoice_qty" property="invoiceQty" />
+    <result column="trans_type" property="transType" />
+    <result column="consignee_user" property="consigneeUser" />
+    <result column="consignee_country_code" property="consigneeCountryCode" />
+    <result column="consignee_user_telephone" property="consigneeUserTelephone" />
+    <result column="consignee_user_mail" property="consigneeUserMail" />
+    <result column="consignee_address" property="consigneeAddress" />
+    <result column="consignee_post_code" property="consigneePostCode" />
+    <result column="factory_id" property="factoryId" />
+    <result column="delivery_date" property="deliveryDate" />
+    <result column="consignor_user" property="consignorUser" />
+    <result column="consignor_country_code" property="consignorCountryCode" />
+    <result column="consignor_telephone" property="consignorTelephone" />
+    <result column="consignor_mail" property="consignorMail" />
+    <result column="notify_user_name" property="notifyUserName" />
+    <result column="notify_country_code" property="notifyCountryCode" />
+    <result column="notify_user_telephone" property="notifyUserTelephone" />
+    <result column="notify_user_mail" property="notifyUserMail" />
+    <result column="remark" property="remark" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, purchase_no, purchase_id, invoice_no, invoice_status, 
     invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, consignee_user_telephone, 
     consignee_user_mail, consignee_address, consignee_post_code, factory_id, delivery_date, 
-    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
-    notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, remark, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user_name, 
+    notify_country_code, notify_user_telephone, notify_user_mail, remark, created_by, 
+    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ros-1.8.3.ope_invoice_order
+    update ope_invoice_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          when id = #{item.id} then #{item.dr}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.tenantId}
         </foreach>
       </trim>
       <trim prefix="dept_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.deptId}
         </foreach>
       </trim>
       <trim prefix="purchase_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseNo,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.purchaseNo}
         </foreach>
       </trim>
       <trim prefix="purchase_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseId,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.purchaseId}
         </foreach>
       </trim>
       <trim prefix="invoice_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceNo,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.invoiceNo}
         </foreach>
       </trim>
       <trim prefix="invoice_status = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceStatus,jdbcType=INTEGER}
+          when id = #{item.id} then #{item.invoiceStatus}
         </foreach>
       </trim>
       <trim prefix="invoice_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceType,jdbcType=INTEGER}
+          when id = #{item.id} then #{item.invoiceType}
         </foreach>
       </trim>
       <trim prefix="invoice_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceQty,jdbcType=INTEGER}
+          when id = #{item.id} then #{item.invoiceQty}
         </foreach>
       </trim>
       <trim prefix="trans_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.transType,jdbcType=INTEGER}
+          when id = #{item.id} then #{item.transType}
         </foreach>
       </trim>
       <trim prefix="consignee_user = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeUser,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.consigneeUser}
         </foreach>
       </trim>
       <trim prefix="consignee_country_code = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeCountryCode,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consigneeCountryCode}
         </foreach>
       </trim>
       <trim prefix="consignee_user_telephone = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeUserTelephone,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consigneeUserTelephone}
         </foreach>
       </trim>
       <trim prefix="consignee_user_mail = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeUserMail,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consigneeUserMail}
         </foreach>
       </trim>
       <trim prefix="consignee_address = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeAddress,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consigneeAddress}
         </foreach>
       </trim>
       <trim prefix="consignee_post_code = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consigneePostCode,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consigneePostCode}
         </foreach>
       </trim>
       <trim prefix="factory_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.factoryId,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.factoryId}
         </foreach>
       </trim>
       <trim prefix="delivery_date = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryDate,jdbcType=TIMESTAMP}
+          when id = #{item.id} then #{item.deliveryDate}
         </foreach>
       </trim>
       <trim prefix="consignor_user = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consignorUser,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.consignorUser}
         </foreach>
       </trim>
       <trim prefix="consignor_country_code = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consignorCountryCode,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consignorCountryCode}
         </foreach>
       </trim>
       <trim prefix="consignor_telephone = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consignorTelephone,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.consignorTelephone}
         </foreach>
       </trim>
       <trim prefix="consignor_mail = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.consignorMail,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="notify_user = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUser,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.consignorMail}
         </foreach>
       </trim>
       <trim prefix="notify_user_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUserName,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.notifyUserName}
         </foreach>
       </trim>
       <trim prefix="notify_country_code = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyCountryCode,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.notifyCountryCode}
         </foreach>
       </trim>
       <trim prefix="notify_user_telephone = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUserTelephone,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.notifyUserTelephone}
         </foreach>
       </trim>
       <trim prefix="notify_user_mail = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUserMail,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.notifyUserMail}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.remark}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.createdBy}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          when id = #{item.id} then #{item.createdTime}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id} then #{item.updatedBy}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          when id = #{item.id} then #{item.updatedTime}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.def1}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.def2}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.def3}
         </foreach>
       </trim>
       <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+          when id = #{item.id} then #{item.def4}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+          when id = #{item.id} then #{item.def5}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
+      #{item.id}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_invoice_order
+    insert into ope_invoice_order
     (id, dr, tenant_id, dept_id, purchase_no, purchase_id, invoice_no, invoice_status, 
       invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-      notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def4, def5)
+      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.deptId,jdbcType=BIGINT}, #{item.purchaseNo,jdbcType=VARCHAR}, #{item.purchaseId,jdbcType=BIGINT}, 
-        #{item.invoiceNo,jdbcType=VARCHAR}, #{item.invoiceStatus,jdbcType=INTEGER}, #{item.invoiceType,jdbcType=INTEGER}, 
-        #{item.invoiceQty,jdbcType=INTEGER}, #{item.transType,jdbcType=INTEGER}, #{item.consigneeUser,jdbcType=BIGINT}, 
-        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR}, 
-        #{item.consigneeUserMail,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
-        #{item.consigneePostCode,jdbcType=VARCHAR}, #{item.factoryId,jdbcType=BIGINT}, 
-        #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.consignorUser,jdbcType=BIGINT}, 
-        #{item.consignorCountryCode,jdbcType=VARCHAR}, #{item.consignorTelephone,jdbcType=VARCHAR}, 
-        #{item.consignorMail,jdbcType=VARCHAR}, #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, 
-        #{item.notifyCountryCode,jdbcType=VARCHAR}, #{item.notifyUserTelephone,jdbcType=VARCHAR}, 
-        #{item.notifyUserMail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.purchaseNo}, #{item.purchaseId}, 
+        #{item.invoiceNo}, #{item.invoiceStatus}, #{item.invoiceType}, #{item.invoiceQty}, 
+        #{item.transType}, #{item.consigneeUser}, #{item.consigneeCountryCode}, #{item.consigneeUserTelephone}, 
+        #{item.consigneeUserMail}, #{item.consigneeAddress}, #{item.consigneePostCode}, 
+        #{item.factoryId}, #{item.deliveryDate}, #{item.consignorUser}, #{item.consignorCountryCode}, 
+        #{item.consignorTelephone}, #{item.consignorMail}, #{item.notifyUserName}, #{item.notifyCountryCode}, 
+        #{item.notifyUserTelephone}, #{item.notifyUserMail}, #{item.remark}, #{item.createdBy}, 
+        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
+        #{item.def3}, #{item.def4}, #{item.def5})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInvoiceOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_invoice_order
+    insert into ope_invoice_order
     (id, dr, tenant_id, dept_id, purchase_no, purchase_id, invoice_no, invoice_status, 
       invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-      notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
-      def2, def3, def4, def5)
+      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
-      #{purchaseNo,jdbcType=VARCHAR}, #{purchaseId,jdbcType=BIGINT}, #{invoiceNo,jdbcType=VARCHAR}, 
-      #{invoiceStatus,jdbcType=INTEGER}, #{invoiceType,jdbcType=INTEGER}, #{invoiceQty,jdbcType=INTEGER}, 
-      #{transType,jdbcType=INTEGER}, #{consigneeUser,jdbcType=BIGINT}, #{consigneeCountryCode,jdbcType=VARCHAR}, 
-      #{consigneeUserTelephone,jdbcType=VARCHAR}, #{consigneeUserMail,jdbcType=VARCHAR}, 
-      #{consigneeAddress,jdbcType=VARCHAR}, #{consigneePostCode,jdbcType=VARCHAR}, #{factoryId,jdbcType=BIGINT}, 
-      #{deliveryDate,jdbcType=TIMESTAMP}, #{consignorUser,jdbcType=BIGINT}, #{consignorCountryCode,jdbcType=VARCHAR}, 
-      #{consignorTelephone,jdbcType=VARCHAR}, #{consignorMail,jdbcType=VARCHAR}, #{notifyUser,jdbcType=BIGINT}, 
-      #{notifyUserName,jdbcType=VARCHAR}, #{notifyCountryCode,jdbcType=VARCHAR}, #{notifyUserTelephone,jdbcType=VARCHAR}, 
-      #{notifyUserMail,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
-      #{def5,jdbcType=DECIMAL})
+    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{purchaseNo}, #{purchaseId}, #{invoiceNo}, 
+      #{invoiceStatus}, #{invoiceType}, #{invoiceQty}, #{transType}, #{consigneeUser}, 
+      #{consigneeCountryCode}, #{consigneeUserTelephone}, #{consigneeUserMail}, #{consigneeAddress}, 
+      #{consigneePostCode}, #{factoryId}, #{deliveryDate}, #{consignorUser}, #{consignorCountryCode}, 
+      #{consignorTelephone}, #{consignorMail}, #{notifyUserName}, #{notifyCountryCode}, 
+      #{notifyUserTelephone}, #{notifyUserMail}, #{remark}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
     on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    dept_id = #{deptId,jdbcType=BIGINT}, 
-    purchase_no = #{purchaseNo,jdbcType=VARCHAR}, 
-    purchase_id = #{purchaseId,jdbcType=BIGINT}, 
-    invoice_no = #{invoiceNo,jdbcType=VARCHAR}, 
-    invoice_status = #{invoiceStatus,jdbcType=INTEGER}, 
-    invoice_type = #{invoiceType,jdbcType=INTEGER}, 
-    invoice_qty = #{invoiceQty,jdbcType=INTEGER}, 
-    trans_type = #{transType,jdbcType=INTEGER}, 
-    consignee_user = #{consigneeUser,jdbcType=BIGINT}, 
-    consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR}, 
-    consignee_user_telephone = #{consigneeUserTelephone,jdbcType=VARCHAR}, 
-    consignee_user_mail = #{consigneeUserMail,jdbcType=VARCHAR}, 
-    consignee_address = #{consigneeAddress,jdbcType=VARCHAR}, 
-    consignee_post_code = #{consigneePostCode,jdbcType=VARCHAR}, 
-    factory_id = #{factoryId,jdbcType=BIGINT}, 
-    delivery_date = #{deliveryDate,jdbcType=TIMESTAMP}, 
-    consignor_user = #{consignorUser,jdbcType=BIGINT}, 
-    consignor_country_code = #{consignorCountryCode,jdbcType=VARCHAR}, 
-    consignor_telephone = #{consignorTelephone,jdbcType=VARCHAR}, 
-    consignor_mail = #{consignorMail,jdbcType=VARCHAR}, 
-    notify_user = #{notifyUser,jdbcType=BIGINT}, 
-    notify_user_name = #{notifyUserName,jdbcType=VARCHAR}, 
-    notify_country_code = #{notifyCountryCode,jdbcType=VARCHAR}, 
-    notify_user_telephone = #{notifyUserTelephone,jdbcType=VARCHAR}, 
-    notify_user_mail = #{notifyUserMail,jdbcType=VARCHAR}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=DECIMAL}
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    dept_id = #{deptId}, 
+    purchase_no = #{purchaseNo}, 
+    purchase_id = #{purchaseId}, 
+    invoice_no = #{invoiceNo}, 
+    invoice_status = #{invoiceStatus}, 
+    invoice_type = #{invoiceType}, 
+    invoice_qty = #{invoiceQty}, 
+    trans_type = #{transType}, 
+    consignee_user = #{consigneeUser}, 
+    consignee_country_code = #{consigneeCountryCode}, 
+    consignee_user_telephone = #{consigneeUserTelephone}, 
+    consignee_user_mail = #{consigneeUserMail}, 
+    consignee_address = #{consigneeAddress}, 
+    consignee_post_code = #{consigneePostCode}, 
+    factory_id = #{factoryId}, 
+    delivery_date = #{deliveryDate}, 
+    consignor_user = #{consignorUser}, 
+    consignor_country_code = #{consignorCountryCode}, 
+    consignor_telephone = #{consignorTelephone}, 
+    consignor_mail = #{consignorMail}, 
+    notify_user_name = #{notifyUserName}, 
+    notify_country_code = #{notifyCountryCode}, 
+    notify_user_telephone = #{notifyUserTelephone}, 
+    notify_user_mail = #{notifyUserMail}, 
+    remark = #{remark}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeInvoiceOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_invoice_order
+    insert into ope_invoice_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -413,9 +394,6 @@
       <if test="consignorMail != null">
         consignor_mail,
       </if>
-      <if test="notifyUser != null">
-        notify_user,
-      </if>
       <if test="notifyUserName != null">
         notify_user_name,
       </if>
@@ -462,235 +440,229 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=BIGINT},
+        #{id},
       </if>
       <if test="dr != null">
-        #{dr,jdbcType=INTEGER},
+        #{dr},
       </if>
       <if test="tenantId != null">
-        #{tenantId,jdbcType=BIGINT},
+        #{tenantId},
       </if>
       <if test="deptId != null">
-        #{deptId,jdbcType=BIGINT},
+        #{deptId},
       </if>
       <if test="purchaseNo != null">
-        #{purchaseNo,jdbcType=VARCHAR},
+        #{purchaseNo},
       </if>
       <if test="purchaseId != null">
-        #{purchaseId,jdbcType=BIGINT},
+        #{purchaseId},
       </if>
       <if test="invoiceNo != null">
-        #{invoiceNo,jdbcType=VARCHAR},
+        #{invoiceNo},
       </if>
       <if test="invoiceStatus != null">
-        #{invoiceStatus,jdbcType=INTEGER},
+        #{invoiceStatus},
       </if>
       <if test="invoiceType != null">
-        #{invoiceType,jdbcType=INTEGER},
+        #{invoiceType},
       </if>
       <if test="invoiceQty != null">
-        #{invoiceQty,jdbcType=INTEGER},
+        #{invoiceQty},
       </if>
       <if test="transType != null">
-        #{transType,jdbcType=INTEGER},
+        #{transType},
       </if>
       <if test="consigneeUser != null">
-        #{consigneeUser,jdbcType=BIGINT},
+        #{consigneeUser},
       </if>
       <if test="consigneeCountryCode != null">
-        #{consigneeCountryCode,jdbcType=VARCHAR},
+        #{consigneeCountryCode},
       </if>
       <if test="consigneeUserTelephone != null">
-        #{consigneeUserTelephone,jdbcType=VARCHAR},
+        #{consigneeUserTelephone},
       </if>
       <if test="consigneeUserMail != null">
-        #{consigneeUserMail,jdbcType=VARCHAR},
+        #{consigneeUserMail},
       </if>
       <if test="consigneeAddress != null">
-        #{consigneeAddress,jdbcType=VARCHAR},
+        #{consigneeAddress},
       </if>
       <if test="consigneePostCode != null">
-        #{consigneePostCode,jdbcType=VARCHAR},
+        #{consigneePostCode},
       </if>
       <if test="factoryId != null">
-        #{factoryId,jdbcType=BIGINT},
+        #{factoryId},
       </if>
       <if test="deliveryDate != null">
-        #{deliveryDate,jdbcType=TIMESTAMP},
+        #{deliveryDate},
       </if>
       <if test="consignorUser != null">
-        #{consignorUser,jdbcType=BIGINT},
+        #{consignorUser},
       </if>
       <if test="consignorCountryCode != null">
-        #{consignorCountryCode,jdbcType=VARCHAR},
+        #{consignorCountryCode},
       </if>
       <if test="consignorTelephone != null">
-        #{consignorTelephone,jdbcType=VARCHAR},
+        #{consignorTelephone},
       </if>
       <if test="consignorMail != null">
-        #{consignorMail,jdbcType=VARCHAR},
-      </if>
-      <if test="notifyUser != null">
-        #{notifyUser,jdbcType=BIGINT},
+        #{consignorMail},
       </if>
       <if test="notifyUserName != null">
-        #{notifyUserName,jdbcType=VARCHAR},
+        #{notifyUserName},
       </if>
       <if test="notifyCountryCode != null">
-        #{notifyCountryCode,jdbcType=VARCHAR},
+        #{notifyCountryCode},
       </if>
       <if test="notifyUserTelephone != null">
-        #{notifyUserTelephone,jdbcType=VARCHAR},
+        #{notifyUserTelephone},
       </if>
       <if test="notifyUserMail != null">
-        #{notifyUserMail,jdbcType=VARCHAR},
+        #{notifyUserMail},
       </if>
       <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
+        #{remark},
       </if>
       <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
+        #{createdBy},
       </if>
       <if test="createdTime != null">
-        #{createdTime,jdbcType=TIMESTAMP},
+        #{createdTime},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+        #{updatedBy},
       </if>
       <if test="updatedTime != null">
-        #{updatedTime,jdbcType=TIMESTAMP},
+        #{updatedTime},
       </if>
       <if test="def1 != null">
-        #{def1,jdbcType=VARCHAR},
+        #{def1},
       </if>
       <if test="def2 != null">
-        #{def2,jdbcType=VARCHAR},
+        #{def2},
       </if>
       <if test="def3 != null">
-        #{def3,jdbcType=VARCHAR},
+        #{def3},
       </if>
       <if test="def4 != null">
-        #{def4,jdbcType=VARCHAR},
+        #{def4},
       </if>
       <if test="def5 != null">
-        #{def5,jdbcType=DECIMAL},
+        #{def5},
       </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
+        id = #{id},
       </if>
       <if test="dr != null">
-        dr = #{dr,jdbcType=INTEGER},
+        dr = #{dr},
       </if>
       <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=BIGINT},
+        tenant_id = #{tenantId},
       </if>
       <if test="deptId != null">
-        dept_id = #{deptId,jdbcType=BIGINT},
+        dept_id = #{deptId},
       </if>
       <if test="purchaseNo != null">
-        purchase_no = #{purchaseNo,jdbcType=VARCHAR},
+        purchase_no = #{purchaseNo},
       </if>
       <if test="purchaseId != null">
-        purchase_id = #{purchaseId,jdbcType=BIGINT},
+        purchase_id = #{purchaseId},
       </if>
       <if test="invoiceNo != null">
-        invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+        invoice_no = #{invoiceNo},
       </if>
       <if test="invoiceStatus != null">
-        invoice_status = #{invoiceStatus,jdbcType=INTEGER},
+        invoice_status = #{invoiceStatus},
       </if>
       <if test="invoiceType != null">
-        invoice_type = #{invoiceType,jdbcType=INTEGER},
+        invoice_type = #{invoiceType},
       </if>
       <if test="invoiceQty != null">
-        invoice_qty = #{invoiceQty,jdbcType=INTEGER},
+        invoice_qty = #{invoiceQty},
       </if>
       <if test="transType != null">
-        trans_type = #{transType,jdbcType=INTEGER},
+        trans_type = #{transType},
       </if>
       <if test="consigneeUser != null">
-        consignee_user = #{consigneeUser,jdbcType=BIGINT},
+        consignee_user = #{consigneeUser},
       </if>
       <if test="consigneeCountryCode != null">
-        consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR},
+        consignee_country_code = #{consigneeCountryCode},
       </if>
       <if test="consigneeUserTelephone != null">
-        consignee_user_telephone = #{consigneeUserTelephone,jdbcType=VARCHAR},
+        consignee_user_telephone = #{consigneeUserTelephone},
       </if>
       <if test="consigneeUserMail != null">
-        consignee_user_mail = #{consigneeUserMail,jdbcType=VARCHAR},
+        consignee_user_mail = #{consigneeUserMail},
       </if>
       <if test="consigneeAddress != null">
-        consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+        consignee_address = #{consigneeAddress},
       </if>
       <if test="consigneePostCode != null">
-        consignee_post_code = #{consigneePostCode,jdbcType=VARCHAR},
+        consignee_post_code = #{consigneePostCode},
       </if>
       <if test="factoryId != null">
-        factory_id = #{factoryId,jdbcType=BIGINT},
+        factory_id = #{factoryId},
       </if>
       <if test="deliveryDate != null">
-        delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+        delivery_date = #{deliveryDate},
       </if>
       <if test="consignorUser != null">
-        consignor_user = #{consignorUser,jdbcType=BIGINT},
+        consignor_user = #{consignorUser},
       </if>
       <if test="consignorCountryCode != null">
-        consignor_country_code = #{consignorCountryCode,jdbcType=VARCHAR},
+        consignor_country_code = #{consignorCountryCode},
       </if>
       <if test="consignorTelephone != null">
-        consignor_telephone = #{consignorTelephone,jdbcType=VARCHAR},
+        consignor_telephone = #{consignorTelephone},
       </if>
       <if test="consignorMail != null">
-        consignor_mail = #{consignorMail,jdbcType=VARCHAR},
-      </if>
-      <if test="notifyUser != null">
-        notify_user = #{notifyUser,jdbcType=BIGINT},
+        consignor_mail = #{consignorMail},
       </if>
       <if test="notifyUserName != null">
-        notify_user_name = #{notifyUserName,jdbcType=VARCHAR},
+        notify_user_name = #{notifyUserName},
       </if>
       <if test="notifyCountryCode != null">
-        notify_country_code = #{notifyCountryCode,jdbcType=VARCHAR},
+        notify_country_code = #{notifyCountryCode},
       </if>
       <if test="notifyUserTelephone != null">
-        notify_user_telephone = #{notifyUserTelephone,jdbcType=VARCHAR},
+        notify_user_telephone = #{notifyUserTelephone},
       </if>
       <if test="notifyUserMail != null">
-        notify_user_mail = #{notifyUserMail,jdbcType=VARCHAR},
+        notify_user_mail = #{notifyUserMail},
       </if>
       <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
+        remark = #{remark},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
+        created_by = #{createdBy},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
+        created_time = #{createdTime},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_by = #{updatedBy},
       </if>
       <if test="updatedTime != null">
-        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+        updated_time = #{updatedTime},
       </if>
       <if test="def1 != null">
-        def1 = #{def1,jdbcType=VARCHAR},
+        def1 = #{def1},
       </if>
       <if test="def2 != null">
-        def2 = #{def2,jdbcType=VARCHAR},
+        def2 = #{def2},
       </if>
       <if test="def3 != null">
-        def3 = #{def3,jdbcType=VARCHAR},
+        def3 = #{def3},
       </if>
       <if test="def4 != null">
-        def4 = #{def4,jdbcType=VARCHAR},
+        def4 = #{def4},
       </if>
       <if test="def5 != null">
-        def5 = #{def5,jdbcType=DECIMAL},
+        def5 = #{def5},
       </if>
     </trim>
   </insert>

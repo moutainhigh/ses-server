@@ -31,7 +31,7 @@ public class InvoiceOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "发货单单号")
     private String invoiceNo;
 
-    @ApiModelProperty(value = "发货单状态")
+    @ApiModelProperty(value = "发货单状态 参考 InvoiceOrderStatusEnums")
     private Integer invoiceStatus;
 
     @ApiModelProperty(value = "交货时间")
@@ -39,7 +39,7 @@ public class InvoiceOrderDetailResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
 
-    @ApiModelProperty(value = "发票类型")
+    @ApiModelProperty(value = "发票类型 参考 ProductTypeEnums")
     private Integer invoiceType;
 
     @ApiModelProperty(value = "运输方式")
@@ -80,6 +80,9 @@ public class InvoiceOrderDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "收获人邮箱")
     private String consigneeUserEmail;
+
+    @ApiModelProperty(value = "通知人")
+    private Long notifyUser;
 
     @ApiModelProperty(value = "通知人名称")
     private String notifyUserName;

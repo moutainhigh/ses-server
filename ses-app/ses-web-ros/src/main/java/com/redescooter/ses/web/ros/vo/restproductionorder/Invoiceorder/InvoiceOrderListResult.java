@@ -16,7 +16,7 @@ import java.util.Date;
  *  @version：V ROS 1.8.3
  *  @Description:
  */
-@ApiModel(value = "采购单列表", description = "采购单列表")
+@ApiModel(value = "发货单列表", description = "发货单列表")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class InvoiceOrderListResult extends GeneralResult {
@@ -24,13 +24,13 @@ public class InvoiceOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "采购单单号")
+    @ApiModelProperty(value = "发货单单号")
     private String invoiceNo;
 
-    @ApiModelProperty(value = "采购单状态")
+    @ApiModelProperty(value = "发货单状态 参考 InvoiceOrderStatusEnums")
     private Integer invoiceStatus;
 
-    @ApiModelProperty(value = "采购单类型")
+    @ApiModelProperty(value = "发货单类型 参考 ProductTypeEnums")
     private Integer invoiceType;
 
     @ApiModelProperty(value = "采购数量")
@@ -75,5 +75,7 @@ public class InvoiceOrderListResult extends GeneralResult {
     private String createByLastName;
 
     @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createByDate;
 }

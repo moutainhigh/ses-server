@@ -7,6 +7,9 @@
         <if test="invoiceStatus != null and invoiceStatus != ''">
             and invorder.invoice_status =#{invoiceStatus}
         </if>
+        <if test="classType != null">
+            and invorder.invoice_type=#{classType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (
             invorder.invoice_no like concat('%',#{keyword},'%') or
@@ -62,33 +65,34 @@
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult">
         select inorder.id                       as id,
-               inorder.invoice_no               as invoiceNo,
-               inorder.invoice_status           as invoiceStatus,
-               inorder.invoice_type             as invoicetype,
-               inorder.trans_type               as transportType,
-               inorder.consignee_user           as consigneeUserId,
-               consignee.first_name             as consigneeUserFistName,
-               consignee.last_name              as consigneeUserLastName,
-               inorder.consignee_country_code   as consigneeUserCountryCode,
-               inorder.consignee_user_telephone as consigneeUserTelephone,
-               inorder.consignee_user_mail      as consigneeUserEmail,
-               inorder.consignee_post_code      as zipCodeName,
-               inorder.consignee_address        as address,
-               inorder.delivery_date            as deliveryDate,
-               inorder.consignor_user           as consignorUserId,
-               consignor.first_name             as consignorUserFistName,
-               consignor.last_name              as consignorUserLastName,
-               inorder.consignor_country_code   as consignorUserCountryCode,
-               inorder.consignor_telephone      as consignorUserTelephone,
-               inorder.consignor_mail           as consignorUserEmail,
-               inorder.notify_user_name   as notifyUserName,
-               inorder.notify_country_code      as notifyUserCountryCode,
-               inorder.notify_user_telephone    as notifyUserTelephone,
-               inorder.notify_user_mail         as notifyUserEmail
+        inorder.invoice_no               as invoiceNo,
+        inorder.invoice_status           as invoiceStatus,
+        inorder.invoice_type             as invoicetype,
+        inorder.trans_type               as transportType,
+        inorder.consignee_user           as consigneeUserId,
+        consignee.first_name             as consigneeUserFistName,
+        consignee.last_name              as consigneeUserLastName,
+        inorder.consignee_country_code   as consigneeUserCountryCode,
+        inorder.consignee_user_telephone as consigneeUserTelephone,
+        inorder.consignee_user_mail      as consigneeUserEmail,
+        inorder.consignee_post_code      as zipCodeName,
+        inorder.consignee_address        as address,
+        inorder.delivery_date            as deliveryDate,
+        inorder.consignor_user           as consignorUserId,
+        consignor.first_name             as consignorUserFistName,
+        consignor.last_name              as consignorUserLastName,
+        inorder.consignor_country_code   as consignorUserCountryCode,
+        inorder.consignor_telephone      as consignorUserTelephone,
+        inorder.consignor_mail           as consignorUserEmail,
+        inorder.notify_user              as notifyUser,
+        inorder.notify_user_name         as notifyUserName,
+        inorder.notify_country_code      as notifyUserCountryCode,
+        inorder.notify_user_telephone    as notifyUserTelephone,
+        inorder.notify_user_mail         as notifyUserEmail
         from ope_invoice_order inorder
-                     left join ope_sys_staff consignee on consignee.id = inorder.consignee_user and consignee.dr = 0
-                     left join ope_sys_staff consignor on consignor.id = inorder.consignor_user and consignor.dr = 0
-        where inorder.dr=0
+        left join ope_sys_staff consignee on consignee.id = inorder.consignee_user and consignee.dr = 0
+        left join ope_sys_staff consignor on consignor.id = inorder.consignor_user and consignor.dr = 0
+        where inorder.dr = 0
         and inorder.id=#{id}
     </select>
 

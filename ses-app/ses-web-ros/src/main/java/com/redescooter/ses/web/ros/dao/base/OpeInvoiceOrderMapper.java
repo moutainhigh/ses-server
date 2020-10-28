@@ -2,12 +2,10 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-@Mapper
 public interface OpeInvoiceOrderMapper extends BaseMapper<OpeInvoiceOrder> {
     int updateBatch(List<OpeInvoiceOrder> list);
 

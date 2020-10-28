@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper">
+
+    <sql id="WHERE_ORDERLIST">
+        where whorder.dr = 0
+        <if test="status != null">
+            and  whorder.out_wh_status =#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            staff.first_name like concat ('%',#{keyword},'%') or
+            staff.last_name like concat ('%',#{keyword},'%') or
+            whorder.out_wh_no like concat ('%',#{keyword},'%') or
+            whorder.invoice_no like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_wh_type as status
+             , count(1)     as totalCount
+        from ope_out_whouse_order
+        group by status
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_out_whouse_order whorder
+        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        <include refid="WHERE_ORDERLIST"/>
+    </select>
+
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult">
+        select whorder.id            as id,
+               whorder.invoice_id    as invoiceId,
+               whorder.invoice_no    as invoiceNo,
+               whorder.out_wh_no     as outWhNo,
+               whorder.out_wh_status as outWhStatus,
+               whorder.out_wh_type   as outWhType,
+               whorder.out_type      as outType,
+               whorder.out_wh_qty    as outWhQty,
+               whorder.country_code  as countryCode,
+               whorder.telephone     as telephone,
+               whorder.created_by    as createById,
+               whorder.created_time  as createDate,
+               staff.first_name      as createBFirstName,
+               staff.last_name       as createBLastName
+        from ope_out_whouse_order whorder
+        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        <include refid="WHERE_ORDERLIST"/>
+        order by whorder.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult">
+        select whorder.id            as id,
+               whorder.invoice_id    as invoiceId,
+               whorder.invoice_no    as invoiceNo,
+               whorder.out_wh_no     as outWhNo,
+               whorder.out_wh_status as outWhStatus,
+               whorder.out_wh_type   as outWhType,
+               whorder.out_type      as outType,
+               whorder.out_wh_qty    as outWhQty,
+               whorder.country_code  as countryCode,
+               whorder.telephone     as telephone,
+               whorder.created_by    as createById,
+               whorder.created_time  as createDate,
+               whorder.mail          as mail,
+               staff.first_name      as createBFirstName,
+               staff.last_name       as createBLastName
+        from ope_out_whouse_order whorder
+                     inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        where whorder.dr=0
+        and whorder.id=#{id}
+    </select>
+</mapper>
