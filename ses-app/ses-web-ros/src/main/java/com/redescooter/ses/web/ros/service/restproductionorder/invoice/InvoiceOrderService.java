@@ -1,16 +1,13 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
 
 import java.util.List;
 import java.util.Map;
@@ -104,11 +101,12 @@ public interface InvoiceOrderService {
 
     /**
      * @Description
-     * @Author: enter
-     * @Date: 2020/10/26 15:57
+     * @Author: alex
+     * @Date: 2020/10/28 10:28
      * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 状态修改
+     * @Return: QueryStaffResult
+     * @desc: 员工列表
      */
-    GeneralResult chanageStatus(ChanageStatusEnter enter);
+    List<QueryStaffResult> staffList(StringEnter enter);
+
 }

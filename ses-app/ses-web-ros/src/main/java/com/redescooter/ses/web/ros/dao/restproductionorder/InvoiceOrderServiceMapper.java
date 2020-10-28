@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
@@ -9,7 +10,6 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSn
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 
 import java.util.List;
-import java.util.Map;
 
 public interface InvoiceOrderServiceMapper {
     /**
@@ -20,7 +20,7 @@ public interface InvoiceOrderServiceMapper {
      * @Return: Map
      * @desc: 类型数量统计
      */
-    Map<Integer, Integer> countByType(GeneralEnter enter);
+    List<CountByStatusResult> countByType(GeneralEnter enter);
 
     /**
      * @Description

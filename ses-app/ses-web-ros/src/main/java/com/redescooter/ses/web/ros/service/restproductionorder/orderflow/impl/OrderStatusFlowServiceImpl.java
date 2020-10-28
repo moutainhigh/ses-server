@@ -177,6 +177,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
         BeanUtils.copyProperties(enter, opeOrderStatusFlow);
         if (enter.getId() == null || enter.getId() == 0) {
             opeOrderStatusFlow.setId(idAppService.getId(""));
+            opeOrderStatusFlow.setDr(0);
             opeOrderStatusFlow.setCreatedBy(enter.getUserId());
             opeOrderStatusFlow.setCreatedTime(new Date());
         }

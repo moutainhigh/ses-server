@@ -33,8 +33,8 @@ public class OpeInvoiceOrder implements Serializable {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value = "逻辑删除")
     @TableLogic
+    @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
     /**
@@ -189,7 +189,7 @@ public class OpeInvoiceOrder implements Serializable {
      */
     @TableField(value = "notify_user_name")
     @ApiModelProperty(value = "通知人")
-    private Long notifyUserName;
+    private String notifyUserName;
 
     /**
      * 通知人国家编码如+86

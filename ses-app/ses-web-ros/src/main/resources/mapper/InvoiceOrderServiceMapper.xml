@@ -18,18 +18,15 @@
     </sql>
 
 
-    <select id="countByType" resultType="java.util.Map">
-        select case invoice_type
-                when 4 then 1
-                when 5 then 2
-                else 3 end as status
-             , count(1)       as count
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select invoice_type as status
+             , count(1)       as totalCount
         from ope_invoice_order
         group by status
     </select>
 
     <select id="listCount" resultType="int">
-        select (1)
+        select count(1)
         from ope_invoice_order invorder
                      left join ope_sys_staff staff on invorder.consignee_user = staff.id and staff.dr = 0
                      left join ope_sys_staff crstaff on invorder.created_by = crstaff.id and crstaff.dr = 0
@@ -38,27 +35,27 @@
 
     <select
     id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult">
-        select invorder.id             as id,
-               invorder.invoice_no     as invoiceNo,
-               invorder.invoice_type   as invoiceType,
-               invorder.invoice_status as invoiceStatus,
-               invorder.invoice_qty    as invoiceType,
-               invorder.purchase_id    as purchaseId,
-               invorder.purchase_no    as purchaseNo,
-               invorder.delivery_date  as deliveryDate,
-               invorder.consignee_user as receiverId,
-               staff.first_name        as receiverFirstName,
-               staff.last_name         as receiverLastName,
-               staff.country_code      as receiverCountryCode,
-               staff.telephone         as receiverTelephone,
-               staff.email             as receiverMail,
-               invorder.created_by     as createById,
-               crstaff.first_name      as createByFirstName,
-               crstaff.last_name       as createByLastName,
-               invorder.created_time   as createByDate
+        select invorder.id                       as id,
+        invorder.invoice_no               as invoiceNo,
+        invorder.invoice_type             as invoiceType,
+        invorder.invoice_status           as invoiceStatus,
+        invorder.invoice_qty              as invoiceType,
+        invorder.purchase_id              as purchaseId,
+        invorder.purchase_no              as purchaseNo,
+        invorder.delivery_date            as deliveryDate,
+        invorder.consignee_user           as receiverId,
+        staff.first_name                  as receiverFirstName,
+        staff.last_name                   as receiverLastName,
+        invorder.consignee_country_code   as receiverCountryCode,
+        invorder.consignee_user_telephone as receiverTelephone,
+        invorder.consignee_user_mail      as receiverMail,
+        invorder.created_by               as createById,
+        crstaff.first_name                as createByFirstName,
+        crstaff.last_name                 as createByLastName,
+        invorder.created_time             as createByDate
         from ope_invoice_order invorder
-                     left join ope_sys_staff staff on invorder.consignee_user = staff.id and staff.dr = 0
-                     left join ope_sys_staff crstaff on invorder.created_by = crstaff.id and crstaff.dr = 0
+        left join ope_sys_staff staff on invorder.consignee_user = staff.id and staff.dr = 0
+        left join ope_sys_staff crstaff on invorder.created_by = crstaff.id and crstaff.dr = 0
         <include refid="Where_list"/>
         limit #{startRow},#{pageSize}
     </select>
@@ -77,7 +74,7 @@
                inorder.consignee_user_mail      as consigneeUserEmail,
                inorder.consignee_post_code      as zipCodeName,
                inorder.consignee_address        as address,
-               inorder.delivery_date            as delivryDate,
+               inorder.delivery_date            as deliveryDate,
                inorder.consignor_user           as consignorUserId,
                consignor.first_name             as consignorUserFistName,
                consignor.last_name              as consignorUserLastName,
@@ -127,7 +124,7 @@
         from ope_invoice_parts_b partB
         inner join ope_production_parts part on part.id = partB.parts_id and part.dr = 0
         where partB.dr = 0
-        and combinB.invoice_id = #{id};
+        and partB.invoice_id = #{id};
     </select>
 
     <select id="scooterSnList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult">

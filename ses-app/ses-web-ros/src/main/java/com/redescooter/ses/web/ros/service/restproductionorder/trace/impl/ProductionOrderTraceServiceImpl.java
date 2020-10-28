@@ -141,8 +141,9 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     public GeneralResult save(SaveOpTraceEnter enter) {
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();
         BeanUtils.copyProperties(enter, saveOpeOpTrace);
-        if (null != enter.getId() || enter.getId() == 0) {
+        if (null == enter.getId() || enter.getId() == 0) {
             saveOpeOpTrace.setId(idAppService.getId(""));
+            saveOpeOpTrace.setDr(0);
             saveOpeOpTrace.setCreatedBy(enter.getUserId());
             saveOpeOpTrace.setCreatedTime(new Date());
         }

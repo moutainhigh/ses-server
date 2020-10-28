@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -18,7 +20,6 @@ import java.util.Date;
 public class SaveInvoiceEnter extends GeneralEnter {
 
     private Long id;
-
 
     @ApiModelProperty(value = "关联的采购单号")
     private String purchaseNo;
@@ -63,6 +64,8 @@ public class SaveInvoiceEnter extends GeneralEnter {
     private Long factoryId;
 
     @ApiModelProperty(value = "交货日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "发货人id")
@@ -78,7 +81,7 @@ public class SaveInvoiceEnter extends GeneralEnter {
     private String consignorMail;
 
     @ApiModelProperty(value = "通知人")
-    private Long notifyUserName;
+    private String notifyUserName;
 
     @ApiModelProperty(value = "通知人国家编码如+86")
     private String notifyCountryCode;
@@ -91,16 +94,4 @@ public class SaveInvoiceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remark;
-
-    @ApiModelProperty(value = "创建人")
-    private Long createdBy;
-
-    @ApiModelProperty(value = "创建时间")
-    private Date createdTime;
-
-    @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
-
-    @ApiModelProperty(value = "更新时间")
-    private Date updatedTime;
 }

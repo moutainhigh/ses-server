@@ -1,32 +1,34 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAllocateOrder;
 import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
 import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeAllocateOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
 import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -37,6 +39,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,6 +72,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
+    @Autowired
+    private OpeSysStaffService opeSysStaffService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -83,11 +89,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      */
     @Override
     public Map<Integer, Integer> countByType(GeneralEnter enter) {
-        Map<Integer, Integer> result = new HashMap<>();
-        Map<Integer, Integer> map = invoiceOrderServiceMapper.countByType(enter);
-
+        List<CountByStatusResult> countByStatusResult = invoiceOrderServiceMapper.countByType(enter);
+        Map<Integer, Integer> result = countByStatusResult.stream().collect(Collectors.toMap(item -> Integer.valueOf(item.getStatus()), CountByStatusResult::getTotalCount));
         for (ProductTypeEnums item : ProductTypeEnums.values()) {
-            if (!map.containsKey(item.getValue())) {
+            if (!result.containsKey(item.getValue())) {
                 result.put(item.getValue(), 0);
             }
         }
@@ -262,6 +267,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 备货
      * @param enter
      */
+    @Transactional
     @Override
     public GeneralResult stockUp(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -297,37 +303,78 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc:
      * @param enter
      */
+    @Transactional
     @Override
     public GeneralResult save(SaveInvoiceEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
+        //关联单据校验
+        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
+        if (opePurchaseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        //通知人校验
+        List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(new LambdaQueryWrapper<OpeSysStaff>().in(OpeSysStaff::getId, enter.getConsigneeUser(), enter.getConsignorUser()));
+        if (CollectionUtils.isEmpty(opeSysStaffList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        BeanUtils.copyProperties(enter, opeInvoiceOrder);
         if (enter.getId() == null || enter.getId() == 0) {
             opeInvoiceOrder.setId(idAppService.getId(""));
+            opeInvoiceOrder.setDr(0);
             opeInvoiceOrder.setCreatedBy(enter.getUserId());
             opeInvoiceOrder.setCreatedTime(new Date());
             opeInvoiceOrder.setUpdatedBy(enter.getUserId());
             opeInvoiceOrder.setUpdatedTime(new Date());
-            //保存动态
-            //保存节点
+            //操作动态
+            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderOperationTypeEnums.CREATE.getValue(), opeInvoiceOrder.getRemark());
+            saveOpTraceEnter.setUserId(enter.getUserId());
+            productionOrderTraceService.save(saveOpTraceEnter);
+
+            //订单节点
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), opeInvoiceOrder.getId(), opeInvoiceOrder.getRemark());
+            orderStatusFlowEnter.setUserId(enter.getUserId());
+            orderStatusFlowService.save(orderStatusFlowEnter);
         } else {
             opeInvoiceOrder.setUpdatedBy(enter.getUserId());
             opeInvoiceOrder.setUpdatedTime(new Date());
-            //更新动态
+            //操作动态
+            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderOperationTypeEnums.EDIT.getValue(), opeInvoiceOrder.getRemark());
+            saveOpTraceEnter.setUserId(enter.getUserId());
+            productionOrderTraceService.save(saveOpTraceEnter);
         }
+        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
 
         return new GeneralResult(enter.getRequestId());
     }
 
     /**
      * @Description
-     * @Author: enter
-     * @Date: 2020/10/26 15:57
+     * @Author: alex
+     * @Date: 2020/10/28 10:28
      * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 状态修改
+     * @Return: QueryStaffResult
+     * @desc: 员工列表
      * @param enter
      */
     @Override
-    public GeneralResult chanageStatus(ChanageStatusEnter enter) {
-        return null;
+    public List<QueryStaffResult> staffList(StringEnter enter) {
+        List<QueryStaffResult> result = new ArrayList<>();
+
+        QueryWrapper<OpeSysStaff> queryStaffResultQueryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(enter.getSt())) {
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_FIRST_NAME, enter.getSt());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_LAST_NAME, enter.getSt());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_TELEPHONE, enter.getSt());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_EMAIL, enter.getSt());
+        }
+        List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(queryStaffResultQueryWrapper);
+        if (CollectionUtils.isNotEmpty(opeSysStaffList)) {
+            opeSysStaffList.forEach(item -> {
+                QueryStaffResult queryStaffResult = new QueryStaffResult();
+                BeanUtils.copyProperties(item, queryStaffResult);
+                result.add(queryStaffResult);
+            });
+        }
+        return result;
     }
 }
