@@ -1,28 +1,36 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 发货单表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeInvoiceOrder")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName(value = "ope_invoice_order")
-public class OpeInvoiceOrder {
-    private static final long serialVersionUID = 1L;
+public class OpeInvoiceOrder implements Serializable {
+    public static final String COL_NOTIFY_USER = "notify_user";
     /**
      * 主键id
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键id")
     private Long id;
 
@@ -30,7 +38,6 @@ public class OpeInvoiceOrder {
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
@@ -182,17 +189,10 @@ public class OpeInvoiceOrder {
     private String consignorMail;
 
     /**
-     * 通知人id
-     */
-    @TableField(value = "notify_user")
-    @ApiModelProperty(value = "通知人id")
-    private Long notifyUser;
-
-    /**
-     * 通知人名称
+     * 通知人
      */
     @TableField(value = "notify_user_name")
-    @ApiModelProperty(value = "通知人名称")
+    @ApiModelProperty(value = "通知人")
     private String notifyUserName;
 
     /**
@@ -286,6 +286,8 @@ public class OpeInvoiceOrder {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
+    private static final long serialVersionUID = 1L;
+
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -331,8 +333,6 @@ public class OpeInvoiceOrder {
     public static final String COL_CONSIGNOR_TELEPHONE = "consignor_telephone";
 
     public static final String COL_CONSIGNOR_MAIL = "consignor_mail";
-
-    public static final String COL_NOTIFY_USER = "notify_user";
 
     public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
 

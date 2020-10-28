@@ -18,5 +18,8 @@ public class InvoiceOrderListEnter extends PageEnter {
     private String keyword;
 
     @ApiModelProperty(value = "发货单状态")
-    private String invoiceStatus;
+    private Integer invoiceStatus;
+
+    @ApiModelProperty(value = "单据类型 参考 ProductTypeEnums")
+    private Integer classType;
 }

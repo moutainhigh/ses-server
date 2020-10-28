@@ -79,6 +79,9 @@ public class SaveInvoiceEnter extends GeneralEnter {
     private String consignorMail;
 
     @ApiModelProperty(value = "通知人")
+    private Long notifyUser;
+
+    @ApiModelProperty(value = "通知人")
     private String notifyUserName;
 
     @ApiModelProperty(value = "通知人国家编码如+86")
