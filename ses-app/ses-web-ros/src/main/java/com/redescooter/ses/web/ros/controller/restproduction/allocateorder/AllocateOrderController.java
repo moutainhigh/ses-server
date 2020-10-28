@@ -1,8 +1,9 @@
-package com.redescooter.ses.web.ros.controller.allocateorder;
+package com.redescooter.ses.web.ros.controller.restproduction.allocateorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -65,7 +66,7 @@ public class AllocateOrderController {
 
     @PostMapping(value = "/cancelOrder")
     @ApiOperation(value = "调拨单取消下单", response = GeneralResult.class)
-    public Response<GeneralResult> allocateCancelOrder(@ModelAttribute @ApiParam("请求参数")IdEnter enter) {
+    public Response<GeneralResult> allocateCancelOrder(@ModelAttribute @ApiParam("请求参数") CancelOrderEnter enter) {
         return new Response<>(allocateOrderService.allocateCancelOrder(enter));
     }
 

@@ -77,7 +77,7 @@ public interface PurchaseOrderService {
      * @Param [enter]
      * @return
      **/
-    GeneralResult cancelOrder(IdEnter enter);
+    GeneralResult cancelOrder(CancelOrderEnter enter);
 
 
     /**
@@ -118,6 +118,17 @@ public interface PurchaseOrderService {
      * @return
      **/
     Map<String,Integer> listCount(GeneralEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  采购单日历
+     * @Date  2020/10/28 15:06
+     * @Param [enter]
+     * @return
+     **/
+    List<PurchaseCalendarResult> purchaseCalendar(PurchaseCalendarEnter enter);
+
 
 
 }

@@ -33,6 +33,7 @@
     <result column="consignor_country_code" jdbcType="VARCHAR" property="consignorCountryCode" />
     <result column="consignor_telephone" jdbcType="VARCHAR" property="consignorTelephone" />
     <result column="consignor_mail" jdbcType="VARCHAR" property="consignorMail" />
+    <result column="notify_user" jdbcType="BIGINT" property="notifyUser" />
     <result column="notify_user_name" jdbcType="VARCHAR" property="notifyUserName" />
     <result column="notify_country_code" jdbcType="VARCHAR" property="notifyCountryCode" />
     <result column="notify_user_telephone" jdbcType="VARCHAR" property="notifyUserTelephone" />
@@ -61,10 +62,10 @@
     consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
     factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
     contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-    consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-    remark, payment_type, planned_payment_time, payment_day, payment_time, payment_status, 
-    purchase_contract, created_by, created_time, updated_by, updated_time, def1, def2, 
-    def3, def4, def5
+    consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+    notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+    payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -210,6 +211,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.consignorMail,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="notify_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUser,jdbcType=BIGINT}
+        </foreach>
+      </trim>
       <trim prefix="notify_user_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.notifyUserName,jdbcType=VARCHAR}
@@ -324,10 +330,10 @@
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
       contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, payment_type, planned_payment_time, payment_day, payment_time, payment_status, 
-      purchase_contract, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def4, def5)
+      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+      notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+      payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
@@ -342,7 +348,7 @@
         #{item.contactTelephone,jdbcType=VARCHAR}, #{item.contactMail,jdbcType=VARCHAR}, 
         #{item.consignorUser,jdbcType=BIGINT}, #{item.consignorCountryCode,jdbcType=VARCHAR}, 
         #{item.consignorTelephone,jdbcType=VARCHAR}, #{item.consignorMail,jdbcType=VARCHAR}, 
-        #{item.notifyUserName,jdbcType=VARCHAR}, #{item.notifyCountryCode,jdbcType=VARCHAR}, 
+        #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, #{item.notifyCountryCode,jdbcType=VARCHAR}, 
         #{item.notifyUserTelephone,jdbcType=VARCHAR}, #{item.notifyUserMail,jdbcType=VARCHAR}, 
         #{item.remark,jdbcType=VARCHAR}, #{item.paymentType,jdbcType=INTEGER}, #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, 
         #{item.paymentDay,jdbcType=INTEGER}, #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.paymentStatus,jdbcType=INTEGER}, 
@@ -360,10 +366,10 @@
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
       contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, payment_type, planned_payment_time, payment_day, payment_time, payment_status, 
-      purchase_contract, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def4, def5)
+      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+      notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+      payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
       #{allocateNo,jdbcType=VARCHAR}, #{allocateId,jdbcType=BIGINT}, #{purchaseNo,jdbcType=VARCHAR}, 
@@ -374,8 +380,8 @@
       #{factoryId,jdbcType=BIGINT}, #{deliveryDate,jdbcType=TIMESTAMP}, #{contactUser,jdbcType=BIGINT}, 
       #{contactUserName,jdbcType=VARCHAR}, #{contactCountryCode,jdbcType=VARCHAR}, #{contactTelephone,jdbcType=VARCHAR}, 
       #{contactMail,jdbcType=VARCHAR}, #{consignorUser,jdbcType=BIGINT}, #{consignorCountryCode,jdbcType=VARCHAR}, 
-      #{consignorTelephone,jdbcType=VARCHAR}, #{consignorMail,jdbcType=VARCHAR}, #{notifyUserName,jdbcType=VARCHAR}, 
-      #{notifyCountryCode,jdbcType=VARCHAR}, #{notifyUserTelephone,jdbcType=VARCHAR}, 
+      #{consignorTelephone,jdbcType=VARCHAR}, #{consignorMail,jdbcType=VARCHAR}, #{notifyUser,jdbcType=BIGINT}, 
+      #{notifyUserName,jdbcType=VARCHAR}, #{notifyCountryCode,jdbcType=VARCHAR}, #{notifyUserTelephone,jdbcType=VARCHAR}, 
       #{notifyUserMail,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{paymentType,jdbcType=INTEGER}, 
       #{plannedPaymentTime,jdbcType=TIMESTAMP}, #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, 
       #{paymentStatus,jdbcType=INTEGER}, #{purchaseContract,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
@@ -412,6 +418,7 @@
     consignor_country_code = #{consignorCountryCode,jdbcType=VARCHAR}, 
     consignor_telephone = #{consignorTelephone,jdbcType=VARCHAR}, 
     consignor_mail = #{consignorMail,jdbcType=VARCHAR}, 
+    notify_user = #{notifyUser,jdbcType=BIGINT}, 
     notify_user_name = #{notifyUserName,jdbcType=VARCHAR}, 
     notify_country_code = #{notifyCountryCode,jdbcType=VARCHAR}, 
     notify_user_telephone = #{notifyUserTelephone,jdbcType=VARCHAR}, 
@@ -523,6 +530,9 @@
       </if>
       <if test="consignorMail != null">
         consignor_mail,
+      </if>
+      <if test="notifyUser != null">
+        notify_user,
       </if>
       <if test="notifyUserName != null">
         notify_user_name,
@@ -674,6 +684,9 @@
       <if test="consignorMail != null">
         #{consignorMail,jdbcType=VARCHAR},
       </if>
+      <if test="notifyUser != null">
+        #{notifyUser,jdbcType=BIGINT},
+      </if>
       <if test="notifyUserName != null">
         #{notifyUserName,jdbcType=VARCHAR},
       </if>
@@ -823,6 +836,9 @@
       </if>
       <if test="consignorMail != null">
         consignor_mail = #{consignorMail,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyUser != null">
+        notify_user = #{notifyUser,jdbcType=BIGINT},
       </if>
       <if test="notifyUserName != null">
         notify_user_name = #{notifyUserName,jdbcType=VARCHAR},

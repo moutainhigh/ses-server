@@ -92,6 +92,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         OpeOpTrace opTrace = new OpeOpTrace();
         opTrace.setRelationId(purchaseOrder.getId());
         opTrace.setOpType(1);
+        opTrace.setOrderType(2);
         opTrace.setCreatedBy(enter.getUserId());
         opTrace.setCreatedTime(new Date());
         opTrace.setUpdatedBy(enter.getUserId());
@@ -101,6 +102,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 状态流转表
         OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
         statusFlow.setRelationId(purchaseOrder.getId());
+        statusFlow.setOrderType(2);
         statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
         statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
         statusFlow.setCreatedBy(enter.getUserId());
@@ -280,12 +282,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder.setUpdatedTime(new Date());
         // 统计采购单产品里面的数量和总金额
         countQtyAmount(enter,purchaseOrder);
+        opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 编辑的时候 先把下面的产品删除  再重新插入
         deleteOrderB(purchaseOrder);
+        // 处理子表
+        createPurchaseB(enter,purchaseOrder);
         // 操作动态表
         OpeOpTrace opTrace = new OpeOpTrace();
         opTrace.setRelationId(purchaseOrder.getId());
         opTrace.setOpType(2);
+        opTrace.setOrderType(2);
         opTrace.setCreatedBy(enter.getUserId());
         opTrace.setCreatedTime(new Date());
         opTrace.setUpdatedBy(enter.getUserId());
@@ -380,6 +386,29 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
+        // 操作动态表
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(purchaseOrder.getId());
+        opTrace.setOpType(3);
+        opTrace.setOrderType(2);
+        opTrace.setCreatedBy(enter.getUserId());
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(enter.getUserId());
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+        // 状态流转表
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(purchaseOrder.getId());
+        statusFlow.setOrderType(2);
+        statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(enter.getUserId());
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(enter.getUserId());
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+
         // todo 调用发货单那边的接口 生成一个发货单
         return new GeneralResult(enter.getRequestId());
     }
@@ -387,7 +416,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Override
     @Transactional
-    public GeneralResult cancelOrder(IdEnter enter) {
+    public GeneralResult cancelOrder(CancelOrderEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
@@ -395,6 +424,31 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // todo 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.CANCEL.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
+
+        // 操作动态表
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(purchaseOrder.getId());
+        opTrace.setOpType(5);
+        opTrace.setOrderType(2);
+        opTrace.setRemark(enter.getRemark());
+        opTrace.setCreatedBy(enter.getUserId());
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(enter.getUserId());
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+        // 状态流转表
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(purchaseOrder.getId());
+        statusFlow.setOrderType(2);
+        statusFlow.setRemark(enter.getRemark());
+        statusFlow.setOrderStatus(purchaseOrder.getPurchaseStatus());
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(enter.getUserId());
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(enter.getUserId());
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -423,6 +477,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
+        opePurchaseOrderService.removeById(purchaseOrder.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -450,5 +505,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         parts.eq(OpePurchaseOrder.COL_PURCHASE_TYPE,3);
         map.put("3",opePurchaseOrderService.count(parts));
         return map;
+    }
+
+    @Override
+    public List<PurchaseCalendarResult> purchaseCalendar(PurchaseCalendarEnter enter) {
+        List<PurchaseCalendarResult> resultList = purchaseOrderServiceMapper.purchaseCalendar(enter);
+        return resultList;
     }
 }

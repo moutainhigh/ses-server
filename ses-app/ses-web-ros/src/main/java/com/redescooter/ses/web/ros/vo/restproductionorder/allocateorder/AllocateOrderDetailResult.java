@@ -67,6 +67,9 @@ public class AllocateOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "收货人地址")
     private String consigneeAddress;
 
+    @ApiModelProperty("通知人id")
+    private Long notifyUser;
+
     @ApiModelProperty("通知人名称")
     private String notifyUserName;
 

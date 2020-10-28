@@ -43,6 +43,9 @@ public class AllocateOrderOrUpdateSaveEnter extends GeneralEnter {
     @ApiModelProperty("收获邮编")
     private String consigneePostCode;
 
+    @ApiModelProperty("通知人id")
+    private Long  notifyUser;
+
     @ApiModelProperty("通知人名称")
     private String  notifyUserName;
 

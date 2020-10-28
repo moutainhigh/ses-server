@@ -1,33 +1,28 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 委托单表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeEntrustOrder")
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName(value = "ope_entrust_order")
-public class OpeEntrustOrder implements Serializable {
-    public static final String COL_NOTIFY_USER = "notify_user";
+public class OpeEntrustOrder {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键id")
     private Long id;
 
@@ -180,11 +175,18 @@ public class OpeEntrustOrder implements Serializable {
     private String consignorMail;
 
     /**
-     * 通知人
+     * 通知人id
+     */
+    @TableField(value = "notify_user")
+    @ApiModelProperty(value = "通知人id")
+    private Long notifyUser;
+
+    /**
+     * 通知人名称
      */
     @TableField(value = "notify_user_name")
-    @ApiModelProperty(value = "通知人")
-    private Long notifyUserName;
+    @ApiModelProperty(value = "通知人名称")
+    private String notifyUserName;
 
     /**
      * 通知人国家编码如+86
@@ -277,8 +279,6 @@ public class OpeEntrustOrder implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -322,6 +322,8 @@ public class OpeEntrustOrder implements Serializable {
     public static final String COL_CONSIGNOR_TELEPHONE = "consignor_telephone";
 
     public static final String COL_CONSIGNOR_MAIL = "consignor_mail";
+
+    public static final String COL_NOTIFY_USER = "notify_user";
 
     public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
 
