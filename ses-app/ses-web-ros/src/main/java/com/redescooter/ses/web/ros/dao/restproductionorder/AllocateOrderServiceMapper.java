@@ -41,4 +41,7 @@ public interface AllocateOrderServiceMapper {
     List<OpTraceResult> allocateTrace(@Param("id") Long id);
 
 
+   Integer allocateOutWh(@Param("id") Long id);
+
+
 }

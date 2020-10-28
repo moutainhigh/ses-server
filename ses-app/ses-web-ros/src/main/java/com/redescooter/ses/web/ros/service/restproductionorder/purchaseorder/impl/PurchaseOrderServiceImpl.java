@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -373,6 +374,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 result.setParts(purchaseOrderServiceMapper.purchaseParts(enter.getId()));
                 break;
         }
+        // 操作动态
+        List<OpTraceResult> traces = purchaseOrderServiceMapper.purchaseTrace(enter.getId());
+        result.setOpTraces(traces);
         return result;
     }
 
@@ -426,6 +430,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
 
         // 操作动态表
+//        createOpTrace();
         OpeOpTrace opTrace = new OpeOpTrace();
         opTrace.setRelationId(purchaseOrder.getId());
         opTrace.setOpType(5);
@@ -511,5 +516,49 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public List<PurchaseCalendarResult> purchaseCalendar(PurchaseCalendarEnter enter) {
         List<PurchaseCalendarResult> resultList = purchaseOrderServiceMapper.purchaseCalendar(enter);
         return resultList;
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description 操作动态
+     * @Date  2020/10/28 17:25
+     * @Param [allocateId, userId, opType, orderType, remark]
+     * @return
+     **/
+    public void createOpTrace(Long purchaseId,Long userId,Integer opType,Integer orderType,String remark){
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(purchaseId);
+        opTrace.setOpType(opType);
+        opTrace.setOrderType(orderType);
+        opTrace.setRemark(remark);
+        opTrace.setCreatedBy(userId);
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(userId);
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  单据状态流转
+     * @Date  2020/10/28 17:31
+     * @Param [allocateId, userId, orderStatus, orderType, remark]
+     * @return
+     **/
+    public void createStatusFlow(Long purchaseId,Long userId,Integer orderStatus,Integer orderType,String remark){
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(purchaseId);
+        statusFlow.setRemark(remark);
+        statusFlow.setOrderType(2);
+        statusFlow.setOrderStatus(orderStatus);
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(userId);
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(userId);
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
     }
 }

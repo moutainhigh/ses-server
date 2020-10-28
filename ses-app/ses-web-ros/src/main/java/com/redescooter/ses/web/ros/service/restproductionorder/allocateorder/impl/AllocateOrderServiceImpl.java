@@ -106,27 +106,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         // 处理调拨单的子表
         createAllocateB(enter, allocateOrder);
         // 操作动态表
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(allocateOrder.getId());
-        opTrace.setOpType(1);
-        opTrace.setOrderType(1);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(allocateOrder.getId(),enter.getUserId(),1,1,"");
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(allocateOrder.getId());
-        statusFlow.setOrderType(1);
-        statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+        createStatusFlow(allocateOrder.getId(),enter.getUserId(),allocateOrder.getAllocateStatus(),1,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -271,20 +253,12 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         allocateOrder.setUpdatedTime(new Date());
         allocateOrder.setUpdatedBy(enter.getUserId());
         getConuntQty(enter, allocateOrder);
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
         // 编辑的时候 先把下面的产品删除  再重新插入
         deleteOrderB(allocateOrder);
         createAllocateB(enter, allocateOrder);
-        // 操作动态表
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(allocateOrder.getId());
-        opTrace.setOpType(2);
-        opTrace.setOrderType(1);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        // 操作记录
+        createOpTrace(allocateOrder.getId(),enter.getUserId(),2,1,"");
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -369,27 +343,11 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_HANDLE.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(allocateOrder.getId());
-        opTrace.setOpType(3);
-        opTrace.setOrderType(1);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        // 操作记录
+        createOpTrace(allocateOrder.getId(),enter.getUserId(),3,1,"");
+
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(allocateOrder.getId());
-        statusFlow.setOrderType(1);
-        statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+        createStatusFlow(allocateOrder.getId(),enter.getUserId(),allocateOrder.getAllocateStatus(),1,"");
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -402,32 +360,17 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // todo 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
+        Integer num = allocateOrderServiceMapper.allocateOutWh(allocateOrder.getId());
+        if(num > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
+        }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.CANCEL.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        // 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
         // 操作记录
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(allocateOrder.getId());
-        opTrace.setOpType(5);
-        opTrace.setOrderType(1);
-        opTrace.setRemark(enter.getRemark());
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(allocateOrder.getId(),enter.getUserId(),5,1,enter.getRemark());
         // 状态流转表
-        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
-        statusFlow.setRelationId(allocateOrder.getId());
-        statusFlow.setRemark(enter.getRemark());
-        statusFlow.setOrderType(1);
-        statusFlow.setOrderStatus(allocateOrder.getAllocateStatus());
-        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
-        statusFlow.setCreatedBy(enter.getUserId());
-        statusFlow.setCreatedTime(new Date());
-        statusFlow.setUpdatedBy(enter.getUserId());
-        statusFlow.setUpdatedTime(new Date());
-        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+        createStatusFlow(allocateOrder.getId(),enter.getUserId(),allocateOrder.getAllocateStatus(),1,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -442,16 +385,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         opeAllocateOrderService.removeById(enter.getId());
         // 操作记录
-        OpeOpTrace opTrace = new OpeOpTrace();
-        opTrace.setRelationId(allocateOrder.getId());
-        opTrace.setOpType(4);
-        opTrace.setOrderType(1);
-        opTrace.setCreatedBy(enter.getUserId());
-        opTrace.setCreatedTime(new Date());
-        opTrace.setUpdatedBy(enter.getUserId());
-        opTrace.setUpdatedTime(new Date());
-        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
-        opeOpTraceService.saveOrUpdate(opTrace);
+        createOpTrace(allocateOrder.getId(),enter.getUserId(),4,1,"");
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -488,4 +422,46 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     }
 
 
+   /**
+    * @Author Aleks
+    * @Description 操作动态
+    * @Date  2020/10/28 17:25
+    * @Param [allocateId, userId, opType, orderType, remark]
+    * @return
+    **/
+    public void createOpTrace(Long allocateId,Long userId,Integer opType,Integer orderType,String remark){
+        OpeOpTrace opTrace = new OpeOpTrace();
+        opTrace.setRelationId(allocateId);
+        opTrace.setOpType(opType);
+        opTrace.setOrderType(orderType);
+        opTrace.setRemark(remark);
+        opTrace.setCreatedBy(userId);
+        opTrace.setCreatedTime(new Date());
+        opTrace.setUpdatedBy(userId);
+        opTrace.setUpdatedTime(new Date());
+        opTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+        opeOpTraceService.saveOrUpdate(opTrace);
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  单据状态流转
+     * @Date  2020/10/28 17:31
+     * @Param [allocateId, userId, orderStatus, orderType, remark]
+     * @return
+     **/
+    public void createStatusFlow(Long allocateId,Long userId,Integer orderStatus,Integer orderType,String remark){
+        OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+        statusFlow.setRelationId(allocateId);
+        statusFlow.setRemark(remark);
+        statusFlow.setOrderType(1);
+        statusFlow.setOrderStatus(orderStatus);
+        statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+        statusFlow.setCreatedBy(userId);
+        statusFlow.setCreatedTime(new Date());
+        statusFlow.setUpdatedBy(userId);
+        statusFlow.setUpdatedTime(new Date());
+        opeOrderStatusFlowService.saveOrUpdate(statusFlow);
+    }
 }

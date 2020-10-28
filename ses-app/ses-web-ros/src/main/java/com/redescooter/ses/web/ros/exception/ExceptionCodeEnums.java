@@ -462,6 +462,8 @@ public enum ExceptionCodeEnums {
 
     ORDER_TRACE_IS_NOT_EXIST(10222, "单据记录不存在"),
 
+    STOCK_NOT_CANCEL(10223, "正在备货中，无法取消"),
+
 
     ;
 

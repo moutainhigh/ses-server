@@ -185,4 +185,19 @@
         from ope_purchase_order
         where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%')
     </select>
+
+    <select id="purchaseTrace"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult">
+            select
+            trace.id,
+            trace.relation_id,
+            trace.op_type,
+            trace.remark,
+            trace.created_time,
+            staff.full_name as createdByName
+            from ope_op_trace trace
+            left join ope_sys_staff staff on trace.created_by = staff.id
+            where trace.dr = 0 and trace.relation_id = #{id}
+            order by trace.created_time desc
+    </select>
 </mapper>

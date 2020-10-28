@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -138,6 +139,9 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty("部件采购产品详情")
     private List<PurchasePartsDetailResult> parts;
+
+    @ApiModelProperty("操作动态")
+    private List<OpTraceResult> opTraces;
 
     // todo 关联的单据（调拨单、发货单、委托单）
 

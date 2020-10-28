@@ -162,5 +162,15 @@
         order by trace.created_time desc
     </select>
 
+    <select id="allocateOutWh" resultType="java.lang.Integer">
+        SELECT
+          count(*)
+        FROM ope_out_whouse_order wh
+        LEFT JOIN ope_invoice_order invoice on invoice.id = wh.invoice_id
+        LEFT JOIN ope_purchase_order purchase on purchase.id = invoice.purchase_id
+        LEFT JOIN ope_allocate_order allocate on  allocate.id = purchase.allocate_id
+        where wh.dr = 0 and allocate.id = #{id}  and wh.out_wh_status in (10,20)
+    </select>
+
 
 </mapper>

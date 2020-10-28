@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,6 +27,8 @@ public interface PurchaseOrderServiceMapper {
     List<PurchaseCombineDetailResult> purchaseCombin(@Param("id") Long id);
 
     List<PurchasePartsDetailResult> purchaseParts(@Param("id") Long id);
+
+    List<OpTraceResult> purchaseTrace(@Param("id") Long id);
 
     List<AllocateNoDataResult> allocateNoData(@Param("enter") KeywordEnter enter);
 
