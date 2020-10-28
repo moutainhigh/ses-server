@@ -77,9 +77,17 @@ public class OrderNumberServiceImpl implements OrderNumberService {
 //        }
 //        if (!StringUtils.isBlank(orderNumber)){
 //            if (StringUtils.equals(String.valueOf(orderNumber.substring(2,9)),dateStamp)){
-//                Integer serialNumber=
-//                return  orderNumber.substring(0,9);
+//                Integer serialNumber=Integer.valueOf(orderNumber.substring(orderNumber.length()-3,orderNumber.length()))+1;
+//                if (serialNumber < 100){
+//                    return result.append(orderNumber.substring(0,9)).append("0").append(String.valueOf(serialNumber)).toString();
+//                }else if (serialNumber<10){
+//                    return result.append(orderNumber.substring(0,9)).append("00").append(String.valueOf(serialNumber)).toString();
+//                }else {
+//                    return result.append(orderNumber.substring(0,9)).append(String.valueOf(serialNumber)).toString();
+//                }
 //            }
+//        }else {
+//            return result.append(orderNumber.substring(0,9)).append(String.valueOf(serialNumber)).toString();
 //        }
 //        return null;
 //
