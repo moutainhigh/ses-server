@@ -194,8 +194,8 @@ public class OrderResult extends GeneralResult {
     private Date createdTime;
 
 
-    @ApiModelProperty(value="更新人")
-    private Integer updatedBy;
+    @ApiModelProperty(value = "更新人")
+    private Long updatedBy;
 
 
     @ApiModelProperty(value="更新时间")
