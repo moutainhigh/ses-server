@@ -34,6 +34,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.Outbound
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,7 +95,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
 
     /**
