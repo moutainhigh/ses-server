@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoun
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -353,7 +354,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         BeanUtils.copyProperties(enter, opeInvoiceOrder);
         SaveOpTraceEnter saveOpTraceEnter = null;
         if (enter.getId() == null || enter.getId() == 0) {
-            opeInvoiceOrder.setId(idAppService.getId(""));
+            opeInvoiceOrder.setId(idAppService.getId(SequenceName.OPE_INVOICE_ORDER));
             opeInvoiceOrder.setDr(0);
             opeInvoiceOrder.setInvoiceNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.INVOICE.getValue())).getValue());
             opeInvoiceOrder.setCreatedBy(enter.getUserId());
