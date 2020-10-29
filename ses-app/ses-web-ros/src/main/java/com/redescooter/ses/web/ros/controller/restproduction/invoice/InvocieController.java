@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOr
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +66,12 @@ public class InvocieController {
     @ApiOperation(value = "装车", response = Map.class)
     public Response<GeneralResult> loading(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(invoiceOrderService.loading(enter));
+    }
+
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存", response = GeneralResult.class)
+    public Response<GeneralResult> detail(@ModelAttribute @ApiParam("请求参数") SaveInvoiceEnter enter) {
+        return new Response<>(invoiceOrderService.save(enter));
     }
 
 

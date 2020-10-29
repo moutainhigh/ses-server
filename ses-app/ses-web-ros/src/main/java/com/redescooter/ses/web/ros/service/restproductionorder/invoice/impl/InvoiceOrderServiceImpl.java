@@ -181,11 +181,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //查询产品列表
         List<OrderProductDetailResult> orderProductDetailResultList = this.productListById(new IdEnter(enter.getId()));
         //查询关联订单
-        List<AssociatedOrderResult> associatedOrderResultList = this.associatedOrderList(new IdEnter(enter.getId()));
+        //List<AssociatedOrderResult> associatedOrderResultList = this.associatedOrderList(new IdEnter(enter.getId()));
 
         detail.setOrderOperatingList(opTraceResultList);
         detail.setInvoiceProductList(orderProductDetailResultList);
-        detail.setAssociatedOrderList(associatedOrderResultList);
+        //detail.setAssociatedOrderList(associatedOrderResultList);
         return detail;
     }
 
@@ -335,11 +335,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public GeneralResult save(SaveInvoiceEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
-        //关联单据校验
-        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
-        if (opePurchaseOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-        }
+//        //关联单据校验
+//        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
+//        if (opePurchaseOrder == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+//        }
 
         //通知人校验
         List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(new LambdaQueryWrapper<OpeSysStaff>().in(OpeSysStaff::getId, enter.getConsigneeUser(), enter.getConsignorUser()));
@@ -378,8 +378,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
         enter.setId(opeInvoiceOrder.getId());
-        opeInvoiceOrder.setPurchaseId(opePurchaseOrder.getId());
-        opeInvoiceOrder.setPurchaseNo(opePurchaseOrder.getPurchaseNo());
         opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
 
         //保存子单据
