@@ -26,6 +26,9 @@ public class ConsignOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "Id")
     private Long id;
 
+    @ApiModelProperty(value = "发货单Id")
+    private Long invoiceId;
+
     @ApiModelProperty(value = "委托单号")
     private String consignOrderNo;
 

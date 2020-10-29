@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
@@ -134,12 +133,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @param enter
      */
     @Override
-    public Map<Integer, Integer> statusList(GeneralEnter enter) {
-        Map<Integer, Integer> result = new HashMap<>();
+    public  Map<Integer, String> statusList(GeneralEnter enter) {
+        Map<Integer, String> result = new HashMap<>();
         for (InvoiceOrderStatusEnums item : InvoiceOrderStatusEnums.values()) {
-            if (!result.containsKey(item.getValue())) {
-                result.put(item.getValue(), 0);
-            }
+            result.put(item.getValue(),item.getMessage());
         }
         return result;
     }
@@ -182,11 +179,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //查询产品列表
         List<OrderProductDetailResult> orderProductDetailResultList = this.productListById(new IdEnter(enter.getId()));
         //查询关联订单
-        //List<AssociatedOrderResult> associatedOrderResultList = this.associatedOrderList(new IdEnter(enter.getId()));
+        List<AssociatedOrderResult> associatedOrderResultList = this.associatedOrderList(new IdEnter(enter.getId()));
 
         detail.setOrderOperatingList(opTraceResultList);
         detail.setInvoiceProductList(orderProductDetailResultList);
-        //detail.setAssociatedOrderList(associatedOrderResultList);
+        detail.setAssociatedOrderList(associatedOrderResultList);
         return detail;
     }
 
@@ -210,12 +207,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opePurchaseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        OpeAllocateOrder opeAllocateOrder = opeAllocateOrderService.getById(opePurchaseOrder.getId());
+        OpeAllocateOrder opeAllocateOrder = opeAllocateOrderService.getById(opePurchaseOrder.getAllocateId());
         if (opeAllocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        resultList.add(new AssociatedOrderResult(opeAllocateOrder.getId(), opeAllocateOrder.getAllocateNo(), OrderTypeEnums.ALLOCATE.getValue(), opeAllocateOrder.getCreatedTime()));
-        resultList.add(new AssociatedOrderResult(opeAllocateOrder.getId(), opeAllocateOrder.getAllocateNo(), OrderTypeEnums.ALLOCATE.getValue(), opeAllocateOrder.getCreatedTime()));
+        resultList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getAllocateNo(), OrderTypeEnums.SHIPPING.getValue(), opeAllocateOrder.getCreatedTime()));
         resultList.add(new AssociatedOrderResult(opeAllocateOrder.getId(), opeAllocateOrder.getAllocateNo(), OrderTypeEnums.ALLOCATE.getValue(), opeAllocateOrder.getCreatedTime()));
         return resultList;
     }
@@ -238,13 +234,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //查询产品列表
         List<OrderProductDetailResult> productList = new ArrayList<>();
         List<InvoiceSnResult> snList = new ArrayList<>();
-        if (StringUtils.equals(String.valueOf(opeInvoiceOrder.getInvoiceType()), BomCommonTypeEnums.SCOOTER.getValue())) {
+        if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
             //整车
             productList = invoiceOrderServiceMapper.scooterProductList(opeInvoiceOrder.getId());
             if (CollectionUtils.isNotEmpty(productList)) {
                 snList = invoiceOrderServiceMapper.scooterSnList(enter.getId());
             }
-        } else if (StringUtils.equals(String.valueOf(opeInvoiceOrder.getInvoiceType()), BomCommonTypeEnums.COMBINATION.getValue())) {
+        } else if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.COMBINATION.getValue())) {
             productList = invoiceOrderServiceMapper.combinationProductList(opeInvoiceOrder.getId());
             if (CollectionUtils.isNotEmpty(productList)) {
                 snList = invoiceOrderServiceMapper.combinationSnList(enter.getId());
@@ -314,11 +310,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //操作动态
         SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.STOCK_UP.getValue(), null);
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -336,11 +334,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public GeneralResult save(SaveInvoiceEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
-//        //关联单据校验
-//        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
-//        if (opePurchaseOrder == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-//        }
+        //关联单据校验
+        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
+        if (opePurchaseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
 
         //通知人校验
         List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(new LambdaQueryWrapper<OpeSysStaff>().in(OpeSysStaff::getId, enter.getConsigneeUser(), enter.getConsignorUser()));
@@ -376,12 +374,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         saveOpTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(saveOpTraceEnter);
 
+
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
-        enter.setId(opeInvoiceOrder.getId());
         opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
 
         //保存子单据
+        enter.setId(opeInvoiceOrder.getId());
         saveInvoiceB(enter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -495,7 +494,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         saveOutboundOrderEnter.setId(null);
         saveOutboundOrderEnter.setInvoiceId(enter.getId());
         saveOutboundOrderEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
-        saveOutboundOrderEnter.setOutType(opeInvoiceOrder.getInvoiceType());
+        saveOutboundOrderEnter.setOutWhType(opeInvoiceOrder.getInvoiceType());
         saveOutboundOrderEnter.setOutType(OutBoundOrderTypeEnums.SALES.getValue());
         saveOutboundOrderEnter.setOutWhQty(opeInvoiceOrder.getInvoiceQty());
         saveOutboundOrderEnter.setRemark(opeInvoiceOrder.getRemark());
@@ -513,6 +512,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                     BeanUtils.copyProperties(item, opeInvoiceScooterB);
                     opeInvoiceScooterB.setId(idAppService.getId(SequenceName.OPE_INVOICE_SCOOTER_B));
                     opeInvoiceScooterB.setDr(0);
+                    opeInvoiceScooterB.setInvoiceId(enter.getId());
                     opeInvoiceScooterB.setCreatedBy(enter.getUserId());
                     opeInvoiceScooterB.setCreatedTime(new Date());
                     opeInvoiceScooterB.setUpdatedBy(enter.getUserId());

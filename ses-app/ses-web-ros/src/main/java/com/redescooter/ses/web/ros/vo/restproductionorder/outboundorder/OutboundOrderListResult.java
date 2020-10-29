@@ -50,7 +50,7 @@ public class OutboundOrderListResult extends GeneralResult {
     private Long createById;
 
     @ApiModelProperty(value = "创建人名称")
-    private String createBFirstName;
+    private String createByFirstName;
 
     @ApiModelProperty(value = "创建人名称")
     private String createByLastName;

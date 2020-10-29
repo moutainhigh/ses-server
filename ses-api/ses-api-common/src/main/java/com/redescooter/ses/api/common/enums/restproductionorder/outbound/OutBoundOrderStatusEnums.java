@@ -11,7 +11,7 @@ public enum OutBoundOrderStatusEnums {
 
 
     BE_OUTBOUND("BE_OUTBOUND", "待出库", 0),
-    QUALITY_INSPECTION("QUALITY_INSPECTION", "QUALITY_INSPECTION", 10),
+    QUALITY_INSPECTION("QUALITY_INSPECTION", "质检中", 10),
     OUT_STOCK("OUT_STOCK", "已出库", 20),
     CANCEL("CANCEL", "取消", 30);
 

@@ -54,6 +54,7 @@
         invorder.consignee_user_mail      as receiverMail,
         invorder.created_by               as createById,
         crstaff.first_name                as createByFirstName,
+        invorder.invoice_qty              as invoiceQty,
         crstaff.last_name                 as createByLastName,
         invorder.created_time             as createByDate
         from ope_invoice_order invorder
@@ -100,6 +101,7 @@
         select scooterB.id       as id,
         scooterB.group_id as categoryId,
         scooterB.color_id as colorId,
+        color.color_name  as colorName,
         scooterB.qty      as totalQty
         from ope_invoice_scooter_b scooterB
         left join ope_specificat_group spgroup on spgroup.id = scooterB.group_id and spgroup.dr = 0

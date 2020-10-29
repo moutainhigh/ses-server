@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeOpTrace;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -144,7 +145,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();
         BeanUtils.copyProperties(enter, saveOpeOpTrace);
         if (null == enter.getId() || enter.getId() == 0) {
-            saveOpeOpTrace.setId(idAppService.getId(""));
+            saveOpeOpTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
             saveOpeOpTrace.setDr(0);
             saveOpeOpTrace.setCreatedBy(enter.getUserId());
             saveOpeOpTrace.setCreatedTime(new Date());

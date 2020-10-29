@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
@@ -39,7 +38,7 @@ public interface ConsignOrderService {
      * @Return: Map
      * @desc: 状态列表
      */
-    Map<Integer, Integer> statusList(GeneralEnter enter);
+    Map<Integer, String> statusList(GeneralEnter enter);
 
     /**
      * @Description
@@ -60,17 +59,6 @@ public interface ConsignOrderService {
      * @desc: 详情
      */
     ConsignOrderDetailResult detail(IdEnter enter);
-
-    /**
-     * @Description
-     * @Author: alex
-     * @Date: 2020/10/29 13:45
-     * @Param: enter
-     * @Return: OrderProductDetailResult
-     * @desc: 产品详情
-     */
-    List<OrderProductDetailResult> productDetailList(IdEnter enter);
-
     /**
      * @Description
      * @Author: alex

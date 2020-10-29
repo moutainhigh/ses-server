@@ -31,7 +31,7 @@ public class OutboundOrderController {
 
     @PostMapping(value = "/statusList")
     @ApiOperation(value = "状态列表", response = Map.class)
-    public Response<Map<Integer, Integer>> statusList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<Integer, String>> statusList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(outboundOrderService.statusList(enter));
     }
 

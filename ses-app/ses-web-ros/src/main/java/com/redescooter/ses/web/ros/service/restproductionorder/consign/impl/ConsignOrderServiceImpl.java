@@ -9,10 +9,16 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
+import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
@@ -22,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +49,15 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Autowired
     private ProductionOrderTraceService productionOrderTraceService;
+
+    @Autowired
+    private OpeEntrustOrderService opeEntrustOrderService;
+
+    @Autowired
+    private OpeInvoiceOrderService opeInvoiceOrderService;
+
+    @Autowired
+    private InvoiceOrderService invoiceOrderService;
 
     /**
      * @Description
@@ -77,12 +93,10 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @param enter
      */
     @Override
-    public Map<Integer, Integer> statusList(GeneralEnter enter) {
-        Map<Integer, Integer> result = new HashMap<>();
+    public  Map<Integer, String> statusList(GeneralEnter enter) {
+        Map<Integer, String> result = new HashMap<>();
         for (ConsignOrderStatusEnums item : ConsignOrderStatusEnums.values()) {
-            if (!result.containsKey(item.getValue())) {
-                result.put(item.getValue(), 0);
-            }
+            result.put(item.getValue(),item.getMessage());
         }
         return result;
     }
@@ -118,26 +132,12 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     public ConsignOrderDetailResult detail(IdEnter enter) {
         ConsignOrderDetailResult detail = consignOrderServiceMapper.detail(enter);
         //产品详情
-        detail.setProductList(this.productDetailList(enter));
+        detail.setProductList(invoiceOrderService.productListById(new IdEnter(detail.getInvoiceId())));
         //关联订单
         detail.setAssociatedOrderList(this.associatedOrderList(enter));
         //操作动态
         detail.setOrderOperatingList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.ORDER.getValue())));
         return detail;
-    }
-
-    /**
-     * @Description
-     * @Author: alex
-     * @Date: 2020/10/29 13:45
-     * @Param: enter
-     * @Return: OrderProductDetailResult
-     * @desc: 产品详情
-     * @param enter
-     */
-    @Override
-    public List<OrderProductDetailResult> productDetailList(IdEnter enter) {
-        return null;
     }
 
     /**
@@ -151,7 +151,17 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public List<AssociatedOrderResult> associatedOrderList(IdEnter enter) {
-        return null;
+        List<AssociatedOrderResult> result=new ArrayList<>();
+        OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
+        if (opeEntrustOrder==null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
+        if (opeInvoiceOrder==null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(),opeInvoiceOrder.getInvoiceNo(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getCreatedTime()));
+        return result;
     }
 
     /**
@@ -179,6 +189,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public GeneralResult save(SaveConsignEnter enter) {
+
         return null;
     }
 }

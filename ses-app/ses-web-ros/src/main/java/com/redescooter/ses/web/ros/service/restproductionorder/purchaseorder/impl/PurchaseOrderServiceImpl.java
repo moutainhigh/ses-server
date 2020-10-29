@@ -422,11 +422,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),enter.getUserId(),purchaseOrder.getPurchaseStatus(),2,"");
-        createInvoice(purchaseOrder);
+        createInvoice(purchaseOrder,enter);
         return new GeneralResult(enter.getRequestId());
     }
 
-    private void createInvoice(OpePurchaseOrder purchaseOrder) {
+    private void createInvoice(OpePurchaseOrder purchaseOrder,IdEnter enter) {
         SaveInvoiceEnter invoiceEnter = new SaveInvoiceEnter();
         invoiceEnter.setPurchaseId(purchaseOrder.getId());
         invoiceEnter.setPurchaseNo(purchaseOrder.getPurchaseNo());
@@ -452,7 +452,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         invoiceEnter.setNotifyUserTelephone(purchaseOrder.getNotifyUserTelephone());
         invoiceEnter.setNotifyUserMail(purchaseOrder.getNotifyUserMail());
         invoiceEnter.setRemark(purchaseOrder.getRemark());
-
+        invoiceEnter.setUserId(enter.getUserId());
         // 处理发货单的产品表（子表）
         List<ProductEnter> productEnters = new ArrayList<>();
         switch (purchaseOrder.getPurchaseType()){

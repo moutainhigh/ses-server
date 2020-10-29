@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public enum OrderTypeEnums {
 
     ALLOCATE("ALLOCATE", "调拨单", 1),
-    SHIPPING("SHIPPING", "SHIPPING", 2),
+    SHIPPING("SHIPPING", "采购单", 2),
     INVOICE("INVOICE", "发货单", 3),
     OUTBOUND("OUTBOUND", "出库单", 4),
     ORDER("ORDER", "委托单", 5);

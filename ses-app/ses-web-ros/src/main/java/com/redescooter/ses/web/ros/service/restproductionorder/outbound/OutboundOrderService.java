@@ -39,7 +39,7 @@ public interface OutboundOrderService {
      * @Return: Map
      * @desc: 状态列表
      */
-    Map<Integer, Integer> statusList(GeneralEnter enter);
+    Map<Integer, String> statusList(GeneralEnter enter);
 
     /**
      * @Description

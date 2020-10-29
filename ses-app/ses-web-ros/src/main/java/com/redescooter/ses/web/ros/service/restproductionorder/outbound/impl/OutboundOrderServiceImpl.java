@@ -133,12 +133,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @param enter
      */
     @Override
-    public Map<Integer, Integer> statusList(GeneralEnter enter) {
-        Map<Integer, Integer> result = new HashMap<>();
+    public  Map<Integer, String> statusList(GeneralEnter enter) {
+        Map<Integer, String> result = new HashMap<>();
         for (OutBoundOrderStatusEnums item : OutBoundOrderStatusEnums.values()) {
-            if (!result.containsKey(item.getValue())) {
-                result.put(item.getValue(), 0);
-            }
+            result.put(item.getValue(),item.getMessage());
         }
         return result;
     }
@@ -290,6 +288,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                     enter.getRemark());
         }
         //操作动态
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(saveOpTraceEnter);
 
