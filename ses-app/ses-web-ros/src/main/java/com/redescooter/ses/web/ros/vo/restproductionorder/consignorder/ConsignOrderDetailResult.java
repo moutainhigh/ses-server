@@ -48,9 +48,6 @@ public class ConsignOrderDetailResult extends GeneralResult {
     private String consignorUserLastName;
 
     @ApiModelProperty(value = "发货人国家代码")
-    private String consignorUserCountryCodeId;
-
-    @ApiModelProperty(value = "发货人国家代码")
     private String consignorUserCountryCode;
 
     @ApiModelProperty(value = "发货人电话")
@@ -69,9 +66,6 @@ public class ConsignOrderDetailResult extends GeneralResult {
     private String consigneeUserLastName;
 
     @ApiModelProperty(value = "收货人国家代码")
-    private String consigneeUserCountryCodeId;
-
-    @ApiModelProperty(value = "收货人国家代码")
     private String consigneeUserCountryCode;
 
     @ApiModelProperty(value = "收货人电话")
@@ -84,13 +78,7 @@ public class ConsignOrderDetailResult extends GeneralResult {
     private Long notifyUserId;
 
     @ApiModelProperty(value = "通知人名字")
-    private String notifyUserFirstName;
-
-    @ApiModelProperty(value = "通知人名字")
-    private String notifyUserLastName;
-
-    @ApiModelProperty(value = "通知人国家代码")
-    private String notifyUserCountryCodeId;
+    private String notifyUserName;
 
     @ApiModelProperty(value = "通知人国家代码")
     private String notifyUserCountryCode;
@@ -102,16 +90,13 @@ public class ConsignOrderDetailResult extends GeneralResult {
     private String notifyUserMail;
 
     @ApiModelProperty(value = "区域代码")
-    private Long zipCodeId;
-
-    @ApiModelProperty(value = "区域代码")
     private String zipcodeName;
 
     @ApiModelProperty(value = "地址")
     private String address;
 
     @ApiModelProperty(value = "产品列表")
-    private List<OrderProductDetailResult> invoiceProductList;
+    private List<OrderProductDetailResult> productList;
 
     @ApiModelProperty(value = "关联订单")
     private List<AssociatedOrderResult> associatedOrderList;

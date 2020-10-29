@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -269,7 +270,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         opeOutWhouseOrder.setTelephone(opeSysStaff.getTelephone());
         SaveOpTraceEnter saveOpTraceEnter = null;
         if (enter.getId() == null || enter.getId() == 0) {
-            opeOutWhouseOrder.setId(idAppService.getId(""));
+            opeOutWhouseOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
             opeOutWhouseOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
             opeOutWhouseOrder.setDr(0);
             opeOutWhouseOrder.setCreatedBy(enter.getUserId());
@@ -318,7 +319,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 enter.getProductEnterList().forEach(item -> {
                     OpeOutWhScooterB opeOutWhScooterB = new OpeOutWhScooterB();
-                    opeOutWhScooterB.setId(idAppService.getId(""));
+                    opeOutWhScooterB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_SCOOTER_B));
                     opeOutWhScooterB.setDr(0);
                     opeOutWhScooterB.setOutWhId(outWhId);
                     opeOutWhScooterB.setGroupId(item.getGroupId());
@@ -347,7 +348,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                     OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomList.stream().filter(combin -> item.getProductId().equals(combin.getId())).findFirst().orElse(null);
 
                     OpeOutWhCombinB opeOutWhCombinB = new OpeOutWhCombinB();
-                    opeOutWhCombinB.setId(idAppService.getId(""));
+                    opeOutWhCombinB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_COMBIN_B));
                     opeOutWhCombinB.setDr(0);
                     opeOutWhCombinB.setOutWhId(outWhId);
                     opeOutWhCombinB.setCombinName(opeProductionCombinBom.getEnName());
@@ -374,7 +375,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                     OpeProductionParts opeProductionParts = opeProductionPartsList.stream().filter(combin -> item.getProductId().equals(combin.getId())).findFirst().orElse(null);
 
                     OpeOutWhPartsB opeOutWhPartsB = new OpeOutWhPartsB();
-                    opeOutWhPartsB.setId(idAppService.getId(""));
+                    opeOutWhPartsB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_PARTS_B));
                     opeOutWhPartsB.setDr(0);
                     opeOutWhPartsB.setOutWhId(outWhId);
                     opeOutWhPartsB.setPartsId(opeProductionParts.getId());

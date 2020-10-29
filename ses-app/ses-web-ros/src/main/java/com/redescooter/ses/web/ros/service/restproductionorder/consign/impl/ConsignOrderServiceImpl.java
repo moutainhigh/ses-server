@@ -3,22 +3,29 @@ package com.redescooter.ses.web.ros.service.restproductionorder.consign.impl;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.consign.ConsignOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *  @author: alex
@@ -29,6 +36,13 @@ import java.util.*;
 @Slf4j
 @Service
 public class ConsignOrderServiceImpl implements ConsignOrderService {
+
+    @Autowired
+    private ConsignOrderServiceMapper consignOrderServiceMapper;
+
+    @Autowired
+    private ProductionOrderTraceService productionOrderTraceService;
+
     /**
      * @Description
      * @Author: alex
@@ -41,6 +55,10 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Override
     public Map<Integer, Integer> countByType(GeneralEnter enter) {
         Map<Integer, Integer> result = new HashMap<>();
+        List<CountByStatusResult> mapList = consignOrderServiceMapper.countByType(enter);
+        result = mapList.stream().collect(Collectors.toMap(item -> {
+            return Integer.valueOf(item.getStatus());
+        }, CountByStatusResult::getTotalCount));
         for (ProductTypeEnums item : ProductTypeEnums.values()) {
             if (!result.containsKey(item.getValue())) {
                 result.put(item.getValue(), 0);
@@ -80,25 +98,11 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public PageResult<ConsignOrderListResult> list(ConsignOrderListEnter enter) {
-        ConsignOrderListResult invoiceOrderListResult = new ConsignOrderListResult();
-        List<ConsignOrderListResult> list = new ArrayList<>();
-        invoiceOrderListResult.setId(1L);
-        invoiceOrderListResult.setConsignOrderNo("你猜");
-        invoiceOrderListResult.setStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
-        invoiceOrderListResult.setOutwhId(432442L);
-        invoiceOrderListResult.setQty(1);
-        invoiceOrderListResult.setConsigneeId(1L);
-        invoiceOrderListResult.setConsigneeCountryCodeId(1L);
-        invoiceOrderListResult.setDeliveryDate(new Date());
-        invoiceOrderListResult.setConsigneeCountryCode("dsadasd");
-        invoiceOrderListResult.setConsigneeTelephone("你才");
-        invoiceOrderListResult.setConsigneeMail("3213213@qq.com");
-        invoiceOrderListResult.setCreateById(1312L);
-        invoiceOrderListResult.setCreateByFirstName("你才");
-        invoiceOrderListResult.setCreateByLastName("dasdsada");
-        invoiceOrderListResult.setCreateByDate(new Date());
-        list.add(invoiceOrderListResult);
-        return PageResult.create(enter, 1, list);
+        int count = consignOrderServiceMapper.listCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter, count, consignOrderServiceMapper.list(enter));
     }
 
     /**
@@ -112,54 +116,42 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public ConsignOrderDetailResult detail(IdEnter enter) {
+        ConsignOrderDetailResult detail = consignOrderServiceMapper.detail(enter);
+        //产品详情
+        detail.setProductList(this.productDetailList(enter));
+        //关联订单
+        detail.setAssociatedOrderList(this.associatedOrderList(enter));
+        //操作动态
+        detail.setOrderOperatingList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.ORDER.getValue())));
+        return detail;
+    }
 
-        ConsignOrderDetailResult result = new ConsignOrderDetailResult();
-        result.setId(1L);
-        result.setConsignOrderNo("dasdad");
-        result.setStatus(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue());
-        result.setDeliveryDate(new Date());
-        result.setConsignorUserId(31231L);
-        result.setConsignorUserFirstName("dadasd");
-        result.setConsignorUserLastName("dadas");
-        result.setConsignorUserCountryCode("+84");
-        result.setConsignorUserTelephone("343424224");
-        result.setConsignorUserMail("321312@qq.com");
-        result.setConsigneeUserId(31231L);
-        result.setConsigneeUserFirstName("dadasd");
-        result.setConsigneeUserLastName("dadas");
-        result.setConsigneeUserCountryCode("+84");
-        result.setConsigneeUserTelephone("343424224");
-        result.setConsigneeUserMail("321312@qq.com");
-        result.setNotifyUserId(31231L);
-        result.setNotifyUserFirstName("dadasd");
-        result.setNotifyUserLastName("dadas");
-        result.setNotifyUserCountryCode("+84");
-        result.setNotifyUserTelephone("343424224");
-        result.setNotifyUserMail("321312@qq.com");
-        result.setZipCodeId(32234343423L);
-        result.setZipcodeName("噶过");
-        result.setAddress("法国");
-        List<OrderProductDetailResult> invoiceOrderDetailProductResults = new ArrayList<>();
-        OrderProductDetailResult invoiceOrderDetailProductResult = new OrderProductDetailResult();
-        invoiceOrderDetailProductResult.setId(242423L);
-        invoiceOrderDetailProductResult.setCategoryId(3434234L);
-        invoiceOrderDetailProductResult.setCategoryName("高速");
-        invoiceOrderDetailProductResult.setColorId(4234234L);
-        invoiceOrderDetailProductResult.setColorName("红色");
-        HashMap<Long, String> objectObjectHashMap = new HashMap<>();
-        objectObjectHashMap.put(123231L, "o1");
-        invoiceOrderDetailProductResult.setSnMap(objectObjectHashMap);
-        invoiceOrderDetailProductResult.setQty(1);
-        result.setInvoiceProductList(invoiceOrderDetailProductResults);
-        List<AssociatedOrderResult> assList = new ArrayList<>();
-        AssociatedOrderResult invoiceOrderDetailAssociatedOrderResult = new AssociatedOrderResult();
-        invoiceOrderDetailAssociatedOrderResult.setId(312312L);
-        invoiceOrderDetailAssociatedOrderResult.setOrderNo("23123131");
-        invoiceOrderDetailAssociatedOrderResult.setCreatedDate(new Date());
-        invoiceOrderDetailAssociatedOrderResult.setOrderType(OrderTypeEnums.INVOICE.getValue());
-        assList.add(invoiceOrderDetailAssociatedOrderResult);
-        result.setAssociatedOrderList(assList);
-        return result;
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/29 13:45
+     * @Param: enter
+     * @Return: OrderProductDetailResult
+     * @desc: 产品详情
+     * @param enter
+     */
+    @Override
+    public List<OrderProductDetailResult> productDetailList(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/29 13:46
+     * @Param: enter
+     * @Return: AssociatedOrderResult
+     * @desc: 关联订单
+     * @param enter
+     */
+    @Override
+    public List<AssociatedOrderResult> associatedOrderList(IdEnter enter) {
+        return null;
     }
 
     /**
@@ -178,20 +170,6 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     /**
      * @Description
-     * @Author: enter
-     * @Date: 2020/10/26 15:57
-     * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 状态修改
-     * @param enter
-     */
-    @Override
-    public GeneralResult chanageStatus(ChanageStatusEnter enter) {
-        return null;
-    }
-
-    /**
-     * @Description
      * @Author: alex
      * @Date: 2020/10/26 16:54
      * @Param: enter
@@ -200,7 +178,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @param enter
      */
     @Override
-    public GeneralResult save(GeneralEnter enter) {
+    public GeneralResult save(SaveConsignEnter enter) {
         return null;
     }
 }

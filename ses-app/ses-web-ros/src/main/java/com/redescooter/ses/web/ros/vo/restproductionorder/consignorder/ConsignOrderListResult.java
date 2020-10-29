@@ -27,11 +27,11 @@ public class ConsignOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "委托单状态")
     private Integer status;
 
-    @ApiModelProperty(value = "出库单Id")
-    private Long outwhId;
+    @ApiModelProperty(value = "发货单Id")
+    private Long invoiceId;
 
-    @ApiModelProperty(value = "出库单编号")
-    private String outwhNo;
+    @ApiModelProperty(value = "发货单编号")
+    private String invoiceNo;
 
     @ApiModelProperty(value = "数量")
     private Integer qty;
@@ -42,8 +42,11 @@ public class ConsignOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "收货人")
     private Long consigneeId;
 
-    @ApiModelProperty(value = "收货人国家代码")
-    private Long consigneeCountryCodeId;
+    @ApiModelProperty(value = "收货人")
+    private String consigneeFirstName;
+
+    @ApiModelProperty(value = "收货人")
+    private String consigneeLastName;
 
     @ApiModelProperty(value = "收货人国家代码")
     private String consigneeCountryCode;

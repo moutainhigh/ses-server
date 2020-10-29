@@ -4,11 +4,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.ChanageStatusEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,6 +64,26 @@ public interface ConsignOrderService {
     /**
      * @Description
      * @Author: alex
+     * @Date: 2020/10/29 13:45
+     * @Param: enter
+     * @Return: OrderProductDetailResult
+     * @desc: 产品详情
+     */
+    List<OrderProductDetailResult> productDetailList(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/29 13:46
+     * @Param: enter
+     * @Return: AssociatedOrderResult
+     * @desc: 关联订单
+     */
+    List<AssociatedOrderResult> associatedOrderList(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
      * @Date: 2020/10/22 14:04
      * @Param: enter
      * @Return: GeneralResult
@@ -70,21 +93,11 @@ public interface ConsignOrderService {
 
     /**
      * @Description
-     * @Author: enter
-     * @Date: 2020/10/26 15:57
-     * @Param: enter
-     * @Return: GeneralResult
-     * @desc: 状态修改
-     */
-    GeneralResult chanageStatus(ChanageStatusEnter enter);
-
-    /**
-     * @Description
      * @Author: alex
      * @Date: 2020/10/26 16:54
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 保存出库单
      */
-    GeneralResult save(GeneralEnter enter);
+    GeneralResult save(SaveConsignEnter enter);
 }

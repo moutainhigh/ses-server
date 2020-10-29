@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoun
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -353,7 +354,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         BeanUtils.copyProperties(enter, opeInvoiceOrder);
         SaveOpTraceEnter saveOpTraceEnter = null;
         if (enter.getId() == null || enter.getId() == 0) {
-            opeInvoiceOrder.setId(idAppService.getId(""));
+            opeInvoiceOrder.setId(idAppService.getId(SequenceName.OPE_INVOICE_ORDER));
             opeInvoiceOrder.setDr(0);
             opeInvoiceOrder.setInvoiceNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.INVOICE.getValue())).getValue());
             opeInvoiceOrder.setCreatedBy(enter.getUserId());
@@ -512,7 +513,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 enter.getProductEnterList().forEach(item -> {
                     OpeInvoiceScooterB opeInvoiceScooterB = new OpeInvoiceScooterB();
                     BeanUtils.copyProperties(item, opeInvoiceScooterB);
-                    opeInvoiceScooterB.setId(idAppService.getId(""));
+                    opeInvoiceScooterB.setId(idAppService.getId(SequenceName.OPE_INVOICE_SCOOTER_B));
                     opeInvoiceScooterB.setDr(0);
                     opeInvoiceScooterB.setCreatedBy(enter.getUserId());
                     opeInvoiceScooterB.setCreatedTime(new Date());
@@ -537,7 +538,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
                     }
                     OpeInvoiceCombinB opeInvoiceCombinB = new OpeInvoiceCombinB();
-                    opeInvoiceCombinB.setId(idAppService.getId(""));
+                    opeInvoiceCombinB.setId(idAppService.getId(SequenceName.OPE_INVOICE_COMBIN_B));
                     opeInvoiceCombinB.setQty(productEnter.getQty());
                     opeInvoiceCombinB.setRemark(productEnter.getRemark());
                     opeInvoiceCombinB.setInvoiceId(enter.getId());
@@ -565,7 +566,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                     }
 
                     OpeInvoicePartsB opeInvoicePartsB = new OpeInvoicePartsB();
-                    opeInvoicePartsB.setId(idAppService.getId(""));
+                    opeInvoicePartsB.setId(idAppService.getId(SequenceName.OPE_INVOICE_PARTS_B));
                     opeInvoicePartsB.setDr(0);
                     opeInvoicePartsB.setInvoiceId(enter.getId());
                     opeInvoicePartsB.setPartsId(item.getId());
