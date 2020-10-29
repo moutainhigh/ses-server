@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTy
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -19,6 +20,7 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
@@ -29,6 +31,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEn
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +95,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private OutboundOrderService outboundOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -295,6 +301,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+        //创建出库单
+        saveOutbound(enter, opeInvoiceOrder);
+
+        //发货单更新
         opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.STOCKING.getValue());
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
@@ -408,6 +418,93 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         return result;
     }
 
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/28 20:42
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 装车
+     * @param enter
+     */
+    @Transactional
+    @Override
+    public GeneralResult loading(IdEnter enter) {
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
+        if (opeInvoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_LOADED.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_DELIVERED.getValue());
+        opeInvoiceOrder.setUpdatedBy(enter.getUserId());
+        opeInvoiceOrder.setUpdatedTime(new Date());
+        opeInvoiceOrderService.updateById(opeInvoiceOrder);
+
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.LOADING.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/29 10:52
+     * @Param: 保存出库单
+     * @Return:
+     * @desc:
+     */
+    private void saveOutbound(IdEnter enter, OpeInvoiceOrder opeInvoiceOrder) {
+        List<ProductEnter> productEnterList = new ArrayList<>();
+        switch (opeInvoiceOrder.getInvoiceType()) {
+            case 1:
+                List<OpeInvoiceScooterB> opeInvoiceScooterBList = opeInvoiceScooterBService.list(new LambdaQueryWrapper<OpeInvoiceScooterB>().eq(OpeInvoiceScooterB::getInvoiceId,
+                        opeInvoiceOrder.getId()));
+                if (CollectionUtils.isNotEmpty(opeInvoiceScooterBList)) {
+                    productEnterList =
+                            opeInvoiceScooterBList.stream().map(item -> new ProductEnter(null, item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark())).collect(Collectors.toList());
+                }
+                break;
+
+            case 2:
+                List<OpeInvoiceCombinB> invoiceCombinBList = opeInvoiceCombinBService.list(new LambdaQueryWrapper<OpeInvoiceCombinB>().eq(OpeInvoiceCombinB::getInvoiceId, opeInvoiceOrder.getId()));
+                if (CollectionUtils.isNotEmpty(invoiceCombinBList)) {
+                    productEnterList =
+                            invoiceCombinBList.stream().map(item -> new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                }
+                break;
+
+            default:
+                List<OpeInvoicePartsB> opeInvoicePartsBList = opeInvoicePartsBService.list(new LambdaQueryWrapper<OpeInvoicePartsB>().eq(OpeInvoicePartsB::getInvoiceId, opeInvoiceOrder.getId()));
+                if (CollectionUtils.isNotEmpty(opeInvoicePartsBList)) {
+                    productEnterList =
+                            opeInvoicePartsBList.stream().map(item -> new ProductEnter(item.getPartsId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                }
+                break;
+        }
+        //发货单
+        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter();
+        BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
+        saveOutboundOrderEnter.setId(null);
+        saveOutboundOrderEnter.setInvoiceId(enter.getId());
+        saveOutboundOrderEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
+        saveOutboundOrderEnter.setOutType(opeInvoiceOrder.getInvoiceType());
+        saveOutboundOrderEnter.setOutType(OutBoundOrderTypeEnums.SALES.getValue());
+        saveOutboundOrderEnter.setOutWhQty(opeInvoiceOrder.getInvoiceQty());
+        saveOutboundOrderEnter.setRemark(opeInvoiceOrder.getRemark());
+        saveOutboundOrderEnter.setProductEnterList(productEnterList);
+        outboundOrderService.save(saveOutboundOrderEnter);
+    }
+
+
     private void saveInvoiceB(SaveInvoiceEnter enter) {
         switch (enter.getInvoiceType()) {
             case 1:
@@ -428,6 +525,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
                 //保存子单据
                 opeInvoiceScooterBService.saveOrUpdateBatch(saveOpeInvoiceScooterBList);
+                break;
+
             case 2:
                 List<OpeInvoiceCombinB> saveOpeInvoiceCombinBList = new ArrayList<>();
                 List<OpeProductionCombinBom> opeProductionCombinBomList =
@@ -454,6 +553,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 //删除是否
                 opeInvoiceCombinBService.remove(new LambdaQueryWrapper<OpeInvoiceCombinB>().eq(OpeInvoiceCombinB::getInvoiceId, enter.getId()));
                 opeInvoiceCombinBService.saveOrUpdateBatch(saveOpeInvoiceCombinBList);
+                break;
+
             default:
                 List<OpeInvoicePartsB> opeInvoicePartsBList = new ArrayList<>();
                 List<OpeProductionParts> opeProductionPartList = opeProductionPartsService.listByIds(enter.getProductEnterList().stream().map(ProductEnter::getProductId).collect(Collectors.toSet()));

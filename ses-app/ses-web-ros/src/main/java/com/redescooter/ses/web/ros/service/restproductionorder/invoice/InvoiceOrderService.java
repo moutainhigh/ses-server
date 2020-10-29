@@ -109,4 +109,13 @@ public interface InvoiceOrderService {
      */
     List<QueryStaffResult> staffList(StringEnter enter);
 
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/10/28 20:42
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 装车
+     */
+    GeneralResult loading(IdEnter enter);
 }

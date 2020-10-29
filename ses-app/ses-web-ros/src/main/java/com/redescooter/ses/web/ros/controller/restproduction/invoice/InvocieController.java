@@ -61,4 +61,11 @@ public class InvocieController {
         return new Response<>(invoiceOrderService.staffList(enter));
     }
 
+    @PostMapping(value = "/loading")
+    @ApiOperation(value = "装车", response = Map.class)
+    public Response<GeneralResult> loading(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(invoiceOrderService.loading(enter));
+    }
+
+
 }
