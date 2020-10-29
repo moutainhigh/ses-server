@@ -164,4 +164,13 @@
         where detail.dr = 0
           and detail.invoice_id=#{id}
     </select>
+
+    <select id="purchaseInvoice" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult">
+        select
+            id，
+            invoice_no as orderNo，
+            created_time
+        from ope_invoice_order
+        where dr = 0 and purchase_id = #{purchaseId}
+    </select>
 </mapper>

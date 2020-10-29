@@ -8,6 +8,8 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOr
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -111,4 +113,14 @@ public interface InvoiceOrderServiceMapper {
      * @desc: 部件序列号集合
      */
     List<InvoiceSnResult> partSnList(Long id);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过采购单id 查询发货单
+     * @Date  2020/10/28 19:32
+     * @Param
+     * @return
+     **/
+    List<PurchaseRelationOrderResult> purchaseInvoice(@Param("purchaseId")Long purchaseId);
 }

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface AllocateOrderServiceMapper {
 
     List<AllocateOrderPartsDetailResult> allocateParts(@Param("id") Long id);
 
-    // todo
+
     List<AllocateEntrustResult> allocateEntrust(@Param("id") Long id);
 
 
@@ -42,6 +43,16 @@ public interface AllocateOrderServiceMapper {
 
 
    Integer allocateOutWh(@Param("id") Long id);
+
+
+   /**
+    * @Author Aleks
+    * @Description
+    * @Date  2020/10/28 19:26
+    * @Param [purchaseId]
+    * @return
+    **/
+    List<PurchaseRelationOrderResult> purchaseAllocate(@Param("id") Long id);
 
 
 }

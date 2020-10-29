@@ -34,4 +34,12 @@ public interface PurchaseOrderServiceMapper {
 
     List<PurchaseCalendarResult> purchaseCalendar(@Param("enter")PurchaseCalendarEnter enter);
 
+    /**
+     * @Author Aleks
+     * @Description  通过
+     * @Date  2020/10/28 19:36
+     * @Param
+     * @return
+     **/
+
 }

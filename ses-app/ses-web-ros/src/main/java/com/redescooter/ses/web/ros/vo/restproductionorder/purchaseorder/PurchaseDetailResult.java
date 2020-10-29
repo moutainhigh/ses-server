@@ -143,6 +143,6 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty("操作动态")
     private List<OpTraceResult> opTraces;
 
-    // todo 关联的单据（调拨单、发货单、委托单）
-
+    @ApiModelProperty("关联的单据")
+    private List<PurchaseRelationOrderResult> relationOrders;
 }

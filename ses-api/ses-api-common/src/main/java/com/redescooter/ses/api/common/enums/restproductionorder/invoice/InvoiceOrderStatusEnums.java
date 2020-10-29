@@ -22,7 +22,8 @@ public enum InvoiceOrderStatusEnums {
     BE_LOADED("BE_LOADED", "待装车", 20),
     BE_DELIVERED("BE_DELIVERED", "待发货", 30),
     BE_SIGNED("BE_SIGNED", "待签收", 40),
-    RECEIVED("RECEIVED", "已签收", 50);
+    RECEIVED("RECEIVED", "已签收", 50),
+    CANCEL("CANCEL", "已取消", 60);
 
     private String code;
 
