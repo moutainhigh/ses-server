@@ -96,6 +96,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
                         opTraceResult.setCreatedById(staff.getId());
                         opTraceResult.setCreatedByName(staff.getFirstName() + " " + staff.getLastName());
                     });
+                    resultList.add(opTraceResult);
                 });
                 return resultList;
             }

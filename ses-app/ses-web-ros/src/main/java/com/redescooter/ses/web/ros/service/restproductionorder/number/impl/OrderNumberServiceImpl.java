@@ -27,7 +27,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
     private OpeInvoiceOrderService opeInvoiceOrderService;
 
     @Autowired
-    private OpeOutwhOrderService opeOutwhOrderService;
+    private OpeOutWhouseOrderService opeOutWhouseOrderService;
 
     @Autowired
     private OpeEntrustOrderService opeEntrustOrderService;
@@ -61,8 +61,8 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                         OrderNumberTypeEnums.ALLOCAT.getValue()));
             case 4:
                 //出库单
-                OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getOne(new LambdaQueryWrapper<OpeOutwhOrder>().orderByDesc(OpeOutwhOrder::getCreatedTime).last("limit 1"));
-                return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opeOutwhOrder.getOrderNo(),
+                OpeOutWhouseOrder opeOutwhOrder = opeOutWhouseOrderService.getOne(new LambdaQueryWrapper<OpeOutWhouseOrder>().orderByDesc(OpeOutWhouseOrder::getCreatedTime).last("limit 1"));
+                return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
                         OrderNumberTypeEnums.ALLOCAT.getValue()));
             case 5:
                 //调拨单

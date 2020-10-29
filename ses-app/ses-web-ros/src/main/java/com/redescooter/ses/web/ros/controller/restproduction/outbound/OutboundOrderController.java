@@ -1,13 +1,11 @@
 package com.redescooter.ses.web.ros.controller.restproduction.outbound;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,5 +49,10 @@ public class OutboundOrderController {
         return new Response<>(outboundOrderService.detail(enter));
     }
 
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存", response = GeneralResult.class)
+    public Response<GeneralResult> detail(@ModelAttribute @ApiParam("请求参数") SaveOutboundOrderEnter enter) {
+        return new Response<>(outboundOrderService.save(enter));
+    }
 
 }

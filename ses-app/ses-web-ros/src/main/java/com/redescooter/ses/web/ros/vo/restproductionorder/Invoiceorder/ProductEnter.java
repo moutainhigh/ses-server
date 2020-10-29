@@ -21,7 +21,6 @@ import io.swagger.annotations.*;
 public class ProductEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "产品Id")
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "id为空")
     private Long productId;
 
     @ApiModelProperty(value = "颜色类型 整车是传递")
