@@ -34,7 +34,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
 import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
-import com.redescooter.ses.mobile.rps.service.base.impl.OpeProductionPartsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdEnter;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult;
