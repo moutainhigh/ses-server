@@ -232,12 +232,12 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         //采购单
-        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getId());
+        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
         if (opePurchaseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         //调拨单
-        OpeAllocateOrder opeAllocateOrder = opeAllocateOrderService.getById(enter.getId());
+        OpeAllocateOrder opeAllocateOrder = opeAllocateOrderService.getById(opePurchaseOrder.getAllocateId());
         if (opeAllocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
