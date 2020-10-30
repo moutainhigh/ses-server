@@ -20,6 +20,7 @@ import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
@@ -28,6 +29,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOr
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
@@ -70,6 +72,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
+
+    @Autowired
+    private OrderNumberService orderNumberService;
 
     @Reference
     private IdAppService idAppService;
@@ -239,6 +244,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         if (enter.getInvoiceId() == null || enter.getId() == 0) {
             opeEntrustOrder.setId(idAppService.getId(SequenceName.OPE_ENTRUST_ORDER));
             opeEntrustOrder.setDr(0);
+            opeEntrustOrder.setEntrustNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.ORDER.getValue())).getValue());
             opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_DELIVERED.getValue());
             opeEntrustOrder.setCreatedBy(enter.getUserId());
             opeEntrustOrder.setCreatedTime(new Date());

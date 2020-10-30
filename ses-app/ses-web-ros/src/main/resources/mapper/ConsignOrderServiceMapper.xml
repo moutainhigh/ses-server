@@ -7,6 +7,9 @@
         <if test="status != null">
             and enorder.entrust_status =#{status}
         </if>
+        <if test="classType != null">
+           and enorder.entrust_type =#{classType}
+        </if>
         <if test="keyword != null and keyword != ''">
             and (
             enorder.invoice_no like concat('%',#{keyword},'%') or

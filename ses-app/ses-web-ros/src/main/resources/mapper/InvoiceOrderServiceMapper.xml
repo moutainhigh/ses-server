@@ -98,11 +98,12 @@
     </select>
 
     <select id="scooterProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
-        select scooterB.id       as id,
-        scooterB.group_id as categoryId,
-        scooterB.color_id as colorId,
-        color.color_name  as colorName,
-        scooterB.qty      as totalQty
+        select scooterB.id        as id,
+        scooterB.group_id  as categoryId,
+        spgroup.group_name as categoryName,
+        scooterB.color_id  as colorId,
+        color.color_name   as colorName,
+        scooterB.qty       as totalQty
         from ope_invoice_scooter_b scooterB
         left join ope_specificat_group spgroup on spgroup.id = scooterB.group_id and spgroup.dr = 0
         left join ope_color color on color.id = scooterB.color_id and color.dr = 0

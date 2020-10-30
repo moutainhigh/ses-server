@@ -25,4 +25,7 @@ public class ConsignOrderListEnter extends PageEnter {
     @ApiModelProperty(value = "关键字")
     private String keyword;
 
+    @ApiModelProperty(value = "table类型")
+    private Integer classType;
+
 }

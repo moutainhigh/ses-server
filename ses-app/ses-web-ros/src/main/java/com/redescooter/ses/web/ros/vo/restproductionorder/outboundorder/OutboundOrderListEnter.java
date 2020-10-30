@@ -24,4 +24,7 @@ public class OutboundOrderListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
+
+    @ApiModelProperty(value = "单据类型 参考 ProductTypeEnums")
+    private Integer classType;
 }

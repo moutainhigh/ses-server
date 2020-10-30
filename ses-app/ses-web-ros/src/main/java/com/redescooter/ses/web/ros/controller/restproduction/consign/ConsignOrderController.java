@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOr
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,6 +52,12 @@ public class ConsignOrderController {
     @ApiOperation(value = "签收", response = GeneralResult.class)
     public Response<GeneralResult> signFor(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(consignOrderService.signFor(enter));
+    }
+
+    @PostMapping(value = "/save")
+    @ApiOperation(value = "保存", response = GeneralResult.class)
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveConsignEnter enter) {
+        return new Response<>(consignOrderService.save(enter));
     }
 
 }

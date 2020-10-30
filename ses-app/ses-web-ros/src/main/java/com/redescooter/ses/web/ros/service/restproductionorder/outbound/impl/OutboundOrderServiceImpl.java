@@ -264,6 +264,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeSysStaff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getInvoiceId());
+        if (outWhouseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
         OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
         BeanUtils.copyProperties(enter, opeOutWhouseOrder);
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
