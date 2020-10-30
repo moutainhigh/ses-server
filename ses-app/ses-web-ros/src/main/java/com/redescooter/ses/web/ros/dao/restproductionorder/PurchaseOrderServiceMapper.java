@@ -36,10 +36,10 @@ public interface PurchaseOrderServiceMapper {
 
     /**
      * @Author Aleks
-     * @Description  通过
-     * @Date  2020/10/28 19:36
+     * @Description  查采购单下的出库单状态为“质检中”或“已出库”的数量
+     * @Date  2020/10/30 15:49
      * @Param
      * @return
      **/
-
+     int whNum(@Param("purchaseId") Long purchaseId);
 }

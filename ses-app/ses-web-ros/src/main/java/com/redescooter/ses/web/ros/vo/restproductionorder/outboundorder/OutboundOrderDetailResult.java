@@ -55,6 +55,9 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "创建人邮箱")
     private String mail;
 
+    @ApiModelProperty("发货单id")
+    private Long invoiceId;
+
     @ApiModelProperty(value = "产品列表")
     private List<OrderProductDetailResult> invoiceProductList;
 

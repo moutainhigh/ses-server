@@ -451,10 +451,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_LOADED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (opePurchaseOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-        }
+//        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getId());
+//        if (opePurchaseOrder == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+//        }
         opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_DELIVERED.getValue());
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
@@ -478,7 +478,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //采购单修改状态
         purchaseOrderService.purchaseWaitDeliver(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         //调拨单修改状态
-        allocateOrderService.allocateWaitDeliver(opePurchaseOrder.getAllocateId(), enter.getUserId());
+//        allocateOrderService.allocateWaitDeliver(opePurchaseOrder.getAllocateId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -684,5 +684,33 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         saveConsignEnter.setNotifyUserTelephone(opeInvoiceOrder.getNotifyUserTelephone());
         saveConsignEnter.setRemark(opeInvoiceOrder.getRemark());
         consignOrderService.save(saveConsignEnter);
+    }
+
+
+     /**
+      * @Author Aleks
+      * @Description  采购单取消的时候  下面的发货单也要取消
+      * @Date  2020/10/30 16:11
+      * @Param [purchaseId, userId, remark]
+      * @return
+      **/
+    @Override
+    public void cancelInvoice(Long purchaseId,Long userId,String remark) {
+        QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();
+        qw.eq(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseId);
+        OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getOne(qw);
+        if(invoiceOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        invoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.CANCEL.getValue());
+        opeInvoiceOrderService.saveOrUpdate(invoiceOrder);
+        // 操作动态
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(idAppService.getId(SequenceName.OPE_OP_TRACE),invoiceOrder.getId(),OrderTypeEnums.INVOICE.getValue(),OrderOperationTypeEnums.CANCEL.getValue(),remark);
+        productionOrderTraceService.save(opTraceEnter);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW),invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        // 取消下面的出库单
+        outboundOrderService.cancelOutWh(invoiceOrder.getId(),userId,remark);
     }
 }

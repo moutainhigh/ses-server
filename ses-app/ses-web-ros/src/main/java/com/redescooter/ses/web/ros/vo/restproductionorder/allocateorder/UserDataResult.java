@@ -28,4 +28,6 @@ public class UserDataResult extends GeneralResult {
     @ApiModelProperty("邮箱")
     private String mail;
 
+    @ApiModelProperty("国家编码如+86")
+    private String countryCode;
 }

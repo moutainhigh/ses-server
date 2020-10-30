@@ -103,6 +103,7 @@
         spgroup.group_name as categoryName,
         scooterB.color_id  as colorId,
         color.color_name   as colorName,
+        color.color_value   as colorValue,
         scooterB.qty       as totalQty
         from ope_invoice_scooter_b scooterB
         left join ope_specificat_group spgroup on spgroup.id = scooterB.group_id and spgroup.dr = 0

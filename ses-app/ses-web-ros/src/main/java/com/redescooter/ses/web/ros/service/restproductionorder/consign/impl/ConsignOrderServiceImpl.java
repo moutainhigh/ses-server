@@ -274,7 +274,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         }
         BeanUtils.copyProperties(enter, opeEntrustOrder);
         SaveOpTraceEnter saveOpTraceEnter = null;
-        if (enter.getInvoiceId() == null || enter.getId() == 0) {
+        if (enter.getInvoiceId() == null || null == enter.getId() || 0 == enter.getId())  {
             opeEntrustOrder.setId(idAppService.getId(SequenceName.OPE_ENTRUST_ORDER));
             opeEntrustOrder.setDr(0);
             opeEntrustOrder.setEntrustNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.ORDER.getValue())).getValue());

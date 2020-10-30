@@ -80,7 +80,7 @@ public interface OutboundOrderService {
      * @Return: AssociatedOrderResult
      * @desc: 关联订单列表
      */
-    List<AssociatedOrderResult> associatedOrderList(IdEnter enter);
+    List<AssociatedOrderResult> associatedOrderList(Long invoiceId);
 
     /**
      * @Description
@@ -91,5 +91,15 @@ public interface OutboundOrderService {
      * @desc: 保存
      */
     GeneralResult save(SaveOutboundOrderEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  发货单取消 下面的出库单也要取消
+     * @Date  2020/10/30 16:19
+     * @Param [purchaseId, userId, remark]
+     * @return
+     **/
+    void cancelOutWh(Long invoiceId,Long userId,String remark);
 
 }

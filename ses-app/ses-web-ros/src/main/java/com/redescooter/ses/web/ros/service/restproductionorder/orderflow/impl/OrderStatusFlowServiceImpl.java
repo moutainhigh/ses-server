@@ -181,6 +181,8 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
             opeOrderStatusFlow.setCreatedBy(enter.getUserId());
             opeOrderStatusFlow.setCreatedTime(new Date());
         }
+        opeOrderStatusFlow.setCreatedBy(enter.getUserId());
+        opeOrderStatusFlow.setCreatedTime(new Date());
         opeOrderStatusFlow.setUpdatedBy(enter.getUserId());
         opeOrderStatusFlow.setUpdatedTime(new Date());
         opeOrderStatusFlowService.saveOrUpdate(opeOrderStatusFlow);

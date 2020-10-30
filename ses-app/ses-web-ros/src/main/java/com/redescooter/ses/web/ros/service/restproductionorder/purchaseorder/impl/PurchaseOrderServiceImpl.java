@@ -522,6 +522,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // todo 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
+        int whNum = purchaseOrderServiceMapper.whNum(purchaseOrder.getId());
+        if (whNum > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
+        }
+        // 取消发货单
+        invoiceOrderService.cancelInvoice(purchaseOrder.getId(),enter.getUserId(),enter.getRemark());
+
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.CANCEL.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
 

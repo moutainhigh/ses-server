@@ -23,6 +23,7 @@
         select out_wh_type as status
              , count(1)     as totalCount
         from ope_out_whouse_order
+        where dr = 0
         group by status
     </select>
 
@@ -84,6 +85,7 @@
                spgroup.group_name as categoryName,
                scooterB.color_id  as colorId,
                color.color_name   as colorName,
+               color.color_value   as colorValue,
                scooterB.qty       as totalQty
         from ope_out_wh_scooter_b scooterB
                      left join ope_specificat_group spgroup on scooterb.group_id = spgroup.id and spgroup.dr = 0

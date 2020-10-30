@@ -62,7 +62,7 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult">
-        select id                          as id,
+        select enorder.id                          as id,
                entrust_no                  as consignOrderNo,
                entrust_status              as status,
                delivery_date               as deliveryDate,
@@ -81,7 +81,8 @@
                notify_user_telephone       as notifyUserTelephone,
                notify_user_mail            as notifyUserMail,
                enorder.consignee_post_code as zipcodeName,
-               enorder.consignee_address   as address
+               enorder.consignee_post_code as zipcodeName,
+               enorder.invoice_id   as invoiceId
         from ope_entrust_order enorder
                      left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
                      left join ope_sys_staff consignor on consignor.id = enorder.consignor_user and consignor.dr = 0

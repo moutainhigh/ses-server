@@ -128,4 +128,14 @@ public interface InvoiceOrderService {
      * @desc: 签收
      */
     GeneralResult signFor(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  取消采购单下的发货单
+     * @Date  2020/10/30 16:00
+     * @Param
+     * @return
+     **/
+    void cancelInvoice(Long purchaseId,Long userId,String remark);
 }

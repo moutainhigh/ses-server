@@ -33,6 +33,9 @@ public class OrderProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
 
+    @ApiModelProperty(value = "色值")
+    private String colorValue;
+
     @ApiModelProperty(value = "组合、部件名称")
     private String name;
 

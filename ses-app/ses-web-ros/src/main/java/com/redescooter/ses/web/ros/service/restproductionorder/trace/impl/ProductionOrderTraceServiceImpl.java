@@ -84,7 +84,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     @Override
     public List<OpTraceResult> listByBussId(ListByBussIdEnter enter) {
         List<OpTraceResult> resultList = new ArrayList<>();
-        List<OpeOpTrace> opTraceList = opeOpTraceService.list(new LambdaQueryWrapper<OpeOpTrace>().eq(OpeOpTrace::getRelationId, enter.getId()).eq(OpeOpTrace::getOrderType, enter.getOrderType()));
+        List<OpeOpTrace> opTraceList = opeOpTraceService.list(new LambdaQueryWrapper<OpeOpTrace>().eq(OpeOpTrace::getRelationId, enter.getId()).eq(OpeOpTrace::getOrderType, enter.getOrderType()).orderByDesc(OpeOpTrace::getCreatedTime));
         if (CollectionUtils.isNotEmpty(opTraceList)) {
             List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(new LambdaQueryWrapper<OpeSysStaff>().in(OpeSysStaff::getId,
                     opTraceList.stream().map(OpeOpTrace::getCreatedBy).collect(Collectors.toSet())));
@@ -150,6 +150,8 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
             saveOpeOpTrace.setCreatedBy(enter.getUserId());
             saveOpeOpTrace.setCreatedTime(new Date());
         }
+        saveOpeOpTrace.setCreatedBy(enter.getUserId());
+        saveOpeOpTrace.setCreatedTime(new Date());
         saveOpeOpTrace.setUpdatedBy(enter.getUserId());
         saveOpeOpTrace.setUpdatedTime(new Date());
         opeOpTraceService.saveOrUpdate(saveOpeOpTrace);
