@@ -548,7 +548,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     }
 
 
-
+    @Transactional
     @Override
     public void allocateSign(Long allocateId,Long purchaseId, Long userId) {
         // 已签收

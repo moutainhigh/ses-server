@@ -638,9 +638,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
+    @Transactional
     @Override
     public void purchaseStocking(Long purchaseId, Long userId) {
-       // 备货中
+        // 备货中
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
         if (purchaseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());

@@ -118,4 +118,14 @@ public interface InvoiceOrderService {
      * @desc: 装车
      */
     GeneralResult loading(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/30 13:45
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 签收
+     */
+    GeneralResult signFor(IdEnter enter);
 }

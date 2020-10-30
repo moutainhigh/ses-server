@@ -14,14 +14,18 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
 import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
+import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
+import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
@@ -75,6 +79,15 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Autowired
     private OrderNumberService orderNumberService;
+
+    @Autowired
+    private PurchaseOrderService purchaseOrderService;
+
+    @Autowired
+    private AllocateOrderService allocateOrderService;
+
+    @Autowired
+    private OpePurchaseOrderService opePurchaseOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -203,6 +216,17 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         if (opeEntrustOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
+        if (opeInvoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+
+        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
+        if (opePurchaseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+
         opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.RECEIVED.getValue());
         opeEntrustOrder.setUpdatedTime(new Date());
         opeEntrustOrder.setUpdatedBy(enter.getId());
@@ -219,6 +243,15 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 opeEntrustOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowService.save(orderStatusFlowEnter);
+
+        //发货单签收
+        IdEnter idEnter = new IdEnter(opeEntrustOrder.getInvoiceId());
+        idEnter.setUserId(enter.getUserId());
+        invoiceOrderService.signFor(idEnter);
+        //采购单签收
+        purchaseOrderService.purchaseSign(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
+        //调拨单签收
+        allocateOrderService.allocateSign(opePurchaseOrder.getAllocateId(), opePurchaseOrder.getId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
