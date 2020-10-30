@@ -17,7 +17,7 @@ import java.util.Date;
 @ApiModel(value = "采购单关联的单据",description = "采购单关联的单据")
 public class PurchaseRelationOrderResult {
 
-    @ApiModelProperty("单据类型，1：调拨单，2：发货单，3：委托单")
+    @ApiModelProperty("单据类型，1：调拨单，3：发货单，5：委托单")
     private Integer orderType;
 
     @ApiModelProperty("单号")

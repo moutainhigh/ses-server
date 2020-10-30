@@ -130,5 +130,33 @@ public interface PurchaseOrderService {
     List<PurchaseCalendarResult> purchaseCalendar(PurchaseCalendarEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  采购状态变备货中
+     * @Date  2020/10/30 10:30
+     * @Param 采购单id  操作人id
+     * @return
+     **/
+    void purchaseStocking(Long purchaseId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  采购单变待发货状态
+     * @Date  2020/10/30 10:30
+     * @Param 采购单id  操作人id
+     * @return
+     **/
+    void purchaseWaitDeliver(Long purchaseId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  采购单状态变已签收
+     * @Date  2020/10/30 10:30
+     * @Param 采购单id  操作人id
+     * @return
+     **/
+    void purchaseSign(Long purchaseId,Long userId);
 
 }

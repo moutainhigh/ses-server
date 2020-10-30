@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.restproductionorder.AllocateOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
@@ -464,7 +466,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     }
 
 
-   /**
+    /**
     * @Author Aleks
     * @Description 操作动态
     * @Date  2020/10/28 17:25
@@ -506,4 +508,72 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         statusFlow.setUpdatedTime(new Date());
         opeOrderStatusFlowService.saveOrUpdate(statusFlow);
     }
+
+
+
+
+    @Override
+    public void allocatePurchaseing(Long allocateId,Long userId) {
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_HANDLE.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.PURCHASING.getValue());
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        // 状态流转表
+        createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
+    }
+
+
+
+    @Override
+    public void allocateWaitDeliver(Long allocateId, Long userId) {
+        // 待发货
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.PURCHASING.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_DELIVER.getValue());
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        // 操作记录
+        createOpTrace(allocateOrder.getId(),userId, OrderOperationTypeEnums.LOADING.getValue(), OrderTypeEnums.ALLOCATE.getValue(),"");
+        // 状态流转表
+        createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
+    }
+
+
+
+    @Override
+    public void allocateSign(Long allocateId,Long purchaseId, Long userId) {
+        // 已签收
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_SIGN.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        // 校验  调拨单下面的所有采购单都签收 调拨单才能变签收状态
+        QueryWrapper<OpePurchaseOrder> purchaseOrderQueryWrapper = new QueryWrapper<>();
+        purchaseOrderQueryWrapper.eq(OpePurchaseOrder.COL_ALLOCATE_ID,allocateId);
+        purchaseOrderQueryWrapper.ne(OpePurchaseOrder.COL_ID,purchaseId);
+        purchaseOrderQueryWrapper.lt(OpePurchaseOrder.COL_PURCHASE_STATUS,PurchaseOrderStatusEnum.SIGNED.getValue());
+        int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
+        if(count == 0){
+            // 说明调拨单下面的采购都签收了，
+            allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
+            opeAllocateOrderService.saveOrUpdate(allocateOrder);
+            // 操作记录
+            createOpTrace(allocateOrder.getId(),userId, OrderOperationTypeEnums.SIGN_FOR.getValue(), OrderTypeEnums.ALLOCATE.getValue(),"");
+            // 状态流转表
+            createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
+        }
+    }
+
 }
