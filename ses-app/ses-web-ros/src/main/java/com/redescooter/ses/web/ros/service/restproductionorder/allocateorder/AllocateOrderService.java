@@ -119,4 +119,34 @@ public interface AllocateOrderService {
     List<WhDataResult> whData(WhDataEnter enter);
 
 
+    /**
+     * @Author Aleks
+     * @Description  调拨单状态变采购中
+     * @Date  2020/10/30 11:14
+     * @Param
+     * @return
+     **/
+     void allocatePurchaseing(Long allocateId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  调拨单状态变待发货
+     * @Date  2020/10/30 10:30
+     * @Param 调拨单id  操作人id
+     * @return
+     **/
+    void allocateWaitDeliver(Long allocateId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  调拨单签收
+     * @Date  2020/10/30 10:30
+     * @Param 调拨单id 采购单id  操作人id
+     * @return
+     **/
+    void allocateSign(Long allocateId,Long purchaseId,Long userId);
+
+
 }
