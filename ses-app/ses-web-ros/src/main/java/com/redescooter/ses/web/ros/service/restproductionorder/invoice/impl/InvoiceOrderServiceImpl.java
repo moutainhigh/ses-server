@@ -17,6 +17,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
@@ -26,6 +27,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
@@ -95,6 +97,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private ConsignOrderService consignOrderService;
 
     @Autowired
     private OutboundOrderService outboundOrderService;
@@ -181,9 +186,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //查询关联订单
         List<AssociatedOrderResult> associatedOrderResultList = this.associatedOrderList(new IdEnter(enter.getId()));
 
-        detail.setOrderOperatingList(opTraceResultList);
-        detail.setInvoiceProductList(orderProductDetailResultList);
-        detail.setAssociatedOrderList(associatedOrderResultList);
+        detail.setOrderOperatingList(CollectionUtils.isEmpty(opTraceResultList) ? new ArrayList<>() : opTraceResultList);
+        detail.setInvoiceProductList(CollectionUtils.isEmpty(orderProductDetailResultList) ? new ArrayList<>() : orderProductDetailResultList);
+        detail.setAssociatedOrderList(CollectionUtils.isEmpty(associatedOrderResultList) ? new ArrayList<>() : associatedOrderResultList);
         return detail;
     }
 
@@ -449,8 +454,12 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowService.save(orderStatusFlowEnter);
+
+        //保存委托单
+        saveBuildConsignOrder(enter, opeInvoiceOrder);
         return new GeneralResult(enter.getRequestId());
     }
+
 
     /**
      * @Description
@@ -583,5 +592,40 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 opeInvoicePartsBService.saveOrUpdateBatch(opeInvoicePartsBList);
                 break;
         }
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/10/30 10:54
+     * @Param: enter opeInvoiceOrder
+     * @Return: 保存 委托单
+     * @desc:
+     */
+    private void saveBuildConsignOrder(IdEnter enter, OpeInvoiceOrder opeInvoiceOrder) {
+        SaveConsignEnter saveConsignEnter = new SaveConsignEnter();
+        BeanUtils.copyProperties(enter, saveConsignEnter);
+        saveConsignEnter.setId(null);
+        saveConsignEnter.setInvoiceId(opeInvoiceOrder.getId());
+        saveConsignEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
+        saveConsignEnter.setEntrustType(opeInvoiceOrder.getTransType());
+        saveConsignEnter.setConsignorQty(opeInvoiceOrder.getInvoiceQty());
+        saveConsignEnter.setDeliveryDate(opeInvoiceOrder.getDeliveryDate());
+        saveConsignEnter.setTransType(opeInvoiceOrder.getTransType());
+        saveConsignEnter.setConsigneeUser(opeInvoiceOrder.getConsigneeUser());
+        saveConsignEnter.setConsigneeCountryCode(opeInvoiceOrder.getConsigneeUserTelephone());
+        saveConsignEnter.setConsigneeAddress(opeInvoiceOrder.getConsigneeAddress());
+        saveConsignEnter.setConsigneeUserMail(opeInvoiceOrder.getConsigneeUserMail());
+        saveConsignEnter.setConsigneePostCode(opeInvoiceOrder.getConsigneePostCode());
+        saveConsignEnter.setConsignorCountryCode(opeInvoiceOrder.getConsignorCountryCode());
+        saveConsignEnter.setConsignorUser(opeInvoiceOrder.getConsignorUser());
+        saveConsignEnter.setConsignorMail(opeInvoiceOrder.getConsignorMail());
+        saveConsignEnter.setNotifyUserName(opeInvoiceOrder.getNotifyUserName());
+        saveConsignEnter.setNotifyUser(opeInvoiceOrder.getNotifyUser());
+        saveConsignEnter.setNotifyCountryCode(opeInvoiceOrder.getNotifyCountryCode());
+        saveConsignEnter.setNotifyUserMail(opeInvoiceOrder.getNotifyUserMail());
+        saveConsignEnter.setNotifyUserTelephone(opeInvoiceOrder.getNotifyUserTelephone());
+        saveConsignEnter.setRemark(opeInvoiceOrder.getRemark());
+        consignOrderService.save(saveConsignEnter);
     }
 }

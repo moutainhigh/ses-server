@@ -6,15 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 发货单表
@@ -26,7 +25,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(value = "ope_invoice_order")
 public class OpeInvoiceOrder implements Serializable {
-    public static final String COL_NOTIFY_USER = "notify_user";
     /**
      * 主键id
      */
@@ -189,6 +187,13 @@ public class OpeInvoiceOrder implements Serializable {
     private String consignorMail;
 
     /**
+     * 通知人id
+     */
+    @TableField(value = "notify_user")
+    @ApiModelProperty(value = "通知人id")
+    private Long notifyUser;
+
+    /**
      * 通知人
      */
     @TableField(value = "notify_user_name")
@@ -333,6 +338,8 @@ public class OpeInvoiceOrder implements Serializable {
     public static final String COL_CONSIGNOR_TELEPHONE = "consignor_telephone";
 
     public static final String COL_CONSIGNOR_MAIL = "consignor_mail";
+
+    public static final String COL_NOTIFY_USER = "notify_user";
 
     public static final String COL_NOTIFY_USER_NAME = "notify_user_name";
 
