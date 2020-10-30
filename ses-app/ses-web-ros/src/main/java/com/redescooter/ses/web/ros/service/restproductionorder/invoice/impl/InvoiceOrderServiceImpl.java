@@ -463,11 +463,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //操作动态
         SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.LOADING.getValue(), null);
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
 
         //保存委托单
