@@ -46,4 +46,6 @@ public interface SequenceName {
     String OPE_ALLOCATE_TRACE = "OPE_ALLOCATE_TRACE";
 
     String OPE_PURCHAS_LOT_TRACE="OPE_PURCHAS_LOT_TRACE";
+
+    String OPE_ORDER_STATUS_FLOW="OPE_ORDER_STATUS_FLOW";
 }
