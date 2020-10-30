@@ -27,6 +27,7 @@
     <result column="consignor_country_code" property="consignorCountryCode" />
     <result column="consignor_telephone" property="consignorTelephone" />
     <result column="consignor_mail" property="consignorMail" />
+    <result column="notify_user" property="notifyUser" />
     <result column="notify_user_name" property="notifyUserName" />
     <result column="notify_country_code" property="notifyCountryCode" />
     <result column="notify_user_telephone" property="notifyUserTelephone" />
@@ -47,9 +48,9 @@
     id, dr, tenant_id, dept_id, purchase_no, purchase_id, invoice_no, invoice_status, 
     invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, consignee_user_telephone, 
     consignee_user_mail, consignee_address, consignee_post_code, factory_id, delivery_date, 
-    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user_name, 
-    notify_country_code, notify_user_telephone, notify_user_mail, remark, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
+    notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, remark, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -165,6 +166,11 @@
           when id = #{item.id} then #{item.consignorMail}
         </foreach>
       </trim>
+      <trim prefix="notify_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyUser}
+        </foreach>
+      </trim>
       <trim prefix="notify_user_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id} then #{item.notifyUserName}
@@ -248,9 +254,9 @@
       invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-      def5)
+      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+      notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.purchaseNo}, #{item.purchaseId}, 
@@ -258,10 +264,10 @@
         #{item.transType}, #{item.consigneeUser}, #{item.consigneeCountryCode}, #{item.consigneeUserTelephone}, 
         #{item.consigneeUserMail}, #{item.consigneeAddress}, #{item.consigneePostCode}, 
         #{item.factoryId}, #{item.deliveryDate}, #{item.consignorUser}, #{item.consignorCountryCode}, 
-        #{item.consignorTelephone}, #{item.consignorMail}, #{item.notifyUserName}, #{item.notifyCountryCode}, 
-        #{item.notifyUserTelephone}, #{item.notifyUserMail}, #{item.remark}, #{item.createdBy}, 
-        #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, #{item.def1}, #{item.def2}, 
-        #{item.def3}, #{item.def4}, #{item.def5})
+        #{item.consignorTelephone}, #{item.consignorMail}, #{item.notifyUser}, #{item.notifyUserName}, 
+        #{item.notifyCountryCode}, #{item.notifyUserTelephone}, #{item.notifyUserMail}, 
+        #{item.remark}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInvoiceOrder">
@@ -271,15 +277,15 @@
       invoice_type, invoice_qty, trans_type, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
       factory_id, delivery_date, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-      def5)
+      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+      notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
     values
     (#{id}, #{dr}, #{tenantId}, #{deptId}, #{purchaseNo}, #{purchaseId}, #{invoiceNo}, 
       #{invoiceStatus}, #{invoiceType}, #{invoiceQty}, #{transType}, #{consigneeUser}, 
       #{consigneeCountryCode}, #{consigneeUserTelephone}, #{consigneeUserMail}, #{consigneeAddress}, 
       #{consigneePostCode}, #{factoryId}, #{deliveryDate}, #{consignorUser}, #{consignorCountryCode}, 
-      #{consignorTelephone}, #{consignorMail}, #{notifyUserName}, #{notifyCountryCode}, 
+      #{consignorTelephone}, #{consignorMail}, #{notifyUser}, #{notifyUserName}, #{notifyCountryCode}, 
       #{notifyUserTelephone}, #{notifyUserMail}, #{remark}, #{createdBy}, #{createdTime}, 
       #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
     on duplicate key update 
@@ -306,6 +312,7 @@
     consignor_country_code = #{consignorCountryCode}, 
     consignor_telephone = #{consignorTelephone}, 
     consignor_mail = #{consignorMail}, 
+    notify_user = #{notifyUser}, 
     notify_user_name = #{notifyUserName}, 
     notify_country_code = #{notifyCountryCode}, 
     notify_user_telephone = #{notifyUserTelephone}, 
@@ -393,6 +400,9 @@
       </if>
       <if test="consignorMail != null">
         consignor_mail,
+      </if>
+      <if test="notifyUser != null">
+        notify_user,
       </if>
       <if test="notifyUserName != null">
         notify_user_name,
@@ -508,6 +518,9 @@
       <if test="consignorMail != null">
         #{consignorMail},
       </if>
+      <if test="notifyUser != null">
+        #{notifyUser},
+      </if>
       <if test="notifyUserName != null">
         #{notifyUserName},
       </if>
@@ -621,6 +634,9 @@
       </if>
       <if test="consignorMail != null">
         consignor_mail = #{consignorMail},
+      </if>
+      <if test="notifyUser != null">
+        notify_user = #{notifyUser},
       </if>
       <if test="notifyUserName != null">
         notify_user_name = #{notifyUserName},

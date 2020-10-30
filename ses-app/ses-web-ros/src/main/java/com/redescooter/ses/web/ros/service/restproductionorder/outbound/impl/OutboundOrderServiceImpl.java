@@ -26,6 +26,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEn
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
@@ -172,11 +173,14 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     public OutboundOrderDetailResult detail(IdEnter enter) {
         OutboundOrderDetailResult detail = outboundOrderServiceMapper.detail(enter);
         //关联单据
-        //detail.setAssociatedOrderList(associatedOrderList(enter));
+        List<AssociatedOrderResult> associatedOrderResultList = associatedOrderList(enter);
+        detail.setAssociatedOrderList(CollectionUtils.isEmpty(associatedOrderResultList) ? new ArrayList<>() : associatedOrderResultList);
         //操作动态
-        detail.setOrderOperatingList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.OUTBOUND.getValue())));
+        List<OpTraceResult> opTraceResultList = productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.OUTBOUND.getValue()));
+        detail.setOrderOperatingList(CollectionUtils.isEmpty(opTraceResultList) ? new ArrayList<>() : opTraceResultList);
         //产品列表
-        detail.setInvoiceProductList(productListById(enter));
+        List<OrderProductDetailResult> orderProductDetailResultList = productListById(enter);
+        detail.setInvoiceProductList(CollectionUtils.isEmpty(orderProductDetailResultList) ? new ArrayList<>() : orderProductDetailResultList);
         return detail;
     }
 
