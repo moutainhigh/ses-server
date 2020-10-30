@@ -293,6 +293,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         //操作动态
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setUserId(enter.getUserId());
+        saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
@@ -415,7 +416,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
         opeOutWhouseOrderService.saveOrUpdate(whouseOrder);
         // 操作记录
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(idAppService.getId(SequenceName.OPE_OP_TRACE),whouseOrder.getId(),OrderTypeEnums.OUTBOUND.getValue(),OrderOperationTypeEnums.CANCEL.getValue(),remark);
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, whouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
         productionOrderTraceService.save(opTraceEnter);
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW),whouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),whouseOrder.getId(),remark);
         orderStatusFlowService.save(orderStatusFlowEnter);
