@@ -53,22 +53,22 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 //采购单
                 OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getOne(new LambdaQueryWrapper<OpePurchaseOrder>().orderByDesc(OpePurchaseOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opePurchaseOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.PURHCAS.getValue()) : generalOrderNum(opePurchaseOrder.getPurchaseNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                        OrderNumberTypeEnums.PURHCAS.getValue()));
             case 3:
                 //发货单
                 OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getOne(new LambdaQueryWrapper<OpeInvoiceOrder>().orderByDesc(OpeInvoiceOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opeInvoiceOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.INVOICE.getValue()) : generalOrderNum(opeInvoiceOrder.getInvoiceNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                        OrderNumberTypeEnums.INVOICE.getValue()));
             case 4:
                 //出库单
                 OpeOutWhouseOrder opeOutwhOrder = opeOutWhouseOrderService.getOne(new LambdaQueryWrapper<OpeOutWhouseOrder>().orderByDesc(OpeOutWhouseOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.STOCK.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                        OrderNumberTypeEnums.STOCK.getValue()));
             case 5:
                 //调拨单
                 OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().orderByDesc(OpeEntrustOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opeEntrustOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.CONSIGN.getValue()) : generalOrderNum(opeEntrustOrder.getEntrustNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                        OrderNumberTypeEnums.CONSIGN.getValue()));
             default:
                 break;
         }
