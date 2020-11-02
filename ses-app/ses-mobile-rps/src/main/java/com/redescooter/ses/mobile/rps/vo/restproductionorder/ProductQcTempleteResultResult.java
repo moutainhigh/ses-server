@@ -15,9 +15,9 @@ import lombok.*;
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
-public class ProductQcTempleteResult extends GeneralResult {
+public class ProductQcTempleteResultResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "模板质检项Id")
     private Long id;
 
     @ApiModelProperty(value = "模板质检项Id")

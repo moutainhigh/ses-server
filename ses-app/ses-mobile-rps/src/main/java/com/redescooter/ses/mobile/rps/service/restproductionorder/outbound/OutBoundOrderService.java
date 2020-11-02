@@ -1,17 +1,17 @@
-package com.redescooter.ses.mobile.rps.service.restproductionorder.invoice;
+package com.redescooter.ses.mobile.rps.service.restproductionorder.outbound;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteResult;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteResultResult;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.QcTempleteEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.SaveQcResultEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundOrderEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundOrderResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductDetailResult;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.ProductOutWhDetailEnter;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +20,7 @@ import java.util.Map;
  *  @version：V ROS 1.8.3
  *  @Description:
  */
-public interface InvoiceOrderService {
+public interface OutBoundOrderService {
     /**
     * @Description
     * @Author: alex
@@ -62,12 +62,21 @@ public interface InvoiceOrderService {
     /**
     * @Description
     * @Author: alex
+    * @Date:   2020/11/2 5:40 下午
+    * @Param:  enter
+    * @Return: List<OutboundDetailProductResult>
+    * @desc: 详情中产品信息
+    */
+    List<OutboundDetailProductResult> detailProductList(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
     * @Date:   2020/11/2 2:48 下午
     * @Param:  enter
     * @Return: ProductDetailResult
     * @desc: 产品详情
     */
-    ProductDetailResult productDetail(IdEnter enter);
+    ProductDetailResult productOutWhDetail(ProductOutWhDetailEnter enter);
     /**
     * @Description
     * @Author: alex
@@ -76,7 +85,7 @@ public interface InvoiceOrderService {
     * @Return: ProductQcTempleteResult
     * @desc: 质检模版
     */
-    ProductQcTempleteResult qcTemplete(QcTempleteEnter enter);
+    List<ProductQcTempleteItemResult> qcTemplete(QcTempleteEnter enter);
     /**
     * @Description
     * @Author: alex

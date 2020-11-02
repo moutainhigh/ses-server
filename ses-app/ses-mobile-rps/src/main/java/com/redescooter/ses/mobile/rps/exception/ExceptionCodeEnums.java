@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.exception;
 
+import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -153,7 +154,14 @@ public enum ExceptionCodeEnums {
     PURCHAS_ORDER_HAS_EXIST_PART_NOT_QC(10073, "采购单存在其他部件未进行质检，不可退货并完成"),
 
     STOCK_IS_NOT_EXIST(10074, "库存不存在"),
+
+    ORDER_TRACE_IS_NOT_EXIST (10075,"订单节点不存在"),
+
+    EMPLOYEE_IS_NOT_EXIST(10076,"员工不存在"),
+
+    ORDER_IS_NOT_EXIST(10077,"单据不存在"),
     ;
+
 
     private int code;
 

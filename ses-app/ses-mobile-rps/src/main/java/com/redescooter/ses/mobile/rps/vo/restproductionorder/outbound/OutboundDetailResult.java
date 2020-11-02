@@ -25,7 +25,10 @@ public class OutboundDetailResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "出库单号")
-    private String outBoundOrderNo;
+    private String outboundOrderNo;
+
+    @ApiModelProperty(value = "产品类型")
+    private Integer productType;
 
     @ApiModelProperty(value = "状态")
     private Integer status;

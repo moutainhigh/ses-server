@@ -33,4 +33,8 @@ public interface ValidationExceptionCode {
     //序列号
     int SERIAL_NUM=10037;
 
+    //状态为空
+    int STATUS_IS_EMPTY = 10038;
+    //类型为空
+    int TYPE_IS_EMPTY = 10039;
 }

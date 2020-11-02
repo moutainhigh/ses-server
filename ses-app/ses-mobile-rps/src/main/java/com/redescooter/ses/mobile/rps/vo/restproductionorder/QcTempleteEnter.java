@@ -22,5 +22,5 @@ public class QcTempleteEnter extends GeneralEnter {
     private String serialN;
 
     @ApiModelProperty(value = "产品类型")
-    private Integer productTypeId;
+    private Integer productType;
 }

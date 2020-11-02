@@ -1,9 +1,6 @@
 package com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -18,22 +15,34 @@ import lombok.Data;
 @ApiModel(value = "订单节点表", description = "订单节点表")
 @Data
 @AllArgsConstructor
-public class OrderStatusFlowEnter extends GeneralEnter {
+public class OrderStatusFlowResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
     @ApiModelProperty(value = "订单状态")
-    @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "状态为空")
     private Integer orderStatus;
 
-    @ApiModelProperty(value = "订单类型")
-    @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "订单类型为空")
-    private Integer orderType;
-
     @ApiModelProperty(value = "关联订单")
-    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id为空")
     private Long relationId;
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "创建人")
+    private Long createById;
+
+    @ApiModelProperty(value = "创建人")
+    private String createByFirstName;
+
+    @ApiModelProperty(value = "创建人")
+    private String createByLastName;
+
+    @ApiModelProperty(value = "更新人")
+    private Long updateById;
+
+    @ApiModelProperty(value = "更新人")
+    private String updateByFirstName;
+
+    @ApiModelProperty(value = "更新人")
+    private String updateByLastName;
 }

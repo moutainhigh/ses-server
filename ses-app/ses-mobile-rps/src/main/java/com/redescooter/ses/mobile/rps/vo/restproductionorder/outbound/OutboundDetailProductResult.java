@@ -55,6 +55,6 @@ public class OutboundDetailProductResult extends GeneralResult {
     @ApiModelProperty(value = "出库总数量")
     private Integer stockTotal;
 
-    @ApiModelProperty(value = "已出库数量")
-    private Integer stockQty;
+    @ApiModelProperty(value = "已质检数量")
+    private Integer qcQty;
 }
