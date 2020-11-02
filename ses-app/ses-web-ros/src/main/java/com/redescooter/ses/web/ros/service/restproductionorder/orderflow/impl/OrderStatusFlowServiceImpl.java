@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OrderStatusFlowServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
@@ -176,7 +177,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();
         BeanUtils.copyProperties(enter, opeOrderStatusFlow);
         if (enter.getId() == null || enter.getId() == 0) {
-            opeOrderStatusFlow.setId(idAppService.getId(""));
+            opeOrderStatusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
             opeOrderStatusFlow.setDr(0);
             opeOrderStatusFlow.setCreatedBy(enter.getUserId());
             opeOrderStatusFlow.setCreatedTime(new Date());
