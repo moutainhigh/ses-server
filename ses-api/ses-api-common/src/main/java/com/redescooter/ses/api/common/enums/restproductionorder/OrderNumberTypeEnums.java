@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum OrderNumberTypeEnums {
-    ALLOCAT("ALLOCAT", "调拨单", "TO"),
-    PURHCAS("PURHCAS", "采购", "PO"),
-    INVOICE("INVOICE", "发货单", "SO"),
-    STOCK("STOCK", "出库单", "OO"),
-    CONSIGN("CONSIGN", "委托单", "DO");
+    ALLOCAT("ALLOCAT", "调拨单", "RTO"),
+    PURHCAS("PURHCAS", "采购", "RPO"),
+    INVOICE("INVOICE", "发货单", "RSO"),
+    STOCK("STOCK", "出库单", "ROO"),
+    CONSIGN("CONSIGN", "委托单", "RDO");
 
     private String code;
 

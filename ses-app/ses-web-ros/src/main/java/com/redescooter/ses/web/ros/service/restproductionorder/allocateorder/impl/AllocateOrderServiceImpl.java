@@ -513,6 +513,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
+    @Transactional
     public void allocatePurchaseing(Long allocateId,Long userId) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
         if (allocateOrder == null) {
