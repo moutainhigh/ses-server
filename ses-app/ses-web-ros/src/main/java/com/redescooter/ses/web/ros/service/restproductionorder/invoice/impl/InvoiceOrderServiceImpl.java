@@ -509,6 +509,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         //操作动态
         SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.SIGN_FOR.getValue(), null);
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
@@ -705,7 +706,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         invoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.CANCEL.getValue());
         opeInvoiceOrderService.saveOrUpdate(invoiceOrder);
         // 操作动态
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(idAppService.getId(SequenceName.OPE_OP_TRACE),invoiceOrder.getId(),OrderTypeEnums.INVOICE.getValue(),OrderOperationTypeEnums.CANCEL.getValue(),remark);
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, invoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
         productionOrderTraceService.save(opTraceEnter);
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW),invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
