@@ -333,7 +333,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         orderStatusFlowService.save(orderStatusFlowEnter);
 
         //采购单修改状态
-        purchaseOrderService.purchaseStocking(opeInvoiceOrder.getId(), enter.getUserId());
+        purchaseOrderService.purchaseStocking(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 

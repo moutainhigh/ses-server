@@ -181,6 +181,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     OpePurchasePartsB partsB = new OpePurchasePartsB();
                     BeanUtils.copyProperties(partsEnter,partsB);
                     partsB.setPurchaseId(purchaseOrder.getId());
+                    if (partsB.getPartsId() == null){
+                        partsB.setPartsId(partsEnter.getId());
+                    }
                     partsB.setCreatedBy(enter.getUserId());
                     partsB.setCreatedTime(new Date());
                     partsB.setUpdatedBy(enter.getUserId());

@@ -78,6 +78,7 @@
           allocate.consignee_post_code,
           allocate.consignee_address,
           allocate.created_time,
+          allocate.remark,
           param1.parameter_name as shipWhName,
           param2.parameter_name as receiptWhName,
           allocate.consignee_country_code,
