@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeAllocateOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeAllocateOrder">
     <!--@mbg.generated-->
-    <!--@Table ros-1.8.3.ope_allocate_order-->
+    <!--@Table ope_allocate_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -46,7 +46,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ros-1.8.3.ope_allocate_order
+    update ope_allocate_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -206,7 +206,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_allocate_order
+    insert into ope_allocate_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_status, allocate_qty, allocate_type, 
       ship_wh, receipt_wh, consignee_user, consignee_country_code, consignee_user_telephone, 
       consignee_user_mail, consignee_address, consignee_post_code, notify_user, notify_user_name, 
@@ -230,7 +230,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeAllocateOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_allocate_order
+    insert into ope_allocate_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_status, allocate_qty, allocate_type, 
       ship_wh, receipt_wh, consignee_user, consignee_country_code, consignee_user_telephone, 
       consignee_user_mail, consignee_address, consignee_post_code, notify_user, notify_user_name, 
@@ -282,7 +282,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeAllocateOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_allocate_order
+    insert into ope_allocate_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
