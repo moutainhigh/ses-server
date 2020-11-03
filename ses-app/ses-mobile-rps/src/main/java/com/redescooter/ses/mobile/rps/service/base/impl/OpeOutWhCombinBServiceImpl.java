@@ -34,3 +34,4 @@ public class OpeOutWhCombinBServiceImpl extends ServiceImpl<OpeOutWhCombinBMappe
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

@@ -44,7 +44,7 @@
         select count(*)
         from ope_out_whouse_order whOrder
         where whOrder.dr = 0
-          and whOrder.out_wh_status =0
+          and whOrder.out_wh_status in (0,10,15)
     </select>
 
     <select id="rpsHeadConsignTotal" resultType="int">

@@ -4,27 +4,29 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB">
     <!--@mbg.generated-->
     <!--@Table ope_out_wh_combin_b-->
-    <id column="id" property="id" />
-    <result column="dr" property="dr" />
-    <result column="out_wh_id" property="outWhId" />
-    <result column="combin_name" property="combinName" />
-    <result column="production_combin_bom_id" property="productionCombinBomId" />
-    <result column="qty" property="qty" />
-    <result column="remark" property="remark" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_time" property="createdTime" />
-    <result column="updated_by" property="updatedBy" />
-    <result column="updated_time" property="updatedTime" />
-    <result column="def1" property="def1" />
-    <result column="def2" property="def2" />
-    <result column="def3" property="def3" />
-    <result column="def4" property="def4" />
-    <result column="def5" property="def5" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
+    <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
+    <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, remark, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, already_out_wh_qty, 
+    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -32,124 +34,138 @@
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dr}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="out_wh_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.outWhId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outWhId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="combin_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.combinName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.combinName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="production_combin_bom_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.productionCombinBomId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productionCombinBomId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.qty}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="already_out_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.alreadyOutWhQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.remark}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def1}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def3}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def4}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def5}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id}
+      #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_out_wh_combin_b
-    (id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, remark, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    (id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, already_out_wh_qty, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.outWhId}, #{item.combinName}, #{item.productionCombinBomId}, 
-        #{item.qty}, #{item.remark}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, 
-        #{item.updatedTime}, #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5}
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.outWhId,jdbcType=BIGINT}, 
+        #{item.combinName,jdbcType=VARCHAR}, #{item.productionCombinBomId,jdbcType=BIGINT}, 
+        #{item.qty,jdbcType=INTEGER}, #{item.alreadyOutWhQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
         )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB">
     <!--@mbg.generated-->
     insert into ope_out_wh_combin_b
-    (id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, remark, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
+    (id, dr, out_wh_id, combin_name, production_combin_bom_id, qty, already_out_wh_qty, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
     values
-    (#{id}, #{dr}, #{outWhId}, #{combinName}, #{productionCombinBomId}, #{qty}, #{remark}, 
-      #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, 
-      #{def4}, #{def5})
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{outWhId,jdbcType=BIGINT}, #{combinName,jdbcType=VARCHAR}, 
+      #{productionCombinBomId,jdbcType=BIGINT}, #{qty,jdbcType=INTEGER}, #{alreadyOutWhQty,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+      )
     on duplicate key update 
-    id = #{id}, 
-    dr = #{dr}, 
-    out_wh_id = #{outWhId}, 
-    combin_name = #{combinName}, 
-    production_combin_bom_id = #{productionCombinBomId}, 
-    qty = #{qty}, 
-    remark = #{remark}, 
-    created_by = #{createdBy}, 
-    created_time = #{createdTime}, 
-    updated_by = #{updatedBy}, 
-    updated_time = #{updatedTime}, 
-    def1 = #{def1}, 
-    def2 = #{def2}, 
-    def3 = #{def3}, 
-    def4 = #{def4}, 
-    def5 = #{def5}
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    out_wh_id = #{outWhId,jdbcType=BIGINT}, 
+    combin_name = #{combinName,jdbcType=VARCHAR}, 
+    production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT}, 
+    qty = #{qty,jdbcType=INTEGER}, 
+    already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB">
     <!--@mbg.generated-->
@@ -172,6 +188,9 @@
       </if>
       <if test="qty != null">
         qty,
+      </if>
+      <if test="alreadyOutWhQty != null">
+        already_out_wh_qty,
       </if>
       <if test="remark != null">
         remark,
@@ -207,103 +226,109 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        #{dr},
+        #{dr,jdbcType=INTEGER},
       </if>
       <if test="outWhId != null">
-        #{outWhId},
+        #{outWhId,jdbcType=BIGINT},
       </if>
       <if test="combinName != null">
-        #{combinName},
+        #{combinName,jdbcType=VARCHAR},
       </if>
       <if test="productionCombinBomId != null">
-        #{productionCombinBomId},
+        #{productionCombinBomId,jdbcType=BIGINT},
       </if>
       <if test="qty != null">
-        #{qty},
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="alreadyOutWhQty != null">
+        #{alreadyOutWhQty,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
-        #{remark},
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy},
+        #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        #{createdTime},
+        #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        #{updatedTime},
+        #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        #{def1},
+        #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        #{def2},
+        #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        #{def3},
+        #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def4 != null">
-        #{def4},
+        #{def4,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        #{def5},
+        #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id},
+        id = #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        dr = #{dr},
+        dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="outWhId != null">
-        out_wh_id = #{outWhId},
+        out_wh_id = #{outWhId,jdbcType=BIGINT},
       </if>
       <if test="combinName != null">
-        combin_name = #{combinName},
+        combin_name = #{combinName,jdbcType=VARCHAR},
       </if>
       <if test="productionCombinBomId != null">
-        production_combin_bom_id = #{productionCombinBomId},
+        production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
       </if>
       <if test="qty != null">
-        qty = #{qty},
+        qty = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="alreadyOutWhQty != null">
+        already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
-        remark = #{remark},
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy},
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        updated_time = #{updatedTime},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        def1 = #{def1},
+        def1 = #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        def2 = #{def2},
+        def2 = #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        def3 = #{def3},
+        def3 = #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def4 != null">
-        def4 = #{def4},
+        def4 = #{def4,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        def5 = #{def5},
+        def5 = #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>

@@ -3,14 +3,12 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 出库单
@@ -21,7 +19,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_out_whouse_order")
-public class OpeOutWhouseOrder implements Serializable {
+public class OpeOutWhouseOrder {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
@@ -99,6 +98,13 @@ public class OpeOutWhouseOrder implements Serializable {
     @TableField(value = "out_wh_qty")
     @ApiModelProperty(value = "出库数量")
     private Integer outWhQty;
+
+    /**
+     * 已出库数量
+     */
+    @TableField(value = "already_out_wh_qty")
+    @ApiModelProperty(value = "已出库数量")
+    private Integer alreadyOutWhQty;
 
     /**
      * 国家编码如+86
@@ -191,8 +197,6 @@ public class OpeOutWhouseOrder implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -214,6 +218,8 @@ public class OpeOutWhouseOrder implements Serializable {
     public static final String COL_OUT_TYPE = "out_type";
 
     public static final String COL_OUT_WH_QTY = "out_wh_qty";
+
+    public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
     public static final String COL_COUNTRY_CODE = "country_code";
 

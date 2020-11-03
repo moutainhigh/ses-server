@@ -39,12 +39,15 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailResult">
-        select whorder.id            as id,
-               whorder.out_wh_no     as outboundOrderNo,
-               whorder.out_wh_status as status,
-               whorder.out_wh_qty    as stockTotal,
-               whorder.out_wh_type   as productType
+        select whorder.id                 as id,
+        whorder.out_wh_no          as outboundOrderNo,
+        whorder.out_wh_status      as status,
+        whorder.out_wh_qty         as stockTotal,
+        whorder.already_out_wh_qty as qcQty,
+        whorder.out_wh_type        as productType
         from ope_out_whouse_order whorder
+        where whorder.dr = 0
+        and whorder.id=#{id}
     </select>
 
     <select id="detailProductListByPart" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailProductResult">
@@ -69,7 +72,8 @@
         combin.bom_no                    as productN,
         '2'                              as productType,
         combinB.qty                      as stockTotal,
-        combinB.already_out_wh_qty       as qcQty
+        combinB.already_out_wh_qty       as qcQty,
+        true as idclass
         from ope_out_wh_combin_b combinB
         inner join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
         where combinB.dr = 0
@@ -85,10 +89,11 @@
                spgroup.group_name as groupName,
                scooterB.qty       as stockTotal,
                scooterB.already_out_wh_qty as qcQty,
-                '1'                as productType
+                '1'                as productType,
+                true as idclass
         from ope_out_wh_scooter_b scooterB
-                 inner join ope_specificat_group spgroup on scooterB.group_id = spgroup.id and spgroup.dr = 0
-                 inner join ope_color color on color.id = scooterB.color_id and color.dr = 0
+                 left join ope_specificat_group spgroup on scooterB.group_id = spgroup.id and spgroup.dr = 0
+                 left join ope_color color on color.id = scooterB.color_id and color.dr = 0
         where scooterB.dr=0
         and scooterB.out_wh_id = #{id}
     </select>

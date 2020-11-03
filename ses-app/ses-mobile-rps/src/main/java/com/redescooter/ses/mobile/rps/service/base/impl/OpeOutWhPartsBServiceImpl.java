@@ -34,3 +34,4 @@ public class OpeOutWhPartsBServiceImpl extends ServiceImpl<OpeOutWhPartsBMapper,
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

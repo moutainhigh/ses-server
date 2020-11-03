@@ -34,3 +34,4 @@ public class OpeOutWhScooterBServiceImpl extends ServiceImpl<OpeOutWhScooterBMap
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

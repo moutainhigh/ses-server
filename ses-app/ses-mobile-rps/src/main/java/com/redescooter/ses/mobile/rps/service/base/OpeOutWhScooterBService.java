@@ -5,7 +5,9 @@ import com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface OpeOutWhScooterBService extends IService<OpeOutWhScooterB> {
 
 
@@ -18,3 +20,4 @@ public interface OpeOutWhScooterBService extends IService<OpeOutWhScooterB> {
     int insertOrUpdateSelective(OpeOutWhScooterB record);
 
 }
+

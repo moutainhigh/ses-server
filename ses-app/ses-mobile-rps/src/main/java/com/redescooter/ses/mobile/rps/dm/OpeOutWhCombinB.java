@@ -3,14 +3,12 @@ package com.redescooter.ses.mobile.rps.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 出库组装件产品表
@@ -21,7 +19,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_out_wh_combin_b")
-public class OpeOutWhCombinB implements Serializable {
+public class OpeOutWhCombinB {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
@@ -59,11 +58,18 @@ public class OpeOutWhCombinB implements Serializable {
     private Long productionCombinBomId;
 
     /**
-     * 出库数量数量
+     * 出库数量
      */
     @TableField(value = "qty")
-    @ApiModelProperty(value = "出库数量数量")
+    @ApiModelProperty(value = "出库数量")
     private Integer qty;
+
+    /**
+     * 已出库数量
+     */
+    @TableField(value = "already_out_wh_qty")
+    @ApiModelProperty(value = "已出库数量")
+    private Integer alreadyOutWhQty;
 
     /**
      * 备注
@@ -135,8 +141,6 @@ public class OpeOutWhCombinB implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -148,6 +152,8 @@ public class OpeOutWhCombinB implements Serializable {
     public static final String COL_PRODUCTION_COMBIN_BOM_ID = "production_combin_bom_id";
 
     public static final String COL_QTY = "qty";
+
+    public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
     public static final String COL_REMARK = "remark";
 
