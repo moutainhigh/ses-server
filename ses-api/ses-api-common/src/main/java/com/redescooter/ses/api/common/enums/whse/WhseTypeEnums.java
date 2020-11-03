@@ -20,7 +20,10 @@ public enum WhseTypeEnums {
     ALLOCATE("ALLOCATE", "调拨仓库", "2"),
     ASSEMBLY("ASSEMBLY", "生产仓库", "3"),
     FR_WHSE("FR_WHSE","法国仓库","4"),
-    UK_WHSE("FR_WHSE","英国仓库","5")
+    UK_WHSE("FR_WHSE","英国仓库","5"),
+    DELIVER_WH("DELIVER_WH","发货仓库","10"),
+    RECEP_WH("RECEP_WH","接受仓库","11"),
+
     ;
 
     private String code;
