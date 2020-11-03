@@ -97,6 +97,14 @@ public class StripeServiceImpl implements StripeService {
     @Value("${Request.publicKey}")
     private String publicSecret;
 
+    /**
+     * 欧元 最小单位为 欧分
+     * 优惠时间内，预定金价格为190
+     * 优惠时间已过，恢复原价590
+     **/
+    static Long payAmount = 59000L;
+    //static Long payAmount=19000L;
+
     @SneakyThrows
     @Override
     public StringResult paymentIntent(IdEnter enter) {
@@ -107,19 +115,18 @@ public class StripeServiceImpl implements StripeService {
 
         if (payOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
         Map<String, String> map = new HashMap<>();
         map.put(integrationCheck, PaymentEvent);
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
-        //暂时支付为190 欧元 优惠500欧元 最小单位为 欧分
-        Long payAmount=19000L;
+
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
-                .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
-                .setAmount(payAmount).putAllMetadata(map).build();
+                    .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
+                    .setAmount(payAmount).putAllMetadata(map).build();
 
             PaymentIntent intent = PaymentIntent.create(params);
        /*   String decrypt =null;
@@ -146,11 +153,11 @@ public class StripeServiceImpl implements StripeService {
     public GeneralResult succeeHooks(String enter) {
         if (StringUtils.isEmpty(enter)) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
         log.info("=============================");
@@ -169,7 +176,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("===============结果==============");
         log.info(JSONObject.toJSONString(payResponseBody));
@@ -182,11 +189,11 @@ public class StripeServiceImpl implements StripeService {
 
         if (StringUtils.isEmpty(enter)) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
         log.info("=============================");
@@ -205,7 +212,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("=============================");
         log.info(payResponseBody.toString());
@@ -224,11 +231,11 @@ public class StripeServiceImpl implements StripeService {
     public GeneralResult cancelledPaymentIntent(String enter) {
         if (StringUtils.isEmpty(enter)) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
         log.info("=============================");
@@ -247,7 +254,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("===============结果==============");
         log.info(JSONObject.toJSONString(payResponseBody));
@@ -304,11 +311,11 @@ public class StripeServiceImpl implements StripeService {
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
         if (customerInquiry == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         // 订单数据保存
-        //todo 定金支付成功后优惠500 欧元
-        BigDecimal price = new BigDecimal("690");
+        //todo 定金支付成功后优惠500 欧元,该优惠已过时。
+        BigDecimal price = new BigDecimal(payAmount);
         customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
 
         customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
@@ -318,9 +325,9 @@ public class StripeServiceImpl implements StripeService {
 
         //将预定客户转化为潜在客户
         OpeCustomer opeCustomer = opeCustomerService.getById(customerInquiry.getCustomerId());
-        if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
-                !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.TRASH_CUSTOMER.getValue())
-        ){
+        if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
+                !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.TRASH_CUSTOMER.getValue())
+        ) {
             opeCustomer.setTelephone(customerInquiry.getTelephone());
             opeCustomer.setAddress(customerInquiry.getAddress());
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
@@ -350,7 +357,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setToUserId(0L);
         enter.setUserId(0L);
         enter.setPrice(String.valueOf(customerInquiry.getTotalPrice().intValue()));
-        enter.setFullName(customerInquiry.getFirstName()+" "+customerInquiry.getLastName());
+        enter.setFullName(customerInquiry.getFirstName() + " " + customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
     }
@@ -403,8 +410,8 @@ public class StripeServiceImpl implements StripeService {
     public PublicSecretResult publicSecret() {
         PublicSecretResult result = new PublicSecretResult();
         String secret = publicSecret;
-        String front = secret.substring(0,secret.length()/2);
-        String behind = secret.substring(secret.length()/2,secret.length());
+        String front = secret.substring(0, secret.length() / 2);
+        String behind = secret.substring(secret.length() / 2, secret.length());
         String whole = front + behind;
         System.out.println(whole);
         try {
