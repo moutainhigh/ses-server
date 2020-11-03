@@ -19,3 +19,4 @@ public interface OpeOutWhPartsBService extends IService<OpeOutWhPartsB> {
     int insertOrUpdateSelective(OpeOutWhPartsB record);
 
 }
+

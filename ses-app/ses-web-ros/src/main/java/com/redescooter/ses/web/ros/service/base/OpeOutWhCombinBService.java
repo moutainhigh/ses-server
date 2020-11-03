@@ -19,3 +19,4 @@ public interface OpeOutWhCombinBService extends IService<OpeOutWhCombinB> {
     int insertOrUpdateSelective(OpeOutWhCombinB record);
 
 }
+

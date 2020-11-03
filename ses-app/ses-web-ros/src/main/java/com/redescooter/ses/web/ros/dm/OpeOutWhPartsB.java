@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,11 +17,12 @@ import java.util.Date;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeOutWhPartsB")
 @Data
 @TableName(value = "ope_out_wh_parts_b")
-public class OpeOutWhPartsB implements Serializable {
+public class OpeOutWhPartsB {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键id")
     private Long id;
 
@@ -72,6 +75,13 @@ public class OpeOutWhPartsB implements Serializable {
     @TableField(value = "qty")
     @ApiModelProperty(value = "出库数量")
     private Integer qty;
+
+    /**
+     * 已出库数量
+     */
+    @TableField(value = "already_out_wh_qty")
+    @ApiModelProperty(value = "已出库数量")
+    private Integer alreadyOutWhQty;
 
     /**
      * 备注
@@ -143,8 +153,6 @@ public class OpeOutWhPartsB implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -160,6 +168,8 @@ public class OpeOutWhPartsB implements Serializable {
     public static final String COL_PARTS_TYPE = "parts_type";
 
     public static final String COL_QTY = "qty";
+
+    public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
     public static final String COL_REMARK = "remark";
 
