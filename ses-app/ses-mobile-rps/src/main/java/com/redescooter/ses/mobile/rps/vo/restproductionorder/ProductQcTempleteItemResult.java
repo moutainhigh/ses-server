@@ -21,17 +21,15 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class ProductQcTempleteItemResult extends GeneralResult {
 
-    @ApiModelProperty(value = "Id")
-    private Long id;
-
-    @ApiModelProperty(value = "产品名称")
-    private String productName;
 
     @ApiModelProperty(value = "模版Id")
-    private Long templateId;
+    private Long id;
 
     @ApiModelProperty(value = "质检项条目Id")
     private String itemName;
+
+    @ApiModelProperty(value = "子单据Id")
+    private Long orderBId;
 
     @ApiModelProperty(value = "质检项结果集")
     private List<ProductQcTempleteResultResult> qcTempleteList;

@@ -160,6 +160,8 @@ public enum ExceptionCodeEnums {
     EMPLOYEE_IS_NOT_EXIST(10076,"员工不存在"),
 
     ORDER_IS_NOT_EXIST(10077,"单据不存在"),
+
+    TRACE_IS_NOT_EXIST(10078,"单据记录不存在")
     ;
 
 

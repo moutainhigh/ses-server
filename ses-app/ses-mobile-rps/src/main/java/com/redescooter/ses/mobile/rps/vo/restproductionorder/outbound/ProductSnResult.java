@@ -1,11 +1,13 @@
 package com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.*;
 
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:ProductSnResult
@@ -21,10 +23,18 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class ProductSnResult extends GeneralResult {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
+
+    @ApiModelProperty(value = "字单据Id")
+    private Long orderBId;
+
     @ApiModelProperty(value = "序列号")
-    private String sn;
+    private String serialN;
 
     @ApiModelProperty(value = "到货时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date arrivalDate;
 
     @ApiModelProperty(value = "批次号")
@@ -39,6 +49,6 @@ public class ProductSnResult extends GeneralResult {
     @ApiModelProperty(value = "数量")
     private Integer qty;
 
-    @ApiModelProperty(value = "附件")
+    @ApiModelProperty(value = "附件 多个附件逗号分割")
     private String annex;
 }

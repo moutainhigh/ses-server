@@ -40,6 +40,13 @@ public class OutboundController {
         return new Response<>(outboundOrderService.countByProductType(enter));
     }
 
+    @PostMapping(value = "/countByOrderType")
+    @ApiOperation(value = "单据类型统计", response = Map.class)
+    public Response<Map<Integer,Integer>> countByOrderType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(outboundOrderService.countByOrderType(enter));
+    }
+
+
     @PostMapping(value = "/list")
     @ApiOperation(value = "单据列表", response = OutboundOrderResult.class)
     public Response<PageResult<OutboundOrderResult>> list(@ModelAttribute @ApiParam("请求参数") OutboundOrderEnter enter) {
@@ -71,8 +78,8 @@ public class OutboundController {
     }
 
     @PostMapping(value = "/saveQcResult")
-    @ApiOperation(value = "保存质检结果", response = ProductDetailResult.class)
-    public Response<GeneralResult> saveQcResult(@ModelAttribute @ApiParam("请求参数") SaveQcResultEnter enter) {
+    @ApiOperation(value = "保存质检结果", response = BooleanResult.class)
+    public Response<BooleanResult> saveQcResult(@ModelAttribute @ApiParam("请求参数") SaveQcResultEnter enter) {
         return new Response<>(outboundOrderService.saveQcResult(enter));
     }
 }

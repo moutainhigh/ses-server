@@ -28,7 +28,7 @@ public class OutboundDetailResult extends GeneralResult {
     private String outboundOrderNo;
 
     @ApiModelProperty(value = "产品类型")
-    private Integer productType;
+    private Integer productionType;
 
     @ApiModelProperty(value = "状态")
     private Integer status;

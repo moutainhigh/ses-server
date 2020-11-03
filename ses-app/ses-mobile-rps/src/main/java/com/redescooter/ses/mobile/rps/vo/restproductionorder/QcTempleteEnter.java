@@ -18,8 +18,9 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 public class QcTempleteEnter extends GeneralEnter {
-    @ApiModelProperty(value = "序列号")
-    private String serialN;
+
+    @ApiModelProperty(value = "子单据Id")
+    private Integer id;
 
     @ApiModelProperty(value = "产品类型")
     private Integer productType;

@@ -23,14 +23,29 @@ public class ProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "Id")
     private Long id;
 
-    @ApiModelProperty(value = "产品名称")
+    @ApiModelProperty(value = "产品Id 部件、组合使用")
+    private Long productId;
+
+    @ApiModelProperty(value = "产品名称 部件、组合使用")
     private String productName;
 
-    @ApiModelProperty(value = "产品编码")
+    @ApiModelProperty(value = "产品编码 部件、组合使用")
     private String productN;
 
-    @ApiModelProperty(value = "产品序列号")
-    private String serialN;
+    @ApiModelProperty(value = "产品颜色Id 车辆使用")
+    private Integer colorId;
+
+    @ApiModelProperty(value = "产品颜色名字 车辆使用")
+    private String colorName;
+
+    @ApiModelProperty(value = "产品色值 车辆使用")
+    private String colorValue;
+
+    @ApiModelProperty(value = "产品分组Id 车辆使用")
+    private Integer groupId;
+
+    @ApiModelProperty(value = "分组名称 车辆使用")
+    private String groupName;
 
     @ApiModelProperty(value = "产品类型")
     private Integer productType;
@@ -38,7 +53,7 @@ public class ProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "出库总数")
     private Integer stockTotal;
 
-    @ApiModelProperty(value = "质检数量")
+    @ApiModelProperty(value = "已经质检出库数量")
     private Integer qcQty;
 
     @ApiModelProperty(value = "产品sn列表")

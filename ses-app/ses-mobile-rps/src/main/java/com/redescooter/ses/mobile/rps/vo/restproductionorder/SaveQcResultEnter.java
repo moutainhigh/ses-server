@@ -18,15 +18,18 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 public class SaveQcResultEnter extends GeneralEnter {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "子单据Id")
     private Long id;
 
-    @ApiModelProperty(value = "产品Id")
-    private Long productId;
+    @ApiModelProperty(value = "产品类型")
+    private Integer productType;
 
-    @ApiModelProperty(value = "产品类型Id")
-    private Integer productTypeId;
+    @ApiModelProperty(value = "质检数量")
+    private Integer qty;
 
-    @ApiModelProperty(value = "质检结果 json")
-    private String qcResult;
+    @ApiModelProperty(value = "图片URL")
+    private String imageUrl;
+
+    @ApiModelProperty(value = "质检结果 json 格式：[{\"id\":123,\"imageUrls\":\"\",\"qcResultId\":321313,\"remark\":\"\"}]")
+    private String st;
 }

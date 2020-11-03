@@ -1,32 +1,27 @@
 package com.redescooter.ses.mobile.rps.service.restproductionorder.outbound.impl;
 
 
+import cn.hutool.json.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.dao.restproductionorder.invoice.OutBoundOrderSrviceMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;
-import com.redescooter.ses.mobile.rps.dm.OpeProductionQualityTempateB;
+import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.base.OpeOutWhouseOrderService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductionQualityTempateBService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.outbound.OutBoundOrderService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.trace.ProductionOrderTraceService;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteResultResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.QcTempleteEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.SaveQcResultEnter;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.ProductOutWhDetailEnter;
@@ -35,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,6 +61,21 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     private OpeProductionQualityTempateBService opeProductionQualityTempateBService;
 
     @Autowired
+    private OpeOrderSerialBindService opeOrderSerialBindService;
+
+    @Autowired
+    private OpeOrderQcItemService opeOrderQcItemService;
+
+    @Autowired
+    private OpeOutWhScooterBService opeOutWhScooterBService;
+
+    @Autowired
+    private OpeOutWhCombinBService opeOutWhCombinBService;
+
+    @Autowired
+    private OpeOutWhPartsBService opeOutWhPartsBService;
+
+    @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
     /**
@@ -83,6 +94,29 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
         map=countByStatusResultList.stream().collect(Collectors.toMap(item->{return Integer.valueOf(item.getStatus());},CountByStatusResult::getTotalCount));
 
         for (ProductTypeEnums item : ProductTypeEnums.values()) {
+            if (!map.containsKey(item.getValue())){
+                map.put(item.getValue(),0);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * @Description
+     * @Author: enter
+     * @Date: 2020/11/3 2:28 下午
+     * @Param: enter
+     * @Return: Map
+     * @des： 单据类型统计
+     * @param enter
+     */
+    @Override
+    public Map<Integer, Integer> countByOrderType(GeneralEnter enter) {
+        Map<Integer, Integer> map = new HashMap<>();
+        List<CountByStatusResult> countByStatusResultList= outBoundOrderSrviceMapper.countByOrderType(enter);
+        map=countByStatusResultList.stream().collect(Collectors.toMap(item->{return Integer.valueOf(item.getStatus());},CountByStatusResult::getTotalCount));
+
+        for (OutBoundOrderTypeEnums item : OutBoundOrderTypeEnums.values()) {
             if (!map.containsKey(item.getValue())){
                 map.put(item.getValue(),0);
             }
@@ -205,18 +239,32 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      */
     @Override
     public ProductDetailResult productOutWhDetail(ProductOutWhDetailEnter enter) {
-        ProductDetailResult productDetailResult = new ProductDetailResult();
+        ProductDetailResult productDetailResult =null;
+        List<ProductSnResult> productSnResultList=new ArrayList<>();
         switch (enter.getProductType()){
             case 1 :
                 productDetailResult=outBoundOrderSrviceMapper.productOutWhDetailByScooter(enter);
+                //产品出库列表查询
+                if (productDetailResult != null) {
+                    productSnResultList=outBoundOrderSrviceMapper.productOutWhDetailByScooterSnList(enter);
+                }
                 break;
             case 2 :
                 productDetailResult=outBoundOrderSrviceMapper.productOutWhDetailByCombin(enter);
+                //产品出库列表查询
+                if (productDetailResult != null) {
+                    productSnResultList=outBoundOrderSrviceMapper.productOutWhDetailByCombinSnList(enter);
+                }
                 break;
             default:
                 productDetailResult=outBoundOrderSrviceMapper.productOutWhDetailByPart(enter);
+                //产品出库列表查询
+                if (productDetailResult != null) {
+                    productSnResultList=outBoundOrderSrviceMapper.productOutWhDetailByPartSnList(enter);
+                }
                 break;
         }
+        productDetailResult.setProductSnResultList(productSnResultList);
         return productDetailResult;
     }
 
@@ -232,27 +280,27 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     @Override
     public List<ProductQcTempleteItemResult> qcTemplete(QcTempleteEnter enter) {
         List<ProductQcTempleteItemResult> productQcTempleteItemResultList = new ArrayList<>();
-        String produtionType=null;
+        Integer produtionType=null;
         switch (enter.getProductType()){
             case 1:
-                produtionType= BomCommonTypeEnums.SCOOTER.getValue();
+                produtionType= Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue());
                 break;
             case 2 :
-                produtionType= BomCommonTypeEnums.COMBINATION.getValue();
+                produtionType= Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue());
                 break;
             default:
-                produtionType= BomCommonTypeEnums.COMBINATION.getValue();
+                produtionType= Integer.valueOf(BomCommonTypeEnums.PARTS.getValue());
                 break;
 
         }
-        productQcTempleteItemResultList=outBoundOrderSrviceMapper.qcTemplete(enter);
+        productQcTempleteItemResultList=outBoundOrderSrviceMapper.qcTemplete(enter,produtionType);
         if (CollectionUtils.isEmpty(productQcTempleteItemResultList)){
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
         }
         //查询质检结果项
         List<OpeProductionQualityTempateB> productionQualityTempateBList =
                 opeProductionQualityTempateBService.list(new LambdaQueryWrapper<OpeProductionQualityTempateB>().in(OpeProductionQualityTempateB::getProductQualityTempateId,
-                productQcTempleteItemResultList.stream().map(ProductQcTempleteItemResult::getTemplateId).collect(Collectors.toList())));
+                        productQcTempleteItemResultList.stream().map(ProductQcTempleteItemResult::getId).collect(Collectors.toList())));
         if (CollectionUtils.isEmpty(productionQualityTempateBList)){
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
         }
@@ -277,8 +325,39 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      * @desc: 保存质检结果
      * @param enter
      */
+    @Transactional
     @Override
-    public GeneralResult saveQcResult(SaveQcResultEnter enter) {
+    public BooleanResult saveQcResult(SaveQcResultEnter enter) {
+        List<SaveQcTempleteResultEnter> templeteEnterList = new ArrayList<>();
+        try {
+            templeteEnterList = JSON.parseArray(enter.getSt(), SaveQcTempleteResultEnter.class);
+        }catch (Exception e) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+        }
+        //单据校验
+        switch (enter.getProductType()){
+            case 1:
+                OpeOutWhScooterB opeOutWhScooterB = opeOutWhScooterBService.getById(enter.getId());
+                if (opeOutWhScooterB==null){
+                    throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+                }
+                break;
+            case 2 :
+                OpeOutWhCombinB opeOutWhCombinB = opeOutWhCombinBService.getById(enter.getId());
+                if (opeOutWhCombinB==null){
+                    throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+                }
+                break;
+            default :
+                OpeOutWhPartsB opeOutWhPartsB = opeOutWhPartsBService.getById(enter.getId());
+                if (opeOutWhPartsB==null){
+                    throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+                }
+                break;
+        }
+        //查询产品质检模版
+        //获取质检结果
+        //保存质检记录
         return null;
     }
 }

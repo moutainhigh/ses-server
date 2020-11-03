@@ -1,13 +1,8 @@
 package com.redescooter.ses.mobile.rps.service.restproductionorder.outbound;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteResultResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.QcTempleteEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.SaveQcResultEnter;
+import com.baomidou.mybatisplus.extension.api.R;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.ProductOutWhDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.*;
 
@@ -30,6 +25,16 @@ public interface OutBoundOrderService {
      * @desc: countByProductType
      */
     Map<Integer,Integer> countByProductType(GeneralEnter enter);
+
+    /**
+    * @Description
+    * @Author: enter
+    * @Date:   2020/11/3 2:28 下午
+    * @Param:  enter
+    * @Return: Map
+    * @des： 单据类型统计
+    */
+    Map<Integer,Integer> countByOrderType(GeneralEnter enter);
     /**
     * @Description
     * @Author: alex
@@ -94,5 +99,5 @@ public interface OutBoundOrderService {
     * @Return: GeneralResult
     * @desc:  保存质检结果
     */
-    GeneralResult saveQcResult(SaveQcResultEnter enter);
+    BooleanResult saveQcResult(SaveQcResultEnter enter);
 }

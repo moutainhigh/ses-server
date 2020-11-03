@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum OutBoundOrderTypeEnums {
-    SALES("SALES", "销售", 1);
+    SALES("SALES", "销售", 1),
+    RECEIVING("RECEIVING","领用",2),
+    ASSEMBLY("ASSEMBLY","组装",3),
+    OTHER("OTHER","其他",4);
 
     private String code;
 
