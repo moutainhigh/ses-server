@@ -692,7 +692,7 @@
       )
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="ses.redescooter.com.ros.dm.OpeCustomerInquiry">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
     insert into ope_customer_inquiry
     (id, dr, order_no, customer_id, country, city, district, post_code, customer_source,
@@ -770,7 +770,7 @@
     def5 = #{def5,jdbcType=VARCHAR},
     def6 = #{def6,jdbcType=DOUBLE}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="ses.redescooter.com.ros.dm.OpeCustomerInquiry">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeCustomerInquiry">
     <!--@mbg.generated-->
     insert into ope_customer_inquiry
     <trim prefix="(" suffix=")" suffixOverrides=",">
