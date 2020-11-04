@@ -90,4 +90,8 @@ public interface SequenceName {
     String OPE_PURCHASE_PARTS_B = "OPE_PURCHASE_PARTS_B";
 
     String OPE_PURCHASE_SCOOTER_B = "OPE_PURCHASE_SCOOTER_B";
+
+    String OPE_ORDER_QC_ITEM="ope_order_qc_item";
+
+    String OPE_ORDER_QC_TRACE="OPE_ORDER_QC_TRACE";
 }

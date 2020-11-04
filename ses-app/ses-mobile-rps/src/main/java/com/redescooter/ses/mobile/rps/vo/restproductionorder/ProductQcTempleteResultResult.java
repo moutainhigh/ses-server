@@ -26,6 +26,9 @@ public class ProductQcTempleteResultResult extends GeneralResult {
     @ApiModelProperty(value = "质检结果")
     private String qcResult;
 
+    @ApiModelProperty(value = "质检结果",hidden = true)
+    private Boolean passFlag;
+
     @ApiModelProperty(value = "上传图片标志")
     private Boolean uploadFlag;
 

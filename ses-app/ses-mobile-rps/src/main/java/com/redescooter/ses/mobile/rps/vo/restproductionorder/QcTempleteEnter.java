@@ -20,7 +20,7 @@ import io.swagger.annotations.*;
 public class QcTempleteEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "子单据Id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty(value = "产品类型")
     private Integer productType;
