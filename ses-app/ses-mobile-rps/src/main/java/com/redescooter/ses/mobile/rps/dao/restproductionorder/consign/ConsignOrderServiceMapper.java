@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.dao.restproductionorder.consign;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignDetailProductResult;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignDetailResult;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignOrderListEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignOrderListResult;

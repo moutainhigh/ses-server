@@ -65,6 +65,9 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     private OpeOrderQcItemService opeOrderQcItemService;
 
     @Autowired
+    private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
     private OpeOutWhScooterBService opeOutWhScooterBService;
 
     @Autowired
@@ -246,6 +249,8 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
                 if (productDetailResult != null) {
                     productSnResultList=outBoundOrderSrviceMapper.productOutWhDetailByScooterSnList(enter);
                 }
+                //查询整车bom信息
+                //opeProductionScooterBomService.getById();
                 break;
             case 2 :
                 productDetailResult=outBoundOrderSrviceMapper.productOutWhDetailByCombin(enter);
