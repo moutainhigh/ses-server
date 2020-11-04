@@ -218,7 +218,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice = topCase.getPrice();
+        BigDecimal totalPrice =product.getPrice();
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(partsTotalPrice);
         }
@@ -330,7 +330,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
 
         //总价格计算
-        BigDecimal totalPrice = topCase.getPrice();
+        BigDecimal totalPrice = product.getPrice();
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(partsTotalPrice);
         }
