@@ -132,12 +132,6 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public GeneralResult ship(ConsignShipEnter enter) {
-        List<>
-        try {
-
-        }catch (Exception e) {
-
-        }
         return null;
     }
 }
