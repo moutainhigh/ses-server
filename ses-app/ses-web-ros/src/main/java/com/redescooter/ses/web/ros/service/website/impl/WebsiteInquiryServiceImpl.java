@@ -218,9 +218,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice =product.getPrice();
+        BigDecimal totalPrice =product.getPrice().add(partsTotalPrice);
+        //是否购买后备箱
         if (enter.getBuyTopCase()) {
-            totalPrice = totalPrice.add(partsTotalPrice);
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
 
         //生成主订单
@@ -328,13 +329,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-
         //总价格计算
-        BigDecimal totalPrice = product.getPrice();
+        BigDecimal totalPrice =product.getPrice().add(partsTotalPrice);
+        //是否购买后备箱
         if (enter.getBuyTopCase()) {
-            totalPrice = totalPrice.add(partsTotalPrice);
+            totalPrice = totalPrice.add(topCase.getPrice());
         }
-
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, enter.getId());
         opeCustomerInquiry.setCreatedBy(enter.getUserId());
@@ -664,7 +664,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     /**
      * 校验电池数量
-     *
+     * 返回所选电池价格
      * @param enter
      * @param product
      */
@@ -697,8 +697,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 break;
         }
 
-        //todo 目前是优惠价 减500欧元
-        return product.getPrice().add(batteryPrice.multiply(new BigDecimal(qty)));
+        return batteryPrice.multiply(new BigDecimal(qty));
     }
 
     private void adPush(String email) {
