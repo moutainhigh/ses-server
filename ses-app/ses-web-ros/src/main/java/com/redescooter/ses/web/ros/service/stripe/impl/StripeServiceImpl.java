@@ -122,20 +122,16 @@ public class StripeServiceImpl implements StripeService {
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
-
         try {
-            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setReceiptEmail(ReceiptEmail)
                     .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
-                    .setAmount(payAmount).putAllMetadata(map).build();
+                    /**欧元转换欧分**/
+                    .setAmount(payOrder.getPrepaidDeposit().multiply(new BigDecimal("100")).longValue())
+                    .putAllMetadata(map)
+                    .build();
 
             PaymentIntent intent = PaymentIntent.create(params);
-       /*   String decrypt =null;
-          try {
-
-            decrypt = RsaUtils.encryptByPrivateKey(intent.getClientSecret(),privatekey);
-          }catch (Exception e){
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-          }*/
             result.setValue(intent.getClientSecret());
 
         } catch (Exception e) {
@@ -152,11 +148,9 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public GeneralResult succeeHooks(String enter) {
         if (StringUtils.isEmpty(enter)) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
@@ -313,10 +307,17 @@ public class StripeServiceImpl implements StripeService {
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        // 订单数据保存
-        //todo 定金支付成功后优惠500 欧元,该优惠已过时。
-        BigDecimal price = new BigDecimal(payAmount);
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
+        //定金金额
+        BigDecimal price = customerInquiry.getPrepaidDeposit();
+
+        /**
+         * 已付金额
+         */
+        customerInquiry.setAmountPaid(customerInquiry.getAmountPaid().add(price));
+        /**
+         * 待付金额
+         */
+        customerInquiry.setAmountObligation(customerInquiry.getAmountObligation().subtract(price).subtract(customerInquiry.getAmountDiscount()));
 
         customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
@@ -338,10 +339,11 @@ public class StripeServiceImpl implements StripeService {
         sendmail(customerInquiry);
     }
 
-    /*
-     *  发送邮件
+    /**
+     * 发送邮件
      *
-     * */
+     * @param customerInquiry
+     */
     private void sendmail(OpeCustomerInquiry customerInquiry) {
         String eamil = customerInquiry.getEmail();
         String name = eamil.substring(0, eamil.indexOf("@"));
@@ -356,7 +358,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
-        enter.setPrice(String.valueOf(customerInquiry.getTotalPrice().intValue()));
+        enter.setPrice(customerInquiry.getAmountObligation().toString());
         enter.setFullName(customerInquiry.getFirstName() + " " + customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);

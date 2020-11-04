@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.website;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -80,8 +81,21 @@ public class OrderFormInfoResult extends GeneralResult {
     @ApiModelProperty(value = "总价格")
     private BigDecimal totalPrice;
 
-    @ApiModelProperty(value = "剩余价格")
-    private BigDecimal remainingPrice;
+    @ApiModelProperty(value="产品单价")
+    private BigDecimal productPrice;
+
+    @ApiModelProperty(value="已付金额")
+    private BigDecimal amountPaid;
+
+    @ApiModelProperty(value="待付款金额")
+    private BigDecimal amountObligation;
+
+    @ApiModelProperty(value="预付定金")
+    private BigDecimal prepaidDeposit;
+
+    @TableField(value = "amount_discount")
+    @ApiModelProperty(value="优惠抵扣金额")
+    private BigDecimal amountDiscount;
 
     @ApiModelProperty(value = "颜色")
     private String color;
