@@ -14,7 +14,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/11/02 13:39 
  */
-@ApiModel(value = "产品", description = "")
+@ApiModel(value = "产品出库详情", description = "产品出库详情")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -49,6 +49,9 @@ public class ProductDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "产品类型")
     private Integer productType;
+
+    @ApiModelProperty(value = "零部件类型")
+    private Integer productionType;
 
     @ApiModelProperty(value = "出库总数")
     private Integer stockTotal;

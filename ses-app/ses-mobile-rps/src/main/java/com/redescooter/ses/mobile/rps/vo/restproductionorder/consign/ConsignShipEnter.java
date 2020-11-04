@@ -22,6 +22,12 @@ public class ConsignShipEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "物流公司")
+    private String logisticsCompany;
+
+    @ApiModelProperty(value = "物流单号")
+    private String shipmentN;
+
     @ApiModelProperty(value = "产品信息 ConsignShipProductEnter json 格式：[{\"id\":123,\"serialN\":\"3424242\",\"qty\":123}]\n")
     private String st;
 }

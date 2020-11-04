@@ -1,13 +1,22 @@
 package com.redescooter.ses.mobile.rps.service.restproductionorder.consign.impl;
 
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.mobile.rps.dao.restproductionorder.consign.ConsignOrderServiceMapper;
+import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *  @author: alex
@@ -18,6 +27,9 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ConsignOrderServiceImpl implements ConsignOrderService {
+
+    @Autowired
+    private ConsignOrderServiceMapper consignOrderServiceMapper;
 
     /**
      * @Description
@@ -30,7 +42,16 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public Map<Integer, Integer> countByProductType(GeneralEnter enter) {
-        return null;
+        Map<Integer, Integer> map = new HashMap<>();
+        List<CountByStatusResult>  countByStatusResultList=consignOrderServiceMapper.countByProductType(enter);
+        map=countByStatusResultList.stream().collect(Collectors.toMap(item->{return Integer.valueOf(item.getStatus());},CountByStatusResult::getTotalCount));
+
+        for (ProductTypeEnums item : ProductTypeEnums.values()) {
+            if (!map.containsKey(item.getValue())){
+                map.put(item.getValue(),0);
+            }
+        }
+        return map;
     }
 
     /**
@@ -44,7 +65,11 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public PageResult<ConsignOrderListResult> list(ConsignOrderListEnter enter) {
-        return null;
+        int count=consignOrderServiceMapper.listCount(enter);
+        if (count==0){
+            return PageResult.createZeroRowResult(enter);
+        }
+        return PageResult.create(enter,count,consignOrderServiceMapper.list(enter));
     }
 
     /**
@@ -58,7 +83,12 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public ConsignDetailResult detail(IdEnter enter) {
-        return null;
+        ConsignDetailResult detail=consignOrderServiceMapper.detail(enter);
+        if (detail==null){
+            throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+        }
+        detail.setConsignDetailProductResultList(this.detailProductList(enter));
+        return detail;
     }
 
     /**
@@ -72,7 +102,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public List<ConsignDetailProductResult> detailProductList(IdEnter enter) {
-        return null;
+        List<ConsignDetailProductResult> result = new ArrayList<>();
+//        result=consignOrderServiceMapper.detailProductList(enter);
+        return result;
     }
 
     /**
@@ -100,6 +132,12 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      */
     @Override
     public GeneralResult ship(ConsignShipEnter enter) {
+        List<>
+        try {
+
+        }catch (Exception e) {
+
+        }
         return null;
     }
 }

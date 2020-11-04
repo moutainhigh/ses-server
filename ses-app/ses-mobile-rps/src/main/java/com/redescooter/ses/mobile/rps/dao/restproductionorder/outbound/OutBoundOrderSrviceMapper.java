@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.dao.restproductionorder.invoice;
+package com.redescooter.ses.mobile.rps.dao.restproductionorder.outbound;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

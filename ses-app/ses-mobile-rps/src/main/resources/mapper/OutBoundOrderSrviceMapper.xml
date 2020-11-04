@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.mobile.rps.dao.restproductionorder.invoice.OutBoundOrderSrviceMapper">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.restproductionorder.outbound.OutBoundOrderSrviceMapper">
 
     <sql id="WHERE_LIST">
         where whorder.dr = 0
@@ -140,15 +140,16 @@
 
     <select id="productOutWhDetailByPart" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductDetailResult">
         select partB.id                 as id,
-               partB.parts_id           as productId,
-               partB.parts_name         as productName,
-               partB.parts_no           as productN,
-               partB.qty                as stockTotal,
-               partB.already_out_wh_qty as qcQty,
-               3                        as productType
+        partB.parts_id           as productId,
+        partB.parts_name         as productName,
+        partB.parts_no           as productN,
+        partB.qty                as stockTotal,
+        partB.already_out_wh_qty as qcQty,
+        3                        as productType,
+        partB.parts_type         as productionType
         from ope_out_wh_parts_b partB
-                 left join ope_production_parts part on partB.parts_id = part.id and part.dr = 0
-        where partB.dr=0
+        left join ope_production_parts part on partB.parts_id = part.id and part.dr = 0
+        where partB.dr = 0
         and  partB.id=#{id}
     </select>
 
