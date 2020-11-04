@@ -754,6 +754,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String, Object>> listMap) {
         log.info("开始执行****************************");
         List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
+        // 嵌套分组
         Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
         System.out.println(map.size());
         return scooterBomList;
