@@ -451,10 +451,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_LOADED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-//        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getId());
-//        if (opePurchaseOrder == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-//        }
         opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_DELIVERED.getValue());
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
@@ -477,8 +473,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
         //采购单修改状态
         purchaseOrderService.purchaseWaitDeliver(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
-        //调拨单修改状态
-//        allocateOrderService.allocateWaitDeliver(opePurchaseOrder.getAllocateId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 

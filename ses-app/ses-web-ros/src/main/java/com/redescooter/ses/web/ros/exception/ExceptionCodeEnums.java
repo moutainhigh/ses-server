@@ -464,6 +464,12 @@ public enum ExceptionCodeEnums {
 
     STOCK_NOT_CANCEL(10223, "正在备货中，无法取消"),
 
+    PRODUCT_DOES_NOT_EXIST(10224, "产品不存在"),
+
+    PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
+
+
+
 
     ;
 

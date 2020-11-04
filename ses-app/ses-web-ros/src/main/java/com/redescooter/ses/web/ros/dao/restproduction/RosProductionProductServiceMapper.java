@@ -2,11 +2,13 @@ package com.redescooter.ses.web.ros.dao.restproduction;
 
 import com.redescooter.ses.api.common.vo.base.BaseNameResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RosProductionProductServiceMapper {
     /**
@@ -168,4 +170,14 @@ public interface RosProductionProductServiceMapper {
      * @return
      **/
     List<BomNameData> bomNoData(@Param("enter")BomNoEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过分组和颜色找整车
+     * @Date  2020/11/4 15:03
+     * @Param [listMap]
+     * @return
+     **/
+    List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
 }

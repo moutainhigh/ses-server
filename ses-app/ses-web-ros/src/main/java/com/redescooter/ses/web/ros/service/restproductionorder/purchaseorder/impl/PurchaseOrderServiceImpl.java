@@ -15,6 +15,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
@@ -30,6 +31,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoi
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +51,7 @@ import java.util.stream.Collectors;
  * @Version V1.0
  **/
 @Service
+@Slf4j
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
@@ -86,6 +89,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private AllocateOrderService allocateOrderService;
+
+    @Autowired
+    private RosProductionProductServiceMapper rosProductionProductServiceMapper;
 
 
     @Reference
@@ -426,6 +432,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
+        // 追加  如果是整车的话 判断是否有符合颜色和车型的产品，没有的话抛异常、
+        if (purchaseOrder.getPurchaseType() == 1){
+            // 产品说  这个先不做校验  暂注释掉 2020 11 04
+//            checkProtion(purchaseOrder);
+        }
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 操作动态表
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
@@ -437,6 +448,36 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         allocateOrderService.allocatePurchaseing(purchaseOrder.getAllocateId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 如果是整车的话 判断是否有符合颜色和车型的产品
+    public void checkProtion(OpePurchaseOrder purchaseOrder){
+        QueryWrapper<OpePurchaseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+        scooterBQueryWrapper.eq(OpePurchaseScooterB.COL_PURCHASE_ID,purchaseOrder.getId());
+        List<OpePurchaseScooterB> scooterBS = opePurchaseScooterBService.list(scooterBQueryWrapper);
+        if(CollectionUtils.isNotEmpty(scooterBS)){
+           List<Map<String,Object>> listMap = new ArrayList<>();
+            for (OpePurchaseScooterB scooterB : scooterBS) {
+                Map<String,Object> map = new HashMap<>();
+                map.put(OpeProductionScooterBom.COL_GROUP_ID,scooterB.getGroupId());
+                map.put(OpeProductionScooterBom.COL_COLOR_ID,scooterB.getColorId());
+                listMap.add(map);
+            }
+            // 找到符合条件的整车产品
+            List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
+            // 对查询出来的结果 根据分组和颜色进行分组
+            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+            if (scooterBS.size() > map.size()){
+                // 说明存在没有这种产品的整车
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
+            }
+        }
+    }
+
+
+
+
+
 
     private void createInvoice(OpePurchaseOrder purchaseOrder,IdEnter enter) {
         SaveInvoiceEnter invoiceEnter = new SaveInvoiceEnter();
@@ -524,7 +565,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if (purchaseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        // todo 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
+        // 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
         int whNum = purchaseOrderServiceMapper.whNum(purchaseOrder.getId());
         if (whNum > 0){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
@@ -707,5 +748,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         createStatusFlow(purchaseOrder.getId(),purchaseId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为已签收
         allocateOrderService.allocateSign(purchaseOrder.getAllocateId(),purchaseOrder.getId(),userId);
+    }
+
+    @Override
+    public List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String, Object>> listMap) {
+        log.info("开始执行****************************");
+        List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
+        Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+        System.out.println(map.size());
+        return scooterBomList;
     }
 }

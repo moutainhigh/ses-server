@@ -302,6 +302,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         opeEntrustOrder.setUpdatedBy(enter.getUserId());
         opeEntrustOrder.setUpdatedTime(new Date());
         opeEntrustOrderService.saveOrUpdate(opeEntrustOrder);
+
         return new GeneralResult(enter.getRequestId());
     }
 }
