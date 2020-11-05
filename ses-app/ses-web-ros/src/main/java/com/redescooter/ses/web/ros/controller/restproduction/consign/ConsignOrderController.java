@@ -54,10 +54,16 @@ public class ConsignOrderController {
         return new Response<>(consignOrderService.signFor(enter));
     }
 
-    @PostMapping(value = "/save")
-    @ApiOperation(value = "保存", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveConsignEnter enter) {
-        return new Response<>(consignOrderService.save(enter));
-    }
+//    @PostMapping(value = "/save")
+//    @ApiOperation(value = "保存", response = GeneralResult.class)
+//    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveConsignEnter enter) {
+//        return new Response<>(consignOrderService.save(enter));
+//    }
 
+
+    @PostMapping(value = "/waitSign")
+    @ApiOperation(value = "模拟RPS发货流程", response = GeneralResult.class)
+    public Response<GeneralResult> waitSign(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(consignOrderService.waitSign(enter));
+    }
 }

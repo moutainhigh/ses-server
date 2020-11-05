@@ -149,4 +149,22 @@ public interface AllocateOrderService {
     void allocateSign(Long allocateId,Long purchaseId,Long userId);
 
 
+    /**
+     * @Author Aleks
+     * @Description  调拨单的状态变为待签收
+     * @Date  2020/10/30 19:26
+     * @Param [allocateId, userId]
+     * @return
+     **/
+    void allocateWaitSign(Long allocateId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  调拨单状态变已完成
+     * @Date  2020/10/30 10:30
+     * @Param 调拨单id 采购单id
+     * @return
+     **/
+    void allocateFinish(Long allocateId,Long purchaseId,Long userId);
 }

@@ -148,4 +148,14 @@ public interface InvoiceOrderService {
      * @return 
      **/
     void invoiceWaitLoading(Long invoiceId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  发货单状态变为待签收
+     * @Date  2020/11/5 10:19
+     * @Param
+     * @return
+     **/
+    void invoiceWaitSign(Long invoiceId,Long userId);
 }

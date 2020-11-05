@@ -66,7 +66,7 @@ public class OutboundOrderController {
     @PostMapping(value = "/endQc")
     @ApiOperation(value = "模拟RPS质检完成", response = GeneralResult.class)
     public Response<GeneralResult> endQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(outboundOrderService.detail(enter));
+        return new Response<>(outboundOrderService.endQc(enter));
     }
 
 

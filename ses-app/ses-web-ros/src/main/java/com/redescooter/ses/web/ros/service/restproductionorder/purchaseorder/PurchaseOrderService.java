@@ -163,4 +163,14 @@ public interface PurchaseOrderService {
 
     List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
 
+
+    /**
+     * @Author Aleks
+     * @Description  采购单状态变为待签收
+     * @Date  2020/10/30 19:24
+     * @Param [purchaseId, userId]
+     * @return
+     **/
+    void purchaseWaitSign(Long purchaseId ,Long userId);
+
 }

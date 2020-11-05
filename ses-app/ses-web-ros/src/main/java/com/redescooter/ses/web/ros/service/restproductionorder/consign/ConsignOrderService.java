@@ -88,4 +88,14 @@ public interface ConsignOrderService {
      * @desc: 保存出库单
      */
     GeneralResult save(SaveConsignEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  状态变待签收
+     * @Date  2020/11/5 11:27
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult waitSign(IdEnter enter);
 }

@@ -211,6 +211,13 @@ public interface SequenceName {
 
     String OPE_PURCHASE_SCOOTER_B = "OPE_PURCHASE_SCOOTER_B";
 
+    String OPE_ENTRUST_SCOOTER_B = "OPE_ENTRUST_SCOOTER_B";
+
+    String OPE_ENTRUST_COMBIN_B = "OPE_ENTRUST_COMBIN_B";
+
+    String OPE_ENTRUST_PARTS_B = "OPE_ENTRUST_PARTS_B";
+
+
 
 
 

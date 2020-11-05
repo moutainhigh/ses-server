@@ -25,11 +25,13 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -92,6 +94,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private RosProductionProductServiceMapper rosProductionProductServiceMapper;
+
+    @Autowired
+    private OrderStatusFlowService orderStatusFlowService;
 
 
     @Reference
@@ -432,11 +437,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
-        // 追加  如果是整车的话 判断是否有符合颜色和车型的产品，没有的话抛异常、
-        if (purchaseOrder.getPurchaseType() == 1){
-            // 产品说  这个先不做校验  暂注释掉 2020 11 04
-//            checkProtion(purchaseOrder);
-        }
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 操作动态表
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
@@ -448,35 +448,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         allocateOrderService.allocatePurchaseing(purchaseOrder.getAllocateId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
-
-
-    // 如果是整车的话 判断是否有符合颜色和车型的产品
-    public void checkProtion(OpePurchaseOrder purchaseOrder){
-        QueryWrapper<OpePurchaseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
-        scooterBQueryWrapper.eq(OpePurchaseScooterB.COL_PURCHASE_ID,purchaseOrder.getId());
-        List<OpePurchaseScooterB> scooterBS = opePurchaseScooterBService.list(scooterBQueryWrapper);
-        if(CollectionUtils.isNotEmpty(scooterBS)){
-           List<Map<String,Object>> listMap = new ArrayList<>();
-            for (OpePurchaseScooterB scooterB : scooterBS) {
-                Map<String,Object> map = new HashMap<>();
-                map.put(OpeProductionScooterBom.COL_GROUP_ID,scooterB.getGroupId());
-                map.put(OpeProductionScooterBom.COL_COLOR_ID,scooterB.getColorId());
-                listMap.add(map);
-            }
-            // 找到符合条件的整车产品
-            List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
-            // 对查询出来的结果 根据分组和颜色进行分组
-            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
-            if (scooterBS.size() > map.size()){
-                // 说明存在没有这种产品的整车
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
-            }
-        }
-    }
-
-
-
-
 
 
     private void createInvoice(OpePurchaseOrder purchaseOrder,IdEnter enter) {
@@ -596,6 +567,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.FINISHED.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
+        // 操作动态表
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),6,2,"");
+        // 对应的调拨单状态变为已完成
+        allocateOrderService.allocateFinish(purchaseOrder.getAllocateId(),purchaseOrder.getId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -720,8 +695,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
-        // 操作动态表
-        createOpTrace(purchaseOrder.getId(),userId,OrderOperationTypeEnums.LOADING.getValue(), OrderTypeEnums.SHIPPING.getValue(),"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),userId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为待发货
@@ -742,8 +715,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.SIGNED.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
-        // 操作动态表
-        createOpTrace(purchaseOrder.getId(),purchaseId, OrderOperationTypeEnums.SIGN_FOR.getValue(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),purchaseId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为已签收
@@ -758,5 +729,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
         System.out.println(map.size());
         return scooterBomList;
+    }
+
+
+    @Override
+    @Transactional
+    public void purchaseWaitSign(Long purchaseId, Long userId) {
+        // 采购单变为待签收状态
+        OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);
+        if (opePurchaseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if(!opePurchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        opePurchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_SIGN.getValue());
+        opePurchaseOrderService.saveOrUpdate(opePurchaseOrder);
+        // 状态流转
+        OrderStatusFlowEnter opeOrderStatusFlow = new OrderStatusFlowEnter(null,opePurchaseOrder.getPurchaseStatus(), OrderTypeEnums.SHIPPING.getValue(),opePurchaseOrder.getId(),"");
+        opeOrderStatusFlow.setUserId(userId);
+        orderStatusFlowService.save(opeOrderStatusFlow);
+        // 把采购单对应的调拨单变为待签收状态
+        allocateOrderService.allocateWaitSign(opePurchaseOrder.getAllocateId(),userId);
     }
 }

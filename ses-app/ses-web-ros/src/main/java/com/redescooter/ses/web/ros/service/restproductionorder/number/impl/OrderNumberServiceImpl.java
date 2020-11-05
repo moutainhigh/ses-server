@@ -88,14 +88,14 @@ public class OrderNumberServiceImpl implements OrderNumberService {
         String dateStamp = DateUtil.getSimpleDateStamp();
         //OO 2020 1020 001
         if (!StringUtils.isBlank(orderNumber)) {
-            if (StringUtils.equals(String.valueOf(orderNumber.substring(2, 10)), dateStamp)) {
+            if (StringUtils.equals(String.valueOf(orderNumber.substring(3, 11)), dateStamp)) {
                 Integer serialNumber = Integer.valueOf(orderNumber.substring(orderNumber.length() - 3, orderNumber.length())) + 1;
                 if (serialNumber < 100 && serialNumber > 10) {
-                    return result.append(orderNumber.substring(0, 10)).append("0").append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append("0").append(String.valueOf(serialNumber)).toString();
                 } else if (serialNumber < 10) {
-                    return result.append(orderNumber.substring(0, 10)).append("00").append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append("00").append(String.valueOf(serialNumber)).toString();
                 } else {
-                    return result.append(orderNumber.substring(0, 10)).append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append(String.valueOf(serialNumber)).toString();
                 }
             }
         }
