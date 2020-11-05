@@ -510,7 +510,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .bankCardName(customerInquiry.getBankCardName())
                 .expiredTime(customerInquiry.getExpiredTime())
                 .color(opePartsProduct.getColor())
-                .totalPrice(customerInquiry.getTotalPrice())
                 .productPrice(customerInquiry.getProductPrice())
                 .amountPaid(customerInquiry.getAmountPaid())
                 .amountObligation(customerInquiry.getAmountObligation() == null ? new BigDecimal("0") : customerInquiry.getAmountObligation())
