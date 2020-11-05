@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
@@ -363,7 +364,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
             List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
             // 对查询出来的结果 根据分组和颜色进行分组
             Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
-            if (scooterBS.size() > map.size()){
+            if (CollectionUtil.isEmpty(map)) {
                 // 说明存在没有这种产品的整车
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
             }
