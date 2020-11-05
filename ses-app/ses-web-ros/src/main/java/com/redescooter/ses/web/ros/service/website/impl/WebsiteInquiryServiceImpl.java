@@ -218,7 +218,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice =product.getPrice().add(partsTotalPrice);
+        BigDecimal totalPrice = product.getPrice().add(partsTotalPrice);
         //是否购买后备箱
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
@@ -330,7 +330,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
         //总价格计算
-        BigDecimal totalPrice =product.getPrice().add(partsTotalPrice);
+        BigDecimal totalPrice = product.getPrice().add(partsTotalPrice);
         //是否购买后备箱
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
@@ -513,7 +513,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .totalPrice(customerInquiry.getTotalPrice())
                 .productPrice(customerInquiry.getProductPrice())
                 .amountPaid(customerInquiry.getAmountPaid())
-                .amountObligation(customerInquiry.getAmountObligation())
+                .amountObligation(customerInquiry.getAmountObligation() == null ? new BigDecimal("0") : customerInquiry.getAmountObligation())
                 .prepaidDeposit(customerInquiry.getPrepaidDeposit())
                 .amountObligation(customerInquiry.getAmountObligation())
                 .status(customerInquiry.getStatus())
@@ -665,6 +665,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     /**
      * 校验电池数量
      * 返回所选电池价格
+     *
      * @param enter
      * @param product
      */
