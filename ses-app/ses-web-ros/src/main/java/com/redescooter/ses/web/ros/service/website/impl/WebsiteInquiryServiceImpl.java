@@ -510,13 +510,15 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 .bankCardName(customerInquiry.getBankCardName())
                 .expiredTime(customerInquiry.getExpiredTime())
                 .color(opePartsProduct.getColor())
+                /**
+                 * 金额读取
+                 */
                 .productPrice(customerInquiry.getProductPrice())
                 .amountPaid(customerInquiry.getAmountPaid())
                 .amountObligation(customerInquiry.getAmountObligation() == null ? new BigDecimal("0") : customerInquiry.getAmountObligation())
                 .prepaidDeposit(customerInquiry.getPrepaidDeposit())
-                .amountObligation(customerInquiry.getAmountObligation())
-                .status(customerInquiry.getStatus())
                 .totalPrice(customerInquiry.getTotalPrice())
+                .status(customerInquiry.getStatus())
                 .build();
 
         //封装配件数量
