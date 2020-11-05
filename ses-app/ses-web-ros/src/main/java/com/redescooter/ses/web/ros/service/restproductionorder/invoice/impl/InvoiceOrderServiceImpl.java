@@ -703,9 +703,27 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, invoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
         productionOrderTraceService.save(opTraceEnter);
         // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW),invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 取消下面的出库单
         outboundOrderService.cancelOutWh(invoiceOrder.getId(),userId,remark);
+    }
+
+
+    @Override
+    @Transactional
+    public void invoiceWaitLoading(Long invoiceId) {
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
+        if (opeInvoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.STOCKING.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
+        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
+        orderStatusFlowService.save(orderStatusFlowEnter);
     }
 }

@@ -102,4 +102,24 @@ public interface OutboundOrderService {
      **/
     void cancelOutWh(Long invoiceId,Long userId,String remark);
 
+
+    /**
+     * @Author Aleks
+     * @Description  开始质检
+     * @Date  2020/11/5 10:12
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult startQc(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  质检完成
+     * @Date  2020/11/5 10:12
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult endQc(IdEnter enter);
+
 }
