@@ -407,7 +407,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         /**
          * 已付金额
          */
-        opeCustomerInquiry.setAmountPaid(new BigDecimal(0));
+        opeCustomerInquiry.setAmountPaid(BigDecimal.ZERO);
         /**
          * 待付金额
          */
@@ -419,7 +419,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         /**
          * 优惠抵扣金额
          */
-        opeCustomerInquiry.setAmountDiscount(new BigDecimal(0));
+        opeCustomerInquiry.setAmountDiscount(BigDecimal.ZERO);
 
 
         if (StringUtils.isNotEmpty(opeCustomer.getDef1())) {
