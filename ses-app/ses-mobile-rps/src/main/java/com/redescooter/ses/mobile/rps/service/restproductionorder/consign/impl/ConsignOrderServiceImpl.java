@@ -334,6 +334,18 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         opeLogisticsOrder.setUpdatedBy(enter.getUserId());
         opeLogisticsOrder.setUpdatedTime(new Date());
         opeLogisticsOrderService.save(opeLogisticsOrder);
+
+//        //操作动态
+//        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeLogisticsOrder.getId(), OrderTypeEnums..getValue(), OrderOperationTypeEnums.CREATE.getValue(),
+//                opeLogisticsOrder.getRemark());
+//        saveOpTraceEnter.setUserId(enter.getUserId());
+//        productionOrderTraceService.save(saveOpTraceEnter);
+//
+//        //订单节点
+//        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeEntrustOrder.getEntrustStatus(), OrderTypeEnums.ORDER.getValue(), opeEntrustOrder.getId(),
+//                opeEntrustOrder.getRemark());
+//        orderStatusFlowEnter.setUserId(enter.getUserId());
+//        orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
