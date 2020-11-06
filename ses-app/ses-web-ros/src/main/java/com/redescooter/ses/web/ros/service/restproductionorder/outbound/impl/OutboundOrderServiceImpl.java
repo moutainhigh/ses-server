@@ -229,7 +229,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @Date: 2020/10/27 18:14
      * @Param: enter
      * @Return: AssociatedOrderResult
-     * @desc: 关联订单列表
+     * @desc: 关联订单列表 只关联发货单
      * @param invoiceId
      */
     @Override
@@ -237,17 +237,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         List<AssociatedOrderResult> associatedOrderList = new ArrayList<>();
         //发货单
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
-        if (opeInvoiceOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (opeInvoiceOrder != null) {
+            associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(),""));
         }
-        //采购单
-        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
-        if (opePurchaseOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-        }
-
-        associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime()));
-        associatedOrderList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getPurchaseNo(), OrderTypeEnums.SHIPPING.getValue(), opePurchaseOrder.getCreatedTime()));
         return associatedOrderList;
     }
 

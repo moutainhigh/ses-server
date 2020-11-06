@@ -13,7 +13,8 @@ public enum OrderTypeEnums {
     SHIPPING("SHIPPING", "采购单", 2),
     INVOICE("INVOICE", "发货单", 3),
     OUTBOUND("OUTBOUND", "出库单", 4),
-    ORDER("ORDER", "委托单", 5);
+    ORDER("ORDER", "委托单", 5),
+    LOGISTICS("LOGISTICS", "物流运输单", 6);
 
     private String code;
 

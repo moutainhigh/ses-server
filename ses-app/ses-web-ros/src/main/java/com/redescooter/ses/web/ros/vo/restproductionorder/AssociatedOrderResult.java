@@ -37,4 +37,7 @@ public class AssociatedOrderResult extends GeneralResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdDate;
+
+    @ApiModelProperty("物流公司")
+    private String logisticsCompanyName;
 }

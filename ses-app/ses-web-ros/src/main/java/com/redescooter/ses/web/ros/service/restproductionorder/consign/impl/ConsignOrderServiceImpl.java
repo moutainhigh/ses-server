@@ -104,6 +104,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Autowired
     private OpeEntrustPartsBService opeEntrustPartsBService;
 
+    @Autowired
+    private OpeLogisticsOrderService opeLogisticsOrderService;
+
 
     @Reference
     private IdAppService idAppService;
@@ -209,10 +212,16 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
-        if (opeInvoiceOrder==null){
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (opeInvoiceOrder != null){
+            result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(),opeInvoiceOrder.getInvoiceNo(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getCreatedTime(),""));
         }
-        result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(),opeInvoiceOrder.getInvoiceNo(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getCreatedTime()));
+        QueryWrapper<OpeLogisticsOrder>  qw = new QueryWrapper<>();
+        qw.eq(OpeLogisticsOrder.COL_ENTRUST_ID,opeEntrustOrder.getId());
+        qw.last("limit 1");
+        OpeLogisticsOrder opeLogisticsOrder = opeLogisticsOrderService.getOne(qw);
+        if (opeLogisticsOrder != null){
+            result.add(new AssociatedOrderResult(opeLogisticsOrder.getId(),opeLogisticsOrder.getLogisticsNo(),OrderTypeEnums.LOGISTICS.getValue(),opeLogisticsOrder.getCreatedTime(),opeLogisticsOrder.getLogisticsCompany()));
+        }
         return result;
     }
 

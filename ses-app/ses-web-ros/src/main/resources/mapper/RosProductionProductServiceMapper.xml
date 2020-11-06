@@ -325,11 +325,11 @@
 
     <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
         select * from ope_production_scooter_bom
-        where dr = 0 and bom_status = 1 and
+        where dr = 0  and
         <foreach item="item" index="key" collection="list"
                  open="" separator="OR" close="">
             ( group_id=#{item.group_id} and
-            color_id = #{item.color_id} )
+            color_id = #{item.color_id} and bom_status = 1)
         </foreach>
     </select>
 </mapper>

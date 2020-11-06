@@ -82,6 +82,7 @@
                notify_user_mail            as notifyUserMail,
                enorder.consignee_post_code as zipcodeName,
                enorder.consignee_post_code as zipcodeName,
+               enorder.consignee_address   as address,
                enorder.invoice_id   as invoiceId
         from ope_entrust_order enorder
                      left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
