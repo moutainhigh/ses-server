@@ -36,4 +36,59 @@
         where enorder.dr=0
         and  enorder.id=#{id}
     </select>
+
+    <select id="detailProductScooterList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignProductSerialResult">
+        select serialNum.id as id,
+        scooterB.id        as orderBId,
+        scooterB.color_id  as colorId,
+        color.color_name   as colorName,
+        color_value        as colorValue,
+        scooterB.group_id  as groupId,
+        spgroup.group_name as groupName,
+        1                  as idclass,
+        1                  as productType,
+        scooterBom.id      as productId,
+        scooterBom.bom_no  as productN
+        from ope_entrust_product_serial_num serialNum
+        left join ope_entrust_scooter_b scooterB on serialNum.relation_id = serialNum.id
+        left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        left join ope_specificat_group spgroup on spgroup.id = scooterB.group_id and spgroup.dr = 0
+        left join ope_production_scooter_bom scooterBom
+        on scooterBom.group_id = scooterB.group_id and scooterBom.color_id = scooterBom.color_id and
+        scooterBom.bom_status = 1
+        where scooterB.dr = 0
+        and scooterB.entrust_id =#{id}
+    </select>
+
+    <select id="detailProductCombinList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignProductSerialResult">
+        select serialNum.id         as serialNum,
+        combinB.id           as orderBId,
+        2                    as productType,
+        combin.bom_no        as productN,
+        combin.en_name       as productName,
+        1                    as idclass,
+        combinB.qty          as qty,
+        serialNum.serial_num as serialNum
+        from ope_entrust_product_serial_num serialNum
+        left join ope_entrust_combin_b combinB on serialNum.relation_id=combinB.id
+        left join ope_production_combin_bom combin on combin.id = combinB.production_combin_bom_id and combin.dr = 0
+        where combinB.dr = 0
+        and combinB.entrust_id =#{id}
+    </select>
+
+    <select id="detailProductPartList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignProductSerialResult">
+        select serialNum.id as id,
+               partB.id         as orderBId,
+               partB.parts_id   as productId,
+               partB.parts_no   as productN,
+               partB.parts_name as productName,
+               part.id_calss    as idclass,
+               partB.parts_qty  as qty,
+               3                as productType
+        from serialNum.serial_num as serialNum
+        left join ope_entrust_parts_b partB on serialNum.relation_id =partB.id
+                 left join ope_production_parts part on partB.parts_id = part.id and part.dr=0
+        where partB.dr=0
+        and partB.entrust_id=#{id}
+    </select>
 </mapper>

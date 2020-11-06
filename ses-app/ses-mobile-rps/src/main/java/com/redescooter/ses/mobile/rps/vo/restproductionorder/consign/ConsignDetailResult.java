@@ -43,6 +43,6 @@ public class ConsignDetailResult extends GeneralResult {
     @ApiModelProperty(value = "已发货总数")
     private Integer consignorQty;
 
-    @ApiModelProperty(value = "产品信息")
-    private List<ConsignDetailProductResult> consignDetailProductResultList;
+    @ApiModelProperty(value = "产序列号信息")
+    private List<ConsignProductSerialResult> consignProductSerialResult;
 }

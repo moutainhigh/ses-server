@@ -21,8 +21,20 @@ public class SaveQcResultEnter extends GeneralEnter {
     @ApiModelProperty(value = "子单据Id")
     private Long id;
 
+    @ApiModelProperty(value = "产品Id")
+    private Long productId;
+
     @ApiModelProperty(value = "产品类型")
     private Integer productType;
+
+    @ApiModelProperty(value = "序列号")
+    private String serialNum;
+
+    @ApiModelProperty(value = "是否存在序列号")
+    private Boolean idClass;
+
+    @ApiModelProperty(value = "批次号")
+    private String lot;
 
     @ApiModelProperty(value = "质检数量")
     private Integer qty;

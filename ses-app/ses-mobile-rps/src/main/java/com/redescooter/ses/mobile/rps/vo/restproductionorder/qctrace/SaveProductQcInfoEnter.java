@@ -29,10 +29,10 @@ public class SaveProductQcInfoEnter extends GeneralEnter {
     @ApiModelProperty(value="质检项名称")
     private String productQcTemplateName;
 
-    @ApiModelProperty(value="商品质检条目")
-    private Long qcItemId;
-
     @ApiModelProperty(value="质检图片（多个图片逗号分隔）")
     private String picture;
+
+    @ApiModelProperty(value="备注")
+    private String remark;
 
 }

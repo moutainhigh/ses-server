@@ -100,4 +100,13 @@ public interface OutBoundOrderService {
     * @desc:  保存质检结果
     */
     BooleanResult saveQcResult(SaveQcResultEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/5 4:00 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 单据状态更新
+    */
+    GeneralResult updateStatus(OutboundUpdateStatusEnter enter);
 }

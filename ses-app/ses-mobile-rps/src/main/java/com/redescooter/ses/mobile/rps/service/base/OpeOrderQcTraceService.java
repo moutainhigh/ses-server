@@ -3,7 +3,10 @@ package com.redescooter.ses.mobile.rps.service.base;
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeOrderQcTrace;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeOrderQcTraceService extends IService<OpeOrderQcTrace>{
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+public interface OpeOrderQcTraceService extends IService<OpeOrderQcTrace> {
 
 
     int updateBatch(List<OpeOrderQcTrace> list);
@@ -15,3 +18,5 @@ public interface OpeOrderQcTraceService extends IService<OpeOrderQcTrace>{
     int insertOrUpdateSelective(OpeOrderQcTrace record);
 
 }
+
+

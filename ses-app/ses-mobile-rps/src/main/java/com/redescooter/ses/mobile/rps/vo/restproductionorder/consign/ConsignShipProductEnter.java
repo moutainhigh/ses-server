@@ -22,6 +22,9 @@ public class ConsignShipProductEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "是否存在序列号")
+    private Boolean idclass;
+
     @ApiModelProperty(value = "序列号")
     private String serialN;
 

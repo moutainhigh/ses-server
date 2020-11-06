@@ -3,9 +3,7 @@ package com.redescooter.ses.mobile.rps.dao.restproductionorder.consign;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignDetailResult;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignOrderListEnter;
-import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.ConsignOrderListResult;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.*;
 import lombok.*;
 
 import java.util.List;
@@ -55,4 +53,31 @@ public interface ConsignOrderServiceMapper{
     * @desc: 委托单详情
     */
     ConsignDetailResult detail(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/5 2:39 下午
+    * @Param:  enter
+    * @Return: ConsignProductSerialResult
+    * @desc: 委托单车辆列表
+    */
+    List<ConsignProductSerialResult> detailProductScooterList(Long id);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/5 2:40 下午
+    * @Param:  enter
+    * @Return: ConsignProductSerialResult
+    * @desc: 委托单组合件列表
+    */
+    List<ConsignProductSerialResult> detailProductCombinList(Long id);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/5 2:40 下午
+    * @Param:  enter
+    * @Return: ConsignProductSerialResult
+    * @desc: 委托单部件列表
+    */
+    List<ConsignProductSerialResult> detailProductPartList(Long id);
 }

@@ -42,15 +42,16 @@ public interface ConsignOrderService {
     * @desc: 单据详情
     */
     ConsignDetailResult detail(IdEnter enter);
+
     /**
     * @Description
     * @Author: alex
-    * @Date:   2020/11/3 7:25 下午
+    * @Date:   2020/11/5 2:01 下午
     * @Param:  enter
-    * @Return: ConsignOrderListResult
-    * @desc: 产品列表
+    * @Return: detailProductList
+    * @desc: 产品的序列号
     */
-    List<ConsignDetailProductResult> detailProductList(IdEnter enter);
+    List<ConsignProductSerialResult> detailProductSerialList(IdEnter enter);
     /**
     * @Description
     * @Author: alex
@@ -70,6 +71,24 @@ public interface ConsignOrderService {
     * @desc: 出库
     */
     GeneralResult ship(ConsignShipEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/6 2:32 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 更新状态
+    */
+    GeneralResult updateStatus(UpdateConsignStatusEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/6 2:33 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 保存物流运输单
+    */
+    GeneralResult saveLogisticsOrder(SaveLogisticsOrderEnter enter);
 
 
 }

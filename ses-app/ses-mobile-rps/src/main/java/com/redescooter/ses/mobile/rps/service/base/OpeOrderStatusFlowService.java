@@ -5,7 +5,9 @@ import com.redescooter.ses.mobile.rps.dm.OpeOrderStatusFlow;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface OpeOrderStatusFlowService extends IService<OpeOrderStatusFlow> {
 
 

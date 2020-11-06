@@ -19,8 +19,15 @@ import io.swagger.annotations.*;
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
 public class SaveQcTempleteResultEnter extends GeneralEnter {
+
+//    @ApiModelProperty(value = "主单据Id")
+//    private Long id;
+
+    @ApiModelProperty(value = "子单据Id")
+    private Long orderBId;
+    
     @ApiModelProperty(value = "质检项Id")
-    private Long id;
+    private Long itemId;
 
     @ApiModelProperty(value = "图片URL，多个图片逗号分隔")
     private String imageUrls;

@@ -19,7 +19,7 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class ConsignShipEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "子单据Id")
     private Long id;
 
     @ApiModelProperty(value = "物流公司")

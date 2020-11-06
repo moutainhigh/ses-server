@@ -77,6 +77,7 @@ public class ProductQcTraceServiceImpl implements ProductQcTraceService {
             BeanUtils.copyProperties(item,opeOrderQcTrace);
             opeOrderQcTrace.setId(idAppService.getId(SequenceName.OPE_ORDER_QC_TRACE));
             opeOrderQcTrace.setDr(0);
+            opeOrderQcTrace.setQcItemId(opeOrderQcItemId);
             opeOrderQcTrace.setCreatedBy(enter.getUserId());
             opeOrderQcTrace.setCreatedTime(new Date());
             opeOrderQcTrace.setUpdatedBy(enter.getUserId());
