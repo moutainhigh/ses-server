@@ -4,7 +4,7 @@
 
     <sql id="Where_list">
         where invorder.dr=0
-        <if test="invoiceStatus != null and invoiceStatus != ''">
+        <if test="invoiceStatus != null">
             and invorder.invoice_status =#{invoiceStatus}
         </if>
         <if test="classType != null">
@@ -17,7 +17,7 @@
             staff.last_name like concat('%',#{keyword},'%')
             )
         </if>
-        order by invorder.created_time asc
+        order by invorder.created_time desc
     </sql>
 
 

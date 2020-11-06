@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeEntrustOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    <!--@Table ros-1.8.3.ope_entrust_order-->
+    <!--@Table ope_entrust_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -14,6 +14,7 @@
     <result column="entrust_status" jdbcType="INTEGER" property="entrustStatus" />
     <result column="entrust_type" jdbcType="INTEGER" property="entrustType" />
     <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
+    <result column="already_consignor_qty" jdbcType="INTEGER" property="alreadyConsignorQty" />
     <result column="delivery_date" jdbcType="TIMESTAMP" property="deliveryDate" />
     <result column="trans_type" jdbcType="INTEGER" property="transType" />
     <result column="consignee_user" jdbcType="BIGINT" property="consigneeUser" />
@@ -45,15 +46,16 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, entrust_type, 
-    consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
-    consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
-    notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, remark, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    consignor_qty, already_consignor_qty, delivery_date, trans_type, consignee_user, 
+    consignee_country_code, consignee_user_telephone, consignee_user_mail, consignee_address, 
+    consignee_post_code, consignor_user, consignor_country_code, consignor_telephone, 
+    consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
+    notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ros-1.8.3.ope_entrust_order
+    update operation.ope_entrust_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -98,6 +100,11 @@
       <trim prefix="consignor_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.consignorQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="already_consignor_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.alreadyConsignorQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="delivery_date = case" suffix="end,">
@@ -243,49 +250,49 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_entrust_order
+    insert into operation.ope_entrust_order
     (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
-      entrust_type, consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
-      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-      consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
-      notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-      def5)
+      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type, 
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
+      consignee_address, consignee_post_code, consignor_user, consignor_country_code, 
+      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code, 
+      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.deptId,jdbcType=BIGINT}, #{item.invoiceId,jdbcType=BIGINT}, #{item.invoiceNo,jdbcType=VARCHAR}, 
         #{item.entrustNo,jdbcType=VARCHAR}, #{item.entrustStatus,jdbcType=INTEGER}, #{item.entrustType,jdbcType=INTEGER}, 
-        #{item.consignorQty,jdbcType=INTEGER}, #{item.deliveryDate,jdbcType=TIMESTAMP}, 
-        #{item.transType,jdbcType=INTEGER}, #{item.consigneeUser,jdbcType=BIGINT}, #{item.consigneeCountryCode,jdbcType=VARCHAR}, 
-        #{item.consigneeUserTelephone,jdbcType=VARCHAR}, #{item.consigneeUserMail,jdbcType=VARCHAR}, 
-        #{item.consigneeAddress,jdbcType=VARCHAR}, #{item.consigneePostCode,jdbcType=VARCHAR}, 
-        #{item.consignorUser,jdbcType=BIGINT}, #{item.consignorCountryCode,jdbcType=VARCHAR}, 
-        #{item.consignorTelephone,jdbcType=VARCHAR}, #{item.consignorMail,jdbcType=VARCHAR}, 
-        #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, #{item.notifyCountryCode,jdbcType=VARCHAR}, 
-        #{item.notifyUserTelephone,jdbcType=VARCHAR}, #{item.notifyUserMail,jdbcType=VARCHAR}, 
-        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=DECIMAL})
+        #{item.consignorQty,jdbcType=INTEGER}, #{item.alreadyConsignorQty,jdbcType=INTEGER}, 
+        #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.transType,jdbcType=INTEGER}, #{item.consigneeUser,jdbcType=BIGINT}, 
+        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR}, 
+        #{item.consigneeUserMail,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
+        #{item.consigneePostCode,jdbcType=VARCHAR}, #{item.consignorUser,jdbcType=BIGINT}, 
+        #{item.consignorCountryCode,jdbcType=VARCHAR}, #{item.consignorTelephone,jdbcType=VARCHAR}, 
+        #{item.consignorMail,jdbcType=VARCHAR}, #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, 
+        #{item.notifyCountryCode,jdbcType=VARCHAR}, #{item.notifyUserTelephone,jdbcType=VARCHAR}, 
+        #{item.notifyUserMail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_entrust_order
+    insert into operation.ope_entrust_order
     (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
-      entrust_type, consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
-      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-      consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
-      notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
-      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-      def5)
+      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type, 
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
+      consignee_address, consignee_post_code, consignor_user, consignor_country_code, 
+      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code, 
+      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
       #{invoiceId,jdbcType=BIGINT}, #{invoiceNo,jdbcType=VARCHAR}, #{entrustNo,jdbcType=VARCHAR}, 
       #{entrustStatus,jdbcType=INTEGER}, #{entrustType,jdbcType=INTEGER}, #{consignorQty,jdbcType=INTEGER}, 
-      #{deliveryDate,jdbcType=TIMESTAMP}, #{transType,jdbcType=INTEGER}, #{consigneeUser,jdbcType=BIGINT}, 
-      #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
+      #{alreadyConsignorQty,jdbcType=INTEGER}, #{deliveryDate,jdbcType=TIMESTAMP}, #{transType,jdbcType=INTEGER}, 
+      #{consigneeUser,jdbcType=BIGINT}, #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
       #{consigneeUserMail,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, #{consigneePostCode,jdbcType=VARCHAR}, 
       #{consignorUser,jdbcType=BIGINT}, #{consignorCountryCode,jdbcType=VARCHAR}, #{consignorTelephone,jdbcType=VARCHAR}, 
       #{consignorMail,jdbcType=VARCHAR}, #{notifyUser,jdbcType=BIGINT}, #{notifyUserName,jdbcType=VARCHAR}, 
@@ -305,6 +312,7 @@
     entrust_status = #{entrustStatus,jdbcType=INTEGER}, 
     entrust_type = #{entrustType,jdbcType=INTEGER}, 
     consignor_qty = #{consignorQty,jdbcType=INTEGER}, 
+    already_consignor_qty = #{alreadyConsignorQty,jdbcType=INTEGER}, 
     delivery_date = #{deliveryDate,jdbcType=TIMESTAMP}, 
     trans_type = #{transType,jdbcType=INTEGER}, 
     consignee_user = #{consigneeUser,jdbcType=BIGINT}, 
@@ -335,7 +343,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_entrust_order
+    insert into operation.ope_entrust_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -366,6 +374,9 @@
       </if>
       <if test="consignorQty != null">
         consignor_qty,
+      </if>
+      <if test="alreadyConsignorQty != null">
+        already_consignor_qty,
       </if>
       <if test="deliveryDate != null">
         delivery_date,
@@ -481,6 +492,9 @@
       <if test="consignorQty != null">
         #{consignorQty,jdbcType=INTEGER},
       </if>
+      <if test="alreadyConsignorQty != null">
+        #{alreadyConsignorQty,jdbcType=INTEGER},
+      </if>
       <if test="deliveryDate != null">
         #{deliveryDate,jdbcType=TIMESTAMP},
       </if>
@@ -594,6 +608,9 @@
       </if>
       <if test="consignorQty != null">
         consignor_qty = #{consignorQty,jdbcType=INTEGER},
+      </if>
+      <if test="alreadyConsignorQty != null">
+        already_consignor_qty = #{alreadyConsignorQty,jdbcType=INTEGER},
       </if>
       <if test="deliveryDate != null">
         delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},

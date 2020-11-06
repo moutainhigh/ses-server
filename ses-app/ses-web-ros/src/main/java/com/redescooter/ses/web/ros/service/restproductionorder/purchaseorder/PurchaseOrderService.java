@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 
@@ -158,5 +159,18 @@ public interface PurchaseOrderService {
      * @return
      **/
     void purchaseSign(Long purchaseId,Long userId);
+
+
+    List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
+
+
+    /**
+     * @Author Aleks
+     * @Description  采购单状态变为待签收
+     * @Date  2020/10/30 19:24
+     * @Param [purchaseId, userId]
+     * @return
+     **/
+    void purchaseWaitSign(Long purchaseId ,Long userId);
 
 }

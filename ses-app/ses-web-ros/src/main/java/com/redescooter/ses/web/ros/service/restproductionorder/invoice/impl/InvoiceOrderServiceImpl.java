@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
@@ -12,6 +13,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -111,6 +113,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private AllocateOrderService allocateOrderService;
+
+    @Autowired
+    private RosProductionProductServiceMapper rosProductionProductServiceMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -311,6 +316,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+        // 追加  如果是整车的话 判断是否有符合颜色和车型的产品，没有的话抛异常、
+        if (opeInvoiceOrder.getInvoiceType() == 1){
+            checkProtion(opeInvoiceOrder);
+        }
         //创建出库单
         saveOutbound(enter, opeInvoiceOrder);
 
@@ -333,9 +342,36 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         orderStatusFlowService.save(orderStatusFlowEnter);
 
         //采购单修改状态
-        purchaseOrderService.purchaseStocking(opeInvoiceOrder.getId(), enter.getUserId());
+        purchaseOrderService.purchaseStocking(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 如果是整车的话 判断是否有符合颜色和车型的产品
+    public void checkProtion(OpeInvoiceOrder invoiceOrder){
+        QueryWrapper<OpeInvoiceScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+        scooterBQueryWrapper.eq(OpeInvoiceScooterB.COL_INVOICE_ID,invoiceOrder.getId());
+        List<OpeInvoiceScooterB> scooterBS = opeInvoiceScooterBService.list(scooterBQueryWrapper);
+        if(CollectionUtils.isNotEmpty(scooterBS)){
+            List<Map<String,Object>> listMap = new ArrayList<>();
+            for (OpeInvoiceScooterB scooterB : scooterBS) {
+                Map<String,Object> map = new HashMap<>();
+                map.put(OpeProductionScooterBom.COL_GROUP_ID,scooterB.getGroupId());
+                map.put(OpeProductionScooterBom.COL_COLOR_ID,scooterB.getColorId());
+                listMap.add(map);
+            }
+            // 找到符合条件的整车产品
+            List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
+            // 对查询出来的结果 根据分组和颜色进行分组
+            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+            if (CollectionUtil.isEmpty(map)) {
+                // 说明存在没有这种产品的整车
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
+            }
+        }
+    }
+
+
 
     /**
      * @Description
@@ -451,10 +487,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_LOADED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-//        OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getId());
-//        if (opePurchaseOrder == null) {
-//            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-//        }
         opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_DELIVERED.getValue());
         opeInvoiceOrder.setUpdatedBy(enter.getUserId());
         opeInvoiceOrder.setUpdatedTime(new Date());
@@ -477,8 +509,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
         //采购单修改状态
         purchaseOrderService.purchaseWaitDeliver(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
-        //调拨单修改状态
-//        allocateOrderService.allocateWaitDeliver(opePurchaseOrder.getAllocateId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -506,16 +536,12 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         opeInvoiceOrder.setUpdatedTime(new Date());
         opeInvoiceOrderService.updateById(opeInvoiceOrder);
 
-        //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeInvoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.SIGN_FOR.getValue(), null);
-        BeanUtils.copyProperties(enter, saveOpTraceEnter);
-        saveOpTraceEnter.setId(null);
-        productionOrderTraceService.save(saveOpTraceEnter);
-
         //订单节点
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeInvoiceOrder.getInvoiceStatus(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowService.save(orderStatusFlowEnter);
+        //采购单签收
+        purchaseOrderService.purchaseSign(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -666,16 +692,18 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         saveConsignEnter.setId(null);
         saveConsignEnter.setInvoiceId(opeInvoiceOrder.getId());
         saveConsignEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
-        saveConsignEnter.setEntrustType(opeInvoiceOrder.getTransType());
+        saveConsignEnter.setEntrustType(opeInvoiceOrder.getInvoiceType());
         saveConsignEnter.setConsignorQty(opeInvoiceOrder.getInvoiceQty());
         saveConsignEnter.setDeliveryDate(opeInvoiceOrder.getDeliveryDate());
         saveConsignEnter.setTransType(opeInvoiceOrder.getTransType());
         saveConsignEnter.setConsigneeUser(opeInvoiceOrder.getConsigneeUser());
-        saveConsignEnter.setConsigneeCountryCode(opeInvoiceOrder.getConsigneeUserTelephone());
+        saveConsignEnter.setConsigneeUserTelephone(opeInvoiceOrder.getConsigneeUserTelephone());
+        saveConsignEnter.setConsigneeCountryCode(opeInvoiceOrder.getConsigneeCountryCode());
         saveConsignEnter.setConsigneeAddress(opeInvoiceOrder.getConsigneeAddress());
         saveConsignEnter.setConsigneeUserMail(opeInvoiceOrder.getConsigneeUserMail());
         saveConsignEnter.setConsigneePostCode(opeInvoiceOrder.getConsigneePostCode());
         saveConsignEnter.setConsignorCountryCode(opeInvoiceOrder.getConsignorCountryCode());
+        saveConsignEnter.setConsignorTelephone(opeInvoiceOrder.getConsignorTelephone());
         saveConsignEnter.setConsignorUser(opeInvoiceOrder.getConsignorUser());
         saveConsignEnter.setConsignorMail(opeInvoiceOrder.getConsignorMail());
         saveConsignEnter.setNotifyUserName(opeInvoiceOrder.getNotifyUserName());
@@ -709,9 +737,49 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, invoiceOrder.getId(), OrderTypeEnums.INVOICE.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
         productionOrderTraceService.save(opTraceEnter);
         // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW),invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,invoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),invoiceOrder.getId(),remark);
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 取消下面的出库单
         outboundOrderService.cancelOutWh(invoiceOrder.getId(),userId,remark);
+    }
+
+
+    // 发货单状态变待装车
+    @Override
+    @Transactional
+    public void invoiceWaitLoading(Long invoiceId) {
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
+        if (opeInvoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.STOCKING.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
+        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
+
+
+    // 发货单状态变待签收
+    @Override
+    @Transactional
+    public void invoiceWaitSign(Long invoiceId,Long userId) {
+        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
+        if (opeInvoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_DELIVERED.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_SIGNED.getValue());
+        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        // 将发货单对应的采购单状态变为待签收
+        purchaseOrderService.purchaseWaitSign(opeInvoiceOrder.getPurchaseId(),userId);
     }
 }

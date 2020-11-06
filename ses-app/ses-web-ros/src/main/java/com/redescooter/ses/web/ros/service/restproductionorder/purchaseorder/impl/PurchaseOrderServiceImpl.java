@@ -15,6 +15,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
@@ -24,12 +25,15 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +53,7 @@ import java.util.stream.Collectors;
  * @Version V1.0
  **/
 @Service
+@Slf4j
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
@@ -86,6 +91,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private AllocateOrderService allocateOrderService;
+
+    @Autowired
+    private RosProductionProductServiceMapper rosProductionProductServiceMapper;
+
+    @Autowired
+    private OrderStatusFlowService orderStatusFlowService;
 
 
     @Reference
@@ -181,6 +192,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     OpePurchasePartsB partsB = new OpePurchasePartsB();
                     BeanUtils.copyProperties(partsEnter,partsB);
                     partsB.setPurchaseId(purchaseOrder.getId());
+                    if (partsB.getPartsId() == null){
+                        partsB.setPartsId(partsEnter.getId());
+                    }
                     partsB.setCreatedBy(enter.getUserId());
                     partsB.setCreatedTime(new Date());
                     partsB.setUpdatedBy(enter.getUserId());
@@ -435,6 +449,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
     private void createInvoice(OpePurchaseOrder purchaseOrder,IdEnter enter) {
         SaveInvoiceEnter invoiceEnter = new SaveInvoiceEnter();
         invoiceEnter.setPurchaseId(purchaseOrder.getId());
@@ -521,7 +536,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if (purchaseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        // todo 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
+        // 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
         int whNum = purchaseOrderServiceMapper.whNum(purchaseOrder.getId());
         if (whNum > 0){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
@@ -552,6 +567,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.FINISHED.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
+        // 操作动态表
+        createOpTrace(purchaseOrder.getId(),enter.getUserId(),6,2,"");
+        // 对应的调拨单状态变为已完成
+        allocateOrderService.allocateFinish(purchaseOrder.getAllocateId(),purchaseOrder.getId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -676,8 +695,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
-        // 操作动态表
-        createOpTrace(purchaseOrder.getId(),userId,OrderOperationTypeEnums.LOADING.getValue(), OrderTypeEnums.SHIPPING.getValue(),"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),userId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为待发货
@@ -698,11 +715,41 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.SIGNED.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
-        // 操作动态表
-        createOpTrace(purchaseOrder.getId(),purchaseId, OrderOperationTypeEnums.SIGN_FOR.getValue(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),purchaseId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为已签收
         allocateOrderService.allocateSign(purchaseOrder.getAllocateId(),purchaseOrder.getId(),userId);
+    }
+
+    @Override
+    public List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String, Object>> listMap) {
+        log.info("开始执行****************************");
+        List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
+        // 嵌套分组
+        Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+        System.out.println(map.size());
+        return scooterBomList;
+    }
+
+
+    @Override
+    @Transactional
+    public void purchaseWaitSign(Long purchaseId, Long userId) {
+        // 采购单变为待签收状态
+        OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);
+        if (opePurchaseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
+        }
+        if(!opePurchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        opePurchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_SIGN.getValue());
+        opePurchaseOrderService.saveOrUpdate(opePurchaseOrder);
+        // 状态流转
+        OrderStatusFlowEnter opeOrderStatusFlow = new OrderStatusFlowEnter(null,opePurchaseOrder.getPurchaseStatus(), OrderTypeEnums.SHIPPING.getValue(),opePurchaseOrder.getId(),"");
+        opeOrderStatusFlow.setUserId(userId);
+        orderStatusFlowService.save(opeOrderStatusFlow);
+        // 把采购单对应的调拨单变为待签收状态
+        allocateOrderService.allocateWaitSign(opePurchaseOrder.getAllocateId(),userId);
     }
 }

@@ -55,4 +55,20 @@ public class OutboundOrderController {
         return new Response<>(outboundOrderService.save(enter));
     }
 
+
+    @PostMapping(value = "/startQc")
+    @ApiOperation(value = "模拟RPS开始质检", response = GeneralResult.class)
+    public Response<GeneralResult> startQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.startQc(enter));
+    }
+
+
+    @PostMapping(value = "/endQc")
+    @ApiOperation(value = "模拟RPS质检完成", response = GeneralResult.class)
+    public Response<GeneralResult> endQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.endQc(enter));
+    }
+
+
+
 }

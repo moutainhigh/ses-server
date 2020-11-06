@@ -46,10 +46,10 @@ public class OrderProductDetailResult extends GeneralResult {
     private Integer partType;
 
     @ApiModelProperty(value = "已发货数量")
-    private Integer qty;
+    private Integer qty = 0;
 
     @ApiModelProperty(value = "应发货总数量")
-    private Integer totalQty;
+    private Integer totalQty = 0;
 
     @ApiModelProperty(value = "SN集合")
     private Map<Long, String> snMap;

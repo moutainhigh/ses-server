@@ -52,23 +52,23 @@ public class OrderNumberServiceImpl implements OrderNumberService {
             case 2:
                 //采购单
                 OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getOne(new LambdaQueryWrapper<OpePurchaseOrder>().orderByDesc(OpePurchaseOrder::getCreatedTime).last("limit 1"));
-                return new StringResult(opePurchaseOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opePurchaseOrder.getPurchaseNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                return new StringResult(opePurchaseOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.PURHCAS.getValue()) : generalOrderNum(opePurchaseOrder.getPurchaseNo(),
+                        OrderNumberTypeEnums.PURHCAS.getValue()));
             case 3:
                 //发货单
                 OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getOne(new LambdaQueryWrapper<OpeInvoiceOrder>().orderByDesc(OpeInvoiceOrder::getCreatedTime).last("limit 1"));
-                return new StringResult(opeInvoiceOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opeInvoiceOrder.getInvoiceNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                return new StringResult(opeInvoiceOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.INVOICE.getValue()) : generalOrderNum(opeInvoiceOrder.getInvoiceNo(),
+                        OrderNumberTypeEnums.INVOICE.getValue()));
             case 4:
                 //出库单
                 OpeOutWhouseOrder opeOutwhOrder = opeOutWhouseOrderService.getOne(new LambdaQueryWrapper<OpeOutWhouseOrder>().orderByDesc(OpeOutWhouseOrder::getCreatedTime).last("limit 1"));
-                return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.STOCK.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
+                        OrderNumberTypeEnums.STOCK.getValue()));
             case 5:
                 //调拨单
                 OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().orderByDesc(OpeEntrustOrder::getCreatedTime).last("limit 1"));
-                return new StringResult(opeEntrustOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.ALLOCAT.getValue()) : generalOrderNum(opeEntrustOrder.getEntrustNo(),
-                        OrderNumberTypeEnums.ALLOCAT.getValue()));
+                return new StringResult(opeEntrustOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.CONSIGN.getValue()) : generalOrderNum(opeEntrustOrder.getEntrustNo(),
+                        OrderNumberTypeEnums.CONSIGN.getValue()));
             default:
                 break;
         }
@@ -88,14 +88,14 @@ public class OrderNumberServiceImpl implements OrderNumberService {
         String dateStamp = DateUtil.getSimpleDateStamp();
         //OO 2020 1020 001
         if (!StringUtils.isBlank(orderNumber)) {
-            if (StringUtils.equals(String.valueOf(orderNumber.substring(2, 10)), dateStamp)) {
+            if (StringUtils.equals(String.valueOf(orderNumber.substring(3, 11)), dateStamp)) {
                 Integer serialNumber = Integer.valueOf(orderNumber.substring(orderNumber.length() - 3, orderNumber.length())) + 1;
                 if (serialNumber < 100 && serialNumber > 10) {
-                    return result.append(orderNumber.substring(0, 10)).append("0").append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append("0").append(String.valueOf(serialNumber)).toString();
                 } else if (serialNumber < 10) {
-                    return result.append(orderNumber.substring(0, 10)).append("00").append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append("00").append(String.valueOf(serialNumber)).toString();
                 } else {
-                    return result.append(orderNumber.substring(0, 10)).append(String.valueOf(serialNumber)).toString();
+                    return result.append(orderNumber.substring(0, 11)).append(String.valueOf(serialNumber)).toString();
                 }
             }
         }

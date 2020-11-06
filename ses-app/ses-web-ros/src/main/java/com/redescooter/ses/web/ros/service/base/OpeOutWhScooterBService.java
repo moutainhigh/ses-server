@@ -19,3 +19,4 @@ public interface OpeOutWhScooterBService extends IService<OpeOutWhScooterB> {
     int insertOrUpdateSelective(OpeOutWhScooterB record);
 
 }
+

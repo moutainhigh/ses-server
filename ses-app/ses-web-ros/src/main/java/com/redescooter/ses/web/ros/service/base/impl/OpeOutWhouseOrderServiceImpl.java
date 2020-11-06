@@ -36,3 +36,4 @@ public class OpeOutWhouseOrderServiceImpl extends ServiceImpl<OpeOutWhouseOrderM
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

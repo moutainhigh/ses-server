@@ -17,3 +17,4 @@ public interface OpeOutWhouseOrderService extends IService<OpeOutWhouseOrder> {
     int insertOrUpdateSelective(OpeOutWhouseOrder record);
 
 }
+

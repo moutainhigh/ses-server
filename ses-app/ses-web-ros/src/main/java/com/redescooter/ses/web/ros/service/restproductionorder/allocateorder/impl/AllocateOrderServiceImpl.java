@@ -23,9 +23,11 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -80,6 +82,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private OpeOutWhouseOrderService opeOutWhouseOrderService;
+
+    @Autowired
+    private OrderStatusFlowService orderStatusFlowService;
 
     @Reference
     private IdAppService idAppService;
@@ -513,10 +518,16 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
+    @Transactional
     public void allocatePurchaseing(Long allocateId,Long userId) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
         if (allocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
+        if(allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.PURCHASING.getValue())){
+            // 如果调拨单的状态已经是采购中了，说明这个调拨单下已经有采购单走过这个流程了 直接返回即可
+            return;
         }
         if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_HANDLE.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
@@ -536,13 +547,16 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         if (allocateOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
+        if(allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_DELIVER.getValue())){
+            // 如果调拨单的状态已经是代发货了，说明这个调拨单下已经有采购单走过这个流程了 直接返回即可
+            return;
+        }
         if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.PURCHASING.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_DELIVER.getValue());
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
-        // 操作记录
-        createOpTrace(allocateOrder.getId(),userId, OrderOperationTypeEnums.LOADING.getValue(), OrderTypeEnums.ALLOCATE.getValue(),"");
         // 状态流转表
         createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
     }
@@ -569,11 +583,59 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             // 说明调拨单下面的采购都签收了，
             allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
             opeAllocateOrderService.saveOrUpdate(allocateOrder);
-            // 操作记录
-            createOpTrace(allocateOrder.getId(),userId, OrderOperationTypeEnums.SIGN_FOR.getValue(), OrderTypeEnums.ALLOCATE.getValue(),"");
             // 状态流转表
             createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
         }
     }
 
+
+    @Override
+    @Transactional
+    public void allocateWaitSign(Long allocateId, Long userId) {
+        // 调拨单状态变为待签收
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
+        }
+        // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
+        if(allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_SIGN.getValue())){
+            // 如果调拨单的状态已经是待签收了，说明这个调拨单下已经有采购单走过这个流程了 直接返回即可
+            return;
+        }
+        if (!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.WAIT_DELIVER.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_SIGN.getValue());
+        opeAllocateOrderService.saveOrUpdate(allocateOrder);
+        // 状态流转
+        OrderStatusFlowEnter opeOrderStatusFlow = new OrderStatusFlowEnter(null,allocateOrder.getAllocateStatus(), OrderTypeEnums.ALLOCATE.getValue(),allocateOrder.getId(),"");
+        opeOrderStatusFlow.setUserId(userId);
+        orderStatusFlowService.save(opeOrderStatusFlow);
+    }
+
+
+    @Override
+    public void allocateFinish(Long allocateId, Long purchaseId,Long userId) {
+        // 已完成
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if(!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        // 校验  调拨单下面的所有采购单都已完成 调拨单才能变完成状态
+        QueryWrapper<OpePurchaseOrder> purchaseOrderQueryWrapper = new QueryWrapper<>();
+        purchaseOrderQueryWrapper.eq(OpePurchaseOrder.COL_ALLOCATE_ID,allocateId);
+        purchaseOrderQueryWrapper.ne(OpePurchaseOrder.COL_ID,purchaseId);
+        purchaseOrderQueryWrapper.lt(OpePurchaseOrder.COL_PURCHASE_STATUS,PurchaseOrderStatusEnum.FINISHED.getValue());
+        int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
+        if(count == 0){
+            // 说明调拨单下面的采购单都完成了
+            allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.FINISHED.getValue());
+            opeAllocateOrderService.saveOrUpdate(allocateOrder);
+            // 状态流转表
+            createStatusFlow(allocateOrder.getId(),userId,allocateOrder.getAllocateStatus(),OrderTypeEnums.ALLOCATE.getValue(),"");
+        }
+    }
 }

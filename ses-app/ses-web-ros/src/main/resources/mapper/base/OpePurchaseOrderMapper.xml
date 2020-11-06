@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpePurchaseOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    <!--@Table ros-1.8.3.ope_purchase_order-->
+    <!--@Table ope_purchase_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -69,7 +69,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ros-1.8.3.ope_purchase_order
+    update ope_purchase_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -324,7 +324,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_purchase_order
+    insert into ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status, 
       purchase_qty, purchase_type, trans_type, purchase_amount, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
@@ -360,7 +360,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_purchase_order
+    insert into ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status, 
       purchase_qty, purchase_type, trans_type, purchase_amount, consignee_user, consignee_country_code, 
       consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
@@ -442,7 +442,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_purchase_order
+    insert into ope_purchase_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

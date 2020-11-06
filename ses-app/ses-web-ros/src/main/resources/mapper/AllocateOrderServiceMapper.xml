@@ -36,12 +36,12 @@
           allocate.consignee_user_telephone,
           allocate.consignee_user_mail,
           allocate.created_time,
-          param1.parameter_name as shipWhName,
-          param2.parameter_name as receiptWhName
+          param1.name as shipWhName,
+          param2.name as receiptWhName
         from ope_allocate_order allocate
         left join ope_sys_staff staff on allocate.consignee_user = staff.id
-        left join platform.pla_sys_param_setting param1 on allocate.ship_wh = param1.id
-        left join platform.pla_sys_param_setting param2 on allocate.receipt_wh = param2.id
+        left join ope_whse param1 on allocate.ship_wh = param1.id
+        left join ope_whse param2 on allocate.receipt_wh = param2.id
         where allocate.dr = 0 and allocate.allocate_type = #{enter.classType}
         <include refid="listCondition"></include>
         order by allocate.created_time desc limit #{enter.startRow},#{enter.pageSize}
@@ -51,14 +51,14 @@
             resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataResult">
         select
           id as whId,
-          parameter_name as whName
-        from platform.pla_sys_param_setting
+           name as whName
+        from ope_whse
         where dr = 0
         <if test="enter.type == 1">
-           and  parameter_name = '中国成品库'
+           and  type = '10'
         </if>
         <if test="enter.type == 2">
-           and  parameter_name != '中国成品库'
+           and  type = '11'
         </if>
     </select>
 
@@ -78,8 +78,9 @@
           allocate.consignee_post_code,
           allocate.consignee_address,
           allocate.created_time,
-          param1.parameter_name as shipWhName,
-          param2.parameter_name as receiptWhName,
+          allocate.remark,
+          param1.name as shipWhName,
+          param2.name as receiptWhName,
           allocate.consignee_country_code,
           allocate.notify_user,
           allocate.notify_user_name,
@@ -88,8 +89,8 @@
           allocate.notify_user_mail
         from ope_allocate_order allocate
         left join ope_sys_staff staff on allocate.consignee_user = staff.id
-        left join platform.pla_sys_param_setting param1 on allocate.ship_wh = param1.id
-        left join platform.pla_sys_param_setting param2 on allocate.receipt_wh = param2.id
+        left join ope_whse param1 on allocate.ship_wh = param1.id
+        left join ope_whse param2 on allocate.receipt_wh = param2.id
         where allocate.dr = 0 and allocate.id = #{id}
 
     </select>

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.consign.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
@@ -12,14 +13,10 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
-import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
-import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
-import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
@@ -88,6 +85,25 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Autowired
     private OpePurchaseOrderService opePurchaseOrderService;
+
+    @Autowired
+    private OpeInvoiceScooterBService opeInvoiceScooterBService;
+
+    @Autowired
+    private OpeInvoiceCombinBService opeInvoiceCombinBService;
+
+    @Autowired
+    private OpeInvoicePartsBService opeInvoicePartsBService;
+
+    @Autowired
+    private OpeEntrustScooterBService opeEntrustScooterBService;
+
+    @Autowired
+    private OpeEntrustCombinBService opeEntrustCombinBService;
+
+    @Autowired
+    private OpeEntrustPartsBService opeEntrustPartsBService;
+
 
     @Reference
     private IdAppService idAppService;
@@ -248,10 +264,6 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         IdEnter idEnter = new IdEnter(opeEntrustOrder.getInvoiceId());
         idEnter.setUserId(enter.getUserId());
         invoiceOrderService.signFor(idEnter);
-        //采购单签收
-        purchaseOrderService.purchaseSign(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
-        //调拨单签收
-        allocateOrderService.allocateSign(opePurchaseOrder.getAllocateId(), opePurchaseOrder.getId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -302,6 +314,109 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         opeEntrustOrder.setUpdatedBy(enter.getUserId());
         opeEntrustOrder.setUpdatedTime(new Date());
         opeEntrustOrderService.saveOrUpdate(opeEntrustOrder);
+        // 处理委托单的子表
+        entrustBs(enter, opeEntrustOrder);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    private void entrustBs(SaveConsignEnter enter, OpeEntrustOrder opeEntrustOrder) {
+        switch (opeEntrustOrder.getEntrustType()){
+            case 1:
+                // scooter
+                QueryWrapper<OpeInvoiceScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeInvoiceScooterB.COL_INVOICE_ID,opeEntrustOrder.getInvoiceId());
+                List<OpeInvoiceScooterB> scooterBS = opeInvoiceScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    List<OpeEntrustScooterB> scooterBList = new ArrayList<>();
+                    for (OpeInvoiceScooterB scooterB : scooterBS) {
+                        OpeEntrustScooterB entrustScooterB = new OpeEntrustScooterB();
+                        BeanUtils.copyProperties(scooterB,entrustScooterB);
+                        entrustScooterB.setEntrustId(opeEntrustOrder.getId());
+                        entrustScooterB.setCreatedBy(enter.getUserId());
+                        entrustScooterB.setUpdatedBy(enter.getUserId());
+                        entrustScooterB.setCreatedTime(new Date());
+                        entrustScooterB.setUpdatedTime(new Date());
+                        entrustScooterB.setId(idAppService.getId(SequenceName.OPE_ENTRUST_SCOOTER_B));
+                        scooterBList.add(entrustScooterB);
+                    }
+                    opeEntrustScooterBService.saveOrUpdateBatch(scooterBList);
+                }
+            default:
+                    break;
+            case 2:
+                // combin
+                QueryWrapper<OpeInvoiceCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeInvoiceCombinB.COL_INVOICE_ID,opeEntrustOrder.getInvoiceId());
+                List<OpeInvoiceCombinB> combinBS = opeInvoiceCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    List<OpeEntrustCombinB> combinBList = new ArrayList<>();
+                    for (OpeInvoiceCombinB combinB : combinBS) {
+                        OpeEntrustCombinB entrustCombinB = new OpeEntrustCombinB();
+                        BeanUtils.copyProperties(combinB,entrustCombinB);
+                        entrustCombinB.setEntrustId(opeEntrustOrder.getId());
+                        entrustCombinB.setId(idAppService.getId(SequenceName.OPE_ENTRUST_COMBIN_B));
+                        entrustCombinB.setCreatedBy(enter.getUserId());
+                        entrustCombinB.setCreatedTime(new Date());
+                        entrustCombinB.setUpdatedBy(enter.getUserId());
+                        entrustCombinB.setUpdatedTime(new Date());
+                        combinBList.add(entrustCombinB);
+                    }
+                    opeEntrustCombinBService.saveOrUpdateBatch(combinBList);
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeInvoicePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeInvoicePartsB.COL_INVOICE_ID,opeEntrustOrder.getInvoiceId());
+                List<OpeInvoicePartsB> partsBS = opeInvoicePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    List<OpeEntrustPartsB> partsBList = new ArrayList<>();
+                    for (OpeInvoicePartsB partsB : partsBS) {
+                        OpeEntrustPartsB entrustPartsB = new OpeEntrustPartsB();
+                        BeanUtils.copyProperties(partsB,entrustPartsB);
+                        entrustPartsB.setEntrustId(opeEntrustOrder.getId());
+                        entrustPartsB.setId(idAppService.getId(SequenceName.OPE_ENTRUST_PARTS_B));
+                        entrustPartsB.setCreatedBy(enter.getUserId());
+                        entrustPartsB.setCreatedTime(new Date());
+                        entrustPartsB.setUpdatedBy(enter.getUserId());
+                        entrustPartsB.setUpdatedTime(new Date());
+                        partsBList.add(entrustPartsB);
+                    }
+                    opeEntrustPartsBService.saveOrUpdateBatch(partsBList);
+                }
+                break;
+
+        }
+    }
+
+
+    // 委托单状态变待签收
+    @Override
+    @Transactional
+    public GeneralResult waitSign(IdEnter enter) {
+        OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
+        if (opeEntrustOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeEntrustOrder.getEntrustStatus().equals(ConsignOrderStatusEnums.BE_DELIVERED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
+        opeEntrustOrderService.saveOrUpdate(opeEntrustOrder);
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeEntrustOrder.getId(), OrderTypeEnums.ORDER.getValue(), OrderOperationTypeEnums.SHIPMENT.getValue(),
+                opeEntrustOrder.getRemark());
+        saveOpTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeEntrustOrder.getEntrustStatus(), OrderTypeEnums.ORDER.getValue(), opeEntrustOrder.getId(),
+                opeEntrustOrder.getRemark());
+        orderStatusFlowEnter.setUserId(enter.getUserId());
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        // 委托单对应的发货单状态变为待签收
+        invoiceOrderService.invoiceWaitSign(opeEntrustOrder.getInvoiceId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 }

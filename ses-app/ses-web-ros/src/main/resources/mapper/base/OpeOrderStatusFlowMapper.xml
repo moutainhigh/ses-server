@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeOrderStatusFlowMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow">
     <!--@mbg.generated-->
-    <!--@Table ros-1.8.3.ope_order_status_flow-->
+    <!--@Table ope_order_status_flow-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="relation_id" jdbcType="BIGINT" property="relationId" />
@@ -27,7 +27,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ros-1.8.3.ope_order_status_flow
+    update ope_order_status_flow
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -107,7 +107,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_order_status_flow
+    insert into ope_order_status_flow
     (id, dr, relation_id, order_type, order_status, remark, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -122,7 +122,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_order_status_flow
+    insert into ope_order_status_flow
     (id, dr, relation_id, order_type, order_status, remark, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -150,7 +150,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow">
     <!--@mbg.generated-->
-    insert into ros-1.8.3.ope_order_status_flow
+    insert into ope_order_status_flow
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
