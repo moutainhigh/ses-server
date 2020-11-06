@@ -90,7 +90,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
         if (!StringUtils.isBlank(orderNumber)) {
             if (StringUtils.equals(String.valueOf(orderNumber.substring(3, 11)), dateStamp)) {
                 Integer serialNumber = Integer.valueOf(orderNumber.substring(orderNumber.length() - 3, orderNumber.length())) + 1;
-                if (serialNumber < 100 && serialNumber > 10) {
+                if (serialNumber < 100 && serialNumber >= 10) {
                     return result.append(orderNumber.substring(0, 11)).append("0").append(String.valueOf(serialNumber)).toString();
                 } else if (serialNumber < 10) {
                     return result.append(orderNumber.substring(0, 11)).append("00").append(String.valueOf(serialNumber)).toString();
@@ -102,4 +102,11 @@ public class OrderNumberServiceImpl implements OrderNumberService {
         return result.append(orderNumType).append(dateStamp).append("001").toString();
 
     }
+
+
+//    public static void main(String[] args) {
+//        String no = generalOrderNum("RSO20201106099", "RSO");
+//        System.out.println(no);
+//    }
+
 }

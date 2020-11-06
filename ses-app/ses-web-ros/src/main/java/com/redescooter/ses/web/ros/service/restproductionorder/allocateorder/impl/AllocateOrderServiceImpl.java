@@ -25,6 +25,7 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.utils.OrderGenerateUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -143,12 +144,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(queryWrapper);
         if(allocateOrder != null){
             // 说明今天已经有过单据了  只需要流水号递增
-            if (!Strings.isNullOrEmpty(allocateOrder.getAllocateNo())) {
-                String oldCode = allocateOrder.getAllocateNo();
-                Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
-                i++;
-                code = DateUtil.getSimpleDateStamp() + String.format("%3d", i).replace(" ", "0");
-            }
+            code = OrderGenerateUtil.orderGenerate(allocateOrder.getAllocateNo());
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = DateUtil.getSimpleDateStamp() + "001";

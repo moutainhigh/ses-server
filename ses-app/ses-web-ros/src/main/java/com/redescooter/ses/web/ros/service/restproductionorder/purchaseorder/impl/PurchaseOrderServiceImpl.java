@@ -27,6 +27,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.All
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
+import com.redescooter.ses.web.ros.utils.OrderGenerateUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
@@ -219,12 +220,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(queryWrapper);
         if(purchaseOrder != null){
             // 说明今天已经有过单据了  只需要流水号递增
-            if (!Strings.isNullOrEmpty(purchaseOrder.getPurchaseNo())) {
-                String oldCode = purchaseOrder.getPurchaseNo();
-                Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
-                i++;
-                code = DateUtil.getSimpleDateStamp() + String.format("%3d", i).replace(" ", "0");
-            }
+            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getAllocateNo());
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = DateUtil.getSimpleDateStamp() + "001";
