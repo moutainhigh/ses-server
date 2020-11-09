@@ -2,8 +2,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.im
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.base.Strings;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
@@ -36,7 +34,6 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusF
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +96,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
-
 
     @Reference
     private IdAppService idAppService;
@@ -444,7 +440,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 发货单
         createInvoice(purchaseOrder,enter);
         // 调拨单状态变为采购中
-        if (purchaseOrder.getPurchaseOriginType() == 1){
+        if (purchaseOrder.getPurchaseOriginType().equals(1)){
             // 调拨采购才会有调拨单的id
             allocateOrderService.allocatePurchaseing(purchaseOrder.getAllocateId(),enter.getUserId());
         }

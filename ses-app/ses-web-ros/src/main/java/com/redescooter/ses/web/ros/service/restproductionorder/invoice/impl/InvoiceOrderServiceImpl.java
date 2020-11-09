@@ -228,7 +228,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opePurchaseOrder != null) {
             resultList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getAllocateNo(), OrderTypeEnums.SHIPPING.getValue(), opePurchaseOrder.getCreatedTime(),""));
         }
-        OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(opePurchaseOrder.getAllocateId());
+        OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().eq(OpeEntrustOrder::getInvoiceId,opeInvoiceOrder.getId()));
         if (opeEntrustOrder != null) {
             resultList.add(new AssociatedOrderResult(opeEntrustOrder.getId(), opeEntrustOrder.getEntrustNo(), OrderTypeEnums.ORDER.getValue(), opeEntrustOrder.getCreatedTime(),""));
         }
