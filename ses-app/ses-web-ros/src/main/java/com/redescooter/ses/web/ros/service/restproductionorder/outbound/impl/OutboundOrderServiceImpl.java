@@ -410,16 +410,15 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         QueryWrapper<OpeOutWhouseOrder> qw = new QueryWrapper<>();
         qw.eq(OpeOutWhouseOrder.COL_INVOICE_ID,invoiceId);
         OpeOutWhouseOrder whouseOrder = opeOutWhouseOrderService.getOne(qw);
-        if(whouseOrder == null){
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if(whouseOrder != null){
+            whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
+            opeOutWhouseOrderService.saveOrUpdate(whouseOrder);
+            // 操作记录
+            SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, whouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
+            productionOrderTraceService.save(opTraceEnter);
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,whouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),whouseOrder.getId(),remark);
+            orderStatusFlowService.save(orderStatusFlowEnter);
         }
-        whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
-        opeOutWhouseOrderService.saveOrUpdate(whouseOrder);
-        // 操作记录
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, whouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
-        productionOrderTraceService.save(opTraceEnter);
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,whouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),whouseOrder.getId(),remark);
-        orderStatusFlowService.save(orderStatusFlowEnter);
     }
 
 
