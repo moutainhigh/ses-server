@@ -329,7 +329,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 combinBQueryWrapper.eq(OpePurchaseCombinB.COL_PURCHASE_ID,purchaseOrder.getId());
                 List<OpePurchaseCombinB> combinBS = opePurchaseCombinBService.list(combinBQueryWrapper);
                 if (CollectionUtils.isNotEmpty(combinBS)){
-                    opePurchaseScooterBService.removeByIds(combinBS.stream().map(OpePurchaseCombinB::getId).collect(Collectors.toList()));
+                    opePurchaseCombinBService.removeByIds(combinBS.stream().map(OpePurchaseCombinB::getId).collect(Collectors.toList()));
                 }
                 break;
             case 3:
@@ -338,7 +338,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 partsBQueryWrapper.eq(OpePurchasePartsB.COL_PURCHASE_ID,purchaseOrder.getId());
                 List<OpePurchasePartsB> partsBS = opePurchasePartsBService.list(partsBQueryWrapper);
                 if (CollectionUtils.isNotEmpty(partsBS)){
-                    opePurchaseScooterBService.removeByIds(partsBS.stream().map(OpePurchasePartsB::getId).collect(Collectors.toList()));
+                    opePurchasePartsBService.removeByIds(partsBS.stream().map(OpePurchasePartsB::getId).collect(Collectors.toList()));
                 }
                 break;
         }
