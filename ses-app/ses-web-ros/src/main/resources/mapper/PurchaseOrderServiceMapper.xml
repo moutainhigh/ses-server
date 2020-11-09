@@ -185,7 +185,7 @@
             purchase_type,
             delivery_date
         from ope_purchase_order
-        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%')
+        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%') and purchase_status != 70
     </select>
 
     <select id="purchaseTrace"

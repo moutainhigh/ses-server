@@ -32,7 +32,7 @@ public class OrderGenerateUtil {
     }
 
     public static void main(String[] args) {
-        String number = orderGenerate("RTO20201106009");
+        String number = orderGenerate("RPO20201109002");
         System.out.println(number);
     }
 

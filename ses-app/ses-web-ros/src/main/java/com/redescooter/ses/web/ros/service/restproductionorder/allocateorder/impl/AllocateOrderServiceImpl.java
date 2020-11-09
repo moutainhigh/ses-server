@@ -136,7 +136,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<OpeAllocateOrder> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(OpeAllocateOrder.COL_ALLOCATE_NO, DateUtil.getSimpleDateStamp());
-        queryWrapper.orderByDesc(OpeAllocateOrder.COL_CREATED_TIME);
+        queryWrapper.orderByDesc(OpeAllocateOrder.COL_ALLOCATE_NO);
         queryWrapper.last("limit 1");
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(queryWrapper);
         if (allocateOrder != null) {
