@@ -66,7 +66,7 @@ public class SaleCombinController {
 
     @PostMapping(value = "/combinNameData")
     @ApiOperation(value = "销售组装件名称下拉接口", response = CombinNameData.class)
-    public Response<List<CombinNameData>> combinNameData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<CombinNameData>> combinNameData(@ModelAttribute @ApiParam("请求参数") CombinNameEnter enter) {
         return new Response<>(saleCombinService.combinNameData(enter));
     }
 

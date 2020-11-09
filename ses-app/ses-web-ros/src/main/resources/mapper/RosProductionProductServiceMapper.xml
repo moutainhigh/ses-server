@@ -311,7 +311,13 @@
           distinct
           bom.en_name as combinName
         from ope_production_combin_bom bom
-        where bom.dr = 0 and bom.bom_status = 1
+        where bom.dr = 0
+        <if test="enter.type == 1">
+            and bom.bom_status in (1)
+        </if>
+        <if test="enter.type == 2">
+            and bom.bom_status in (1,2)
+        </if>
     </select>
 
 
@@ -320,7 +326,7 @@
           bom.bom_no,
           bom.id as productionCombinBomId
         from ope_production_combin_bom bom
-        where bom.dr = 0 and bom.en_name like concat('%', #{enter.combinName}, '%')
+        where bom.dr = 0 and bom.en_name like concat('%', #{enter.combinName}, '%') and bom.bom_status in (1)
     </select>
 
     <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">

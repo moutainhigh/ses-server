@@ -74,7 +74,7 @@ public interface SaleCombinService {
      * @Param [enter]
      * @return
      **/
-    List<CombinNameData> combinNameData(GeneralEnter enter);
+    List<CombinNameData> combinNameData(CombinNameEnter enter);
 
 
     /**

@@ -3,10 +3,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.im
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
-import com.redescooter.ses.api.common.enums.restproductionorder.AllocateOrderStatusEnum;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -393,6 +390,8 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 purchaseIds.add(purchaseOrder.getId());
             }
             opePurchaseOrderService.saveOrUpdateBatch(purchaseOrderList);
+            // 采购单的操作动态
+            orderOpTrace(purchaseOrderList.stream().map(OpePurchaseOrder::getId).collect(Collectors.toList()), OrderTypeEnums.SHIPPING.getValue(),enter.getRemark(),enter.getUserId());
             // 找到采购单的发货单
             QueryWrapper<OpeInvoiceOrder> invoiceOrderQueryWrapper = new QueryWrapper<>();
             invoiceOrderQueryWrapper.in(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseIds);
@@ -405,6 +404,8 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     invoiceIds.add(invoiceOrder.getId());
                 }
                 opeInvoiceOrderService.saveOrUpdateBatch(invoiceOrderList);
+                // 发货单的操作动态
+                orderOpTrace(invoiceOrderList.stream().map(OpeInvoiceOrder::getId).collect(Collectors.toList()), OrderTypeEnums.INVOICE.getValue(),enter.getRemark(),enter.getUserId());
                 // 找到发货单的出库单
                 QueryWrapper<OpeOutWhouseOrder> opeOutWhouseOrderQueryWrapper = new QueryWrapper<>();
                 opeOutWhouseOrderQueryWrapper.in(OpeOutWhouseOrder.COL_INVOICE_ID,invoiceIds);
@@ -414,6 +415,8 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                         outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
                     }
                     opeOutWhouseOrderService.saveOrUpdateBatch(whouseOrderList);
+                    // 出库单的操作动态
+                    orderOpTrace(whouseOrderList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()), OrderTypeEnums.OUTBOUND.getValue(),enter.getRemark(),enter.getUserId());
                 }
             }
         }
@@ -424,6 +427,45 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         createStatusFlow(allocateOrder.getId(),enter.getUserId(),allocateOrder.getAllocateStatus(),1,enter.getRemark());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 批量处理单据的操作动态和单据状态流转
+    public void orderOpTrace(List<Long> ids,Integer orderType,String remark,Long userId) {
+        // 操作动态
+        List<OpeOpTrace> opList = new ArrayList<>();
+        for (Long id : ids) {
+            OpeOpTrace opPurchase = new OpeOpTrace();
+            opPurchase.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
+            opPurchase.setRelationId(id);
+            opPurchase.setOrderType(orderType);
+            opPurchase.setOpType(OrderOperationTypeEnums.CANCEL.getValue());
+            opPurchase.setRemark(remark);
+            opPurchase.setCreatedBy(userId);
+            opPurchase.setCreatedTime(new Date());
+            opPurchase.setUpdatedBy(userId);
+            opPurchase.setUpdatedTime(new Date());
+            opList.add(opPurchase);
+        }
+        opeOpTraceService.saveOrUpdateBatch(opList);
+
+        // 状态流转
+        List<OpeOrderStatusFlow> statusFlowList = new ArrayList<>();
+        for (Long id : ids) {
+            OpeOrderStatusFlow statusFlow = new OpeOrderStatusFlow();
+            statusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
+            statusFlow.setRelationId(id);
+            statusFlow.setOrderType(orderType);
+            statusFlow.setRemark(remark);
+            statusFlow.setCreatedBy(userId);
+            statusFlow.setCreatedTime(new Date());
+            statusFlow.setUpdatedBy(userId);
+            statusFlow.setUpdatedTime(new Date());
+            statusFlowList.add(statusFlow);
+        }
+        opeOrderStatusFlowService.saveOrUpdateBatch(statusFlowList);
+    }
+
+
 
     @Override
     public GeneralResult allocateDelete(IdEnter enter) {

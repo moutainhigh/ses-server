@@ -147,8 +147,8 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
 
     @Override
-    public List<CombinNameData> combinNameData(GeneralEnter enter) {
-        List<CombinNameData> list = rosProductionProductServiceMapper.combinNameData();
+    public List<CombinNameData> combinNameData(CombinNameEnter enter) {
+        List<CombinNameData> list = rosProductionProductServiceMapper.combinNameData(enter);
         return list;
     }
 

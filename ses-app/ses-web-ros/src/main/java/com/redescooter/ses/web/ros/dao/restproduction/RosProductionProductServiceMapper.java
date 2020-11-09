@@ -160,7 +160,7 @@ public interface RosProductionProductServiceMapper {
      * @Param []
      * @return
      **/
-    List<CombinNameData> combinNameData();
+    List<CombinNameData> combinNameData(@Param("enter")CombinNameEnter enter);
 
     /**
      * @Author Aleks
