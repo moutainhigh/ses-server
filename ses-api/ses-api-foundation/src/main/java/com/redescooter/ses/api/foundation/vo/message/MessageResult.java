@@ -40,7 +40,7 @@ public class MessageResult extends GeneralResult {
     private String appId;
 
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     @ApiModelProperty(value = "用户ID")
     private Long userId;
@@ -88,7 +88,7 @@ public class MessageResult extends GeneralResult {
     private Date createdTime;
 
     @ApiModelProperty(value = "更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

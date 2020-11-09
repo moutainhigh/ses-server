@@ -11,6 +11,7 @@ import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.vo.message.JpushUserEnter;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -48,7 +49,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
         if (enter.getClientType().equals(ClientTypeEnums.APP_ANDROID.getCode())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnums.ANDROID.getValue());
         }
-        if (enter.getClientType().equals(ClientTypeEnums.APP_IOS.getCode())) {
+        if (StringUtils.equals(enter.getClientType(),ClientTypeEnums.APP_IOS.getValue())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnums.IOS.getValue());
         }
         jpushUserEnter.setAudienceType(PushTypeEnums.REGISTRATION_ID.getCode());
