@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -167,4 +169,14 @@ public interface AllocateOrderService {
      * @return
      **/
     void allocateFinish(Long allocateId,Long purchaseId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  调拨单的产品列表返参
+     * @Date  2020/11/9 15:15
+     * @Param [enter]
+     * @return
+     **/
+    AllocateProductListResult allocateProductData(IdEnter enter);
 }
