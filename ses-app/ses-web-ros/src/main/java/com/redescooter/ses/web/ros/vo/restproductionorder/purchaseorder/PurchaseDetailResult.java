@@ -145,4 +145,7 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty("关联的单据")
     private List<PurchaseRelationOrderResult> relationOrders;
+
+    @ApiModelProperty("采购来源类型，1：调拨采购，2：其他")
+    private Integer purchaseOriginType;
 }

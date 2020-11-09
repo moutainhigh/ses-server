@@ -93,7 +93,8 @@
           purchase.planned_payment_time,
           purchase.payment_day,
           purchase.purchase_contract,
-          purchase.purchase_type
+          purchase.purchase_type,
+          purchase.purchase_origin_type
         from ope_purchase_order purchase
         left join ope_sys_staff staff1 on staff1.id = purchase.consignor_user
         left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
