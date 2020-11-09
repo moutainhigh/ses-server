@@ -220,7 +220,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(queryWrapper);
         if(purchaseOrder != null){
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getAllocateNo());
+            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getPurchaseNo());
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = DateUtil.getSimpleDateStamp() + "001";
