@@ -752,6 +752,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
             qw.eq(OpeProductionScooterBom.COL_GROUP_ID,opeProductionScooterBom.getGroupId());
             qw.eq(OpeProductionScooterBom.COL_COLOR_ID,opeProductionScooterBom.getColorId());
+            qw.eq(OpeProductionScooterBom.COL_BOM_STATUS,ProductionBomStatusEnums.ACTIVE.getValue());
             int count = opeProductionScooterBomService.count(qw);
             if (count > 0){
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getMessage());
