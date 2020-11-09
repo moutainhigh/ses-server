@@ -96,6 +96,7 @@
         inner join ope_product_price sheet
         on sheet.product_id = product.id and product_price_type = 1
         <where>
+            product.disable=0
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
             </if>
