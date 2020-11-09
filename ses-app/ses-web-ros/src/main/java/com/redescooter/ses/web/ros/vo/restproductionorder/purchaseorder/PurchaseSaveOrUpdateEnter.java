@@ -134,4 +134,7 @@ public class PurchaseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty("调拨单类型,1:车辆，2:组装件，3:部件")
     private Integer classType;
 
+    @ApiModelProperty("采购来源类型，1：调拨采购，2：其他")
+    private Integer purchaseOriginType;
+
 }

@@ -168,7 +168,7 @@
           allocate.consignee_address
         from ope_allocate_order allocate
         left join ope_sys_staff staff on staff.id = allocate.consignee_user
-        where allocate.dr = 0 and allocate.allocate_status not in (0,60,70)
+        where allocate.dr = 0 and allocate.allocate_status not in (0,70)
         and allocate.allocate_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and allocate.allocate_no like concat('%', #{enter.keyword}, '%')
@@ -185,7 +185,7 @@
             purchase_type,
             delivery_date
         from ope_purchase_order
-        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%')
+        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%') and purchase_status != 70
     </select>
 
     <select id="purchaseTrace"

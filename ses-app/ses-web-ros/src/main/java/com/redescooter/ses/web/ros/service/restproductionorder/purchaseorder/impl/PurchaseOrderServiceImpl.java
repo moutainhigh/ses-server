@@ -216,12 +216,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<OpePurchaseOrder> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(OpePurchaseOrder.COL_PURCHASE_NO, DateUtil.getSimpleDateStamp());
-        queryWrapper.orderByDesc(OpePurchaseOrder.COL_CREATED_TIME);
+        queryWrapper.orderByDesc(OpePurchaseOrder.COL_PURCHASE_NO);
         queryWrapper.last("limit 1");
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(queryWrapper);
         if(purchaseOrder != null){
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getAllocateNo());
+            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getPurchaseNo());
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = DateUtil.getSimpleDateStamp() + "001";
@@ -434,6 +434,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
+        purchaseOrder.setUpdatedBy(enter.getUserId());
+        purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 操作动态表
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),3,2,"");
@@ -442,7 +444,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 发货单
         createInvoice(purchaseOrder,enter);
         // 调拨单状态变为采购中
-        allocateOrderService.allocatePurchaseing(purchaseOrder.getAllocateId(),enter.getUserId());
+        if (purchaseOrder.getPurchaseOriginType() == 1){
+            // 调拨采购才会有调拨单的id
+            allocateOrderService.allocatePurchaseing(purchaseOrder.getAllocateId(),enter.getUserId());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -542,6 +547,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         invoiceOrderService.cancelInvoice(purchaseOrder.getId(),enter.getUserId(),enter.getRemark());
 
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.CANCEL.getValue());
+        purchaseOrder.setUpdatedBy(enter.getUserId());
+        purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
 
         // 操作动态表
@@ -563,11 +570,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.FINISHED.getValue());
+        purchaseOrder.setUpdatedBy(enter.getUserId());
+        purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 操作动态表
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),6,2,"");
         // 对应的调拨单状态变为已完成
-        allocateOrderService.allocateFinish(purchaseOrder.getAllocateId(),purchaseOrder.getId(),enter.getUserId());
+        if(purchaseOrder.getPurchaseOriginType() == 1){
+            // 调拨采购才会有调拨单
+            allocateOrderService.allocateFinish(purchaseOrder.getAllocateId(),purchaseOrder.getId(),enter.getUserId());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -673,6 +685,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.STOCKING.getValue());
+        purchaseOrder.setUpdatedBy(userId);
+        purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),userId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
@@ -691,11 +705,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue());
+        purchaseOrder.setUpdatedBy(userId);
+        purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),userId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为待发货
-        allocateOrderService.allocateWaitDeliver(purchaseOrder.getAllocateId(),userId);
+        if (purchaseOrder.getPurchaseOriginType() == 1){
+            // 调拨采购才会有调拨单id
+            allocateOrderService.allocateWaitDeliver(purchaseOrder.getAllocateId(),userId);
+        }
     }
 
 
@@ -710,12 +729,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_SIGN.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
+        purchaseOrder.setUpdatedBy(userId);
+        purchaseOrder.setUpdatedTime(new Date());
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.SIGNED.getValue());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),purchaseId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为已签收
-        allocateOrderService.allocateSign(purchaseOrder.getAllocateId(),purchaseOrder.getId(),userId);
+        if (purchaseOrder.getPurchaseOriginType() == 1){
+            // 调拨采购才会有调拨单id
+            allocateOrderService.allocateSign(purchaseOrder.getAllocateId(),purchaseOrder.getId(),userId);
+        }
     }
 
     @Override
@@ -740,6 +764,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if(!opePurchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
+        opePurchaseOrder.setUpdatedBy(userId);
+        opePurchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_SIGN.getValue());
         opePurchaseOrderService.saveOrUpdate(opePurchaseOrder);
         // 状态流转
@@ -747,6 +773,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         opeOrderStatusFlow.setUserId(userId);
         orderStatusFlowService.save(opeOrderStatusFlow);
         // 把采购单对应的调拨单变为待签收状态
-        allocateOrderService.allocateWaitSign(opePurchaseOrder.getAllocateId(),userId);
+        if (opePurchaseOrder.getPurchaseOriginType() == 1){
+            // 调拨采购才会有调拨单id
+            allocateOrderService.allocateWaitSign(opePurchaseOrder.getAllocateId(),userId);
+        }
     }
 }
