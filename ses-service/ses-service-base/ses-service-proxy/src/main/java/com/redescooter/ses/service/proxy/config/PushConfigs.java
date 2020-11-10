@@ -52,7 +52,10 @@ public class PushConfigs {
         jPushClientOne = jPushClientMap.get(new StringBuffer()
                 .append(enter.getSystemId())
                 .append("-")
-                .append(enter.getAppId()).toString());
+                .append(enter.getAppId())
+                .append("-")
+                .append(enter.getType())
+                .toString());
 
         return jPushClientOne;
 
@@ -83,7 +86,10 @@ public class PushConfigs {
                 if (app.getName().equals(new StringBuffer()
                         .append(enter.getSystemId())
                         .append("-")
-                        .append(enter.getAppId()).toString())) {
+                        .append(enter.getAppId())
+                        .append("-")
+                        .append(enter.getType())
+                        .toString())) {
                     appInfoBase = new AppInfoBase();
                     BeanUtils.copyProperties(app, appInfoBase);
                 }

@@ -143,14 +143,14 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfile.setLastName(enter.getLastName());
             conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
         }
-        if (StringUtils.isNotBlank(enter.getTelNumber1()) && StringUtils.isNotBlank(enter.getCountryCode1())) {
+        if (!StringUtils.isAllBlank(enter.getCountryCode1(),enter.getTelNumber1())) {
             conUserProfile.setTelNumber1(enter.getTelNumber1());
             conUserProfile.setCountryCode1(enter.getCountryCode1());
         }
         if (StringUtils.isNotEmpty(enter.getPicture())){
             conUserProfile.setPicture(enter.getPicture());
         }
-        if (StringUtils.isNotBlank(enter.getCertificateType()) && StringUtils.isNotBlank(enter.getCertificateNegativeAnnex()) && StringUtils.isNotBlank(enter.getCertificatePositiveAnnex())) {
+        if (!StringUtils.isAllBlank(enter.getCertificateType(),enter.getCertificateNegativeAnnex(),enter.getCertificatePositiveAnnex())) {
             conUserProfile.setCertificateType(enter.getCertificateType());
             conUserProfile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
             conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());

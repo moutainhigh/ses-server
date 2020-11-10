@@ -138,11 +138,16 @@ jasypt:
 # 极光推送多有用配置
 # value 是appid 枚举类中的值appid-systemId
 jg-push: #自定义的属性和值
-  listDriver:
-    # vo diver 极光配置
-    - name: REDE_SAAS-SAAS_APP
+  listDriver: #极光配置不区分应用，只区分客户端类型
+    # 安卓 极光配置
+    - name: REDE_SAAS-SAAS_APP-android
       appkey: 565ab684b9fee01d476a7f53
       secret: f656262e5840089252f1b37d
+      apns: false
+      ## IOS 极光配置
+    - name: REDE_SAAS-SAAS_APP-ios
+      appkey: 290d5c75db9db0d1a5fab8bf
+      secret: 3cfdadb8f0dedbcc4c2b04e5
       apns: false
       # consumer consumer 极光配置
 #  - name: SES-APP_C_DELIVERY

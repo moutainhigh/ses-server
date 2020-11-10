@@ -759,7 +759,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 //        }
         for (RosPartsSaveOrUpdateEnter saveOrUpdateEnter : enters) {
             if(Strings.isNullOrEmpty(saveOrUpdateEnter.getPartsNo()) || saveOrUpdateEnter.getPartsSec() == null || saveOrUpdateEnter.getPartsType() == null || saveOrUpdateEnter.getSnClass() == null ||
-                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
+                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || saveOrUpdateEnter.getProcurementCycle() == 0 || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
                     Strings.isNullOrEmpty(saveOrUpdateEnter.getEnName())){
                 // 上面这些都不为空的时候  信息才是完善的
                 throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());
