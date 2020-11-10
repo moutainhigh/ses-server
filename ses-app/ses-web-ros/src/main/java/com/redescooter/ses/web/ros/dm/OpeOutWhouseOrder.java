@@ -87,7 +87,7 @@ public class OpeOutWhouseOrder {
      * 出库类型，1：销售调拨
      */
     @TableField(value = "out_type")
-    @ApiModelProperty(value = "出库类型，1：销售调拨")
+    @ApiModelProperty(value = "出库类型，1：销售调拨，2：生产组装")
     private Integer outType;
 
     /**
