@@ -1,36 +1,43 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-import io.swagger.annotations.*;
-
 /**
- * @ClassName:AssociatedOrder
- * @description: AssociatedOrder
- * @author: Alex
- * @Version：1.3
- * @create: 2020/11/10 15:02 
+ *  @author: alex
+ *  @Date: 2020/10/26 14:13
+ *  @version：V ROS 1.8.3
+ *  @Description:
  */
-@ApiModel(value = "关联单据出参", description = "关联单据出参")
-@Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
-@EqualsAndHashCode(callSuper = false)
-public class AssociatedOrderResult extends GeneralEnter {
-
+@ApiModel(value = "关联订单的列表", description = "关联订单的列表")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class AssociatedOrderResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
-
-    @ApiModelProperty(value = "订单类型")
-    private Integer orderType;
 
     @ApiModelProperty(value = "订单编号")
     private String orderNo;
 
-    @ApiModelProperty(value = "创建时间")
-    private Date createDate;
+    @ApiModelProperty(value = "订单类型")
+    private Integer orderType;
 
+    @ApiModelProperty(value = "订单创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdDate;
+
+    @ApiModelProperty("物流公司")
+    private String logisticsCompanyName;
 }

@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
