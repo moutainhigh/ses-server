@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.im
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PurchaseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
@@ -11,6 +12,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
@@ -118,7 +120,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.DRAFT.getValue());
         purchaseOrder.setId(idAppService.getId(SequenceName.OPE_PURCHASE_ORDER));
         // 生成单据号
-        purchaseOrder.setPurchaseNo("RPO"+createPurchaseNo());
+        purchaseOrder.setPurchaseNo(createPurchaseNo(OrderNumberTypeEnums.PURHCAS.getValue()));
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
         // 处理子表
         createPurchaseB(enter,purchaseOrder);
@@ -207,7 +209,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     // 采购单号生成规则
-    public String createPurchaseNo() {
+    public String createPurchaseNo(String orderNoEnum) {
         String code = "";
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<OpePurchaseOrder> queryWrapper = new QueryWrapper<>();
@@ -217,10 +219,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(queryWrapper);
         if(purchaseOrder != null){
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderGenerateUtil.orderGenerate(purchaseOrder.getPurchaseNo());
+            code = OrderNoGenerateUtil.orderNoGenerate(purchaseOrder.getPurchaseNo(),orderNoEnum);
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
-            code = DateUtil.getSimpleDateStamp() + "001";
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         return code;
     }

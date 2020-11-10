@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
@@ -118,7 +119,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.DRAFT.getValue());
         allocateOrder.setId(idAppService.getId(SequenceName.OPE_ALLOCATE_ORDER));
         // 单据号
-        allocateOrder.setAllocateNo("RTO" + createAllocateNo());
+        allocateOrder.setAllocateNo(createAllocateNo(OrderNumberTypeEnums.ALLOCAT.getValue()));
         opeAllocateOrderService.saveOrUpdate(allocateOrder);
         // 处理调拨单的子表
         createAllocateB(enter, allocateOrder);
@@ -131,7 +132,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     // 调拨单号生成规则
-    public String createAllocateNo() {
+    public String createAllocateNo(String orderNoEnum) {
         String code = "";
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<OpeAllocateOrder> queryWrapper = new QueryWrapper<>();
@@ -141,10 +142,10 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(queryWrapper);
         if (allocateOrder != null) {
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderGenerateUtil.orderGenerate(allocateOrder.getAllocateNo());
+            code = OrderNoGenerateUtil.orderNoGenerate(allocateOrder.getAllocateNo(),orderNoEnum);
         } else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
-            code = DateUtil.getSimpleDateStamp() + "001";
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         return code;
     }
