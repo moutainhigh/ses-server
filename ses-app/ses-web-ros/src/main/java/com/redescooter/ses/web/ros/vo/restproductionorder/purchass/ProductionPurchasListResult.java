@@ -49,10 +49,7 @@ public class ProductionPurchasListResult extends GeneralResult {
     private Long purchaserId;
 
     @ApiModelProperty(value = "采购人对接人名称")
-    private String purchaserFirstName;
-
-    @ApiModelProperty(value = "采购人对接人名称")
-    private String purchaserLastName;
+    private String purchaserName;
 
     @ApiModelProperty(value = "采购人对接人国家代码")
     private String purchaserCountryCode;

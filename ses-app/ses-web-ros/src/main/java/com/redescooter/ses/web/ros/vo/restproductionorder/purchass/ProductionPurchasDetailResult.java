@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -90,4 +92,7 @@ public class ProductionPurchasDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "关联订单")
     List<AssociatedOrderResult> associatedOrderResultList;
+
+    @ApiModelProperty(value = "操作日志")
+    List<OpTraceResult> operatingDynamicsList;
 }

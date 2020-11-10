@@ -1,10 +1,13 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.purchas;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SaveProductionPurchasEnter;
 
 import java.util.List;
 
@@ -34,4 +37,13 @@ public interface ProductionPurchasService {
     * @desc: 详情
     */
     ProductionPurchasDetailResult detail(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/10 4:08 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 保存采购单
+    */
+    GeneralResult save(SaveProductionPurchasEnter enter);
 }
