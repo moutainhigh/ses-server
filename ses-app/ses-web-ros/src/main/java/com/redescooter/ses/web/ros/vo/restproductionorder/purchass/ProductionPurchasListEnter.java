@@ -20,7 +20,7 @@ import io.swagger.annotations.*;
 public class ProductionPurchasListEnter extends PageEnter {
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer purchaseStatus;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;

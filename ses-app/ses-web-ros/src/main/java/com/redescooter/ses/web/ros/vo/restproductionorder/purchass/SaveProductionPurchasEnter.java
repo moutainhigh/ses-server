@@ -1,6 +1,10 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
+import com.redescooter.ses.api.common.annotation.NotEmpty;
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import lombok.*;
 
 import java.util.Date;
@@ -23,9 +27,11 @@ public class SaveProductionPurchasEnter extends GeneralEnter {
 
 
     @ApiModelProperty(value = "供应商Id")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id 为空")
     private Long factoryId;
 
     @ApiModelProperty(value = "交货日期")
+    @NotNull(code = ValidationExceptionCode.DATE_IS_NOT_EMPTY, message = "日期为空")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "负责人")
@@ -58,12 +64,7 @@ public class SaveProductionPurchasEnter extends GeneralEnter {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "收货日期")
-    private String productDate;
-
-    @ApiModelProperty(value = "付款方式")
-    private Integer paymentType;
-
     @ApiModelProperty(value = "付款数据")
+    @NotNull(code = ValidationExceptionCode.PAYMENTINFO_IS_EMPTY, message = "付款信息为空")
     private String paymentDate;
 }

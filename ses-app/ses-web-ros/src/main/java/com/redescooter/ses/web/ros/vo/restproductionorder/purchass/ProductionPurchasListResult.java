@@ -25,37 +25,37 @@ public class ProductionPurchasListResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "订单编号")
-    private String orderNo;
+    private String purchaseNo;
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer purchaseStatus;
 
     @ApiModelProperty(value = "数量")
-    private Integer qty;
+    private Integer purchaseQty;
 
     @ApiModelProperty(value = "配送订单")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "金额")
-    private String amount;
+    private String purchaseAmount;
 
     @ApiModelProperty(value = "供应商Id")
-    private Long supplierId;
+    private Long factoryId;
 
     @ApiModelProperty(value = "供应商名称")
-    private String supplierName;
+    private String factoryName;
 
     @ApiModelProperty(value = "采购人对接人Id")
-    private Long purchaserId;
+    private Long dockingUser;
 
     @ApiModelProperty(value = "采购人对接人名称")
-    private String purchaserName;
+    private String dockingUserName;
 
     @ApiModelProperty(value = "采购人对接人国家代码")
-    private String purchaserCountryCode;
+    private String dockingCountryCode;
 
     @ApiModelProperty(value = "采购人对接人电话")
-    private String purchaserTelephone;
+    private String dockingUserTelephone;
 
     @ApiModelProperty(value = "创建人")
     private Long createById;
