@@ -291,10 +291,10 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
                 }
                 product.setQty(qty.intValue());
-                product.setSnMap(snMap);
+                product.setSnMap(CollectionUtils.isEmpty(snMap)?new ArrayList<>():snMap);
             }
         }
-        return CollectionUtils.isEmpty(productList)?new ArrayList<>():productList;
+        return productList;
 
     }
 
