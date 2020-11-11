@@ -15,6 +15,7 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -83,6 +84,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
+
+    @Autowired
+    private PurchaseOrderServiceMapper purchaseOrderServiceMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -648,7 +652,29 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 List<OpeAllocateCombinB> combinBs = opeAllocateCombinBService.list(combinBQueryWrapper);
                 if (CollectionUtils.isNotEmpty(combinBs)){
                     Map<Long, List<OpeAllocateCombinB>> allBMap = combinBs.stream().collect(Collectors.groupingBy(OpeAllocateCombinB::getProductionCombinBomId));
-                    //
+                    // 找到这个调拨单下面的所有的产品明细
+                    List<OpePurchaseCombinB> purchaseCombinBS = purchaseOrderServiceMapper.purchaseCombinB(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchaseCombinBS)){
+                        flag = false;
+                        break;
+                    }
+                    Map<Long, List<OpePurchaseCombinB>> bMap = purchaseCombinBS.stream().collect(Collectors.groupingBy(OpePurchaseCombinB::getProductionCombinBomId));
+                    if (allBMap.size() > bMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (Long key1 : allBMap.keySet()) {
+                        for (Long key2 : bMap.keySet()) {
+                            if (key1.equals(key2)){
+                                Integer allocateNum = allBMap.get(key1).stream().mapToInt(OpeAllocateCombinB::getQty).sum();
+                                Integer purchaseNum = bMap.get(key2).stream().mapToInt(OpePurchaseCombinB::getQty).sum();
+                                if (allocateNum > purchaseNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 break;
             case 3:
@@ -660,6 +686,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 if (CollectionUtils.isNotEmpty(partsBs)){
                     Map<Long, List<OpeAllocatePartsB>> allBMap = partsBs.stream().collect(Collectors.groupingBy(OpeAllocatePartsB::getPartsId));
                     //
+
                 }
                 break;
         }

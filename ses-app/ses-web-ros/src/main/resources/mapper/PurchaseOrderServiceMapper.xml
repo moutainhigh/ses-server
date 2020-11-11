@@ -211,4 +211,12 @@
         left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
         where wh.dr = 0 and purchase.id = #{purchaseId} and wh.out_wh_status in (10,20)
     </select>
+
+    <select id="purchaseCombinB" resultType="com.redescooter.ses.web.ros.dm.OpePurchaseCombinB">
+        SELECT * FROM ope_purchase_combin_b combin
+        left join ope_purchase_order purchase on combin.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where combin.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
 </mapper>
