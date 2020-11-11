@@ -25,64 +25,55 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     private Long id;
 
     @ApiModelProperty(value = "订单编号")
-    private String orderNo;
+    private String purchaseNo;
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
-
-    @ApiModelProperty(value = "供应商Id")
-    private Long supplierId;
-
-    @ApiModelProperty(value = "供应商名称")
-    private String supplierName;
+    private Integer purchaseStatus;
 
     @ApiModelProperty(value = "采购人对接人Id")
-    private Long purchaserId;
+    private Long dockingUser;
 
     @ApiModelProperty(value = "采购人对接人名称")
-    private String purchaserFirstName;
-
-    @ApiModelProperty(value = "采购人对接人名称")
-    private String purchaserLastName;
+    private String dockingUserName;
 
     @ApiModelProperty(value = "采购人对接人国家代码")
-    private String purchaserCountryCode;
-
-    @ApiModelProperty(value = "采购人对接人电话")
-    private String purchaserTelephone;
-
-    @ApiModelProperty(value = "负责人Id")
-    private Long dockingId;
-
-    @ApiModelProperty(value = "负责人名称")
-    private String dockingFirstName;
-
-    @ApiModelProperty(value = "负责人名称")
-    private String dockingLastName;
-
-    @ApiModelProperty(value = "负责人国家代码")
     private String dockingCountryCode;
 
+    @ApiModelProperty(value = "采购人对接人电话")
+    private String dockingUserTelephone;
+
+    @ApiModelProperty(value = "供应商Id")
+    private Long factoryId;
+
+    @ApiModelProperty(value = "供应商名称")
+    private String factoryName;
+
+    @ApiModelProperty(value = "负责人Id")
+    private Long factoryPrincipalId;
+
+    @ApiModelProperty(value = "负责人名称")
+    private String factoryPrincipalName;
+
+    @ApiModelProperty(value = "负责人国家代码")
+    private String principalCountryCode;
+
     @ApiModelProperty(value = "负责人电话")
-    private String dockingTelephone;
+    private String principalTelephone;
 
     @ApiModelProperty(value = "收货人Id")
-    private Long receiverId;
+    private Long consigneeUser;
 
     @ApiModelProperty(value = "收货人名称")
-    private String receiverFirstName;
-
-    @ApiModelProperty(value = "收货人名称")
-    private String receiverLastName;
+    private String consigneeUserName;
 
     @ApiModelProperty(value = "收货人国家代码")
-    private String receiverCountryCode;
+    private String consigneeCountryCode;
 
     @ApiModelProperty(value = "收货人电话")
-    private String receiverTelephone;
+    private String consigneeUserTelephone;
 
     @ApiModelProperty(value = "收货地址")
-    private String receiverAddress;
+    private String consigneeAddress;
 
     @ApiModelProperty(value = "备注")
     private String remark;
