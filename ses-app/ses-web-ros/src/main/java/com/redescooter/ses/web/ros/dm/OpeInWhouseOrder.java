@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -35,6 +32,7 @@ public class OpeInWhouseOrder {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -63,7 +61,7 @@ public class OpeInWhouseOrder {
      */
     @TableField(value = "combin_status")
     @ApiModelProperty(value="入库单状态， 1： 草稿，:10：待质检，20：质检中，30：已入库")
-    private Integer combinStatus;
+    private Integer inWhStatus;
 
     /**
      * 关联的单据id
