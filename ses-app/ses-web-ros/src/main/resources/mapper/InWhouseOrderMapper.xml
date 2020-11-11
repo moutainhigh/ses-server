@@ -12,7 +12,7 @@
          inwh.id,
          inwh.in_wh_no,
          inwh.in_wh_status,
-         inwh.inWhQty,
+         inwh.in_wh_qty,
          inwh.in_wh_type,
          inwh.created_time,
          staff.full_name    as createdByName
