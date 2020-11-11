@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper">
+    <select id="totalNum" resultType="int">
+        select count(*)
+        from ope_in_whouse_order inwh
+        <include refid="listCondition"></include>
+    </select>
 
+    <select id="inWhList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult">
+        select
+         inwh.id,
+         inwh.in_wh_no,
+         inwh.in_wh_status,
+         inwh.inWhQty,
+         inwh.in_wh_type,
+         inwh.created_time,
+         staff.full_name    as createdByName
+        from ope_in_whouse_order inwh
+        left join ope_sys_staff staff on staff.id = inwh.created_by
+        <include refid="listCondition"></include>
+        order by inwh.updated_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="listCondition">
+        where dr = 0 and order_type = #{enter.classType}
+        <if test="enter.inWhStatus != null">
+            and inwh.in_wh_status = #{enter.inWhStatus}
+        </if>
+        <if test="enter.inWhType != null">
+            and inwh.in_wh_type = #{enter.inWhType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and inwh.in_wh_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
 </mapper>
