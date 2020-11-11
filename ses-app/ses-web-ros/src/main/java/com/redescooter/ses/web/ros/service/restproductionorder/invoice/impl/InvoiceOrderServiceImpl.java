@@ -272,7 +272,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         }
 
         if (CollectionUtils.isNotEmpty(snList)) {
-            List<String> snMap = new ArrayList<>();
+            List<String> snMap =null;
             Long qty = 0L;
             for (OrderProductDetailResult product : productList) {
                 //序列号集合
@@ -294,7 +294,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 product.setSnMap(snMap);
             }
         }
-        return productList;
+        return CollectionUtils.isEmpty(productList)?new ArrayList<>():productList;
 
     }
 
