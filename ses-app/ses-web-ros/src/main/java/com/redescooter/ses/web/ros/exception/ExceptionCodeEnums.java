@@ -468,6 +468,7 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
 
+    QTY_IS_ILLEGAL(10226,"数量不合法")
 
 
 

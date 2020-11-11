@@ -12,7 +12,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/11/10 15:00 
  */
-@ApiModel(value = "", description = "")
+@ApiModel(value = "单据详情部件列表", description = "单据详情部件列表")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -21,6 +21,9 @@ public class PurchasDetailProductListResult extends GeneralResult {
 
     @ApiModelProperty(value = "id")
     private Long id;
+
+    @ApiModelProperty(value = "部品Id")
+    private Long partId;
 
     @ApiModelProperty(value = "部品编号")
     private String partN;
@@ -34,6 +37,6 @@ public class PurchasDetailProductListResult extends GeneralResult {
     @ApiModelProperty(value = "数量")
     private Integer qty;
 
-    @ApiModelProperty(value = "金额")
+    @ApiModelProperty(value = "单价金额")
     private String amount;
 }

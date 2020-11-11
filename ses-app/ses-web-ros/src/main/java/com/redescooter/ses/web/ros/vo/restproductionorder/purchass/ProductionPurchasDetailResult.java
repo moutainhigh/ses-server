@@ -81,11 +81,11 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     private String remark;
 
     @ApiModelProperty(value = "采购产品")
-    List<PurchasDetailProductListResult> productList;
+    private List<PurchasDetailProductListResult> productList;
 
     @ApiModelProperty(value = "关联订单")
-    List<AssociatedOrderResult> associatedOrderResultList;
+    private List<AssociatedOrderResult> associatedOrderResultList;
 
     @ApiModelProperty(value = "操作日志")
-    List<OpTraceResult> operatingDynamicsList;
+    private List<OpTraceResult> operatingDynamicsList;
 }

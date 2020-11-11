@@ -4,11 +4,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SaveProductionPurchasEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
 
 import java.util.List;
 
@@ -38,6 +36,24 @@ public interface ProductionPurchasService {
     * @desc: 详情
     */
     ProductionPurchasDetailResult detail(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/11 4:18 下午
+    * @Param:  enter
+    * @Return: List<PurchasDetailProductListResult>
+    * @desc: 产品详情
+    */
+    List<PurchasDetailProductListResult> detailProductList(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/11 5:02 下午
+    * @Param:  enter
+    * @Return: List<AssociatedOrderResult>
+    * @desc: 关联订单
+    */
+    List<AssociatedOrderResult> associatedOrder(IdEnter enter);
     /**
     * @Description
     * @Author: alex

@@ -19,9 +19,6 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class SupplierPrincipaleResult extends GeneralResult {
 
-    @ApiModelProperty(value = "id")
-    private Long id;
-
     @ApiModelProperty(value = "姓")
     private String firstName;
 

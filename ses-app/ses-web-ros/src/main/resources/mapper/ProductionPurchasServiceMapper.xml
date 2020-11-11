@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper">
+
+    <sql id="where_pruchasList">
+        where purOrder.dr = 0
+        <if test="purchaseStatus != null">
+            and purOrder.purchase_status =#{purchaseStatus}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            supplier.supplier_name like concat ('%',#{keyword},'%') or
+            purOrder.purchase_no like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_production_purchase_order purOrder
+        left join ope_supplier supplier on supplier.id = purOrder.factory_id and supplier.dr = 0
+        left join ope_sys_staff staff on staff.id = purOrder.created_by and staff.dr = 0
+        <include refid="where_pruchasList"/>
+    </select>
+
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult">
+        select purOrder.id                     as id,
+               purOrder.purchase_no            as purchaseNo,
+               purOrder.purchase_status        as purchaseStatus,
+               purOrder.purchase_qty           as purchaseQty,
+               purOrder.delivery_date          as deliveryDate,
+               purOrder.purchase_amount        as purchaseAmount,
+               purOrder.factory_id             as factoryId,
+               supplier.supplier_name          as factoryName,
+               purOrder.docking_user           as dockingUser,
+               purOrder.docking_user_name      as dockingUserName,
+               purOrder.docking_country_code   as dockingCountryCode,
+               purOrder.docking_user_telephone as dockingUserTelephone,
+               purOrder.created_by             as createById,
+               purOrder.created_time           as createTime
+        from ope_production_purchase_order purOrder
+                 left join ope_supplier supplier on supplier.id = purOrder.factory_id and supplier.dr = 0
+                 left join ope_sys_staff staff on staff.id = purOrder.created_by and staff.dr = 0
+        <include refid="where_pruchasList"/>
+        order by purOrder.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detailProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
+        select partB.id as id,
+               partB.parts_id as partId,
+               partB.parts_no as partN,
+               partB.parts_name as partName,
+               partB.parts_type as partType,
+               partB.qty as qty,
+               partB.unit_price as amount
+        from ope_production_purchase_parts_b partB
+        where partB.dr=0
+
+    </select>
+</mapper>
