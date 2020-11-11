@@ -26,9 +26,9 @@ public enum ProductionPurchasEnums {
 
     HAS_BEEN_STORED("HAS_BEEN_STORED", "已入库", 40),
 
-    FINISHED("FINISHED", "已完成", 60),
+    FINISHED("FINISHED", "已完成", 50),
 
-    CANCEL("CANCEL", "已取消", 70);
+    CANCEL("CANCEL", "已取消", 60);
 
     private String code;
 

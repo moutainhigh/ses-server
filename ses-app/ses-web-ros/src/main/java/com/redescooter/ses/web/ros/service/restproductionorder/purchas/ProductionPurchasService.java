@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
@@ -46,4 +47,13 @@ public interface ProductionPurchasService {
     * @desc: 保存采购单
     */
     GeneralResult save(SaveProductionPurchasEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/11 3:21 下午
+    * @Param:  enter
+    * @Return: SupplierListResult
+    * @desc: 供应商列表
+    */
+    List<SupplierListResult>  supplierList(GeneralEnter enter);
 }

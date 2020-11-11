@@ -1,10 +1,8 @@
 package com.redescooter.ses.web.ros.controller.restproduction.proudctionpurchas;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
@@ -17,6 +15,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassName:PurchasController
@@ -52,6 +52,12 @@ public class PurchasController {
     @ApiOperation(value = "保存订单", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveProductionPurchasEnter enter) {
         return new Response<>(productionPurchasService.save(enter));
+    }
+
+    @PostMapping(value = "/supplierList")
+    @ApiOperation(value = "供应商列表", response = SupplierListResult.class)
+    public Response<List<SupplierListResult>> supplierList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(productionPurchasService.supplierList(enter));
     }
 
 }

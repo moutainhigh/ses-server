@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
@@ -53,7 +55,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         productionPurchasListResult.setCreateById(32242L);
         productionPurchasListResult.setCreateByFirstName("244244");
         productionPurchasListResult.setCreateByLastName("2324234");
-        productionPurchasListResult.setCreateDate(new Date());
+        productionPurchasListResult.setCreateTime(new Date());
         result.add(productionPurchasListResult);
         return PageResult.create(enter,1,result);
     }
@@ -104,6 +106,20 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Transactional
     @Override
     public GeneralResult save(SaveProductionPurchasEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/11 3:21 下午
+     * @Param: enter
+     * @Return: SupplierListResult
+     * @desc: 供应商列表
+     * @param enter
+     */
+    @Override
+    public List<SupplierListResult> supplierList(GeneralEnter enter) {
         return null;
     }
 }

@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.assembly;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.*;
 
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:AssemblyPurchasOrderListResult
@@ -23,35 +25,35 @@ public class ProductionAssemblyOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "组装单类型")
+    private Integer combinType;
+
     @ApiModelProperty(value = "订单编号")
-    private String orderNo;
+    private String combinNo;
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer combinStatus;
 
     @ApiModelProperty(value = "数量")
-    private Integer qty;
+    private Integer combinQty;
 
     @ApiModelProperty(value = "开始时间")
-    private Date startDate;
+    private Date combinStartDate;
 
     @ApiModelProperty(value = "结束时间")
-    private Date endDate;
+    private Date combinEndDate;
 
     @ApiModelProperty(value = "负责人Id")
     private Long principalId;
 
-    @ApiModelProperty(value = "负责人姓")
-    private String principalFirstName;
-
-    @ApiModelProperty(value = "负责人名")
-    private String principalLastName;
+    @ApiModelProperty(value = "负责人姓名")
+    private String principalName;
 
     @ApiModelProperty(value = "负责人国家代码")
-    private String principalCountryCode;
+    private String countryCode;
 
     @ApiModelProperty(value = "负责人电话")
-    private String principalTelephone;
+    private String telephone;
 
     @ApiModelProperty(value = "创建人Id")
     private Long createById;
@@ -63,5 +65,7 @@ public class ProductionAssemblyOrderListResult extends GeneralResult {
     private String createByLastName;
 
     @ApiModelProperty(value = "创建时间")
-    private Date createDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createdTime;
 }

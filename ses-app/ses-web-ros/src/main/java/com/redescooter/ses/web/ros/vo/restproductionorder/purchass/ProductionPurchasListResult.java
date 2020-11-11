@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.*;
 
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:ProductionPurchasListResult
@@ -14,7 +16,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/11/10 14:43 
  */
-@ApiModel(value = "采购单列表", description = "采购单列表")
+@ApiModel(value = "Production采购单列表", description = "Production采购单列表")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -67,5 +69,7 @@ public class ProductionPurchasListResult extends GeneralResult {
     private String createByLastName;
 
     @ApiModelProperty(value = "创建日期")
-    private Date createDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date createTime;
 }
