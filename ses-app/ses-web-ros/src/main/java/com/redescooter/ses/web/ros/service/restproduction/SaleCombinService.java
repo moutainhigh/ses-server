@@ -85,4 +85,24 @@ public interface SaleCombinService {
      * @return
      **/
     List<BomNameData> bomNoData(BomNoEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  组装件下拉数据接口(中文名字)
+     * @Date  2020/11/11 13:10
+     * @Param [enter]
+     * @return
+     **/
+    List<CombinNameData> combinCnNameData(CombinNameEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  组装件编号下拉数据源接口
+     * @Date  2020/11/11 13:19
+     * @Param [enter]
+     * @return
+     **/
+    List<BomNameData> cnBomNoData(BomNoEnter enter);
 }

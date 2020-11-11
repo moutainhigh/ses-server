@@ -8,14 +8,13 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,5 +96,36 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Transactional
     public GeneralResult inWhReadyQc(IdEnter enter) {
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public List<InWhRelationOrderResult> relationPurchaseOrderData(KeywordEnter enter) {
+        List<InWhRelationOrderResult> list = new ArrayList<>();
+
+        return list;
+    }
+
+    @Override
+    public List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(IdEnter enter) {
+        List<SaveOrUpdatePartsBEnter> list = new ArrayList<>();
+        return list;
+    }
+
+    @Override
+    public List<InWhRelationOrderResult> relationCombinOrderData(KeywordEnter enter) {
+        List<InWhRelationOrderResult> list = new ArrayList<>();
+        return list;
+    }
+
+    @Override
+    public List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(IdEnter enter) {
+        List<SaveOrUpdateCombinBEnter> list = new ArrayList<>();
+        return list;
+    }
+
+    @Override
+    public List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter) {
+        List<SaveOrUpdateScooterBEnter> list = new ArrayList<>();
+        return list;
     }
 }

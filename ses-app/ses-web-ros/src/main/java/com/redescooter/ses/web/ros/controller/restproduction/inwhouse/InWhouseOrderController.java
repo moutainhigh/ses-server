@@ -1,17 +1,21 @@
 package com.redescooter.ses.web.ros.controller.restproduction.inwhouse;
 
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.restproduction.SaleCombinService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +35,8 @@ public class InWhouseOrderController {
     @Autowired
     private InWhouseService inWhouseService;
 
+    @Autowired
+    private SaleCombinService saleCombinService;
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "入库单列表", response = InWhouseListResult.class)
@@ -85,5 +91,60 @@ public class InWhouseOrderController {
     @ApiOperation(value = "准备质检", response = GeneralResult.class)
     public Response<GeneralResult> inWhReadyQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.inWhReadyQc(enter));
+    }
+
+
+    @PostMapping(value = "/relationPurchaseOrderData")
+    @ApiOperation(value = "关联的生产采购单单据号下拉数据源", response = InWhRelationOrderResult.class)
+    public Response<List<InWhRelationOrderResult>> relationPurchaseOrderData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
+        // todo 后面要改成调用生产采购单的service接口
+        return new Response<>(inWhouseService.relationPurchaseOrderData(enter));
+    }
+
+
+    @PostMapping(value = "/relationPurchaseOrderPartsData")
+    @ApiOperation(value = "关联的生产采购单部件信息", response = InWhRelationOrderResult.class)
+    public Response<List<SaveOrUpdatePartsBEnter>> relationPurchaseOrderPartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        // todo 后面要改成调用生产采购单的service接口
+        return new Response<>(inWhouseService.relationPurchaseOrderPartsData(enter));
+    }
+
+
+
+    @PostMapping(value = "/relationCombinOrderData")
+    @ApiOperation(value = "关联的组装单单据号下拉数据源", response = InWhRelationOrderResult.class)
+    public Response<List<InWhRelationOrderResult>> relationCombinOrderData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
+        // todo 后面要改成调用组装单service接口
+        return new Response<>(inWhouseService.relationCombinOrderData(enter));
+    }
+
+
+    @PostMapping(value = "/relationCombinOrderCombinData")
+    @ApiOperation(value = "关联的组装单的组装件产品信息", response = InWhRelationOrderResult.class)
+    public Response<List<SaveOrUpdateCombinBEnter>> relationCombinOrderCombinData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        // todo 后面要改成调用组装单的service接口
+        return new Response<>(inWhouseService.relationCombinOrderCombinData(enter));
+    }
+
+
+    @PostMapping(value = "/relationCombinOrderScooterData")
+    @ApiOperation(value = "关联的组装单的整车产品信息", response = InWhRelationOrderResult.class)
+    public Response<List<SaveOrUpdateScooterBEnter>> relationCombinOrderScooterData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        // todo 后面要改成调用组装单的service接口
+        return new Response<>(inWhouseService.relationCombinOrderScooterData(enter));
+    }
+
+
+    @PostMapping(value = "/combinCnNameData")
+    @ApiOperation(value = "销售组装件名称下拉接口(中文名称)", response = CombinNameData.class)
+    public Response<List<CombinNameData>> combinCnNameData(@ModelAttribute @ApiParam("请求参数") CombinNameEnter enter) {
+        return new Response<>(saleCombinService.combinCnNameData(enter));
+    }
+
+
+    @PostMapping(value = "/bomNoData")
+    @ApiOperation(value = "销售组装件编号下拉接口", response = BomNameData.class)
+    public Response<List<BomNameData>> bomNoData(@ModelAttribute @ApiParam("请求参数") BomNoEnter enter) {
+        return new Response<>(saleCombinService.cnBomNoData(enter));
     }
 }
