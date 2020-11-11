@@ -2,15 +2,19 @@ package com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,9 @@ import java.util.Map;
 public class InWhouseServiceImpl implements InWhouseService {
 
     @Autowired
+    private OpeInWhouseOrderService opeInWhouseOrderService;
+
+    @Autowired
     private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
 
 
@@ -37,18 +44,20 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (totalNum == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<InWhouseListResult> list = null;
+        List<InWhouseListResult> list = inWhouseOrderServiceMapper.inWhList(enter);
         return PageResult.create(enter, totalNum, list);
     }
 
 
     @Override
+    @Transactional
     public GeneralResult inWhouseSave(InWhouseSaveOrUpdateEnter enter) {
         return new GeneralResult(enter.getRequestId());
     }
 
 
     @Override
+    @Transactional
     public GeneralResult inWhouseEdit(InWhouseSaveOrUpdateEnter enter) {
         return new GeneralResult(enter.getRequestId());
     }
@@ -63,5 +72,30 @@ public class InWhouseServiceImpl implements InWhouseService {
         map.put("2",num2);
         map.put("3",num3);
         return map;
+    }
+
+    @Override
+    @Transactional
+    public GeneralResult inWhouseDelete(IdEnter enter) {
+        opeInWhouseOrderService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public InWhouseDetailResult inWhouseDetail(IdEnter enter) {
+        InWhouseDetailResult result = new InWhouseDetailResult();
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public GeneralResult inWhConfirm(IdEnter enter) {
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    @Transactional
+    public GeneralResult inWhReadyQc(IdEnter enter) {
+        return new GeneralResult(enter.getRequestId());
     }
 }
