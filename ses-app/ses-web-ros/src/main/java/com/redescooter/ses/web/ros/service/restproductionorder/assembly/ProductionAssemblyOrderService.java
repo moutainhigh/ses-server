@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.assembly;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult;
 
@@ -21,6 +22,9 @@ public interface ProductionAssemblyOrderService {
     * @desc: 列表
     */
     PageResult<ProductionAssemblyOrderListResult> list(ProductionAssemblyOrderListEnter enter);
+
+
+    ProductionAssemblyOrderDetailResult detail();
 
 
 }

@@ -53,7 +53,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         productionPurchasListResult.setCreateById(32242L);
         productionPurchasListResult.setCreateByFirstName("244244");
         productionPurchasListResult.setCreateByLastName("2324234");
-        productionPurchasListResult.setCreateDate(new Date());
+        productionPurchasListResult.setCreateTime(new Date());
         result.add(productionPurchasListResult);
         return PageResult.create(enter,1,result);
     }
