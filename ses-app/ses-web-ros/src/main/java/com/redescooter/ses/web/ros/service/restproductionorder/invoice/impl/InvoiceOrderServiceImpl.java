@@ -272,20 +272,20 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         }
 
         if (CollectionUtils.isNotEmpty(snList)) {
-            Map<Long, String> snMap = new HashMap<>();
+            List<String> snMap = new ArrayList<>();
             Long qty = 0L;
             for (OrderProductDetailResult product : productList) {
                 //序列号集合
                 if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
 
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
                 } else {
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
