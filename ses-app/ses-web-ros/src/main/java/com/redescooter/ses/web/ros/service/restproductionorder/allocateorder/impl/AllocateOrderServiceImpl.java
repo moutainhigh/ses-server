@@ -614,13 +614,58 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             if (allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue())) {
                 return;
             }
-            // 说明调拨单下面的采购都签收了，
-            allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
-            opeAllocateOrderService.saveOrUpdate(allocateOrder);
-            // 状态流转表
-            createStatusFlow(allocateOrder.getId(), userId, allocateOrder.getAllocateStatus(), OrderTypeEnums.ALLOCATE.getValue(), "");
+            // 追加：check调拨单下面的所有的采购单的明细签收的数量是否大于等于调拨单下面的产品明细数量
+            if (checkNum(allocateOrder,purchaseId)){
+                // 说明调拨单下面的采购都签收了，
+                allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
+                opeAllocateOrderService.saveOrUpdate(allocateOrder);
+                // 状态流转表
+                createStatusFlow(allocateOrder.getId(), userId, allocateOrder.getAllocateStatus(), OrderTypeEnums.ALLOCATE.getValue(), "");
+            }
         }
     }
+
+
+    public boolean checkNum(OpeAllocateOrder allocateOrder,Long purchaseId){
+        boolean flag = true;
+        switch (allocateOrder.getAllocateType()){
+            case 1:
+                // 整车
+                // 先找到整车的产品数据
+                QueryWrapper<OpeAllocateScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocateScooterB> scooterBs = opeAllocateScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBs)){
+
+                }
+                default:
+                    break;
+            case 2:
+                // 组装件
+                // 先找到组装件的产品数据
+                QueryWrapper<OpeAllocateCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocateCombinB> combinBs = opeAllocateCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBs)){
+                    Map<Long, List<OpeAllocateCombinB>> allBMap = combinBs.stream().collect(Collectors.groupingBy(OpeAllocateCombinB::getProductionCombinBomId));
+                    //
+                }
+                break;
+            case 3:
+                // 部件
+                // 先找到部件的产品数据
+                QueryWrapper<OpeAllocatePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocatePartsB> partsBs = opeAllocatePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBs)){
+                    Map<Long, List<OpeAllocatePartsB>> allBMap = partsBs.stream().collect(Collectors.groupingBy(OpeAllocatePartsB::getPartsId));
+                    //
+                }
+                break;
+        }
+        return flag;
+    }
+
 
 
     @Override
