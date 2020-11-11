@@ -14,7 +14,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/11/10 16:08 
  */
-@ApiModel(value = "", description = "")
+@ApiModel(value = "保存采购接口", description = "保存采购接口")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -43,27 +43,27 @@ public class SaveProductionPurchasEnter extends GeneralEnter {
     @ApiModelProperty(value = "收货人Id")
     private Long consigneeUser;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "收货人姓名")
     private String consigneeUserName;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "收货人国家代码")
     private String consigneeCountryCode;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "收货人电话")
     private String consigneeUserTelephone;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "收货人地址")
     private String consigneeAddress;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "收货日期")
     private String productDate;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "付款方式")
     private Integer paymentType;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "付款数据")
     private String paymentDate;
 }
