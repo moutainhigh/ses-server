@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/11/10 14:54 
  */
+@ApiModel(value = "Production采购单详情出参", description = "Production采购单详情出参")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数

@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @Version：1.3
  * @create: 2020/11/10 14:43 
  */
-@ApiModel(value = "采购单列表", description = "采购单列表")
+@ApiModel(value = "Production采购单列表", description = "Production采购单列表")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
