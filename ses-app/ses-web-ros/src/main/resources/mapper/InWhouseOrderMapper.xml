@@ -23,7 +23,7 @@
     </select>
 
     <sql id="listCondition">
-        where dr = 0 and order_type = #{enter.classType}
+        where inwh.dr = 0 and inwh.order_type = #{enter.classType}
         <if test="enter.inWhStatus != null">
             and inwh.in_wh_status = #{enter.inWhStatus}
         </if>
