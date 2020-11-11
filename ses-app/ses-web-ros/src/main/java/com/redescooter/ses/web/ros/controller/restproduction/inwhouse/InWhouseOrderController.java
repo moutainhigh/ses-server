@@ -110,7 +110,6 @@ public class InWhouseOrderController {
     }
 
 
-
     @PostMapping(value = "/relationCombinOrderData")
     @ApiOperation(value = "关联的组装单单据号下拉数据源", response = InWhRelationOrderResult.class)
     public Response<List<InWhRelationOrderResult>> relationCombinOrderData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
@@ -147,4 +146,5 @@ public class InWhouseOrderController {
     public Response<List<BomNameData>> bomNoData(@ModelAttribute @ApiParam("请求参数") BomNoEnter enter) {
         return new Response<>(saleCombinService.cnBomNoData(enter));
     }
+
 }
