@@ -18,7 +18,7 @@ public class BomNoEnter {
     @ApiModelProperty("组装件名称")
     private String combinName;
 
-    @ApiModelProperty("类型，1：生效的，2:生效和待生效的")
+    @ApiModelProperty("类型，1：生效的，2:生效和待生效的,3:全部")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "TYPE为空")
     private Integer type;
 }

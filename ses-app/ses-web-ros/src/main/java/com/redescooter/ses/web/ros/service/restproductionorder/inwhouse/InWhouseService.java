@@ -4,13 +4,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -93,4 +92,50 @@ public interface InWhouseService {
      * @return
      **/
     GeneralResult inWhReadyQc(IdEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description 关联的生产采购单单据号下拉数据源
+     * @Date  2020/11/11 15:49
+     * @Param
+     * @return
+     **/
+    List<InWhRelationOrderResult> relationPurchaseOrderData(KeywordEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  采购单部件的产品信息
+     * @Date  2020/11/11 16:11
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(IdEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  关联的组装单据号下拉数据源
+     * @Date  2020/11/11 16:07
+     * @Param [enter]
+     * @return
+     **/
+    List<InWhRelationOrderResult> relationCombinOrderData(KeywordEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description 关联的组装单的组装件产品信息
+     * @Date  2020/11/11 16:24
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(IdEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  关联的组装单的整车产品信息
+     * @Date  2020/11/11 16:28
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter);
+
 }
