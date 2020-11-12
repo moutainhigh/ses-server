@@ -9,6 +9,8 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTy
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -77,6 +79,32 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     @Autowired
     private IdAppService idAppService;
+
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 7:15 下午
+     * @Param: enter
+     * @Return: map
+     * @desc: 类型统计
+     * @param enter
+     */
+    @Override
+    public Map<Integer, Integer> countByType(GeneralEnter enter) {
+        List<CountByStatusResult>  countByStatusResultList=productionAssemblyOrderServiceMapper.countByType(enter);
+        Map<Integer, Integer> result=countByStatusResultList.stream().collect(Collectors.toMap(item->{
+            return Integer.valueOf(item.getStatus());
+        },CountByStatusResult::getTotalCount));
+
+        if (!result.containsKey(ProductTypeEnums.SCOOTER.getValue())) {
+            result.put(ProductTypeEnums.SCOOTER.getValue(), 0);
+        }
+        if (!result.containsKey(ProductTypeEnums.COMBINATION.getValue())) {
+            result.put(ProductTypeEnums.COMBINATION.getValue(), 0);
+        }
+        return result;
+    }
 
     /**
      * @Description
@@ -224,11 +252,11 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Transactional
     @Override
     public GeneralResult save(SaveAssemblyOrderEnter enter) {
-        List<SaveAssemblyProductEnter> productEnterList = new ArrayList<>();
+        List<SaveAssemblyProductListEnter> productEnterList = new ArrayList<>();
         List<OpeCombinOrderScooterB> saveOpeCombinOrderScooterBList = new ArrayList<>();
         List<OpeCombinOrderCombinB> saveOpeCombinOrderCominBList = new ArrayList<>();
         try {
-            productEnterList.addAll(JSON.parseArray(enter.getSt(), SaveAssemblyProductEnter.class));
+            productEnterList.addAll(JSON.parseArray(enter.getSt(), SaveAssemblyProductListEnter.class));
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -236,7 +264,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        int productQty = Long.valueOf(productEnterList.stream().map(SaveAssemblyProductEnter::getQty).count()).intValue();
+        int productQty = Long.valueOf(productEnterList.stream().map(SaveAssemblyProductListEnter::getQty).count()).intValue();
         //主单据
         OpeCombinOrder opeCombinOrder = buildOpeCombinOrder(enter, productQty);
 
@@ -400,9 +428,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
 
-    private List<OpeCombinOrderCombinB> buildOpeCombinOrderCombinB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductEnter> productEnterList, Long assemblyProductId,
+    private List<OpeCombinOrderCombinB> buildOpeCombinOrderCombinB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductListEnter> productEnterList, Long assemblyProductId,
                                                                    List<OpeCombinOrderCombinB> saveOpeCombinOrderCominBList) {
-        List<OpeProductionCombinBom> opeProductionCombinBomList = opeProductionCombinBomService.listByIds(productEnterList.stream().map(SaveAssemblyProductEnter::getId).collect(Collectors.toSet()));
+        List<OpeProductionCombinBom> opeProductionCombinBomList = opeProductionCombinBomService.listByIds(productEnterList.stream().map(SaveAssemblyProductListEnter::getId).collect(Collectors.toSet()));
         if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
@@ -432,10 +460,10 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         return saveOpeCombinOrderCominBList;
     }
 
-    private List<OpeCombinOrderScooterB> buildOpeCombinOrderScooterB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductEnter> productEnterList, Long assemblyProductId,
+    private List<OpeCombinOrderScooterB> buildOpeCombinOrderScooterB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductListEnter> productEnterList, Long assemblyProductId,
                                                                      List<OpeCombinOrderScooterB> saveOpeCombinOrderScooterBList) {
         List<Map<String, Object>> listMap = new ArrayList<>();
-        for (SaveAssemblyProductEnter scooterB : productEnterList) {
+        for (SaveAssemblyProductListEnter scooterB : productEnterList) {
             Map<String, Object> map = new HashMap<>();
             map.put(OpeProductionScooterBom.COL_GROUP_ID, scooterB.getGroupId());
             map.put(OpeProductionScooterBom.COL_COLOR_ID, scooterB.getColorId());

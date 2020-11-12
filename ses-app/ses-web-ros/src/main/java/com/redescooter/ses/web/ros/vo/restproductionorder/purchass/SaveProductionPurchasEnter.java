@@ -28,6 +28,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @EqualsAndHashCode(callSuper = false)
 public class SaveProductionPurchasEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
+
     @ApiModelProperty(value = "供应商Id")
     @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id 为空")
     private Long factoryId;

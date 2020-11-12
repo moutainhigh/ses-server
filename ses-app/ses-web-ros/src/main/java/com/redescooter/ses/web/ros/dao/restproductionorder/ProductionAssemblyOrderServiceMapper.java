@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
@@ -18,6 +20,16 @@ import java.util.Set;
  * @create: 2020/11/12 11:56 
  */
 public interface ProductionAssemblyOrderServiceMapper {
+
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 7:17 下午
+    * @Param:  enter
+    * @Return: List<CountByStatusResult>
+     * @desc: 类型统计
+    */
+    List<CountByStatusResult> countByType(GeneralEnter enter);
     /**
     * @Description
     * @Author: alex

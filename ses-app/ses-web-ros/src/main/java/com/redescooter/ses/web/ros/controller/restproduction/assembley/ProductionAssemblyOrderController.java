@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduction.assembley;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:ProductionAssemblyOrderController
@@ -33,6 +31,13 @@ public class ProductionAssemblyOrderController {
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
+
+
+    @PostMapping(value = "/countByType")
+    @ApiOperation(value = "分组统计", response = Map.class)
+    public Response<Map<Integer, Integer>> countByType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(productionAssemblyOrderService.countByType(enter));
+    }
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表", response = ProductionAssemblyOrderListResult.class)

@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:AssemblyPurchasOrderService
@@ -18,6 +19,16 @@ import java.util.List;
  * @create: 2020/11/10 14:09 
  */
 public interface ProductionAssemblyOrderService {
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 7:15 下午
+    * @Param:  enter
+    * @Return: map
+    * @desc: 类型统计
+    */
+    Map<Integer, Integer> countByType(GeneralEnter enter);
+
     /**
     * @Description
     * @Author: alex

@@ -24,6 +24,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SaveAssemblyProductEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "产品信息 格式:id：100，qty：123")
+    private String productList;
+
     @ApiModelProperty(value = "产品信息 id")
     private Long id;
 
