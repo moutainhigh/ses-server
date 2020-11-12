@@ -88,6 +88,12 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
 
+    @Autowired
+    private ProductionPurchasServiceMapper productionPurchasServiceMapper;
+
+    @Autowired
+    private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
+
     @Reference
     private IdAppService idAppService;
 
@@ -459,8 +465,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Override
     public List<InWhRelationOrderResult> relationPurchaseOrderData(KeywordEnter enter) {
-        List<InWhRelationOrderResult> list = new ArrayList<>();
-
+        List<InWhRelationOrderResult> list = productionPurchasServiceMapper.relationOrderData(enter);
         return list;
     }
 
@@ -472,7 +477,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Override
     public List<InWhRelationOrderResult> relationCombinOrderData(KeywordEnter enter) {
-        List<InWhRelationOrderResult> list = new ArrayList<>();
+        List<InWhRelationOrderResult> list = productionAssemblyOrderServiceMapper.relationOrderData(enter);
         return list;
     }
 

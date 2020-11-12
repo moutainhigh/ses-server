@@ -97,7 +97,6 @@ public class InWhouseOrderController {
     @PostMapping(value = "/relationPurchaseOrderData")
     @ApiOperation(value = "关联的生产采购单单据号下拉数据源", response = InWhRelationOrderResult.class)
     public Response<List<InWhRelationOrderResult>> relationPurchaseOrderData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
-        // todo 后面要改成调用生产采购单的service接口
         return new Response<>(inWhouseService.relationPurchaseOrderData(enter));
     }
 
@@ -113,7 +112,6 @@ public class InWhouseOrderController {
     @PostMapping(value = "/relationCombinOrderData")
     @ApiOperation(value = "关联的组装单单据号下拉数据源", response = InWhRelationOrderResult.class)
     public Response<List<InWhRelationOrderResult>> relationCombinOrderData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
-        // todo 后面要改成调用组装单service接口
         return new Response<>(inWhouseService.relationCombinOrderData(enter));
     }
 

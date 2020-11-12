@@ -91,4 +91,16 @@
         where dr=0
         and  combin_id=#{id}
     </select>
+
+
+    <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+        id as relationOrderId,
+        combin_no as relationOrderNo
+        from ope_combin_order
+        where dr = 0 and combin_status in (70,80)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and combin_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </select>
 </mapper>

@@ -2,7 +2,10 @@ package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -80,4 +83,14 @@ public interface ProductionPurchasServiceMapper {
     * @desc: 单据详情
     */
     ProductionPurchasDetailResult detail(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  获取生产采购单的部分数据
+     * @Date  2020/11/12 16:52
+     * @Param [enter]
+     * @return
+     **/
+    List<InWhRelationOrderResult> relationOrderData(@Param("enter") KeywordEnter enter);
 }

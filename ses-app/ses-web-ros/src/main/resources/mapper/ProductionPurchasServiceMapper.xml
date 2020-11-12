@@ -151,4 +151,15 @@
         where dr=0
         and  id=#{id}
     </select>
+
+    <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+          id as relationOrderId,
+          purchase_no as relationOrderNo
+        from ope_production_purchase_order
+        where dr = 0 and purchase_status in (20,30)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and purchase_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </select>
 </mapper>

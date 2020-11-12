@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,4 +61,14 @@ public interface ProductionAssemblyOrderServiceMapper {
     * @desc: 产品组装件列表
     */
     List<AssemblyDetailProductListResult> productCombinList(AssemblyOrderDetailEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  获取组装单的部分数据
+     * @Date  2020/11/12 16:52
+     * @Param [enter]
+     * @return
+     **/
+    List<InWhRelationOrderResult> relationOrderData(@Param("enter") KeywordEnter enter);
 }
