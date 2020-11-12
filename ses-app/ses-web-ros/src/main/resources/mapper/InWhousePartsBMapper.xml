@@ -7,6 +7,6 @@
         select
           *
         from ope_in_whouse_parts_b parts
-        parts.dr = 0 and parts.in_wh_id = #{inWhId}
+        where parts.dr = 0 and parts.in_wh_id = #{inWhId}
     </select>
 </mapper>
