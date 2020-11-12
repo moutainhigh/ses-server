@@ -5,6 +5,8 @@ import lombok.*;
 
 import io.swagger.annotations.*;
 
+import java.util.Date;
+
 /**
  * @ClassName:SavePurchasPaymentEnter
  * @description: SavePurchasPaymentEnter
@@ -22,7 +24,7 @@ public class SavePurchasPaymentEnter extends GeneralEnter {
     private int paymentType;
 
     @ApiModelProperty(value = "日期")
-    private String date;
+    private Date date;
 
     @ApiModelProperty(value = "天数")
     private int days;

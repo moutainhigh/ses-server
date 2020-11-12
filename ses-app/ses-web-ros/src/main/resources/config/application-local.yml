@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://localhost:22181
   metadata-report:
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://localhost:22181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:

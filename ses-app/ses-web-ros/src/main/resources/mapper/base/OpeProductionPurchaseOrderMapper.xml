@@ -19,6 +19,7 @@
     <result column="docking_user" jdbcType="BIGINT" property="dockingUser" />
     <result column="docking_user_name" jdbcType="VARCHAR" property="dockingUserName" />
     <result column="docking_country_code" jdbcType="VARCHAR" property="dockingCountryCode" />
+    <result column="docking_user_telephone" jdbcType="VARCHAR" property="dockingUserTelephone" />
     <result column="consignee_user" jdbcType="BIGINT" property="consigneeUser" />
     <result column="consignee_user_name" jdbcType="VARCHAR" property="consigneeUserName" />
     <result column="consignee_country_code" jdbcType="VARCHAR" property="consigneeCountryCode" />
@@ -31,6 +32,7 @@
     <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
     <result column="purchase_contract" jdbcType="VARCHAR" property="purchaseContract" />
     <result column="pre_pay_ratio" jdbcType="DECIMAL" property="prePayRatio" />
+    <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -45,11 +47,11 @@
     <!--@mbg.generated-->
     id, dr, purchase_no, purchase_status, purchase_qty, purchase_amount, factory_id, 
     factory_principal_id, factory_principal_name, principal_country_code, principal_telephone, 
-    delivery_date, docking_user, docking_user_name, docking_country_code, consignee_user, 
-    consignee_user_name, consignee_country_code, consignee_user_telephone, consignee_address, 
-    remark, payment_type, planned_payment_time, payment_day, payment_time, purchase_contract, 
-    pre_pay_ratio, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
-    def4, def5
+    delivery_date, docking_user, docking_user_name, docking_country_code, docking_user_telephone, 
+    consignee_user, consignee_user_name, consignee_country_code, consignee_user_telephone, 
+    consignee_address, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+    purchase_contract, pre_pay_ratio, pay_amount, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -125,6 +127,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.dockingCountryCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="docking_user_telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dockingUserTelephone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
       <trim prefix="consignee_user = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.consigneeUser,jdbcType=BIGINT}
@@ -185,6 +192,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.prePayRatio,jdbcType=DECIMAL}
         </foreach>
       </trim>
+      <trim prefix="pay_amount = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.payAmount,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
@@ -241,11 +253,11 @@
     insert into ope_production_purchase_order
     (id, dr, purchase_no, purchase_status, purchase_qty, purchase_amount, factory_id, 
       factory_principal_id, factory_principal_name, principal_country_code, principal_telephone, 
-      delivery_date, docking_user, docking_user_name, docking_country_code, consignee_user, 
-      consignee_user_name, consignee_country_code, consignee_user_telephone, consignee_address, 
-      remark, payment_type, planned_payment_time, payment_day, payment_time, purchase_contract, 
-      pre_pay_ratio, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def4, def5)
+      delivery_date, docking_user, docking_user_name, docking_country_code, docking_user_telephone, 
+      consignee_user, consignee_user_name, consignee_country_code, consignee_user_telephone, 
+      consignee_address, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+      purchase_contract, pre_pay_ratio, pay_amount, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.purchaseNo,jdbcType=VARCHAR}, 
@@ -254,15 +266,16 @@
         #{item.factoryPrincipalName,jdbcType=VARCHAR}, #{item.principalCountryCode,jdbcType=VARCHAR}, 
         #{item.principalTelephone,jdbcType=VARCHAR}, #{item.deliveryDate,jdbcType=TIMESTAMP}, 
         #{item.dockingUser,jdbcType=BIGINT}, #{item.dockingUserName,jdbcType=VARCHAR}, 
-        #{item.dockingCountryCode,jdbcType=VARCHAR}, #{item.consigneeUser,jdbcType=BIGINT}, 
-        #{item.consigneeUserName,jdbcType=VARCHAR}, #{item.consigneeCountryCode,jdbcType=VARCHAR}, 
-        #{item.consigneeUserTelephone,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
-        #{item.remark,jdbcType=VARCHAR}, #{item.paymentType,jdbcType=INTEGER}, #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, 
-        #{item.paymentDay,jdbcType=INTEGER}, #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.purchaseContract,jdbcType=VARCHAR}, 
-        #{item.prePayRatio,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=DECIMAL})
+        #{item.dockingCountryCode,jdbcType=VARCHAR}, #{item.dockingUserTelephone,jdbcType=VARCHAR}, 
+        #{item.consigneeUser,jdbcType=BIGINT}, #{item.consigneeUserName,jdbcType=VARCHAR}, 
+        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR}, 
+        #{item.consigneeAddress,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.paymentType,jdbcType=INTEGER}, 
+        #{item.plannedPaymentTime,jdbcType=TIMESTAMP}, #{item.paymentDay,jdbcType=INTEGER}, 
+        #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.purchaseContract,jdbcType=VARCHAR}, 
+        #{item.prePayRatio,jdbcType=DECIMAL}, #{item.payAmount,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionPurchaseOrder">
@@ -270,22 +283,23 @@
     insert into ope_production_purchase_order
     (id, dr, purchase_no, purchase_status, purchase_qty, purchase_amount, factory_id, 
       factory_principal_id, factory_principal_name, principal_country_code, principal_telephone, 
-      delivery_date, docking_user, docking_user_name, docking_country_code, consignee_user, 
-      consignee_user_name, consignee_country_code, consignee_user_telephone, consignee_address, 
-      remark, payment_type, planned_payment_time, payment_day, payment_time, purchase_contract, 
-      pre_pay_ratio, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def4, def5)
+      delivery_date, docking_user, docking_user_name, docking_country_code, docking_user_telephone, 
+      consignee_user, consignee_user_name, consignee_country_code, consignee_user_telephone, 
+      consignee_address, remark, payment_type, planned_payment_time, payment_day, payment_time, 
+      purchase_contract, pre_pay_ratio, pay_amount, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{purchaseNo,jdbcType=VARCHAR}, #{purchaseStatus,jdbcType=INTEGER}, 
       #{purchaseQty,jdbcType=INTEGER}, #{purchaseAmount,jdbcType=DECIMAL}, #{factoryId,jdbcType=BIGINT}, 
       #{factoryPrincipalId,jdbcType=BIGINT}, #{factoryPrincipalName,jdbcType=VARCHAR}, 
       #{principalCountryCode,jdbcType=VARCHAR}, #{principalTelephone,jdbcType=VARCHAR}, 
       #{deliveryDate,jdbcType=TIMESTAMP}, #{dockingUser,jdbcType=BIGINT}, #{dockingUserName,jdbcType=VARCHAR}, 
-      #{dockingCountryCode,jdbcType=VARCHAR}, #{consigneeUser,jdbcType=BIGINT}, #{consigneeUserName,jdbcType=VARCHAR}, 
-      #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
-      #{consigneeAddress,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{paymentType,jdbcType=INTEGER}, 
-      #{plannedPaymentTime,jdbcType=TIMESTAMP}, #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, 
-      #{purchaseContract,jdbcType=VARCHAR}, #{prePayRatio,jdbcType=DECIMAL}, #{createdBy,jdbcType=BIGINT}, 
+      #{dockingCountryCode,jdbcType=VARCHAR}, #{dockingUserTelephone,jdbcType=VARCHAR}, 
+      #{consigneeUser,jdbcType=BIGINT}, #{consigneeUserName,jdbcType=VARCHAR}, #{consigneeCountryCode,jdbcType=VARCHAR}, 
+      #{consigneeUserTelephone,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{paymentType,jdbcType=INTEGER}, #{plannedPaymentTime,jdbcType=TIMESTAMP}, 
+      #{paymentDay,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, #{purchaseContract,jdbcType=VARCHAR}, 
+      #{prePayRatio,jdbcType=DECIMAL}, #{payAmount,jdbcType=DECIMAL}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
       #{def5,jdbcType=DECIMAL})
@@ -305,6 +319,7 @@
     docking_user = #{dockingUser,jdbcType=BIGINT}, 
     docking_user_name = #{dockingUserName,jdbcType=VARCHAR}, 
     docking_country_code = #{dockingCountryCode,jdbcType=VARCHAR}, 
+    docking_user_telephone = #{dockingUserTelephone,jdbcType=VARCHAR}, 
     consignee_user = #{consigneeUser,jdbcType=BIGINT}, 
     consignee_user_name = #{consigneeUserName,jdbcType=VARCHAR}, 
     consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR}, 
@@ -317,6 +332,7 @@
     payment_time = #{paymentTime,jdbcType=TIMESTAMP}, 
     purchase_contract = #{purchaseContract,jdbcType=VARCHAR}, 
     pre_pay_ratio = #{prePayRatio,jdbcType=DECIMAL}, 
+    pay_amount = #{payAmount,jdbcType=DECIMAL}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
@@ -376,6 +392,9 @@
       <if test="dockingCountryCode != null">
         docking_country_code,
       </if>
+      <if test="dockingUserTelephone != null">
+        docking_user_telephone,
+      </if>
       <if test="consigneeUser != null">
         consignee_user,
       </if>
@@ -411,6 +430,9 @@
       </if>
       <if test="prePayRatio != null">
         pre_pay_ratio,
+      </if>
+      <if test="payAmount != null">
+        pay_amount,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -487,6 +509,9 @@
       <if test="dockingCountryCode != null">
         #{dockingCountryCode,jdbcType=VARCHAR},
       </if>
+      <if test="dockingUserTelephone != null">
+        #{dockingUserTelephone,jdbcType=VARCHAR},
+      </if>
       <if test="consigneeUser != null">
         #{consigneeUser,jdbcType=BIGINT},
       </if>
@@ -522,6 +547,9 @@
       </if>
       <if test="prePayRatio != null">
         #{prePayRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="payAmount != null">
+        #{payAmount,jdbcType=DECIMAL},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -598,6 +626,9 @@
       <if test="dockingCountryCode != null">
         docking_country_code = #{dockingCountryCode,jdbcType=VARCHAR},
       </if>
+      <if test="dockingUserTelephone != null">
+        docking_user_telephone = #{dockingUserTelephone,jdbcType=VARCHAR},
+      </if>
       <if test="consigneeUser != null">
         consignee_user = #{consigneeUser,jdbcType=BIGINT},
       </if>
@@ -633,6 +664,9 @@
       </if>
       <if test="prePayRatio != null">
         pre_pay_ratio = #{prePayRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="payAmount != null">
+        pay_amount = #{payAmount,jdbcType=DECIMAL},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},

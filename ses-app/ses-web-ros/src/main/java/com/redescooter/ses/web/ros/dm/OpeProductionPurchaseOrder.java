@@ -129,6 +129,13 @@ public class OpeProductionPurchaseOrder {
     private String dockingCountryCode;
 
     /**
+     * 采购对接人电话
+     */
+    @TableField(value = "docking_user_telephone")
+    @ApiModelProperty(value = "采购对接人电话")
+    private String dockingUserTelephone;
+
+    /**
      * 收货人id
      */
     @TableField(value = "consignee_user")
@@ -211,6 +218,13 @@ public class OpeProductionPurchaseOrder {
     @TableField(value = "pre_pay_ratio")
     @ApiModelProperty(value = "预付款比例(小数点最多一位)")
     private BigDecimal prePayRatio;
+
+    /**
+     * 支付金额
+     */
+    @TableField(value = "pay_amount")
+    @ApiModelProperty(value = "支付金额")
+    private BigDecimal payAmount;
 
     /**
      * 创建人
@@ -305,6 +319,8 @@ public class OpeProductionPurchaseOrder {
 
     public static final String COL_DOCKING_COUNTRY_CODE = "docking_country_code";
 
+    public static final String COL_DOCKING_USER_TELEPHONE = "docking_user_telephone";
+
     public static final String COL_CONSIGNEE_USER = "consignee_user";
 
     public static final String COL_CONSIGNEE_USER_NAME = "consignee_user_name";
@@ -328,6 +344,8 @@ public class OpeProductionPurchaseOrder {
     public static final String COL_PURCHASE_CONTRACT = "purchase_contract";
 
     public static final String COL_PRE_PAY_RATIO = "pre_pay_ratio";
+
+    public static final String COL_PAY_AMOUNT = "pay_amount";
 
     public static final String COL_CREATED_BY = "created_by";
 

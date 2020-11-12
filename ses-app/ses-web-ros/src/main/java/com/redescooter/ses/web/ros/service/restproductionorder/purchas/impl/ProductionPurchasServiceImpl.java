@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
@@ -18,6 +19,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
@@ -32,10 +34,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -103,6 +103,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      */
     @Override
     public ProductionPurchasDetailResult detail(IdEnter enter) {
+        //ProductionPurchasDetailResult  detail=productionPurchasServiceMapper.detail(enter);
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (opeProductionPurchaseOrder==null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
@@ -110,6 +111,11 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         ProductionPurchasDetailResult productionPurchasDetailResult = new ProductionPurchasDetailResult();
         BeanUtils.copyProperties(enter,productionPurchasDetailResult);
 
+        productionPurchasDetailResult.setDate(opeProductionPurchaseOrder.getPlannedPaymentTime());
+        productionPurchasDetailResult.setDays(opeProductionPurchaseOrder.getPaymentDay());
+        productionPurchasDetailResult.setPercentage(opeProductionPurchaseOrder.getPrePayRatio().intValue());
+        productionPurchasDetailResult.setContract(opeProductionPurchaseOrder.getPurchaseContract());
+        productionPurchasDetailResult.setAmount(opeProductionPurchaseOrder.getPayAmount().toString());
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         productionPurchasDetailResult.setAssociatedOrderResultList(this.associatedOrder(enter));
@@ -180,45 +186,68 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         }
 
         //校验json 数据
-        List<OpeProductionParts> opeProductionPartList = checkJsonDate(productList, paymentEnter);
+        List<PartDetailDto> PartDetailDtoList = checkJsonDate(productList, paymentEnter);
 
-        OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
-        BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
-        opeProductionPurchaseOrder.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_ORDER));
-        opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setPurchaseNo("42342442");
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
-        opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
-        opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
-        opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
-        opeProductionPurchaseOrder.setCreatedTime(new Date());
-        opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
-        opeProductionPurchaseOrder.setUpdatedTime(new Date());
-        opeProductionPurchaseOrderService.save(opeProductionPurchaseOrder);
+        Long purchasId=idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_ORDER);
 
+        BigDecimal totalPrice =BigDecimal.ZERO;
         //子订单保存
         List<OpeProductionPurchasePartsB> saveOpeProductionPurchasePartsBList = new ArrayList<>();
         productList.forEach(item->{
-            OpeProductionParts opeProductionParts = opeProductionPartList.stream().filter(part -> item.getId().equals(part.getId())).findFirst().orElse(null);
+            PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(part -> item.getId().equals(part.getPartId())).findFirst().orElse(null);
             OpeProductionPurchasePartsB opeProductionPurchasePartsB = new OpeProductionPurchasePartsB();
             opeProductionPurchasePartsB.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_PARTS_B));
             opeProductionPurchasePartsB.setDr(0);
-            opeProductionPurchasePartsB.setPartsId(opeProductionParts.getId());
-            opeProductionPurchasePartsB.setPartsName(opeProductionParts.getEnName());
-            opeProductionPurchasePartsB.setPartsNo(opeProductionParts.getPartsNo());
-            opeProductionPurchasePartsB.setPartsType(opeProductionParts.getPartsType());
+            opeProductionPurchasePartsB.setProductionPurchaseId(purchasId);
+            opeProductionPurchasePartsB.setPartsId(partDetailDto.getPartId());
+            opeProductionPurchasePartsB.setPartsName(partDetailDto.getPartName());
+            opeProductionPurchasePartsB.setPartsNo(partDetailDto.getPartN());
+            opeProductionPurchasePartsB.setPartsType(Integer.valueOf(partDetailDto.getProductType()));
             opeProductionPurchasePartsB.setQty(item.getQty());
-            opeProductionPurchasePartsB.setUnitPrice(null);
+            opeProductionPurchasePartsB.setUnitPrice(partDetailDto.getPrice());
             opeProductionPurchasePartsB.setRemark(null);
             opeProductionPurchasePartsB.setCreatedBy(enter.getUserId());
             opeProductionPurchasePartsB.setCreatedTime(new Date());
             opeProductionPurchasePartsB.setUpdatedBy(enter.getUserId());
             opeProductionPurchasePartsB.setUpdatedTime(new Date());
             saveOpeProductionPurchasePartsBList.add(opeProductionPurchasePartsB);
+            totalPrice.add(partDetailDto.getPrice().multiply(new BigDecimal(item.getQty())));
         });
+
+
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
+        BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
+        opeProductionPurchaseOrder.setId(purchasId);
+        opeProductionPurchaseOrder.setDr(0);
+        opeProductionPurchaseOrder.setPurchaseNo(RandomUtil.randomString("RO",10));
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
+        opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
+        opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
+        opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
+        opeProductionPurchaseOrder.setPlannedPaymentTime(paymentEnter.getDate());
+        opeProductionPurchaseOrder.setPaymentDay(paymentEnter.getDays());
+        opeProductionPurchaseOrder.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
+        opeProductionPurchaseOrder.setPurchaseAmount(totalPrice);
+        opeProductionPurchaseOrder.setPayAmount(new BigDecimal(paymentEnter.getAmount()));
+        opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
+        opeProductionPurchaseOrder.setCreatedTime(new Date());
+        opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.save(opeProductionPurchaseOrder);
+
         opeProductionPurchasePartsBService.saveBatch(saveOpeProductionPurchasePartsBList);
         return new GeneralResult(enter.getRequestId());
     }
+
+    @Override
+    public PageResult<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter) {
+       int  count=productionPurchasServiceMapper.purchasPartListCount(enter);
+       if (count==0){
+          return PageResult.createZeroRowResult(enter);
+       }
+       return PageResult.create(enter,count,productionPurchasServiceMapper.purchasPartList(enter));
+    }
+
     /**
     * @Description
     * @Author: alex
@@ -227,11 +256,11 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     * @Return: List<OpeProductionParts>
     * @desc: 校验json 数据
     */
-    private List<OpeProductionParts> checkJsonDate(List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter) {
-        List<OpeProductionParts> opeProductionParts = opeProductionPartsService.listByIds(productList.stream().map(SavePurchasProductEnter::getId).collect(Collectors.toList()));
+    private List<PartDetailDto> checkJsonDate(List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter) {
+      List<PartDetailDto>  PartDetailDtoList=productionPurchasServiceMapper.partDetailList(productList.stream().map(SavePurchasProductEnter::getId).collect(Collectors.toSet()));
         productList.forEach(item->{
-            OpeProductionParts opeProductionPart = opeProductionParts.stream().filter(product -> item.getId().equals(product.getId())).findFirst().orElse(null);
-            if (Objects.isNull(opeProductionPart)){
+            PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(product -> item.getId().equals(product.getPartId())).findFirst().orElse(null);
+            if (Objects.isNull(partDetailDto)){
                 throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
             if (Objects.isNull(item.getQty()) || item.getQty().equals(0)){
@@ -241,7 +270,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
         switch (paymentEnter.getPaymentType()){
             case 1:
-                if (StringUtils.isBlank(paymentEnter.getDate())){
+                if (Objects.isNull(paymentEnter.getDate())){
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 break;
@@ -256,7 +285,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                 }
                 break;
         }
-        return opeProductionParts;
+        return PartDetailDtoList;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
+import cn.hutool.db.DaoTemplate;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,9 @@ public class ProductionPurchasDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "状态")
     private Integer purchaseStatus;
+
+    @ApiModelProperty(value = "交货日期")
+    private Date deliveryDate;
 
     @ApiModelProperty(value = "采购人对接人Id")
     private Long dockingUser;
@@ -79,6 +84,24 @@ public class ProductionPurchasDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty(value = "付款方式")
+    private int paymentType;
+
+    @ApiModelProperty(value = "日期")
+    private Date date;
+
+    @ApiModelProperty(value = "天数")
+    private int days;
+
+    @ApiModelProperty(value = "百分比")
+    private int percentage;
+
+    @ApiModelProperty(value = "金额")
+    private String amount;
+
+    @ApiModelProperty(value = "合同")
+    private String contract;
 
     @ApiModelProperty(value = "采购产品")
     private List<PurchasDetailProductListResult> productList;
