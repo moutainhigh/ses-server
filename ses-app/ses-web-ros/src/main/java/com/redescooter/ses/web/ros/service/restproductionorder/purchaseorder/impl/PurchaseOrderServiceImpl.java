@@ -107,7 +107,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
         BeanUtils.copyProperties(enter,purchaseOrder);
-        purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        if (purchaseOrder.getPlannedPaymentTime() != null){
+            purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        }
         purchaseOrder.setPurchaseType(enter.getClassType());
         purchaseOrder.setCreatedBy(enter.getUserId());
         purchaseOrder.setCreatedTime(new Date());
