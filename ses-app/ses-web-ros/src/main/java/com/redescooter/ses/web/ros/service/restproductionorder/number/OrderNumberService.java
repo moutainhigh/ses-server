@@ -13,4 +13,15 @@ public interface OrderNumberService {
      * @desc: 订单编号
      */
     StringResult orderNumber(OrderNumberEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  生成单据号的方法
+     * @Date  2020/11/12 10:04
+     * @Param [enter]
+     * @return
+     **/
+    String generateOrderNo(OrderNumberEnter enter);
+
 }

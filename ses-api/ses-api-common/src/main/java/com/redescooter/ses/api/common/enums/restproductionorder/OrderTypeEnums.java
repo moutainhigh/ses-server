@@ -16,7 +16,8 @@ public enum OrderTypeEnums {
     ORDER("ORDER", "委托单", 5),
     LOGISTICS("LOGISTICS", "物流运输单", 6),
     FACTORY_PURCHAS("FACTORY_PURCHAS","工厂采购单",7),
-    FACTORY_INBOUND("FACTORY_INBOUND","工厂入库单",8);
+    FACTORY_INBOUND("FACTORY_INBOUND","工厂入库单",8),
+    COMBIN_ORDER("COMBIN_ORDER","组装单",9);
 
     private String code;
 

@@ -25,6 +25,9 @@ public class OrderNoGenerateUtil {
             Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
             i++;
             code = DateUtil.getSimpleDateStamp() + String.format("%3d", i).replace(" ", "0");
+        }else {
+            // 说明今天还没有产生过单据号，给今天的第一个就好
+            code = orderEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         return orderEnum + code;
     }
