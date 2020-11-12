@@ -91,4 +91,31 @@
         where dr=0
         and  combin_id=#{id}
     </select>
+
+    <select id="partsDetail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
+        select part.id         as id,
+                part.parts_no   as partN,
+                part.en_name    as partName,
+                part.parts_type as partType,
+                100             as price,
+                1               as unit
+                from ope_production_parts part
+        where part.dr = 0
+        <if test="collection != null and collection.size() != 0">
+            and part.id in
+            <foreach collection="collection" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
+        select * from ope_production_scooter_bom
+        where dr = 0  and
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="OR" close="">
+            ( group_id=#{item.group_id} and
+            color_id = #{item.color_id} and bom_status = 1)
+        </foreach>
+    </select>
 </mapper>

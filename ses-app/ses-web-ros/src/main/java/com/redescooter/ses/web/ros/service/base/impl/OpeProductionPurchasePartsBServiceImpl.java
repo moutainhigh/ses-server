@@ -8,7 +8,9 @@ import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeProductionPurchasePartsB;
 import com.redescooter.ses.web.ros.dao.base.OpeProductionPurchasePartsBMapper;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPurchasePartsBService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class OpeProductionPurchasePartsBServiceImpl extends ServiceImpl<OpeProductionPurchasePartsBMapper, OpeProductionPurchasePartsB> implements OpeProductionPurchasePartsBService {
 

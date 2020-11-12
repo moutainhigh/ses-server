@@ -22,9 +22,6 @@ public class PurchasDetailProductListResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "部品Id")
-    private Long partId;
-
     @ApiModelProperty(value = "部品编号")
     private String partN;
 
@@ -38,5 +35,5 @@ public class PurchasDetailProductListResult extends GeneralResult {
     private Integer qty;
 
     @ApiModelProperty(value = "单价金额")
-    private String amount;
+    private String price;
 }

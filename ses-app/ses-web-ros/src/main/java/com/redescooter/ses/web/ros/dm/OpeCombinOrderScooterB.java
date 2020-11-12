@@ -11,9 +11,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
-    * 组装单车辆产品表
-    */
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeCombinOrderScooterB")
+ * 组装单车辆产品表
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeCombinOrderScooterB")
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,14 +24,14 @@ public class OpeCombinOrderScooterB {
      * 主键id
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键id")
+    @ApiModelProperty(value = "主键id")
     private Long id;
 
     /**
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除")
+    @ApiModelProperty(value = "逻辑删除")
     @TableLogic
     private Integer dr;
 
@@ -39,119 +39,119 @@ public class OpeCombinOrderScooterB {
      * 关联的组装单id
      */
     @TableField(value = "combin_id")
-    @ApiModelProperty(value="关联的组装单id")
+    @ApiModelProperty(value = "关联的组装单id")
     private Long combinId;
 
     /**
      * 车型（规格分组）的id
      */
     @TableField(value = "group_id")
-    @ApiModelProperty(value="车型（规格分组）的id")
+    @ApiModelProperty(value = "车型（规格分组）的id")
     private Long groupId;
 
     /**
      * 颜色id
      */
     @TableField(value = "color_id")
-    @ApiModelProperty(value="颜色id")
+    @ApiModelProperty(value = "颜色id")
     private Long colorId;
 
     /**
      * bom车辆id
      */
     @TableField(value = "scooter_bom_id")
-    @ApiModelProperty(value="bom车辆id")
+    @ApiModelProperty(value = "bom车辆id")
     private Long scooterBomId;
 
     /**
      * 应发数量
      */
     @TableField(value = "qty")
-    @ApiModelProperty(value="应发数量")
+    @ApiModelProperty(value = "应发数量")
     private Integer qty;
 
     /**
      * 待质检数量
      */
     @TableField(value = "wait_qc_qty")
-    @ApiModelProperty(value="待质检数量")
+    @ApiModelProperty(value = "待质检数量")
     private Integer waitQcQty;
 
     /**
      * 待入库数量
      */
     @TableField(value = "wait_in_wh_qty")
-    @ApiModelProperty(value="待入库数量")
+    @ApiModelProperty(value = "待入库数量")
     private Integer waitInWhQty;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def4")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def4;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
     public static final String COL_ID = "id";

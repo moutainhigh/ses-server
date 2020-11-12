@@ -1,9 +1,14 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName:ProductionAssemblyOrderServiceMapper
@@ -58,4 +63,22 @@ public interface ProductionAssemblyOrderServiceMapper {
     * @desc: 产品组装件列表
     */
     List<AssemblyDetailProductListResult> productCombinList(AssemblyOrderDetailEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 4:47 下午
+    * @Param:  ids
+    * @Return: PartDetailDto
+    * @desc: 部件详情列表
+    */
+    List<PurchasDetailProductListResult> partsDetail(Set<Long> ids);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 5:41 下午
+    * @Param:  enter
+    * @Return: OpeProductionScooterBom
+    * @desc: 整车颜色序列号校验
+    */
+    List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
 }
