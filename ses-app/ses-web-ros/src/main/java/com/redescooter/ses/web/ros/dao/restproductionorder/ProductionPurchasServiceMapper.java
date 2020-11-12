@@ -71,5 +71,13 @@ public interface ProductionPurchasServiceMapper {
     * @desc: 可采购的产品列表
     */
     List<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter);
-
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 11:04 上午
+    * @Param:  enter
+    * @Return: ProductionPurchasDetailResult
+    * @desc: 单据详情
+    */
+    ProductionPurchasDetailResult detail(IdEnter enter);
 }

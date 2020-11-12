@@ -36,6 +36,8 @@ public class ProductionPurchasListResult extends GeneralResult {
     private Integer purchaseQty;
 
     @ApiModelProperty(value = "配送订单")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "金额")

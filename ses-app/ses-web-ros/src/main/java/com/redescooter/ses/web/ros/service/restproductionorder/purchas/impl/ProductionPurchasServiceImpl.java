@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -17,6 +18,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
@@ -24,6 +26,8 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -59,6 +63,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     private ProductionPurchasServiceMapper productionPurchasServiceMapper;
 
     @Autowired
+    private OrderStatusFlowService orderStatusFlowService;
+
+    @Autowired
     private ProductionOrderTraceService productionOrderTraceService;
 
     @Autowired
@@ -69,7 +76,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
-
 
     @Reference
     private IdAppService idAppService;
@@ -103,19 +109,10 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      */
     @Override
     public ProductionPurchasDetailResult detail(IdEnter enter) {
-        //ProductionPurchasDetailResult  detail=productionPurchasServiceMapper.detail(enter);
-        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
-        if (opeProductionPurchaseOrder==null){
+        ProductionPurchasDetailResult  productionPurchasDetailResult=productionPurchasServiceMapper.detail(enter);
+        if (Objects.isNull(productionPurchasDetailResult)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        ProductionPurchasDetailResult productionPurchasDetailResult = new ProductionPurchasDetailResult();
-        BeanUtils.copyProperties(enter,productionPurchasDetailResult);
-
-        productionPurchasDetailResult.setDate(opeProductionPurchaseOrder.getPlannedPaymentTime());
-        productionPurchasDetailResult.setDays(opeProductionPurchaseOrder.getPaymentDay());
-        productionPurchasDetailResult.setPercentage(opeProductionPurchaseOrder.getPrePayRatio().intValue());
-        productionPurchasDetailResult.setContract(opeProductionPurchaseOrder.getPurchaseContract());
-        productionPurchasDetailResult.setAmount(opeProductionPurchaseOrder.getPayAmount().toString());
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         productionPurchasDetailResult.setAssociatedOrderResultList(this.associatedOrder(enter));
@@ -228,7 +225,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setPaymentDay(paymentEnter.getDays());
         opeProductionPurchaseOrder.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
         opeProductionPurchaseOrder.setPurchaseAmount(totalPrice);
-        opeProductionPurchaseOrder.setPayAmount(new BigDecimal(paymentEnter.getAmount()));
+        opeProductionPurchaseOrder.setPayAmount(paymentEnter.getAmount());
         opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
         opeProductionPurchaseOrder.setCreatedTime(new Date());
         opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
@@ -236,6 +233,19 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrderService.save(opeProductionPurchaseOrder);
 
         opeProductionPurchasePartsBService.saveBatch(saveOpeProductionPurchasePartsBList);
+
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.CREATE.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -275,12 +285,12 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                 }
                 break;
             case 2:
-                if (paymentEnter.getPercentage()==0){
+                if (paymentEnter.getPercentage()<0){
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 break;
             default :
-                if (StringUtils.isBlank(paymentEnter.getAmount())){
+                if (Objects.isNull(paymentEnter.getAmount())){
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 break;

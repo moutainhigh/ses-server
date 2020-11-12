@@ -1,13 +1,16 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
 import cn.hutool.db.DaoTemplate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +38,8 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     private Integer purchaseStatus;
 
     @ApiModelProperty(value = "交货日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date deliveryDate;
 
     @ApiModelProperty(value = "采购人对接人Id")
@@ -89,6 +94,8 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     private int paymentType;
 
     @ApiModelProperty(value = "日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date date;
 
     @ApiModelProperty(value = "天数")
@@ -98,10 +105,13 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     private int percentage;
 
     @ApiModelProperty(value = "金额")
-    private String amount;
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "合同")
     private String contract;
+
+    @ApiModelProperty(value = "采购金额")
+    private BigDecimal purchaseAmount;
 
     @ApiModelProperty(value = "采购产品")
     private List<PurchasDetailProductListResult> productList;
