@@ -640,7 +640,51 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 scooterBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
                 List<OpeAllocateScooterB> scooterBs = opeAllocateScooterBService.list(scooterBQueryWrapper);
                 if (CollectionUtils.isNotEmpty(scooterBs)){
+                    // 按照车型和颜色进行分组
+                    Map<String,List<OpeAllocateScooterB>> scooterAllMap = new HashMap<>();
+                    for (OpeAllocateScooterB scooterB : scooterBs) {
+                        String key = scooterB.getGroupId() + scooterB.getColorId() + "";
+                        List<OpeAllocateScooterB> scooterBList = scooterAllMap.get(key);
+                        if (CollectionUtils.isEmpty(scooterBList)){
+                            scooterBList = new ArrayList<>();
+                            scooterAllMap.put(key,scooterBList);
+                        }
+                        scooterBList.add(scooterB);
+                    }
 
+                    // 找到这个调拨单下面的所有的已签收的采购的整车信息
+                    List<OpePurchaseScooterB> purchaseScooterBS = purchaseOrderServiceMapper.purchaseScooterBS(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchaseScooterBS)){
+                        flag = false;
+                        break;
+                    }
+                    // 按照车型和颜色进行分组
+                    Map<String,List<OpePurchaseScooterB>> scooterMap = new HashMap<>();
+                    for (OpePurchaseScooterB scooterB : purchaseScooterBS) {
+                        String key = scooterB.getGroupId() + scooterB.getColorId() + "";
+                        List<OpePurchaseScooterB> scooterbList = scooterMap.get(key);
+                        if (CollectionUtils.isEmpty(scooterbList)){
+                            scooterbList = new ArrayList<>();
+                            scooterMap.put(key,scooterbList);
+                        }
+                        scooterbList.add(scooterB);
+                    }
+                    if (scooterAllMap.size() > scooterMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (String scooterKey1 : scooterAllMap.keySet()) {
+                        for (String scooterKey2 : scooterMap.keySet()) {
+                            if (scooterKey1.equals(scooterKey2)){
+                                Integer allscooterNum = scooterAllMap.get(scooterKey1).stream().mapToInt(OpeAllocateScooterB::getQty).sum();
+                                Integer scooterNum = scooterMap.get(scooterKey2).stream().mapToInt(OpePurchaseScooterB::getQty).sum();
+                                if (allscooterNum > scooterNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 default:
                     break;
@@ -684,9 +728,30 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 partsBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
                 List<OpeAllocatePartsB> partsBs = opeAllocatePartsBService.list(partsBQueryWrapper);
                 if (CollectionUtils.isNotEmpty(partsBs)){
-                    Map<Long, List<OpeAllocatePartsB>> allBMap = partsBs.stream().collect(Collectors.groupingBy(OpeAllocatePartsB::getPartsId));
-                    //
-
+                    Map<Long, List<OpeAllocatePartsB>> partsAllBMap = partsBs.stream().collect(Collectors.groupingBy(OpeAllocatePartsB::getPartsId));
+                    // 找到这个调拨单下面的所有的已签收的采购的部件信息
+                    List<OpePurchasePartsB> purchasePartsBS = purchaseOrderServiceMapper.purchasePartsBS(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchasePartsBS)){
+                        flag = false;
+                        break;
+                    }
+                    Map<Long, List<OpePurchasePartsB>> partsMap = purchasePartsBS.stream().collect(Collectors.groupingBy(OpePurchasePartsB::getPartsId));
+                    if (partsAllBMap.size() > partsMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (Long partsKey1 : partsAllBMap.keySet()) {
+                        for (Long partsKey2 : partsMap.keySet()) {
+                            if (partsKey1.equals(partsKey2)){
+                                Integer allocatePartsNum = partsAllBMap.get(partsKey1).stream().mapToInt(OpeAllocatePartsB::getQty).sum();
+                                Integer purchasePartsNum = partsMap.get(partsKey2).stream().mapToInt(OpePurchasePartsB::getQty).sum();
+                                if (allocatePartsNum > purchasePartsNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 break;
         }
