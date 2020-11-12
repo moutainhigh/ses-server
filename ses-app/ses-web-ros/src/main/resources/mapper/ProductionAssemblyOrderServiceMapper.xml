@@ -45,6 +45,50 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult">
+        select id                       as id,
+               combin.combin_type       as combinType,
+               combin.combin_no         as combinNo,
+               combin.combin_status     as combinStatus,
+               combin.combin_qty        as combinQty,
+               combin.combin_start_date as combinStartDate,
+               combin.combin_end_date   as combinEndDate,
+               combin.principal_id      as principalId,
+               combin.principal_name    as principalName,
+               combin.country_code      as countryCode,
+               combin.telephone         as telephone,
+               combin.remark            as remark,
+               combin.combin_type       as classType
+        from ope_combin_order combin
+        where combin.dr=0
+        and combin.id=#{id}
+    </select>
 
+    <select id="productScooterList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
+        select scooterb.id        as id,
+                group_id           as groupId,
+                spgroup.group_name as groupName,
+                color_id           as colorId,
+                color.color_name   as colorName,
+                color.color_value  as colorValue,
+                1                  as productType,
+                scooter_bom_id     as productId,
+                qty                as qty
+        from ope_combin_order_scooter_b scooterb
+        left join ope_specificat_group spgroup on spgroup.id = scooterb.group_id and scooterb.dr = 0
+        left join ope_color color on color.id = scooterb.color_id and color.dr = 0
+        where scooterb.dr=0
+        and  scooterb.combin_id=#{id}
+    </select>
+
+    <select id="productCombinList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
+        select id                       as id,
+               combin_name              as productName,
+               combin_no                as productN,
+               production_combin_bom_id as productId,
+               2                        as productType,
+               qty                      as qty
+        from ope_combin_order_combin_b
+        where dr=0
+        and  combin_id=#{id}
     </select>
 </mapper>

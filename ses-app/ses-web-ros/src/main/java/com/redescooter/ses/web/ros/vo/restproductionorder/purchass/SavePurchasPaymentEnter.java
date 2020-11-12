@@ -31,6 +31,9 @@ public class SavePurchasPaymentEnter {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date date;
 
+    @ApiModelProperty(value = "2金额，1 百分比")
+    private Integer amountType;
+
     @ApiModelProperty(value = "天数")
     private int days;
 

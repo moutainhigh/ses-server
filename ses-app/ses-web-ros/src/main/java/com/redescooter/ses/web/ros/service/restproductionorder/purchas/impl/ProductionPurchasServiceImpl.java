@@ -408,6 +408,35 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @param enter
      */
     @Override
+    public GeneralResult delete(IdEnter enter) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.removeById(opeProductionPurchaseOrder.getId());
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.DELETE.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 2:53 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 下单
+     * @param enter
+     */
+    @Override
     public GeneralResult bookOrder(IdEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)){

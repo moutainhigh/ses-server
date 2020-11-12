@@ -101,6 +101,17 @@ public interface ProductionPurchasService {
     * @desc: 取消订单
     */
     GeneralResult cancel(IdEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date:   2020/11/12 2:53 下午
+     * @Param:  enter
+     * @Return: GeneralResult
+     * @desc: 下单
+     */
+    GeneralResult delete(IdEnter enter);
+ 
     /**
     * @Description
     * @Author: alex

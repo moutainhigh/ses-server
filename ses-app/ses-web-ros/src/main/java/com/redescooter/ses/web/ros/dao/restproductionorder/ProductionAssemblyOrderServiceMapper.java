@@ -1,10 +1,8 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
-import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyOrderDetailEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -42,4 +40,22 @@ public interface ProductionAssemblyOrderServiceMapper {
     * @desc: 单据详情
     */
     ProductionAssemblyOrderDetailResult detail(AssemblyOrderDetailEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 3:08 下午
+    * @Param:  enter
+    * @Return: AssemblyDetailProductListResult
+    * @desc: 产品车辆列表
+    */
+    List<AssemblyDetailProductListResult> productScooterList(AssemblyOrderDetailEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 3:09 下午
+    * @Param:  enter
+    * @Return: List<AssemblyDetailProductListResult>
+    * @desc: 产品组装件列表
+    */
+    List<AssemblyDetailProductListResult> productCombinList(AssemblyOrderDetailEnter enter);
 }

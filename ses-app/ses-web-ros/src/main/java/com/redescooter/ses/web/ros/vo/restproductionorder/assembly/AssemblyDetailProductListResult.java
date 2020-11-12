@@ -46,11 +46,8 @@ public class AssemblyDetailProductListResult extends GeneralResult {
     @ApiModelProperty(value = "分组名称")
     private String groupName;
 
-    @ApiModelProperty(value = "订单编号")
-    private String orderNo;
-
-    @ApiModelProperty(value = "订单类型")
-    private Integer orderType;
+    @ApiModelProperty(value = "产品编号")
+    private String productN;
 
     @ApiModelProperty(value = "数量")
     private Integer qty;

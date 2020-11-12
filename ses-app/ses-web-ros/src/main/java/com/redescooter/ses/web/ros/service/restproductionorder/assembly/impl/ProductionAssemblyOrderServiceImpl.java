@@ -2,16 +2,24 @@ package com.redescooter.ses.web.ros.service.restproductionorder.assembly.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeCombinOrderCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeCombinOrderScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
@@ -24,8 +32,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ClassName:ProductionAssemblyOrderService
@@ -40,7 +47,19 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
 
     @Autowired
+    private OpeInWhouseOrderService opeInWhouseOrderService;
+
+    @Autowired
     private ProductionOrderTraceService productionOrderTraceService;
+
+    @Autowired
+    private OpeCombinOrderScooterBService opeCombinOrderScooterBService;
+
+    @Autowired
+    private OpeCombinOrderCombinBService opeCombinOrderCombinBService;
+
+    @Autowired
+    private OpeProductionPartsRelationService opeProductionPartsRelationService;
 
     @Autowired
     private IdAppService idAppService;
@@ -78,9 +97,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (detail==null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        //detail.setProductList(this.detailProductList(enter));
+        detail.setProductList(this.detailProductList(enter));
         detail.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
-        detail.setAssociatedOrderResultList(this.associatedOrder(enter));
+        detail.setAssociatedOrderResultList(this.associatedOrder(new IdEnter(enter.getId())));
         return detail;
     }
 
@@ -94,8 +113,15 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @param enter
      */
     @Override
-    public List<PurchasDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter) {
-        return null;
+    public List<AssemblyDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter) {
+        List<AssemblyDetailProductListResult> result = new ArrayList<> ();
+        if (enter.getClassType().equals(ProductTypeEnums.SCOOTER.getValue())){
+            result.addAll(productionAssemblyOrderServiceMapper.productScooterList(enter));
+        }
+        if (enter.getClassType().equals(ProductTypeEnums.COMBINATION.getValue())){
+            result.addAll(productionAssemblyOrderServiceMapper.productCombinList(enter));
+        }
+        return result;
     }
 
     /**
@@ -108,8 +134,17 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @param enter
      */
     @Override
-    public List<AssociatedOrderResult> associatedOrder(AssemblyOrderDetailEnter enter) {
-        return null;
+    public List<AssociatedOrderResult> associatedOrder(IdEnter enter) {
+        List<AssociatedOrderResult> resultList=new ArrayList<>();
+        List<OpeInWhouseOrder> opeInWhouseOrderList = opeInWhouseOrderService.list(new LambdaQueryWrapper<OpeInWhouseOrder>()
+                .eq(OpeInWhouseOrder::getRelationOrderId, enter.getId())
+                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
+        if (CollectionUtils.isNotEmpty(opeInWhouseOrderList)){
+            opeInWhouseOrderList.forEach(item->{
+                resultList.add(new AssociatedOrderResult(item.getId(),item.getInWhNo(),item.getOrderType(),item.getCreatedTime(),null));
+            });
+        }
+        return resultList;
     }
 
     /**
@@ -123,7 +158,32 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      */
     @Override
     public List<PurchasDetailProductListResult> productPartDetail(AssemblyOrderDetailEnter enter) {
-        return null;
+        List<PurchasDetailProductListResult> result=new ArrayList<>();
+
+        Map<Integer,Long> productMap = new HashMap<>();
+        Integer qty=0;
+        if (enter.getClassType().equals(ProductTypeEnums.SCOOTER.getValue())){
+            OpeCombinOrderScooterB opeCombinOrderScooterB = opeCombinOrderScooterBService.getById(enter.getId());
+            if (Objects.isNull(opeCombinOrderScooterB)){
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getCode(),ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getMessage());
+            }
+            qty=opeCombinOrderScooterB.getQty();
+            productMap.put(ProductTypeEnums.SCOOTER.getValue(),opeCombinOrderScooterB.getScooterBomId());
+        }
+        if (enter.getClassType().equals(ProductTypeEnums.COMBINATION.getValue())){
+            OpeCombinOrderCombinB opeCombinOrderCombinB = opeCombinOrderCombinBService.getById(enter.getId());
+            if (Objects.isNull(opeCombinOrderCombinB)){
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getCode(),ExceptionCodeEnums.PRODUCT_HAS_NO_PARTS.getMessage());
+            }
+            qty=opeCombinOrderCombinB.getQty();
+            productMap.put(ProductTypeEnums.COMBINATION.getValue(),opeCombinOrderCombinB.getProductionCombinBomId());
+        }
+
+        //部件关联关系
+        opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>()
+                .eq(OpeProductionPartsRelation::getProductionType, ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue())
+        .eq(OpeProductionPartsRelation::getProductionId,null));
+        return result;
     }
 
     /**
@@ -156,6 +216,51 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setDr(0);
         opeCombinOrder.setCombinNo(RandomUtil.randomString(RandomUtil.BASE_CHAR,10));
         opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.DRAF.getValue());
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 3:46 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 备料
+     * @param enter
+     */
+    @Transactional
+    @Override
+    public GeneralResult materialPreparation(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 3:46 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 组装
+     * @param enter
+     */
+    @Transactional
+    @Override
+    public GeneralResult assembly(IdEnter enter) {
+        return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 删除
+     * @param enter
+     */
+    @Transactional
+    @Override
+    public GeneralResult delete(IdEnter enter) {
         return null;
     }
 }

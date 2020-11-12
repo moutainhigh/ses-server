@@ -78,4 +78,9 @@ public class PurchasController {
         return new Response<>(productionPurchasService.cancel(enter));
     }
 
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "删除", response = SupplierListResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionPurchasService.delete(enter));
+    }
 }

@@ -45,7 +45,7 @@ public interface ProductionAssemblyOrderService {
      * @Return: List<PurchasDetailProductListResult>
      * @desc: 产品详情
      */
-    List<PurchasDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter);
+    List<AssemblyDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter);
     /**
      * @Description
      * @Author: alex
@@ -54,7 +54,7 @@ public interface ProductionAssemblyOrderService {
      * @Return: List<AssociatedOrderResult>
      * @desc: 关联订单
      */
-    List<AssociatedOrderResult> associatedOrder(AssemblyOrderDetailEnter enter);
+    List<AssociatedOrderResult> associatedOrder(IdEnter enter);
 
     /**
     * @Description
@@ -74,4 +74,31 @@ public interface ProductionAssemblyOrderService {
     * @desc: 保存组装单
     */
    GeneralResult save(SaveAssemblyOrderEnter enter);
+   /**
+   * @Description
+   * @Author: alex
+   * @Date:   2020/11/12 3:46 下午
+   * @Param:  enter
+   * @Return: GeneralResult
+   * @desc: 备料
+   */
+   GeneralResult materialPreparation(IdEnter enter);
+   /**
+   * @Description
+   * @Author: alex
+   * @Date:   2020/11/12 3:46 下午
+   * @Param:  enter
+   * @Return: GeneralResult
+   * @desc: 组装
+   */
+   GeneralResult assembly(IdEnter enter);
+   /**
+   * @Description
+   * @Author: alex
+   * @Date:   2020/11/12
+   * @Param:  enter
+   * @Return: GeneralResult
+   * @desc: 删除
+   */
+   GeneralResult delete(IdEnter enter);
 }
