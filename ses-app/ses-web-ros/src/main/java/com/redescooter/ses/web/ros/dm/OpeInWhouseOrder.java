@@ -89,7 +89,7 @@ public class OpeInWhouseOrder {
      * 关联的单据类型，1：生产采购单，2：组装单
      */
     @TableField(value = "relation_order_type")
-    @ApiModelProperty(value = "关联的单据类型，1：生产采购单，2：组装单")
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单``")
     private Integer relationOrderType;
 
     /**
