@@ -30,6 +30,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetail
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -41,6 +42,7 @@ import java.util.*;
  * @Version：1.3
  * @create: 2020/11/12 11:53
  */
+@Service
 public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrderService {
 
     @Autowired
