@@ -471,7 +471,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Override
     public List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(IdEnter enter) {
-        List<SaveOrUpdatePartsBEnter> list = new ArrayList<>();
+        List<SaveOrUpdatePartsBEnter> list = productionPurchasServiceMapper.relationPurchaseOrderPartsData(enter);
         return list;
     }
 
@@ -483,13 +483,13 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Override
     public List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(IdEnter enter) {
-        List<SaveOrUpdateCombinBEnter> list = new ArrayList<>();
+        List<SaveOrUpdateCombinBEnter> list = productionAssemblyOrderServiceMapper.relationCombinOrderCombinData(enter);
         return list;
     }
 
     @Override
     public List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter) {
-        List<SaveOrUpdateScooterBEnter> list = new ArrayList<>();
+        List<SaveOrUpdateScooterBEnter> list = productionAssemblyOrderServiceMapper.relationCombinOrderScooterData(enter);
         return list;
     }
 }

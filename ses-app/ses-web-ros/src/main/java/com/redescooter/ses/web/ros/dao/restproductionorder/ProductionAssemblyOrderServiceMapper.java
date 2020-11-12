@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateCombinBEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import org.apache.ibatis.annotations.Param;
 
@@ -71,4 +74,24 @@ public interface ProductionAssemblyOrderServiceMapper {
      * @return
      **/
     List<InWhRelationOrderResult> relationOrderData(@Param("enter") KeywordEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id 获取组装单的组装件产品信息
+     * @Date  2020/11/12 18:09
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(@Param("enter") IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id 获取组装单的整车产品信息
+     * @Date  2020/11/12 18:14
+     * @Param [enter]
+     * @return
+     **/
+    List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(@Param("enter")IdEnter enter);
 }

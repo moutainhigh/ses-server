@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.restproductionorder;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
 import org.apache.ibatis.annotations.Param;
@@ -93,4 +94,14 @@ public interface ProductionPurchasServiceMapper {
      * @return
      **/
     List<InWhRelationOrderResult> relationOrderData(@Param("enter") KeywordEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过生产采购单的主键获取下面的部件产品信息
+     * @Date  2020/11/12 17:49
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(@Param("enter") IdEnter enter);
 }

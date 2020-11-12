@@ -162,4 +162,16 @@
             and purchase_no like concat('%', #{enter.keyword}, '%')
         </if>
     </select>
+
+    <select id="relationPurchaseOrderPartsData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter">
+        select
+           parts_id,
+           parts_name,
+           parts_no,
+           parts_type,
+           qty as purchaseQty,
+           qty as ableInWhQty
+        from ope_production_purchase_parts_b
+        where dr = 0 and production_purchase_id = #{enter.id}
+    </select>
 </mapper>
