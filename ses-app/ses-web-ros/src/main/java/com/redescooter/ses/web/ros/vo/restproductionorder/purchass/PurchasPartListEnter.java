@@ -21,7 +21,7 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class PurchasPartListEnter extends PageEnter {
     @ApiModelProperty(value = "部件类型")
-    private Integer partType;
+    private Integer productType;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;

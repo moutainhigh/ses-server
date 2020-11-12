@@ -74,7 +74,6 @@ public interface ProductionPurchasService {
     */
    PageResult<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter);
 
-
     /**
     * @Description
     * @Author: alex
@@ -84,4 +83,31 @@ public interface ProductionPurchasService {
     * @desc: 供应商列表
     */
     List<SupplierListResult>  supplierList(GeneralEnter enter);
+    /**
+    * @Description
+    * @Author: alexx
+    * @Date:   2020/11/12 2:51 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 删除
+    */
+    GeneralResult close(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 2:52 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 取消订单
+    */
+    GeneralResult cancel(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 2:53 下午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 下单
+    */
+    GeneralResult bookOrder(IdEnter enter);
 }

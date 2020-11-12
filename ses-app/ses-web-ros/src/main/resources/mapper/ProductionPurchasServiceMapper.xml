@@ -85,8 +85,8 @@
             from ope_production_parts part
             where part.disable=0
             and  part.dr=0
-            <if test="partType != null">
-                and part.parts_type=#{partType}
+            <if test="productType != null">
+                and part.parts_type=#{productType}
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
@@ -109,8 +109,8 @@
         from ope_production_parts part
         where part.disable=0
         and  part.dr=0
-        <if test="partType != null">
-            and part.parts_type=#{partType}
+        <if test="productType != null">
+            and part.parts_type=#{productType}
         </if>
         <if test="keyword != null and keyword != ''">
             and (

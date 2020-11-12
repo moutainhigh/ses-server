@@ -113,6 +113,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(productionPurchasDetailResult)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
+        productionPurchasDetailResult.setPaymentDate(new SavePurchasPaymentEnter(opeProductionPurchaseOrder.getPaymentType(),opeProductionPurchaseOrder.getPlannedPaymentTime(),
+                opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount()));
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         productionPurchasDetailResult.setAssociatedOrderResultList(this.associatedOrder(enter));
@@ -314,10 +317,121 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (CollectionUtils.isNotEmpty(opeSupplierList)){
             opeSupplierList.forEach(item->{
                 List<SupplierPrincipaleResult> supplierList = new ArrayList<>();
-                supplierList.add(new SupplierPrincipaleResult(item.getContactFirstName(),item.getContactLastName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
+                supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFirstName(),item.getContactLastName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
                 resultList.add(new SupplierListResult(item.getId(),item.getSupplierName(),supplierList));
             });
         }
         return resultList;
+    }
+
+    /**
+     * @Description
+     * @Author: alexx
+     * @Date: 2020/11/12 2:51 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 删除
+     * @param enter
+     */
+    @Override
+    public GeneralResult close(IdEnter enter) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.HAS_BEEN_STORED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.FINISHED.getValue());
+        opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.CLOSE.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 2:52 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 取消订单
+     * @param enter
+     */
+    @Override
+    public GeneralResult cancel(IdEnter enter) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.CANCEL.getValue());
+        opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/12 2:53 下午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 下单
+     * @param enter
+     */
+    @Override
+    public GeneralResult bookOrder(IdEnter enter) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.PURCHASING.getValue());
+        opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.PLACE_ORDER.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 }

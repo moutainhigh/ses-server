@@ -2,7 +2,9 @@ package com.redescooter.ses.web.ros.service.restproductionorder.assembly;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 
@@ -34,6 +36,26 @@ public interface ProductionAssemblyOrderService {
     * @desc: 详情
     */
     ProductionAssemblyOrderDetailResult detail(AssemblyOrderDetailEnter enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date:   2020/11/11 4:18 下午
+     * @Param:  enter
+     * @Return: List<PurchasDetailProductListResult>
+     * @desc: 产品详情
+     */
+    List<PurchasDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter);
+    /**
+     * @Description
+     * @Author: alex
+     * @Date:   2020/11/11 5:02 下午
+     * @Param:  enter
+     * @Return: List<AssociatedOrderResult>
+     * @desc: 关联订单
+     */
+    List<AssociatedOrderResult> associatedOrder(AssemblyOrderDetailEnter enter);
+
     /**
     * @Description
     * @Author: alex
