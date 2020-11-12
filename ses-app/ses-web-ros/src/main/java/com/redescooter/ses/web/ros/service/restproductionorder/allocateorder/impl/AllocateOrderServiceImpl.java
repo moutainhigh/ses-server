@@ -341,7 +341,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         result.setEntrusts(entrustResults);
         // 操作动态
-        List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId());
+        List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId(),OrderTypeEnums.ALLOCATE.getValue());
         result.setOpTraces(traces);
         return result;
     }

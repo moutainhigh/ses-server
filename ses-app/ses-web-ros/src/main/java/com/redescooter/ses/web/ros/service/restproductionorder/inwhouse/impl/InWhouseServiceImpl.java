@@ -2,10 +2,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderEnum;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -13,26 +10,23 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
-import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dao.restproductionorder.*;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameInWhouseServiceImpl
@@ -75,6 +70,24 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
+    @Autowired
+    private InWhouseOrderScooterBServiceMapper inWhouseOrderScooterBServiceMapper;
+
+    @Autowired
+    private InWhouseOrderCombinBServiceMapper inWhouseOrderCombinBServiceMapper;
+
+    @Autowired
+    private InWhouseOrderPartsBServiceMapper inWhouseOrderPartsBServiceMapper;
+
+    @Autowired
+    private AllocateOrderServiceMapper allocateOrderServiceMapper;
+
+    @Autowired
+    private OpeProductionPurchaseOrderService opeProductionPurchaseOrderService;
+
+    @Autowired
+    private OpeCombinOrderService opeCombinOrderService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -98,12 +111,12 @@ public class InWhouseServiceImpl implements InWhouseService {
         OpeInWhouseOrder inWhouseOrder = new OpeInWhouseOrder();
         BeanUtils.copyProperties(enter,inWhouseOrder);
         inWhouseOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
-        inWhouseOrder.setInWhStatus(InWhouseOrderEnum.DRAFT.getValue());
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.DRAFT.getValue());
         inWhouseOrder.setCreatedBy(enter.getUserId());
         inWhouseOrder.setCreatedTime(new Date());
         inWhouseOrder.setUpdatedBy(enter.getUserId());
         inWhouseOrder.setUpdatedTime(new Date());
-        inWhouseOrder.setInWhStatus(InWhouseOrderEnum.DRAFT.getValue());
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.DRAFT.getValue());
         // 单据号
         inWhouseOrder.setInWhNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_INBOUND.getValue())));
         // 统计入库数量
@@ -240,11 +253,70 @@ public class InWhouseServiceImpl implements InWhouseService {
     }
 
 
+
     @Override
     @Transactional
     public GeneralResult inWhouseEdit(InWhouseSaveOrUpdateEnter enter) {
+        enter = SesStringUtils.objStringTrim(enter);
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        BeanUtils.copyProperties(enter,inWhouseOrder);
+        inWhouseOrder.setUpdatedTime(new Date());
+        inWhouseOrder.setUpdatedBy(enter.getUserId());
+        countQty(inWhouseOrder,enter.getSt());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // 编辑的时候 先把下面的产品删除  再重新插入
+        deleteOrderB(inWhouseOrder);
+        // 处理子表
+        createInWhouseB(inWhouseOrder,enter);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.EDIT.getValue(),
+                inWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 删除入库单下面的子表数据
+    public void deleteOrderB(OpeInWhouseOrder inWhouseOrder){
+        switch (inWhouseOrder.getOrderType()){
+            case 1:
+                // scooter
+                QueryWrapper<OpeInWhouseScooterB> scooter = new QueryWrapper<>();
+                scooter.eq(OpeInWhouseScooterB.COL_IN_WH_ID,inWhouseOrder.getId());
+                List<OpeInWhouseScooterB> scooterBList = opeInWhouseScooterBService.list(scooter);
+                if (CollectionUtils.isNotEmpty(scooterBList)){
+                    opeInWhouseScooterBService.removeByIds(scooterBList.stream().map(OpeInWhouseScooterB::getId).collect(Collectors.toList()));
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeInWhouseCombinB> combin = new QueryWrapper<>();
+                combin.eq(OpeInWhouseCombinB.COL_IN_WH_ID,inWhouseOrder.getId());
+                List<OpeInWhouseCombinB> combinBList = opeInWhouseCombinBService.list(combin);
+                if (CollectionUtils.isNotEmpty(combinBList)){
+                    opeInWhouseScooterBService.removeByIds(combinBList.stream().map(OpeInWhouseCombinB::getId).collect(Collectors.toList()));
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeInWhousePartsB> parts = new QueryWrapper<>();
+                parts.eq(OpeInWhousePartsB.COL_IN_WH_ID,inWhouseOrder.getId());
+                List<OpeInWhousePartsB> partsBList = opeInWhousePartsBService.list(parts);
+                if (CollectionUtils.isNotEmpty(partsBList)){
+                    opeInWhouseScooterBService.removeByIds(partsBList.stream().map(OpeInWhousePartsB::getId).collect(Collectors.toList()));
+                }
+                break;
+        }
+    }
+
 
     @Override
     public Map<String, Integer> listCount(GeneralEnter enter) {
@@ -267,25 +339,121 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Override
     @Transactional
     public GeneralResult inWhouseDelete(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
         opeInWhouseOrderService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public InWhouseDetailResult inWhouseDetail(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
         InWhouseDetailResult result = new InWhouseDetailResult();
+        result.setId(inWhouseOrder.getId());
+        result.setInWhType(inWhouseOrder.getInWhType());
+        result.setOrderType(inWhouseOrder.getOrderType());
+        // 入库单下面的产品明细
+        switch (inWhouseOrder.getOrderType()){
+            case 1:
+                // scooter
+                result.setScooters(inWhouseOrderScooterBServiceMapper.scooterBs(inWhouseOrder.getId()));
+                default:
+                    break;
+            case 2:
+                // combin
+                result.setCombins(inWhouseOrderCombinBServiceMapper.combinBs(inWhouseOrder.getId()));
+                break;
+            case 3:
+                // parts
+                result.setParts(inWhouseOrderPartsBServiceMapper.partsBs(inWhouseOrder.getId()));
+                break;
+        }
+        // 操作动态
+        List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId(),OrderTypeEnums.ALLOCATE.getValue());
+        result.setOpTraces(traces);
+        // 关联的单据（可能关联生产采购单或者组装单）
+        // 先判断关联的是哪种单据
+        List<PurchaseRelationOrderResult> relationOrderResults = new ArrayList<>();
+        if (inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue()) && InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
+            // 生产采购单
+            QueryWrapper<OpeProductionPurchaseOrder> purchaseQueryWrapper = new QueryWrapper<>();
+            purchaseQueryWrapper.eq(OpeProductionPurchaseOrder.COL_ID,inWhouseOrder.getRelationOrderId());
+            purchaseQueryWrapper.last("limit 1");
+            OpeProductionPurchaseOrder purchaseOrder = opeProductionPurchaseOrderService.getOne(purchaseQueryWrapper);
+            if (purchaseOrder != null){
+                PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
+                relationOrderResult.setId(purchaseOrder.getId());
+                relationOrderResult.setOrderNo(purchaseOrder.getPurchaseNo());
+                relationOrderResult.setOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+                relationOrderResult.setCreatedTime(purchaseOrder.getCreatedTime());
+                relationOrderResults.add(relationOrderResult);
+            }
+        }else if (inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue()) && InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
+            // 组装单
+            QueryWrapper<OpeCombinOrder> combinOrderQueryWrapper = new QueryWrapper<>();
+            combinOrderQueryWrapper.eq(OpeCombinOrder.COL_ID,inWhouseOrder.getRelationOrderId());
+            combinOrderQueryWrapper.last("limit 1");
+            OpeCombinOrder combinOrder = opeCombinOrderService.getOne(combinOrderQueryWrapper);
+            if (combinOrder != null){
+                PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
+                relationOrderResult.setId(combinOrder.getId());
+                relationOrderResult.setOrderNo(combinOrder.getCombinNo());
+                relationOrderResult.setOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                relationOrderResult.setCreatedTime(combinOrder.getCreatedTime());
+                relationOrderResults.add(relationOrderResult);
+            }
+        }
+        result.setRelationOrders(relationOrderResults);
         return result;
     }
 
     @Override
     @Transactional
     public GeneralResult inWhConfirm(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+                inWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
         return new GeneralResult(enter.getRequestId());
     }
+
 
     @Override
     @Transactional
     public GeneralResult inWhReadyQc(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.READY_QC.getValue(),
+                inWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+        // todo 生成质检单
         return new GeneralResult(enter.getRequestId());
     }
 

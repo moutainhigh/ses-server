@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,7 +23,7 @@ public class InWhouseDetailResult extends GeneralResult {
     @ApiModelProperty("主键id")
     private Long id;
 
-    @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他")
+    @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
     private Integer inWhType;
 
     @ApiModelProperty("入库单据类型,1:车辆，2:组装件，3:部件")
@@ -37,7 +38,9 @@ public class InWhouseDetailResult extends GeneralResult {
     @ApiModelProperty("组装件明细")
     private List<InWhouseDetailCombinResult>  combins;
 
-    // todo 枚举待调整
+    @ApiModelProperty("操作动态")
+    private List<OpTraceResult> opTraces;
+
     @ApiModelProperty("关联的单据")
     private List<PurchaseRelationOrderResult> relationOrders;
 

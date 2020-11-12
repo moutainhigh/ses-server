@@ -169,7 +169,7 @@
           staff.full_name as createdByName
         from ope_op_trace trace
         left join ope_sys_staff staff on trace.created_by = staff.id
-        where trace.dr = 0 and trace.relation_id = #{id} and order_type = 1
+        where trace.dr = 0 and trace.relation_id = #{id} and order_type = #{orderTypeEnum}
         order by trace.created_time desc
     </select>
 

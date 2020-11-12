@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderCombinBServiceMapper">
 
+
+    <select id="combinBs" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailCombinResult">
+        select
+           *
+        from ope_in_whouse_combin_b  combin
+        where combin.dr = 0 and combin.in_wh_id = #{inWhId}
+    </select>
 </mapper>

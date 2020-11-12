@@ -39,7 +39,7 @@ public interface AllocateOrderServiceMapper {
     List<AllocateEntrustResult> allocateEntrust(@Param("id") Long id);
 
 
-    List<OpTraceResult> allocateTrace(@Param("id") Long id);
+    List<OpTraceResult> allocateTrace(@Param("id") Long id,@Param("orderTypeEnum")Integer orderTypeEnum);
 
 
    Integer allocateOutWh(@Param("id") Long id);

@@ -31,7 +31,7 @@ public class InWhouseListResult extends GeneralResult {
     @ApiModelProperty(value="入库数量")
     private Integer inWhQty;
 
-    @ApiModelProperty(value="入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他")
+    @ApiModelProperty(value="入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
     private Integer inWhType;
 
     @ApiModelProperty(value = "创建人名称")

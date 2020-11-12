@@ -19,7 +19,7 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty("主键id")
     private Long id;
 
-    @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他")
+    @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
     private Integer inWhType;
 
     @ApiModelProperty("关联的单据号id")
