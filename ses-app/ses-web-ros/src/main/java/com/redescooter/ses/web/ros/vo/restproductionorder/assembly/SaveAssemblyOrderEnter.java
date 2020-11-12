@@ -21,9 +21,8 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class SaveAssemblyOrderEnter extends GeneralEnter {
 
-
-    @ApiModelProperty(value = "id")
-    private Long id;
+    @ApiModelProperty(value = "组装开始时间")
+    private Integer combinType;
 
     @ApiModelProperty(value = "组装开始时间")
     private Date combinStartDate;
