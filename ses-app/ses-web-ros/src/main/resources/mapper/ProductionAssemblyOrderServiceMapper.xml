@@ -1,4 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper">
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_combin_order combin
+        left join ope_sys_staff staff on staff.id = combin.created_by and staff.dr = 0
+        where combin.dr=0
+        and combin.combin_type=#{classType}
+        <if test="status != null">
+            and  combin.combin_status =#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and combin.combin_no like concat('%',#{keyword},'%')
+        </if>
+    </select>
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult">
+        select id                       as id,
+               combin.combin_type       as combinType,
+               combin.combin_no         as combinNo,
+               combin.combin_status     as combinStatus,
+               combin.combin_qty        as combinQty,
+               combin.combin_start_date as combinStartDate,
+               combin.combin_end_date   as combinEndDate,
+               combin.principal_id      as principalId,
+               combin.principal_name    as principalName,
+               combin.country_code      as countryCode,
+               combin.telephone         as telephone,
+               combin.created_by        as createById,
+               staff.first_name         as createByFistName,
+               staff.last_name          as createByLastName,
+               combin.created_time      as createdTime
+        from ope_combin_order combin
+                 left join ope_sys_staff staff on staff.id = combin.created_by and staff.dr = 0
+        where combin.dr=0
+        and combin.combin_type=#{classType}
+        <if test="status != null">
+            and  combin.combin_status =#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and combin.combin_no like concat('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult">
+
+    </select>
 </mapper>

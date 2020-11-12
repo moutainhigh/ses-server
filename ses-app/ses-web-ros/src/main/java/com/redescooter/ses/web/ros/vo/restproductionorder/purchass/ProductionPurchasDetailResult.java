@@ -90,22 +90,8 @@ public class ProductionPurchasDetailResult extends GeneralResult {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "付款方式")
-    private int paymentType;
-
-    @ApiModelProperty(value = "日期")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
-    private Date date;
-
-    @ApiModelProperty(value = "天数")
-    private int days;
-
-    @ApiModelProperty(value = "百分比")
-    private int percentage;
-
-    @ApiModelProperty(value = "金额")
-    private BigDecimal amount;
+    @ApiModelProperty(value = "付款信息")
+    private SavePurchasPaymentEnter paymentDate;
 
     @ApiModelProperty(value = "合同")
     private String contract;

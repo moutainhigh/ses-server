@@ -60,4 +60,22 @@ public class PurchasController {
         return new Response<>(productionPurchasService.supplierList(enter));
     }
 
+    @PostMapping(value = "/close")
+    @ApiOperation(value = "关闭订单", response = GeneralResult.class)
+    public Response<GeneralResult> close(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionPurchasService.close(enter));
+    }
+
+    @PostMapping(value = "/bookOrder")
+    @ApiOperation(value = "下单", response = GeneralResult.class)
+    public Response<GeneralResult> bookOrder(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionPurchasService.bookOrder(enter));
+    }
+
+    @PostMapping(value = "/cancel")
+    @ApiOperation(value = "取消", response = SupplierListResult.class)
+    public Response<GeneralResult> cancel(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionPurchasService.cancel(enter));
+    }
+
 }

@@ -22,7 +22,7 @@ import java.util.Date;
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
-public class SavePurchasPaymentEnter extends GeneralEnter {
+public class SavePurchasPaymentEnter {
     @ApiModelProperty(value = "付款方式")
     private int paymentType;
 

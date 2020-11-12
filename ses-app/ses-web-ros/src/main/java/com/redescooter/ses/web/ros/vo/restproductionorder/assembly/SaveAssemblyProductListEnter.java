@@ -17,7 +17,7 @@ import io.swagger.annotations.*;
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @EqualsAndHashCode(callSuper = false)
-public class SaveAssemblyProductEnter extends GeneralEnter {
+public class SaveAssemblyProductListEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id")
     private Long id;
