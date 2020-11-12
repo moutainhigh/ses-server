@@ -124,4 +124,37 @@
             color_id = #{item.color_id} and bom_status = 1)
         </foreach>
     </select>
+
+
+    <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+        id as relationOrderId,
+        combin_no as relationOrderNo
+        from ope_combin_order
+        where dr = 0 and combin_status in (70,80)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and combin_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </select>
+
+    <select id="relationCombinOrderCombinData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateCombinBEnter">
+        select
+           combin_name,
+           combin_no,
+           production_combin_bom_id,
+           qty as combinQty,
+           qty as ableInWhQty
+        from ope_combin_order_combin_b
+        where dr = 0 and combin_id = #{enter.id}
+    </select>
+
+    <select id="relationCombinOrderScooterData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter">
+        select
+           group_id,
+           color_id,
+           qty as combinQty,
+           qty as ableInWhQty
+        from ope_combin_order_scooter_b
+        where dr = 0 and combin_id = #{enter.id}
+    </select>
 </mapper>

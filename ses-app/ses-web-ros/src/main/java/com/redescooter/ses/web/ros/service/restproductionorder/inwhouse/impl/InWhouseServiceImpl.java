@@ -88,6 +88,12 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
 
+    @Autowired
+    private ProductionPurchasServiceMapper productionPurchasServiceMapper;
+
+    @Autowired
+    private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
+
     @Reference
     private IdAppService idAppService;
 
@@ -459,32 +465,31 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Override
     public List<InWhRelationOrderResult> relationPurchaseOrderData(KeywordEnter enter) {
-        List<InWhRelationOrderResult> list = new ArrayList<>();
-
+        List<InWhRelationOrderResult> list = productionPurchasServiceMapper.relationOrderData(enter);
         return list;
     }
 
     @Override
     public List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(IdEnter enter) {
-        List<SaveOrUpdatePartsBEnter> list = new ArrayList<>();
+        List<SaveOrUpdatePartsBEnter> list = productionPurchasServiceMapper.relationPurchaseOrderPartsData(enter);
         return list;
     }
 
     @Override
     public List<InWhRelationOrderResult> relationCombinOrderData(KeywordEnter enter) {
-        List<InWhRelationOrderResult> list = new ArrayList<>();
+        List<InWhRelationOrderResult> list = productionAssemblyOrderServiceMapper.relationOrderData(enter);
         return list;
     }
 
     @Override
     public List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(IdEnter enter) {
-        List<SaveOrUpdateCombinBEnter> list = new ArrayList<>();
+        List<SaveOrUpdateCombinBEnter> list = productionAssemblyOrderServiceMapper.relationCombinOrderCombinData(enter);
         return list;
     }
 
     @Override
     public List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter) {
-        List<SaveOrUpdateScooterBEnter> list = new ArrayList<>();
+        List<SaveOrUpdateScooterBEnter> list = productionAssemblyOrderServiceMapper.relationCombinOrderScooterData(enter);
         return list;
     }
 }

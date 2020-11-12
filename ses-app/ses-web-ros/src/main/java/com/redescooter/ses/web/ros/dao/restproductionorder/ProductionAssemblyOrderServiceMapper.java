@@ -93,4 +93,34 @@ public interface ProductionAssemblyOrderServiceMapper {
     * @desc: 整车颜色序列号校验
     */
     List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
+
+
+    /**
+     * @Author Aleks
+     * @Description  获取组装单的部分数据
+     * @Date  2020/11/12 16:52
+     * @Param [enter]
+     * @return
+     **/
+    List<InWhRelationOrderResult> relationOrderData(@Param("enter") KeywordEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id 获取组装单的组装件产品信息
+     * @Date  2020/11/12 18:09
+     * @Param
+     * @return
+     **/
+    List<SaveOrUpdateCombinBEnter> relationCombinOrderCombinData(@Param("enter") IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id 获取组装单的整车产品信息
+     * @Date  2020/11/12 18:14
+     * @Param [enter]
+     * @return
+     **/
+    List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(@Param("enter")IdEnter enter);
 }
