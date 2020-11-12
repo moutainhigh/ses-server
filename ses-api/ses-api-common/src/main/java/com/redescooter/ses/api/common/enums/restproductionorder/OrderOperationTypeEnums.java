@@ -27,6 +27,8 @@ public enum OrderOperationTypeEnums {
     OUT_STOCK("OUT_STOCK", "出库", 10),
     SHIPMENT("SHIPMENT", "发货", 11),
     SIGN_FOR("SIGN_FOR", "签收", 12),
+    READY_QC("READY_QC", "准备质检", 13),
+    CONFIRM_IN_WH("CONFIRM_IN_WH", "确认入库", 14),
     ;
 
 

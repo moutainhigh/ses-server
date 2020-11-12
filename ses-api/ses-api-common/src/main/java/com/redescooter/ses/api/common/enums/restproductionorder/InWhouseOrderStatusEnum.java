@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public enum InWhouseOrderEnum {
+public enum InWhouseOrderStatusEnum {
 
     DRAFT("DRAFT", "草稿", 1),
 
