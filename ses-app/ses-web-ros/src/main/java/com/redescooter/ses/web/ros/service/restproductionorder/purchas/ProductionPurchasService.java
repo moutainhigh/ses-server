@@ -63,6 +63,18 @@ public interface ProductionPurchasService {
     * @desc: 保存采购单
     */
     GeneralResult save(SaveProductionPurchasEnter enter);
+
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 10:36 上午
+    * @Param:  enter
+    * @Return: PurchasPartListResult
+    * @desc: 可采购的产品列表
+    */
+   PageResult<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter);
+
+
     /**
     * @Description
     * @Author: alex

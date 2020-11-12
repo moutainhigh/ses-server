@@ -25,22 +25,24 @@
     <select
     id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult">
         select purOrder.id                     as id,
-               purOrder.purchase_no            as purchaseNo,
-               purOrder.purchase_status        as purchaseStatus,
-               purOrder.purchase_qty           as purchaseQty,
-               purOrder.delivery_date          as deliveryDate,
-               purOrder.purchase_amount        as purchaseAmount,
-               purOrder.factory_id             as factoryId,
-               supplier.supplier_name          as factoryName,
-               purOrder.docking_user           as dockingUser,
-               purOrder.docking_user_name      as dockingUserName,
-               purOrder.docking_country_code   as dockingCountryCode,
-               purOrder.docking_user_telephone as dockingUserTelephone,
-               purOrder.created_by             as createById,
-               purOrder.created_time           as createTime
-        from ope_production_purchase_order purOrder
-                 left join ope_supplier supplier on supplier.id = purOrder.factory_id and supplier.dr = 0
-                 left join ope_sys_staff staff on staff.id = purOrder.created_by and staff.dr = 0
+                purOrder.purchase_no            as purchaseNo,
+                purOrder.purchase_status        as purchaseStatus,
+                purOrder.purchase_qty           as purchaseQty,
+                purOrder.delivery_date          as deliveryDate,
+                purOrder.purchase_amount        as purchaseAmount,
+                purOrder.factory_id             as factoryId,
+                supplier.supplier_name          as factoryName,
+                purOrder.docking_user           as dockingUser,
+                purOrder.docking_user_name      as dockingUserName,
+                purOrder.docking_country_code   as dockingCountryCode,
+                purOrder.docking_user_telephone as dockingUserTelephone,
+                purOrder.created_by             as createById,
+                staff.first_name                as createByFirstName,
+                staff.last_name                 as createByLastName,
+                purOrder.created_time           as createTime
+                from ope_production_purchase_order purOrder
+        left join ope_supplier supplier on supplier.id = purOrder.factory_id and supplier.dr = 0
+        left join ope_sys_staff staff on staff.id = purOrder.created_by and staff.dr = 0
         <include refid="where_pruchasList"/>
         order by purOrder.created_time desc
         limit #{startRow},#{pageSize}
@@ -57,5 +59,96 @@
         from ope_production_purchase_parts_b partB
         where partB.dr=0
 
+    </select>
+
+    <select id="partDetailList" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">
+        select part.id          as partId,
+               part.parts_no    as partN,
+               part.en_name     as partName,
+               part.parts_type  as productType,
+               100              as price,
+               1                as unit,
+               part.supplier_id as supplierId
+        from ope_production_parts part
+        where  part.dr=0
+        <if test="collection != null and collection.size() != 0">
+            and part.id in
+            <foreach collection="collection" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="purchasPartListCount" resultType="int">
+           select count(1)
+            from ope_production_parts part
+            where part.disable=0
+            and  part.dr=0
+            <if test="partType != null">
+                and part.parts_type=#{partType}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                and (
+                part.parts_no like concat ('%',#{keyword},'%') or
+                part.en_name like concat ('%',#{keyword},'%')
+                )
+            </if>
+    </select>
+
+    <select
+    id="purchasPartList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListResult">
+
+        select part.id          as id,
+               part.parts_no    as partsN,
+               part.en_name     as enName,
+               part.parts_type  as productType,
+               100              as price,
+               1                as unit,
+               part.supplier_id as supplierId
+        from ope_production_parts part
+        where part.disable=0
+        and  part.dr=0
+        <if test="partType != null">
+            and part.parts_type=#{partType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            part.parts_no like concat ('%',#{keyword},'%') or
+            part.en_name like concat ('%',#{keyword},'%')
+            )
+        </if>
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult">
+        select id                       as id,
+               purchase_no              as purchaseNo,
+               purchase_status          as purchaseStatus,
+               purchase_amount          as purchaseAmount,
+               factory_id               as factoryId,
+               factory_principal_id     as factoryPrincipalId,
+               factory_principal_name   as factoryPrincipalName,
+               principal_country_code   as principalCountryCode,
+               principal_telephone      as principalTelephone,
+               delivery_date            as deliveryDate,
+               docking_user             as dockingUser,
+               docking_user_name        as dockingUserName,
+               docking_country_code     as dockingCountryCode,
+               docking_user_telephone   as dockingUserTelephone,
+               consignee_user           as consigneeUser,
+               consignee_user_name      as consigneeUserName,
+               consignee_country_code   as consigneeCountryCode,
+               consignee_user_telephone as consigneeUserTelephone,
+               consignee_address        as consigneeAddress,
+               remark                   as remark,
+               payment_type             as paymentType,
+               planned_payment_time     as date,
+               payment_day              as days,
+               purchase_contract        as contract,
+               pre_pay_ratio            as percentage
+        from ope_production_purchase_order
+        where dr=0
+        and  id=#{id}
     </select>
 </mapper>

@@ -1,12 +1,12 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
+import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName:ProductionPurchasServiceMapper
@@ -43,4 +43,41 @@ public interface ProductionPurchasServiceMapper {
     * @desc: 单据产品详情
     */
     List<PurchasDetailProductListResult> detailProductList(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 9:52 上午
+    * @Param:  Collection
+    * @Return: PartDetailDto
+    * @desc: 部件详情列表
+    */
+    List<PartDetailDto> partDetailList(Collection<Long> partIds);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 10:32 上午
+    * @Param:  enter
+    * @Return: 可采购的产品列表
+    * @desc:
+    */
+    int purchasPartListCount(PurchasPartListEnter enter);
+
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 10:32 上午
+    * @Param:  enter
+    * @Return: PurchasPartListResult
+    * @desc: 可采购的产品列表
+    */
+    List<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/12 11:04 上午
+    * @Param:  enter
+    * @Return: ProductionPurchasDetailResult
+    * @desc: 单据详情
+    */
+    ProductionPurchasDetailResult detail(IdEnter enter);
 }

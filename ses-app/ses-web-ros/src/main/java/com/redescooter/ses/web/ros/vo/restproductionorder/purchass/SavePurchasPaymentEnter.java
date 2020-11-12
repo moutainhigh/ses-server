@@ -1,9 +1,14 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.*;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @ClassName:SavePurchasPaymentEnter
@@ -22,7 +27,9 @@ public class SavePurchasPaymentEnter extends GeneralEnter {
     private int paymentType;
 
     @ApiModelProperty(value = "日期")
-    private String date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Date date;
 
     @ApiModelProperty(value = "天数")
     private int days;
@@ -31,5 +38,5 @@ public class SavePurchasPaymentEnter extends GeneralEnter {
     private int percentage;
 
     @ApiModelProperty(value = "金额")
-    private String amount;
+    private BigDecimal amount;
 }
