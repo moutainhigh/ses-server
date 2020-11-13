@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.service.foundation.dao.JpushUserServiceMapper">
 
     <select id="queryJpushUserByRegistrationId" resultType="com.redescooter.ses.service.foundation.dm.JpushUserData">
-        select * from pla_jpush_user where registration_id = #{registrationId} and user_id=#{userId}
+        select * from pla_jpush_user where registration_id = #{registrationId} and user_id=#{userId} and dr=0
     </select>
 
     <update id="reset">
