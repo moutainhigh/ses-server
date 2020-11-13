@@ -35,7 +35,7 @@ public class SavePurchasPaymentEnter {
     private Integer amountType;
 
     @ApiModelProperty(value = "天数")
-    private int days;
+    private Integer days;
 
     @ApiModelProperty(value = "百分比")
     private int percentage;
