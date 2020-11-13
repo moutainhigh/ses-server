@@ -2,10 +2,22 @@ package com.redescooter.ses.web.ros.dao.restproductionorder;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateCombinBEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
+import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -123,4 +135,40 @@ public interface ProductionAssemblyOrderServiceMapper {
      * @return
      **/
     List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(@Param("enter")IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:26 上午
+    * @Param:  enter
+    * @Return: List<SpecificatGroupDataResult>
+    * @desc: 查询整车分组数据
+    */
+    List<SpecificatGroupDataResult> scooterGroupData();
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:30 上午
+    * @Param:  enter
+    * @Return: 查询整车颜色数据
+    * @desc: enter
+    */
+    List<ColorDataResult> colorData(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:33 上午
+    * @Param:  enter
+    * @Return: CombinNameData
+    * @desc: 查询组装件数据
+    */
+    List<CombinNameData> combinNameData(CombinNameEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:33 上午
+    * @Param:  enter
+    * @Return: BomNameData
+    * @desc: Bom数据
+    */
+    List<BomNameData> bomNoData(BomNoEnter enter);
 }

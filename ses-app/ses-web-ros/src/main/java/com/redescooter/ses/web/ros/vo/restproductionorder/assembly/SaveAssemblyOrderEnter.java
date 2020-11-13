@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.assembly;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import lombok.*;
 
 import java.util.Date;
 
 import io.swagger.annotations.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @ClassName:SaveAssemblyOrderEnter
@@ -28,9 +30,13 @@ public class SaveAssemblyOrderEnter extends GeneralEnter {
     private Integer combinType;
 
     @ApiModelProperty(value = "组装开始时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date combinStartDate;
 
     @ApiModelProperty(value = "组装结束时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date combinEndDate;
 
     @ApiModelProperty(value = "负责人Id")

@@ -23,7 +23,7 @@
     </select>
     <select
     id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult">
-        select id                       as id,
+        select combin.id                       as id,
                combin.combin_type       as combinType,
                combin.combin_no         as combinNo,
                combin.combin_status     as combinStatus,
@@ -156,5 +156,43 @@
            qty as ableInWhQty
         from ope_combin_order_scooter_b
         where dr = 0 and combin_id = #{enter.id}
+    </select>
+
+    <select id="scooterGroupData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
+        select distinct bom.group_id       as groupId,
+               spgroup.group_name as groupName,
+               1                  as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_specificat_group spgroup on bom.group_id = spgroup.id and spgroup.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+    </select>
+
+    <select id="colorData" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorDataResult">
+        select distinct bom.color_id      as colorId,
+                color.color_name  as colorName,
+                color.color_value as colorValue,
+                1                 as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_color color on color.id = bom.color_id and color.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+          and bom.group_id=#{id}
+    </select>
+
+    <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select distinctrow en_name
+        from ope_production_combin_bom bom
+        where dr=0
+        and bom_status=1
+    </select>
+
+    <select
+    id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select bom_no, id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where dr = 0
+          and bom_status = 1
+          and en_name = #{combinName}
     </select>
 </mapper>

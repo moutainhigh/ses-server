@@ -4,9 +4,15 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
+import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 
 import java.util.List;
 import java.util.Map;
@@ -112,4 +118,41 @@ public interface ProductionAssemblyOrderService {
    * @desc: 删除
    */
    GeneralResult delete(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:15 上午
+    * @Param:  enter
+    * @Return: 车辆分组
+    * @desc: 车辆分组
+    */
+  List<SpecificatGroupDataResult> scooterGroupData(GeneralEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:16 上午
+    * @Param:  enter
+    * @Return: ColorDataResult
+    * @desc: 根据颜色查询分组
+    */
+    List<ColorDataResult> colorData(IdEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/13 10:17 上午
+    * @Param:  enter
+    * @Return: CombinNameData
+    * @desc: 查询组装件数据
+    */
+    List<CombinNameData> combinNameData(CombinNameEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  组装件编号下拉数据源接口
+     * @Date  2020/10/20 13:19
+     * @Param [enter]
+     * @return
+     **/
+    List<BomNameData> bomNoData(BomNoEnter enter);
+
 }
