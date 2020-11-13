@@ -114,7 +114,8 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
-        productionPurchasDetailResult.setPaymentDate(new SavePurchasPaymentEnter(opeProductionPurchaseOrder.getPaymentType(),opeProductionPurchaseOrder.getPlannedPaymentTime(),1,
+        productionPurchasDetailResult.setPaymentDate(new SavePurchasPaymentEnter(opeProductionPurchaseOrder.getPaymentType(),opeProductionPurchaseOrder.getPlannedPaymentTime(),
+                opeProductionPurchaseOrder.getAmountType(),
                 opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount()));
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
