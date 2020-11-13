@@ -49,8 +49,8 @@
     </select>
 
     <select id="detailProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
-        select partB.id as id,
-               partB.parts_id as partId,
+        select
+               partB.parts_id as id,
                partB.parts_no as partN,
                partB.parts_name as partName,
                partB.parts_type as partType,
@@ -58,7 +58,7 @@
                partB.unit_price as price
         from ope_production_purchase_parts_b partB
         where partB.dr=0
-
+        and partB.production_purchase_id=#{id}
     </select>
 
     <select id="partDetailList" resultType="com.redescooter.ses.web.ros.vo.bo.PartDetailDto">

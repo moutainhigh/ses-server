@@ -3,9 +3,9 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -191,16 +191,18 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         Long purchasId=idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_ORDER);
 
         Long totalPrice =0L;
+
         //子订单保存
         List<OpeProductionPurchasePartsB> saveOpeProductionPurchasePartsBList = new ArrayList<>();
         for (SavePurchasProductEnter item : productList) {
             PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(part -> item.getId().equals(part.getPartId())).findFirst().orElse(null);
             //封装子单据
-            OpeProductionPurchasePartsB opeProductionPurchasePartsB = buildOpeProductionPurchasePartsB(enter, purchasId, item, partDetailDto);
+            OpeProductionPurchasePartsB opeProductionPurchasePartsB = buildOpeProductionPurchasePartsB(enter, (enter.getId()==null||enter.getId()==0)?purchasId:enter.getId(), item, partDetailDto);
             saveOpeProductionPurchasePartsBList.add(opeProductionPurchasePartsB);
             Long price = partDetailDto.getPrice().multiply(new BigDecimal(item.getQty())).longValue();
             totalPrice += price;
         }
+
 
         SaveOpTraceEnter saveOpTraceEnter = null;
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = buildOpeProductionPurchaseOrder(enter, productList, paymentEnter, new BigDecimal(totalPrice));
@@ -273,8 +275,11 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setPayAmount(paymentEnter.getAmount());
         opeProductionPurchaseOrder.setAmountType(paymentEnter.getAmountType());
 
-        if (paymentEnter.getAmount().subtract(totalPrice).equals(BigDecimal.ZERO)){
-            throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(),ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage());
+        if (PaymentTypeEnums.PREPAYMENTS.getValue().equals(paymentEnter.getPaymentType()) && paymentEnter.getAmount()!=null){
+            if (totalPrice.subtract(paymentEnter.getAmount()).longValue()<0){
+                throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(),ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage());
+            }
+            opeProductionPurchaseOrder.setPayAmount(paymentEnter.getAmount());
         }
         return opeProductionPurchaseOrder;
     }

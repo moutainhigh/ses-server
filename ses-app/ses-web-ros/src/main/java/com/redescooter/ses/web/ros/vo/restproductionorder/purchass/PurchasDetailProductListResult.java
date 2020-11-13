@@ -5,6 +5,8 @@ import lombok.*;
 
 import io.swagger.annotations.*;
 
+import java.math.BigDecimal;
+
 /**
  * @ClassName:PurchasDetailProductListResult
  * @description: PurchasDetailProductListResult
@@ -35,5 +37,5 @@ public class PurchasDetailProductListResult extends GeneralResult {
     private Integer qty;
 
     @ApiModelProperty(value = "单价金额")
-    private String price;
+    private BigDecimal price;
 }

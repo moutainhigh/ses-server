@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import io.swagger.annotations.*;
@@ -41,7 +42,7 @@ public class ProductionPurchasListResult extends GeneralResult {
     private Date deliveryDate;
 
     @ApiModelProperty(value = "金额")
-    private String purchaseAmount;
+    private BigDecimal purchaseAmount;
 
     @ApiModelProperty(value = "供应商Id")
     private Long factoryId;
