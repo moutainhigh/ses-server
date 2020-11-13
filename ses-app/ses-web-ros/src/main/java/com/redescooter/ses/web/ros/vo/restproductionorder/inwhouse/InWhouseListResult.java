@@ -25,7 +25,7 @@ public class InWhouseListResult extends GeneralResult {
     @ApiModelProperty(value="入库单号")
     private String inWhNo;
 
-    @ApiModelProperty(value="入库单状态， 1： 草稿，:10：待质检，20：质检中，30：已入库")
+    @ApiModelProperty(value="入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库")
     private Integer inWhStatus;
 
     @ApiModelProperty(value="入库数量")

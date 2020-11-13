@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -368,6 +369,9 @@ public class InWhouseServiceImpl implements InWhouseService {
         result.setOrderType(inWhouseOrder.getOrderType());
         result.setInWhNo(inWhouseOrder.getInWhNo());
         result.setInWhStatus(inWhouseOrder.getInWhStatus());
+        result.setRelationOrderId(inWhouseOrder.getRelationOrderId());
+        result.setRelationOrderNo(inWhouseOrder.getRelationOrderNo());
+        result.setRelationOrderType(inWhouseOrder.getRelationOrderType());
         // 入库单下面的产品明细
         switch (inWhouseOrder.getOrderType()){
             case 1:
@@ -430,7 +434,12 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+        if ((inWhouseOrder.getOrderType().equals(ProductTypeEnums.SCOOTER.getValue()) || inWhouseOrder.getOrderType().equals(ProductTypeEnums.COMBINATION.getValue())) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            // 整车和组装件 是草稿状态的时候才能点击
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue()) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+            // 部件 是质检中状态的时候才能点击
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());

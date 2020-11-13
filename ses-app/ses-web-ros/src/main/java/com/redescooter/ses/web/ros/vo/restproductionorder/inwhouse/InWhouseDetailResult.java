@@ -26,7 +26,7 @@ public class InWhouseDetailResult extends GeneralResult {
     @ApiModelProperty(value="入库单号")
     private String inWhNo;
 
-    @ApiModelProperty(value="入库单状态， 1： 草稿，:10：待质检，20：质检中，30：已入库")
+    @ApiModelProperty(value="入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库")
     private Integer inWhStatus;
 
     @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
@@ -34,6 +34,15 @@ public class InWhouseDetailResult extends GeneralResult {
 
     @ApiModelProperty("入库单据类型,1:车辆，2:组装件，3:部件")
     private Integer orderType;
+
+    @ApiModelProperty(value = "关联的单据id")
+    private Long relationOrderId;
+
+    @ApiModelProperty(value = "关联的单据号")
+    private String relationOrderNo;
+
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单``")
+    private Integer relationOrderType;
 
     @ApiModelProperty("部件明细")
     private List<InWhouseDetailPartsResult>  parts;
