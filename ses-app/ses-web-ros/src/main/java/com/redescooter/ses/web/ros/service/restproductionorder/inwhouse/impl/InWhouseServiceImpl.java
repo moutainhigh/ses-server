@@ -231,7 +231,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateScooterBEnter::getInWhQty).sum());
-                inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+                inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
             default:
                 break;
             case 2:
@@ -254,7 +254,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(partsBEnters.stream().mapToInt(SaveOrUpdatePartsBEnter::getInWhQty).sum());
-                inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
                 break;
         }
     }
