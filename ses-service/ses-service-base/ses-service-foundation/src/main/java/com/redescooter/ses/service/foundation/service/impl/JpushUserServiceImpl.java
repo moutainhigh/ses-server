@@ -76,7 +76,7 @@ public class JpushUserServiceImpl implements JpushUserService {
         }
 
         PlaJpushUser jpushUser = null;
-        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId());
+        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId(),enter.getUserId());
 
         //用户首次登录极光
         if (jpushUserData == null) {

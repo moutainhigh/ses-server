@@ -37,6 +37,6 @@ public interface JpushUserServiceMapper {
      * @param registrationId
      * @return
      */
-    JpushUserData queryJpushUserByRegistrationId(@Param("registrationId") String registrationId);
+    JpushUserData queryJpushUserByRegistrationId(@Param("registrationId") String registrationId,@Param("userId")Long userId);
 
 }

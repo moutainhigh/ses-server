@@ -131,5 +131,6 @@ mybatis-plus:
     auto-mapping-unknown-column-behavior: warning
     local-cache-scope: session
     call-setters-on-nulls: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
 
 
