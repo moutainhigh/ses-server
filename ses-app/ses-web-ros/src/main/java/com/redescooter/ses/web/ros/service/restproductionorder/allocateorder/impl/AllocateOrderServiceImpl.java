@@ -797,7 +797,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
         if (count == 0) {
             // 说明调拨单下面的采购单都完成了
-            if (allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.FINISHED.getValue())) {
+            if (!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue()) || allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.FINISHED.getValue())) {
                 return;
             }
             allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.FINISHED.getValue());
