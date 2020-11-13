@@ -21,8 +21,17 @@ public class InWhouseDetailScooterResult {
     @ApiModelProperty(value="车型（规格分组）的id")
     private Long groupId;
 
+    @ApiModelProperty(value="车型（规格分组）的名字")
+    private String groupName;
+
     @ApiModelProperty(value="颜色id")
     private Long colorId;
+
+    @ApiModelProperty(value="颜色的名字")
+    private String colorName;
+
+    @ApiModelProperty(value="色值")
+    private String colorValue;
 
     @ApiModelProperty(value="bom车辆id")
     private Long scooterBomId;

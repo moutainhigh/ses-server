@@ -20,6 +20,15 @@ public class SaveOrUpdateScooterBEnter {
     @ApiModelProperty(value="颜色id")
     private Long colorId;
 
+    @ApiModelProperty(value="车型（规格分组）的名字")
+    private String groupName;
+
+    @ApiModelProperty(value="颜色的名字")
+    private String colorName;
+
+    @ApiModelProperty(value="色值")
+    private String colorValue;
+
     @ApiModelProperty(value="bom车辆id")
     private Long scooterBomId;
 
@@ -30,7 +39,7 @@ public class SaveOrUpdateScooterBEnter {
     private Integer ableInWhQty;
 
     @ApiModelProperty(value="入库数量")
-    private Integer inWhQty;
+    private Integer inWhQty = 1;
 
     @ApiModelProperty(value="备注")
     private String remark;

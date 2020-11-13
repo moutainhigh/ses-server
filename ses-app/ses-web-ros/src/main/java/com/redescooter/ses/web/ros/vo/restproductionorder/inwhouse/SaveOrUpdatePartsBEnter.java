@@ -32,6 +32,6 @@ public class SaveOrUpdatePartsBEnter {
     private Integer ableInWhQty;
 
     @ApiModelProperty(value="入库数量")
-    private Integer inWhQty;
+    private Integer inWhQty = 1;
 
 }

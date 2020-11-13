@@ -366,6 +366,8 @@ public class InWhouseServiceImpl implements InWhouseService {
         result.setId(inWhouseOrder.getId());
         result.setInWhType(inWhouseOrder.getInWhType());
         result.setOrderType(inWhouseOrder.getOrderType());
+        result.setInWhNo(inWhouseOrder.getInWhNo());
+        result.setInWhStatus(inWhouseOrder.getInWhStatus());
         // 入库单下面的产品明细
         switch (inWhouseOrder.getOrderType()){
             case 1:

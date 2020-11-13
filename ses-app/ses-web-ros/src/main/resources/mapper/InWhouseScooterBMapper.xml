@@ -5,8 +5,18 @@
 
     <select id="scooterBs" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailScooterResult">
         select
-           *
+          scooter.id,
+          scooter.group_id,
+          scooter.color_id,
+          scooter.combin_qty,
+          scooter.able_in_wh_qty,
+          scooter.in_wh_qty,
+          group1.group_name AS groupName,
+          color.color_value AS colorValue,
+          color.color_name AS colorName
         from ope_in_whouse_scooter_b scooter
+        left join ope_specificat_group group1 on scooter.group_id = group1.id
+        left join ope_color color ON color.id = scooter.color_id
         where scooter.dr = 0 and scooter.in_wh_id = #{inWhId}
     </select>
 </mapper>

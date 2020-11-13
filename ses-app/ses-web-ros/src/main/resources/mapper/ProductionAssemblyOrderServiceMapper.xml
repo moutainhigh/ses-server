@@ -150,12 +150,17 @@
 
     <select id="relationCombinOrderScooterData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter">
         select
-           group_id,
-           color_id,
-           qty as combinQty,
-           qty as ableInWhQty
-        from ope_combin_order_scooter_b
-        where dr = 0 and combin_id = #{enter.id}
+            scooter.group_id,
+            scooter.color_id,
+            scooter.qty as combinQty,
+            scooter.qty as ableInWhQty,
+            group1.group_name AS groupName,
+            color.color_value AS colorValue,
+            color.color_name AS colorName
+        from ope_combin_order_scooter_b scooter
+        left join ope_specificat_group group1 on scooter.group_id = group1.id
+        left join ope_color color ON color.id = scooter.color_id
+        where scooter.dr = 0 and scooter.combin_id = #{enter.id}
     </select>
 
     <select id="scooterGroupData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
