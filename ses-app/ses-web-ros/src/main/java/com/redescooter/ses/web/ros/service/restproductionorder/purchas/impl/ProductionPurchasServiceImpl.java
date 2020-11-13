@@ -313,23 +313,8 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                 throw new SesWebRosException(ExceptionCodeEnums.QTY_IS_ILLEGAL.getCode(),ExceptionCodeEnums.QTY_IS_ILLEGAL.getMessage());
             }
         });
-
-        switch (paymentEnter.getPaymentType()){
-            case 1:
-                if (Objects.isNull(paymentEnter.getDate())){
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-                }
-                break;
-            case 2:
-                if (paymentEnter.getPercentage()<0){
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-                }
-                break;
-            default :
-                if (Objects.isNull(paymentEnter.getAmount())){
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-                }
-                break;
+        if (paymentEnter.getPercentage()<0 || Objects.isNull(paymentEnter.getAmount())){
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return PartDetailDtoList;
     }
