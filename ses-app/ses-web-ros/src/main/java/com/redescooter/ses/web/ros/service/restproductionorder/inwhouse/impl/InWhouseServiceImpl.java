@@ -389,7 +389,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 break;
         }
         // 操作动态
-        List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId(),OrderTypeEnums.ALLOCATE.getValue());
+        List<OpTraceResult> traces = allocateOrderServiceMapper.allocateTrace(enter.getId(),OrderTypeEnums.FACTORY_INBOUND.getValue());
         result.setOpTraces(traces);
         // 关联的单据（可能关联生产采购单或者组装单）
         // 先判断关联的是哪种单据
