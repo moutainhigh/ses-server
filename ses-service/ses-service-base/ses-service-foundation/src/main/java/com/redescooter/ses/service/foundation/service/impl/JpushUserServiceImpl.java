@@ -72,11 +72,8 @@ public class JpushUserServiceImpl implements JpushUserService {
         List<PlaJpushUser> plaJpushUserList = jpushUserMapper
             .selectList(new QueryWrapper<PlaJpushUser>().eq(PlaJpushUser.COL_USER_ID, enter.getUserId()));
         if (CollectionUtils.isNotEmpty(plaJpushUserList)) {
-            List<Long> ids = plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList());
             jpushUserMapper
-                .delete(new LambdaQueryWrapper<PlaJpushUser>()
-                        .in(PlaJpushUser::getId,ids)
-                        .ne(PlaJpushUser::getRegistrationId,enter.getRegistrationId()));
+                .deleteBatchIds(plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList()));
         }
 
         PlaJpushUser jpushUser = null;
