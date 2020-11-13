@@ -55,7 +55,7 @@
                partB.parts_name as partName,
                partB.parts_type as partType,
                partB.qty as qty,
-               partB.unit_price as amount
+               partB.unit_price as price
         from ope_production_purchase_parts_b partB
         where partB.dr=0
 
@@ -122,34 +122,36 @@
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult">
-        select id                       as id,
-               purchase_no              as purchaseNo,
-               purchase_status          as purchaseStatus,
-               purchase_amount          as purchaseAmount,
-               factory_id               as factoryId,
-               factory_principal_id     as factoryPrincipalId,
-               factory_principal_name   as factoryPrincipalName,
-               principal_country_code   as principalCountryCode,
-               principal_telephone      as principalTelephone,
-               delivery_date            as deliveryDate,
-               docking_user             as dockingUser,
-               docking_user_name        as dockingUserName,
-               docking_country_code     as dockingCountryCode,
-               docking_user_telephone   as dockingUserTelephone,
-               consignee_user           as consigneeUser,
-               consignee_user_name      as consigneeUserName,
-               consignee_country_code   as consigneeCountryCode,
-               consignee_user_telephone as consigneeUserTelephone,
-               consignee_address        as consigneeAddress,
-               remark                   as remark,
-               payment_type             as paymentType,
-               planned_payment_time     as date,
-               payment_day              as days,
-               purchase_contract        as contract,
-               pre_pay_ratio            as percentage
-        from ope_production_purchase_order
-        where dr=0
-        and  id=#{id}
+        select purOrder.id                       as id,
+        purOrder.purchase_no              as purchaseNo,
+        purOrder.purchase_status          as purchaseStatus,
+        purOrder.purchase_amount          as purchaseAmount,
+        purOrder.factory_id               as factoryId,
+        supplier.supplier_name            as factoryName,
+        purOrder.factory_principal_id     as factoryPrincipalId,
+        purOrder.factory_principal_name   as factoryPrincipalName,
+        purOrder.principal_country_code   as principalCountryCode,
+        purOrder.principal_telephone      as principalTelephone,
+        purOrder.delivery_date            as deliveryDate,
+        purOrder.docking_user             as dockingUser,
+        purOrder.docking_user_name        as dockingUserName,
+        purOrder.docking_country_code     as dockingCountryCode,
+        purOrder.docking_user_telephone   as dockingUserTelephone,
+        purOrder.consignee_user           as consigneeUser,
+        purOrder.consignee_user_name      as consigneeUserName,
+        purOrder.consignee_country_code   as consigneeCountryCode,
+        purOrder.consignee_user_telephone as consigneeUserTelephone,
+        purOrder.consignee_address        as consigneeAddress,
+        purOrder.remark                   as remark,
+        purOrder.payment_type             as paymentType,
+        purOrder.planned_payment_time     as date,
+        purOrder.payment_day              as days,
+        purOrder.purchase_contract        as contract,
+        purOrder.pre_pay_ratio            as percentage
+        from ope_production_purchase_order purOrder
+        left join ope_supplier supplier on supplier.id = purOrder.factory_id and supplier.dr = 0
+        where purOrder.dr = 0
+        and  purOrder.id=#{id}
     </select>
 
     <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">

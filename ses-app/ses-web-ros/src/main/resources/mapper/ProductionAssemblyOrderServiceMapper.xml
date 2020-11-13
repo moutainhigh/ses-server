@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper">
 
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(corder.combin_type) as totalCount, combin_type as status
+        from ope_combin_order corder
+        group by corder.combin_type
+    </select>
+
     <select id="listCount" resultType="int">
         select count(1)
         from ope_combin_order combin
@@ -17,7 +23,7 @@
     </select>
     <select
     id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult">
-        select id                       as id,
+        select combin.id                       as id,
                combin.combin_type       as combinType,
                combin.combin_no         as combinNo,
                combin.combin_status     as combinStatus,
@@ -92,6 +98,33 @@
         and  combin_id=#{id}
     </select>
 
+    <select id="partsDetail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
+        select part.id         as id,
+                part.parts_no   as partN,
+                part.en_name    as partName,
+                part.parts_type as partType,
+                100             as price,
+                1               as unit
+                from ope_production_parts part
+        where part.dr = 0
+        <if test="collection != null and collection.size() != 0">
+            and part.id in
+            <foreach collection="collection" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
+        select * from ope_production_scooter_bom
+        where dr = 0  and
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="OR" close="">
+            ( group_id=#{item.group_id} and
+            color_id = #{item.color_id} and bom_status = 1)
+        </foreach>
+    </select>
+
 
     <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
         select
@@ -128,5 +161,43 @@
         left join ope_specificat_group group1 on scooter.group_id = group1.id
         left join ope_color color ON color.id = scooter.color_id
         where scooter.dr = 0 and scooter.combin_id = #{enter.id}
+    </select>
+
+    <select id="scooterGroupData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
+        select distinct bom.group_id       as groupId,
+               spgroup.group_name as groupName,
+               1                  as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_specificat_group spgroup on bom.group_id = spgroup.id and spgroup.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+    </select>
+
+    <select id="colorData" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorDataResult">
+        select distinct bom.color_id      as colorId,
+                color.color_name  as colorName,
+                color.color_value as colorValue,
+                1                 as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_color color on color.id = bom.color_id and color.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+          and bom.group_id=#{id}
+    </select>
+
+    <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select distinctrow en_name
+        from ope_production_combin_bom bom
+        where dr=0
+        and bom_status=1
+    </select>
+
+    <select
+    id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select bom_no, id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where dr = 0
+          and bom_status = 1
+          and en_name = #{combinName}
     </select>
 </mapper>

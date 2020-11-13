@@ -29,6 +29,7 @@ public enum OrderOperationTypeEnums {
     SIGN_FOR("SIGN_FOR", "签收", 12),
     READY_QC("READY_QC", "准备质检", 13),
     CONFIRM_IN_WH("CONFIRM_IN_WH", "确认入库", 14),
+    COMBIN("COMBIN","组装",15),
     ;
 
 

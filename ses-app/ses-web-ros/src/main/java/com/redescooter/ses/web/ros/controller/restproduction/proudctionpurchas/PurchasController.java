@@ -19,7 +19,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/11/11 11:59 
  */
-@Api(tags = {"采购单"})
+@Api(tags = {"Purchas采购单"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/restproduction/purchas")

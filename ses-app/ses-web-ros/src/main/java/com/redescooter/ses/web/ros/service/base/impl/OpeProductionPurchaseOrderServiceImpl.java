@@ -1,14 +1,14 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.ros.dao.base.OpeProductionPurchaseOrderMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionPurchaseOrder;
-import java.util.List;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPurchaseOrderService;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class OpeProductionPurchaseOrderServiceImpl extends ServiceImpl<OpeProductionPurchaseOrderMapper, OpeProductionPurchaseOrder> implements OpeProductionPurchaseOrderService {
 
@@ -32,5 +32,7 @@ public class OpeProductionPurchaseOrderServiceImpl extends ServiceImpl<OpeProduc
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
 
 

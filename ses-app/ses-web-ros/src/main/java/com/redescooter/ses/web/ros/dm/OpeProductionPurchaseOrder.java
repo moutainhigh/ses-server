@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -32,7 +35,6 @@ public class OpeProductionPurchaseOrder {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -211,6 +213,13 @@ public class OpeProductionPurchaseOrder {
     private String purchaseContract;
 
     /**
+     * 金额类型，1：百分比，2：金额
+     */
+    @TableField(value = "amount_type")
+    @ApiModelProperty(value = "金额类型，1：百分比，2：金额")
+    private Integer amountType;
+
+    /**
      * 预付款比例(小数点最多一位)
      */
     @TableField(value = "pre_pay_ratio")
@@ -340,6 +349,8 @@ public class OpeProductionPurchaseOrder {
     public static final String COL_PAYMENT_TIME = "payment_time";
 
     public static final String COL_PURCHASE_CONTRACT = "purchase_contract";
+
+    public static final String COL_AMOUNT_TYPE = "amount_type";
 
     public static final String COL_PRE_PAY_RATIO = "pre_pay_ratio";
 
