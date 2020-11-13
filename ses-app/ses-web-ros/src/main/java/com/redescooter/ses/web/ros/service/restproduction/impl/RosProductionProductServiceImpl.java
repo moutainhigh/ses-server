@@ -1229,7 +1229,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
                                                           OpeProductionCombinBomDraft opeProductionCombinBomDraft, List<ProductionProductEnter> partList) {
 
-        Long combinBomBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM);
+        Long combinBomBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_COMBIN_BOM);
 
         List<OpeProductionParts> opeProductionPartsList = null;
         int partQty = 0;
@@ -1287,7 +1287,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             for (OpeProductionPartsRelation item : opeProductionPartsRelationList) {
                 item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION));
                 item.setProductionId(combinBomBomId);
-                item.setProductionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
+                item.setProductionType(ProductionPartsRelationTypeEnums.COMBINATION_BOM.getValue());
                 item.setCreatedBy(enter.getUserId());
                 item.setCreatedTime(new Date());
                 item.setUpdatedTime(new Date());
@@ -1298,7 +1298,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 opeProductionPartsRelationList.add(OpeProductionPartsRelation.builder()
                         .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0)
                         .productionId(combinBomBomId)
-                        .productionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue()).partsId(item.getId())
+                        .productionType(ProductionPartsRelationTypeEnums.COMBINATION_BOM.getValue()).partsId(item.getId())
                         .partsNo(item.getPartsNo()).partsSec(item.getPartsSec())
                         .procurementCycle(item.getProcurementCycle())
                         .partsQty(partList.stream().filter(part -> part.getId().equals(item.getId())).findFirst()
