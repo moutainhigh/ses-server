@@ -519,6 +519,8 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             opeCombinOrderCombinB.setDr(0);
             opeCombinOrderCombinB.setCombinId(assemblyProductId);
             opeCombinOrderCombinB.setProductionCombinBomId(opeProductionCombinBom.getId());
+            opeCombinOrderCombinB.setCombinName(opeProductionCombinBom.getEnName());
+            opeCombinOrderCombinB.setCombinNo(opeProductionCombinBom.getBomNo());
             opeCombinOrderCombinB.setQty(item.getQty());
             opeCombinOrderCombinB.setWaitQcQty(0);
             opeCombinOrderCombinB.setWaitQcQty(0);
