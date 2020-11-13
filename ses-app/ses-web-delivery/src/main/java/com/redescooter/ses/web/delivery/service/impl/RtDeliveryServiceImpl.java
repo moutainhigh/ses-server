@@ -195,6 +195,20 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             deliveryService.save(deliverySave);
 
             saveDeliveryNode(deliverySave, enter, null, statusConversionEvent(deliverySave.getStatus()));
+            PushMsgBo pushMsg = PushMsgBo.builder()
+                    .enter(enter)
+                    .pushType(PlatformTypeEnums.ANDROID.getValue())
+                    .bizId(deliverySave.getId())
+                    .bizType(BizType.DELIVERY.getValue())
+                    .status(DeliveryStatusEnums.PENDING.getValue())
+                    .args(null)
+                    .belongId(deliverySave.getDelivererId())
+                    .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                    .appId(AppIDEnums.SAAS_APP.getAppId())
+                    .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                    .mesageType(MesageTypeEnum.SITE.getValue())
+                    .build();
+            pushMsg(pushMsg);
 
         } else {
             //编辑配送单

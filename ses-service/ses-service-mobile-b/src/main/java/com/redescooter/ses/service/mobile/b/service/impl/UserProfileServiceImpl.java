@@ -98,7 +98,7 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
             CorUserProfile update = new CorUserProfile();
             update.setId(enter.getId());
-            if (StringUtils.isNotBlank(update.getPicture())){
+            if (StringUtils.isNotBlank(enter.getPicture())){
                 update.setPicture(enter.getPicture());
             }
             if (!StringUtils.isAllBlank(enter.getCertificateType(),enter.getCertificateNegativeAnnex(),enter.getCertificatePositiveAnnex())){
