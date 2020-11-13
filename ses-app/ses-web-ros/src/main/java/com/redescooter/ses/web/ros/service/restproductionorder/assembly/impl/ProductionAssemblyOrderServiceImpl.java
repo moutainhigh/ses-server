@@ -225,7 +225,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             }
             qty = opeCombinOrderScooterB.getQty();
             opeProductionPartsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE, ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
-            opeProductionPartsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE, opeCombinOrderScooterB.getScooterBomId());
+            opeProductionPartsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID, opeCombinOrderScooterB.getScooterBomId());
         }
         if (enter.getClassType().equals(ProductTypeEnums.COMBINATION.getValue())) {
             OpeCombinOrderCombinB opeCombinOrderCombinB = opeCombinOrderCombinBService.getById(enter.getId());

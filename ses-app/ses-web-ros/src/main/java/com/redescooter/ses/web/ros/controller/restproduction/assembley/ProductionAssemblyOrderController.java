@@ -89,13 +89,13 @@ public class ProductionAssemblyOrderController {
 
 
     @PostMapping(value = "/scooterGroupData")
-    @ApiOperation(value = "根据颜色查询分组", response = SpecificatGroupDataResult.class)
+    @ApiOperation(value = "根据车辆分组", response = SpecificatGroupDataResult.class)
     public Response<List<SpecificatGroupDataResult>> scooterGroupData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(productionAssemblyOrderService.scooterGroupData(enter));
     }
 
     @PostMapping(value = "/colorData")
-    @ApiOperation(value = "查询组装件数据", response = ColorDataResult.class)
+    @ApiOperation(value = "查询颜色数据", response = ColorDataResult.class)
     public Response<List<ColorDataResult>> colorData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productionAssemblyOrderService.colorData(enter));
     }
