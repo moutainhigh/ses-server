@@ -181,7 +181,7 @@
     </select>
 
     <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
-        select distinctrow en_name
+        select distinctrow en_name as combinName
         from ope_production_combin_bom bom
         where dr=0
         and bom_status=1
@@ -189,7 +189,7 @@
 
     <select
     id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
-        select bom_no, id as productionCombinBomId
+        select bom_no as bomNo, id as productionCombinBomId
         from ope_production_combin_bom bom
         where dr = 0
           and bom_status = 1
