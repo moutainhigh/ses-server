@@ -54,4 +54,12 @@ public class TokenController {
     public Response<GeneralResult> chanagePassword(@PathVariable("code") String code, @ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenRpsService.modifyPassword(enter));
     }
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "RPS登录", response = TokenResult.class)
+    @PostMapping(value = "/rpsLogin")
+    public Response<TokenResult> rpsLogin(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+        return new Response<>(tokenRpsService.rpsLogin(enter));
+    }
 }

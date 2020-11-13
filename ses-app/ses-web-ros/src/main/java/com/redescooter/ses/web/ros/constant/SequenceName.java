@@ -163,4 +163,6 @@ public interface SequenceName {
 
     String OPE_WITHDRAWAL_SITE = "OPE_WITHDRAWAL_SITE";
 
+    String OPE_SYS_RPS_USER = "OPE_SYS_RPS_USER";
+
 }
