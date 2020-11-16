@@ -179,4 +179,15 @@ public interface AllocateOrderService {
      * @return
      **/
     AllocateProductListResult allocateProductData(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  取消采购单的时候 调拨单状态变为已完成
+     * @Date  2020/11/16 15:21
+     * @Param
+     * @return
+     **/
+    void allocateFinishOrSignByPurchaseCalcal(Long allocateId,Long purchaseId,Long userId);
+
 }

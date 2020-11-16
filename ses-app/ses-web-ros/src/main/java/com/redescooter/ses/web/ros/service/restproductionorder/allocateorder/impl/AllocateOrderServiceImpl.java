@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassNameAllocateOrderServiceImpl
@@ -832,6 +833,46 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 break;
         }
         return allocateProductListResult;
+    }
+
+
+    // 取消采购单的时候 调拨单状态变为已完成（可能变成已签收）
+    // 前提是调拨单下面的别的采购单都是已签收或者是已完成的状态  且数量大于等于调拨数量
+    @Override
+    public void allocateFinishOrSignByPurchaseCalcal(Long allocateId, Long purchaseId, Long userId) {
+        AllocateProductListResult allocateProductListResult = new AllocateProductListResult();
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 总体来说 判断是签收还是完成
+        // 先找到调拨单下面的除了当前采购单之外的所有的有效的采购单
+        QueryWrapper<OpePurchaseOrder> purchaseQueryWrapper = new QueryWrapper<>();
+        purchaseQueryWrapper.eq(OpePurchaseOrder.COL_ALLOCATE_ID,allocateId);
+        purchaseQueryWrapper.ne(OpePurchaseOrder.COL_ID,purchaseId);
+        purchaseQueryWrapper.ne(OpePurchaseOrder.COL_PURCHASE_STATUS,PurchaseOrderStatusEnum.CANCEL.getValue());
+        List<OpePurchaseOrder> purchaseOrderList = opePurchaseOrderService.list(purchaseQueryWrapper);
+        if (CollectionUtils.isEmpty(purchaseOrderList)){
+            return;
+        }
+        // 过滤出状态小于已签收的数据
+        List<OpePurchaseOrder> noSignPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus() < PurchaseOrderStatusEnum.SIGNED.getValue()).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(noSignPurchaseOrderList)){
+            // 说明还有未签收的采购单  直接return
+            return;
+        }
+        // 到这里 说明下面的采购单的状态都是已签收或者是已完成
+        // 过滤状态等于已签收的采购单
+        List<OpePurchaseOrder> signPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus().equals(PurchaseOrderStatusEnum.SIGNED.getValue())).collect(Collectors.toList());
+        List<OpePurchaseOrder> finishPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus().equals(PurchaseOrderStatusEnum.FINISHED.getValue())).collect(Collectors.toList());
+        if (signPurchaseOrderList.size() == purchaseOrderList.size()){
+            // 说明下面的采购单都是已签收的，这个时候调拨单需要判断采购单下面的所有明细是否满足调拨单的调拨数量 满足的话需要把调拨单状态变为已签收
+
+        }
+        if (finishPurchaseOrderList.size() ==  purchaseOrderList.size()){
+            // 说明下面的采购单都已经完成了，这个时候调拨单需要判断采购单下面的所有明细是否满足调拨单的调拨数量 满足的话需要把调拨单状态变为已完成
+
+        }
     }
 
 }
