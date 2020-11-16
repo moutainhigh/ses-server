@@ -5,6 +5,7 @@
     <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select count(corder.combin_type) as totalCount, combin_type as status
         from ope_combin_order corder
+        where corder.dr = 0
         group by corder.combin_type
     </select>
 
@@ -132,6 +133,7 @@
         combin_no as relationOrderNo
         from ope_combin_order
         where dr = 0 and combin_status in (70,80)
+        and combin_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and combin_no like concat('%', #{enter.keyword}, '%')
         </if>

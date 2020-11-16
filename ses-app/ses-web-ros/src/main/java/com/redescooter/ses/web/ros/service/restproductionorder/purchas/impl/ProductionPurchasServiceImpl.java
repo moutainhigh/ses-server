@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
@@ -480,5 +481,74 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 部件入库单准备质检时，将关联的部件入库单的状态变为待入库
+    @Override
+    @Transactional
+    public void statusToBeStored(Long productionPurchaseId, Long userId) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.TO_BE_STORED.getValue());
+        opeProductionPurchaseOrder.setUpdatedBy(userId);
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowEnter.setUserId(userId);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
+
+
+    // 部件入库单确认入库时，将关联的部件入库单的状态变为部分入库或已入库
+    @Override
+    public void statusToPartWhOrAllInWh(Long productionPurchaseId,Long inWhId, Long userId) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        // 判断一波 是变成部分入库还是已入库
+        if (checkStatusChange(productionPurchaseId,inWhId)){
+            // 已入库
+            opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.HAS_BEEN_STORED.getValue());
+        }else {
+            // 部分入库
+            opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.PARTIAL_STORAGE.getValue());
+        }
+        opeProductionPurchaseOrder.setUpdatedBy(userId);
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowEnter.setUserId(userId);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
+
+
+    // 校验本次是部分入库还是已入库
+    public boolean checkStatusChange(Long productionPurchaseId,Long inWhId){
+        boolean flag = true;
+        // 找到部件采购单下面的部件明细
+        QueryWrapper<OpeProductionPurchasePartsB> qw = new QueryWrapper<>();
+        qw.eq(OpeProductionPurchasePartsB.COL_PRODUCTION_PURCHASE_ID,productionPurchaseId);
+        List<OpeProductionPurchasePartsB>  purchasePartsBs = opeProductionPurchasePartsBService.list(qw);
+        if (CollectionUtils.isNotEmpty(purchasePartsBs)){
+            // 先看看这个采购单下面有没有还没有 没有
+
+        }
+        return flag;
     }
 }

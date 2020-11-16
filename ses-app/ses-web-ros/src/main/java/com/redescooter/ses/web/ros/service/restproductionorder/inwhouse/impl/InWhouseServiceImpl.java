@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
@@ -94,6 +95,9 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Autowired
     private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
+
+    @Autowired
+    private ProductionPurchasService productionPurchasService;
 
     @Reference
     private IdAppService idAppService;
@@ -438,8 +442,8 @@ public class InWhouseServiceImpl implements InWhouseService {
             // 整车和组装件 是草稿状态的时候才能点击
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue()) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
-            // 部件 是质检中状态的时候才能点击
+        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue()) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.WAIT_IN_WH.getValue())){
+            // 部件 是待入库状态的时候才能点击
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
@@ -449,6 +453,10 @@ public class InWhouseServiceImpl implements InWhouseService {
                 inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
+        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
+            // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
+            productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -470,7 +478,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                 inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),
+                inWhouseOrder.getRemark());
+        orderStatusFlowEnter.setUserId(enter.getUserId());
+        orderStatusFlowService.save(orderStatusFlowEnter);
         // todo 生成质检单
+        if(inWhouseOrder.equals(ProductTypeEnums.PARTS.getValue())){
+            // 如果是部件 将对应的部件采购单的状态变为待入库
+            productionPurchasService.statusToBeStored(inWhouseOrder.getRelationOrderId(),enter.getUserId());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -502,5 +519,47 @@ public class InWhouseServiceImpl implements InWhouseService {
     public List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter) {
         List<SaveOrUpdateScooterBEnter> list = productionAssemblyOrderServiceMapper.relationCombinOrderScooterData(enter);
         return list;
+    }
+
+
+    // 模拟rps的操作 开始质检
+    @Override
+    public GeneralResult startQc(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.INSPECTING.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),
+                inWhouseOrder.getRemark());
+        orderStatusFlowEnter.setUserId(enter.getUserId());
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 模拟rps的操作 完成质检
+    @Override
+    public GeneralResult finishQc(IdEnter enter) {
+        OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
+        if (inWhouseOrder == null){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.INSPECTING.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_IN_WH.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),
+                inWhouseOrder.getRemark());
+        orderStatusFlowEnter.setUserId(enter.getUserId());
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
     }
 }

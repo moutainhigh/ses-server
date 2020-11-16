@@ -138,4 +138,24 @@ public interface InWhouseService {
      **/
     List<SaveOrUpdateScooterBEnter> relationCombinOrderScooterData(IdEnter enter);
 
+
+    /**
+     * @Author Aleks
+     * @Description  模拟RPS的操作  开始质检
+     * @Date  2020/11/16 11:12
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult startQc(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  模拟RPS的操作  完成质检
+     * @Date  2020/11/16 11:12
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult finishQc(IdEnter enter);
+
 }
