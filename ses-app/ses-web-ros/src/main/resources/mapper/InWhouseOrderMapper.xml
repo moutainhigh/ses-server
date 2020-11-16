@@ -19,7 +19,7 @@
         from ope_in_whouse_order inwh
         left join ope_sys_staff staff on staff.id = inwh.created_by
         <include refid="listCondition"></include>
-        order by inwh.updated_time desc limit #{enter.startRow},#{enter.pageSize}
+        order by inwh.created_time desc limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <sql id="listCondition">
