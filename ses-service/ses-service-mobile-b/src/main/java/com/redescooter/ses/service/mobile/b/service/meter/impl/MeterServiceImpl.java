@@ -58,8 +58,6 @@ public class MeterServiceImpl implements MeterService {
     public MeterExpressOrderResult meterExpressOrder(MeterOrderEnter enter) {
         CorDriver corDriver = this.getDriverByScooterNo(enter);
 
-
-
         return null;
     }
 
