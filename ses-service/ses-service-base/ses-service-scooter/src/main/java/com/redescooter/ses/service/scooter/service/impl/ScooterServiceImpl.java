@@ -71,6 +71,8 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterResultList;
     }
 
+
+
     @Transactional
     @Override
     public GeneralResult saveScooter(List<BaseScooterEnter> enter) {
@@ -179,5 +181,24 @@ public class ScooterServiceImpl implements ScooterService {
             });
         });
         return scooterResultList;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/16 6:01 下午
+     * @Param: id, scooterNo
+     * @Return: BaseScooterResult
+     * @desc: 车辆基本信息
+     * @param id
+     * @param scooterNo
+     */
+    @Override
+    public BaseScooterResult scooterInfoByScooterNo(Long id, String scooterNo) {
+        BaseScooterResult result=scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
+        if (result==null){
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
+        return result;
     }
 }
