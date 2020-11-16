@@ -18,9 +18,6 @@ import java.util.Date;
 @Data
 @TableName(value = "ope_in_whouse_order")
 public class OpeInWhouseOrder {
-    public static final String COL_COMBIN_STATUS = "combin_status";
-    public static final String COL_ORDER_ID = "order_id";
-    public static final String COL_ORDER_NO = "order_no";
     /**
      * 主键id
      */

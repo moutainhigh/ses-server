@@ -121,4 +121,24 @@ public interface ProductionPurchasService {
     * @desc: 下单
     */
     GeneralResult bookOrder(IdEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  部件入库单准备质检时，将关联的部件入库单的状态变为待入库
+     * @Date  2020/11/16 10:39
+     * @Param
+     * @return
+     **/
+    void statusToBeStored(Long productionPurchaseId,Long userId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  部件入库单确认入库时，将关联的部件入库单的状态变为部分入库或已入库
+     * @Date  2020/11/16 11:35
+     * @Param
+     * @return
+     **/
+    void statusToPartWhOrAllInWh(Long productionPurchaseId,Long inWhId,Long userId);
 }

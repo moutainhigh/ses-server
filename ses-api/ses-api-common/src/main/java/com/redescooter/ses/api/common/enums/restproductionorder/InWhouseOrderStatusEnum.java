@@ -22,6 +22,8 @@ public enum InWhouseOrderStatusEnum {
 
     INSPECTING("INSPECTING", "质检中", 20),
 
+    WAIT_IN_WH("WAIT_IN_WH", "待入库", 25),
+
     ALREADY_IN_WHOUSE("ALREADY_IN_WHOUSE", "已入库", 30);
 
 

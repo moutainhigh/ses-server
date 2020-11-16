@@ -34,4 +34,12 @@
             and inwh.in_wh_no like concat('%', #{enter.keyword}, '%')
         </if>
     </sql>
+
+    <select id="inWhousePartsList" resultType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
+        select *
+        from ope_in_whouse_parts_b parts
+        left join ope_in_whouse_order inwhouse on inwhouse.id = parts.in_wh_id
+        left join ope_production_purchase_order purchase on purchase.id = inwhouse.relation_order_id
+        where parts.dr = 0 and purchase.id = #{productionPurchaseId}
+    </select>
 </mapper>

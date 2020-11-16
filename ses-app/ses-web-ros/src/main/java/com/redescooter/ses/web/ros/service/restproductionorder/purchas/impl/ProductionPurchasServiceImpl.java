@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -13,11 +15,13 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
@@ -28,6 +32,8 @@ import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
@@ -91,6 +97,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private OpeSysStaffService opeSysStaffService;
+
+    @Autowired
+    private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -293,7 +302,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
         BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
         opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setFactoryPrincipalName(enter.getFactoryPrincipalName());
         opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
         opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
@@ -536,5 +544,111 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         inWhouseSaveOrUpdateEnter.setUserId(enter.getUserId());
         inWhouseService.inWhouseSave(inWhouseSaveOrUpdateEnter);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 部件入库单准备质检时，将关联的部件入库单的状态变为待入库
+    @Override
+    @Transactional
+    public void statusToBeStored(Long productionPurchaseId, Long userId) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.TO_BE_STORED.getValue());
+        opeProductionPurchaseOrder.setUpdatedBy(userId);
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowEnter.setUserId(userId);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
+
+
+    // 部件入库单确认入库时，将关联的部件入库单的状态变为部分入库或已入库
+    @Override
+    public void statusToPartWhOrAllInWh(Long productionPurchaseId,Long inWhId, Long userId) {
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
+        if (Objects.isNull(opeProductionPurchaseOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())){
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        // 判断一波 是变成部分入库还是已入库
+        if (checkStatusChange(productionPurchaseId,inWhId)){
+            // 已入库
+            opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.HAS_BEEN_STORED.getValue());
+        }else {
+            // 部分入库
+            opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.PARTIAL_STORAGE.getValue());
+        }
+        opeProductionPurchaseOrder.setUpdatedBy(userId);
+        opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
+                null);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowEnter.setUserId(userId);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
+
+
+    // 校验本次是部分入库还是已入库
+    public boolean checkStatusChange(Long productionPurchaseId,Long inWhId){
+        boolean flag = true;
+        // 找到部件采购单下面的部件明细
+        QueryWrapper<OpeProductionPurchasePartsB> qw = new QueryWrapper<>();
+        qw.eq(OpeProductionPurchasePartsB.COL_PRODUCTION_PURCHASE_ID,productionPurchaseId);
+        List<OpeProductionPurchasePartsB>  purchasePartsBs = opeProductionPurchasePartsBService.list(qw);
+        if (CollectionUtils.isNotEmpty(purchasePartsBs)){
+            // 先看看这个采购单下面有没有还没有 没有已入库状态之前的入库单  有的话 为部分入库  返回false
+            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQueryWrapper = new QueryWrapper<>();
+            inWhouseOrderQueryWrapper.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,productionPurchaseId);
+            inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID,inWhId);
+            inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+            int inWhNum = opeInWhouseOrderService.count(inWhouseOrderQueryWrapper);
+            if (inWhNum > 0){
+                flag = false;
+                return flag;
+            }
+            // 说明采购单下面的入库单都签收了 再判断“实际入库数量”是否大于等于“采购数量”  如果大于等于 则为已入库  返回true
+            // 1、对采购单下面的部件信息按照部件id进行分组
+            Map<Long, List<OpeProductionPurchasePartsB>> purchasePartsMap = purchasePartsBs.stream().collect(Collectors.groupingBy(OpeProductionPurchasePartsB::getPartsId));
+            // 2、找到采购单下面的入库单的所有部件信息
+            List<OpeInWhousePartsB> inWhousePartsBList = inWhouseOrderServiceMapper.inWhousePartsList(productionPurchaseId);
+            if (CollectionUtils.isEmpty(inWhousePartsBList)){
+                flag = false;
+                return flag;
+            }
+            // 3、采购单下面的入库单的所有部件信息 按照部件id进行分组
+            Map<Long, List<OpeInWhousePartsB>> inWhousePartsMap = inWhousePartsBList.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+            if (purchasePartsMap.size() > inWhousePartsMap.size()){
+                // 如果生产采购单下面的部件种类比入库单的多  说明生产采购单还没有入库单（还需要继续产生入库单才行）
+                flag = false;
+                return flag;
+            }
+            for (Long key1 : purchasePartsMap.keySet()) {
+                int purchasePartsNum = purchasePartsMap.get(key1).stream().mapToInt(OpeProductionPurchasePartsB::getQty).sum();
+                for (Long key2 : inWhousePartsMap.keySet()) {
+                    if (key1.equals(key2)){
+                        int inWhousePartsNum = inWhousePartsMap.get(key2).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum();
+                        if (purchasePartsNum > inWhousePartsNum){
+                            // 某个部件的采购数量大于入库单的实际入库数量，状态变为部分入库  返回false
+                            flag = false;
+                            return flag;
+                        }
+                    }
+                }
+            }
+        }
+        return flag;
     }
 }
