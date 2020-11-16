@@ -43,6 +43,6 @@ public class InWhouseDetailPartsResult {
     private Integer actInWhQty;
 
     @ApiModelProperty("不合格数量")
-    private Integer unqualifiedQty = 1;
+    private Integer unqualifiedQty = 0;
 
 }
