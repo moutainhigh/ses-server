@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -24,6 +26,7 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
@@ -31,11 +34,13 @@ import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
@@ -93,6 +98,12 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     @Autowired
     private OrderNumberService orderNumberService;
+
+    @Autowired
+    private OutboundOrderService outboundOrderService;
+
+    @Autowired
+    private OpeOutWhouseOrderService opeOutWhouseOrderService;
 
     @Autowired
     private IdAppService idAppService;
@@ -195,6 +206,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public List<AssociatedOrderResult> associatedOrder(IdEnter enter) {
         List<AssociatedOrderResult> resultList = new ArrayList<>();
+        //入库单
         List<OpeInWhouseOrder> opeInWhouseOrderList = opeInWhouseOrderService.list(new LambdaQueryWrapper<OpeInWhouseOrder>()
                 .eq(OpeInWhouseOrder::getRelationOrderId, enter.getId())
                 .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
@@ -203,6 +215,10 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                 resultList.add(new AssociatedOrderResult(item.getId(), item.getInWhNo(), item.getOrderType(), item.getCreatedTime(), null));
             });
         }
+        //出库单
+//        opeOutWhouseOrderService.list(new LambdaQueryWrapper<OpeOutWhouseOrder>()
+//                .eq(OpeOutWhouseOrder::getid, enter.getId())
+//                .eq(OpeOutWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
         return resultList;
     }
 
@@ -373,6 +389,32 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
+
+        //查询子订单
+        List<ProductEnter> productEnterList=new ArrayList<>();
+        if (opeCombinOrder.getCombinType().equals(ProductTypeEnums.SCOOTER.getValue())){
+            List<OpeCombinOrderScooterB> opeCombinOrderScooterBList = opeCombinOrderScooterBService.list(new LambdaQueryWrapper<OpeCombinOrderScooterB>().eq(OpeCombinOrderScooterB::getCombinId, opeCombinOrder.getId()));
+            if (CollectionUtils.isEmpty(opeCombinOrderScooterBList)){
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            }
+            productEnterList.addAll(opeCombinOrderScooterBList.stream().map(item->{
+                return new ProductEnter(item.getScooterBomId(),item.getColorId(),item.getGroupId(),item.getQty(),item.getRemark());
+            }).collect(Collectors.toList()));
+        }else {
+            List<OpeCombinOrderCombinB> opeCombinOrderCombinBList = opeCombinOrderCombinBService.list(new LambdaQueryWrapper<OpeCombinOrderCombinB>().eq(OpeCombinOrderCombinB::getCombinId, opeCombinOrder.getId()));
+            if (CollectionUtils.isEmpty(opeCombinOrderCombinBList)){
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            }
+            productEnterList.addAll(opeCombinOrderCombinBList.stream().map(item->{
+                return new ProductEnter(item.getProductionCombinBomId(),null,null,item.getQty(),item.getRemark());
+            }).collect(Collectors.toList()));
+        }
+
+        //组装单 备料生成 出库单
+        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter(null,null,null,orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())),
+                opeCombinOrder.getCombinType(),OutBoundOrderTypeEnums.PRODUCT.getValue(), opeCombinOrder.getCombinQty(),opeCombinOrder.getRemark(),productEnterList);
+        saveOutboundOrderEnter.setUserId(enter.getUserId());
+        outboundOrderService.save(saveOutboundOrderEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
