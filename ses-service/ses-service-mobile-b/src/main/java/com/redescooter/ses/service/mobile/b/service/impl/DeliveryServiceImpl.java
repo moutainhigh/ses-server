@@ -411,14 +411,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnums.PC.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(delivery.getStatus())
                 .args(args)
-                .belongId(delivery.getCreatedBy())
-                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .belongId(delivery.getDelivererId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
                 .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
