@@ -22,6 +22,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
@@ -31,6 +32,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -88,6 +90,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     @Autowired
     private OpeProductionCombinBomService opeProductioncombinBomService;
+
+    @Autowired
+    private OrderNumberService orderNumberService;
 
     @Autowired
     private IdAppService idAppService;
@@ -585,7 +590,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
         BeanUtils.copyProperties(enter, opeCombinOrder);
         opeCombinOrder.setDr(0);
-        opeCombinOrder.setCombinNo(RandomUtil.randomString(RandomUtil.BASE_CHAR, 10));
+        opeCombinOrder.setCombinNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.COMBIN_ORDER.getValue())));
         opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.DRAF.getValue());
         opeCombinOrder.setCombinQty(productQty);
         opeCombinOrder.setUpdatedBy(enter.getUserId());
