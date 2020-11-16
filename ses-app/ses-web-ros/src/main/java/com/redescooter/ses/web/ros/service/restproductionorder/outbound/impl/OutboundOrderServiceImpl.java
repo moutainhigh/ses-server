@@ -457,7 +457,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeOutWhouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),opeOutWhouseOrder.getId(),"");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 更改发货单的状态为待装车
-        invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getInvoiceId());
+        invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
         return new GeneralResult(enter.getRequestId());
     }
 }
