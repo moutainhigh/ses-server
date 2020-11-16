@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeInWhousePartsBMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
-    <!--@Table ope_in_whouse_parts_b-->
+    <!--@Table operation.ope_in_whouse_parts_b-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
@@ -15,6 +15,7 @@
     <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
     <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
     <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+    <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -29,12 +30,12 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-    in_wh_qty, act_in_wh_qty, remark, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def4, def5
+    in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_in_whouse_parts_b
+    update operation.ope_in_whouse_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -84,6 +85,11 @@
       <trim prefix="act_in_wh_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.actInWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="unqualified_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.unqualifiedQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
@@ -144,36 +150,36 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_in_whouse_parts_b
+    insert into operation.ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-      in_wh_qty, act_in_wh_qty, remark, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT}, 
         #{item.partsId,jdbcType=BIGINT}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR}, 
         #{item.partsType,jdbcType=INTEGER}, #{item.purchaseQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, 
-        #{item.inWhQty,jdbcType=INTEGER}, #{item.actInWhQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
-        )
+        #{item.inWhQty,jdbcType=INTEGER}, #{item.actInWhQty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
-    insert into ope_in_whouse_parts_b
+    insert into operation.ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-      in_wh_qty, act_in_wh_qty, remark, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT}, 
       #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, 
       #{purchaseQty,jdbcType=INTEGER}, #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, 
-      #{actInWhQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
-      #{def5,jdbcType=DECIMAL})
+      #{actInWhQty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -186,6 +192,7 @@
     able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER}, 
     in_wh_qty = #{inWhQty,jdbcType=INTEGER}, 
     act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER}, 
+    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
@@ -199,7 +206,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
-    insert into ope_in_whouse_parts_b
+    insert into operation.ope_in_whouse_parts_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -233,6 +240,9 @@
       </if>
       <if test="actInWhQty != null">
         act_in_wh_qty,
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty,
       </if>
       <if test="remark != null">
         remark,
@@ -300,6 +310,9 @@
       <if test="actInWhQty != null">
         #{actInWhQty,jdbcType=INTEGER},
       </if>
+      <if test="unqualifiedQty != null">
+        #{unqualifiedQty,jdbcType=INTEGER},
+      </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
@@ -365,6 +378,9 @@
       </if>
       <if test="actInWhQty != null">
         act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},

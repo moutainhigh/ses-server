@@ -3,7 +3,8 @@ package com.redescooter.ses.web.ros.service.base;
 import java.util.List;
 import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface OpeInWhousePartsBService extends IService<OpeInWhousePartsB>{
+
+public interface OpeInWhousePartsBService extends IService<OpeInWhousePartsB> {
 
 
     int updateBatch(List<OpeInWhousePartsB> list);
@@ -15,3 +16,4 @@ public interface OpeInWhousePartsBService extends IService<OpeInWhousePartsB>{
     int insertOrUpdateSelective(OpeInWhousePartsB record);
 
 }
+

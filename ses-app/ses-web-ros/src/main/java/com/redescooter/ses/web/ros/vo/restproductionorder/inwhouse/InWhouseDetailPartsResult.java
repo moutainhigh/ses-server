@@ -42,4 +42,7 @@ public class InWhouseDetailPartsResult {
     @ApiModelProperty(value="实际入库数量")
     private Integer actInWhQty;
 
+    @ApiModelProperty("不合格数量")
+    private Integer unqualifiedQty = 1;
+
 }
