@@ -28,7 +28,8 @@
         ju.audience_type as audienceType,
         ju.push_time as pushTime
         from pla_jpush_user ju
-        where ju.user_id in
+        where  ju.dr=0
+        and ju.user_id in
         <foreach collection="list" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

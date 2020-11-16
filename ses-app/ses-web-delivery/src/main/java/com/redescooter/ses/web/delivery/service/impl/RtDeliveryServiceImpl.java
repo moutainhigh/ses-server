@@ -194,14 +194,14 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             deliverySave.setUpdatedTime(new Date());
             deliveryService.save(deliverySave);
 
-            saveDeliveryNode(deliverySave, enter, null, statusConversionEvent(deliverySave.getStatus()));
+            //骑手推送消息
             PushMsgBo pushMsg = PushMsgBo.builder()
                     .enter(enter)
                     .pushType(PlatformTypeEnums.ANDROID.getValue())
                     .bizId(deliverySave.getId())
                     .bizType(BizType.DELIVERY.getValue())
                     .status(DeliveryStatusEnums.PENDING.getValue())
-                    .args(null)
+                    .args(new String[]{deliverySave.getOrderNo()})
                     .belongId(deliverySave.getDelivererId())
                     .systemId(AppIDEnums.SAAS_APP.getSystemId())
                     .appId(AppIDEnums.SAAS_APP.getAppId())
@@ -232,7 +232,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             oloDelivery.setUpdatedTime(new Date());
             deliveryService.updateById(oloDelivery);
         }
-
         return new GeneralResult(enter.getRequestId());
     }
 
