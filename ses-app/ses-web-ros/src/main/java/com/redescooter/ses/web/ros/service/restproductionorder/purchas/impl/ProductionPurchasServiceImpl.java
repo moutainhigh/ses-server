@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
@@ -14,6 +15,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -77,6 +79,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
+
+    @Autowired
+    private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -546,8 +551,45 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         qw.eq(OpeProductionPurchasePartsB.COL_PRODUCTION_PURCHASE_ID,productionPurchaseId);
         List<OpeProductionPurchasePartsB>  purchasePartsBs = opeProductionPurchasePartsBService.list(qw);
         if (CollectionUtils.isNotEmpty(purchasePartsBs)){
-            // 先看看这个采购单下面有没有还没有 没有
-
+            // 先看看这个采购单下面有没有还没有 没有已入库状态之前的入库单  有的话 为部分入库  返回false
+            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQueryWrapper = new QueryWrapper<>();
+            inWhouseOrderQueryWrapper.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,productionPurchaseId);
+            inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID,inWhId);
+            inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+            int inWhNum = opeInWhouseOrderService.count(inWhouseOrderQueryWrapper);
+            if (inWhNum > 0){
+                flag = false;
+                return flag;
+            }
+            // 说明采购单下面的入库单都签收了 再判断“实际入库数量”是否大于等于“采购数量”  如果大于等于 则为已入库  返回true
+            // 1、对采购单下面的部件信息按照部件id进行分组
+            Map<Long, List<OpeProductionPurchasePartsB>> purchasePartsMap = purchasePartsBs.stream().collect(Collectors.groupingBy(OpeProductionPurchasePartsB::getPartsId));
+            // 2、找到采购单下面的入库单的所有部件信息
+            List<OpeInWhousePartsB> inWhousePartsBList = inWhouseOrderServiceMapper.inWhousePartsList(productionPurchaseId);
+            if (CollectionUtils.isEmpty(inWhousePartsBList)){
+                flag = false;
+                return flag;
+            }
+            // 3、采购单下面的入库单的所有部件信息 按照部件id进行分组
+            Map<Long, List<OpeInWhousePartsB>> inWhousePartsMap = inWhousePartsBList.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+            if (purchasePartsMap.size() > inWhousePartsMap.size()){
+                // 如果生产采购单下面的部件种类比入库单的多  说明生产采购单还没有入库单（还需要继续产生入库单才行）
+                flag = false;
+                return flag;
+            }
+            for (Long key1 : purchasePartsMap.keySet()) {
+                int purchasePartsNum = purchasePartsMap.get(key1).stream().mapToInt(OpeProductionPurchasePartsB::getQty).sum();
+                for (Long key2 : inWhousePartsMap.keySet()) {
+                    if (key1.equals(key2)){
+                        int inWhousePartsNum = inWhousePartsMap.get(key2).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum();
+                        if (purchasePartsNum > inWhousePartsNum){
+                            // 某个部件的采购数量大于入库单的实际入库数量，状态变为部分入库  返回false
+                            flag = false;
+                            return flag;
+                        }
+                    }
+                }
+            }
         }
         return flag;
     }
