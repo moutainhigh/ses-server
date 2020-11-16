@@ -3,7 +3,9 @@ package com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ClassNameInWhouseSaveOrUpdateEnter
@@ -13,6 +15,8 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(value = "入库单新增或修改传参",description = "入库单新增或修改传参")
 public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
 
