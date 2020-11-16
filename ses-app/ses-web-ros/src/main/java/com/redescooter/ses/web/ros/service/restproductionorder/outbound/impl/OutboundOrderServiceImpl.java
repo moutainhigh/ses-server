@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTy
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -72,12 +73,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     private OpeInvoiceOrderService opeInvoiceOrderService;
 
     @Autowired
-    private OpePurchaseOrderService opePurchaseOrderService;
-
-    @Autowired
-    private OpeAllocateOrderService opeAllocateOrderService;
-
-    @Autowired
     private OrderNumberService orderNumberService;
 
     @Autowired
@@ -100,6 +95,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private InvoiceOrderService invoiceOrderService;
+
+    @Autowired
+    private OpeCombinOrderService opecombinOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -259,10 +257,18 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeSysStaff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getInvoiceId());
-        if (opeInvoiceOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (OutBoundOrderTypeEnums.SALES.getValue().equals(enter.getRelationType())){
+            OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getRelationId());
+            if (opeInvoiceOrder == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            }
+        }else {
+            OpeCombinOrder opeCombinOrder = opecombinOrderService.getById(enter.getRelationId());
+            if (opeCombinOrder == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            }
         }
+
         OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
         BeanUtils.copyProperties(enter, opeOutWhouseOrder);
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
@@ -408,7 +414,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Override
     public void cancelOutWh(Long invoiceId, Long userId, String remark) {
         QueryWrapper<OpeOutWhouseOrder> qw = new QueryWrapper<>();
-        qw.eq(OpeOutWhouseOrder.COL_INVOICE_ID,invoiceId);
+        qw.eq(OpeOutWhouseOrder.COL_RELATION_ID,invoiceId);
         OpeOutWhouseOrder whouseOrder = opeOutWhouseOrderService.getOne(qw);
         if(whouseOrder != null){
             whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());

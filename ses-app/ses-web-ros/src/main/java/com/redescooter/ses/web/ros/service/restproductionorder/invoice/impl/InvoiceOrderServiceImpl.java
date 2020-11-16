@@ -73,9 +73,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     private OpePurchaseOrderService opePurchaseOrderService;
 
     @Autowired
-    private OpeAllocateOrderService opeAllocateOrderService;
-
-    @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
     @Autowired
@@ -600,8 +597,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter();
         BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
         saveOutboundOrderEnter.setId(null);
-        saveOutboundOrderEnter.setInvoiceId(enter.getId());
-        saveOutboundOrderEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
+        saveOutboundOrderEnter.setRelationId(enter.getId());
+        saveOutboundOrderEnter.setRelationType(OutBoundOrderTypeEnums.PRODUCT.getValue());
+        saveOutboundOrderEnter.setRelationNo(opeInvoiceOrder.getInvoiceNo());
         saveOutboundOrderEnter.setOutWhType(opeInvoiceOrder.getInvoiceType());
         saveOutboundOrderEnter.setOutType(OutBoundOrderTypeEnums.SALES.getValue());
         saveOutboundOrderEnter.setOutWhQty(opeInvoiceOrder.getInvoiceQty());

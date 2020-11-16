@@ -18,8 +18,6 @@ import java.util.Date;
 @Data
 @TableName(value = "ope_out_whouse_order")
 public class OpeOutWhouseOrder {
-    public static final String COL_INVOICE_ID = "invoice_id";
-    public static final String COL_INVOICE_NO = "invoice_no";
     private static final long serialVersionUID = 1L;
     /**
      * 主键id

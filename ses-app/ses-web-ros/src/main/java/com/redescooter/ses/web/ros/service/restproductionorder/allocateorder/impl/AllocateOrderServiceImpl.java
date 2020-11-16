@@ -409,7 +409,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 orderOpTrace(invoiceOrderList.stream().map(OpeInvoiceOrder::getId).collect(Collectors.toList()), OrderTypeEnums.INVOICE.getValue(), enter.getRemark(), enter.getUserId());
                 // 找到发货单的出库单
                 QueryWrapper<OpeOutWhouseOrder> opeOutWhouseOrderQueryWrapper = new QueryWrapper<>();
-                opeOutWhouseOrderQueryWrapper.in(OpeOutWhouseOrder.COL_INVOICE_ID, invoiceIds);
+                opeOutWhouseOrderQueryWrapper.in(OpeOutWhouseOrder.COL_RELATION_ID, invoiceIds);
                 List<OpeOutWhouseOrder> whouseOrderList = opeOutWhouseOrderService.list(opeOutWhouseOrderQueryWrapper);
                 if (CollectionUtils.isNotEmpty(whouseOrderList)) {
                     for (OpeOutWhouseOrder outWhouseOrder : whouseOrderList) {

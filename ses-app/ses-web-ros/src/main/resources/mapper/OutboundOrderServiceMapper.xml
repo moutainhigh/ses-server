@@ -37,8 +37,8 @@
     <select
     id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult">
         select whorder.id            as id,
-               whorder.invoice_id    as invoiceId,
-               whorder.invoice_no    as invoiceNo,
+                whorder.relation_id    as invoiceId,
+                whorder.relation_no    as invoiceNo,
                whorder.out_wh_no     as outWhNo,
                whorder.out_wh_status as outWhStatus,
                whorder.out_wh_type   as outWhType,
@@ -59,8 +59,8 @@
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult">
         select whorder.id            as id,
-               whorder.invoice_id    as invoiceId,
-               whorder.invoice_no    as invoiceNo,
+                whorder.relation_id    as invoiceId,
+                whorder.relation_no    as invoiceNo,
                whorder.out_wh_no     as outWhNo,
                whorder.out_wh_status as outWhStatus,
                whorder.out_wh_type   as outWhType,
