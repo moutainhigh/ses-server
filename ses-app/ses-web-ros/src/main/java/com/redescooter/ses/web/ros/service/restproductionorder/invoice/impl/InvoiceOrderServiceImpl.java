@@ -371,7 +371,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
             }
             // 对查询出来的结果 根据分组和颜色进行分组 (嵌套分组)
-            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+//            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+            Map<String, List<OpeProductionScooterBom>> map = scooterBomList.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
             // 因为下单的时候 可能会出现 同分组颜色的情况，所以scooterBS需要先根据分组颜色来先进行分组 （多字段自定义分组）  再比较
             Map<String, List<OpeInvoiceScooterB>> map1 = scooterBS.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
             if (map1.size() > map.size()) {
@@ -385,6 +386,12 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 多字段自定义分组
     private static String fetchGroupKey(OpeInvoiceScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+    // 多字段自定义分组
+    private static String fetchGroupKey1(OpeProductionScooterBom scooterB){
         // 按照分组和颜色进行分组
         return scooterB.getGroupId() +""+scooterB.getColorId();
     }
