@@ -313,7 +313,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 combin.eq(OpeInWhouseCombinB.COL_IN_WH_ID,inWhouseOrder.getId());
                 List<OpeInWhouseCombinB> combinBList = opeInWhouseCombinBService.list(combin);
                 if (CollectionUtils.isNotEmpty(combinBList)){
-                    opeInWhouseScooterBService.removeByIds(combinBList.stream().map(OpeInWhouseCombinB::getId).collect(Collectors.toList()));
+                    opeInWhouseCombinBService.removeByIds(combinBList.stream().map(OpeInWhouseCombinB::getId).collect(Collectors.toList()));
                 }
                 break;
             case 3:
@@ -322,7 +322,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 parts.eq(OpeInWhousePartsB.COL_IN_WH_ID,inWhouseOrder.getId());
                 List<OpeInWhousePartsB> partsBList = opeInWhousePartsBService.list(parts);
                 if (CollectionUtils.isNotEmpty(partsBList)){
-                    opeInWhouseScooterBService.removeByIds(partsBList.stream().map(OpeInWhousePartsB::getId).collect(Collectors.toList()));
+                    opeInWhousePartsBService.removeByIds(partsBList.stream().map(OpeInWhousePartsB::getId).collect(Collectors.toList()));
                 }
                 break;
         }
