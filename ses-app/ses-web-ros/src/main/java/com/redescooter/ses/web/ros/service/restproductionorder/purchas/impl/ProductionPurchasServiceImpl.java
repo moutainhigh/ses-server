@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
@@ -28,6 +29,7 @@ import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -76,6 +78,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OrderNumberService orderNumberService;
 
     @Autowired
     private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
@@ -270,7 +275,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
         BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
         opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setPurchaseNo(RandomUtil.randomString("RO",10));
+        opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
         opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
         opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
@@ -279,7 +284,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setPaymentDay(paymentEnter.getDays());
         opeProductionPurchaseOrder.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
         opeProductionPurchaseOrder.setPurchaseAmount(totalPrice);
-        opeProductionPurchaseOrder.setPayAmount(paymentEnter.getAmount());
         opeProductionPurchaseOrder.setAmountType(paymentEnter.getAmountType());
 
         if (PaymentTypeEnums.PREPAYMENTS.getValue().equals(paymentEnter.getPaymentType()) && paymentEnter.getAmount()!=null){
@@ -319,9 +323,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                 throw new SesWebRosException(ExceptionCodeEnums.QTY_IS_ILLEGAL.getCode(),ExceptionCodeEnums.QTY_IS_ILLEGAL.getMessage());
             }
         });
-        if (paymentEnter.getPercentage()<0 || Objects.isNull(paymentEnter.getAmount())){
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
         return PartDetailDtoList;
     }
 
@@ -341,7 +342,11 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (CollectionUtils.isNotEmpty(opeSupplierList)){
             opeSupplierList.forEach(item->{
                 List<SupplierPrincipaleResult> supplierList = new ArrayList<>();
-                supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFirstName(),item.getContactLastName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
+                if (StringUtils.isAnyEmpty(item.getContactFirstName(),item.getContactLastName())){
+                    supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFullName(),item.getContactFullName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
+                }else {
+                    supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFirstName(),item.getContactLastName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
+                }
                 resultList.add(new SupplierListResult(item.getId(),item.getSupplierName(),supplierList));
             });
         }
