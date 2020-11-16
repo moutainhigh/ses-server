@@ -175,7 +175,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         List<AssociatedOrderResult> resultList = new ArrayList<> ();
         List<OpeInWhouseOrder> opeInWhouseOrderList = opeInWhouseOrderService.list(new LambdaQueryWrapper<OpeInWhouseOrder>()
                 .eq(OpeInWhouseOrder::getRelationOrderId, enter.getId())
-                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.FACTORY_INBOUND));
+                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.FACTORY_PURCHAS.getValue()));
         if (CollectionUtils.isNotEmpty(opeInWhouseOrderList)){
             opeInWhouseOrderList.forEach(item->{
                 resultList.add(new AssociatedOrderResult(item.getId(),item.getInWhNo(),item.getOrderType(),item.getCreatedTime(),null));
@@ -296,7 +296,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             if (opeSysStaff==null){
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
             }
-            enter.setDockingUserName(opeSysStaff.getFullName());
+            enter.setDockingUserName(opeSysStaff.getFirstName()+" "+opeSysStaff.getLastName());
         }
 
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();

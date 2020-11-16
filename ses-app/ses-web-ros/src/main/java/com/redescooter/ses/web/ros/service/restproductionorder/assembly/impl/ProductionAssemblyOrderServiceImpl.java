@@ -209,16 +209,21 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         //入库单
         List<OpeInWhouseOrder> opeInWhouseOrderList = opeInWhouseOrderService.list(new LambdaQueryWrapper<OpeInWhouseOrder>()
                 .eq(OpeInWhouseOrder::getRelationOrderId, enter.getId())
-                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
+                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.FACTORY_INBOUND.getValue()));
         if (CollectionUtils.isNotEmpty(opeInWhouseOrderList)) {
             opeInWhouseOrderList.forEach(item -> {
                 resultList.add(new AssociatedOrderResult(item.getId(), item.getInWhNo(), item.getOrderType(), item.getCreatedTime(), null));
             });
         }
         //出库单
-//        opeOutWhouseOrderService.list(new LambdaQueryWrapper<OpeOutWhouseOrder>()
-//                .eq(OpeOutWhouseOrder::getid, enter.getId())
-//                .eq(OpeOutWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
+        List<OpeOutWhouseOrder> opeOutWhouseOrderList = opeOutWhouseOrderService.list(new LambdaQueryWrapper<OpeOutWhouseOrder>()
+                .eq(OpeOutWhouseOrder::getRelationId, enter.getId())
+                .eq(OpeOutWhouseOrder::getRelationType, OrderTypeEnums.COMBIN_ORDER.getValue()));
+        if (CollectionUtils.isNotEmpty(opeOutWhouseOrderList)) {
+            opeOutWhouseOrderList.forEach(item -> {
+                resultList.add(new AssociatedOrderResult(item.getId(), item.getOutWhNo(), OrderTypeEnums.OUTBOUND.getValue(), item.getCreatedTime(), null));
+            });
+        }
         return resultList;
     }
 
@@ -411,7 +416,8 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         }
 
         //组装单 备料生成 出库单
-        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter(null,null,null,orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())),
+        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter(null,opeCombinOrder.getId(),opeCombinOrder.getCombinNo(),OrderTypeEnums.COMBIN_ORDER.getValue(),
+                orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())),
                 opeCombinOrder.getCombinType(),OutBoundOrderTypeEnums.PRODUCT.getValue(), opeCombinOrder.getCombinQty(),opeCombinOrder.getRemark(),productEnterList);
         saveOutboundOrderEnter.setUserId(enter.getUserId());
         outboundOrderService.save(saveOutboundOrderEnter);
