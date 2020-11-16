@@ -145,14 +145,14 @@ public class InWhouseOrderController {
 
     //********************* 一下为模拟RPS的操作的接口 先暂时加两个按钮代替
     @PostMapping(value = "/startQc")
-    @ApiOperation(value = "开始质检", response = GeneralResult.class)
+    @ApiOperation(value = "模拟RPS操作，开始质检", response = GeneralResult.class)
     public Response<GeneralResult> startQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.startQc(enter));
     }
 
 
     @PostMapping(value = "/finishQc")
-    @ApiOperation(value = "完成质检", response = GeneralResult.class)
+    @ApiOperation(value = "模拟RPS操作，完成质检", response = GeneralResult.class)
     public Response<GeneralResult> finishQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.finishQc(enter));
     }
