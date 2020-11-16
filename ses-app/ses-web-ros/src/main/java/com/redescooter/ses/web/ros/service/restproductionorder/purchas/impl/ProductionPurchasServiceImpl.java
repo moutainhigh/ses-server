@@ -2,10 +2,10 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -18,14 +18,18 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
@@ -82,6 +86,12 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Autowired
     private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
 
+    @Autowired
+    private InWhouseService inWhouseService;
+
+    @Autowired
+    private OpeSysStaffService opeSysStaffService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -120,8 +130,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         }
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         productionPurchasDetailResult.setPaymentDate(new SavePurchasPaymentEnter(opeProductionPurchaseOrder.getPaymentType(),opeProductionPurchaseOrder.getPlannedPaymentTime(),
-                opeProductionPurchaseOrder.getAmountType(),
-                opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount()));
+                opeProductionPurchaseOrder.getAmountType(),opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount()));
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         productionPurchasDetailResult.setAssociatedOrderResultList(this.associatedOrder(enter));
@@ -266,9 +275,25 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     }
 
     private OpeProductionPurchaseOrder buildOpeProductionPurchaseOrder(SaveProductionPurchasEnter enter, List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter, BigDecimal totalPrice) {
+        if (StringUtils.isEmpty(enter.getFactoryPrincipalName()) && enter.getFactoryId()!=null && enter.getFactoryId()!=0){
+            OpeSupplier opeSupplier = opeSupplierService.getById(enter.getFactoryId());
+            if (Objects.isNull(opeSupplier)){
+                throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
+            }
+            enter.setFactoryPrincipalName(opeSupplier.getContactFullName());
+        }
+        if (StringUtils.isEmpty(enter.getDockingUserName()) && enter.getDockingUser()!=null && enter.getDockingUser()!=0){
+            OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getId());
+            if (opeSysStaff==null){
+                throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+            }
+            enter.setDockingUserName(opeSysStaff.getFullName());
+        }
+
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
         BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
         opeProductionPurchaseOrder.setDr(0);
+        opeProductionPurchaseOrder.setFactoryPrincipalName(enter.getFactoryPrincipalName());
         opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
         opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
@@ -484,6 +509,32 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
+
+
+
+        //查询子订单
+        List<OpeProductionPurchasePartsB> opeProductionPurchasePartsBList =
+                opeProductionPurchasePartsBService.list(new LambdaQueryWrapper<OpeProductionPurchasePartsB>().eq(OpeProductionPurchasePartsB::getProductionPurchaseId,
+                        opeProductionPurchaseOrder.getId()));
+        if (CollectionUtils.isEmpty(opeProductionPurchasePartsBList)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<SaveOrUpdatePartsBEnter> partsBEnterList = opeProductionPurchasePartsBList.stream().map(item -> {
+            SaveOrUpdatePartsBEnter saveOrUpdatePartsBEnter = new SaveOrUpdatePartsBEnter();
+            saveOrUpdatePartsBEnter.setPartsId(item.getPartsId());
+            saveOrUpdatePartsBEnter.setPartsName(item.getPartsName());
+            saveOrUpdatePartsBEnter.setPartsNo(item.getPartsNo());
+            saveOrUpdatePartsBEnter.setPartsType(item.getPartsType());
+            saveOrUpdatePartsBEnter.setAbleInWhQty(item.getQty());
+            saveOrUpdatePartsBEnter.setInWhQty(0);
+            return saveOrUpdatePartsBEnter;
+        }).collect(Collectors.toList());
+
+        //入库单保存
+        InWhouseSaveOrUpdateEnter inWhouseSaveOrUpdateEnter = new InWhouseSaveOrUpdateEnter(null, InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(),opeProductionPurchaseOrder.getId(),
+                opeProductionPurchaseOrder.getPurchaseNo(), ProductTypeEnums.PARTS.getValue(),JSON.toJSONString(partsBEnterList));
+        inWhouseSaveOrUpdateEnter.setUserId(enter.getUserId());
+        inWhouseService.inWhouseSave(inWhouseSaveOrUpdateEnter);
         return new GeneralResult(enter.getRequestId());
     }
 }

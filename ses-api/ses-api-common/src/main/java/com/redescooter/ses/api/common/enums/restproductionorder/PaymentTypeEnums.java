@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum PaymentTypeEnums {
 
-    MONTHLY("MONTHLY","月结",1),
-    PREPAYMENTS("PREPAYMENTS","预付款",2),
+    PREPAYMENTS("PREPAYMENTS","预付款",1),
+    MONTHLY("MONTHLY","月结",2),
     FULL_AMOUNT("FULL_AMOUNT","全款",3);
 
 
