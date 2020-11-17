@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,5 +53,5 @@ public class OrderProductDetailResult extends GeneralResult {
     private Integer totalQty = 0;
 
     @ApiModelProperty(value = "SN集合")
-    private Map<Long, String> snMap;
+    private List<String> snMap;
 }

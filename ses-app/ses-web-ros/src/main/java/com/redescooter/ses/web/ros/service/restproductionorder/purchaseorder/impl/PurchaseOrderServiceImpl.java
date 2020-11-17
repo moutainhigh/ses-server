@@ -109,7 +109,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
         BeanUtils.copyProperties(enter,purchaseOrder);
-        purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        if (purchaseOrder.getPlannedPaymentTime() != null){
+            purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        }
         purchaseOrder.setPurchaseType(enter.getClassType());
         purchaseOrder.setCreatedBy(enter.getUserId());
         purchaseOrder.setCreatedTime(new Date());
@@ -548,6 +550,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         purchaseOrder.setUpdatedBy(enter.getUserId());
         purchaseOrder.setUpdatedTime(new Date());
         opePurchaseOrderService.saveOrUpdate(purchaseOrder);
+        // 2020 11 16追加，如果一个调拨单下面有多个采购单 一个采购单已经跑完了  这个时候调拨单的状态是待签收  再取消采购单的时候
+        // 要判断这个调拨单下面除了这个采购单职位  别的采购单是否都签收  如果都签收  判断数量是否满足调拨单  满足的话 需要把调拨单
+        // 的状态从待签收变为已签收
+        try {
+            allocateOrderService.allocateFinishOrSignByPurchaseCalcal(purchaseOrder.getAllocateId(),purchaseOrder.getId(),enter.getUserId());
+        }catch (Exception e){}
 
         // 操作动态表
         createOpTrace(purchaseOrder.getId(),enter.getUserId(),5,2,enter.getRemark());
