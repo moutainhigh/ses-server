@@ -292,11 +292,19 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             enter.setFactoryPrincipalName(opeSupplier.getContactFullName());
         }
         if (StringUtils.isEmpty(enter.getDockingUserName()) && enter.getDockingUser()!=null && enter.getDockingUser()!=0){
-            OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getId());
+            OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getDockingUser());
             if (opeSysStaff==null){
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
             }
             enter.setDockingUserName(opeSysStaff.getFirstName()+" "+opeSysStaff.getLastName());
+
+        }
+        if (StringUtils.isEmpty(enter.getConsigneeUserName()) && enter.getConsigneeUser()!=null && enter.getConsigneeUser()!=0){
+            OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getConsigneeUser());
+            if (opeSysStaff==null){
+                throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+            }
+            enter.setConsigneeUserName(opeSysStaff.getFirstName()+" "+opeSysStaff.getLastName());
         }
 
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
@@ -304,7 +312,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setDr(0);
         opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
-//        opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
         opeProductionPurchaseOrder.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
         opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
         opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
@@ -370,11 +377,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (CollectionUtils.isNotEmpty(opeSupplierList)){
             opeSupplierList.forEach(item->{
                 List<SupplierPrincipaleResult> supplierList = new ArrayList<>();
-                if (StringUtils.isAnyEmpty(item.getContactFirstName(),item.getContactLastName())){
-                    supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFullName(),item.getContactFullName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
-                }else {
-                    supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFirstName(),item.getContactLastName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
-                }
+                supplierList.add(new SupplierPrincipaleResult(item.getId(),item.getContactFullName(),item.getContactPhoneCountryCode(),item.getContactPhone()));
                 resultList.add(new SupplierListResult(item.getId(),item.getSupplierName(),supplierList));
             });
         }
