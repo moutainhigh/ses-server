@@ -22,11 +22,8 @@ public class SupplierPrincipaleResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "姓")
-    private String firstName;
-
-    @ApiModelProperty(value = "名")
-    private String lastName;
+    @ApiModelProperty(value = "全名")
+    private String fullName;
 
     @ApiModelProperty(value = "国家代码")
     private String countryCode;
