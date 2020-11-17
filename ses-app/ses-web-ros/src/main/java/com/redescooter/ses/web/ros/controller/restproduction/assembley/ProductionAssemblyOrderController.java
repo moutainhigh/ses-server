@@ -115,17 +115,31 @@ public class ProductionAssemblyOrderController {
 
     //************************  以下为模拟RPS操作的方法 *****************************
 
-//    @PostMapping(value = "/startCombin")
-//    @ApiOperation(value = "模拟RPS的开组装检操作", response = GeneralResult.class)
-//    public Response<GeneralResult> startCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(productionAssemblyOrderService.startCombin(enter));
-//    }
-//
-//
-//    @PostMapping(value = "/startCombin")
-//    @ApiOperation(value = "模拟RPS的开始质检操作", response = GeneralResult.class)
-//    public Response<GeneralResult> startCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(productionAssemblyOrderService.startQC(enter));
-//    }
+    @PostMapping(value = "/startCombin")
+    @ApiOperation(value = "模拟RPS的开始组装操作", response = GeneralResult.class)
+    public Response<GeneralResult> startCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionAssemblyOrderService.startCombin(enter));
+    }
+
+
+    @PostMapping(value = "/endCombin")
+    @ApiOperation(value = "模拟RPS的组装完成操作", response = GeneralResult.class)
+    public Response<GeneralResult> endCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionAssemblyOrderService.endCombin(enter));
+    }
+
+
+    @PostMapping(value = "/startQc")
+    @ApiOperation(value = "模拟RPS对质检单的开始质检的操作", response = GeneralResult.class)
+    public Response<GeneralResult> startQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionAssemblyOrderService.startQc(enter));
+    }
+
+
+    @PostMapping(value = "/endQc")
+    @ApiOperation(value = "模拟RPS对质检单的质检完成的操作", response = GeneralResult.class)
+    public Response<GeneralResult> endQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionAssemblyOrderService.endQc(enter));
+    }
 
 }
