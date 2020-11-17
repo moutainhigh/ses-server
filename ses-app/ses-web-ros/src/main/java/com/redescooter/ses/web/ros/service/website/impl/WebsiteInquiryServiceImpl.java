@@ -645,6 +645,17 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 在次支付校验
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult payAgainCheck(IdEnter enter) {
+        return null;
+    }
+
     private OpeCustomerInquiryB buildAccessory(SaveSaleOrderEnter enter, Long id, BigDecimal price, String type) {
         OpeCustomerInquiryB opeCustomerInquiryB = new OpeCustomerInquiryB();
         opeCustomerInquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));
