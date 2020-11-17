@@ -38,4 +38,7 @@ public class PurchasDetailProductListResult extends GeneralResult {
 
     @ApiModelProperty(value = "单价金额")
     private BigDecimal price;
+
+    @ApiModelProperty(value = "单号")
+    private String orderNo;
 }

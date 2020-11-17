@@ -51,4 +51,7 @@ public class AssemblyDetailProductListResult extends GeneralResult {
 
     @ApiModelProperty(value = "数量")
     private Integer qty;
+
+    @ApiModelProperty(value = "组装单号")
+    private String orderNo;
 }
