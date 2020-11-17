@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
@@ -209,10 +208,10 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         //入库单
         List<OpeInWhouseOrder> opeInWhouseOrderList = opeInWhouseOrderService.list(new LambdaQueryWrapper<OpeInWhouseOrder>()
                 .eq(OpeInWhouseOrder::getRelationOrderId, enter.getId())
-                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.FACTORY_INBOUND.getValue()));
+                .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.COMBIN_ORDER.getValue()));
         if (CollectionUtils.isNotEmpty(opeInWhouseOrderList)) {
             opeInWhouseOrderList.forEach(item -> {
-                resultList.add(new AssociatedOrderResult(item.getId(), item.getInWhNo(), item.getOrderType(), item.getCreatedTime(), null));
+                resultList.add(new AssociatedOrderResult(item.getId(), item.getInWhNo(), OrderTypeEnums.FACTORY_INBOUND.getValue(), item.getCreatedTime(), null));
             });
         }
         //出库单

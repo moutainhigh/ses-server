@@ -178,7 +178,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                 .eq(OpeInWhouseOrder::getRelationOrderType, OrderTypeEnums.FACTORY_PURCHAS.getValue()));
         if (CollectionUtils.isNotEmpty(opeInWhouseOrderList)){
             opeInWhouseOrderList.forEach(item->{
-                resultList.add(new AssociatedOrderResult(item.getId(),item.getInWhNo(),item.getOrderType(),item.getCreatedTime(),null));
+                resultList.add(new AssociatedOrderResult(item.getId(),item.getInWhNo(),OrderTypeEnums.FACTORY_INBOUND.getValue(), item.getCreatedTime(),null));
             });
             return resultList;
         }
