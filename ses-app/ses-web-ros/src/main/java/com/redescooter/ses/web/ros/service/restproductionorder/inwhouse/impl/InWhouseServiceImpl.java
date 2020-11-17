@@ -238,7 +238,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateScooterBEnter::getInWhQty).sum());
-                inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                }
             default:
                 break;
             case 2:
@@ -250,7 +252,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateCombinBEnter::getInWhQty).sum());
-                inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                }
                 break;
             case 3:
                 // parts
@@ -261,7 +265,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(partsBEnters.stream().mapToInt(SaveOrUpdatePartsBEnter::getInWhQty).sum());
-                inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
+                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+                }
                 break;
         }
     }
@@ -491,7 +497,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowService.save(orderStatusFlowEnter);
         // todo 生成质检单
-        if(inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
+        if(null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
             // 如果是部件 将对应的部件采购单的状态变为待入库
             productionPurchasService.statusToBeStored(inWhouseOrder.getRelationOrderId(),enter.getUserId());
         }
