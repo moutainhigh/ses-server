@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduction.assembley;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
@@ -19,6 +20,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +112,13 @@ public class ProductionAssemblyOrderController {
     @ApiOperation(value = "组装件编号下拉数据源接口", response = BomNameData.class)
     public Response<List<BomNameData>> bomNoData(@ModelAttribute @ApiParam("请求参数") BomNoEnter enter) {
         return new Response<>(productionAssemblyOrderService.bomNoData(enter));
+    }
+
+    @IgnoreLoginCheck
+    @GetMapping(value = "/export")
+    @ApiOperation(value = "采购导出零部件", response = GeneralResult.class)
+    public Response<GeneralResult> export( @ApiParam("id")Long id, HttpServletResponse response) {
+        return new Response<>(productionAssemblyOrderService.export(id,response));
     }
 
 }

@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.assembly.impl;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,6 +34,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionExport;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
@@ -45,10 +48,12 @@ import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -585,6 +590,57 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
         });
         return saveOpeCombinOrderCominBList;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/17 11:23 上午
+     * @Param: id, response
+     * @Return: GeneralResult
+     * @desc: 产品导出
+     * @param id
+     * @param response
+     */
+    @Override
+    public GeneralResult export(Long id, HttpServletResponse response) {
+        List<ProductionAssemblyExport> result=new ArrayList<>();
+        OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(id);
+        if (Objects.isNull(opeCombinOrder)){
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<AssemblyDetailProductListResult> assemblyDetailProductListResults = this.detailProductList(new AssemblyOrderDetailEnter(id, opeCombinOrder.getCombinType()));
+        assemblyDetailProductListResults.stream().forEach(item->{
+            ProductionAssemblyExport productionAssemblyExport = new ProductionAssemblyExport();
+            BeanUtils.copyProperties(item,productionAssemblyExport);
+            if (item.getProductType().equals(ProductTypeEnums.SCOOTER.getValue())){
+                productionAssemblyExport.setProductType(ProductTypeEnums.SCOOTER.getMessage());
+                productionAssemblyExport.setProductN("/");
+                productionAssemblyExport.setProductName("/");
+            }else {
+                productionAssemblyExport.setColorName("/");
+                productionAssemblyExport.setColorValue("/");
+                productionAssemblyExport.setGroupName("/");
+            }
+            productionAssemblyExport.setProductType(item.getProductType().equals(ProductTypeEnums.SCOOTER.getValue())?ProductTypeEnums.SCOOTER.getMessage():ProductTypeEnums.COMBINATION.getMessage());
+            result.add(productionAssemblyExport);
+        });
+        try {
+            // 设置响应输出的头类型
+            response.setHeader("content-Type", "application/vnd.ms-excel");
+            // 下载文件的默认名称
+            response.setHeader("Content-Disposition", "attachment;filename=" + System.currentTimeMillis() + ".xls");
+            // =========easypoi部分
+            ExportParams exportParams = new ExportParams();
+            exportParams.setSheetName("log");
+            // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, ProductionAssemblyExport.class, result);
+            workbook.write(response.getOutputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("+++++++++++++++++++");
+        }
+        return new GeneralResult();
     }
 
     private List<OpeCombinOrderScooterB> buildOpeCombinOrderScooterB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductListEnter> productEnterList, Long assemblyProductId,

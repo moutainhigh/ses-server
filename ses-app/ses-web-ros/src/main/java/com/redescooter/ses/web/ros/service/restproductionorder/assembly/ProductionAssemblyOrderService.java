@@ -14,6 +14,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetail
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -154,5 +155,14 @@ public interface ProductionAssemblyOrderService {
      * @return
      **/
     List<BomNameData> bomNoData(BomNoEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/17 11:23 上午
+    * @Param:  id,response
+    * @Return: GeneralResult
+    * @desc: 产品导出
+    */
+    GeneralResult export(Long id, HttpServletResponse response);
 
 }

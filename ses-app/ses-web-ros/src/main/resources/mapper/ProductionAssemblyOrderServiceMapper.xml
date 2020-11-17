@@ -71,32 +71,42 @@
     </select>
 
     <select id="productScooterList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
-        select scooterb.id        as id,
-                group_id           as groupId,
-                spgroup.group_name as groupName,
-                color_id           as colorId,
-                color.color_name   as colorName,
-                color.color_value  as colorValue,
-                1                  as productType,
-                scooter_bom_id     as productId,
-                qty                as qty
+        select scooterb.id             as id,
+        scooterb.group_id       as groupId,
+        spgroup.group_name      as groupName,
+        scooterb.color_id       as colorId,
+        color.color_name        as colorName,
+        color.color_value       as colorValue,
+        1                       as productType,
+        scooterb.scooter_bom_id as productId,
+        scooterb.qty            as qty,
+        combin.combin_no        as orderNo,
+        bom.en_name             as productName,
+        bom.bom_no              as productN
         from ope_combin_order_scooter_b scooterb
         left join ope_specificat_group spgroup on spgroup.id = scooterb.group_id and scooterb.dr = 0
         left join ope_color color on color.id = scooterb.color_id and color.dr = 0
-        where scooterb.dr=0
+        left join ope_combin_order combin on scooterb.combin_id = combin.id and combin.dr = 0
+        left join ope_production_scooter_bom bom on bom.id = scooterb.scooter_bom_id and bom.dr = 0
+        where scooterb.dr = 0
         and  scooterb.combin_id=#{id}
     </select>
 
     <select id="productCombinList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
-        select id                       as id,
-               combin_name              as productName,
-               combin_no                as productN,
-               production_combin_bom_id as productId,
-               2                        as productType,
-               qty                      as qty
-        from ope_combin_order_combin_b
-        where dr=0
-        and  combin_id=#{id}
+        select combinB.id                       as id,
+        combinB.combin_name              as productName,
+        combinB.combin_no                as productN,
+        combinB.production_combin_bom_id as productId,
+        2                                as productType,
+        combinB.qty                      as qty,
+        combinB.combin_no                as orderNo,
+        combinBom.en_name                as productName,
+        combinBom.bom_no                 as productN
+        from ope_combin_order_combin_b combinB
+        left join ope_production_combin_bom combinBom
+        on combinB.production_combin_bom_id = combinBom.id and combinBom.dr = 0
+        where combinB.dr = 0
+        and  combinB.combin_id=#{id}
     </select>
 
     <select id="partsDetail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
