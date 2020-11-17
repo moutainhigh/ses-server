@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper;
@@ -317,6 +318,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
         opeProductionPurchaseOrder.setPlannedPaymentTime(paymentEnter.getDate());
         opeProductionPurchaseOrder.setPaymentDay(paymentEnter.getDays());
+        if(paymentEnter.getDays() != null && paymentEnter.getDate() != null){
+            opeProductionPurchaseOrder.setPaymentTime(DateUtil.addDays(paymentEnter.getDate(),paymentEnter.getDays()));
+        }
         opeProductionPurchaseOrder.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
         opeProductionPurchaseOrder.setPurchaseAmount(totalPrice);
         opeProductionPurchaseOrder.setAmountType(paymentEnter.getAmountType());
