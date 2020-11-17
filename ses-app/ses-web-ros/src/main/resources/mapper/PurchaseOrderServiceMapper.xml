@@ -91,6 +91,7 @@
           purchase.consignor_mail,
           purchase.payment_type,
           purchase.planned_payment_time,
+          purchase.payment_time,
           purchase.payment_day,
           purchase.purchase_contract,
           purchase.purchase_type,
