@@ -53,7 +53,7 @@
 
     <select id="inWhouseScooterList" resultType="com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB">
         select *
-        from ope_combin_order_scooter_b scooter
+        from ope_in_whouse_scooter_b scooter
         left join ope_in_whouse_order inwhouse on inwhouse.id = scooter.in_wh_id
         left join ope_combin_order purchase on purchase.id = inwhouse.relation_order_id
         where scooter.dr = 0 and purchase.id = #{combinId}

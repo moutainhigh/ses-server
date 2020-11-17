@@ -880,6 +880,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         }
         opeCombinOrder.setUpdatedBy(userId);
         opeCombinOrder.setUpdatedTime(new Date());
+        opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
                 opeCombinOrder.getRemark());
