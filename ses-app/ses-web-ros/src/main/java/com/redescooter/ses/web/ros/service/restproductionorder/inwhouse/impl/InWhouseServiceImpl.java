@@ -238,7 +238,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateScooterBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+                if (null != inWhouseOrder.getRelationOrderId()){
                     inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
                 }
             default:
@@ -252,7 +252,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateCombinBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+                if (null != inWhouseOrder.getRelationOrderId()){
                     inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
                 }
                 break;
@@ -265,7 +265,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(partsBEnters.stream().mapToInt(SaveOrUpdatePartsBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
+                if (null != inWhouseOrder.getRelationOrderId()){
                     inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
                 }
                 break;
