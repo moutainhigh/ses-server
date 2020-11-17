@@ -125,6 +125,9 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "付款周期")
     private Integer paymentDay;
 
+    @ApiModelProperty(value = "付款时间")
+    private Date paymentTime;
+
     @ApiModelProperty(value = "采购合同")
     private String purchaseContract;
 

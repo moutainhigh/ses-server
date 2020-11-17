@@ -83,7 +83,11 @@
                enorder.consignee_post_code as zipcodeName,
                enorder.consignee_post_code as zipcodeName,
                enorder.consignee_address   as address,
-               enorder.invoice_id   as invoiceId
+               enorder.invoice_id   as invoiceId,
+               consignee.first_name as consigneeUserFirstName,
+               consignee.last_name as consigneeUserLastName,
+               consignor.first_name as consignorUserFirstName,
+               consignor.last_name as consignorUserLastName
         from ope_entrust_order enorder
                      left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
                      left join ope_sys_staff consignor on consignor.id = enorder.consignor_user and consignor.dr = 0

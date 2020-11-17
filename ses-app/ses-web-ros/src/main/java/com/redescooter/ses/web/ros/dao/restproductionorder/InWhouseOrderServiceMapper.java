@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
 import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
 import org.apache.ibatis.annotations.Param;
@@ -35,4 +37,23 @@ public interface InWhouseOrderServiceMapper {
      * @return
      **/
     List<OpeInWhousePartsB> inWhousePartsList(@Param("productionPurchaseId")Long productionPurchaseId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id  找到下面所有的入库单的明细（组装类型的入库单）
+     * @Date  2020/11/17 15:28
+     * @Param
+     * @return
+     **/
+    List<OpeInWhouseCombinB>  inWhouseCombinList(@Param("combinId")Long combinId);
+
+    /**
+     * @Author Aleks
+     * @Description  通过组装单的id  找到下面所有的入库单的明细（整车类型的入库单）
+     * @Date  2020/11/17 15:28
+     * @Param
+     * @return
+     **/
+    List<OpeInWhouseScooterB>  inWhouseScooterList(@Param("combinId")Long combinId);
 }

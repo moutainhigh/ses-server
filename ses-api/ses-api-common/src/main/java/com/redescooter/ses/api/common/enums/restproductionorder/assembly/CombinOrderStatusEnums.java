@@ -21,8 +21,11 @@ public enum CombinOrderStatusEnums {
     PREPARATION_COMPLETED("PREPARATION_COMPLETED","备料完成",20),
     TO_BE_ASSEMBLED("TO_BE_ASSEMBLED","待组装",30),
     ASSEMBLING("ASSEMBLING","组装中",40),
-    WAIT_QC("WAIT_QC","待质检",50),;
-
+    WAIT_QC("WAIT_QC","待质检",50),
+    INSPECTING("INSPECTING", "质检中", 60),
+    WAIT_IN_WH("WAIT_IN_WH", "待入库", 70),
+    PART_IN_WH("WAIT_IN_WH", "部分入库", 80),
+    ALREADY_IN_WHOUSE("ALREADY_IN_WHOUSE", "已入库", 90);
 
 
     private String code;

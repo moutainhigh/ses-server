@@ -269,28 +269,31 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         }
 
         if (CollectionUtils.isNotEmpty(snList)) {
-            Map<Long, String> snMap = new HashMap<>();
+            List<String> snMap =new ArrayList<>();
             Long qty = 0L;
             for (OrderProductDetailResult product : productList) {
                 //序列号集合
-                if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
+                /*if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
 
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
                 } else {
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
-                }
+                }*/
                 product.setQty(qty.intValue());
                 product.setSnMap(snMap);
             }
+        }else {
+            productList.stream().forEach(item->{item.setQty(0);item.setSnMap(new ArrayList<>());});
         }
+
         return productList;
 
     }
@@ -365,7 +368,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
             }
             // 对查询出来的结果 根据分组和颜色进行分组 (嵌套分组)
-            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+//            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+            Map<String, List<OpeProductionScooterBom>> map = scooterBomList.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
             // 因为下单的时候 可能会出现 同分组颜色的情况，所以scooterBS需要先根据分组颜色来先进行分组 （多字段自定义分组）  再比较
             Map<String, List<OpeInvoiceScooterB>> map1 = scooterBS.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
             if (map1.size() > map.size()) {
@@ -379,6 +383,12 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 多字段自定义分组
     private static String fetchGroupKey(OpeInvoiceScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+    // 多字段自定义分组
+    private static String fetchGroupKey1(OpeProductionScooterBom scooterB){
         // 按照分组和颜色进行分组
         return scooterB.getGroupId() +""+scooterB.getColorId();
     }
@@ -729,13 +739,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     }
 
 
-     /**
-      * @Author Aleks
-      * @Description  采购单取消的时候  下面的发货单也要取消
-      * @Date  2020/10/30 16:11
-      * @Param [purchaseId, userId, remark]
-      * @return
-      **/
+    /**
+     * @Author Aleks
+     * @Description  采购单取消的时候  下面的发货单也要取消
+     * @Date  2020/10/30 16:11
+     * @Param [purchaseId, userId, remark]
+     * @return
+     **/
     @Override
     public void cancelInvoice(Long purchaseId,Long userId,String remark) {
         QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();

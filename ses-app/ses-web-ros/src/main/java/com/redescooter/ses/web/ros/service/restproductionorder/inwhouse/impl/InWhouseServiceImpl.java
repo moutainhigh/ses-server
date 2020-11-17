@@ -16,6 +16,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
@@ -98,6 +99,9 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Autowired
     private ProductionPurchasService productionPurchasService;
+
+    @Autowired
+    private ProductionAssemblyOrderService productionAssemblyOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -452,9 +456,13 @@ public class InWhouseServiceImpl implements InWhouseService {
                 inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
-        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
+//        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
+        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
             // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
             productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
+        }else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+            // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
+            productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
         }
         return new GeneralResult(enter.getRequestId());
     }

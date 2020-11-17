@@ -23,7 +23,7 @@ import java.util.Map;
  * @description: AssemblyPurchasOrderService
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/10 14:09 
+ * @create: 2020/11/10 14:09
  */
 public interface ProductionAssemblyOrderService {
     /**
@@ -79,8 +79,8 @@ public interface ProductionAssemblyOrderService {
     * @Author: alex
     * @Date:   2020/11/11 2:47 下午
     * @Param:  enter
-    * @Return: 
-    * @desc: 
+    * @Return:
+    * @desc:
     */
     List<PurchasDetailProductListResult> productPartDetail(AssemblyOrderDetailEnter enter);
     /**
@@ -165,4 +165,61 @@ public interface ProductionAssemblyOrderService {
     */
     GeneralResult export(Long id, HttpServletResponse response);
 
+
+    /**
+     * @Author Aleks
+     * @Description  备料完成
+     * @Date  2020/11/17 13:30
+     * @Param
+     * @return
+     **/
+     void materialPreparationFinish(Long combinOrderId,Long userId);
+
+
+     /**
+      * @Author Aleks
+      * @Description  模拟RPS的开始组装操作
+      * @Date  2020/11/17 14:04
+      * @Param [enter]
+      * @return
+      **/
+     GeneralResult startCombin(IdEnter enter);
+
+
+     /**
+      * @Author Aleks
+      * @Description  模拟RPS的开组装完成操作
+      * @Date  2020/11/17 14:04
+      * @Param [enter]
+      * @return
+      **/
+     GeneralResult endCombin(IdEnter enter);
+
+     /**
+      * @Author Aleks
+      * @Description  模拟RPS对质检单的开始质检的操作
+      * @Date  2020/11/17 14:04
+      * @Param [enter]
+      * @return
+      **/
+     GeneralResult startQc(IdEnter enter);
+
+     /**
+      * @Author Aleks
+      * @Description  模拟RPS对质检单的质检的操作
+      * @Date  2020/11/17 14:04
+      * @Param [enter]
+      * @return
+      **/
+     GeneralResult endQc(IdEnter enter);
+
+
+     /**
+      * @Author Aleks
+      * @Description  点击入库单的确认入库 如果关联的是组装单  需要改变组装单的状态
+      * @Date  2020/11/17 14:37
+      * @Param [productionPurchaseId, inWhId, userId]
+      * @return
+      **/
+    void statusToPartWhOrAllInWh(Long combinId,Long inWhId,Long userId);
 }

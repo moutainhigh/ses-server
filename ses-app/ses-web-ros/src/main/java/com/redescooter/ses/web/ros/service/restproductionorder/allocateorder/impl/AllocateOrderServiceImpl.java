@@ -16,6 +16,7 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @ClassNameAllocateOrderServiceImpl
@@ -84,6 +86,9 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
+
+    @Autowired
+    private PurchaseOrderServiceMapper purchaseOrderServiceMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -615,13 +620,146 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             if (allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue())) {
                 return;
             }
-            // 说明调拨单下面的采购都签收了，
-            allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
-            opeAllocateOrderService.saveOrUpdate(allocateOrder);
-            // 状态流转表
-            createStatusFlow(allocateOrder.getId(), userId, allocateOrder.getAllocateStatus(), OrderTypeEnums.ALLOCATE.getValue(), "");
+            // 追加：check调拨单下面的所有的采购单的明细签收的数量是否大于等于调拨单下面的产品明细数量
+            if (checkNum(allocateOrder,purchaseId)){
+                // 说明调拨单下面的采购都签收了，
+                allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.SIGNED.getValue());
+                opeAllocateOrderService.saveOrUpdate(allocateOrder);
+                // 状态流转表
+                createStatusFlow(allocateOrder.getId(), userId, allocateOrder.getAllocateStatus(), OrderTypeEnums.ALLOCATE.getValue(), "");
+            }
         }
     }
+
+
+    public boolean checkNum(OpeAllocateOrder allocateOrder,Long purchaseId){
+        boolean flag = true;
+        switch (allocateOrder.getAllocateType()){
+            case 1:
+                // 整车
+                // 先找到整车的产品数据
+                QueryWrapper<OpeAllocateScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocateScooterB> scooterBs = opeAllocateScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBs)){
+                    // 按照车型和颜色进行分组
+                    Map<String,List<OpeAllocateScooterB>> scooterAllMap = new HashMap<>();
+                    for (OpeAllocateScooterB scooterB : scooterBs) {
+                        String key = scooterB.getGroupId() + scooterB.getColorId() + "";
+                        List<OpeAllocateScooterB> scooterBList = scooterAllMap.get(key);
+                        if (CollectionUtils.isEmpty(scooterBList)){
+                            scooterBList = new ArrayList<>();
+                            scooterAllMap.put(key,scooterBList);
+                        }
+                        scooterBList.add(scooterB);
+                    }
+
+                    // 找到这个调拨单下面的所有的已签收的采购的整车信息
+                    List<OpePurchaseScooterB> purchaseScooterBS = purchaseOrderServiceMapper.purchaseScooterBS(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchaseScooterBS)){
+                        flag = false;
+                        break;
+                    }
+                    // 按照车型和颜色进行分组
+                    Map<String,List<OpePurchaseScooterB>> scooterMap = new HashMap<>();
+                    for (OpePurchaseScooterB scooterB : purchaseScooterBS) {
+                        String key = scooterB.getGroupId() + scooterB.getColorId() + "";
+                        List<OpePurchaseScooterB> scooterbList = scooterMap.get(key);
+                        if (CollectionUtils.isEmpty(scooterbList)){
+                            scooterbList = new ArrayList<>();
+                            scooterMap.put(key,scooterbList);
+                        }
+                        scooterbList.add(scooterB);
+                    }
+                    if (scooterAllMap.size() > scooterMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (String scooterKey1 : scooterAllMap.keySet()) {
+                        for (String scooterKey2 : scooterMap.keySet()) {
+                            if (scooterKey1.equals(scooterKey2)){
+                                Integer allscooterNum = scooterAllMap.get(scooterKey1).stream().mapToInt(OpeAllocateScooterB::getQty).sum();
+                                Integer scooterNum = scooterMap.get(scooterKey2).stream().mapToInt(OpePurchaseScooterB::getQty).sum();
+                                if (allscooterNum > scooterNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                default:
+                    break;
+            case 2:
+                // 组装件
+                // 先找到组装件的产品数据
+                QueryWrapper<OpeAllocateCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocateCombinB> combinBs = opeAllocateCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBs)){
+                    Map<Long, List<OpeAllocateCombinB>> allBMap = combinBs.stream().collect(Collectors.groupingBy(OpeAllocateCombinB::getProductionCombinBomId));
+                    // 找到这个调拨单下面的所有的产品明细
+                    List<OpePurchaseCombinB> purchaseCombinBS = purchaseOrderServiceMapper.purchaseCombinB(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchaseCombinBS)){
+                        flag = false;
+                        break;
+                    }
+                    Map<Long, List<OpePurchaseCombinB>> bMap = purchaseCombinBS.stream().collect(Collectors.groupingBy(OpePurchaseCombinB::getProductionCombinBomId));
+                    if (allBMap.size() > bMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (Long key1 : allBMap.keySet()) {
+                        for (Long key2 : bMap.keySet()) {
+                            if (key1.equals(key2)){
+                                Integer allocateNum = allBMap.get(key1).stream().mapToInt(OpeAllocateCombinB::getQty).sum();
+                                Integer purchaseNum = bMap.get(key2).stream().mapToInt(OpePurchaseCombinB::getQty).sum();
+                                if (allocateNum > purchaseNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case 3:
+                // 部件
+                // 先找到部件的产品数据
+                QueryWrapper<OpeAllocatePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeAllocateScooterB.COL_ALLOCATE_ID,allocateOrder.getId());
+                List<OpeAllocatePartsB> partsBs = opeAllocatePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBs)){
+                    Map<Long, List<OpeAllocatePartsB>> partsAllBMap = partsBs.stream().collect(Collectors.groupingBy(OpeAllocatePartsB::getPartsId));
+                    // 找到这个调拨单下面的所有的已签收的采购的部件信息
+                    List<OpePurchasePartsB> purchasePartsBS = purchaseOrderServiceMapper.purchasePartsBS(allocateOrder.getId(),purchaseId);
+                    if (CollectionUtils.isEmpty(purchasePartsBS)){
+                        flag = false;
+                        break;
+                    }
+                    Map<Long, List<OpePurchasePartsB>> partsMap = purchasePartsBS.stream().collect(Collectors.groupingBy(OpePurchasePartsB::getPartsId));
+                    if (partsAllBMap.size() > partsMap.size()){
+                        flag = false;
+                        break;
+                    }
+                    for (Long partsKey1 : partsAllBMap.keySet()) {
+                        for (Long partsKey2 : partsMap.keySet()) {
+                            if (partsKey1.equals(partsKey2)){
+                                Integer allocatePartsNum = partsAllBMap.get(partsKey1).stream().mapToInt(OpeAllocatePartsB::getQty).sum();
+                                Integer purchasePartsNum = partsMap.get(partsKey2).stream().mapToInt(OpePurchasePartsB::getQty).sum();
+                                if (allocatePartsNum > purchasePartsNum){
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+        return flag;
+    }
+
 
 
     @Override
@@ -661,7 +799,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
         if (count == 0) {
             // 说明调拨单下面的采购单都完成了
-            if (allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.FINISHED.getValue())) {
+            if (!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue()) || allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.FINISHED.getValue())) {
                 return;
             }
             allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.FINISHED.getValue());
@@ -696,6 +834,46 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                 break;
         }
         return allocateProductListResult;
+    }
+
+
+    // 取消采购单的时候 调拨单状态变为已完成（可能变成已签收）
+    // 前提是调拨单下面的别的采购单都是已签收或者是已完成的状态  且数量大于等于调拨数量
+    @Override
+    public void allocateFinishOrSignByPurchaseCalcal(Long allocateId, Long purchaseId, Long userId) {
+        AllocateProductListResult allocateProductListResult = new AllocateProductListResult();
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
+        if (allocateOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 总体来说 判断是签收还是完成
+        // 先找到调拨单下面的除了当前采购单之外的所有的有效的采购单
+        QueryWrapper<OpePurchaseOrder> purchaseQueryWrapper = new QueryWrapper<>();
+        purchaseQueryWrapper.eq(OpePurchaseOrder.COL_ALLOCATE_ID,allocateId);
+        purchaseQueryWrapper.ne(OpePurchaseOrder.COL_ID,purchaseId);
+        purchaseQueryWrapper.ne(OpePurchaseOrder.COL_PURCHASE_STATUS,PurchaseOrderStatusEnum.CANCEL.getValue());
+        List<OpePurchaseOrder> purchaseOrderList = opePurchaseOrderService.list(purchaseQueryWrapper);
+        if (CollectionUtils.isEmpty(purchaseOrderList)){
+            return;
+        }
+        // 过滤出状态小于已签收的数据
+        List<OpePurchaseOrder> noSignPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus() < PurchaseOrderStatusEnum.SIGNED.getValue()).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(noSignPurchaseOrderList)){
+            // 说明还有未签收的采购单  直接return
+            return;
+        }
+        // 到这里 说明下面的采购单的状态都是已签收或者是已完成
+        // 过滤状态等于已签收的采购单
+        List<OpePurchaseOrder> signPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus().equals(PurchaseOrderStatusEnum.SIGNED.getValue())).collect(Collectors.toList());
+        List<OpePurchaseOrder> finishPurchaseOrderList = purchaseOrderList.stream().filter(o -> o.getPurchaseStatus().equals(PurchaseOrderStatusEnum.FINISHED.getValue())).collect(Collectors.toList());
+        if (signPurchaseOrderList.size() == purchaseOrderList.size()){
+            // 说明下面的采购单都是已签收的，这个时候调拨单需要判断采购单下面的所有明细是否满足调拨单的调拨数量 满足的话需要把调拨单状态变为已签收
+
+        }
+        if (finishPurchaseOrderList.size() ==  purchaseOrderList.size()){
+            // 说明下面的采购单都已经完成了，这个时候调拨单需要判断采购单下面的所有明细是否满足调拨单的调拨数量 满足的话需要把调拨单状态变为已完成
+
+        }
     }
 
 }
