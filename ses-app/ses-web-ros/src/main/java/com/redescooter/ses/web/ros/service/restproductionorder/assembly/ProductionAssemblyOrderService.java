@@ -155,4 +155,13 @@ public interface ProductionAssemblyOrderService {
      **/
     List<BomNameData> bomNoData(BomNoEnter enter);
 
+
+    /**
+     * @Author Aleks
+     * @Description  备料完成
+     * @Date  2020/11/17 13:30
+     * @Param
+     * @return
+     **/
+     void materialPreparationFinish(Long combinOrderId,Long userId);
 }

@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
@@ -98,6 +99,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private OpeCombinOrderService opecombinOrderService;
+
+    @Autowired
+    private ProductionAssemblyOrderService productionAssemblyOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -462,8 +466,14 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeOutWhouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),opeOutWhouseOrder.getId(),"");
         orderStatusFlowService.save(orderStatusFlowEnter);
-        // 更改发货单的状态为待装车
-        invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
+        // 2020 11 17 追加  判断关联的是哪种单据类型  可能是发货单 可能是组装单
+        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
+            // 更改发货单的状态为待装车
+            invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
+        }else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+            // 如果关联的是组装单  把组装单的状态变为备料完成
+            productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(),enter.getUserId());
+        }
         return new GeneralResult(enter.getRequestId());
     }
 }

@@ -112,4 +112,20 @@ public class ProductionAssemblyOrderController {
         return new Response<>(productionAssemblyOrderService.bomNoData(enter));
     }
 
+
+    //************************  以下为模拟RPS操作的方法 *****************************
+
+//    @PostMapping(value = "/startCombin")
+//    @ApiOperation(value = "模拟RPS的开组装检操作", response = GeneralResult.class)
+//    public Response<GeneralResult> startCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(productionAssemblyOrderService.startCombin(enter));
+//    }
+//
+//
+//    @PostMapping(value = "/startCombin")
+//    @ApiOperation(value = "模拟RPS的开始质检操作", response = GeneralResult.class)
+//    public Response<GeneralResult> startCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response<>(productionAssemblyOrderService.startQC(enter));
+//    }
+
 }

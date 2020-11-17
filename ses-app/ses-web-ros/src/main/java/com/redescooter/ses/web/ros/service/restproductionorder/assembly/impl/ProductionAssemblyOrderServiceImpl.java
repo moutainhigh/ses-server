@@ -644,4 +644,28 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         return opeCombinOrder;
     }
+
+
+    // 备料完成
+    @Override
+    @Transactional
+    public void materialPreparationFinish(Long combinOrderId, Long userId) {
+        OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinOrderId);
+        if (opeCombinOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARED.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        }
+        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.PREPARATION_COMPLETED.getValue());
+        opeCombinOrder.setUpdatedBy(userId);
+        opeCombinOrder.setUpdatedTime(new Date());
+        opeCombinOrderService.saveOrUpdate(opeCombinOrder);
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
+                opeCombinOrder.getRemark());
+        orderStatusFlowEnter.setUserId(userId);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+    }
 }
