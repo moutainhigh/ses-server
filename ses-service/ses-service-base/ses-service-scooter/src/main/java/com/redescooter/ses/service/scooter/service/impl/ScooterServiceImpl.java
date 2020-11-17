@@ -195,10 +195,6 @@ public class ScooterServiceImpl implements ScooterService {
      */
     @Override
     public BaseScooterResult scooterInfoByScooterNo(Long id, String scooterNo) {
-        BaseScooterResult result=scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
-        if (result==null){
-            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
-        }
-        return result;
+        return scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
     }
 }
