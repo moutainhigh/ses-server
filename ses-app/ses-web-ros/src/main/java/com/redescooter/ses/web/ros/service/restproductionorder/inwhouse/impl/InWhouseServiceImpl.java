@@ -122,7 +122,6 @@ public class InWhouseServiceImpl implements InWhouseService {
         OpeInWhouseOrder inWhouseOrder = new OpeInWhouseOrder();
         BeanUtils.copyProperties(enter,inWhouseOrder);
         inWhouseOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
-        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.DRAFT.getValue());
         inWhouseOrder.setCreatedBy(enter.getUserId());
         inWhouseOrder.setCreatedTime(new Date());
         inWhouseOrder.setUpdatedBy(enter.getUserId());
@@ -484,7 +483,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowService.save(orderStatusFlowEnter);
         // todo 生成质检单
-        if(inWhouseOrder.equals(ProductTypeEnums.PARTS.getValue())){
+        if(inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
             // 如果是部件 将对应的部件采购单的状态变为待入库
             productionPurchasService.statusToBeStored(inWhouseOrder.getRelationOrderId(),enter.getUserId());
         }
@@ -533,6 +532,8 @@ public class InWhouseServiceImpl implements InWhouseService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.INSPECTING.getValue());
+        inWhouseOrder.setUpdatedBy(enter.getUserId());
+        inWhouseOrder.setUpdatedTime(new Date());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),
@@ -554,7 +555,19 @@ public class InWhouseServiceImpl implements InWhouseService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_IN_WH.getValue());
+        inWhouseOrder.setUpdatedBy(enter.getUserId());
+        inWhouseOrder.setUpdatedTime(new Date());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        // todo 为了流程能走下去  这里先把部件的明细实际入库数量设置为可入库数量
+        QueryWrapper<OpeInWhousePartsB> qw = new QueryWrapper<>();
+        qw.eq(OpeInWhousePartsB.COL_IN_WH_ID,inWhouseOrder.getId());
+        List<OpeInWhousePartsB> whousePartsBList = opeInWhousePartsBService.list(qw);
+        if(CollectionUtils.isNotEmpty(whousePartsBList)){
+            for (OpeInWhousePartsB partsB : whousePartsBList) {
+                partsB.setActInWhQty(partsB.getInWhQty());
+            }
+            opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
+        }
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),
                 inWhouseOrder.getRemark());

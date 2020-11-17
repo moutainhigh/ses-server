@@ -304,7 +304,8 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setDr(0);
         opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
-        opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
+//        opeProductionPurchaseOrder.setPurchaseQty(Long.valueOf(productList.stream().map(SavePurchasProductEnter::getQty).count()).intValue());
+        opeProductionPurchaseOrder.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
         opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
         opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
         opeProductionPurchaseOrder.setPlannedPaymentTime(paymentEnter.getDate());
@@ -517,32 +518,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
-
-
-
-        //查询子订单
-        List<OpeProductionPurchasePartsB> opeProductionPurchasePartsBList =
-                opeProductionPurchasePartsBService.list(new LambdaQueryWrapper<OpeProductionPurchasePartsB>().eq(OpeProductionPurchasePartsB::getProductionPurchaseId,
-                        opeProductionPurchaseOrder.getId()));
-        if (CollectionUtils.isEmpty(opeProductionPurchasePartsBList)){
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-        }
-        List<SaveOrUpdatePartsBEnter> partsBEnterList = opeProductionPurchasePartsBList.stream().map(item -> {
-            SaveOrUpdatePartsBEnter saveOrUpdatePartsBEnter = new SaveOrUpdatePartsBEnter();
-            saveOrUpdatePartsBEnter.setPartsId(item.getPartsId());
-            saveOrUpdatePartsBEnter.setPartsName(item.getPartsName());
-            saveOrUpdatePartsBEnter.setPartsNo(item.getPartsNo());
-            saveOrUpdatePartsBEnter.setPartsType(item.getPartsType());
-            saveOrUpdatePartsBEnter.setAbleInWhQty(item.getQty());
-            saveOrUpdatePartsBEnter.setInWhQty(item.getQty());
-            return saveOrUpdatePartsBEnter;
-        }).collect(Collectors.toList());
-
-        //入库单保存
-        InWhouseSaveOrUpdateEnter inWhouseSaveOrUpdateEnter = new InWhouseSaveOrUpdateEnter(null, InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(),opeProductionPurchaseOrder.getId(),
-                opeProductionPurchaseOrder.getPurchaseNo(), ProductTypeEnums.PARTS.getValue(),JSON.toJSONString(partsBEnterList));
-        inWhouseSaveOrUpdateEnter.setUserId(enter.getUserId());
-        inWhouseService.inWhouseSave(inWhouseSaveOrUpdateEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
