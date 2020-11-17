@@ -486,10 +486,6 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setDr(0);
         opeCustomer.setTenantId(0L);
         opeCustomer.setTimeZone(enter.getTimeZone());
-        opeCustomer.setCountry(opeCustomerInquiry.getCountry());
-        opeCustomer.setCountryCode(opeCustomerInquiry.getCountryCode());
-        opeCustomer.setCity(opeCustomerInquiry.getCity());
-        opeCustomer.setDistrust(opeCustomerInquiry.getDistrict());
         opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
         opeCustomer.setSalesId(0L);
         opeCustomer.setCustomerCode("0");
