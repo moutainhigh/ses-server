@@ -116,7 +116,7 @@ public class ProductionAssemblyOrderController {
 
     @IgnoreLoginCheck
     @GetMapping(value = "/export")
-    @ApiOperation(value = "采购导出零部件", response = GeneralResult.class)
+    @ApiOperation(value = "组装单导出产品", response = GeneralResult.class)
     public Response<GeneralResult> export( @ApiParam("id")Long id, HttpServletResponse response) {
         return new Response<>(productionAssemblyOrderService.export(id,response));
     }
