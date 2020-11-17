@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.purchass;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import lombok.*;
-
-import io.swagger.annotations.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -42,4 +44,7 @@ public class SavePurchasPaymentEnter {
 
     @ApiModelProperty(value = "金额")
     private BigDecimal amount;
+
+    @ApiModelProperty("实际付款时间")
+    private Date paymentTime;
 }

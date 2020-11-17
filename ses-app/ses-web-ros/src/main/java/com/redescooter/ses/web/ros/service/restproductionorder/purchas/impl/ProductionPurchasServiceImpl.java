@@ -140,7 +140,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         }
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         productionPurchasDetailResult.setPaymentDate(new SavePurchasPaymentEnter(opeProductionPurchaseOrder.getPaymentType(),opeProductionPurchaseOrder.getPlannedPaymentTime(),
-                opeProductionPurchaseOrder.getAmountType(),opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount()));
+                opeProductionPurchaseOrder.getAmountType(),opeProductionPurchaseOrder.getPaymentDay(),opeProductionPurchaseOrder.getPrePayRatio().intValue(),opeProductionPurchaseOrder.getPayAmount(),opeProductionPurchaseOrder.getPaymentTime()));
         productionPurchasDetailResult.setProductList(this.detailProductList(enter));
         productionPurchasDetailResult.setOperatingDynamicsList(productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         productionPurchasDetailResult.setAssociatedOrderResultList(this.associatedOrder(enter));
