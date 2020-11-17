@@ -407,7 +407,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 关联的单据（可能关联生产采购单或者组装单）
         // 先判断关联的是哪种单据
         List<PurchaseRelationOrderResult> relationOrderResults = new ArrayList<>();
-        if (inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue()) && InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
+        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue()) && InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
             // 生产采购单
             QueryWrapper<OpeProductionPurchaseOrder> purchaseQueryWrapper = new QueryWrapper<>();
             purchaseQueryWrapper.eq(OpeProductionPurchaseOrder.COL_ID,inWhouseOrder.getRelationOrderId());
@@ -421,7 +421,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 relationOrderResult.setCreatedTime(purchaseOrder.getCreatedTime());
                 relationOrderResults.add(relationOrderResult);
             }
-        }else if (inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue()) && InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
+        }else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue()) && InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())){
             // 组装单
             QueryWrapper<OpeCombinOrder> combinOrderQueryWrapper = new QueryWrapper<>();
             combinOrderQueryWrapper.eq(OpeCombinOrder.COL_ID,inWhouseOrder.getRelationOrderId());
