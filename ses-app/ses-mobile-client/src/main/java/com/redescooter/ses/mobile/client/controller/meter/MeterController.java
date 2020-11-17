@@ -1,12 +1,18 @@
 package com.redescooter.ses.mobile.client.controller.meter;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
+import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
+import com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult;
+import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import io.swagger.annotations.Api;
-import lombok.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName:MeterController
@@ -21,4 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/meter", method = RequestMethod.POST)
 public class MeterController {
+
+    @Reference
+    private MeterService meterService;
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "快递仪表订单", response = MeterExpressOrderResult.class)
+    @RequestMapping(value = "/meterExpressOrder")
+    public Response<MeterExpressOrderResult> meterExpressOrder(@ModelAttribute MeterOrderEnter enter) {
+        return new Response<>(meterService.meterExpressOrder(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "餐厅仪表订单", response = MeterDeliveryOrderReuslt.class)
+    @RequestMapping(value = "/meterDeliveryOrder")
+    public Response<MeterDeliveryOrderReuslt> meterDeliveryOrder(@ModelAttribute MeterOrderEnter enter) {
+        return new Response<>(meterService.meterDeliveryOrder(enter));
+    }
+
 }

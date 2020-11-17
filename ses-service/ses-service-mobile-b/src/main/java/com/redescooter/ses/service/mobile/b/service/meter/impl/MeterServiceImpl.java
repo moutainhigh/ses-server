@@ -1,27 +1,30 @@
 package com.redescooter.ses.service.mobile.b.service.meter.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
+import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
+import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.service.mobile.b.dao.MeterServiceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
-import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrder;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverScooterService;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
-import com.redescooter.ses.service.mobile.b.service.meter.MeterService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Objects;
 
 /**
  * @ClassName:MeterServiceImpl
@@ -43,6 +46,9 @@ public class MeterServiceImpl implements MeterService {
     private CorDriverService corDriverService;
 
     @Autowired
+    private MeterServiceMapper meterServiceMapper;
+
+    @Autowired
     private CorExpressOrderService corExpressOrderService;
 
     /**
@@ -57,8 +63,14 @@ public class MeterServiceImpl implements MeterService {
     @Override
     public MeterExpressOrderResult meterExpressOrder(MeterOrderEnter enter) {
         CorDriver corDriver = this.getDriverByScooterNo(enter);
-
-        return null;
+        //查询当前正在进行的订单
+        MeterExpressOrderResult result= meterServiceMapper.meterExpressOrderByStatus(corDriver.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
+        if (result!=null){
+            //查询所有订单的统计数据
+            int  count=meterServiceMapper.meterExpressOrderByCount(corDriver.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+            result.setRemainingOrderNum(count);
+        }
+        return result;
     }
 
     /**
@@ -72,7 +84,12 @@ public class MeterServiceImpl implements MeterService {
      */
     @Override
     public MeterDeliveryOrderReuslt meterDeliveryOrder(MeterOrderEnter enter) {
-        return null;
+        CorDriver corDriver = this.getDriverByScooterNo(enter);
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(corDriver.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
+        if (Objects.nonNull(result)) {
+            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(corDriver.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
+        }
+        return result;
     }
     /**
     * @Description

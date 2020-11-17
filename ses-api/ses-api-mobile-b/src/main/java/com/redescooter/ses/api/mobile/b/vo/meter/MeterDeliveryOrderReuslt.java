@@ -26,6 +26,9 @@ public class MeterDeliveryOrderReuslt extends GeneralResult {
     @ApiModelProperty(value = "订单号")
     private String orderNo;
 
+    @ApiModelProperty(value = "订单号")
+    private Long scooterId;
+
     @ApiModelProperty(value = "收件人")
     private String recipient;
 
@@ -43,4 +46,10 @@ public class MeterDeliveryOrderReuslt extends GeneralResult {
 
     @ApiModelProperty(value = "纬度")
     private BigDecimal latitude;
+
+    @ApiModelProperty(value = "geohash")
+    private String geohash;
+
+    @ApiModelProperty(value="剩余订单数，包含当前正在进行的订单")
+    private int remainingOrderNum;
 }
