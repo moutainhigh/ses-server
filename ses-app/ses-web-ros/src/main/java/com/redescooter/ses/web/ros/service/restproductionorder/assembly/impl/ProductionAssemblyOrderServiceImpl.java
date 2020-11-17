@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.assembly.impl;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,12 +30,10 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
-import com.redescooter.ses.web.ros.vo.production.allocate.SaveAssemblyProductEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionExport;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
@@ -715,6 +712,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        if(opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())){
+            return;
+        }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
@@ -743,6 +743,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.ASSEMBLING.getValue())){
+            return new GeneralResult(enter.getRequestId());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.TO_BE_ASSEMBLED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
@@ -775,6 +778,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())){
+            return new GeneralResult(enter.getRequestId());
+        }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.ASSEMBLING.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
@@ -806,6 +812,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())){
+            return new GeneralResult(enter.getRequestId());
+        }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
@@ -825,7 +834,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     /**
      * @Author Aleks
-     * @Description 模拟RPS对质检单的质检的操作
+     * @Description 模拟RPS对质检单的质检完成的操作
      * @Date  2020/11/17 14:23
      * @Param [enter]
      * @return
@@ -836,6 +845,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue())){
+            return new GeneralResult(enter.getRequestId());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
