@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.SalePartsMapper">
+
+    <select id="salePartsTotal" resultType="int">
+       select count(*) from ope_sale_parts parts
+       left join ope_production_parts proparts on parts.parts_id = proparts.id
+       where parts.dr = 0
+        <include refid="listCondition"> </include> </select>
+
+    <sql id="listCondition">
+        <if test="enter.saleStutas != null">
+            and parts.sale_stutas = #{enter.saleStutas}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and parts.product_name like concat('%', #{enter.keyword}, '%') or
+            parts.parts_name like concat('%', #{enter.keyword}, '%') or
+            proparts.parts_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="salePartsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.SalePartsListResult">
+       select
+        parts.id,
+        parts.product_name,
+        parts.product_code,
+        parts.parts_name,
+        proparts.parts_no,
+        parts.parts_id,
+        parts.sale_stutas
+       from ope_sale_parts parts
+        left join ope_production_parts proparts on parts.parts_id = proparts.id
+       where parts.dr = 0
+        <include refid="listCondition"> </include>
+        order by parts.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.SaleCombinMapper">
+
+
+    <select id="saleCombinTotal" resultType="int">
+        select count(*) from ope_sale_combin combin
+        left join ope_production_combin_bom bom on combin.production_combin_bom_id = bom.id
+        where combin.dr = 0
+        <include refid="saleCombinListCondition"></include>
+    </select>
+
+    <sql id="saleCombinListCondition">
+        <if test="enter.saleStutas != null">
+            and combin.sale_stutas = #{enter.saleStutas}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and combin.product_name like concat('%', #{enter.keyword}, '%') or
+            combin.combin_name like concat('%', #{enter.keyword}, '%') or
+            bom.bom_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+
+    <select id="saleCombinList" resultType="com.redescooter.ses.web.ros.vo.restproduct.SaleCombinListResult">
+        select
+        combin.id,
+        combin.product_name,
+        combin.product_code,
+        combin.combin_name,
+        bom.bom_no,
+        combin.production_combin_bom_id,
+        combin.sale_stutas
+        from ope_sale_combin combin
+        left join ope_production_combin_bom bom on combin.production_combin_bom_id = bom.id
+        where combin.dr = 0
+        <include refid="saleCombinListCondition"></include>
+        order by combin.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+</mapper>
