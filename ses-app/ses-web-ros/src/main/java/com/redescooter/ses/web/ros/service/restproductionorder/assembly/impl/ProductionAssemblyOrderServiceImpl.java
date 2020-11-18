@@ -308,7 +308,8 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        int productQty = Long.valueOf(productEnterList.stream().map(SaveAssemblyProductListEnter::getQty).count()).intValue();
+//        int productQty = Long.valueOf(productEnterList.stream().map(SaveAssemblyProductListEnter::getQty).count()).intValue();
+        int productQty = productEnterList.stream().mapToInt(SaveAssemblyProductListEnter::getQty).sum();
         //主单据
         OpeCombinOrder opeCombinOrder = buildOpeCombinOrder(enter, productQty);
 
