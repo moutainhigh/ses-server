@@ -235,6 +235,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             opeProductionPurchaseOrder.setId(purchasId);
             opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
             opeProductionPurchaseOrder.setCreatedTime(new Date());
+            opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
 
             //订单节点
             OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
@@ -311,7 +312,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
         BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
         opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setPurchaseNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_PURCHAS.getValue())));
         opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
         opeProductionPurchaseOrder.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
         opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());

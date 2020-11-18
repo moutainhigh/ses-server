@@ -321,6 +321,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             opeCombinOrder.setId(assemblyProductId);
             opeCombinOrder.setCreatedBy(enter.getUserId());
             opeCombinOrder.setCreatedTime(new Date());
+            opeCombinOrder.setCombinNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.COMBIN_ORDER.getValue())));
 
             //子单据
             if (enter.getCombinType().equals(ProductTypeEnums.SCOOTER.getValue())) {
@@ -698,7 +699,6 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
         BeanUtils.copyProperties(enter, opeCombinOrder);
         opeCombinOrder.setDr(0);
-        opeCombinOrder.setCombinNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.COMBIN_ORDER.getValue())));
         opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.DRAF.getValue());
         opeCombinOrder.setCombinQty(productQty);
         opeCombinOrder.setUpdatedBy(enter.getUserId());
