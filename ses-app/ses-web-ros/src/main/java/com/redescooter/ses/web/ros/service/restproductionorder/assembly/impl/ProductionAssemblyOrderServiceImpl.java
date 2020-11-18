@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
@@ -151,6 +152,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      */
     @Override
     public PageResult<ProductionAssemblyOrderListResult> list(ProductionAssemblyOrderListEnter enter) {
+        SesStringUtils.objStringTrim(enter);
         int count = productionAssemblyOrderServiceMapper.listCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
