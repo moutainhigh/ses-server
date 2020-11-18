@@ -16,6 +16,8 @@ import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeSaleCombinService;
+import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
@@ -61,6 +63,12 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
     @Autowired
     private JedisService jedisService;
+
+    @Autowired
+    private OpeSaleCombinService opeSaleCombinService;
+
+    @Autowired
+    private OpeSalePartsService opeSalePartsService;
 
 
 
@@ -182,8 +190,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         Map<String, Integer> map = new HashMap<>();
         // 1 2 3分别对应整车、组装件、部件
         map.put("1",opeSaleScooterService.count());
-        map.put("2",0);
-        map.put("3",0);
+        map.put("2",opeSaleCombinService.count());
+        map.put("3",opeSalePartsService.count());
         return map;
     }
 }
