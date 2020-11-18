@@ -171,4 +171,23 @@ public interface ProductionAssemblyOrderServiceMapper {
     * @desc: Bom数据
     */
     List<BomNameData> bomNoData(BomNoEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  整车组装单导出的SQL查询
+     * @Date  2020/11/18 15:10
+     * @Param
+     * @return
+     **/
+    List<ProductionCombinScooterExport> scooterExportList(@Param("combinId") Long combinId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  整车组装单导出的SQL查询
+     * @Date  2020/11/18 15:10
+     * @Param
+     * @return
+     **/
+    List<ProductionCombinAssemblyExport> combinExportList(@Param("combinId") Long combinId);
 }

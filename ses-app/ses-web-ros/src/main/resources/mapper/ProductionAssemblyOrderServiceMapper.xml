@@ -214,4 +214,24 @@
           and bom_status = 1
           and en_name = #{combinName}
     </select>
+
+    <select id="scooterExportList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionCombinScooterExport">
+        select
+           scooter.qty,
+           group1.group_name AS groupName,
+           color.color_name AS colorName
+        from ope_combin_order_scooter_b scooter
+        left join ope_specificat_group group1 on scooter.group_id = group1.id
+        left join ope_color color ON color.id = scooter.color_id
+        where scooter.dr = 0 and scooter.combin_id = #{combinId}
+    </select>
+
+    <select id="combinExportList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionCombinAssemblyExport">
+       select
+          combin.combin_name as productName,
+          combin.combin_no as productN,
+          combin.qty
+       from ope_combin_order_combin_b combin
+       where combin.dr = 0 and combin.combin_id = #{combinId}
+    </select>
 </mapper>

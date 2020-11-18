@@ -610,27 +610,36 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      */
     @Override
     public GeneralResult export(Long id, HttpServletResponse response) {
-        List<ProductionAssemblyExport> result=new ArrayList<>();
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(id);
-        if (Objects.isNull(opeCombinOrder)){
+        if (opeCombinOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        List<AssemblyDetailProductListResult> assemblyDetailProductListResults = this.detailProductList(new AssemblyOrderDetailEnter(id, opeCombinOrder.getCombinType()));
-        assemblyDetailProductListResults.stream().forEach(item->{
-            ProductionAssemblyExport productionAssemblyExport = new ProductionAssemblyExport();
-            BeanUtils.copyProperties(item,productionAssemblyExport);
-            if (item.getProductType().equals(ProductTypeEnums.SCOOTER.getValue())){
-                productionAssemblyExport.setProductType(ProductTypeEnums.SCOOTER.getMessage());
-                productionAssemblyExport.setProductN("/");
-                productionAssemblyExport.setProductName("/");
-            }else {
-                productionAssemblyExport.setColorName("/");
-                productionAssemblyExport.setColorValue("/");
-                productionAssemblyExport.setGroupName("/");
-            }
-            productionAssemblyExport.setProductType(item.getProductType().equals(ProductTypeEnums.SCOOTER.getValue())?ProductTypeEnums.SCOOTER.getMessage():ProductTypeEnums.COMBINATION.getMessage());
-            result.add(productionAssemblyExport);
-        });
+        List<ProductionCombinScooterExport> scooterExportList = new ArrayList<>();
+        List<ProductionCombinAssemblyExport> combinExportList = new ArrayList<>();
+        switch (opeCombinOrder.getCombinType()){
+            case 1:
+                // scooter
+                // 找到车辆组装单的明细
+                scooterExportList = productionAssemblyOrderServiceMapper.scooterExportList(id);
+                if (CollectionUtils.isNotEmpty(scooterExportList)){
+                    for (ProductionCombinScooterExport scooterExport : scooterExportList) {
+                        scooterExport.setOrderNo(opeCombinOrder.getCombinNo());
+                        scooterExport.setProductType(ProductTypeEnums.SCOOTER.getMessage());
+                    }
+                }
+                default:
+                    break;
+            case 2:
+                // combin
+                combinExportList = productionAssemblyOrderServiceMapper.combinExportList(id);
+                if (CollectionUtils.isNotEmpty(combinExportList)){
+                    for (ProductionCombinAssemblyExport combin : combinExportList) {
+                        combin.setOrderNo(opeCombinOrder.getCombinNo());
+                        combin.setProductType(ProductTypeEnums.COMBINATION.getMessage());
+                    }
+                }
+                break;
+        }
         try {
             // 设置响应输出的头类型
             response.setHeader("content-Type", "application/vnd.ms-excel");
@@ -638,9 +647,17 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             response.setHeader("Content-Disposition", "attachment;filename=" + System.currentTimeMillis() + ".xls");
             // =========easypoi部分
             ExportParams exportParams = new ExportParams();
-            exportParams.setSheetName("log");
-            // exportParams.setDataHanlder(null);//和导入一样可以设置一个handler来处理特殊数据
-            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, ProductionAssemblyExport.class, result);
+            Workbook workbook = null;
+            switch (opeCombinOrder.getCombinType()){
+                case 1:
+                    exportParams.setSheetName("整车");
+                    workbook = ExcelExportUtil.exportExcel(exportParams, ProductionCombinScooterExport.class, scooterExportList);
+                    default:
+                        break;
+                case 2:
+                    exportParams.setSheetName("组装件");
+                    workbook = ExcelExportUtil.exportExcel(exportParams, ProductionCombinAssemblyExport.class, combinExportList);
+            }
             workbook.write(response.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
