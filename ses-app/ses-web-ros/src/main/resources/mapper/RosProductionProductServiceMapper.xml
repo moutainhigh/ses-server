@@ -372,5 +372,8 @@
         <if test="enter.type == 2">
             and bom.bom_status in (1,2)
         </if>
+        <if test="enter.type == 3">
+            and bom.bom_status in (1,3) and bom.disable = 0
+        </if>
     </select>
 </mapper>
