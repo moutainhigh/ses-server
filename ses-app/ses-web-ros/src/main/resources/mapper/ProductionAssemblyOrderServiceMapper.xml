@@ -49,6 +49,8 @@
         <if test="keyword != null and keyword != ''">
             and combin.combin_no like concat('%',#{keyword},'%')
         </if>
+        order by  combin.created_time desc
+        limit #{startRow},#{pageSize}
     </select>
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult">
