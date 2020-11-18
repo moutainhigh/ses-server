@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.scooter.dao;
 
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,4 +23,14 @@ public interface ScooterServiceMapper {
      * @return
      */
     List<BaseScooterResult> scooterInforByplates(List<String> enter);
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/16 6:03 下午
+     * @Param: id，scooterNo
+     * @Return: BaseScooterResult
+     * @desc: 车辆基本信息
+     */
+    BaseScooterResult scooterInfoByScooterNo(@Param("id") Long id, @Param("scooterNo") String scooterNo);
 }

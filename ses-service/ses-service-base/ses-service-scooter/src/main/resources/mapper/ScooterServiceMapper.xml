@@ -63,4 +63,40 @@
         </if>
     </select>
 
+    <select id="scooterInfoByScooterNo" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+        select scooter.id as id,
+        scooter.picture as pictures,
+        scooter.scooter_no as scooterNo,
+        scooter.status as status,
+        scooter.available_status as availableStatus,
+        scooter.box_status as boxStatus,
+        scooter.model as model,
+        scooter.license_plate as licensePlate,
+        scooter.license_plate_picture as licensePlatePicture,
+        scooter.license_plate_time as licensePlateTime,
+        scooter.scooter_id_picture as scooterIdPicture,
+        scooter.insurance as insurance,
+        scooter.insure_time as insureTime,
+        scooter.revision as revision,
+        status.scooter_ecu_id as scooterEcuId,
+        status.longitule as longitule,
+        status.latitude as latitude,
+        status.battery as battery,
+        ifnull(scooter.total_mileage, 0) as totalmileage
+        from sco_scooter scooter
+        inner join sco_scooter_status status on scooter.id = status.scooter_id
+        where scooter.dr = 0
+        <if test="scooterNo != null and scooterNo != '' and id != null">
+            and scooter.id=#{id} and scooter.scooter_no=#{scooterNo}
+        </if>
+        <if test="(scooterNo == null or scooterNo == '') or (id == null)">
+            <if test="scooterNo != null and scooterNo != ''">
+                and scooter.scooter_no=#{scooterNo}
+            </if>
+            <if test="id != null">
+                and scooter.id=#{id}
+            </if>
+        </if>
+        limit 1
+    </select>
 </mapper>
