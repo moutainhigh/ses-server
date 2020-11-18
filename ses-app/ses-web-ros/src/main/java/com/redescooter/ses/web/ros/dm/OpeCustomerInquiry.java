@@ -31,6 +31,7 @@ public class OpeCustomerInquiry implements Serializable {
     /**
      * 逻辑删除标识 0正常 1删除
      */
+    @TableLogic
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
     private Integer dr;
