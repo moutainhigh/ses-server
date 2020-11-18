@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
@@ -80,7 +81,7 @@ public interface OutboundOrderService {
      * @Return: AssociatedOrderResult
      * @desc: 关联订单列表
      */
-    List<AssociatedOrderResult> associatedOrderList(Long invoiceId);
+    List<AssociatedOrderResult> associatedOrderList(OpeOutWhouseOrder opeOutWhouseOrder);
 
     /**
      * @Description

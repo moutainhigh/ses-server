@@ -184,7 +184,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
         OutboundOrderDetailResult detail = outboundOrderServiceMapper.detail(enter);
         //关联单据
-        List<AssociatedOrderResult> associatedOrderResultList = associatedOrderList(detail.getInvoiceId());
+        List<AssociatedOrderResult> associatedOrderResultList = associatedOrderList(opeOutWhouseOrder);
         detail.setAssociatedOrderList(CollectionUtils.isEmpty(associatedOrderResultList) ? new ArrayList<>() : associatedOrderResultList);
         //操作动态
         List<OpTraceResult> opTraceResultList = productionOrderTraceService.listByBussId(new ListByBussIdEnter(enter.getId(), OrderTypeEnums.OUTBOUND.getValue()));
@@ -232,15 +232,24 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @Param: enter
      * @Return: AssociatedOrderResult
      * @desc: 关联订单列表 只关联发货单
-     * @param invoiceId
+     * @param opeOutWhouseOrder
      */
     @Override
-    public List<AssociatedOrderResult> associatedOrderList(Long invoiceId) {
+    public List<AssociatedOrderResult> associatedOrderList(OpeOutWhouseOrder opeOutWhouseOrder) {
         List<AssociatedOrderResult> associatedOrderList = new ArrayList<>();
-        //发货单
-        OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
-        if (opeInvoiceOrder != null) {
-            associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(),""));
+        // 先判断关联的是哪个单据
+        if(null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
+            //发货单
+            OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeOutWhouseOrder.getRelationId());
+            if (opeInvoiceOrder != null) {
+                associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(),""));
+            }
+        }else if (null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+            // 2020 11 18 追加  出库单还可能会关联组装单
+            OpeCombinOrder combinOrder = opecombinOrderService.getById(opeOutWhouseOrder.getRelationId());
+            if (combinOrder != null){
+                associatedOrderList.add(new AssociatedOrderResult(combinOrder.getId(), combinOrder.getCombinNo(), OrderTypeEnums.COMBIN_ORDER.getValue(), combinOrder.getCreatedTime(),""));
+            }
         }
         return associatedOrderList;
     }
