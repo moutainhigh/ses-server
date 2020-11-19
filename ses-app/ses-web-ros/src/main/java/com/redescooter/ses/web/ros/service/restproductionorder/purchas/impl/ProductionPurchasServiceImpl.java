@@ -537,7 +537,8 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if(opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())){
+        if(opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())
+        || opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
             return;
         }
         if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
