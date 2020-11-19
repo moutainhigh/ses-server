@@ -29,6 +29,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnt
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
  * @Version V1.0
  **/
 @Service
+@Slf4j
 public class InWhouseServiceImpl implements InWhouseService {
 
     @Autowired
@@ -205,6 +207,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<SaveOrUpdatePartsBEnter> partsBEnters = new ArrayList<>();
                 try {
                     partsBEnters = JSONArray.parseArray(enter.getSt(), SaveOrUpdatePartsBEnter.class);
+                    log.info("本次传过来的数据条数：：：：：：" + partsBEnters.size());
                 } catch (Exception e) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
@@ -220,6 +223,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     partsB.setUpdatedTime(new Date());
                     partsBList.add(partsB);
                 }
+                log.info("本次保存的数据条数：：：：：：" + partsBList.size());
                 opeInWhousePartsBService.saveOrUpdateBatch(partsBList);
                 break;
         }
