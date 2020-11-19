@@ -279,11 +279,11 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             }
         }
 
-        MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
-        result.setAllMap(allMap);
-        result.setListMap(listMap);
-        result.setRequestId(enter.getRequestId());
-        return result;
+        MobileBDeliveryChartResult chartResult = new MobileBDeliveryChartResult();
+        chartResult.setAllMap(allMap);
+        chartResult.setListMap(listMap);
+        chartResult.setRequestId(enter.getRequestId());
+        return chartResult;
     }
 
     /**
