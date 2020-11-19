@@ -46,4 +46,13 @@ public interface ScooterService {
      * @return
      */
     List<BaseScooterResult> scooterInforByPlates(List<String> enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/16 6:01 下午
+    * @Param:  id,scooterNo
+    * @Return: BaseScooterResult
+    * @desc: 车辆基本信息
+    */
+    BaseScooterResult scooterInfoByScooterNo(Long id,String scooterNo);
 }

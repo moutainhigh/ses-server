@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.MeterServiceMapper">
+
+    <select id="meterExpressOrderByStatus" resultType="com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt">
+        select exorder.id                  as id,
+        exorder.order_no            as orderNo,
+        exorder.status              as status,
+        exorder.recipient_address   as recipientAddress,
+        exorder.recipient_latitude  as latitude,
+        exorder.recipient_longitude as longitude,
+        exorder.recipient_geohash   as geohash
+        from cor_express_order exorder
+        left join cor_express_delivery_detail detail on exorder.id = detail.express_order_id and detail.dr = 0
+        left join cor_express_delivery delivery on delivery.id = detail.express_delivery_id and delivery.dr = 0
+        where exorder.dr = 0
+          and delivery.driver_id = #{driverId}
+          and exorder.status =#{status}
+          limit 1
+    </select>
+
+    <select id="meterExpressOrderByCount" resultType="int">
+        select count(1) from
+                 cor_express_delivery_detail detail
+                 left join cor_express_delivery delivery on delivery.id = detail.express_delivery_id and delivery.dr = 0
+        where detail.dr = 0
+          and delivery.driver_id = {driverId}
+          and detail.status !=#{completeStatus}
+          and detail.status !=#{rejectedStatus}
+    </select>
+
+    <select id="meterDeliveryOrderByStatus" resultType="com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt">
+        select id                as id,
+               order_no          as orderNo,
+               scooter_id        as scooterId,
+               recipient         as recipient,
+               recipient_email   as recipientEmail,
+               recipient_tel     as recipientTel,
+               recipient_address as recipientAddress,
+               longitude         as longitude,
+               latitude          as latitude,
+               geohash           as geohash,
+               status            as status
+        from cor_delivery delivery
+        where dr=0
+        and deliverer_id=#{userId}
+        and status=#{status}
+    </select>
+
+    <select id="meterDeliveryOrderByCount" resultType="int">
+        select count(*)
+        from cor_delivery delivery
+        where dr=0
+        and deliverer_id=#{userId}
+        and (status=#{pendingStatus} or status=#{deliveryStatus})
+    </select>
+</mapper>

@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -17,8 +16,8 @@ import java.util.Date;
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleScooter")
 @Data
-@TableName(value = "ope_sale_scooter")
-public class OpeSaleScooter implements Serializable {
+@TableName(value = "operation.ope_sale_scooter")
+public class OpeSaleScooter {
     /**
      * 主键
      */
@@ -33,6 +32,13 @@ public class OpeSaleScooter implements Serializable {
     @ApiModelProperty(value = "逻辑删除")
     @TableLogic
     private Integer dr;
+
+    /**
+     * 所属部门id
+     */
+    @TableField(value = "dept_id")
+    @ApiModelProperty(value = "所属部门id")
+    private Long deptId;
 
     /**
      * 产品名称
@@ -149,6 +155,8 @@ public class OpeSaleScooter implements Serializable {
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
+
+    public static final String COL_DEPT_ID = "dept_id";
 
     public static final String COL_PRODUCT_NAME = "product_name";
 

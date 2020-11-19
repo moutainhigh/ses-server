@@ -1,14 +1,10 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.redescooter.ses.api.mobile.b.exception.MobileBException;
+import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,6 +244,10 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
         Map<String, MonthlyDeliveryChartResult> allMap = new LinkedHashMap<>();
         Map<String, MonthlyDeliveryChartResult> listMap = new LinkedHashMap<>();
+        if (Objects.isNull(enter.getStartDateTime()) || Objects.isNull(enter.getEndDateTime())){
+            throw  new MobileBException(ExceptionCodeEnums.DATE_IS_EMPTY.getCode(),ExceptionCodeEnums.DATE_IS_EMPTY.getMessage());
+        }
+
         List<String> dayList = new LinkedList();
         // 获取指定日期格式向前N天时间集合
 //            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
