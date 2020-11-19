@@ -78,19 +78,20 @@ public interface SellsyDocumentService {
 
 
     /**
+     * 解析到的发票数据保存到数据库
+     * @param successList
+     * @return
+     */
+    //todo 下面的方法 不要使用 可参考
+    SellsyImportExcelResult saveSellsyInvoid(List<SellsyExcleData> successList);
+
+    /**
      * 导入发票
      *
      * @param file
      * @return
      */
     SellsyImportExcelResult importSellsyDocument(MultipartFile file);
-
-    /**
-     * 解析到的发票数据保存到数据库
-     * @param successList
-     * @return
-     */
-    SellsyImportExcelResult saveSellsyInvoid(List<SellsyExcleData> successList);
 
     /**
      * 根据数据库数据批量创建发票
