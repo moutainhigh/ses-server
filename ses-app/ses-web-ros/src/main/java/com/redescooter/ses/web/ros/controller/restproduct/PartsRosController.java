@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
@@ -43,6 +44,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增部件", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         // 可能是保存并发布
         return new Response<>(partsRosService.partsSave(enter));

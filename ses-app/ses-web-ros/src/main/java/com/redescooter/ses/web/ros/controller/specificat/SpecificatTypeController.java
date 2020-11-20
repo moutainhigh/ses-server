@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.specificat;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult;
@@ -30,6 +31,7 @@ public class SpecificatTypeController {
 
     @PostMapping(value = "/specificatTypeSave")
     @ApiOperation(value = "规格类型新增", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> specificatTypeSave(@ModelAttribute @ApiParam("请求参数") SpecificatTypeSaveOrEditEnter enter) {
         return new Response(specificatTypeService.specificatTypeSave(enter));
     }
