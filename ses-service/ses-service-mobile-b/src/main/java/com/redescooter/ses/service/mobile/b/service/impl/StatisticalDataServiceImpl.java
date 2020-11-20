@@ -248,16 +248,22 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             throw  new MobileBException(ExceptionCodeEnums.DATE_IS_EMPTY.getCode(),ExceptionCodeEnums.DATE_IS_EMPTY.getMessage());
         }
 
+        List<String> dayList = new LinkedList();
+        // 获取指定日期格式向前N天时间集合
+//            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
 
+        MonthlyDeliveryChartResult result = null;
         if (CollectionUtils.isEmpty(list)) {
-            return new MobileBDeliveryChartResult();
+            for (String str : dayList) {
+                result = new MonthlyDeliveryChartResult();
+                result.setTimes(str);
+                allMap.put(str, result);
+            }
         } else {
-            MonthlyDeliveryChartResult result = null;
-            List<String> dayList = new LinkedList();
             // 获取指定日期格式向前N天时间集合
 //            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-            dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
             for (String str : dayList) {
                 for (MonthlyDeliveryChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
@@ -273,11 +279,11 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
             }
         }
 
-        MobileBDeliveryChartResult result = new MobileBDeliveryChartResult();
-        result.setAllMap(allMap);
-        result.setListMap(listMap);
-        result.setRequestId(enter.getRequestId());
-        return result;
+        MobileBDeliveryChartResult chartResult = new MobileBDeliveryChartResult();
+        chartResult.setAllMap(allMap);
+        chartResult.setListMap(listMap);
+        chartResult.setRequestId(enter.getRequestId());
+        return chartResult;
     }
 
     /**
