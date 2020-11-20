@@ -163,6 +163,9 @@ public class Advice {
             sysLog.setCreatedTime(new Date());
             sysLog.setUpdatedTime(new Date());
             sysLog.setId(idAppService.getId(SequenceName.OPE_SYS_LOG));
+            if(sysLog.getIfSuccess() == null){
+                sysLog.setIfSuccess(0);
+            }
             opeSysLogService.save(sysLog);
         }
 
