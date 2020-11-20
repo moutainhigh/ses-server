@@ -344,7 +344,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         //APP推送
         PushMsgBo pushApp = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnums.PC.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())
