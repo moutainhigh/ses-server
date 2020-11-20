@@ -32,6 +32,7 @@ public class SysStaffController {
     @PostMapping(value = "/staffSave")
     @ApiOperation(value = "新增员工", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> staffSave(@ModelAttribute @ApiParam("请求参数") StaffSaveOrEditEnter enter) {
         return new Response(staffService.staffSave(enter));
     }
@@ -64,7 +65,6 @@ public class SysStaffController {
     @PostMapping(value = "/staffList")
     @ApiOperation(value = "员工列表", response = GeneralResult.class)
     @LogAnnotation
-    @AvoidDuplicateSubmit
     public Response<PageResult<StaffListResult>> staffList(@ModelAttribute @ApiParam("请求参数") StaffListEnter enter) {
         return new Response(staffService.staffList(enter));
     }

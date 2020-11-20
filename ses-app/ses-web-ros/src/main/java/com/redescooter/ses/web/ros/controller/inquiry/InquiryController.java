@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.inquiry;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -48,6 +49,7 @@ public class InquiryController {
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存询价单", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> saveInquiry(@ModelAttribute @ApiParam("请求参数") SaveAboutUsEnter enter) {
         return new Response<>(inquiryService.saveAboutUs(enter));
     }
