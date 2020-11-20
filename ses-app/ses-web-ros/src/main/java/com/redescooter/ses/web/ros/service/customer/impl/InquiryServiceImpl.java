@@ -425,6 +425,7 @@ public class InquiryServiceImpl implements InquiryService {
                 Integer i = 1;
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
                 dataMap.add(toMap(inquiry, i));
+                i ++;
             }
             String sheetName = "Inquiry";
             String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice", "totalPrice", "time"};

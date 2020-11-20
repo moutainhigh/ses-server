@@ -176,8 +176,8 @@
                 inquiry.def3                                    as postcode,
                 oc.address
                 from ope_customer_inquiry inquiry
-                inner join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
-                inner join ope_parts_product opp on inquiry.product_id = opp.id and opp.dr = 0
+                left join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
+                left join ope_parts_product opp on inquiry.product_id = opp.id and opp.dr = 0
                 left join ope_customer_inquiry_b ocib on inquiry.id = ocib.inquiry_id and ocib.dr = 0
 
         <include refid="where_inquiryList"/>
