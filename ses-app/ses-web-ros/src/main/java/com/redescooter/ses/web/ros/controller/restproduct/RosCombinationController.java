@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
@@ -85,6 +86,7 @@ public class RosCombinationController {
 
     @PostMapping(value = "/rosSaveProductionProduct")
     @ApiOperation(value = "组合保存", response = BaseNameResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult>
         rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));

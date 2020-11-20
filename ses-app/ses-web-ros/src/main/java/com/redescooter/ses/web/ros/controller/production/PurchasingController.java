@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -84,6 +85,7 @@ public class PurchasingController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存采购单", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePurchasingEnter enter) {
         return new Response<>(purchasingService.save(enter));
     }

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.specificat;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatGroupService;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
@@ -32,6 +33,7 @@ public class SpecificatGroupController {
 
     @PostMapping(value = "/specificatGroupSave")
     @ApiOperation(value = "规格分组新增", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> specificatGroupSave(@ModelAttribute @ApiParam("请求参数") SpecificatGroupSaveOrEditEnter enter) {
         return new Response(specificatGroupService.specificatGroupSave(enter));
     }
