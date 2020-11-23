@@ -211,14 +211,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-
-        //附属配件总金额
-        BigDecimal partsTotalPrice = checkBatteryQty(enter, product, battery.getPrice());
-
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-        //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(partsTotalPrice);
+        //todo 总价格=产品价格+附属配件总金额
+        BigDecimal totalPrice = product.getPrice().add(checkBatteryQty(enter, product, battery.getPrice()));
         //是否购买后备箱
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
@@ -251,6 +247,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
     /**
      * 发送数据到Monday
+     *
      * @param productModel
      * @param opeCustomerInquiry
      */
@@ -303,7 +300,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
         }
 
-
         //后备箱 校验
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
@@ -324,13 +320,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        //附属配件总金额
-        BigDecimal partsTotalPrice = checkBatteryQty(enter, product, battery.getPrice());
 
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-        //总价格计算
-        BigDecimal totalPrice = product.getPrice().add(partsTotalPrice);
+        //TODO 总价格=产品单价+附属配件总金额
+        BigDecimal totalPrice = product.getPrice().add(checkBatteryQty(enter, product, battery.getPrice()));
         //是否购买后备箱
         if (enter.getBuyTopCase()) {
             totalPrice = totalPrice.add(topCase.getPrice());
@@ -413,7 +407,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
          */
         opeCustomerInquiry.setAmountObligation(totalPrice);
         /**
-         * 预定金
+         * 预定金，正常时期
          */
         opeCustomerInquiry.setPrepaidDeposit(new BigDecimal(590));
         /**
@@ -513,11 +507,11 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 /**
                  * 金额读取
                  */
+                .totalPrice(customerInquiry.getTotalPrice())
                 .productPrice(customerInquiry.getProductPrice())
                 .amountPaid(customerInquiry.getAmountPaid())
-                .amountObligation(customerInquiry.getAmountObligation() == null ? new BigDecimal("0") : customerInquiry.getAmountObligation())
+                .amountObligation(customerInquiry.getAmountObligation() == null ? BigDecimal.ZERO : customerInquiry.getAmountObligation())
                 .prepaidDeposit(customerInquiry.getPrepaidDeposit())
-                .totalPrice(customerInquiry.getTotalPrice())
                 .status(customerInquiry.getStatus())
                 .build();
 
