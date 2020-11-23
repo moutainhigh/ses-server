@@ -115,8 +115,11 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getAppId, AppIDEnums.SES_WEBSITE.getValue()).last(
-                        "limit 1"));
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>()
+                        .eq(OpeSysUser::getLoginName, enter.getLoginName())
+                        .eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue())
+                        .eq(OpeSysUser::getAppId, AppIDEnums.SES_WEBSITE.getValue())
+                        .last("limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -188,7 +191,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
 
         //用户校验
-        OpeSysUser sysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, decryptEamil).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()));
+        OpeSysUser sysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, decryptEamil)
+                .eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()));
         if (sysUser != null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }

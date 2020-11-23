@@ -316,10 +316,17 @@ public class StripeServiceImpl implements StripeService {
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        // 订单数据保存
-        //todo 定金支付成功后优惠500 欧元
-        BigDecimal price = new BigDecimal("690");
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
+
+        BigDecimal price = customerInquiry.getPrepaidDeposit();
+
+        /**
+         * 已付金额
+         */
+        customerInquiry.setAmountPaid(customerInquiry.getAmountPaid().add(price));
+        /**
+         * 待付金额
+         */
+        customerInquiry.setAmountObligation(customerInquiry.getAmountObligation().subtract(price).subtract(customerInquiry.getAmountDiscount()));
 
         customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
@@ -359,7 +366,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
-        enter.setPrice(String.valueOf(customerInquiry.getTotalPrice().intValue()));
+        enter.setPrice(customerInquiry.getAmountObligation().toString());
         enter.setFullName(customerInquiry.getFirstName()+" "+customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
