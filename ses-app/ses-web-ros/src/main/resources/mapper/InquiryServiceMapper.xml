@@ -164,16 +164,16 @@
                 when (opp.color = 5) then '#130c0e' end as colorValue,
                 1                                           as qty,
                 ocib.product_qty                            as batteryQty,
-                inquiry.total_price + 690                       as amount,
-                '190.00'                                    as paid,
-                '500.00'                                    as discount,
-                inquiry.total_price                             as balance,
+                inquiry.total_price                         as amount,
+                inquiry.prepaid_deposit                                    as paid,
+                inquiry.amount_discount                                   as discount,
+                inquiry.amount_obligation                             as balance,
                 inquiry.created_time                            as createdTime,
                 oc.country_code,
                 oc.telephone,
                 inquiry.def1                                    as country,
                 inquiry.def2                                    as city,
-                inquiry.def3                                    as postcode,
+                inquiry.post_code                                    as postcode,
                 oc.address
                 from ope_customer_inquiry inquiry
                 left join ope_customer oc on inquiry.customer_id = oc.id and oc.dr = 0
