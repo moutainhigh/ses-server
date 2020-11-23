@@ -109,7 +109,7 @@
         part.cn_name              as cnName,
         stock.available_total     as stocks
         from ope_stock stock
-        left join ope_production_parts part on part.id = stock.materiel_product_id and part.dr = 0
+        right join ope_production_parts part on part.id = stock.materiel_product_id and part.dr = 0
         <include refid="wher_availableList"/>
         order by part.updated_time desc
         limit #{enter.startRow},#{enter.pageSize}
