@@ -421,8 +421,8 @@ public class InquiryServiceImpl implements InquiryService {
         log.info("总共的数据量：" + list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
+            Integer i = 1;
             for (InquiryExportResult inquiry : list) {
-                Integer i = 1;
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
                 dataMap.add(toMap(inquiry, i));
                 i ++;
@@ -466,16 +466,16 @@ public class InquiryServiceImpl implements InquiryService {
     private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry, Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("ID", i);
-        map.put("fullName", opeCustomerInquiry.getCustomerFullName());
-        map.put("email", opeCustomerInquiry.getEmail());
-        map.put("bankCardname", opeCustomerInquiry.getBankCardName());
-        map.put("district", opeCustomerInquiry.getPostcode());
-        map.put("address", opeCustomerInquiry.getAddress());
-        map.put("productName", opeCustomerInquiry.getProductName());
-        map.put("color", opeCustomerInquiry.getColorName());
-        map.put("batteryQty", opeCustomerInquiry.getBatteryQty());
-        map.put("lastPrice", opeCustomerInquiry.getBalance());
-        map.put("totalPrice", opeCustomerInquiry.getAmount());
+        map.put("fullName", opeCustomerInquiry.getCustomerFullName()==null?"--":opeCustomerInquiry.getCustomerFullName());
+        map.put("email", opeCustomerInquiry.getEmail()==null?"--":opeCustomerInquiry.getEmail());
+        map.put("bankCardname", opeCustomerInquiry.getBankCardName()==null?"--":opeCustomerInquiry.getBankCardName());
+        map.put("district", opeCustomerInquiry.getPostcode()==null?"--":opeCustomerInquiry.getPostcode());
+        map.put("address", opeCustomerInquiry.getAddress()==null?"--":opeCustomerInquiry.getAddress());
+        map.put("productName", opeCustomerInquiry.getProductName()==null?"--":opeCustomerInquiry.getProductName());
+        map.put("color", opeCustomerInquiry.getColorName()==null?"--":opeCustomerInquiry.getColorName());
+        map.put("batteryQty", opeCustomerInquiry.getBatteryQty()==null?0:opeCustomerInquiry.getBatteryQty());
+        map.put("lastPrice", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
+        map.put("totalPrice", opeCustomerInquiry.getAmount()==null?0.00:opeCustomerInquiry.getAmount());
         map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }
