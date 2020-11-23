@@ -70,14 +70,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -627,15 +620,15 @@ public class PurchasingServiceImpl implements PurchasingService {
                             List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
                             
                             for (PruchasingItemResult item : partList) {
-                                item.setProductType(
-                                        BomCommonTypeEnums.getEnumsByValue(item.getProductType()).getCode());
                                 if (item.getId().equals(scooter.getId())) {
+                                    item.setProductType(Objects.requireNonNull(BomCommonTypeEnums.getEnumsByValue(item.getProductType())).getCode());
                                     totalPrice = totalPrice.add(item.getPrice());
                                     scooterPartList.add(item);
                                 }
                             }
                             scooter.setPrice(totalPrice);
-                            if (scooter.getProductType().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+//                            if (scooter.getProductType().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+                            if (BomCommonTypeEnums.SCOOTER.getValue().equals(scooter.getProductType())) {
                                 scooter.setPruchasingItemResultList(scooterPartList);
                             }
                         }
