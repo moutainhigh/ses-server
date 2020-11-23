@@ -1068,7 +1068,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         }
         Integer addHour = Integer.valueOf(StringUtils.equals(StringUtils.trim(enter.getTimeZone()).substring(0, 1), "0") ? StringUtils.trim(enter.getTimeZone()).substring(1, 2) :
                 enter.getTimeZone().substring(0, 2));
-        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),DateUtil.dateAddHour(new Date(),addHour))>0){
+        if(DateUtil.diffDays(opeProductionScooterBomDraft.getEffectiveDate(),DateUtil.dateAddHour(new Date(),addHour))<0){
             throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                     ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
         }
