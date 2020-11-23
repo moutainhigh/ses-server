@@ -630,7 +630,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      */
     @Override
-    public GeneralResult email(StorageEamilEnter enter) {
+    public GeneralResult email(CheckEmailEnter enter) {
         if (enter.getEmail().isEmpty()) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
