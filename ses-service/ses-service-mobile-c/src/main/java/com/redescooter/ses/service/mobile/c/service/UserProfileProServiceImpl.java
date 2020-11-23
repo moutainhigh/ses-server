@@ -155,6 +155,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
             conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
         }
+        if (StringUtils.isNotEmpty(enter.getAddress())){
+            conUserProfile.setAddress(enter.getAddress());
+        }
         conUserProfile.setUpdatedBy(enter.getUserId());
         conUserProfile.setUpdatedTime(new Date());
         return conUserProfile;

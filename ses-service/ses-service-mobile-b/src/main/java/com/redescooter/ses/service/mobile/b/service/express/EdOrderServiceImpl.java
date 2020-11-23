@@ -351,6 +351,7 @@ public class EdOrderServiceImpl implements EdOrderService {
             // 1、 app 自己
             PushMsgBo pushApp = PushMsgBo.builder()
                     .enter(enter)
+                    .pushType(PlatformTypeEnums.ANDROID.getValue())
                     .status(ExpressOrderStatusEnums.REJECTED.getValue())
                     .args(args)
                     .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())
@@ -367,6 +368,7 @@ public class EdOrderServiceImpl implements EdOrderService {
             // 2 app----》web
             PushMsgBo pushWeb = PushMsgBo.builder()
                     .enter(enter)
+                    .pushType(PlatformTypeEnums.PC.getValue())
                     .status(ExpressOrderStatusEnums.REJECTED.getValue())
                     .args(args)
                     .bizType(MesageBizTypeEnum.EXPRESS_ORDER.getValue())

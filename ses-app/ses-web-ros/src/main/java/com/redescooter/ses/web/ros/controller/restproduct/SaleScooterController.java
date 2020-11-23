@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.service.specificat.ColorService;
@@ -44,6 +45,7 @@ public class SaleScooterController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增销售车辆", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaleScooterSaveOrUpdateEnter enter) {
         return new Response<>(saleScooterService.saveSaleScooter(enter));
     }

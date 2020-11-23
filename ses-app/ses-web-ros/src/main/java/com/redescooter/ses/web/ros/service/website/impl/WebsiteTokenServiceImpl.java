@@ -115,7 +115,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         }
         //用户校验
         OpeSysUser opeSysUser =
-                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getAppId,AppIDEnums.SES_WEBSITE.getValue()).last(
+                opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, enter.getLoginName()).eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getAppId, AppIDEnums.SES_WEBSITE.getValue()).last(
                         "limit 1"));
         if (opeSysUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -193,7 +193,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //校验客户邮箱
-        if (opeCustomerService.count(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail,enter.getEmail()))>0){
+        if (opeCustomerService.count(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail())) > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //密码校验
@@ -524,12 +524,8 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                 inquiry.setFirstName(customer.getCustomerFirstName());
                 inquiry.setLastName(customer.getCustomerLastName());
                 inquiry.setFullName(customer.getCustomerFullName());
-//                inquiry.setTelephone(customer.getTelephone());
-                inquiry.setCountry(enter.getCountryId());
+                inquiry.setCountry(enter.getCustomerCountry());
                 inquiry.setAddress(customer.getAddress());
-                inquiry.setDef1(enter.getCustomerCountry());
-                inquiry.setDef2(enter.getDistrict());
-                inquiry.setDef3(enter.getCity());
                 update.add(inquiry);
             }
             opeCustomerInquiryMapper.updateBatch(update);
@@ -541,7 +537,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         OpeCustomer saveCustomer = new OpeCustomer();
         saveCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
         saveCustomer.setDr(0);
-        saveCustomer.setTenantId(enter.getTenantId()==null?0L:enter.getTenantId());
+        saveCustomer.setTenantId(enter.getTenantId() == null ? 0L : enter.getTenantId());
         saveCustomer.setTimeZone(enter.getTimeZone());
         saveCustomer.setCustomerFirstName(SesStringUtils.upperCaseString(enter.getFirstName()));
         saveCustomer.setCustomerLastName(SesStringUtils.upperCaseString(enter.getLastName()));

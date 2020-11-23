@@ -81,7 +81,9 @@ public enum ExceptionCodeEnums {
 
     DRIVER_HAS_AN_DELIVERY_IN_PROGRESS(10034,"司机有正在配送中的订单不可重复开启"),
 
-    EXPRESS_ORDER_IS_NOT_EXIST(10035,"快递订单不存在")
+    EXPRESS_ORDER_IS_NOT_EXIST(10035,"快递订单不存在"),
+
+    DATE_IS_EMPTY(10036,"日期为空"),
 
     ;
     private int code;

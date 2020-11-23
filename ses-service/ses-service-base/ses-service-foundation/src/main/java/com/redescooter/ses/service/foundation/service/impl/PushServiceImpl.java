@@ -22,6 +22,7 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.proxy.service.PushProxyService;
 import com.redescooter.ses.api.proxy.vo.jiguang.PushProxyEnter;
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
+import com.redescooter.ses.service.foundation.SesServiceFoundationApplication;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaPushResultMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaJpushUser;
@@ -235,6 +236,9 @@ public class PushServiceImpl implements PushService {
         PlaJpushUser plaJpushUser = plaJpushUserService.getOne(new LambdaQueryWrapper<PlaJpushUser>().eq(PlaJpushUser::getUserId, Long.valueOf(map.get("userIds").toString())));
         if (plaJpushUser != null && StringUtils.isNotBlank(plaJpushUser.getRegistrationId())) {
             map.put("pushType", plaJpushUser.getPlatformType());
+        }
+        if (Objects.isNull(map.get("pushType"))){
+            throw new FoundationException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }
 
         switch (map.get("pushType").toString()) {

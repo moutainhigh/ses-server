@@ -425,6 +425,7 @@ public class InquiryServiceImpl implements InquiryService {
                 Integer i = 1;
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
                 dataMap.add(toMap(inquiry, i));
+                i ++;
             }
             String sheetName = "Inquiry";
             String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice", "totalPrice", "time"};
@@ -486,10 +487,6 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setDr(0);
         opeCustomer.setTenantId(0L);
         opeCustomer.setTimeZone(enter.getTimeZone());
-        opeCustomer.setCountry(opeCustomerInquiry.getCountry());
-        opeCustomer.setCountryCode(opeCustomerInquiry.getCountryCode());
-        opeCustomer.setCity(opeCustomerInquiry.getCity());
-        opeCustomer.setDistrust(opeCustomerInquiry.getDistrict());
         opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
         opeCustomer.setSalesId(0L);
         opeCustomer.setCustomerCode("0");

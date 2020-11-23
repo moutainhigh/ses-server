@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -67,16 +68,19 @@ public class JpushUserServiceImpl implements JpushUserService {
             return new GeneralResult(enter.getRequestId());
         }
 
+        PlaJpushUser jpushUser = null;
+        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId(),enter.getUserId());
+
+
         // 如果发现当前用户绑定有其他设备 直接删除设备绑定的令牌
         List<PlaJpushUser> plaJpushUserList = jpushUserMapper
             .selectList(new QueryWrapper<PlaJpushUser>().eq(PlaJpushUser.COL_USER_ID, enter.getUserId()));
         if (CollectionUtils.isNotEmpty(plaJpushUserList)) {
+            List<Long> ids = plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList());
             jpushUserMapper
-                .deleteBatchIds(plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList()));
+                    .delete(new LambdaQueryWrapper<PlaJpushUser>()
+                            .in(PlaJpushUser::getId,ids));
         }
-
-        PlaJpushUser jpushUser = null;
-        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId());
 
         //用户首次登录极光
         if (jpushUserData == null) {
@@ -99,8 +103,10 @@ public class JpushUserServiceImpl implements JpushUserService {
         //登录绑定
         if (enter.getStatus() == 0) {
             jpushUser = new PlaJpushUser();
-            BeanUtils.copyProperties(jpushUserData, jpushUser);
+            //BeanUtils.copyProperties(jpushUserData, jpushUser);
             //变更绑定用户ID,别名，标签，推送平台，推送类型，设备状态，设备状态值
+            jpushUser.setId(jpushUserData.getId());
+            jpushUser.setDr(0);
             jpushUser.setUserId(enter.getUserId());
             jpushUser.setAlias(enter.getAlias());
             jpushUser.setTag(enter.getTag());
