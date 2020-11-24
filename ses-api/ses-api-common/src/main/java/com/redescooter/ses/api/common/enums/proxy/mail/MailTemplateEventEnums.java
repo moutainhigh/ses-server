@@ -38,6 +38,9 @@ public enum MailTemplateEventEnums {
     ROS_LOGIN_BY_CODE("ROS发送验证码登录", 20, "ros_login_by_code", "ROS_LOGIN_BY_CODE"),
     SAAS_LOGIN_BY_CODE("SAAS发送验证码登录", 21, "saas_login_by_code", "SAAS_LOGIN_BY_CODE"),
     CONSTANT_US_NOTICE("联系我们邮件通知", 22, "constant_us_notice", "CONSTANT_US_NOTICE"),
+    ENTRUST_SIGN_TO_CONSIGNOR("委托单签收给发货人的邮件",23,"entrust_sign_to_consignor","ENTRUST_SIGN_TO_CONSIGNOR"),
+    ENTRUST_SIGN_TO_CONSIGNEE("委托单签收给收货人的邮件",24,"entrust_sign_to_consignee","ENTRUST_SIGN_TO_CONSIGNEE"),
+    ENTRUST_DELIVERY_TO_CONSIGNEE("委托单发货给收货人的邮件",25,"entrust_delivery_to_consignee","ENTRUST_DELIVERY_TO_CONSIGNEE"),
     ;
     private String mome;
 

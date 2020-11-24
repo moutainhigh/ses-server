@@ -608,7 +608,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
         saveOutboundOrderEnter.setId(null);
         saveOutboundOrderEnter.setRelationId(enter.getId());
-        saveOutboundOrderEnter.setRelationType(OutBoundOrderTypeEnums.PRODUCT.getValue());
+        saveOutboundOrderEnter.setRelationType(OrderTypeEnums.INVOICE.getValue());
         saveOutboundOrderEnter.setRelationNo(opeInvoiceOrder.getInvoiceNo());
         saveOutboundOrderEnter.setOutWhType(opeInvoiceOrder.getInvoiceType());
         saveOutboundOrderEnter.setOutType(OutBoundOrderTypeEnums.SALES.getValue());

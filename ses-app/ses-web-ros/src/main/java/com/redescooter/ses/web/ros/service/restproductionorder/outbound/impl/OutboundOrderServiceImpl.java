@@ -270,7 +270,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeSysStaff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if (OutBoundOrderTypeEnums.SALES.getValue().equals(enter.getRelationType())){
+//        if (OutBoundOrderTypeEnums.SALES.getValue().equals(enter.getRelationType())){
+        if (OrderTypeEnums.INVOICE.getValue().equals(enter.getRelationType())){
             OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getRelationId());
             if (opeInvoiceOrder == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
