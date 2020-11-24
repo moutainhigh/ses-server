@@ -456,6 +456,22 @@ public enum ExceptionCodeEnums {
 
     COLOR_VALUE_EXIST(10219, "色值已存在"),
 
+    ORDER_NOT_EXIST(10220, "单据不存在"),
+
+    ORDER_STATUS_ERROR(10221, "单据状态的不满足"),
+
+    ORDER_TRACE_IS_NOT_EXIST(10222, "单据记录不存在"),
+
+    STOCK_NOT_CANCEL(10223, "正在备货中，无法取消"),
+
+    PRODUCT_DOES_NOT_EXIST(10224, "产品不存在"),
+
+    PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
+
+    QTY_IS_ILLEGAL(10226,"数量不合法")
+
+
+
     ;
 
 

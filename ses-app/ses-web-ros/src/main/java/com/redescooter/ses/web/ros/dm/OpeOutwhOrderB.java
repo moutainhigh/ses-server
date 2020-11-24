@@ -1,19 +1,19 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * 中国生产仓库出库单子表
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeOutwhOrderB")
 @Data
 @Builder
@@ -58,7 +58,7 @@ public class OpeOutwhOrderB implements Serializable {
     private Long partProductId;
 
     /**
-     * 产品类型
+     * 产品类型 
      */
     @TableField(value = "product_type")
     @ApiModelProperty(value = "产品类型 ")
@@ -81,7 +81,7 @@ public class OpeOutwhOrderB implements Serializable {
     /**
      * 状态
      */
-    @TableField(value = "status")
+    @TableField(value = "`status`")
     @ApiModelProperty(value = "状态")
     private String status;
 

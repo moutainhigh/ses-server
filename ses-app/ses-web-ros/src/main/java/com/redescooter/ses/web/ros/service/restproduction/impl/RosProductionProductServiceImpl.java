@@ -673,7 +673,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                         rosProductionProductServiceMapper.productionCombinBomVersionList(opeProductionCombinBom.getBomNo());
                 // 部件列表信息
                 productionProductId = opeProductionCombinBom.getId();
-                productionPartsRelationType = ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue();
+                productionPartsRelationType = ProductionPartsRelationTypeEnums.COMBINATION_BOM.getValue();
 
                 result = RosProductionProductDetailResult.builder().id(opeProductionCombinBom.getId())
                         .productN(opeProductionCombinBom.getBomNo()).qty(opeProductionCombinBom.getPartsQty())
@@ -748,7 +748,15 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
                         ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
-
+            // 校验当前的车的颜色和分组是否存在已生效中，有的话  不能生效
+            QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
+            qw.eq(OpeProductionScooterBom.COL_GROUP_ID,opeProductionScooterBom.getGroupId());
+            qw.eq(OpeProductionScooterBom.COL_COLOR_ID,opeProductionScooterBom.getColorId());
+            qw.eq(OpeProductionScooterBom.COL_BOM_STATUS,ProductionBomStatusEnums.ACTIVE.getValue());
+            int count = opeProductionScooterBomService.count(qw);
+            if (count > 0){
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getMessage());
+            }
             // 查询当前是否有生效中的Bomn 有的话 更新状态
             OpeProductionScooterBom avticeScooterBom =
                     opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
@@ -1221,7 +1229,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     private void checkOpeProductionOpeProductionCombinBom(RosProductionProductReleaseEnter enter,
                                                           OpeProductionCombinBomDraft opeProductionCombinBomDraft, List<ProductionProductEnter> partList) {
 
-        Long combinBomBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_SCOOTER_BOM);
+        Long combinBomBomId = idAppService.getId(SequenceName.OPE_PRODUCTION_COMBIN_BOM);
 
         List<OpeProductionParts> opeProductionPartsList = null;
         int partQty = 0;
@@ -1279,7 +1287,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             for (OpeProductionPartsRelation item : opeProductionPartsRelationList) {
                 item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION));
                 item.setProductionId(combinBomBomId);
-                item.setProductionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
+                item.setProductionType(ProductionPartsRelationTypeEnums.COMBINATION_BOM.getValue());
                 item.setCreatedBy(enter.getUserId());
                 item.setCreatedTime(new Date());
                 item.setUpdatedTime(new Date());
@@ -1290,7 +1298,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 opeProductionPartsRelationList.add(OpeProductionPartsRelation.builder()
                         .id(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS_RELATION)).dr(0)
                         .productionId(combinBomBomId)
-                        .productionType(ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue()).partsId(item.getId())
+                        .productionType(ProductionPartsRelationTypeEnums.COMBINATION_BOM.getValue()).partsId(item.getId())
                         .partsNo(item.getPartsNo()).partsSec(item.getPartsSec())
                         .procurementCycle(item.getProcurementCycle())
                         .partsQty(partList.stream().filter(part -> part.getId().equals(item.getId())).findFirst()

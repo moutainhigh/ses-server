@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper">
+
+    <sql id="Where_list">
+        where invorder.dr=0
+        <if test="invoiceStatus != null">
+            and invorder.invoice_status =#{invoiceStatus}
+        </if>
+        <if test="classType != null">
+            and invorder.invoice_type=#{classType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            invorder.invoice_no like concat('%',#{keyword},'%') or
+            staff.first_name like concat('%',#{keyword},'%') or
+            staff.last_name like concat('%',#{keyword},'%')
+            )
+        </if>
+        order by invorder.created_time desc
+    </sql>
+
+
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select invoice_type as status
+             , count(1)       as totalCount
+        from ope_invoice_order
+        group by status
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_invoice_order invorder
+                     left join ope_sys_staff staff on invorder.consignee_user = staff.id and staff.dr = 0
+                     left join ope_sys_staff crstaff on invorder.created_by = crstaff.id and crstaff.dr = 0
+        <include refid="Where_list"/>
+    </select>
+
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult">
+        select invorder.id                       as id,
+        invorder.invoice_no               as invoiceNo,
+        invorder.invoice_type             as invoiceType,
+        invorder.invoice_status           as invoiceStatus,
+        invorder.invoice_qty              as invoiceType,
+        invorder.purchase_id              as purchaseId,
+        invorder.purchase_no              as purchaseNo,
+        invorder.delivery_date            as deliveryDate,
+        invorder.consignee_user           as receiverId,
+        staff.first_name                  as receiverFirstName,
+        staff.last_name                   as receiverLastName,
+        invorder.consignee_country_code   as receiverCountryCode,
+        invorder.consignee_user_telephone as receiverTelephone,
+        invorder.consignee_user_mail      as receiverMail,
+        invorder.created_by               as createById,
+        crstaff.first_name                as createByFirstName,
+        invorder.invoice_qty              as invoiceQty,
+        crstaff.last_name                 as createByLastName,
+        invorder.created_time             as createByDate
+        from ope_invoice_order invorder
+        left join ope_sys_staff staff on invorder.consignee_user = staff.id and staff.dr = 0
+        left join ope_sys_staff crstaff on invorder.created_by = crstaff.id and crstaff.dr = 0
+        <include refid="Where_list"/>
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult">
+        select inorder.id                       as id,
+        inorder.invoice_no               as invoiceNo,
+        inorder.invoice_status           as invoiceStatus,
+        inorder.invoice_type             as invoicetype,
+        inorder.trans_type               as transportType,
+        inorder.consignee_user           as consigneeUserId,
+        consignee.first_name             as consigneeUserFistName,
+        consignee.last_name              as consigneeUserLastName,
+        inorder.consignee_country_code   as consigneeUserCountryCode,
+        inorder.consignee_user_telephone as consigneeUserTelephone,
+        inorder.consignee_user_mail      as consigneeUserEmail,
+        inorder.consignee_post_code      as zipCodeName,
+        inorder.consignee_address        as address,
+        inorder.delivery_date            as deliveryDate,
+        inorder.consignor_user           as consignorUserId,
+        consignor.first_name             as consignorUserFistName,
+        consignor.last_name              as consignorUserLastName,
+        inorder.consignor_country_code   as consignorUserCountryCode,
+        inorder.consignor_telephone      as consignorUserTelephone,
+        inorder.consignor_mail           as consignorUserEmail,
+        inorder.notify_user              as notifyUser,
+        inorder.notify_user_name         as notifyUserName,
+        inorder.notify_country_code      as notifyUserCountryCode,
+        inorder.notify_user_telephone    as notifyUserTelephone,
+        inorder.notify_user_mail         as notifyUserEmail
+        from ope_invoice_order inorder
+        left join ope_sys_staff consignee on consignee.id = inorder.consignee_user and consignee.dr = 0
+        left join ope_sys_staff consignor on consignor.id = inorder.consignor_user and consignor.dr = 0
+        where inorder.dr = 0
+        and inorder.id=#{id}
+    </select>
+
+    <select id="scooterProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select scooterB.id        as id,
+        scooterB.group_id  as categoryId,
+        spgroup.group_name as categoryName,
+        scooterB.color_id  as colorId,
+        color.color_name   as colorName,
+        color.color_value   as colorValue,
+        scooterB.qty       as totalQty
+        from ope_invoice_scooter_b scooterB
+        left join ope_specificat_group spgroup on spgroup.id = scooterB.group_id and spgroup.dr = 0
+        left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        where scooterB.dr=0
+        and  scooterB.invoice_id=#{id}
+    </select>
+
+    <select id="combinationProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select combinB.id     as id,
+               combin.en_name as name,
+               combin.bom_no  as serialN,
+               combinB.qty    as totalQty
+        from ope_invoice_combin_b combinB
+        inner join ope_production_combin_bom combin on combin.id = combinB.production_combin_bom_id
+        where combinB.dr = 0
+          and combinB.invoice_id = #{id};
+    </select>
+
+    <select id="partProductList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select partB.id         as id,
+        partB.parts_name as name,
+        part.parts_type  as partType,
+        part.parts_no    as serialN,
+        partB.qty        as totalQty
+        from ope_invoice_parts_b partB
+        inner join ope_production_parts part on part.id = partB.parts_id and part.dr = 0
+        where partB.dr = 0
+        and partB.invoice_id = #{id};
+    </select>
+
+    <select id="scooterSnList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult">
+        select detail.id          as id,
+        detail.unique_code as sn,
+        detail.color_id,
+        detail.group_id,
+        detail.qty,
+        1                as productType
+        from ope_invoice_scooter_detail_b detail
+        where detail.dr = 0
+          and detail.invoice_id = #{id}
+    </select>
+
+    <select id="combinationSnList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult">
+        select detail.id                       as id,
+        detail.unique_code              as sn,
+        detail.qty,
+        detail.production_combin_bom_id as partId,
+        2                as productType
+        from ope_invoice_combin_detail_b detail
+        where detail.dr = 0
+          and detail.invoice_id=#{id}
+    </select>
+
+    <select id="partSnList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult">
+        select detail.id          as id,
+               detail.unique_code as sn,
+               detail.qty,
+               detail.parts_id as partId,
+                3                as productType
+        from ope_invoice_parts_detail_b detail
+        where detail.dr = 0
+          and detail.invoice_id=#{id}
+    </select>
+
+    <select id="purchaseInvoice" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult">
+        select
+        id,
+        invoice_no as orderNo,
+        created_time
+        from ope_invoice_order
+        where dr = 0 and purchase_id = #{purchaseId}
+    </select>
+</mapper>

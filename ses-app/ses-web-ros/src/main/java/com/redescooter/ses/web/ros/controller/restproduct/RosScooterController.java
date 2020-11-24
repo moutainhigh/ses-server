@@ -135,6 +135,7 @@ public class RosScooterController {
         checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.checkProductionInfo(enter));
     }
+
     @PostMapping(value = "/qcTempleteDetail")
     @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
     public Response<List<QcTemplateDetailResult>>

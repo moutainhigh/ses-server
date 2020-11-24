@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeInWhousePartsBMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
+    <!--@mbg.generated-->
+    <!--@Table operation.ope_in_whouse_parts_b-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+    <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+    <result column="parts_name" jdbcType="VARCHAR" property="partsName" />
+    <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+    <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+    <result column="purchase_qty" jdbcType="INTEGER" property="purchaseQty" />
+    <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
+    <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+    <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+    <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
+    in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update operation.ope_in_whouse_parts_b
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="in_wh_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWhId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="parts_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="parts_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="parts_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="parts_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="purchase_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="able_in_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.ableInWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="in_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.inWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="act_in_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.actInWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="unqualified_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.unqualifiedQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into operation.ope_in_whouse_parts_b
+    (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
+      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT}, 
+        #{item.partsId,jdbcType=BIGINT}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR}, 
+        #{item.partsType,jdbcType=INTEGER}, #{item.purchaseQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, 
+        #{item.inWhQty,jdbcType=INTEGER}, #{item.actInWhQty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=DECIMAL})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
+    <!--@mbg.generated-->
+    insert into operation.ope_in_whouse_parts_b
+    (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
+      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT}, 
+      #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, 
+      #{purchaseQty,jdbcType=INTEGER}, #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, 
+      #{actInWhQty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    in_wh_id = #{inWhId,jdbcType=BIGINT}, 
+    parts_id = #{partsId,jdbcType=BIGINT}, 
+    parts_name = #{partsName,jdbcType=VARCHAR}, 
+    parts_no = #{partsNo,jdbcType=VARCHAR}, 
+    parts_type = #{partsType,jdbcType=INTEGER}, 
+    purchase_qty = #{purchaseQty,jdbcType=INTEGER}, 
+    able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER}, 
+    in_wh_qty = #{inWhQty,jdbcType=INTEGER}, 
+    act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER}, 
+    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
+    <!--@mbg.generated-->
+    insert into operation.ope_in_whouse_parts_b
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="inWhId != null">
+        in_wh_id,
+      </if>
+      <if test="partsId != null">
+        parts_id,
+      </if>
+      <if test="partsName != null">
+        parts_name,
+      </if>
+      <if test="partsNo != null">
+        parts_no,
+      </if>
+      <if test="partsType != null">
+        parts_type,
+      </if>
+      <if test="purchaseQty != null">
+        purchase_qty,
+      </if>
+      <if test="ableInWhQty != null">
+        able_in_wh_qty,
+      </if>
+      <if test="inWhQty != null">
+        in_wh_qty,
+      </if>
+      <if test="actInWhQty != null">
+        act_in_wh_qty,
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="inWhId != null">
+        #{inWhId,jdbcType=BIGINT},
+      </if>
+      <if test="partsId != null">
+        #{partsId,jdbcType=BIGINT},
+      </if>
+      <if test="partsName != null">
+        #{partsName,jdbcType=VARCHAR},
+      </if>
+      <if test="partsNo != null">
+        #{partsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="partsType != null">
+        #{partsType,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseQty != null">
+        #{purchaseQty,jdbcType=INTEGER},
+      </if>
+      <if test="ableInWhQty != null">
+        #{ableInWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="inWhQty != null">
+        #{inWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="actInWhQty != null">
+        #{actInWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="unqualifiedQty != null">
+        #{unqualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="inWhId != null">
+        in_wh_id = #{inWhId,jdbcType=BIGINT},
+      </if>
+      <if test="partsId != null">
+        parts_id = #{partsId,jdbcType=BIGINT},
+      </if>
+      <if test="partsName != null">
+        parts_name = #{partsName,jdbcType=VARCHAR},
+      </if>
+      <if test="partsNo != null">
+        parts_no = #{partsNo,jdbcType=VARCHAR},
+      </if>
+      <if test="partsType != null">
+        parts_type = #{partsType,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseQty != null">
+        purchase_qty = #{purchaseQty,jdbcType=INTEGER},
+      </if>
+      <if test="ableInWhQty != null">
+        able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="inWhQty != null">
+        in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="actInWhQty != null">
+        act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -118,7 +118,7 @@ public class SysRoleController {
 
 
     @PostMapping(value = "/roleList")
-    @ApiOperation(value = "角色列表--reseat", response = GeneralResult.class)
+    @ApiOperation(value = "角色列表--reseat", response = RoleListResult.class)
     @LogAnnotation
     public Response<PageResult<RoleListResult>> roleList(@ModelAttribute @ApiParam("请求参数") RoleQueryListEnter enter) {
         return new Response(roleService.roleList(enter));

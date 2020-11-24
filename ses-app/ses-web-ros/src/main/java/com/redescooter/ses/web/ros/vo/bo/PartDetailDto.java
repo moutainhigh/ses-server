@@ -29,6 +29,12 @@ public class PartDetailDto extends GeneralEnter {
     @ApiModelProperty(value = "部件Id")
     private Long partId;
 
+    @ApiModelProperty(value = "部件编号")
+    private String partN;
+
+    @ApiModelProperty(value = "部件名称")
+    private String partName;
+
     @ApiModelProperty(value = "产品类型")
     private String productType;
 

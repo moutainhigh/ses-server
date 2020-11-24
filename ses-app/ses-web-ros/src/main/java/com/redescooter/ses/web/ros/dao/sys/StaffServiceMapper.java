@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,4 +41,7 @@ public interface StaffServiceMapper {
 
 
     List<StaffDataResult> announUser(@Param("tenantId") Long tenantId);
+
+
+    List<UserDataResult> userData(@Param("enter") UserDataEnter enter);
 }

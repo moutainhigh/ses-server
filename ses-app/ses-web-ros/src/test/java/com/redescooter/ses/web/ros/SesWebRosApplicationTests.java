@@ -4,10 +4,12 @@ import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
 import com.ulisesbocchio.jasyptspringboot.encryptor.DefaultLazyEncryptor;
@@ -23,6 +25,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +53,9 @@ public class SesWebRosApplicationTests {
     @Autowired
     private WebSiteTokenService webSiteService;
 
+    @Autowired
+    private PurchaseOrderService purchaseOrderService;
+
     @Test
     public void stream() {
         String test = "RedEScooter2019";
@@ -69,6 +78,30 @@ public class SesWebRosApplicationTests {
         enter.setRequestId("123456789qazwsx");
         webSiteService.forgetPassword(enter);
     }
+
+
+    /**
+     * @Author Aleks
+     * @Description  测试List<Map<String,Object>> 这种方式查询
+     * @Date  2020/11/4 15:48
+     * @Param []
+     * @return
+     **/
+    @Test
+    public void getByGroupAndColorIds(){
+        List<Map<String,Object>> listMap = new ArrayList<>();
+        Map<String,Object> map = new HashMap<>();
+        map.put("group_id",1012522);
+        map.put("color_id",1006307);
+        listMap.add(map);
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("group_id",1014594);
+        map1.put("color_id",1010514);
+        listMap.add(map1);
+        List<OpeProductionScooterBom> ids = purchaseOrderService.getByGroupAndColorIds(listMap);
+        System.out.println("操作成功");
+    }
+
 
     @Test
     public void resetPassword() {

@@ -147,8 +147,8 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
 
     @Override
-    public List<CombinNameData> combinNameData(GeneralEnter enter) {
-        List<CombinNameData> list = rosProductionProductServiceMapper.combinNameData();
+    public List<CombinNameData> combinNameData(CombinNameEnter enter) {
+        List<CombinNameData> list = rosProductionProductServiceMapper.combinNameData(enter);
         return list;
     }
 
@@ -161,4 +161,22 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         List<BomNameData> list = rosProductionProductServiceMapper.bomNoData(enter);
         return list;
     }
+
+
+    @Override
+    public List<CombinNameData> combinCnNameData(CombinNameEnter enter) {
+        List<CombinNameData> list = rosProductionProductServiceMapper.combinCnNameData(enter);
+        return list;
+    }
+
+    @Override
+    public List<BomNameData> cnBomNoData(BomNoEnter enter) {
+        if (Strings.isNullOrEmpty(enter.getCombinName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SELECT_COMBIN_NAME.getCode(), ExceptionCodeEnums.SELECT_COMBIN_NAME.getMessage());
+        }
+        List<BomNameData> list = rosProductionProductServiceMapper.cnBomNoData(enter);
+        return list;
+    }
+
+
 }

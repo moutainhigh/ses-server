@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper">
+    <select id="totalNum" resultType="int">
+        select count(*)
+        from ope_in_whouse_order inwh
+        <include refid="listCondition"></include>
+    </select>
+
+    <select id="inWhList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult">
+        select
+         inwh.id,
+         inwh.in_wh_no,
+         inwh.in_wh_status,
+         inwh.in_wh_qty,
+         inwh.in_wh_type,
+         inwh.created_time,
+         staff.full_name    as createdByName
+        from ope_in_whouse_order inwh
+        left join ope_sys_staff staff on staff.id = inwh.created_by
+        <include refid="listCondition"></include>
+        order by inwh.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="listCondition">
+        where inwh.dr = 0 and inwh.order_type = #{enter.classType}
+        <if test="enter.inWhStatus != null">
+            and inwh.in_wh_status = #{enter.inWhStatus}
+        </if>
+        <if test="enter.inWhType != null">
+            and inwh.in_wh_type = #{enter.inWhType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and inwh.in_wh_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="inWhousePartsList" resultType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
+        select *
+        from ope_in_whouse_parts_b parts
+        left join ope_in_whouse_order inwhouse on inwhouse.id = parts.in_wh_id
+        left join ope_production_purchase_order purchase on purchase.id = inwhouse.relation_order_id
+        where parts.dr = 0 and purchase.id = #{productionPurchaseId}
+    </select>
+
+    <select id="inWhouseCombinList" resultType="com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB">
+        select *
+        from ope_in_whouse_combin_b combin
+        left join ope_in_whouse_order inwhouse on inwhouse.id = combin.in_wh_id
+        left join ope_combin_order purchase on purchase.id = inwhouse.relation_order_id
+        where combin.dr = 0 and purchase.id = #{combinId}
+    </select>
+
+    <select id="inWhouseScooterList" resultType="com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB">
+        select *
+        from ope_in_whouse_scooter_b scooter
+        left join ope_in_whouse_order inwhouse on inwhouse.id = scooter.in_wh_id
+        left join ope_combin_order purchase on purchase.id = inwhouse.relation_order_id
+        where scooter.dr = 0 and purchase.id = #{combinId}
+    </select>
+</mapper>

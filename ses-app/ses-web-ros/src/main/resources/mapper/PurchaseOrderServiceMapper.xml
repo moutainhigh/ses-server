@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper">
+    <select id="purchaseListTotal" resultType="int">
+
+        select count(*)
+        from ope_purchase_order purchase
+        left join ope_sys_staff staff1 on staff1.id = purchase.created_by
+        left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
+        left join ope_supplier supp on supp.id = purchase.factory_id
+        where purchase.dr = 0 and purchase.purchase_type = #{enter.classType}
+
+        <include refid="listCondition">
+        </include>
+    </select>
+
+    <sql id="listCondition">
+        <if test="enter.purchaseStatus != null">
+            and purchase.purchase_status = #{enter.purchaseStatus}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and purchase.purchase_no like concat('%', #{enter.keyword}, '%') or
+            staff2.full_name like concat('%', #{enter.keyword}, '%') or
+            supp.supplier_name like concat('%', #{enter.keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="purchaseList"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListResult">
+
+        select
+          purchase.id,
+          purchase.purchase_no,
+          purchase.purchase_status,
+          purchase.purchase_qty,
+          purchase.purchase_amount,
+          purchase.delivery_date,
+          purchase.factory_id,
+          supp.supplier_name as factoryName,
+          purchase.consignee_user,
+          staff2.full_name as consigneeUserName,
+          purchase.created_by,
+          purchase.created_time,
+          staff1.full_name as createdByName
+        from ope_purchase_order purchase
+        left join ope_sys_staff staff1 on staff1.id = purchase.created_by
+        left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
+        left join ope_supplier supp on supp.id = purchase.factory_id
+        where purchase.dr = 0 and purchase.purchase_type = #{enter.classType}
+        <include refid="listCondition"> </include>
+        order by purchase.created_time desc limit #{enter.startRow},#{enter.pageSize}
+
+    </select>
+
+
+    <select id="purchaseDetail"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseDetailResult">
+
+        select
+          purchase.id,
+          purchase.purchase_no,
+          purchase.purchase_status,
+          purchase.trans_type,
+          purchase.allocate_id,
+          purchase.allocate_no,
+          purchase.factory_id,
+          supp.supplier_name as factoryName,
+          purchase.delivery_date,
+          purchase.contact_user,
+          purchase.contact_user_name,
+          purchase.contact_country_code,
+          purchase.contact_telephone,
+          purchase.contact_mail,
+          purchase.notify_user,
+          purchase.notify_user_name,
+          purchase.notify_country_code,
+          purchase.notify_user_telephone,
+          purchase.notify_user_mail,
+          purchase.remark,
+          purchase.consignee_user,
+          staff2.full_name as consigneeUserName,
+          purchase.consignee_country_code,
+          purchase.consignee_user_telephone,
+          purchase.consignee_user_mail,
+          purchase.consignee_address,
+          purchase.consignee_post_code,
+          purchase.consignor_user,
+          staff1.full_name as consignorUserName,
+          purchase.consignor_country_code,
+          purchase.consignor_telephone,
+          purchase.consignor_mail,
+          purchase.payment_type,
+          purchase.planned_payment_time,
+          purchase.payment_time,
+          purchase.payment_day,
+          purchase.purchase_contract,
+          purchase.purchase_type,
+          purchase.purchase_origin_type
+        from ope_purchase_order purchase
+        left join ope_sys_staff staff1 on staff1.id = purchase.consignor_user
+        left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
+        left join ope_supplier supp on supp.id = purchase.factory_id
+        where purchase.dr = 0 and purchase.id = #{id}
+
+
+    </select>
+
+    <select id="purchaseScooter"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseScooterDetailResult">
+
+        SELECT
+        scooter.id AS id,
+        scooter.group_id AS groupId,
+        scooter.color_id AS colorId,
+        scooter.qty AS qty,
+        scooter.unit_price,
+        group1.group_name AS groupName,
+        color.color_value AS colorValue,
+        color.color_name AS colorName
+        FROM
+        ope_purchase_scooter_b scooter
+        LEFT JOIN ope_specificat_group group1 ON group1.id = scooter.group_id
+        LEFT JOIN ope_color color ON color.id = scooter.color_id
+        where scooter.purchase_id = #{id} and scooter.dr = 0
+
+    </select>
+
+    <select id="purchaseCombin"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseCombineDetailResult">
+
+        select
+        combin.id,
+        combin.combin_name,
+        combin.production_combin_bom_id,
+        combin.qty,
+        combin.unit_price,
+        bom.bom_no
+        from ope_purchase_combin_b combin
+        left join ope_production_combin_bom bom on bom.id = combin.production_combin_bom_id
+        where combin.dr = 0 and  combin.purchase_id = #{id}
+
+    </select>
+
+
+    <select id="purchaseParts" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchasePartsDetailResult">
+        select
+            parts.id,
+            parts.parts_id,
+            parts.parts_name,
+            parts.parts_no,
+            parts.parts_type,
+            parts.qty,
+            parts.unit_price
+        from ope_purchase_parts_b parts
+        where parts.dr = 0 and parts.purchase_id = #{id}
+
+    </select>
+
+
+    <select id="allocateNoData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult">
+        select
+          allocate.id as allocateId,
+          allocate.allocate_no,
+          allocate.consignee_user,
+          staff.full_name as consigneeUserName,
+          allocate.consignee_country_code,
+          allocate.consignee_user_telephone,
+          allocate.consignee_user_mail,
+          allocate.consignee_post_code,
+          allocate.consignee_address
+        from ope_allocate_order allocate
+        left join ope_sys_staff staff on staff.id = allocate.consignee_user
+        where allocate.dr = 0 and allocate.allocate_status not in (0,70)
+        and allocate.allocate_type = #{enter.classType}
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and allocate.allocate_no like concat('%', #{enter.keyword}, '%')
+        </if>
+
+    </select>
+
+    <select id="purchaseCalendar" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseCalendarResult">
+        select
+            id,
+            purchase_no,
+            purchase_status,
+            purchase_qty,
+            purchase_type,
+            delivery_date
+        from ope_purchase_order
+        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%') and purchase_status != 70
+    </select>
+
+    <select id="purchaseTrace"
+            resultType="com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult">
+            select
+            trace.id,
+            trace.relation_id,
+            trace.op_type,
+            trace.remark,
+            trace.created_time,
+            staff.full_name as createdByName
+            from ope_op_trace trace
+            left join ope_sys_staff staff on trace.created_by = staff.id
+            where trace.dr = 0 and trace.relation_id = #{id} and order_type = 2
+            order by trace.created_time desc
+    </select>
+
+    <select id="whNum" resultType="int">
+        select  count(*)
+        from ope_out_whouse_order wh
+        left join ope_invoice_order invoice on invoice.id = wh.invoice_id
+        left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
+        where wh.dr = 0 and purchase.id = #{purchaseId} and wh.out_wh_status in (10,20)
+    </select>
+
+    <select id="purchaseCombinB" resultType="com.redescooter.ses.web.ros.dm.OpePurchaseCombinB">
+        SELECT * FROM ope_purchase_combin_b combin
+        left join ope_purchase_order purchase on combin.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where combin.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
+
+    <select id="purchasePartsBS" resultType="com.redescooter.ses.web.ros.dm.OpePurchasePartsB">
+        SELECT * FROM ope_purchase_parts_b parts
+        left join ope_purchase_order purchase on parts.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where parts.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
+
+    <select id="purchaseScooterBS" resultType="com.redescooter.ses.web.ros.dm.OpePurchaseScooterB">
+        SELECT * FROM ope_purchase_scooter_b scooter
+        left join ope_purchase_order purchase on scooter.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where scooter.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
+</mapper>

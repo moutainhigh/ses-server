@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.sys.role;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @Version V1.0
  **/
 @Data
+@ApiModel(value = "角色列表出参",description = "角色列表出参")
 public class RoleListResult extends GeneralResult {
 
     @ApiModelProperty("角色id")

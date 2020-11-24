@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.web.ros.service.deliveryopion.DeliveryOpionServer;
+import com.redescooter.ses.web.ros.service.deliveryopion.DeliveryOpionService;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionEditEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
@@ -25,18 +25,18 @@ import java.util.List;
 public class DeliveryOpionController {
 
     @Autowired
-    private DeliveryOpionServer deliveryOpionServer;
+    private DeliveryOpionService deliveryOpionService;
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "Save Option", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("Parameter") DeliveryOptionSaveEnter enter) {
-        return new Response<>(deliveryOpionServer.save(enter));
+        return new Response<>(deliveryOpionService.save(enter));
     }
 
     @PostMapping(value = "/edit/{id}")
     @ApiOperation(value = "Option Edit", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") DeliveryOptionEditEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(deliveryOpionServer.edit(enter, id));
+        return new Response<>(deliveryOpionService.edit(enter, id));
 
     }
 
@@ -44,13 +44,13 @@ public class DeliveryOpionController {
     @PostMapping(value = "/details/{id}")
     @ApiOperation(value = "Option Details", response = DeliveryOptionSaveResult.class)
     public Response<DeliveryOptionSaveResult> details(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(deliveryOpionServer.details(enter, id));
+        return new Response<>(deliveryOpionService.details(enter, id));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "Option List Table", response = DeliveryOptionSaveResult.class)
     public Response<List<DeliveryOptionSaveResult>> list(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
-        return new Response<>(deliveryOpionServer.list(enter));
+        return new Response<>(deliveryOpionService.list(enter));
     }
 }

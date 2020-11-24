@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper">
+
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(corder.combin_type) as totalCount, combin_type as status
+        from ope_combin_order corder
+        where corder.dr = 0
+        group by corder.combin_type
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_combin_order combin
+        left join ope_sys_staff staff on staff.id = combin.created_by and staff.dr = 0
+        where combin.dr=0
+        and combin.combin_type=#{classType}
+        <if test="status != null">
+            and  combin.combin_status =#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and combin.combin_no like concat('%',#{keyword},'%')
+        </if>
+    </select>
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult">
+        select combin.id                       as id,
+               combin.combin_type       as combinType,
+               combin.combin_no         as combinNo,
+               combin.combin_status     as combinStatus,
+               combin.combin_qty        as combinQty,
+               combin.combin_start_date as combinStartDate,
+               combin.combin_end_date   as combinEndDate,
+               combin.principal_id      as principalId,
+               combin.principal_name    as principalName,
+               combin.country_code      as countryCode,
+               combin.telephone         as telephone,
+               combin.created_by        as createById,
+               staff.first_name         as createByFistName,
+               staff.last_name          as createByLastName,
+               combin.created_time      as createdTime
+        from ope_combin_order combin
+                 left join ope_sys_staff staff on staff.id = combin.created_by and staff.dr = 0
+        where combin.dr=0
+        and combin.combin_type=#{classType}
+        <if test="status != null">
+            and  combin.combin_status =#{status}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and combin.combin_no like concat('%',#{keyword},'%')
+        </if>
+        order by  combin.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult">
+        select id                       as id,
+               combin.combin_type       as combinType,
+               combin.combin_no         as combinNo,
+               combin.combin_status     as combinStatus,
+               combin.combin_qty        as combinQty,
+               combin.combin_start_date as combinStartDate,
+               combin.combin_end_date   as combinEndDate,
+               combin.principal_id      as principalId,
+               combin.principal_name    as principalName,
+               combin.country_code      as countryCode,
+               combin.telephone         as telephone,
+               combin.remark            as remark,
+               combin.combin_type       as classType
+        from ope_combin_order combin
+        where combin.dr=0
+        and combin.id=#{id}
+    </select>
+
+    <select id="productScooterList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
+        select scooterb.id             as id,
+        scooterb.group_id       as groupId,
+        spgroup.group_name      as groupName,
+        scooterb.color_id       as colorId,
+        color.color_name        as colorName,
+        color.color_value       as colorValue,
+        1                       as productType,
+        scooterb.scooter_bom_id as productId,
+        scooterb.qty            as qty,
+        combin.combin_no        as orderNo,
+        bom.en_name             as productName,
+        bom.bom_no              as productN
+        from ope_combin_order_scooter_b scooterb
+        left join ope_specificat_group spgroup on spgroup.id = scooterb.group_id and scooterb.dr = 0
+        left join ope_color color on color.id = scooterb.color_id and color.dr = 0
+        left join ope_combin_order combin on scooterb.combin_id = combin.id and combin.dr = 0
+        left join ope_production_scooter_bom bom on bom.id = scooterb.scooter_bom_id and bom.dr = 0
+        where scooterb.dr = 0
+        and  scooterb.combin_id=#{id}
+    </select>
+
+    <select id="productCombinList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyDetailProductListResult">
+        select combinB.id                       as id,
+        combinB.combin_name              as productName,
+        combinB.combin_no                as productN,
+        combinB.production_combin_bom_id as productId,
+        2                                as productType,
+        combinB.qty                      as qty,
+        combinB.combin_no                as orderNo,
+        combinBom.en_name                as productName,
+        combinBom.bom_no                 as productN
+        from ope_combin_order_combin_b combinB
+        left join ope_production_combin_bom combinBom
+        on combinB.production_combin_bom_id = combinBom.id and combinBom.dr = 0
+        where combinB.dr = 0
+        and  combinB.combin_id=#{id}
+    </select>
+
+    <select id="partsDetail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult">
+        select part.id         as id,
+                part.parts_no   as partN,
+                part.en_name    as partName,
+                part.parts_type as partType,
+                100             as price,
+                1               as unit
+                from ope_production_parts part
+        where part.dr = 0
+        <if test="collection != null and collection.size() != 0">
+            and part.id in
+            <foreach collection="collection" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
+        select * from ope_production_scooter_bom
+        where dr = 0  and
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="OR" close="">
+            ( group_id=#{item.group_id} and
+            color_id = #{item.color_id} and bom_status = 1)
+        </foreach>
+    </select>
+
+
+    <select id="relationOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+        id as relationOrderId,
+        combin_no as relationOrderNo
+        from ope_combin_order
+        where dr = 0 and combin_status in (70,80)
+        and combin_type = #{enter.classType}
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and combin_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </select>
+
+    <select id="relationCombinOrderCombinData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateCombinBEnter">
+        select
+           combin_name,
+           combin_no,
+           production_combin_bom_id,
+           qty as combinQty,
+           qty as ableInWhQty
+        from ope_combin_order_combin_b
+        where dr = 0 and combin_id = #{enter.id}
+    </select>
+
+    <select id="relationCombinOrderScooterData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter">
+        select
+            scooter.group_id,
+            scooter.color_id,
+            scooter.qty as combinQty,
+            scooter.qty as ableInWhQty,
+            group1.group_name AS groupName,
+            color.color_value AS colorValue,
+            color.color_name AS colorName
+        from ope_combin_order_scooter_b scooter
+        left join ope_specificat_group group1 on scooter.group_id = group1.id
+        left join ope_color color ON color.id = scooter.color_id
+        where scooter.dr = 0 and scooter.combin_id = #{enter.id}
+    </select>
+
+    <select id="scooterGroupData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
+        select distinct bom.group_id       as groupId,
+               spgroup.group_name as groupName,
+               1                  as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_specificat_group spgroup on bom.group_id = spgroup.id and spgroup.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+    </select>
+
+    <select id="colorData" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorDataResult">
+        select distinct bom.color_id      as colorId,
+                color.color_name  as colorName,
+                color.color_value as colorValue,
+                1                 as productionType
+        from ope_production_scooter_bom bom
+                 left join ope_color color on color.id = bom.color_id and color.dr = 0
+        where bom.dr = 0
+          and bom.bom_status = 1
+          and bom.group_id=#{id}
+    </select>
+
+    <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select distinctrow en_name as combinName
+        from ope_production_combin_bom bom
+        where dr=0
+        and bom_status=1
+    </select>
+
+    <select
+    id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select bom_no as bomNo, id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where dr = 0
+          and bom_status = 1
+          and en_name = #{combinName}
+    </select>
+
+    <select id="scooterExportList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionCombinScooterExport">
+        select
+           scooter.qty,
+           group1.group_name AS groupName,
+           color.color_name AS colorName
+        from ope_combin_order_scooter_b scooter
+        left join ope_specificat_group group1 on scooter.group_id = group1.id
+        left join ope_color color ON color.id = scooter.color_id
+        where scooter.dr = 0 and scooter.combin_id = #{combinId}
+    </select>
+
+    <select id="combinExportList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionCombinAssemblyExport">
+       select
+          combin.combin_name as productName,
+          combin.combin_no as productN,
+          combin.qty
+       from ope_combin_order_combin_b combin
+       where combin.dr = 0 and combin.combin_id = #{combinId}
+    </select>
+</mapper>

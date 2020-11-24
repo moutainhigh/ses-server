@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
 
 import java.util.List;
 
-public interface DeliveryOpionServer {
+public interface DeliveryOpionService {
 
     /**
      * 保存取货配置

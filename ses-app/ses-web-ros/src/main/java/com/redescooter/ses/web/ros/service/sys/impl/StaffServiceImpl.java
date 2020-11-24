@@ -29,6 +29,8 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -739,6 +741,12 @@ public class StaffServiceImpl implements StaffService {
         map.put("deptIds", StringUtils.join(list, ","));
         jedisCluster.hmset(key, map);
 //        return userMsg;
+    }
+
+    @Override
+    public List<UserDataResult> userData(UserDataEnter enter) {
+        List<UserDataResult> list = staffServiceMapper.userData(enter);
+        return list;
     }
 
 

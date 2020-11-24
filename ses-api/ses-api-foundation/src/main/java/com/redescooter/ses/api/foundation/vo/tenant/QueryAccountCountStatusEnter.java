@@ -2,7 +2,8 @@ package com.redescooter.ses.api.foundation.vo.tenant;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -15,9 +16,6 @@ import java.util.List;
  **/
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class QueryAccountCountStatusEnter extends GeneralEnter {
   @ApiModelProperty(value = "emailList")
   private List<String> emailList;
