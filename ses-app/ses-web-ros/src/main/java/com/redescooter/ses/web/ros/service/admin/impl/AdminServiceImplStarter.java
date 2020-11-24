@@ -276,7 +276,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
                 .dr(0)
                 .tenantId(0L)
-                .roleName("rede")
+                .roleName(Constant.ADMIN_USER_NAME)
                 .roleCode(null)
                 .roleDesc(Constant.ADMIN_USER_NAME)
                 .createdBy(0L)
