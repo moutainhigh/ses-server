@@ -521,6 +521,9 @@ public class RoleServiceImpl implements RoleService {
         if(enter.getPositionId() != null){
             qw.eq(OpeSysRole.COL_POSITION_ID,enter.getPositionId());
         }
+        if (enter.getType() == 2){
+            qw.eq(OpeSysRole.COL_ROLE_STATUS,1);
+        }
         List<OpeSysRole> roles = sysRoleService.list(qw);
         if(CollectionUtils.isNotEmpty(roles)){
             for (OpeSysRole role : roles) {

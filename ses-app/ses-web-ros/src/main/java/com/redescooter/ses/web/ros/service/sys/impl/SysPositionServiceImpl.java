@@ -69,7 +69,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public List<PositionTypeResult> selectPositionType(DeptIdEnter enter) {
-        return positionServiceMapper.positionTypeList(enter.getTenantId(),enter.getDeptId());
+        return positionServiceMapper.positionTypeList(enter);
     }
 
     /**

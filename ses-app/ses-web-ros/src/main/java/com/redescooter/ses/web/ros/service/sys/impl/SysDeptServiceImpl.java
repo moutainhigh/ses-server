@@ -403,8 +403,8 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    public List<DeptTypeResult> selectDeptType(GeneralEnter enter) {
-        return deptServiceMapper.deptType(enter.getTenantId());
+    public List<DeptTypeResult> selectDeptType(TypeListEnter enter) {
+        return deptServiceMapper.deptType(enter);
     }
 
     /**

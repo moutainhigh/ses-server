@@ -85,7 +85,7 @@ public interface SysDeptService {
          * @param enter
          * @return
          */
-     List<DeptTypeResult>  selectDeptType(GeneralEnter enter);
+     List<DeptTypeResult>  selectDeptType(TypeListEnter enter);
     /**
      * 查询编辑部门
      *
