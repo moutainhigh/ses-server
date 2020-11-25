@@ -88,6 +88,7 @@ public class SysRoleController {
     @PostMapping(value = "/roleSave")
     @ApiOperation(value = "新增角色--reseat", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> roleSave(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleSave(enter));
     }

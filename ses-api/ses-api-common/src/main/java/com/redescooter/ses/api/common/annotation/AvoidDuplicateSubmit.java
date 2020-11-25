@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AvoidDuplicateSubmit {
 
-    // 时间为毫秒  暂时设置为一秒钟
-    long timeout() default 1000;
+    // 时间为毫秒  暂时设置为2秒钟
+    long timeout() default 2000;
 
 }

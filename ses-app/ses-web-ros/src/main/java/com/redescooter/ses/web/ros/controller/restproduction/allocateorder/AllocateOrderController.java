@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduction.allocateorder;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
@@ -38,6 +39,7 @@ public class AllocateOrderController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "调拨单新增", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> allocateSave(@ModelAttribute @ApiParam("请求参数") AllocateOrderOrUpdateSaveEnter enter) {
         return new Response<>(allocateOrderService.allocateSave(enter));
     }
