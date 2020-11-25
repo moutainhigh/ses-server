@@ -50,7 +50,7 @@ public class SysPositionController {
 
     @PostMapping(value = "/selectDeptType")
     @ApiOperation(value = "查询部门类型", response = DeptTypeResult.class)
-    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") TypeListEnter enter) {
         return new Response<>(deptService.selectDeptType(enter));
     }
 

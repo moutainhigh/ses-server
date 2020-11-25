@@ -55,6 +55,7 @@ public class SysDeptController {
     @PostMapping(value = "/saveDept")
     @ApiOperation(value = "新建部门--reseat", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
@@ -88,7 +89,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/selectDeptType")
     @ApiOperation(value = "查询部门类型--reseat", response = DeptTypeResult.class)
-    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") TypeListEnter enter) {
         return new Response<>(deptService.selectDeptType(enter));
     }
 

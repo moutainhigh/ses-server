@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -48,4 +49,6 @@ public interface RoleServiceMapper {
     int totalRows(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
 
     List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
+
+    List<OpeSysStaff> roleStaffs(@Param("roleId") Long roleId);
 }

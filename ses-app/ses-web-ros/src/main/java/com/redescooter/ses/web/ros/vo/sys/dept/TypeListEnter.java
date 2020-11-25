@@ -7,21 +7,17 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * @ClassNameDeptIdEnter
- * @Description
+ * @ClassNameTypeListEnter
+ * @Description 组织架构选择部门 岗位 角色的下拉传参
  * @Author Aleks
- * @Date2020/9/8 14:51
+ * @Date2020/11/24 19:14
  * @Version V1.0
  **/
 @Data
-public class DeptIdEnter extends GeneralEnter {
-
-    @ApiModelProperty("部门id")
-    private Long deptId;
+public class TypeListEnter extends GeneralEnter {
 
     @ApiModelProperty("类型，1：查询全部的，2:查询未禁用的")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "TYPE为空")
     private Integer type;
-
 
 }

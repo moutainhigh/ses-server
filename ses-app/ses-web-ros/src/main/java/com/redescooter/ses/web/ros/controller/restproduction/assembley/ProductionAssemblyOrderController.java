@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduction.assembley;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
@@ -67,6 +68,7 @@ public class ProductionAssemblyOrderController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveAssemblyOrderEnter enter) {
         return new Response<>(productionAssemblyOrderService.save(enter));
     }
