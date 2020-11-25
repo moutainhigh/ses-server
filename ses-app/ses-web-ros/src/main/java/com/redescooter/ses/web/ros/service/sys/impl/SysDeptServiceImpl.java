@@ -149,6 +149,8 @@ public class SysDeptServiceImpl implements SysDeptService {
             throw new SesWebRosException(ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getCode(), ExceptionCodeEnums.SUPERIOR_DEPT_IS_EMPTY.getMessage());
 
         }
+        // 校验部门名称是否重复(同一父级部门下)
+        checkDeptName(enter.getName(),enter.getPid(),null);
         OpeSysDept dept = this.addDept(enter);
         sysDeptService.save(dept);
         try {
@@ -156,6 +158,23 @@ public class SysDeptServiceImpl implements SysDeptService {
             staffService.inintUserMsg(enter.getUserId());
         }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 校验部门名称是否重复(新增和编辑都走这个校验)、
+    // 追加  同一个父级部门下面的部门名称不能重复
+    public void checkDeptName(String deptName, Long parentId, Long deptId){
+        QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
+        qw.eq(OpeSysDept.COL_NAME,deptName);
+        qw.eq(OpeSysDept.COL_P_ID,parentId);
+        if (deptId != null){
+            // 编辑走这里
+            qw.ne(OpeSysDept.COL_ID,deptId);
+        }
+        int count = opeSysDeptService.count(qw);
+        if (count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_NAME_EXIST.getCode(), ExceptionCodeEnums.DEPT_NAME_EXIST.getMessage());
+        }
     }
 
 
@@ -431,7 +450,8 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (enter.getPid() != null && enter.getPid() != -1) {
             checkDeptStatus(enter.getPid(),true);
         }
-
+        // 校验部门名称是否重复(同一父级部门下)
+        checkDeptName(enter.getName(),enter.getPid(),enter.getId());
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
         OpeSysDept opeSysDept = new OpeSysDept();
         List<Long> ids = new ArrayList<>();

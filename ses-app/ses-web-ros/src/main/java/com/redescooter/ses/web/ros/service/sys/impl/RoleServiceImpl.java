@@ -324,6 +324,8 @@ public class RoleServiceImpl implements RoleService {
         if(!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100){
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
+        // 校验角色名称是否重复
+        checkRoleName(enter.getRoleName(),null);
         String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
         enter.setRoleName(roleName);
         OpeSysRole role = new OpeSysRole();
@@ -337,6 +339,21 @@ public class RoleServiceImpl implements RoleService {
         role.setUpdateTime(new Date());
         sysRoleService.save(role);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 校验角色名称是否重复（新增和编辑都要走这里）
+    public void checkRoleName(String roleName, Long roleId){
+        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysRole.COL_ROLE_NAME,roleName);
+        if (roleId != null){
+            // 编辑
+            qw.ne(OpeSysRole.COL_ID,roleId);
+        }
+        int count = sysRoleService.count(qw);
+        if (count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_NAME_EXIST.getCode(), ExceptionCodeEnums.ROLE_NAME_EXIST.getMessage())
+        }
     }
 
 
@@ -362,6 +379,8 @@ public class RoleServiceImpl implements RoleService {
         if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100) {
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
+        // 校验角色名称是否重复
+        checkRoleName(enter.getRoleName(),enter.getId());
         OpeSysRole role = sysRoleService.getById(enter.getId());
         if (role == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
@@ -561,7 +580,7 @@ public class RoleServiceImpl implements RoleService {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_ROLE_ID, role.getId());
         qw.eq(OpeSysStaff.COL_STATUS, 1);
-        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        List<OpeSysStaff> staffList = roleServiceMapper.roleStaffs(role.getId());
         if(CollectionUtils.isEmpty(staffList)){
             return;
         }
