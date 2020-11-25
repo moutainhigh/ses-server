@@ -537,8 +537,8 @@ public class RoleServiceImpl implements RoleService {
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
         qw.eq(OpeSysRole.COL_ROLE_STATUS, DeptStatusEnums.COMPANY.getValue());
-        if(enter.getPositionId() != null){
-            qw.eq(OpeSysRole.COL_POSITION_ID,enter.getPositionId());
+        if(!Strings.isNullOrEmpty(enter.getPositionId())){
+            qw.in(OpeSysRole.COL_POSITION_ID,enter.getPositionId().split(","));
         }
         if (enter.getType() == 2){
             qw.eq(OpeSysRole.COL_ROLE_STATUS,1);
