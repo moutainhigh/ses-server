@@ -352,7 +352,7 @@ public class RoleServiceImpl implements RoleService {
         }
         int count = sysRoleService.count(qw);
         if (count > 0){
-            throw new SesWebRosException(ExceptionCodeEnums.ROLE_NAME_EXIST.getCode(), ExceptionCodeEnums.ROLE_NAME_EXIST.getMessage())
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_NAME_EXIST.getCode(), ExceptionCodeEnums.ROLE_NAME_EXIST.getMessage());
         }
     }
 
