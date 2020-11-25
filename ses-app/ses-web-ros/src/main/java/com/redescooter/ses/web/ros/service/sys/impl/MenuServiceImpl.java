@@ -87,7 +87,24 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuTreeResult> trees(GeneralEnter enter) {
-        return this.buildMenuTree(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())), Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
+//        return this.buildMenuTree(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())), Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
+        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
+
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            List<MenuTreeResult> menuTreeResults = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().orderByAsc(OpeSysMenu::getSort)), null, Boolean.TRUE);
+            return TreeUtil.build(menuTreeResults, Constant.MENU_TREE_ROOT_ID);
+        } else {
+            List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
+            if (CollUtil.isNotEmpty(roleIds)) {
+                List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
+                if (CollUtil.isNotEmpty(menuIds)) {
+                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).orderByAsc(OpeSysMenu::getSort)), roleIds,Boolean.FALSE);
+                    List<MenuTreeResult> treeResult = TreeUtil.build(results, Constant.MENU_TREE_ROOT_ID);
+                    return treeResult;
+                }
+            }
+        }
+        return new ArrayList<>();
     }
 
     /**

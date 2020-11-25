@@ -34,12 +34,12 @@
         position_name as positionName
         from ope_sys_position
         where dr = 0
-        and tenant_id = #{enter.tenantId} and id != 1000000 and position_status = 1
+        and tenant_id = #{enter.tenantId} and id != 1000000
         <if test="enter.deptId != null">
             and dept_id = #{enter.deptId}
         </if>
         <if test="enter.type != null and enter.type == 2">
-            position_status = 1
+            and position_status = 1
         </if>
     </select>
     <select id="listcount" resultType="int">
