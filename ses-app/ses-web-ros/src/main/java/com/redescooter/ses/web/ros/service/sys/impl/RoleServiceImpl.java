@@ -534,15 +534,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleDataResult> roleData(PositionIdEnter enter) {
         List<RoleDataResult> resultList = new ArrayList<>();
-        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
-        qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
-        if(!Strings.isNullOrEmpty(enter.getPositionId())){
-            qw.in(OpeSysRole.COL_POSITION_ID,enter.getPositionId().split(","));
-        }
-        if (enter.getType() == 2){
-            qw.eq(OpeSysRole.COL_ROLE_STATUS,1);
-        }
-        List<OpeSysRole> roles = sysRoleService.list(qw);
+
+        List<OpeSysRole> roles = roleServiceMapper.rolesByDeptAndPosition(enter);
         if(CollectionUtils.isNotEmpty(roles)){
             for (OpeSysRole role : roles) {
                 RoleDataResult result = new RoleDataResult();

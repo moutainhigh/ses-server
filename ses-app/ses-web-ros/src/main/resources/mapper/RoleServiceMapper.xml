@@ -127,4 +127,22 @@
         left join ope_sys_user_role ur on ur.user_id = staff.id
         where staff.dr = 0 and ur.role_id = #{roleId} and staff.status = 1
     </select>
+
+    <select id="rolesByDeptAndPosition" resultType="com.redescooter.ses.web.ros.dm.OpeSysRole">
+        select
+          role.*
+        from ope_sys_role role
+        left join ope_sys_position pos on pos.id = role.position_id
+        left join ope_sys_dept dept on dept.id = pos.dept_id
+        where role.dr = 0 and pos.dr = 0 and dept.dr = 0
+        <if test="enter.positionId != null and enter.positionId != ''">
+            and role.position_id = #{enter.positionId}
+        </if>
+        <if test="enter.deptId != null and enter.deptId != ''">
+            and dept.id = #{enter.deptId}
+        </if>
+        <if test="enter.type == 2">
+            and role.role_status = 1
+        </if>
+    </select>
 </mapper>

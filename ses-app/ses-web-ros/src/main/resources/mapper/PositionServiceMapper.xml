@@ -38,7 +38,7 @@
         <if test="enter.deptId != null">
             and dept_id = #{enter.deptId}
         </if>
-        <if test="enter.type != null and enter.type == 2">
+        <if test="enter.type == 2">
             and position_status = 1
         </if>
     </select>

@@ -16,8 +16,11 @@ import lombok.Data;
 @Data
 public class PositionIdEnter extends GeneralEnter {
 
+    @ApiModelProperty("部门id")
+    private Long deptId;
+
     @ApiModelProperty("岗位id")
-    private String positionId;
+    private Long positionId;
 
     @ApiModelProperty("类型，1：查询全部的，2:查询未禁用的")
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "TYPE为空")
