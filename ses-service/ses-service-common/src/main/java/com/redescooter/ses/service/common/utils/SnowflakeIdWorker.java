@@ -31,7 +31,7 @@ public class SnowflakeIdWorker {
     private final long twepoch = 1288834974657L;
 
     /** 机器id所占的位数 */
-    private final long workerIdBits = 5L;
+    private final long workerIdBits = 2L;
 
     /** 数据标识id所占的位数 */
     // 由5改为2
@@ -45,7 +45,7 @@ public class SnowflakeIdWorker {
 
     /** 序列在id中占的位数 */
     // 由12改为8
-    private final long sequenceBits = 8L;
+    private final long sequenceBits = 5L;
 
     /** 机器ID向左移12位 */
     private final long workerIdShift = sequenceBits;
