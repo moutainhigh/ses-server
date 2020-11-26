@@ -474,6 +474,8 @@ public enum ExceptionCodeEnums {
 
     ROLE_NAME_EXIST(10228,"角色名称已存在"),
 
+    PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
+
 
 
     ;
