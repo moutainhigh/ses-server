@@ -1,9 +1,6 @@
 package com.redescooter.ses.api.hub.service.operation;
 
-import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 
 /**
  * @ClassName:CustomerService
@@ -36,4 +33,13 @@ public interface CustomerService {
      * @return
      */
     GeneralResult updateCustomerInfoByAnyProperty(BaseCustomerEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/26 10:51 上午
+    * @Param:  enter
+    * @Return: GeneralResult
+    * @desc: 更新客户个人信息
+    */
+    GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter);
 }
