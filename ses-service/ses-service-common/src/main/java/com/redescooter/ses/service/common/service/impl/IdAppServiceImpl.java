@@ -25,7 +25,7 @@ public class IdAppServiceImpl implements IdAppService {
     @Override
     public long getId(String tableName) {
         try {
-            log.info("采用雪花算法");
+//            log.info("采用雪花算法");
             // 糊涂工具自带的雪花算法
 //            Snowflake snowflake = new Snowflake(0,0);
 //            return snowflake.nextId();
@@ -49,7 +49,7 @@ public class IdAppServiceImpl implements IdAppService {
 //        System.out.println(snowflake.nextId());
         SnowflakeIdWorker snowflakeIdWorker = SnowflakeIdWorker.getInstance();
         System.out.println(snowflakeIdWorker.nextId());
-        Thread.sleep(100);
+//        Thread.sleep(100);
         System.out.println(snowflakeIdWorker.nextId());
 //        Thread.sleep(100);
         System.out.println(snowflakeIdWorker.nextId());
