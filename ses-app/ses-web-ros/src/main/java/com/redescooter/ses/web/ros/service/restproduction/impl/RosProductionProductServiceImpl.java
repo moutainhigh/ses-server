@@ -354,12 +354,11 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
                 }
                 rosProductionProductPartListResult.setQty(Integer.valueOf(item.getQuantity()));
             }
-            for (RosParseExcelData success : successList) {
-                for (RosProductionProductPartListResult item : failProductPartListResult) {
-                    if (StringUtils.equals(item.getPartsNum(), success.getPartsNo())) {
-                        successList.remove(success);
-                        continue;
-                    }
+            Set<String> successListPartNo = successList.stream().map(RosParseExcelData::getPartsNo).collect(Collectors.toSet());
+            for (RosProductionProductPartListResult item : failProductPartListResult) {
+                if (successListPartNo.contains(item.getPartsNum())){
+                    successList.removeIf(success->success.getPartsNo().equals(item.getPartsNum()));
+                    continue;
                 }
             }
         }
