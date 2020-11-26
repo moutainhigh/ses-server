@@ -725,7 +725,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
             exportEnter.setType(type);
-            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==1?"SC":"SSC"));
+            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==0?"SC":"SSC"));
             exportEnter.setCnName(list.getCnName());
             exportEnter.setEnName(list.getEnName());
 //            exportEnter.setFrName(list.getFrName());
