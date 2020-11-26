@@ -172,7 +172,11 @@ public class TokenRosServiceImpl implements TokenRosService {
         UserToken userToken = setToken(enter, sysUser);
         boolean flag = false;
         if(Strings.isNullOrEmpty(sysUser.getLastLoginToken())){
-            flag = true;
+            // 如果上次登陆的token为空  则需要重置密码 放在缓存里 在获取用户信息那个接口返回去
+            String key = JedisConstant.FIRST_LOGIN_RESET_PSD + sysUser.getId();
+            Map<String,String> map = new HashMap<>();
+            map.put("flag","1");
+            jedisCluster.hmset(key, map);
         }
         //获取用户角色,更新至缓存
         //  setAuth(userRole.getRoleId());
@@ -187,7 +191,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
         result.setRequestId(enter.getRequestId());
-        result.setResetPsd(flag);
+//        result.setResetPsd(flag);
         return result;
     }
 
