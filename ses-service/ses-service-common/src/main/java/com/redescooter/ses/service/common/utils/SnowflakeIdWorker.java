@@ -8,6 +8,8 @@ package com.redescooter.ses.service.common.utils;
  * @Version V1.0
  **/
 
+import lombok.SneakyThrows;
+
 import java.util.Objects;
 
 /**
@@ -29,7 +31,7 @@ public class SnowflakeIdWorker {
     private final long twepoch = 1288834974657L;
 
     /** 机器id所占的位数 */
-    private final long workerIdBits = 5L;
+    private final long workerIdBits = 2L;
 
     /** 数据标识id所占的位数 */
     // 由5改为2
@@ -43,7 +45,7 @@ public class SnowflakeIdWorker {
 
     /** 序列在id中占的位数 */
     // 由12改为8
-    private final long sequenceBits = 8L;
+    private final long sequenceBits = 5L;
 
     /** 机器ID向左移12位 */
     private final long workerIdShift = sequenceBits;
@@ -91,9 +93,9 @@ public class SnowflakeIdWorker {
      * 获得下一个ID (该方法是线程安全的)
      * @return SnowflakeId
      */
-    public synchronized long nextId() {
+    public synchronized long nextId() throws InterruptedException {
         long timestamp = timeGen();
-
+        Thread.sleep(1);
         //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(
@@ -166,6 +168,7 @@ public class SnowflakeIdWorker {
 
     //==============================Test=============================================
     /** 测试 */
+    @SneakyThrows
     public static void main(String[] args) {
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
             long id = idWorker.nextId();

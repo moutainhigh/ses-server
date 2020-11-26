@@ -450,6 +450,11 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (enter.getPid() != null && enter.getPid() != -1) {
             checkDeptStatus(enter.getPid(),true);
         }
+        // 校验编辑的时候  是不是把自己选成了父级部门（神级操作）
+        if (enter.getId().equals(enter.getPid())){
+            // 把自己当成了自己的父级部门
+            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_ERROR.getCode(), ExceptionCodeEnums.PARENT_DEPT_ERROR.getMessage());
+        }
         // 校验部门名称是否重复(同一父级部门下)
         checkDeptName(enter.getName(),enter.getPid(),enter.getId());
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());

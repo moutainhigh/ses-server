@@ -3,6 +3,8 @@ package com.redescooter.ses.service.mobile.c.service;
 import java.util.Date;
 import java.util.List;
 
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -38,6 +40,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
 
     @Autowired
     private ConUserProfileService userProfileService;
+
+    @Reference
+    private CustomerService customerService;
     @Reference
     private IdAppService idAppService;
 
@@ -63,8 +68,12 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             userProfile.setUpdatedBy(enter.getUserId());
             userProfile.setUpdatedTime(new Date());
         } else {
+            //更新客户信息
+            BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
             // 修改 个人信息
-            userProfile = checkUserProfile(enter);
+            userProfile = checkUserProfile(enter,baseCustomerEnter);
+            //更新客户个人信息
+            customerService.updateCustomerInfoByEmail(baseCustomerEnter);
         }
 
         if (userProfile != null) {
@@ -125,7 +134,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      *
      * @param enter
      */
-    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter) {
+    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter,BaseCustomerEnter baseCustomerEnter) {
         // 查询个人信息
         ConUserProfile conUserProfile = userProfileService.getById(enter.getId());
         if (conUserProfile == null) {
@@ -137,15 +146,18 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         }
         if (StringUtils.isNotBlank(enter.getFirstName())) {
             conUserProfile.setFirstName(enter.getFirstName());
+            baseCustomerEnter.setCustomerFirstName(enter.getFirstName());
             conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
         }
         if (StringUtils.isNotBlank(enter.getLastName())) {
             conUserProfile.setLastName(enter.getLastName());
+            baseCustomerEnter.setCustomerLastName(enter.getLastName());
             conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
         }
         if (!StringUtils.isAllBlank(enter.getCountryCode1(),enter.getTelNumber1())) {
             conUserProfile.setTelNumber1(enter.getTelNumber1());
             conUserProfile.setCountryCode1(enter.getCountryCode1());
+            baseCustomerEnter.setTelephone(enter.getTelNumber1());
         }
         if (StringUtils.isNotEmpty(enter.getPicture())){
             conUserProfile.setPicture(enter.getPicture());
@@ -158,6 +170,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         if (StringUtils.isNotEmpty(enter.getAddress())){
             conUserProfile.setAddress(enter.getAddress());
         }
+        baseCustomerEnter.setEmail(conUserProfile.getEmail1());
         conUserProfile.setUpdatedBy(enter.getUserId());
         conUserProfile.setUpdatedTime(new Date());
         return conUserProfile;
