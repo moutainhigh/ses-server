@@ -66,7 +66,8 @@
 
     <select id="totalRows" resultType="int">
         select count(*) from ope_sys_role r
-        right JOIN ope_sys_position p on r.position_id =  p.id
+        left JOIN ope_sys_position p on r.position_id =  p.id
+        left join ope_sys_dept dept on dept.id = p.dept_id
         where r.dr = 0 and p.dr = 0
         <include refid="roleListCondition"></include>
     </select>
@@ -84,6 +85,7 @@
           r.position_id
         from ope_sys_role r
         left join ope_sys_position p on r.position_id = p.id
+        left join ope_sys_dept dept on dept.id = p.dept_id
         where r.dr = 0
         <include refid="roleListCondition"></include>
         order by r.sort,r.create_time desc
@@ -93,6 +95,9 @@
     <sql id="roleListCondition">
         <if test="enter.positionId != null and enter.positionId != ''">
             and r.position_id = #{enter.positionId}
+        </if>
+        <if test="enter.deptId != null and enter.deptId != ''">
+            and dept.id = #{enter.deptId}
         </if>
         <if test="enter.roleStatus != null">
             and r.role_status = #{enter.roleStatus}
