@@ -375,9 +375,9 @@ public class MenuServiceImpl implements MenuService {
             for (OpeSysMenu menu : menus) {
                 trees.add(buildMenuTreeResult(menu));
             }
-            if (adminBoolean) {
-                trees.forEach(t -> t.setChecked(Boolean.TRUE));
-            } else {
+//            if (adminBoolean) {
+//                trees.forEach(t -> t.setChecked(Boolean.TRUE));
+//            } else {
                 if (CollUtil.isNotEmpty(roleIds)) {
                     List<Long> list = this.getMenuIdsByRoleIds(roleIds);
                     //判断该角色所属权限
@@ -385,7 +385,7 @@ public class MenuServiceImpl implements MenuService {
                         list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
                     }
                 }
-            }
+//            }
         }
         return TreeUtil.build(trees, root);
     }
