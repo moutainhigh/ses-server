@@ -34,7 +34,7 @@
         position_name as positionName
         from ope_sys_position
         where dr = 0
-        and tenant_id = #{enter.tenantId} and id != 1000000
+        and tenant_id = #{enter.tenantId} and  system_root is null
         <if test="enter.deptId != null">
             and dept_id = #{enter.deptId}
         </if>
