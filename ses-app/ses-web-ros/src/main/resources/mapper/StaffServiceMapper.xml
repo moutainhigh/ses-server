@@ -52,9 +52,7 @@
     </select>
 
     <sql id="staffListCondition">
-        <if test="systemRoot != null and systemRoot != ''">
-            and s.system_root != #{systemRoot}
-        </if>
+            and s.system_root is null
         <if test="enter.deptId != null">
             and s.dept_id = #{enter.deptId}
         </if>

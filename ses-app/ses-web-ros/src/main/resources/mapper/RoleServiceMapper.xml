@@ -93,9 +93,7 @@
     </select>
 
     <sql id="roleListCondition">
-        <if test="systemRoot != null and systemRoot != ''">
-            and r.system_root != #{systemRoot}
-        </if>
+            and r.system_root is null
         <if test="enter.positionId != null and enter.positionId != ''">
             and r.position_id = #{enter.positionId}
         </if>

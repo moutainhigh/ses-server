@@ -3,10 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
     <sql id="positionList">
         WHERE
-        pos.dr=0
-        <if test="systemRoot != null and systemRoot != ''">
-            and pos.system_root != #{systemRoot}
-        </if>
+        pos.dr=0 and pos.system_root is null
         <if test="enter.deptId!=null and enter.deptId != ''">
             and  pos.dept_id=#{enter.deptId}
         </if>
