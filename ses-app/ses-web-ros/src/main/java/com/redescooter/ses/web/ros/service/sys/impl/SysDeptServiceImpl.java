@@ -463,6 +463,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (deptResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
+        if (deptResult.getPId().equals(-1) && enter.getDeptStatus() == 2){
+            // 如果是顶级部门 不能禁用
+            throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getMessage());
+        }
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             // 禁用部门  部门下面的子部门全部禁用
             List<OpeSysDept> childDepts = deptServiceMapper.getChildDept(deptResult.getId());

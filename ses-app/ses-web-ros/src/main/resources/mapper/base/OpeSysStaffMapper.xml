@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
-    <!--@Table ope_sys_staff-->
+    <!--@Table operation.ope_sys_staff-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -33,6 +33,7 @@
     <result column="sys_user_id" jdbcType="BIGINT" property="sysUserId" />
     <result column="if_safe_code" jdbcType="INTEGER" property="ifSafeCode" />
     <result column="safe_code" jdbcType="VARCHAR" property="safeCode" />
+    <result column="system_root" jdbcType="VARCHAR" property="systemRoot" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -49,11 +50,12 @@
     email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
     certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
     first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_sys_staff
+    update operation.ope_sys_staff
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -195,6 +197,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.safeCode,jdbcType=VARCHAR}
         </foreach>
       </trim>
+      <trim prefix="system_root = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.systemRoot,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
@@ -246,284 +253,15 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
-  <update id="updateBatchSelective" parameterType="java.util.List">
-    <!--@mbg.generated-->
-    update ope_sys_staff
-    <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.dr != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="tenant_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.tenantId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="`status` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="dept_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.deptId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="position_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.positionId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.positionId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="role_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.roleId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.roleId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="country_code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.countryCode != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="telephone = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.telephone != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.telephone,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="email = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.email != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="entry_date = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.entryDate != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.entryDate,jdbcType=DATE}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="country_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.countryName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.countryName,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="address_1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.address1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.address1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="address_2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.address2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.address2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="birthday = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.birthday != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.birthday,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="certificate_type = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.certificateType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="certificat_picture_1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.certificatPicture1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.certificatPicture1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="certificat_picture_2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.certificatPicture2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.certificatPicture2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="open_account = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.openAccount != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.openAccount,jdbcType=CHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="remark = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.remark != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="employee_picture = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.employeePicture != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.employeePicture,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="first_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.firstName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.firstName,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="last_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.lastName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.lastName,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="full_name = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.fullName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.fullName,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.code != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="gender = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.gender != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.gender,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="sys_user_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.sysUserId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.sysUserId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="if_safe_code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.ifSafeCode != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.ifSafeCode,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="safe_code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.safeCode != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.safeCode,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def3 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def5 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def6 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def6 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
-          </if>
-        </foreach>
-      </trim>
-    </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
-  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_sys_staff
+    insert into operation.ope_sys_staff
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
       first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
@@ -536,21 +274,21 @@
         #{item.remark,jdbcType=VARCHAR}, #{item.employeePicture,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, 
         #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR}, 
         #{item.gender,jdbcType=INTEGER}, #{item.sysUserId,jdbcType=BIGINT}, #{item.ifSafeCode,jdbcType=INTEGER}, 
-        #{item.safeCode,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, 
-        #{item.def6,jdbcType=DOUBLE})
+        #{item.safeCode,jdbcType=VARCHAR}, #{item.systemRoot,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
-    insert into ope_sys_staff
+    insert into operation.ope_sys_staff
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone, 
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type, 
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture, 
       first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
       #{deptId,jdbcType=BIGINT}, #{positionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
@@ -561,10 +299,10 @@
       #{openAccount,jdbcType=CHAR}, #{remark,jdbcType=VARCHAR}, #{employeePicture,jdbcType=VARCHAR}, 
       #{firstName,jdbcType=VARCHAR}, #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{sysUserId,jdbcType=BIGINT}, 
-      #{ifSafeCode,jdbcType=INTEGER}, #{safeCode,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DOUBLE})
+      #{ifSafeCode,jdbcType=INTEGER}, #{safeCode,jdbcType=VARCHAR}, #{systemRoot,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -595,6 +333,7 @@
     sys_user_id = #{sysUserId,jdbcType=BIGINT}, 
     if_safe_code = #{ifSafeCode,jdbcType=INTEGER}, 
     safe_code = #{safeCode,jdbcType=VARCHAR}, 
+    system_root = #{systemRoot,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
@@ -607,7 +346,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
-    insert into ope_sys_staff
+    insert into operation.ope_sys_staff
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -695,6 +434,9 @@
       </if>
       <if test="safeCode != null">
         safe_code,
+      </if>
+      <if test="systemRoot != null">
+        system_root,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -813,6 +555,9 @@
       <if test="safeCode != null">
         #{safeCode,jdbcType=VARCHAR},
       </if>
+      <if test="systemRoot != null">
+        #{systemRoot,jdbcType=VARCHAR},
+      </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
       </if>
@@ -929,6 +674,9 @@
       </if>
       <if test="safeCode != null">
         safe_code = #{safeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="systemRoot != null">
+        system_root = #{systemRoot,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},

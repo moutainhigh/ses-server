@@ -1,24 +1,27 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.Date;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 部门管理
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysDept")
-@TableName(value = "ope_sys_dept")
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class OpeSysDept implements Serializable {
-    @TableId(value = "id", type = IdType.AUTO)
+@TableName(value = "ope_sys_dept")
+public class OpeSysDept {
+    private static final long serialVersionUID = 1L;
+    @TableId(value = "id")
     @ApiModelProperty(value = "")
     private Long id;
 
@@ -94,6 +97,13 @@ public class OpeSysDept implements Serializable {
     private Integer sort;
 
     /**
+     * 系统内置标识
+     */
+    @TableField(value = "system_root")
+    @ApiModelProperty(value = "系统内置标识")
+    private String systemRoot;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -121,7 +131,40 @@ public class OpeSysDept implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date updatedTime;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def1")
+    @ApiModelProperty(value = "冗余字段")
+    private String def1;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def2")
+    @ApiModelProperty(value = "冗余字段")
+    private String def2;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def3")
+    @ApiModelProperty(value = "冗余字段")
+    private String def3;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def4")
+    @ApiModelProperty(value = "冗余字段")
+    private BigDecimal def4;
+
+    /**
+     * 冗余字段
+     */
+    @TableField(value = "def5")
+    @ApiModelProperty(value = "冗余字段")
+    private String def5;
 
     public static final String COL_ID = "id";
 
@@ -145,6 +188,8 @@ public class OpeSysDept implements Serializable {
 
     public static final String COL_SORT = "sort";
 
+    public static final String COL_SYSTEM_ROOT = "system_root";
+
     public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -153,5 +198,13 @@ public class OpeSysDept implements Serializable {
 
     public static final String COL_UPDATED_TIME = "updated_time";
 
+    public static final String COL_DEF1 = "def1";
 
+    public static final String COL_DEF2 = "def2";
+
+    public static final String COL_DEF3 = "def3";
+
+    public static final String COL_DEF4 = "def4";
+
+    public static final String COL_DEF5 = "def5";
 }

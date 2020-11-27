@@ -47,9 +47,9 @@ public interface RoleServiceMapper {
 
     RoleDetailResult roleDetail(@Param("roleId")Long roleId);
 
-    int totalRows(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
+    int totalRows(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
-    List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
+    List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
     List<OpeSysStaff> roleStaffs(@Param("roleId") Long roleId);
 

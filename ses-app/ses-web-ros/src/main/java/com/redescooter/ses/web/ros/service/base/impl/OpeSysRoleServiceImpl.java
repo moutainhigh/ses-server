@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.web.ros.dm.OpeSysRole;
-import java.util.List;
 import com.redescooter.ses.web.ros.dao.base.OpeSysRoleMapper;
+import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class OpeSysRoleServiceImpl extends ServiceImpl<OpeSysRoleMapper, OpeSysRole> implements OpeSysRoleService {
@@ -34,7 +33,8 @@ public class OpeSysRoleServiceImpl extends ServiceImpl<OpeSysRoleMapper, OpeSysR
 
     @Override
     public int updateBatchSelective(List<OpeSysRole> list) {
-        return baseMapper.updateBatchSelective(list);
+        return 0;
     }
 }
+
 

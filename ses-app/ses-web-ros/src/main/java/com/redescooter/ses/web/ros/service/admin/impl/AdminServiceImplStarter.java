@@ -190,6 +190,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         position.setPositionCode("P000001");
         position.setSort(1);
         position.setTenantId(0L);
+        position.setSystemRoot(Constant.SYSTEM_ROOT);
         opeSysPositionService.save(position);
         return position;
     }
@@ -285,6 +286,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .updateTime(new Date())
                 .roleCode("R000001")
                 .positionId(positionId)
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
         opeSysRoleService.save(sysRole);
         return sysRole;
@@ -334,6 +336,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .countryCode("33")
                 .code("S000001")
                 .openAccount("1")
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
     }
 
@@ -378,6 +381,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .createdTime(new Date())
                 .updatedBy(0L)
                 .updatedTime(new Date())
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
         opeSysDeptService.save(dept);
         return dept;

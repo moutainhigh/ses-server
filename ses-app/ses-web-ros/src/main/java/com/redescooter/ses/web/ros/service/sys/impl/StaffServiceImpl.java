@@ -344,11 +344,11 @@ public class StaffServiceImpl implements StaffService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds);
+        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if (staffRoleResult != null) {

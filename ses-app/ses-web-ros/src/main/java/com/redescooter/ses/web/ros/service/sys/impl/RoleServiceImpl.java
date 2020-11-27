@@ -452,11 +452,11 @@ public class RoleServiceImpl implements RoleService {
                 }
             }
         }
-        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds);
+        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds);
+        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
         // 查询这些角色下的员工数量
         QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();

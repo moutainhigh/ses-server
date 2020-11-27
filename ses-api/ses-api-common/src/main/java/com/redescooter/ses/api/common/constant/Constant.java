@@ -88,4 +88,7 @@ public interface Constant {
 
     //账户设置 下载导入模版的url
     String PARAMETER_DOWNLOAD_URL = "https://rede.oss-cn-shanghai.aliyuncs.com/1600332621562.xlsx";
+
+    // 系统内置标识
+    String SYSTEM_ROOT = "system::root";
 }

@@ -24,9 +24,9 @@ public interface StaffServiceMapper {
 
     StaffRoleResult staffRoleMsg(@Param("staffId") Long staffId);
 
-    int totalRows(@Param("enter") StaffListEnter enter, @Param("userIds") List<Long>  userIds, @Param("deptIds")Set<Long> deptIds);
+    int totalRows(@Param("enter") StaffListEnter enter, @Param("userIds") List<Long>  userIds, @Param("deptIds")Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
-    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter,List<Long>  userIds,@Param("deptIds")Set<Long> deptIds);
+    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter,List<Long>  userIds,@Param("deptIds")Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
     List<StaffDataResult> principalData(@Param("tenantId")Long tenantId);
 

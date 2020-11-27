@@ -97,11 +97,11 @@ public class SysPositionServiceImpl implements SysPositionService {
         if (page.getKeyWord() != null && page.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(page);
         }
-        int totalRows = positionServiceMapper.listcount(page,flag?null:deptIds);
+        int totalRows = positionServiceMapper.listcount(page,flag?null:deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
-        List<PositionResult> list = positionServiceMapper.list(page,flag?null:deptIds);
+        List<PositionResult> list = positionServiceMapper.list(page,flag?null:deptIds,Constant.SYSTEM_ROOT);
 
         //获取岗位下的人员
         List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());

@@ -52,7 +52,9 @@
     </select>
 
     <sql id="staffListCondition">
-        and s.id != 1000000
+        <if test="systemRoot != null and systemRoot != ''">
+            and s.system_root != #{systemRoot}
+        </if>
         <if test="enter.deptId != null">
             and s.dept_id = #{enter.deptId}
         </if>
