@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -18,6 +20,8 @@ import java.util.Date;
 @Data
 @Builder
 @TableName(value = "oope_sys_staff")
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeSysStaff {
     private static final long serialVersionUID = 1L;
     /**
