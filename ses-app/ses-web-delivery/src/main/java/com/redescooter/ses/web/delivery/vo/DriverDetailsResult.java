@@ -93,4 +93,7 @@ public class DriverDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "驾照等级")
     private String driverLicenseLevel;
 
+    @ApiModelProperty(value = "状态")
+    private String status;
+
 }
