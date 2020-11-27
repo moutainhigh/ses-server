@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.b.dao.ScooterRideStatMapper">
+
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat">
+        <id column="id" property="id" />
+        <result column="dr" property="dr" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="scooter_id" property="scooterId" />
+        <result column="total_duration" property="totalDuration" />
+        <result column="co2_total" property="co2Total" />
+        <result column="co2_increment" property="co2Increment" />
+        <result column="saved_money" property="savedMoney" />
+        <result column="svg_speed" property="svgSpeed" />
+        <result column="read_time" property="readTime" />
+        <result column="total_mileage" property="totalMileage" />
+        <result column="first_ride_time" property="firstRideTime" />
+        <result column="create_time" property="createTime" />
+        <result column="create_by" property="createBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="def1" property="def1" />
+        <result column="def2" property="def2" />
+        <result column="def3" property="def3" />
+        <result column="def5" property="def5" />
+        <result column="def6" property="def6" />
+    </resultMap>
+
+    <!--新增车辆骑行统计数据-->
+    <insert id="insertScooterRideStat" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat">
+        insert into cor_scooter_ride_stat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="scooterId != null">
+                scooter_id,
+            </if>
+            <if test="totalDuration != null">
+                total_duration,
+            </if>
+            <if test="co2Total != null">
+                co2_total,
+            </if>
+            <if test="co2Increment != null">
+                co2_increment,
+            </if>
+            <if test="savedMoney != null">
+                saved_money,
+            </if>
+            <if test="svgSpeed != null">
+                svg_speed,
+            </if>
+            <if test="readTime != null">
+                read_time,
+            </if>
+            <if test="totalMileage != null">
+                total_mileage,
+            </if>
+            <if test="firstRideTime != null">
+                first_ride_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="dr != null">
+                #{dr},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId},
+            </if>
+            <if test="scooterId != null">
+                #{scooterId},
+            </if>
+            <if test="totalDuration != null">
+                #{totalDuration},
+            </if>
+            <if test="co2Total != null">
+                #{co2Total},
+            </if>
+            <if test="co2Increment != null">
+                #{co2Increment},
+            </if>
+            <if test="savedMoney != null">
+                #{savedMoney},
+            </if>
+            <if test="svgSpeed != null">
+                #{svgSpeed},
+            </if>
+            <if test="readTime != null">
+                #{readTime},
+            </if>
+            <if test="totalMileage != null">
+                #{totalMileage},
+            </if>
+            <if test="firstRideTime != null">
+                #{firstRideTime},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+        </trim>
+    </insert>
+
+    <!--修改车辆骑行统计数据-->
+    <update id="updateScooterRideStat" parameterType="com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat">
+        update cor_scooter_ride_stat
+        <set>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId},
+            </if>
+            <if test="scooterId != null">
+                scooter_id = #{scooterId},
+            </if>
+            <if test="totalDuration != null">
+                total_duration = #{totalDuration},
+            </if>
+            <if test="co2Total != null">
+                co2_total = #{co2Total},
+            </if>
+            <if test="co2Increment != null">
+                co2_increment = #{co2Increment},
+            </if>
+            <if test="savedMoney != null">
+                saved_money = #{savedMoney},
+            </if>
+            <if test="svgSpeed != null">
+                svg_speed = #{svgSpeed},
+            </if>
+            <if test="readTime != null">
+                read_time = #{readTime},
+            </if>
+            <if test="totalMileage != null">
+                total_mileage = #{totalMileage},
+            </if>
+            <if test="firstRideTime != null">
+                first_ride_time = #{firstRideTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据tenantId、scooterId查询车辆骑行统计数据-->
+    <select id="getScooterRideStatByTenantIdAndScooterId" resultMap="BaseResultMap">
+        select * from cor_scooter_ride_stat
+	    where scooter_id = #{scooterId} and tenant_id = #{tenantId} and dr = '0'
+    </select>
+
+</mapper>

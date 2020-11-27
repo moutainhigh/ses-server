@@ -39,6 +39,10 @@
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-emqx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-foundation</artifactId>
         </dependency>
         <dependency>

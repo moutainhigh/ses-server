@@ -1,6 +1,7 @@
 package com.redescooter.ses.starter.redis.service.impl;
 
 import com.alibaba.fastjson.JSON;
+
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,9 @@ public class JedisServiceImpl implements JedisService {
 
     @Override
     public String set(String key, String value, int seconds) {
-        String responseResult = jedisCluster.set(key,value);
-        if(seconds!=0) {
-            jedisCluster.expire(key,seconds);
+        String responseResult = jedisCluster.set(key, value);
+        if (seconds != 0) {
+            jedisCluster.expire(key, seconds);
         }
         return responseResult;
     }
@@ -44,7 +45,7 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public String getSet(String key, String value, int seconds) {
         String jedisClusterSet = jedisCluster.getSet(key, value);
-        jedisCluster.expire(key,seconds);
+        jedisCluster.expire(key, seconds);
         return jedisClusterSet;
     }
 
@@ -60,8 +61,8 @@ public class JedisServiceImpl implements JedisService {
     }
 
     @Override
-    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,  GeoUnit unit) {
-        return jedisCluster.georadius(key,longitude, latitude,radius, unit);
+    public List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit) {
+        return jedisCluster.georadius(key, longitude, latitude, radius, unit);
     }
 
     @Override
@@ -77,20 +78,21 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public Map<String, Object> getMapData(String key) {
         String str = jedisCluster.get(key);
-        Map<String,Object> map = JSON.parseObject(str, Map.class);
+        Map<String, Object> map = JSON.parseObject(str, Map.class);
         return map;
     }
 
     /**
      * 如为第一次，则加上锁，每次调用值会自动加1
+     *
      * @param key
      * @param seconds
      * @return
      */
     @Override
     public boolean lock(String key, int seconds) {
-        if(jedisCluster.incr(key)==1) {
-            jedisCluster.expire(key,seconds);
+        if (jedisCluster.incr(key) == 1) {
+            jedisCluster.expire(key, seconds);
             return false;
         }
         return true;
