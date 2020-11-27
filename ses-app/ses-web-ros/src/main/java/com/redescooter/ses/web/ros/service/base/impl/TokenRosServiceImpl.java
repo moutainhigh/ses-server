@@ -170,9 +170,8 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
-        boolean flag = false;
-        if(Strings.isNullOrEmpty(sysUser.getLastLoginToken())){
-            // 如果上次登陆的token为空  则需要重置密码 放在缓存里 在获取用户信息那个接口返回去
+        if(Strings.isNullOrEmpty(sysUser.getLastLoginToken()) && !sysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)){
+            // 如果上次登陆的token为空  则需要重置密码 放在缓存里 在获取用户信息那个接口返回去(系统自动生成的账号排除在外)
             String key = JedisConstant.FIRST_LOGIN_RESET_PSD + sysUser.getId();
             Map<String,String> map = new HashMap<>();
             map.put("flag","1");
