@@ -19,7 +19,7 @@ import java.util.Date;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
 @Data
 @Builder
-@TableName(value = "oope_sys_staff")
+@TableName(value = "ope_sys_staff")
 @AllArgsConstructor
 @NoArgsConstructor
 public class OpeSysStaff {
