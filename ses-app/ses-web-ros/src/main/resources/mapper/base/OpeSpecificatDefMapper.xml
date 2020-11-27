@@ -8,7 +8,7 @@
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="specificat_id" jdbcType="BIGINT" property="specificatId" />
     <result column="def_name" jdbcType="VARCHAR" property="defName" />
-    <result column="def_value" jdbcType="DECIMAL" property="defValue" />
+    <result column="def_value" jdbcType="VARCHAR" property="defValue" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -45,7 +45,7 @@
       </trim>
       <trim prefix="def_value = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.defValue,jdbcType=DECIMAL}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.defValue,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -107,7 +107,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.specificatId,jdbcType=BIGINT}, 
-        #{item.defName,jdbcType=VARCHAR}, #{item.defValue,jdbcType=DECIMAL}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.defName,jdbcType=VARCHAR}, #{item.defValue,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
         #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
@@ -120,7 +120,7 @@
       updated_time, def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{specificatId,jdbcType=BIGINT}, 
-      #{defName,jdbcType=VARCHAR}, #{defValue,jdbcType=DECIMAL}, #{createdBy,jdbcType=BIGINT}, 
+      #{defName,jdbcType=VARCHAR}, #{defValue,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
       #{def5,jdbcType=DECIMAL})
@@ -129,7 +129,7 @@
     dr = #{dr,jdbcType=INTEGER}, 
     specificat_id = #{specificatId,jdbcType=BIGINT}, 
     def_name = #{defName,jdbcType=VARCHAR}, 
-    def_value = #{defValue,jdbcType=DECIMAL}, 
+    def_value = #{defValue,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
     updated_by = #{updatedBy,jdbcType=BIGINT}, 
@@ -202,7 +202,7 @@
         #{defName,jdbcType=VARCHAR},
       </if>
       <if test="defValue != null">
-        #{defValue,jdbcType=DECIMAL},
+        #{defValue,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -247,7 +247,7 @@
         def_name = #{defName,jdbcType=VARCHAR},
       </if>
       <if test="defValue != null">
-        def_value = #{defValue,jdbcType=DECIMAL},
+        def_value = #{defValue,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},

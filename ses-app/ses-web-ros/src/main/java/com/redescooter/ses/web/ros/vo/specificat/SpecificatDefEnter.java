@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
-
 /**
  * @ClassNameSpecificatDefEnter
  * @Description
@@ -26,6 +24,6 @@ public class SpecificatDefEnter extends GeneralEnter {
 
     // 整数部分超过7位数时 会自动转为科学计数法，为避免科学计数法的出现 类型由double换成BigDecimal
     @ApiModelProperty(value="自定义的值")
-    private BigDecimal defValue;
+    private String defValue;
 
 }
