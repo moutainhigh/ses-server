@@ -154,19 +154,21 @@ public class Advice {
             sysLog.setIfSuccess(0);
             throw e;
         } finally {
-            log.info("不管这次请求成功还是失败，都要走这里");
-            // 日志开始的时间
-            LocalDateTime endTime = LocalDateTime.now();
-            log.info("开始时间：" + endTime);
-            Duration duration = Duration.between(startTime, endTime);
-            sysLog.setTimeConsum(duration.toMillis());
-            sysLog.setCreatedTime(new Date());
-            sysLog.setUpdatedTime(new Date());
-            sysLog.setId(idAppService.getId(SequenceName.OPE_SYS_LOG));
-            if(sysLog.getIfSuccess() == null){
-                sysLog.setIfSuccess(0);
-            }
-            opeSysLogService.save(sysLog);
+//            log.info("不管这次请求成功还是失败，都要走这里");
+            try {
+                // 日志开始的时间
+                LocalDateTime endTime = LocalDateTime.now();
+                log.info("开始时间：" + endTime);
+                Duration duration = Duration.between(startTime, endTime);
+                sysLog.setTimeConsum(duration.toMillis());
+                sysLog.setCreatedTime(new Date());
+                sysLog.setUpdatedTime(new Date());
+                sysLog.setId(idAppService.getId(SequenceName.OPE_SYS_LOG));
+                if(sysLog.getIfSuccess() == null){
+                    sysLog.setIfSuccess(0);
+                }
+                opeSysLogService.save(sysLog);
+            }catch (Exception e){}
         }
 
     }

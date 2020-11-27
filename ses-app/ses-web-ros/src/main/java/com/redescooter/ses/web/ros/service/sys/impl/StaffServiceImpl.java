@@ -317,6 +317,7 @@ public class StaffServiceImpl implements StaffService {
         if (staffRoleResult != null) {
             staffDetail.setRoleId(staffRoleResult.getRoleId());
             staffDetail.setRoleName(staffRoleResult.getRoleName());
+            staffDetail.setRoleStatus(staffRoleResult.getRoleStatus());
         }
         return staffDetail;
     }

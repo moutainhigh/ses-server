@@ -72,6 +72,7 @@
         pos.position_name,
         pos.position_code,
         dept.name as deptName,
+        dept.dept_status,
         pos.dept_id as deptId,
         pos.sort,
         pos.position_status,

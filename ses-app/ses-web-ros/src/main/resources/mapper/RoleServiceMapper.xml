@@ -47,6 +47,7 @@
             r.role_name,
             r.role_code,
             p.position_name,
+            p.position_status,
             r.sort,
             r.role_status,
             r.role_desc,

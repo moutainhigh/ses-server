@@ -105,19 +105,21 @@ public class SysPositionServiceImpl implements SysPositionService {
 
         //获取岗位下的人员
         List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());
-        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.in(OpeSysStaff.COL_POSITION_ID, positionIds);
-        List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
-        if (CollectionUtils.isNotEmpty(staffs)) {
-            Map<Long, List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
-            for (Long positionId : map.keySet()) {
-                for (PositionResult result : list) {
-                    if (Objects.deepEquals(result.getId(), positionId)) {
-                        result.setPositionPersonnel(map.get(positionId).size());
+        if (CollectionUtils.isNotEmpty(positionIds)){
+            QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+            qw.in(OpeSysStaff.COL_POSITION_ID, positionIds);
+            List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
+            if (CollectionUtils.isNotEmpty(staffs)) {
+                Map<Long, List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
+                for (Long positionId : map.keySet()) {
+                    for (PositionResult result : list) {
+                        if (Objects.deepEquals(result.getId(), positionId)) {
+                            result.setPositionPersonnel(map.get(positionId).size());
+                        }
                     }
+
+
                 }
-
-
             }
         }
         return PageResult.create(page, totalRows, list);

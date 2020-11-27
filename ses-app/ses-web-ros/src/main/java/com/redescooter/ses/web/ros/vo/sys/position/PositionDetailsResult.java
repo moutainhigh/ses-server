@@ -37,6 +37,9 @@ public class PositionDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "所属部门id")
     private String deptId;
 
+    @ApiModelProperty(value = "部门状态 1：正常，2：禁用")
+    private Integer deptStatus;
+
     @ApiModelProperty(value = "岗位排序")
     private Integer sort;
 
