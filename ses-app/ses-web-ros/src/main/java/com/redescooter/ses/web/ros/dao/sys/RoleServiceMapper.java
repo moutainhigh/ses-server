@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.web.ros.dm.OpeSysRole;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -51,4 +52,13 @@ public interface RoleServiceMapper {
     List<RoleListResult> roleList(@Param("enter") RoleQueryListEnter enter,@Param("deptIds") Set<Long> deptIds);
 
     List<OpeSysStaff> roleStaffs(@Param("roleId") Long roleId);
+
+    /**
+     * @Author Aleks
+     * @Description  联动查询角色
+     * @Date  2020/11/26 19:20
+     * @Param
+     * @return
+     **/
+    List<OpeSysRole> rolesByDeptAndPosition(@Param("enter") PositionIdEnter enter);
 }
