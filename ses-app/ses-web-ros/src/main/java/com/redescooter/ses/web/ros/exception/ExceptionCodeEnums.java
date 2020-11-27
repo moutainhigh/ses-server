@@ -476,6 +476,10 @@ public enum ExceptionCodeEnums {
 
     PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
 
+    PARENT_DEPT_NOT_EXIST(10230,"父级部门不存在！"),
+
+    PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
+
 
 
     ;
