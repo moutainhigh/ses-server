@@ -179,7 +179,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     private OpeSysPosition createOpeSysPosition(OpeSysDept dept, OpeSysUser opeSysUser) {
         // 新建岗位
         OpeSysPosition position = new OpeSysPosition();
-        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setId(1000000L);
         position.setPositionName("rede");
         position.setDeptId(dept.getId());
         position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
@@ -273,7 +273,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysRole saveRole(Long positionId) {
         OpeSysRole sysRole = OpeSysRole.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
+                .id(1000000L)
                 .dr(0)
                 .tenantId(0L)
                 .roleName(Constant.ADMIN_USER_NAME)
@@ -292,7 +292,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysUserProfile buildSysUserProfile(OpeSysUser opeSysUser) {
         OpeSysUserProfile opeSysUserProfile = OpeSysUserProfile.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_USER_PROFILE))
+                .id(1000000L)
                 .dr(0)
                 .repairShopId(0L)
                 .sysUserId(opeSysUser.getId())
@@ -339,7 +339,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysUser buildOpeSysUser(Long deptId, int salt) {
         return OpeSysUser.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_USER))
+                .id(1000000L)
                 .dr(0)
                 .deptId(deptId)
                 .orgStaffId(0L)
@@ -364,7 +364,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     private OpeSysDept buildOpeSysDept() {
         OpeSysDept dept;
         dept = OpeSysDept.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_DEPT))
+                .id(1000000L)
                 .dr(0)
                 .code("D000001")
                 .pId(Constant.DEPT_TREE_ROOT_ID)
