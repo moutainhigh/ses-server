@@ -163,7 +163,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         List<OpeSysMenu> sysMenus = opeSysMenuService.list();
 
         //查询销售区域
-        List<CityResult> cityList = cityBaseService.list(new GeneralEnter());
+//        List<CityResult> cityList = cityBaseService.list(new GeneralEnter());
 
         //保存角色权限
 //        rolePermissionService.insertRoleMenuPermissions(sysRole.getId(), sysMenus.stream().map(OpeSysMenu::getId).collect(Collectors.toSet()));
