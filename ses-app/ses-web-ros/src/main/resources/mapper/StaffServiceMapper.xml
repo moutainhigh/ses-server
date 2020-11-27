@@ -52,7 +52,7 @@
     </select>
 
     <sql id="staffListCondition">
-        and email != 'rede@redescooter.com'
+        and s.id != 1000000
         <if test="enter.deptId != null">
             and s.dept_id = #{enter.deptId}
         </if>

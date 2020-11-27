@@ -93,6 +93,7 @@
     </select>
 
     <sql id="roleListCondition">
+        and r.id != 1000000
         <if test="enter.positionId != null and enter.positionId != ''">
             and r.position_id = #{enter.positionId}
         </if>

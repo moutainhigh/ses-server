@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper">
     <sql id="positionList">
         WHERE
-        pos.dr=0
+        pos.dr=0 and pos.id != 1000000
         <if test="enter.deptId!=null and enter.deptId != ''">
             and  pos.dept_id=#{enter.deptId}
         </if>
