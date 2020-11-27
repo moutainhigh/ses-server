@@ -118,6 +118,8 @@ public class StaffServiceImpl implements StaffService {
         if (Strings.isNullOrEmpty(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         // 校验邮箱是否存在
         checkEmail(enter.getEmail(), enter.getId());
         // 校验部门、岗位是否是可用状态
@@ -225,6 +227,8 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getId());
         // 员工状态变化  影响到账号
@@ -272,7 +276,21 @@ public class StaffServiceImpl implements StaffService {
         }
     }
 
-    ;
+
+    // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+    public void checkDept(StaffSaveOrEditEnter enter){
+        // 先找到当前操作人的部门
+        OpeSysStaff opUser = opeSysStaffService.getById(enter.getUserId());
+        if (opUser == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 递归找操作人部门及其子部门
+        List<Long> deptIds = deptServiceMapper.getChildDeptIds(opUser.getDeptId());
+        deptIds.add(opUser.getDeptId());
+        if (!deptIds.contains(enter.getDeptId())){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
+        }
+    }
 
 
     void checkDeptPos(Long deptId, Long positionId) {

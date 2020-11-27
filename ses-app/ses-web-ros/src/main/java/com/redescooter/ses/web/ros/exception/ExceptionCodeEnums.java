@@ -482,6 +482,8 @@ public enum ExceptionCodeEnums {
 
     TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
 
+    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+
 
 
     ;
