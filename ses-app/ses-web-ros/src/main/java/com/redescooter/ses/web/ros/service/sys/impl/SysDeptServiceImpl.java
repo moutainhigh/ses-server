@@ -578,11 +578,11 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, byId.getPId()));
-        if (one == null){
-            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getCode(), ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getMessage());
-        }
-        if (one.getDeptStatus() != null && one.getDeptStatus() == 2){
-            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getCode(), ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getMessage());
+        if (one != null){
+//            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getCode(), ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getMessage());
+            if (one.getDeptStatus() != null && one.getDeptStatus() == 2){
+                throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getCode(), ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getMessage());
+            }
         }
         BeanUtils.copyProperties(byId, result);
         if (one != null) {
