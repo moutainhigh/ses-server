@@ -83,6 +83,8 @@
     <select id="purchasPartListCount" resultType="int">
            select count(1)
             from ope_production_parts part
+            inner join  ope_product_price price on part.id=price.product_id and price.dr=0
+            inner join ope_supplier supplier on supplier.id=part.supplier_id and supplier.dr=0
             where part.disable=0
             and  part.dr=0
             <if test="productType != null">
@@ -100,15 +102,17 @@
     id="purchasPartList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListResult">
 
         select part.id          as id,
-               part.parts_no    as partsN,
-               part.en_name     as enName,
-               part.parts_type  as productType,
-               100              as price,
-               1                as unit,
-               part.supplier_id as supplierId
+        part.parts_no    as partsN,
+        part.en_name     as enName,
+        part.parts_type  as productType,
+        100              as price,
+        1                as unit,
+        part.supplier_id as supplierId
         from ope_production_parts part
-        where part.disable=0
-        and  part.dr=0
+        inner join  ope_product_price price on part.id=price.product_id and price.dr=0
+        inner join ope_supplier supplier on supplier.id=part.supplier_id and supplier.dr=0
+        where part.disable = 0
+        and part.dr = 0
         <if test="productType != null">
             and part.parts_type=#{productType}
         </if>
