@@ -172,6 +172,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     parts.setCreatedTime(new Date());
                     parts.setUpdatedTime(new Date());
                     parts.setDwg(rosPartsSaveOrUpdateEnter.getDwg());
+                    parts.setQcFlag(Boolean.FALSE);
                     parts.setAnnounUserId(enter.getUserId());
                     parts.setOpAnnounUserId(enter.getUserId());
                     parts.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));

@@ -87,6 +87,7 @@
             inner join ope_supplier supplier on supplier.id=part.supplier_id and supplier.dr=0
             where part.disable=0
             and  part.dr=0
+            and part.qc_flag=1
             <if test="productType != null">
                 and part.parts_type=#{productType}
             </if>
@@ -113,6 +114,7 @@
         inner join ope_supplier supplier on supplier.id=part.supplier_id and supplier.dr=0
         where part.disable = 0
         and part.dr = 0
+        and part.qc_flag=1
         <if test="productType != null">
             and part.parts_type=#{productType}
         </if>
