@@ -205,7 +205,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     void checkPositionName(Long id,String positionName,Long deptId){
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
         qw.eq(OpeSysPosition.COL_POSITION_NAME,positionName);
-        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
+//        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
         if(id != null){
             qw.ne(OpeSysPosition.COL_ID,id);
         }
