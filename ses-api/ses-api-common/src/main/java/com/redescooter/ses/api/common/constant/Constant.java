@@ -91,4 +91,6 @@ public interface Constant {
 
     // 系统内置标识
     String SYSTEM_ROOT = "system::root";
+
+
 }

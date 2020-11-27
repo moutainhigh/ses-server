@@ -463,7 +463,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (deptResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        if (deptResult.getPId().equals(-1L) && enter.getDeptStatus() == 2){
+        if (deptResult.getPId().equals(Constant.DEPT_TREE_ROOT_ID) && enter.getDeptStatus() == 2){
             // 如果是顶级部门 不能禁用
             throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getMessage());
         }
