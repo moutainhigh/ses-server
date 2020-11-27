@@ -166,13 +166,13 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         List<CityResult> cityList = cityBaseService.list(new GeneralEnter());
 
         //保存角色权限
-        rolePermissionService.insertRoleMenuPermissions(sysRole.getId(), sysMenus.stream().map(OpeSysMenu::getId).collect(Collectors.toSet()));
-        //保存部门角色
-        rolePermissionService.insertRoleDeptPermissions(sysRole.getId(), dept.getId());
-        //绑定员工销售区域
-        rolePermissionService.insertRoleSalesPermissions(sysRole.getId(), cityList.stream().map(CityResult::getId).collect(Collectors.toSet()));
-        //员工角色绑定关系
-        opeSysUserRoleService.save(OpeSysUserRole.builder().userId(opeSysUser.getId()).roleId(sysRole.getId()).build());
+//        rolePermissionService.insertRoleMenuPermissions(sysRole.getId(), sysMenus.stream().map(OpeSysMenu::getId).collect(Collectors.toSet()));
+//        //保存部门角色
+//        rolePermissionService.insertRoleDeptPermissions(sysRole.getId(), dept.getId());
+//        //绑定员工销售区域
+//        rolePermissionService.insertRoleSalesPermissions(sysRole.getId(), cityList.stream().map(CityResult::getId).collect(Collectors.toSet()));
+//        //员工角色绑定关系
+//        opeSysUserRoleService.save(OpeSysUserRole.builder().userId(opeSysUser.getId()).roleId(sysRole.getId()).build());
         return new GeneralResult();
     }
 
