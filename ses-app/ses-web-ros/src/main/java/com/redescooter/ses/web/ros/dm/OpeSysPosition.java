@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,6 +19,8 @@ import java.util.Date;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysPosition")
 @Data
 @TableName(value = "ope_sys_position")
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeSysPosition {
     private static final long serialVersionUID = 1L;
     /**
