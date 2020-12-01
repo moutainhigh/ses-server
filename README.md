@@ -164,6 +164,8 @@ ses-server
 
 1. maven 多环境打包命令
 ```shell script
+mvn help:system
+
 mvn clean package -Dmaven.test.skip=true -Pprod
 ```
 ### 七、Git分支规范

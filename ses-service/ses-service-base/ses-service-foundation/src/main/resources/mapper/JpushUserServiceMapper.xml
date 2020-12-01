@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.service.foundation.dao.JpushUserServiceMapper">
 
     <select id="queryJpushUserByRegistrationId" resultType="com.redescooter.ses.service.foundation.dm.JpushUserData">
-        select * from pla_jpush_user where registration_id = #{registrationId}
+        select * from pla_jpush_user where registration_id = #{registrationId} and user_id=#{userId} and dr=0
     </select>
 
     <update id="reset">
@@ -28,7 +28,8 @@
         ju.audience_type as audienceType,
         ju.push_time as pushTime
         from pla_jpush_user ju
-        where ju.user_id in
+        where  ju.dr=0
+        and ju.user_id in
         <foreach collection="list" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

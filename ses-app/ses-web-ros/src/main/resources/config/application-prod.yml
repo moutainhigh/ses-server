@@ -68,7 +68,7 @@ oss:                                                                            
   #oss 使用HTTPS、HTTP请求方式
   protocol: HTTPS
 excel:
-  folder: /root/java_service/prod/projectExcel
+  folder: ${log.path}@profile-active@/projectExcel
 
 sendinblue:
   listIds: 117

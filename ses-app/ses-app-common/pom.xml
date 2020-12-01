@@ -4,12 +4,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-app</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-app-common</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <name>ses-app-common</name>
     <description>Demo project for Spring Boot</description>
 
@@ -61,6 +60,15 @@
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-hub</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.redescooter.ses</groupId>-->
+<!--            <artifactId>ses-starter-seata</artifactId>-->
+<!--        </dependency>-->
+        <!-- jasypt加密组件: https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "spring.datasource.p6spy",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.p6spy."
+    },
+    {
+      "name": "dubbo.reference.check",
+      "type": "java.lang.String",
+      "description": "Description for dubbo.reference.check."
+    }
+  ] }

@@ -17,6 +17,9 @@ public class RoleQueryListEnter extends PageEnter {
     @ApiModelProperty("角色状态  1：正常，2：禁用")
     private Integer roleStatus;
 
+    @ApiModelProperty("部门id")
+    private Long deptId;
+
     @ApiModelProperty(value = "岗位ID")
     private Long positionId;
 

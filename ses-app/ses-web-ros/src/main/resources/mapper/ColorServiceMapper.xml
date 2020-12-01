@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.specificat.ColorServiceMapper">
+
+
+    <select id="listNum" resultType="int">
+        select count(*) from ope_color where dr = 0
+    </select>
+
+    <select id="colorList" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorListResult">
+        select
+          color.id,
+          color.color_name,
+          color.color_value,
+          staff.full_name as createdName,
+          color.created_time
+        from ope_color color
+        left join ope_sys_staff staff on color.created_by = staff.id
+        where color.dr = 0
+        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <select id="colorData" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorDataResult">
+        select
+          color.id as colorId,
+          color.color_name,
+          color.color_value
+        from ope_color color
+        where dr = 0
+    </select>
+</mapper>

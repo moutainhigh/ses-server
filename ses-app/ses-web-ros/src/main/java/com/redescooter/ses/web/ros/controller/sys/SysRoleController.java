@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.roledata.RoleDataService;
@@ -44,6 +45,7 @@ public class SysRoleController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "岗位创建", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RoleEnter enter) {
         return new Response<>(roleService.save(enter));
     }
@@ -86,6 +88,7 @@ public class SysRoleController {
     @PostMapping(value = "/roleSave")
     @ApiOperation(value = "新增角色--reseat", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> roleSave(@ModelAttribute @ApiParam("请求参数") RoleSaveOrEditEnter enter) {
         return new Response(roleService.roleSave(enter));
     }
@@ -116,7 +119,7 @@ public class SysRoleController {
 
 
     @PostMapping(value = "/roleList")
-    @ApiOperation(value = "角色列表--reseat", response = GeneralResult.class)
+    @ApiOperation(value = "角色列表--reseat", response = RoleListResult.class)
     @LogAnnotation
     public Response<PageResult<RoleListResult>> roleList(@ModelAttribute @ApiParam("请求参数") RoleQueryListEnter enter) {
         return new Response(roleService.roleList(enter));

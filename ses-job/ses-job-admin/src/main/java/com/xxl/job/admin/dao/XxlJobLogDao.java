@@ -16,45 +16,47 @@ import java.util.Map;
 public interface XxlJobLogDao {
 
 	// exist jobId not use jobGroup, not exist use jobGroup
-    List<XxlJobLog> pageList(@Param("offset") int offset,
-                             @Param("pagesize") int pagesize,
-                             @Param("jobGroup") int jobGroup,
-                             @Param("jobId") int jobId,
-                             @Param("triggerTimeStart") Date triggerTimeStart,
-                             @Param("triggerTimeEnd") Date triggerTimeEnd,
-                             @Param("logStatus") int logStatus);
-	int pageListCount(@Param("offset") int offset,
-                      @Param("pagesize") int pagesize,
-                      @Param("jobGroup") int jobGroup,
-                      @Param("jobId") int jobId,
-                      @Param("triggerTimeStart") Date triggerTimeStart,
-                      @Param("triggerTimeEnd") Date triggerTimeEnd,
-                      @Param("logStatus") int logStatus);
+	public List<XxlJobLog> pageList(@Param("offset") int offset,
+									@Param("pagesize") int pagesize,
+									@Param("jobGroup") int jobGroup,
+									@Param("jobId") int jobId,
+									@Param("triggerTimeStart") Date triggerTimeStart,
+									@Param("triggerTimeEnd") Date triggerTimeEnd,
+									@Param("logStatus") int logStatus);
+	public int pageListCount(@Param("offset") int offset,
+							 @Param("pagesize") int pagesize,
+							 @Param("jobGroup") int jobGroup,
+							 @Param("jobId") int jobId,
+							 @Param("triggerTimeStart") Date triggerTimeStart,
+							 @Param("triggerTimeEnd") Date triggerTimeEnd,
+							 @Param("logStatus") int logStatus);
 	
-	XxlJobLog load(@Param("id") long id);
+	public XxlJobLog load(@Param("id") long id);
 
-	long save(XxlJobLog xxlJobLog);
+	public long save(XxlJobLog xxlJobLog);
 
-	int updateTriggerInfo(XxlJobLog xxlJobLog);
+	public int updateTriggerInfo(XxlJobLog xxlJobLog);
 
-	int updateHandleInfo(XxlJobLog xxlJobLog);
+	public int updateHandleInfo(XxlJobLog xxlJobLog);
 	
-	int delete(@Param("jobId") int jobId);
+	public int delete(@Param("jobId") int jobId);
 
-	Map<String, Object> findLogReport(@Param("from") Date from,
-                                      @Param("to") Date to);
+	public Map<String, Object> findLogReport(@Param("from") Date from,
+											 @Param("to") Date to);
 
-	List<Long> findClearLogIds(@Param("jobGroup") int jobGroup,
-                               @Param("jobId") int jobId,
-                               @Param("clearBeforeTime") Date clearBeforeTime,
-                               @Param("clearBeforeNum") int clearBeforeNum,
-                               @Param("pagesize") int pagesize);
-	int clearLog(@Param("logIds") List<Long> logIds);
+	public List<Long> findClearLogIds(@Param("jobGroup") int jobGroup,
+									  @Param("jobId") int jobId,
+									  @Param("clearBeforeTime") Date clearBeforeTime,
+									  @Param("clearBeforeNum") int clearBeforeNum,
+									  @Param("pagesize") int pagesize);
+	public int clearLog(@Param("logIds") List<Long> logIds);
 
-	List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
+	public List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
 
-	int updateAlarmStatus(@Param("logId") long logId,
-                          @Param("oldAlarmStatus") int oldAlarmStatus,
-                          @Param("newAlarmStatus") int newAlarmStatus);
+	public int updateAlarmStatus(@Param("logId") long logId,
+								 @Param("oldAlarmStatus") int oldAlarmStatus,
+								 @Param("newAlarmStatus") int newAlarmStatus);
+
+	public List<Long> findLostJobIds(@Param("losedTime") Date losedTime);
 
 }

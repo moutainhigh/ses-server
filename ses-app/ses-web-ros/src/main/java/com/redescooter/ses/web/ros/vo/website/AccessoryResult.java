@@ -18,7 +18,7 @@ import java.math.BigDecimal;
  * @Version：1.3
  * @create: 2020/05/12 16:24
  */
-@ApiModel(value = "电池配件出参", description = "电池配件出参")
+@ApiModel(value = "Battery accessories", description = "Battery accessories")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -29,12 +29,12 @@ public class AccessoryResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "配件电池类型")
+    @ApiModelProperty(value = "Accessory battery type")
     private String accessoryType;
 
-    @ApiModelProperty(value = "配件电池名称")
+    @ApiModelProperty(value = "Name of accessory battery")
     private String accessoryName;
 
-    @ApiModelProperty(value = "配件电池价格")
+    @ApiModelProperty(value = "Price of accessory battery")
     private BigDecimal price;
 }

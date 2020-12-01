@@ -10,6 +10,7 @@ import com.redescooter.ses.service.hub.source.operation.dm.OpeProductionScooterB
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -55,7 +56,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
         List<OpeProductionCombinBom> activeList = new ArrayList<>();
 
         for (OpeProductionCombinBom item : opeProductionCombinBomList) {
-            if (item.getEffectiveDate().before(new Date())) {
+            if(DateUtil.diffDays(item.getEffectiveDate(),new Date())<0){
                 continue;
             }
 
@@ -103,7 +104,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
         List<OpeProductionScooterBom> activeList = new ArrayList<>();
 
         for (OpeProductionScooterBom item : productionScooterBomList) {
-            if (item.getEffectiveDate().before(new Date())) {
+            if(DateUtil.diffDays(item.getEffectiveDate(),new Date())<0){
                 continue;
             }
 

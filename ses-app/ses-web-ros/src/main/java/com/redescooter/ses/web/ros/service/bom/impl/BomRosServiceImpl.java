@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
@@ -59,20 +58,17 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
-import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.poi.hssf.record.PageBreakRecord;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -173,7 +169,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .snClass(BomSnClassEnums.SSC.getValue())
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductName())
@@ -603,7 +599,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .tenantId(0L)
                 .userId(enter.getUserId())
                 .snClass(BomSnClassEnums.SSC.getValue())
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductCnName())
                 .frName(enter.getProductFrName())
@@ -774,6 +770,7 @@ public class BomRosServiceImpl implements BomRosService {
         //查询质检项
         QueryWrapper<OpePartDraftQcTemplate> opePartQcTemplateQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateQueryWrapper.eq(OpePartDraftQcTemplate.COL_PART_DRAFT_ID, enter.getId());
+        opePartQcTemplateQueryWrapper.orderByAsc(OpePartDraftQcTemplate.COL_CREATED_TIME);
         List<OpePartDraftQcTemplate> partQcTemplateList = opePartDraftQcTemplateService.list(opePartQcTemplateQueryWrapper);
         if (CollectionUtils.isEmpty(partQcTemplateList)) {
             return result;
@@ -786,6 +783,7 @@ public class BomRosServiceImpl implements BomRosService {
         //查询质检项结果
         QueryWrapper<OpePartDraftQcTemplateB> opePartQcTemplateBQueryWrapper = new QueryWrapper<>();
         opePartQcTemplateBQueryWrapper.in(OpePartDraftQcTemplateB.COL_PART_DRAFT_QC_TEMPLATE_ID, templateIds);
+        opePartQcTemplateBQueryWrapper.orderByAsc(OpePartDraftQcTemplateB.COL_CREATED_TIME);
         List<OpePartDraftQcTemplateB> templateBList = opePartDraftQcTemplateBService.list(opePartQcTemplateBQueryWrapper);
         if (CollectionUtils.isEmpty(templateBList)) {
             partQcTemplateList.forEach(item -> {
@@ -1134,7 +1132,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(userId)
-                .status(BomStatusEnums.NORMAL.getValue())
+            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .partsProductId(ProductId)
                 .partsId(item.getId())
                 .partsQty(item.getQty())

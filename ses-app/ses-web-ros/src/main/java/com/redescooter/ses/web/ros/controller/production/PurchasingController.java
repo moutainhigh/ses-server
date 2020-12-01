@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -10,16 +11,29 @@ import com.redescooter.ses.web.ros.service.production.RpsServvice;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
-import com.redescooter.ses.web.ros.vo.production.ScanBarCodeEnter;
 import com.redescooter.ses.web.ros.vo.production.PayEnter;
 import com.redescooter.ses.web.ros.vo.production.PaymentDetailResullt;
-import com.redescooter.ses.web.ros.vo.production.purchasing.*;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingDetailProductEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PruchasingItemResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.PurchasingResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcInfoResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QcItemListEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.QueryFactorySupplierResult;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SaveFactoryAnnexEnter;
+import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -71,6 +85,7 @@ public class PurchasingController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存采购单", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePurchasingEnter enter) {
         return new Response<>(purchasingService.save(enter));
     }
@@ -117,18 +132,11 @@ public class PurchasingController {
         return new Response<>(purchasingService.purchasingNode(enter));
     }
 
-//    @PostMapping(value = "/export")
-//    @ApiOperation(value = "采购单信息导出", response = GeneralResult.class)
-//    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(purchasingService.export(enter));
-//    }
-
 
     @GetMapping(value = "/export")
     @ApiOperation(value = "采购单信息导出", response = GeneralResult.class)
     public Response<GeneralResult> export(@ApiParam("请求参数 id") Long id,HttpServletResponse response) {
         return new Response<>(purchasingService.purchasingExport(id,response));
-//        return new Response<>(purchasingService.export(enter));
     }
 
 
@@ -162,24 +170,6 @@ public class PurchasingController {
         return new Response<>(purchasingService.saveFactoryAnnex(enter));
     }
 
-//    @PostMapping(value = "/againQc")
-//    @ApiOperation(value = "再次qc质检", response = GeneralResult.class)
-//    public Response<GeneralResult> againQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(purchasingService.againQc(enter));
-//    }
-//
-//    @PostMapping(value = "/completeQc")
-//    @ApiOperation(value = "qc完成", response = GeneralResult.class)
-//    public Response<GeneralResult> completeQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(purchasingService.completeQc(enter));
-//    }
-//
-//    @PostMapping(value = "/purchasingInWh")
-//    @ApiOperation(value = "入库", response = GeneralResult.class)
-//    public Response<GeneralResult> purchasingInWh(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(purchasingService.purchasingInWh(enter));
-//    }
-
     @PostMapping(value = "/qcCountByStatus")
     @ApiOperation(value = "qc状态", response = Map.class)
     public Response<Map<String, Integer>> qcCountByStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -204,16 +194,5 @@ public class PurchasingController {
         return new Response<>(purchasingService.cancel(enter));
     }
 
-//    @PostMapping(value = "/returnedPurchase")
-//    @ApiOperation(value = "取消质检并完成", response = GeneralResult.class)
-//    public Response<GeneralResult> returnedPurchase(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-//        return new Response<>(purchasingService.returnedPurchase(enter));
-//    }
-//
-//    @PostMapping(value = "/scanBarCode")
-//    @ApiOperation(value = "模拟扫码枪质检", response = GeneralResult.class)
-//    public Response<GeneralResult> scanBarCode(@ModelAttribute @ApiParam("请求参数") ScanBarCodeEnter enter) {
-//        return new Response<>(rpsServvice.scanBarCode(enter));
-//    }
 
 }

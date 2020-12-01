@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 public class RosPartsExportEnter implements Serializable {
 
-    @Excel(name = "PARTS NO",width = 20,needMerge = false)
+    @Excel(name = "PARTS N°",width = 20,needMerge = false)
     private String partsNo;
 
     @Excel(name = "SEC",width = 20)
@@ -45,7 +45,7 @@ public class RosPartsExportEnter implements Serializable {
     @Excel(name = "SUPPLIER",width = 20)
     private String supplierName;
 
-    @Excel(name = "LEAD TIME",width = 20)
+    @Excel(name = "PROCUREMENT CYCLE",width = 20)
     private String procurementCycle;
 
 

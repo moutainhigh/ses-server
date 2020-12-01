@@ -18,7 +18,7 @@ import java.math.BigDecimal;
  * @Version：1.3
  * @create: 2020/05/12 15:57
  */
-@ApiModel(value = "车辆型号", description = "车辆型号")
+@ApiModel(value = "Vehicle model", description = "Vehicle model")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -29,15 +29,15 @@ public class ProductResult extends GeneralResult {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "名称")
+    @ApiModelProperty(value = "name")
     private String name;
 
-    @ApiModelProperty(value = "型号")
+    @ApiModelProperty(value = "model")
     private String productModel;
 
-    @ApiModelProperty(value = "颜色")
+    @ApiModelProperty(value = "color")
     private String color;
 
-    @ApiModelProperty(value = "价格")
+    @ApiModelProperty(value = "price")
     private BigDecimal price;
 }

@@ -70,4 +70,7 @@ public class SaveUserProfileEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "出生地")
     private String placeBirth;
+
+    @ApiModelProperty(value = "居住地")
+    private String address;
 }

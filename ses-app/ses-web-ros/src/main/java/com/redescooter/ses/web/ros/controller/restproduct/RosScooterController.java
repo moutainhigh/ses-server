@@ -1,8 +1,13 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import io.swagger.annotations.Api;
@@ -22,6 +27,9 @@ public class RosScooterController {
 
     @Autowired
     private RosServProductionProductService rosServProductionProductService;
+
+    @Autowired
+    private ProductionQcTmepleteService productionQcTmepleteService;
 
     @PostMapping(value = "/countByType")
     @ApiOperation(value = "产品类型统计", response = Map.class)
@@ -77,6 +85,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/rosSaveProductionProduct")
     @ApiOperation(value = "车辆保存", response = BaseNameResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult>
         rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));
@@ -112,5 +121,31 @@ public class RosScooterController {
     @ApiOperation(value = "删除", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.delete(enter));
+    }
+
+    @PostMapping(value = "/checkProductN")
+    @ApiOperation(value = "产品编号", response = BooleanResult.class)
+    public Response<BooleanResult> checkProductN(@ModelAttribute @ApiParam("请求参数") CheckProductNEnter enter) {
+        return new Response<>(rosServProductionProductService.checkProductN(enter));
+    }
+
+    @PostMapping(value = "/checkProductionInfo")
+    @ApiOperation(value = "产品信息校验", response = GeneralResult.class)
+    public Response<GeneralResult>
+        checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+        return new Response<>(rosServProductionProductService.checkProductionInfo(enter));
+    }
+
+    @PostMapping(value = "/qcTempleteDetail")
+    @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
+    public Response<List<QcTemplateDetailResult>>
+        qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
+        return new Response<>(productionQcTmepleteService.detail(enter));
+    }
+
+    @PostMapping(value = "/qcTempleteSave")
+    @ApiOperation(value = "保存质检模板", response = GeneralResult.class)
+    public Response<GeneralResult> qcTempleteSave(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
+        return new Response<>(productionQcTmepleteService.save(enter));
     }
 }

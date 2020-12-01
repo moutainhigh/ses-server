@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -80,6 +81,7 @@ public class AssemblyController {
 
     @PostMapping(value = "/saveAssembly")
     @ApiOperation(value = "新增组装单", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> saveAssembly(@ModelAttribute @ApiParam("请求参数") SaveAssemblyEnter enter) {
         return new Response<>(assemblyService.saveAssembly(enter));
     }

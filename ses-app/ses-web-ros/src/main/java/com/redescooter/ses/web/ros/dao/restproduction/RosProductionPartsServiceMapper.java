@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.dao.restproduction;
 
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * @ClassNameRosProductionPartsServiceMapper
  * @Description
- * @Author kyle
+ * @Author Aleks
  * @Date2020/9/24 15:42
  * @Version V1.0
  **/
@@ -21,5 +20,11 @@ public interface RosProductionPartsServiceMapper {
 
 
    List<RosPartsListResult> partsExport(@Param("ids") List<Long> ids);
+
+
+   List<PartsNameData> partsNameData();
+
+
+   List<PartsNoData> partsNoData(@Param("enter") PartsNoEnter enter);
 
 }

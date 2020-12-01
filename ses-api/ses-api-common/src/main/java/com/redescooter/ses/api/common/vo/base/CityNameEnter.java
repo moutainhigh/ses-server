@@ -1,7 +1,8 @@
 package com.redescooter.ses.api.common.vo.base;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.*;
 
 /**
  * @ClassNameCityNameEnter
@@ -10,20 +11,24 @@ import lombok.Data;
  * @Date2020/7/28 10:28
  * @Version V1.0
  **/
-@Data
-public class CityNameEnter extends GeneralEnter{
+@ApiModel(value = "City Enter", description = "City Enter")
+@Data //生成getter,setter等函数
+@AllArgsConstructor //生成全参数构造函数
+@NoArgsConstructor//生成无参构造函数
+@Builder
+@EqualsAndHashCode(callSuper = false)
+public class CityNameEnter extends GeneralEnter {
 
-    @ApiModelProperty("查询等级,1:查询国家,2:查询城市,3:查询邮编")
+    @ApiModelProperty(value = "Query level", notes = "1: country, 2: City, 3: postcode")
     private Integer level;
 
-
-    @ApiModelProperty("国家id，查询城市的时候必须要传这个")
+    @ApiModelProperty(value = "Country id", notes = "this must be passed when querying a city")
     private Long id;
 
-    @ApiModelProperty("城市,查询邮编的时候必传")
+    @ApiModelProperty(value = "City", notes = "it must be sent when you query the postcode")
     private String city;
 
-    @ApiModelProperty("城市名称")
+    @ApiModelProperty(value = "keyWord")
     private String keyWord;
 
 }

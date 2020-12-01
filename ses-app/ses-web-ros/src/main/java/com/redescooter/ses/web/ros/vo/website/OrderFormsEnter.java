@@ -16,7 +16,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/05/13 19:24
  */
-@ApiModel(value = "", description = "")
+@ApiModel(value = "Order input Enter", description = "Order input Enter")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -24,9 +24,9 @@ import io.swagger.annotations.*;
 @Builder
 public class OrderFormsEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "支付状态")
+    @ApiModelProperty(value = "Payment status")
     private String payStatus;
 
-    @ApiModelProperty(value = "产品型号")
+    @ApiModelProperty(value = "Product model")
     private String productMdoel;
 }

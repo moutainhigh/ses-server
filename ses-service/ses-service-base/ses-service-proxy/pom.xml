@@ -4,12 +4,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-service-base</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-service-proxy</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <name>ses-service-proxy</name>
     <description>Base Server Application Service</description>
 
@@ -20,10 +19,10 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <!--邮件发送模板需要的依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+        <!--        </dependency>-->
         <!--密码加密-->
         <!--http客户端协议-->
         <dependency>
@@ -45,7 +44,8 @@
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
-                <log.path>logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
+                <jar.path>${project.build.directory}</jar.path>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -56,6 +56,7 @@
             <properties>
                 <profile-active>dev</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/dev</jar.path>
             </properties>
         </profile>
         <profile>
@@ -63,13 +64,7 @@
             <properties>
                 <profile-active>test</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>pre</id>
-            <properties>
-                <profile-active>pre</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/test</jar.path>
             </properties>
         </profile>
         <profile>
@@ -77,6 +72,15 @@
             <properties>
                 <profile-active>prod</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/prod</jar.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>pre</id>
+            <properties>
+                <profile-active>pre</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
     </profiles>
@@ -115,6 +119,32 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-lib-src-webapps</id>
+                        <!-- 执行打包操作时执行的任务 -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.build.directory}"/>
+                            </target>
+                            <tasks>
+                                <copy todir="${jar.path}/libs">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.name}.jar"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
 </project>

@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.vo.bom;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +26,6 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = true)
 public class ProductPriceHistroyListEnter extends PageEnter {
     @ApiModelProperty(value = "id", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 }

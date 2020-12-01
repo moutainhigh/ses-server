@@ -1,11 +1,14 @@
 package com.redescooter.ses.web.ros.dao.restproduction;
 
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
+import com.redescooter.ses.api.common.vo.base.BaseNameResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RosProductionProductServiceMapper {
     /**
@@ -133,4 +136,68 @@ public interface RosProductionProductServiceMapper {
      * @return
      */
     List<RosProductionProductPartListResult> rosImportProductionProductPartsList(List<String> collect);
+
+    /**
+     * 分组列表
+     *
+     * @param generalEnter
+     * @return
+     */
+    List<BaseNameResult> groupList(GeneralEnter generalEnter);
+
+    /**
+     * 颜色列表
+     * 
+     * @param enter
+     * @return
+     */
+    List<BaseNameResult> colorList(GeneralEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  查找所有已发布的【生效中】状态的Combination的英文名称
+     * @Date  2020/10/20 13:35
+     * @Param []
+     * @return
+     **/
+    List<CombinNameData> combinNameData(@Param("enter")CombinNameEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description 与组装件名称相关联的BOM编号
+     * @Date  2020/10/20 13:41
+     * @Param [enter]
+     * @return
+     **/
+    List<BomNameData> bomNoData(@Param("enter")BomNoEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description  通过分组和颜色找整车
+     * @Date  2020/11/4 15:03
+     * @Param [listMap]
+     * @return
+     **/
+    List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
+
+
+    /**
+     * @Author Aleks
+     * @Description  查找所Combination的中文名称
+     * @Date  2020/10/20 13:35
+     * @Param []
+     * @return
+     **/
+    List<CombinNameData> combinCnNameData(@Param("enter")CombinNameEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description 根据中文名称查bom数据
+     * @Date  2020/10/20 13:41
+     * @Param [enter]
+     * @return
+     **/
+    List<BomNameData> cnBomNoData(@Param("enter")BomNoEnter enter);
 }

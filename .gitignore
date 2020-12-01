@@ -87,6 +87,10 @@ target/
 */*/.project
 */*/.settings
 
+*/*/.mvn/*
+*/*/mvnw
+*/*/mvnw*
+
 .factorypath
 
 ### Gradle files
@@ -137,3 +141,4 @@ workspace
 ## yarn
 node_modules/*
 yarn.lock
+package-lock.json

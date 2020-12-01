@@ -1,13 +1,9 @@
 #日志路径
 log:
   file:
-    path: ${log.path}@profile-active@
+    path: ${log.path}ses-job-admin
     max-size: 128MB
     max-history: 180
-
-server:
-  servlet:
-    context-path: /
 
 ### xxl-job, datasource
 spring:

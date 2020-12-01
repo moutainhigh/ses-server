@@ -2,28 +2,51 @@ package com.redescooter.ses.mobile.rps.service.purchasinwh.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingEventEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.purchasinwh.PurchasPutStorageMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
+import com.redescooter.ses.mobile.rps.dm.OpePurchas;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpeStock;
+import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
+import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
+import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcItemService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
+import com.redescooter.ses.mobile.rps.service.base.impl.OpeProductionPartsService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdEnter;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdDetailsEnter;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdEnter;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsResult;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsSucceedResult;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsEnter;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsListResult;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -35,8 +58,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-//import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
-//import com.redescooter.ses.mobile.rps.service.base.impl.OpePurchasTraceService;
 
 @Slf4j
 @Service
@@ -52,11 +73,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Autowired
     private OpePurchasBService opePurchasBService;
-    @Autowired
-    private OpePartsService opePartsService;
 
     @Autowired
-    private OpePurchasTraceService opePurchasTraceService;
+    private OpeProductionPartsService opeProductionPartsService;
 
     @Autowired
     private OpeWhseService opeWhseService;
@@ -128,8 +147,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
         //拿取部件信息
-        OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (partsData.getIdClass() != true) {
+        OpeProductionParts partsData = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (partsData.getIdCalss() != 1) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
 
@@ -226,8 +245,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.QC_COMPLETED.getValue()) && !StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.RETURN.getValue())) {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
-        OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (partsData.getIdClass() != false) {
+        OpeProductionParts partsData = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (partsData.getIdCalss() != 0) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
 
@@ -299,7 +318,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .build();
     }
 
-    private OpeStockPurchas buildOpeStockPurchas(Long userId, int inwhCount, OpeParts partsData, OpeStockBill opeStockBill, String bathcNo, String serialNum) {
+    private OpeStockPurchas buildOpeStockPurchas(Long userId, int inwhCount, OpeProductionParts partsData,
+        OpeStockBill opeStockBill, String bathcNo, String serialNum) {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
@@ -307,10 +327,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .stockId(opeStockBill.getStockId())
                 .partId(partsData.getId())
                 .lot(bathcNo)
-                .partNumber(partsData.getPartsNumber())
+            .partNumber(partsData.getPartsNo())
                 .principalId(userId)
                 .inStockTime(new Date())
-                .serialNumber(partsData.getIdClass() ? serialNum : null)
+            .serialNumber(partsData.getIdCalss() == 1 ? serialNum : null)
                 .revision(0)
                 .createdBy(userId)
                 .createdTime(new Date())
@@ -346,15 +366,15 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
-        OpeParts partsData = opePartsService.getById(opePurchasB.getPartId());
-        if (partsData.getIdClass() != false) {
+        OpeProductionParts partsData = opeProductionPartsService.getById(opePurchasB.getPartId());
+        if (partsData.getIdCalss() != 0) {
             throw new SesMobileRpsException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
 
         }
         return notIdPartsResult;
     }
 
-    private OpeStockBill saveStockBill(Long userId, OpePurchasB opePurchasB, OpeParts parts) {
+    private OpeStockBill saveStockBill(Long userId, OpePurchasB opePurchasB, OpeProductionParts parts) {
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
@@ -373,8 +393,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         if (opeStock != null) {
             if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
                 //有库存 库存累计
-                opeStock.setAvailableTotal(parts.getIdClass() ? opeStock.getAvailableTotal() + 1 : opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
-                opeStock.setIntTotal(parts.getIdClass() ? opeStock.getIntTotal() + 1 : opeStock.getIntTotal() + opePurchasB.getTotalCount());
+                opeStock.setAvailableTotal(parts.getIdCalss() == 1 ? opeStock.getAvailableTotal() + 1
+                    : opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
+                opeStock.setIntTotal(parts.getIdCalss() == 1 ? opeStock.getIntTotal() + 1
+                    : opeStock.getIntTotal() + opePurchasB.getTotalCount());
                 opeStock.setUpdatedBy(userId);
                 opeStock.setUpdatedTime(new Date());
             }
@@ -388,8 +410,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .userId(0L)
                     .tenantId(0L)
                     .whseId(opeWhse.getId())
-                    .intTotal(parts.getIdClass() ? 1 : opePurchasB.getTotalCount())
-                    .availableTotal(parts.getIdClass() ? 1 : opePurchasB.getTotalCount())
+                .intTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
+                .availableTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
                     .outTotal(0)
                     .wornTotal(0)
                     .lockTotal(0)
@@ -397,7 +419,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .waitStoredTotal(0)
                     .materielProductId(opePurchasB.getPartId())
                     .materielProductName(parts.getCnName())
-                    .materielProductType(BomCommonTypeEnums.getValueByCode(parts.getPartsType()))
+                .materielProductType(String.valueOf(parts.getPartsType()))
                     .revision(0)
                     .updatedBy(userId)
                     .updatedTime(new Date())
@@ -411,7 +433,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return buildOpeStockBill(userId, opePurchasB, opeStock.getId(), parts);
     }
 
-    private OpeStockBill buildOpeStockBill(Long userId, OpePurchasB item, Long stockId, OpeParts parts) {
+    private OpeStockBill buildOpeStockBill(Long userId, OpePurchasB item, Long stockId, OpeProductionParts parts) {
         return OpeStockBill.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_BILL))
                 .dr(0)
@@ -421,7 +443,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
                 .sourceId(item.getPurchasId())
-                .total(parts.getIdClass() ? 1 : item.getTotalCount())
+            .total(parts.getIdCalss() == 1 ? 1 : item.getTotalCount())
                 .sourceType(SourceTypeEnums.PURCHAS.getValue())
                 .principalId(userId)
                 .operatineTime(new Date())

@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.annotation.Regexp;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -73,7 +74,7 @@ public class SaveEmployeeEnter extends GeneralEnter {
     private String telephone;
 
     @ApiModelProperty(value = "邮箱", required = true)
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.EMAIL_IS_EMPTY, message = "邮箱为空")
+    @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮箱为空")
     @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
     @MinimumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-50字符")
     @MaximumLength(code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "地址字符长度不合法，2-50字符")

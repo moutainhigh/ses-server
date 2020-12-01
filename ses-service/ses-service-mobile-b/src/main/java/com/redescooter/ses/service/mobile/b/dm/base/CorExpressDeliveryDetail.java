@@ -33,7 +33,7 @@ public class CorExpressDeliveryDetail implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户id")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 递送单主键

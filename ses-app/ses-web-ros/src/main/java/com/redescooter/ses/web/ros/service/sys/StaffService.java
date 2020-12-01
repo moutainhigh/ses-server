@@ -2,6 +2,8 @@ package com.redescooter.ses.web.ros.service.sys;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.springframework.scheduling.annotation.Async;
 
@@ -105,4 +107,13 @@ public interface StaffService {
     @Async
     void inintUserMsg(Long id);
 
+
+    /**
+     * @Author Aleks
+     * @Description  收货人、发货人下拉数据源接口
+     * @Date  2020/10/26 19:38
+     * @Param
+     * @return
+     **/
+    List<UserDataResult> userData(UserDataEnter enter);
 }

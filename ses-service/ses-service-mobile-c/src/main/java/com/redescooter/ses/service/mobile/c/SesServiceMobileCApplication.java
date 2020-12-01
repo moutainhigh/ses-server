@@ -32,13 +32,13 @@ public class SesServiceMobileCApplication {
         new SpringApplicationBuilder(SesServiceMobileCApplication.class)
                 .web(WebApplicationType.NONE) // .REACTIVE, .SERVLET
                 .run(args);
-        log.info("SesServiceFoundationApplication started success ... ");
+        log.info("SesServiceMobileCApplication started success ... ");
         synchronized (SesServiceMobileCApplication.class) {
             while (running) {
                 try {
                     SesServiceMobileCApplication.class.wait();
                 } catch (Throwable e) {
-                    log.error("SesServiceFoundationApplication Throwable：", e);
+                    log.error("SesServiceMobileCApplication Throwable：", e);
                 }
             }
         }

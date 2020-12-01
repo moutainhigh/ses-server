@@ -1,10 +1,15 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
+import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import io.swagger.annotations.Api;
@@ -33,9 +38,13 @@ public class PartsRosController {
     @Autowired
     private PartsRosService partsRosService;
 
+    @Autowired
+    private ProductionQcTmepleteService productionQcTmepleteService;
+
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增部件", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         // 可能是保存并发布
         return new Response<>(partsRosService.partsSave(enter));
@@ -139,4 +148,16 @@ public class PartsRosController {
         return new Response<>(partsRosService.partsDisableCheck(enter));
     }
 
+    @PostMapping(value = "/qcTempleteDetail")
+    @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
+    public Response<List<QcTemplateDetailResult>>
+        qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
+        return new Response<>(productionQcTmepleteService.detail(enter));
+    }
+
+    @PostMapping(value = "/qcTempleteSave")
+    @ApiOperation(value = "保存质检模板", response = GeneralResult.class)
+    public Response<GeneralResult> qcTempleteSave(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
+        return new Response<>(productionQcTmepleteService.save(enter));
+    }
 }

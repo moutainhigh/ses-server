@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -17,11 +19,12 @@ public class RosProductionTimeParmEnter extends GeneralEnter {
     @ApiModelProperty(value = "日期")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @NotNull(code = ValidationExceptionBaseCode.TIME_IS_NOT_NULL, message = "时间不能为空")
     private Date dateTime;
 
     @ApiModelProperty(value = "产品类型")
     private Integer productionType;
 
-    @ApiModelProperty(value = "id")
-    private Long id;
+    @ApiModelProperty(value = "productN")
+    private String productN;
 }

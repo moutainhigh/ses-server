@@ -11,16 +11,25 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
+/**
+ * @program: ses-server
+ * @description: ROS 启动类
+ * @author: Jerry
+ * @created: 2020/09/20 12:57
+ */
+
 @Slf4j
-@EnableDubbo
+@EnableDubbo(scanBasePackages = "com.redescooter.ses")
 @EnableDubboConfig(multiple = true)
-@EnableAutoConfiguration
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 @EnableTransactionManagement
 public class SesWebRosApplication {
 
     private static volatile boolean running = true;
 
+    /**
+     * 设置默认时区
+     */
     @PostConstruct
     void started() {
         System.setProperty("user.timezone", "UTC");

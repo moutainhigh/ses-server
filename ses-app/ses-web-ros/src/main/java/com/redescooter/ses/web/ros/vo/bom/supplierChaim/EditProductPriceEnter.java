@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.vo.bom.supplierChaim;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 
@@ -28,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class EditProductPriceEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "id 产品主键Id", required = true)
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "id 为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id 为空")
     private Long id;
 
     @ApiModelProperty(value = "价格类型，指（整车、部品、零部件），传值见TAPD", required = true)

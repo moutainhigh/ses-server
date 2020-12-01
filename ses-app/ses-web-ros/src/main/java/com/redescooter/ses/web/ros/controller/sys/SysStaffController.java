@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
@@ -31,6 +32,7 @@ public class SysStaffController {
     @PostMapping(value = "/staffSave")
     @ApiOperation(value = "新增员工", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> staffSave(@ModelAttribute @ApiParam("请求参数") StaffSaveOrEditEnter enter) {
         return new Response(staffService.staffSave(enter));
     }

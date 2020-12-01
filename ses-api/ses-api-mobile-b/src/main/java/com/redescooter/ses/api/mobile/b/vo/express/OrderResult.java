@@ -195,7 +195,7 @@ public class OrderResult extends GeneralResult {
 
 
     @ApiModelProperty(value="更新人")
-    private Integer updatedBy;
+    private Long updatedBy;
 
 
     @ApiModelProperty(value="更新时间")

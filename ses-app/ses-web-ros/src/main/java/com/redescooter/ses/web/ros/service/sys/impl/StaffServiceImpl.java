@@ -29,6 +29,8 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -64,9 +66,6 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private StaffServiceMapper staffServiceMapper;
 
-    @Reference
-    private IdAppService idAppService;
-
     @Autowired
     private OpeSysUserRoleService opeSysUserRoleService;
 
@@ -75,7 +74,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
-
 
     @Autowired
     private EmployeeService employeeService;
@@ -89,20 +87,11 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSysUserProfileService opeSysUserProfileService;
 
-    @Reference
-    private MailMultiTaskService mailMultiTaskService;
-
     @Autowired
     private DeptServiceMapper deptServiceMapper;
 
     @Autowired
     private JedisCluster jedisCluster;
-
-    @Value("${Request.privateKey}")
-    private String privatekey;
-
-    @Value("${Request.publicKey}")
-    private String publicKey;
 
     @Autowired
     private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
@@ -110,12 +99,27 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSaleAreaService opeSaleAreaService;
 
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
+
+    @Reference
+    private IdAppService idAppService;
+
+    @Value("${Request.privateKey}")
+    private String privatekey;
+
+    @Value("${Request.publicKey}")
+    private String publicKey;
+
+
     @Override
     @Transactional
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
         if (Strings.isNullOrEmpty(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         // 校验邮箱是否存在
         checkEmail(enter.getEmail(), enter.getId());
         // 校验部门、岗位是否是可用状态
@@ -154,13 +158,14 @@ public class StaffServiceImpl implements StaffService {
         try {
             // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
             inintUserMsg(enter.getUserId());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
 
     // 创建user_profile数据
-    public void creatUserProfile(OpeSysStaff staff){
+    public void creatUserProfile(OpeSysStaff staff) {
         OpeSysUserProfile opeSysUserProfile = new OpeSysUserProfile();
         opeSysUserProfile.setId(idAppService.getId(SequenceName.OPE_SYS_USER_PROFILE));
         opeSysUserProfile.setFirstName(staff.getFirstName());
@@ -222,6 +227,8 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getId());
         // 员工状态变化  影响到账号
@@ -237,6 +244,16 @@ public class StaffServiceImpl implements StaffService {
         }
         if (!Strings.isNullOrEmpty(enter.getEntryDate())) {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
+        // 编辑的时候  如果是第一次开启验证码  则需要随机生成
+        if(Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1){
+            String code = null;
+            try {
+                code = RsaUtils.encrypt(getRundom(), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            staff.setSafeCode(code);
         }
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
@@ -259,7 +276,21 @@ public class StaffServiceImpl implements StaffService {
         }
     }
 
-    ;
+
+    // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+    public void checkDept(StaffSaveOrEditEnter enter){
+        // 先找到当前操作人的部门
+        OpeSysStaff opUser = opeSysStaffService.getById(enter.getUserId());
+        if (opUser == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 递归找操作人部门及其子部门
+        List<Long> deptIds = deptServiceMapper.getChildDeptIds(opUser.getDeptId());
+        deptIds.add(opUser.getDeptId());
+        if (!deptIds.contains(enter.getDeptId())){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
+        }
+    }
 
 
     void checkDeptPos(Long deptId, Long positionId) {
@@ -304,6 +335,7 @@ public class StaffServiceImpl implements StaffService {
         if (staffRoleResult != null) {
             staffDetail.setRoleId(staffRoleResult.getRoleId());
             staffDetail.setRoleName(staffRoleResult.getRoleName());
+            staffDetail.setRoleStatus(staffRoleResult.getRoleStatus());
         }
         return staffDetail;
     }
@@ -331,11 +363,11 @@ public class StaffServiceImpl implements StaffService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds);
+        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if (staffRoleResult != null) {
@@ -382,6 +414,7 @@ public class StaffServiceImpl implements StaffService {
         // 判断邮箱在user表里面是否已经存在过
         QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
         qw.eq(OpeSysUser.COL_LOGIN_NAME, staff.getEmail());
+        qw.eq(OpeSysUser.COL_APP_ID, AppIDEnums.SES_ROS.getValue());
         int count = opeSysUserService.count(qw);
         if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
@@ -455,7 +488,7 @@ public class StaffServiceImpl implements StaffService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
-        if(safeCode.length() < 8 || safeCode.length() > 20){
+        if (safeCode.length() < 8 || safeCode.length() > 20) {
             throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
         }
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
@@ -577,7 +610,7 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if(staff.getIfSafeCode() == null || staff.getIfSafeCode() == 0){
+        if (staff.getIfSafeCode() == null || staff.getIfSafeCode() == 0) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getCode(), ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getMessage());
         }
         SafeCodeResult result = new SafeCodeResult();
@@ -727,6 +760,12 @@ public class StaffServiceImpl implements StaffService {
         map.put("deptIds", StringUtils.join(list, ","));
         jedisCluster.hmset(key, map);
 //        return userMsg;
+    }
+
+    @Override
+    public List<UserDataResult> userData(UserDataEnter enter) {
+        List<UserDataResult> list = staffServiceMapper.userData(enter);
+        return list;
     }
 
 

@@ -76,16 +76,21 @@
     </select>
 
     <select id="scooterDraftList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
-        select draft.id as id,
-               draft.bom_no as productNum,
-               draft.procurement_cycle as productionCycle,
-               draft.group_id as groupId,
-               draft.color_id as colorId,
-               draft.cn_name as cnName,
-               draft.en_name as enName,
-               draft.fr_name as frName,
-                draft.parts_qty as qty
+        select draft.id                as id,
+        draft.bom_no            as productNum,
+        draft.procurement_cycle as productionCycle,
+        draft.group_id          as groupId,
+        draft.color_id          as colorId,
+        draft.cn_name           as cnName,
+        draft.en_name           as enName,
+        draft.fr_name           as frName,
+        draft.parts_qty         as qty,
+        sgroup.group_name     as groupName,
+        color.color_name      as colorName,
+        color.color_value as colorValue
         from ope_production_scooter_bom_draft draft
+        left join ope_specificat_group sgroup on draft.group_id = sgroup.id and sgroup.dr = 0
+        left join ope_color color on color.id = draft.color_id and color.dr = 0
        <include refid="where_scooterDraftList"/>
         order by draft.created_time desc
         limit #{startRow},#{pageSize}
@@ -99,19 +104,24 @@
     </select>
 
     <select id="scooterBomList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult">
-        select bom.id as id,
-        bom.bom_no as productNum,
+        select bom.id                as id,
+        bom.bom_no            as productNum,
         bom.procurement_cycle as productionCycle,
-        bom.group_id as groupId,
-        bom.color_id as colorId,
-        bom.bom_status as status,
-        bom.cn_name as cnName,
-        bom.en_name as enName,
-        bom.fr_name as frName,
-        bom.parts_qty as qty
+        bom.group_id          as groupId,
+        bom.color_id          as colorId,
+        bom.bom_status        as status,
+        bom.cn_name           as cnName,
+        bom.en_name           as enName,
+        bom.fr_name           as frName,
+        bom.parts_qty         as qty,
+        sgroup.group_name     as groupName,
+        color.color_name      as colorName,
+        color.color_value as colorValue
         from ope_production_scooter_bom bom
+        left join ope_specificat_group sgroup on bom.group_id = sgroup.id and sgroup.dr = 0
+        left join ope_color color on color.id = bom.color_id and color.dr = 0
         <include refid="where_scooterBomList"/>
-        order by bom.created_time desc
+        order by status asc,bom.effective_date asc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
@@ -136,7 +146,7 @@
                draft.cn_name as cnName,
                draft.en_name as enName,
                draft.fr_name as frName,
-                draft.parts_qty as qty
+               draft.parts_qty as qty
         from ope_production_combin_bom_draft draft
         where draft.dr=0
         <if test="keyword != null and keyword != ''">
@@ -166,36 +176,55 @@
                bom.bom_status as status,
                bom.cn_name as cnName,
                bom.en_name as enName,
-               bom.fr_name as frName
+               bom.fr_name as frName,
+               bom.parts_qty as qty
         from ope_production_combin_bom bom
        <include refid="where_combinationList" />
-        order by bom.created_time desc
+        order by status asc,bom.effective_date asc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <select id="productionProductPartListCount" resultType="int">
-        select count(1)
+        select count(1) from (select parts.id                as id,
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        parts.dwg               as dwgUrl,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        1                       as qty,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
+        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty) as result
     </select>
 
     <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
         select parts.id                as id,
-                parts.parts_no          as partsNum,
-                parts.parts_sec         as secId,
-                sec.name                as sec,
-                parts.procurement_cycle as productionCycle,
-                parts.dwg               as dwgUrl,
-                parts.cn_name           as cnName,
-                parts.en_name           as enName,
-                parts.fr_name           as frName,
-                1 as qty
-                from ope_production_parts parts
-        left join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        parts.dwg               as dwgUrl,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        1                       as qty,
+        count(templete.id) as templeteCount
+        from ope_production_parts parts
+        inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
+        inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
+        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
+        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
+
     </select>
 
     <select id="productionScooterVersionList" resultType="com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult">
@@ -236,21 +265,118 @@
     </select>
 
     <select id="rosImportProductionProductPartsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
-        select id          as id,
-        parts_no          as partsNum,
-        parts_sec         as secId,
-        procurement_cycle as productionCycle,
-        parts_qty         as qty,
-        cn_name           as cnName,
-        en_name           as enName,
-        fr_name           as frName
+        select parts.id                as id,
+        parts.parts_no          as partsNum,
+        parts.parts_sec         as secId,
+        parts.procurement_cycle as productionCycle,
+        parts.parts_qty         as qty,
+        parts.cn_name           as cnName,
+        parts.en_name           as enName,
+        parts.fr_name           as frName,
+        sec.name                as sec,
+        parts.procurement_cycle as productionCycle,
+        price.price             as price,
+        count(templete.id) as templeteCount
         from ope_production_parts parts
+        left join ope_parts_sec sec on parts.parts_sec = sec.id and parts.dr = 0
+        left join ope_product_price price on price.product_id = parts.id and product_price_type = 1
+        left join  ope_production_quality_tempate templete on parts.id=templete.production_id and  parts.parts_type=templete.production_type and templete.dr=0
         where parts.dr=0
         <if test="collection != null and collection.size() != 0">
             and parts_no in
-            <foreach collection="collection" open="(" item="item" close=")">
+            <foreach collection="collection" open="(" item="item" close=")" separator=",">
                  #{item}
             </foreach>
+        </if>
+        group by id,partsNum,secId,productionCycle,qty,cnName,enName,frName,sec,productionCycle,price
+    </select>
+
+    <select id="groupList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">
+        select sgroup.id         as id,
+               sgroup.group_name as name
+        from ope_specificat_group sgroup
+        where dr = 0
+    </select>
+
+    <select id="colorList" resultType="com.redescooter.ses.api.common.vo.base.BaseNameResult">
+        select color.id         as id,
+               color.color_name as name
+        from ope_color color
+        where dr = 0
+    </select>
+
+
+    <select id="combinNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select
+          distinct
+          bom.en_name as combinName
+        from ope_production_combin_bom bom
+        where bom.dr = 0
+        <if test="enter.type == 1">
+            and bom.bom_status in (1)
+        </if>
+        <if test="enter.type == 2">
+            and bom.bom_status in (1,2)
+        </if>
+    </select>
+
+
+    <select id="bomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select
+          bom.bom_no,
+          bom.id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where bom.dr = 0 and bom.en_name like concat('%', #{enter.combinName}, '%')
+        <if test="enter.type == 1">
+            and bom.bom_status in (1)
+        </if>
+        <if test="enter.type == 2">
+            and bom.bom_status in (1,2)
+        </if>
+    </select>
+
+    <select id="getByGroupAndColorIds" resultType="com.redescooter.ses.web.ros.dm.OpeProductionScooterBom">
+        select * from ope_production_scooter_bom
+        where dr = 0  and
+        <foreach item="item" index="key" collection="list"
+                 open="" separator="OR" close="">
+            ( group_id=#{item.group_id} and
+            color_id = #{item.color_id} and bom_status = 1)
+        </foreach>
+    </select>
+
+
+    <select id="combinCnNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.CombinNameData">
+        select
+        distinct
+        bom.cn_name as combinName
+        from ope_production_combin_bom bom
+        where bom.dr = 0
+        <if test="enter.type == 1">
+            and bom.bom_status in (1)
+        </if>
+        <if test="enter.type == 2">
+            and bom.bom_status in (1,2)
+        </if>
+        <if test="enter.type == 3">
+            and bom.bom_status in (1,3) and bom.disable = 0
+        </if>
+    </select>
+
+    <select id="cnBomNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.BomNameData">
+        select
+        bom.bom_no,
+        bom.id as productionCombinBomId
+        from ope_production_combin_bom bom
+        where bom.dr = 0 and bom.cn_name like concat('%', #{enter.combinName}, '%')
+        <if test="enter.type == 1">
+            and bom.bom_status in (1)
+        </if>
+        <if test="enter.type == 2">
+            and bom.bom_status in (1,2)
+        </if>
+        <if test="enter.type == 3">
+            and bom.bom_status in (1,3) and bom.disable = 0
         </if>
     </select>
 </mapper>

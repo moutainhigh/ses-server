@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
@@ -49,13 +50,14 @@ public class SysPositionController {
 
     @PostMapping(value = "/selectDeptType")
     @ApiOperation(value = "查询部门类型", response = DeptTypeResult.class)
-    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") TypeListEnter enter) {
         return new Response<>(deptService.selectDeptType(enter));
     }
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新建岗位", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SavePositionEnter enter) {
         return new Response<>(sysPositionService.save(enter));
     }

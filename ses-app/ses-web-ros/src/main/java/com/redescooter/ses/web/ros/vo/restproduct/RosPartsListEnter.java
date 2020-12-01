@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
+import com.redescooter.ses.api.common.annotation.NotEmpty;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +17,7 @@ import lombok.Data;
 public class RosPartsListEnter  extends PageEnter {
 
     @ApiModelProperty(value = "页面类型,1:草稿，2：部件")
+    @NotEmpty(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "table 为空")
     private Integer classType;
 
     @ApiModelProperty(value = "sec的id")

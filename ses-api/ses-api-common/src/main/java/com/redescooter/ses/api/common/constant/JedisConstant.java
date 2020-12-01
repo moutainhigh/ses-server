@@ -23,6 +23,9 @@ public interface JedisConstant {
     // 校验安全码的结果放缓存
     String CHECK_SAFE_CODE_RESULT = "check:safe:code:result:";
 
+    //第一次登陆 需要重置密码的缓存地址
+    String FIRST_LOGIN_RESET_PSD = "first:login:reset:psd:";
+
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
 }

@@ -1,13 +1,14 @@
 package com.redescooter.ses.service.foundation.dm;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Setter
-@Getter
-@ToString
-public class SequenceDefination {
+import java.io.Serializable;
+
+@Data
+public class SequenceDefination implements Serializable {
 
     private String name;
 

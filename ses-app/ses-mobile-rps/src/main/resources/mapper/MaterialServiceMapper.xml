@@ -16,25 +16,25 @@
 
     <select id="materialQcDetailListCount" resultType="java.lang.Integer">
          select count(*)
-            from ope_purchas_b purchasb
-                     inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
-                     inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (8,3)
-            where purchasb.dr = 0
-                and purchasb.lave_wait_qc_qty != 0
-              and purchasb.purchas_id=#{id}
+        from ope_purchas_b purchasb
+                 inner join ope_production_parts parts on parts.id = purchasb.part_id and parts.dr = 0
+                 inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (8, 3)
+        where purchasb.dr = 0
+          and purchasb.lave_wait_qc_qty != 0
+
     </select>
 
     <select id="detailList" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
         select purchasb.id               as id,
-               purchasb.part_id          as partId,
-               parts.cn_name             as partCnName,
-               parts.parts_number        as partN,
-               parts.id_class            as idClass,
-               purchasb.lave_wait_qc_qty as laveWaitQcQty
+        purchasb.part_id          as partId,
+        parts.cn_name             as partCnName,
+        parts.parts_no            as partN,
+        parts.id_calss            as idClass,
+        purchasb.lave_wait_qc_qty as laveWaitQcQty
         from ope_purchas_b purchasb
-                 inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr=0
-                 inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (8,3)
-        where purchasb.dr=0
+        inner join ope_production_parts parts on parts.id = purchasb.part_id and parts.dr = 0
+        inner join ope_purchas purchas on purchas.id = purchasb.purchas_id and purchas.status in (8, 3)
+        where purchasb.dr = 0
         and purchasb.lave_wait_qc_qty != 0
         and purchasb.purchas_id=#{id}
         limit #{startRow},#{pageSize}
@@ -62,27 +62,27 @@
     </select>
     <select id="qcFailDetailCount" resultType="int">
         select count(*)
-                from ope_purchas_b_qc purchasbqc
-                         inner join ope_purchas_b purchasb on purchasbqc.purchas_b_id = purchasb.id and purchasb.dr = 0
-                         inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
-                where purchasbqc.dr = 0
-                and purchasbqc.fail_count !=0
-                and purchasb.purchas_id=#{id}
+        from ope_purchas_b_qc purchasbqc
+        inner join ope_purchas_b purchasb on purchasbqc.purchas_b_id = purchasb.id and purchasb.dr = 0
+        inner join ope_production_parts parts on parts.id = purchasb.part_id and parts.dr = 0
+        where purchasbqc.dr = 0
+        and purchasbqc.fail_count != 0
+        and purchasb.purchas_id=#{id}
     </select>
 
     <select id="qcFailDetail" resultType="com.redescooter.ses.mobile.rps.vo.materialqc.MaterialDetailResult">
         select purchasb.id           as id,
-               purchasb.purchas_id   as purchasId,
-               purchasb.part_id      as partId,
-               parts.cn_name         as partCnName,
-               parts_number          as partN,
-               parts.id_class        as idClass,
-               purchasbqc.fail_count as laveWaitQcQty
+        purchasb.purchas_id   as purchasId,
+        purchasb.part_id      as partId,
+        parts.cn_name         as partCnName,
+        parts_no              as partN,
+        parts.id_calss        as idClass,
+        purchasbqc.fail_count as laveWaitQcQty
         from ope_purchas_b_qc purchasbqc
-                 inner join ope_purchas_b purchasb on purchasbqc.purchas_b_id = purchasb.id and purchasb.dr = 0
-                 inner join ope_parts parts on parts.id = purchasb.part_id and parts.dr = 0
+        inner join ope_purchas_b purchasb on purchasbqc.purchas_b_id = purchasb.id and purchasb.dr = 0
+        inner join ope_production_parts parts on parts.id = purchasb.part_id and parts.dr = 0
         where purchasbqc.dr = 0
-        and purchasbqc.fail_count !=0
+        and purchasbqc.fail_count != 0
         and purchasb.purchas_id=#{id}
         order by purchasb.created_time asc
         limit #{startRow},#{pageSize}
@@ -95,14 +95,15 @@
         where bqc.fail_count != 0;
     </select>
     <select id="partDetailById" resultType="com.redescooter.ses.mobile.rps.vo.bo.RpsPartDetailDto">
-        select parts.id as partId,
-        ifnull(sheet.price,0) as price,
-        sheet.currency_unit as unit,
-        supplier_id as supplierId
-        from ope_parts parts
+        select parts.id               as partId,
+        ifnull(sheet.price, 0) as price,
+        sheet.currency_type    as unit,
+        supplier_id            as supplierId
+        from ope_production_parts parts
         inner join ope_supplier supplier on parts.supplier_id = supplier.id and supplier.dr = 0
-        left join ope_price_sheet sheet on parts.id = sheet.parts_id and sheet.currency_unit = 1 and sheet.dr = 0
-        where parts.dr=0
+        left join ope_product_price sheet
+        on parts.id = sheet.product_id and sheet.product_price_type = 1 and sheet.dr = 0
+        where parts.dr = 0
         <if test="collection != null and collection.size() != 0">
             and parts.id in
             <foreach collection="list" item="item" open="(" separator="," close=")">

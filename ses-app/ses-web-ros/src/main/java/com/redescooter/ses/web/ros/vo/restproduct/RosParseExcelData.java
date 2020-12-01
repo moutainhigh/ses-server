@@ -12,8 +12,7 @@ import java.io.Serializable;
 /**
  * @ClassNameRosPraseExcelData
  * @Description
- * @Author Aleks
- * @Date2020/9/25 18:41
+ * @Author Aleks @Date2020/9/25 18:41
  * @Version V1.0
  **/
 @Data
@@ -21,52 +20,52 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class RosParseExcelData implements Serializable, IExcelModel, IExcelDataModel {
 
-    @Excel(name = "Level",width = 20)
+    @Excel(name = "Level", width = 20)
     private String level;
 
-    @Excel(name = "PARTS_NO",width = 20)
+    @Excel(name = "PARTS N°", width = 20)
     private String partsNo;
 
-    @Excel(name = "Main_Drawing",width = 20)
+    @Excel(name = "Main_Drawing", width = 20)
     private String mainDrawing;
 
-    @Excel(name = "Chinese_Name",width = 20)
+    @Excel(name = "Chinese_Name", width = 20)
     private String chineseName;
 
     @Excel(name = "English_Name")
     private String englishName;
 
-    @Excel(name = "ECN_Number",width = 20)
+    @Excel(name = "ECN_Number", width = 20)
     private String ecnNumber;
 
-    @Excel(name = "SEC",width = 20)
+    @Excel(name = "SEC", width = 20)
     private String sec;
 
-    @Excel(name = "ITEM",width = 20)
+    @Excel(name = "ITEM", width = 20)
     private String item;
 
-    @Excel(name = "Sell_Class",width = 20)
+    @Excel(name = "Sell_Class", width = 20)
     private String sellClass;
 
-    @Excel(name = "TYPE",width = 20)
+    @Excel(name = "TYPE", width = 20)
     private String type;
 
-    @Excel(name = "Drawing_Size",width = 20)
+    @Excel(name = "Drawing_Size", width = 20)
     private String drawingSize;
 
-    @Excel(name = "Weight",width = 20)
+    @Excel(name = "Weight", width = 20)
     private String weight;
 
-    @Excel(name = "Quantity",width = 20)
+    @Excel(name = "Quantity", width = 20)
     private String quantity;
 
-    @Excel(name = "Supplier1",width = 20)
+    @Excel(name = "Supplier1", width = 20)
     private String supplier1;
 
-    @Excel(name = "RATE_TYP",width = 20)
+    @Excel(name = "RATE_TYP", width = 20)
     private String rateTyp;
 
-    @Excel(name = "Supplier2",width = 20)
+    @Excel(name = "Supplier2", width = 20)
     private String supplier2;
 
     /**
@@ -78,24 +77,23 @@ public class RosParseExcelData implements Serializable, IExcelModel, IExcelDataM
      */
     private int rowNum;
 
-
     @Override
     public Integer getRowNum() {
-        return null;
+        return this.rowNum;
     }
 
     @Override
-    public void setRowNum(Integer integer) {
-
+    public void setRowNum(Integer rowNum) {
+        this.rowNum = rowNum;
     }
 
     @Override
     public String getErrorMsg() {
-        return null;
+        return this.errorMsg;
     }
 
     @Override
-    public void setErrorMsg(String s) {
-
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

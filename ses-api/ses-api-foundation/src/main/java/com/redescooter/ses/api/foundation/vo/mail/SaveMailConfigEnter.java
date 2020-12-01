@@ -25,7 +25,7 @@ public class SaveMailConfigEnter extends GeneralEnter {
      * 主键
      */
     @ApiModelProperty(value="主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 模板编号

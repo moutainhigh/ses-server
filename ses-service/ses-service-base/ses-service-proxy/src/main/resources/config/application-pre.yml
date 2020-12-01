@@ -8,7 +8,7 @@ log:
 # DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.6.101:2181?backup=172.31.6.101:2182,172.31.6.101:2183
+    address: zookeeper://172.31.6.101:2181
 
 spring:                                                                                                                 #spring config
   datasource:                                                                                                           #数据库连接
@@ -32,9 +32,19 @@ spring:                                                                         
         - 172.31.6.136:7005
   # 邮件配置
   mail:
-    from: support@redelectric.fr
-    username: support@redelectric.fr
-    host: smtp.ionos.fr
-    # 邮箱原密码
-    password: sh80QPSKjhqdou!
-    port: 465
+    from: support@redescooter.com
+    username: support@redescooter.com
+    host: smtp.exmail.qq.com
+    # 邮箱原密码或者邮箱安全码
+    password: KfVPkLDstGFDkWbK
+    port: 587
+ #   protocol: smtp
+
+  # 邮件配置
+#  mail:
+#    from: support@redelectric.fr
+#    username: support@redelectric.fr
+#    host: smtp.googlemail.com
+#    # 邮箱原密码
+#    password: xtiflxdroztqmxxw
+#    port: 587

@@ -5,13 +5,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-job-executor</artifactId>
-        <version>2.1.2</version>
+        <version>2.2.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.redescooter.ses</groupId>
     <artifactId>ses-instance-one</artifactId>
-    <version>2.1.2</version>
-    <name>ses-instance-one</name>
-    <description>Demo project for Spring Boot</description>
+    <name>${project.artifactId}</name>
+    <version>2.2.1-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
@@ -25,77 +23,104 @@
         </dependencies>
     </dependencyManagement>
 
+
     <!-- 公共组件 -->
     <dependencies>
         <!-- ses server jar -->
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-common</artifactId>
-            <version>${ses-app.version}</version>
-         <exclusions>
-             <exclusion>
-                 <groupId>com.redescooter.ses</groupId>
-                 <artifactId>ses-starter-swagger</artifactId>
-             </exclusion>
-         </exclusions>
+            <version>${ses.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>ses-starter-swagger</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-hub</artifactId>
-            <version>${ses-app.version}</version>
+            <version>${ses.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.redescooter.ses</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>ses-starter-swagger</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-proxy</artifactId>
-            <version>${ses-app.version}</version>
+            <version>${ses.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.redescooter.ses</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>ses-starter-swagger</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-foundation</artifactId>
-            <version>${ses-app.version}</version>
+            <version>${ses.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.redescooter.ses</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>ses-starter-swagger</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-mobile-b</artifactId>
-            <version>${ses-app.version}</version>
+            <version>${ses.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.redescooter.ses</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>ses-starter-swagger</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>com.redescooter.ses</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>ses-api-scooter</artifactId>
-            <version>${ses-app.version}</version>
+            <version>${ses.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.redescooter.ses</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>ses-starter-swagger</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--引入dubbo-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ses-starter-dubbo</artifactId>
+            <version>${ses.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--日志统一提取-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ses-starter-logs</artifactId>
+            <version>${ses.version}</version>
+        </dependency>
+        <!-- xxl-job-core -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ses-job-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -105,18 +130,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--引入dubbo-->
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-dubbo</artifactId>
-            <version>${ses-app.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -124,18 +137,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--日志统一提取-->
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-logs</artifactId>
-            <version>${ses-app.version}</version>
-        </dependency>
-        <!-- xxl-job-core -->
-        <dependency>
-            <groupId>com.xuxueli</groupId>
-            <artifactId>xxl-job-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
     </dependencies>
 
 
@@ -145,7 +146,8 @@
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
-                <log.path>logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
+                <jar.path>${project.build.directory}</jar.path>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -156,6 +158,7 @@
             <properties>
                 <profile-active>dev</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/dev</jar.path>
             </properties>
         </profile>
         <profile>
@@ -163,6 +166,7 @@
             <properties>
                 <profile-active>test</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/test</jar.path>
             </properties>
         </profile>
         <profile>
@@ -170,6 +174,15 @@
             <properties>
                 <profile-active>prod</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/prod</jar.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>pre</id>
+            <properties>
+                <profile-active>pre</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/pre</jar.path>
             </properties>
         </profile>
     </profiles>
@@ -204,10 +217,26 @@
             </resource>
         </resources>
         <plugins>
+            <!--解决Failed to decode downloaded font的问题-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
@@ -216,28 +245,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--            &lt;!&ndash; 把jar包拷贝到指定目录位置 &ndash;&gt;-->
-            <!--            <plugin>-->
-            <!--                <artifactId>maven-antrun-plugin</artifactId>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>copy</id>-->
-            <!--                        <phase>package</phase>-->
-            <!--                        <configuration>-->
-            <!--                            <tasks>-->
-            <!--                                <copy todir="/Users/lijiating/Documents/Developer/workspace/Server/redeGroup/ses-server/ses-doc/jar/release">-->
-            <!--                                    <fileset dir="${project.build.directory}">-->
-            <!--                                        <include name="${project.artifactId}.jar" />-->
-            <!--                                    </fileset>-->
-            <!--                                </copy>-->
-            <!--                            </tasks>-->
-            <!--                        </configuration>-->
-            <!--                        <goals>-->
-            <!--                            <goal>run</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
         </plugins>
     </build>
 
