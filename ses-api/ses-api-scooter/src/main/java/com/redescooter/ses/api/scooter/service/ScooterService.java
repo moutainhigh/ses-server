@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 
 import java.util.List;
 
@@ -55,4 +56,23 @@ public interface ScooterService {
     * @desc: 车辆基本信息
     */
     BaseScooterResult scooterInfoByScooterNo(Long id,String scooterNo);
+
+    /**
+     * 根据scooterNo修改车辆锁状态 -- EMQ X
+     * @param scooterLock
+     * @return int
+     * @author assert
+     * @date 2020/11/23
+     */
+    int updateScooterStatusByJson(ScooterLockReportedDTO scooterLock);
+
+    /**
+     * 根据scooterId查询车辆实时信息
+     * @param scooterId
+     * @return com.redescooter.ses.api.common.vo.scooter.BaseScooterResult
+     * @author assert
+     * @date 2020/11/26
+    */
+    BaseScooterResult getScooterInfoById(Long scooterId);
+
 }

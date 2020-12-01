@@ -1,6 +1,8 @@
 package com.redescooter.ses.starter.redis.service;
+
 import java.util.List;
 import java.util.Map;
+
 import redis.clients.jedis.GeoRadiusResponse;
 import redis.clients.jedis.GeoUnit;
 
@@ -24,21 +26,21 @@ public interface JedisService {
 
     /**
      * @Description:缓存set值
-     * @Param:  seconds:缓存时间，不设置则为0
+     * @Param: seconds:缓存时间，不设置则为0
      * @return:
      * @Author:
      * @Date: 2018/5/16
      */
-    String set(String key,String value,int seconds);
+    String set(String key, String value, int seconds);
 
     /**
-     * @Description:  重新缓存getSet值
+     * @Description: 重新缓存getSet值
      * @Param:
      * @return:
      * @Author:
      * @Date: 2018/5/16
      */
-    String getSet(String key,String value, int seconds);
+    String getSet(String key, String value, int seconds);
 
     /**
      * @Description: 获取set值
@@ -56,7 +58,7 @@ public interface JedisService {
      * @Author:
      * @Date: 2018/5/16
      */
-    Long geoadd(String key,double longitude,double latitude,byte[] obj);
+    Long geoadd(String key, double longitude, double latitude, byte[] obj);
 
     /**
      * @Description: 地理位置查询
@@ -65,7 +67,7 @@ public interface JedisService {
      * @Author:
      * @Date: 2018/5/16
      */
-    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius,  GeoUnit unit);
+    List<GeoRadiusResponse> georadius(String key, double longitude, double latitude, double radius, GeoUnit unit);
 
     /**
      * @Description: 删除key
@@ -92,7 +94,7 @@ public interface JedisService {
      * @Author:
      * @Date: 2018/5/16
      */
-    Map<String ,Object> getMapData(String key);
+    Map<String, Object> getMapData(String key);
 
     /**
      * @Description: 加锁，避免重复提交
@@ -101,7 +103,7 @@ public interface JedisService {
      * @Author:
      * @Date: 2018/5/16
      */
-    boolean lock(String key,int seconds);
+    boolean lock(String key, int seconds);
 
     /**
      * @Description: 解锁

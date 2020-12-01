@@ -2,11 +2,11 @@ package com.redescooter.ses.service.scooter.service.base.impl;
 
 import java.util.List;
 
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterActionTraceService;
 @Service
 public class ScoScooterActionTraceServiceImpl extends ServiceImpl<ScoScooterActionTraceMapper, ScoScooterActionTrace> implements ScoScooterActionTraceService{

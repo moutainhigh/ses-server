@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "sendinblue",ignoreUnknownFields = true)
+@ConfigurationProperties(prefix = "sendinblue", ignoreUnknownFields = true)
 public class SendinBlueConfig {
     private String updateEnabled;
 

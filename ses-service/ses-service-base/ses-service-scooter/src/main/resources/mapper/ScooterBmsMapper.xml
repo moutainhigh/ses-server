@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterBmsMapper">
+
+    <!--根据scooterNo查询车辆电池信息-->
+    <select id="getScooterBmsWareNoByScooterNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select ware_no from sco_scooter_bms
+        where scooter_no = #{scooterNo}
+    </select>
+
+    <!--批量新增车辆BMS电池信息-->
+    <insert id="batchInsertScooterBms" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterBmsReportedDTO">
+        insert into sco_scooter_bms (id, scooter_no,batch_no, battery_type, breakdown,
+        charge, charge_amount, charge_mos_open,charge_over_i_protect, charge_over_i_protect_amount,
+        `date`, device_version_no, discharge,discharge_amount, discharge_mos_open, discharge_over_i_protect,
+        discharge_over_i_protect_amount, electricity,factory, factory_no, health,
+        high_t_protect, high_t_protect_amount, lack_v_protect,lack_v_protect_amount, low_t_protect, low_t_protect_amount,
+        mos_charge_breakdown, mos_discharge_breakdown,over_charge_amount, over_discharge_amount,
+        over_v_protect, over_v_protect_amount, pack_factory,short_protect, short_protect_amount, soc,
+        soft_ware_version, temperature, total_charge,total_discharge, v12_connected, v5_connected,
+        voltage, voltage_balance, ware_no, created_time,updated_time)
+        <foreach collection="scooterBmsList" item="item" open="values" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.scooterNo,jdbcType=VARCHAR},
+            #{item.batchNo,jdbcType=BIGINT}, #{item.batteryType,jdbcType=INTEGER}, #{item.breakdown,jdbcType=BOOLEAN},
+            #{item.charge,jdbcType=BOOLEAN}, #{item.chargeAmount,jdbcType=INTEGER}, #{item.chargeMosOpen,jdbcType=BOOLEAN},
+            #{item.chargeOverIProtect,jdbcType=BOOLEAN}, #{item.chargeOverIProtectAmount,jdbcType=INTEGER},
+            #{item.date,jdbcType=TIMESTAMP}, #{item.deviceVersionNo,jdbcType=INTEGER}, #{item.discharge,jdbcType=BOOLEAN},
+            #{item.dischargeAmount,jdbcType=INTEGER}, #{item.dischargeMosOpen,jdbcType=BOOLEAN}, #{item.dischargeOverIProtect,jdbcType=BOOLEAN},
+            #{item.dischargeOverIProtectAmount,jdbcType=INTEGER}, #{item.electricity,jdbcType=FLOAT},
+            #{item.factory,jdbcType=VARCHAR}, #{item.factoryNo,jdbcType=BIGINT}, #{item.health,jdbcType=FLOAT},
+            #{item.highTProtect,jdbcType=BOOLEAN}, #{item.highTProtectAmount,jdbcType=INTEGER}, #{item.lackVProtect,jdbcType=BOOLEAN},
+            #{item.lackVProtectAmount,jdbcType=INTEGER}, #{item.lowTProtect,jdbcType=BOOLEAN}, #{item.lowTProtectAmount,jdbcType=INTEGER},
+            #{item.mosChargeBreakdown,jdbcType=BOOLEAN}, #{item.mosDischargeBreakdown,jdbcType=BOOLEAN},
+            #{item.overChargeAmount,jdbcType=INTEGER}, #{item.overDischargeAmount,jdbcType=INTEGER},
+            #{item.overVProtect,jdbcType=BOOLEAN}, #{item.overVProtectAmount,jdbcType=INTEGER}, #{item.packFactory,jdbcType=INTEGER},
+            #{item.shortProtect,jdbcType=BOOLEAN}, #{item.shortProtectAmount,jdbcType=INTEGER}, #{item.soc,jdbcType=FLOAT},
+            #{item.softWareVersion,jdbcType=INTEGER}, #{item.temperature,jdbcType=FLOAT}, #{item.totalCharge,jdbcType=BIGINT},
+            #{item.totalDischarge,jdbcType=BIGINT}, #{item.v12Connected,jdbcType=BOOLEAN}, #{item.v5Connected,jdbcType=BOOLEAN},
+            #{item.voltage,jdbcType=FLOAT}, #{item.voltageBalance,jdbcType=BOOLEAN}, #{item.wareNo,jdbcType=INTEGER},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <!--批量修改车辆BMS电池信息-->
+    <update id="batchUpdateScooterBms">
+        <foreach collection="scooterBmsList" item="item" separator=";">
+            update sco_scooter_bms
+            set batch_no = #{item.batchNo,jdbcType=BIGINT},
+            battery_type = #{item.batteryType,jdbcType=INTEGER},
+            breakdown = #{item.breakdown,jdbcType=BOOLEAN},
+            charge = #{item.charge,jdbcType=BOOLEAN},
+            charge_amount = #{item.chargeAmount,jdbcType=INTEGER},
+            charge_mos_open = #{item.chargeMosOpen,jdbcType=BOOLEAN},
+            charge_over_i_protect = #{item.chargeOverIProtect,jdbcType=BOOLEAN},
+            charge_over_i_protect_amount = #{item.chargeOverIProtectAmount,jdbcType=INTEGER},
+            `date` = #{item.date,jdbcType=TIMESTAMP},
+            device_version_no = #{item.deviceVersionNo,jdbcType=INTEGER},
+            discharge = #{item.discharge,jdbcType=BOOLEAN},
+            discharge_amount = #{item.dischargeAmount,jdbcType=INTEGER},
+            discharge_mos_open = #{item.dischargeMosOpen,jdbcType=BOOLEAN},
+            discharge_over_i_protect = #{item.dischargeOverIProtect,jdbcType=BOOLEAN},
+            discharge_over_i_protect_amount = #{item.dischargeOverIProtectAmount,jdbcType=INTEGER},
+            electricity = #{item.electricity,jdbcType=FLOAT},
+            factory = #{item.factory,jdbcType=VARCHAR},
+            factory_no = #{item.factoryNo,jdbcType=BIGINT},
+            health = #{item.health,jdbcType=FLOAT},
+            high_t_protect = #{item.highTProtect,jdbcType=BOOLEAN},
+            high_t_protect_amount = #{item.highTProtectAmount,jdbcType=INTEGER},
+            lack_v_protect = #{item.lackVProtect,jdbcType=BOOLEAN},
+            lack_v_protect_amount = #{item.lackVProtectAmount,jdbcType=INTEGER},
+            low_t_protect = #{item.lowTProtect,jdbcType=BOOLEAN},
+            low_t_protect_amount = #{item.lowTProtectAmount,jdbcType=INTEGER},
+            mos_charge_breakdown = #{item.mosChargeBreakdown,jdbcType=BOOLEAN},
+            mos_discharge_breakdown = #{item.mosDischargeBreakdown,jdbcType=BOOLEAN},
+            over_charge_amount = #{item.overChargeAmount,jdbcType=INTEGER},
+            over_discharge_amount = #{item.overDischargeAmount,jdbcType=INTEGER},
+            over_v_protect = #{item.overVProtect,jdbcType=BOOLEAN},
+            over_v_protect_amount = #{item.overVProtectAmount,jdbcType=INTEGER},
+            pack_factory = #{item.packFactory,jdbcType=INTEGER},
+            short_protect = #{item.shortProtect,jdbcType=BOOLEAN},
+            short_protect_amount = #{item.shortProtectAmount,jdbcType=INTEGER},
+            soc = #{item.soc,jdbcType=FLOAT},
+            soft_ware_version = #{item.softWareVersion,jdbcType=INTEGER},
+            temperature = #{item.temperature,jdbcType=FLOAT},
+            total_charge = #{item.totalCharge,jdbcType=BIGINT},
+            total_discharge = #{item.totalDischarge,jdbcType=BIGINT},
+            v12_connected = #{item.v12Connected,jdbcType=BOOLEAN},
+            v5_connected = #{item.v5Connected,jdbcType=BOOLEAN},
+            voltage = #{item.voltage,jdbcType=FLOAT},
+            voltage_balance = #{item.voltageBalance,jdbcType=BOOLEAN},
+            ware_no = #{item.wareNo,jdbcType=INTEGER},
+            updated_time = #{item.updatedTime,jdbcType=TIMESTAMP}
+            where scooter_no = #{scooterNo} and batch_no = #{item.batchNo} and ware_no = #{item.wareNo}
+        </foreach>
+    </update>
+
+</mapper>

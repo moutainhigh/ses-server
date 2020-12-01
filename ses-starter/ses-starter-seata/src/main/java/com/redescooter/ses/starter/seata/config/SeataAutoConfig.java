@@ -43,7 +43,7 @@ public class SeataAutoConfig {
      */
     @Bean
     @Primary
-    public DruidDataSource druidDataSource(){
+    public DruidDataSource druidDataSource() {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(dataSourceProperties.getUrl());
         druidDataSource.setUsername(dataSourceProperties.getUsername());

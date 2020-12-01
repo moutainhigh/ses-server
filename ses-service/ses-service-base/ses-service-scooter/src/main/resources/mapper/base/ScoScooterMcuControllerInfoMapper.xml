@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterMcuControllerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_mcu_controller_info-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="mcu_id" jdbcType="BIGINT" property="mcuId" />
+    <result column="control_over_t_protect" jdbcType="BOOLEAN" property="controlOverTProtect" />
+    <result column="motor_over_t_protect" jdbcType="BOOLEAN" property="motorOverTProtect" />
+    <result column="control_block_protect" jdbcType="BOOLEAN" property="controlBlockProtect" />
+    <result column="control_over_load" jdbcType="BOOLEAN" property="controlOverLoad" />
+    <result column="control_over_i_protect" jdbcType="BOOLEAN" property="controlOverIProtect" />
+    <result column="static_power" jdbcType="BOOLEAN" property="staticPower" />
+    <result column="mos_breakdown" jdbcType="BOOLEAN" property="mosBreakdown" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, mcu_id, control_over_t_protect, motor_over_t_protect, control_block_protect, 
+    control_over_load, control_over_i_protect, static_power, mos_breakdown, created_by, 
+    created_time, updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sco_scooter_mcu_controller_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sco_scooter_mcu_controller_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo">
+    <!--@mbg.generated-->
+    insert into sco_scooter_mcu_controller_info (id, dr, mcu_id, 
+      control_over_t_protect, motor_over_t_protect, 
+      control_block_protect, control_over_load, control_over_i_protect, 
+      static_power, mos_breakdown, created_by, 
+      created_time, updated_by, updated_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{mcuId,jdbcType=BIGINT}, 
+      #{controlOverTProtect,jdbcType=BOOLEAN}, #{motorOverTProtect,jdbcType=BOOLEAN}, 
+      #{controlBlockProtect,jdbcType=BOOLEAN}, #{controlOverLoad,jdbcType=BOOLEAN}, #{controlOverIProtect,jdbcType=BOOLEAN}, 
+      #{staticPower,jdbcType=BOOLEAN}, #{mosBreakdown,jdbcType=BOOLEAN}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo">
+    <!--@mbg.generated-->
+    insert into sco_scooter_mcu_controller_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="mcuId != null">
+        mcu_id,
+      </if>
+      <if test="controlOverTProtect != null">
+        control_over_t_protect,
+      </if>
+      <if test="motorOverTProtect != null">
+        motor_over_t_protect,
+      </if>
+      <if test="controlBlockProtect != null">
+        control_block_protect,
+      </if>
+      <if test="controlOverLoad != null">
+        control_over_load,
+      </if>
+      <if test="controlOverIProtect != null">
+        control_over_i_protect,
+      </if>
+      <if test="staticPower != null">
+        static_power,
+      </if>
+      <if test="mosBreakdown != null">
+        mos_breakdown,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="mcuId != null">
+        #{mcuId,jdbcType=BIGINT},
+      </if>
+      <if test="controlOverTProtect != null">
+        #{controlOverTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorOverTProtect != null">
+        #{motorOverTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlBlockProtect != null">
+        #{controlBlockProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlOverLoad != null">
+        #{controlOverLoad,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlOverIProtect != null">
+        #{controlOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="staticPower != null">
+        #{staticPower,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosBreakdown != null">
+        #{mosBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo">
+    <!--@mbg.generated-->
+    update sco_scooter_mcu_controller_info
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="mcuId != null">
+        mcu_id = #{mcuId,jdbcType=BIGINT},
+      </if>
+      <if test="controlOverTProtect != null">
+        control_over_t_protect = #{controlOverTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorOverTProtect != null">
+        motor_over_t_protect = #{motorOverTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlBlockProtect != null">
+        control_block_protect = #{controlBlockProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlOverLoad != null">
+        control_over_load = #{controlOverLoad,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlOverIProtect != null">
+        control_over_i_protect = #{controlOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="staticPower != null">
+        static_power = #{staticPower,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosBreakdown != null">
+        mos_breakdown = #{mosBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo">
+    <!--@mbg.generated-->
+    update sco_scooter_mcu_controller_info
+    set dr = #{dr,jdbcType=INTEGER},
+      mcu_id = #{mcuId,jdbcType=BIGINT},
+      control_over_t_protect = #{controlOverTProtect,jdbcType=BOOLEAN},
+      motor_over_t_protect = #{motorOverTProtect,jdbcType=BOOLEAN},
+      control_block_protect = #{controlBlockProtect,jdbcType=BOOLEAN},
+      control_over_load = #{controlOverLoad,jdbcType=BOOLEAN},
+      control_over_i_protect = #{controlOverIProtect,jdbcType=BOOLEAN},
+      static_power = #{staticPower,jdbcType=BOOLEAN},
+      mos_breakdown = #{mosBreakdown,jdbcType=BOOLEAN},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

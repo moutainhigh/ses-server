@@ -133,6 +133,11 @@
                 <artifactId>ses-starter-poi</artifactId>
                 <version>${ses.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-emqx</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
             <!--ses-api start引入-->
             <dependency>
                 <groupId>com.redescooter.ses</groupId>

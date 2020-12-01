@@ -3,6 +3,7 @@ package com.redescooter.ses.service.scooter.dao;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,4 +34,52 @@ public interface ScooterServiceMapper {
      * @desc: 车辆基本信息
      */
     BaseScooterResult scooterInfoByScooterNo(@Param("id") Long id, @Param("scooterNo") String scooterNo);
+
+    /**
+     * 根据Id更新车辆锁状态
+     * @param status, id, userId
+     * @return int
+     * @author assert
+     * @date 2020/11/19
+     */
+    int updateScooterStatusById(@Param("status") String status, @Param("id") Long id, @Param("userId") Long userId);
+
+    /**
+     * 根据Id查询车辆信息
+     * @param id
+     * @return com.redescooter.ses.api.common.vo.scooter.BaseScooterResult
+     * @author assert
+     * @date 2020/11/19
+     */
+    BaseScooterResult getScooterInfoById(Long id);
+
+    /**
+     * 根据tabletSn查询车辆锁状态
+     * @param tabletSn
+     * @return java.lang.String
+     * @author assert
+     * @date 2020/11/23
+     */
+    String getScooterStatusByTabletSn(String tabletSn);
+
+    /**
+     * 根据tabletSn查询车辆编号
+     * @param tabletSn
+     * @return java.lang.String
+     * @author assert
+     * @date 2020/11/24
+     */
+    String getScooterNoByTabletSn(String tabletSn);
+
+    /**
+     * 根据tabletSn更新车辆锁状态
+     * @param tabletSn
+     * @param status
+     * @return int
+     * @author assert
+     * @date 2020/11/27
+    */
+    int updateScooterStatusByTabletSn(@Param("tabletSn") String tabletSn, @Param("status") String status,
+                                      @Param("date") Date date);
+
 }

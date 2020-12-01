@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.parts.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -9,8 +11,16 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpePartsType;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
 import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.web.ros.service.base.impl.OpeProductionPartsRelationServiceImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +29,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -136,5 +142,31 @@ public class PartsRosServiceImplTest {
         System.out.println(actual.setScale(2, BigDecimal.ROUND_HALF_UP));
 
         BigDecimal bar = new BigDecimal("3000");
+    }
+
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeProductionQualityTempateService opeProductionQualityTempateService;
+    @Test
+    public void partyQcTemplete(){
+        List<OpeProductionParts> productionPartsList = opeProductionPartsService.list();
+        if (!CollectionUtils.isEmpty(productionPartsList)){
+            List<OpeProductionQualityTempate> productionPartsRelationList = opeProductionQualityTempateService
+                    .list(new LambdaQueryWrapper<OpeProductionQualityTempate>()
+                    .in(OpeProductionQualityTempate::getProductionId,productionPartsList.stream().map(OpeProductionParts::getId)
+                    .collect(Collectors.toSet())));
+            if (CollectionUtils.isNotEmpty(productionPartsRelationList)){
+                Set<Long> qcTempleteSet = productionPartsRelationList.stream().map(OpeProductionQualityTempate::getProductionId).collect(Collectors.toSet());
+                productionPartsList.forEach(item->{
+                    if(qcTempleteSet.contains(item.getId())){
+                        item.setQcFlag(Boolean.TRUE);
+                    }
+                });
+            }
+        }
+        opeProductionPartsService.updateBatchById(productionPartsList);
     }
 }
