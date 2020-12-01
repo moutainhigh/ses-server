@@ -188,4 +188,16 @@
         where `sn` = #{serialNumber} and `dr` = 0
     </select>
 
+    <!--批量根据scooterId查询ECU仪表数据-->
+    <select id="batchGetScooterEcuByScooterId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select ecu.*
+        from sco_scooter s
+        inner join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn and ecu.dr = 0
+        where s.dr = 0
+        <foreach collection="scooterIds" item="scooterId" open="and s.id in(" separator="," close=")">
+            #{scooterId}
+        </foreach>
+    </select>
+
 </mapper>

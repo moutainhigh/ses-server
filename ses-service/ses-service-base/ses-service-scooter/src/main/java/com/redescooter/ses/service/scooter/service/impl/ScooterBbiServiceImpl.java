@@ -103,19 +103,20 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
                                 bms -> !bmsWareNos.contains(bms.getWareNo())
                         ).collect(Collectors.toList());
 
-                        // set bmsId and scooterNo
-                        if (!CollectionUtils.isEmpty(insertScooterBmsList)) {
+                        // 目前电池只会有四个,所以这里会做限制
+                        if (!CollectionUtils.isEmpty(insertScooterBmsList) && bmsWareNos.size() < 4) {
                             insertScooterBmsList.forEach(bms -> {
                                 bms.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BMS));
                                 bms.setScooterNo(scooterNo);
-                                // T_T 数据库有时区问题,只能在程序里面把时间设置好了
                                 bms.setCreatedTime(new Date());
                                 bms.setUpdatedTime(new Date());
                             });
-                            scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList);
+
+                            int subLength = 4 - bmsWareNos.size();
+                            scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList.subList(0, subLength));
                         }
 
-                        // set UpdatedTime
+                        // set UpdatedTime or update
                         if (!CollectionUtils.isEmpty(updateScooterBmsList)) {
                             updateScooterBmsList.forEach(bms -> {
                                 bms.setUpdatedTime(new Date());
@@ -141,7 +142,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
                             bms.setCreatedTime(new Date());
                             bms.setUpdatedTime(new Date());
                         });
-                        scooterBmsMapper.batchInsertScooterBms(scooterBmsNew);
+                        scooterBmsMapper.batchInsertScooterBms(scooterBmsNew.size() > 4 ? scooterBmsNew.subList(0, 4) : scooterBmsNew);
                     }
                 }
             } catch (Exception e) {

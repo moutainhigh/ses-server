@@ -8,6 +8,7 @@ import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -34,6 +35,12 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     @Override
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
+        String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
+        if (StringUtils.isBlank(scooterNo)) {
+            log.error("【车辆ECU控制器数据上报失败】----车辆不存在");
+            return 0;
+        }
+
         /**
          * 检查数据是否存在,如果存在则更新,反之新增
          */
@@ -44,8 +51,6 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 scooterEcu.setUpdatedTime(new Date());
                 scooterEcuMapper.updateScooterEcu(scooterEcu);
             } else {
-                String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
-
                 scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
                 scooterEcu.setScooterNo(scooterNo);
                 scooterEcu.setCreatedTime(new Date());

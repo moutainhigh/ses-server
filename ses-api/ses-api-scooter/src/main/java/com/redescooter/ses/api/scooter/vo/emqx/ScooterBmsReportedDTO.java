@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.scooter.vo.emqx;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -65,6 +66,7 @@ public class ScooterBmsReportedDTO {
     /**
      * 生产日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date date;
 
     /**

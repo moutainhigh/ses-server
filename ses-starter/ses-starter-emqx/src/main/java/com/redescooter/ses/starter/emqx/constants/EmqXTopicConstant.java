@@ -20,6 +20,10 @@ public interface EmqXTopicConstant {
      * 车辆平板更新操作
      */
     String SCOOTER_TABLET_UPDATE_TOPIC = "scooter-%s/device-tablet-update";
+    /**
+     * 设置车辆型号
+     */
+    String SET_SCOOTER_MODEL_TOPIC = "scooter-%s/set-model";
 
     // 消息订阅主题Topic(车辆平板端往后台上报车辆数据)
     /**

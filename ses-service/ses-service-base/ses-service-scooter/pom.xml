@@ -30,19 +30,6 @@
     <!--		</dependency>-->
     <!--	</dependencies>-->
 
-    <dependencies>
-        <!--b端业务接口-->
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-api-mobile-b</artifactId>
-        </dependency>
-        <!--c端业务接口-->
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-api-mobile-c</artifactId>
-        </dependency>
-    </dependencies>
-
     <!--环境配置-->
     <profiles>
         <profile>

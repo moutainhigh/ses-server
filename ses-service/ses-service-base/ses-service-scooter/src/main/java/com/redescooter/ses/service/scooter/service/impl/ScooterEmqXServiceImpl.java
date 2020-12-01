@@ -9,16 +9,17 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.InsertRideStatDataDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.foundation.service.AppVersionService;
+import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.mobile.b.service.RideStatBService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.RideStatCService;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
-import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockPublishDTO;
-import com.redescooter.ses.api.scooter.vo.emqx.ScooterNavigationPublishDTO;
-import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.*;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
+import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterNavigationMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
@@ -31,6 +32,7 @@ import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -40,6 +42,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author assert
@@ -55,16 +58,20 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     private ScoScooterActionTraceMapper scooterActionTraceMapper;
     @Resource
     private ScooterNavigationMapper scooterNavigationMapper;
-    @Reference
-    private RideStatBService rideStatBService;
-    @Reference
-    private RideStatCService rideStatCService;
+    @Resource
+    private ScooterEcuMapper scooterEcuMapper;
     @Resource
     private MqttClientUtil mqttClientUtil;
     @Resource
     private IdAppService idAppService;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Reference
+    private RideStatBService rideStatBService;
+    @Reference
+    private RideStatCService rideStatCService;
+    @Reference
+    private AppVersionService appVersionService;
 
 
     @Override
@@ -126,9 +133,6 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
             }
             return 1;
         });
-
-        // 下发平板升级指令
-//        sendTabletUpdateEMQ();
 
         return new GeneralResult(scooterLockDTO.getRequestId());
     }
@@ -228,19 +232,54 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         return new GeneralResult(scooterNavigation.getRequestId());
     }
 
-    /**
-     * 发送平板更新EMQ X消息
-     * TODO 待开发....
-     */
-    private void sendTabletUpdateEMQ() {
-        ScooterTabletUpdatePublishDTO tabletUpdatePublish = new ScooterTabletUpdatePublishDTO();
-        tabletUpdatePublish.setTabletSn("OF894HSG4T9LHECY");
-        tabletUpdatePublish.setDownloadLink("http://test.redescooter.net/download/scs_code4.apk");
-        tabletUpdatePublish.setVersionCode("4");
+    @Override
+    public GeneralResult updateScooterTablet(List<String> tabletSnList) {
+        // 查询车辆平板版本信息
+        AppVersionDTO appVersion = appVersionService.getNewAppVersionById(null);
 
-        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
-                    JSONObject.toJSONString(tabletUpdatePublish));
+        List<ScooterEcuDTO> scooterEcuList = scooterEcuMapper.batchGetScooterEcuByScooterId(null);
+
+        /**
+         * 消息通知下发,通知平板端进行升级操作
+         */
+        ScooterTabletUpdatePublishDTO tabletUpdatePublish = new ScooterTabletUpdatePublishDTO();
+        tabletUpdatePublish.setDownloadLink(appVersion.getUpdateLink());
+        tabletUpdatePublish.setVersionCode(appVersion.getCode());
+
+        ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+            tabletSnList.forEach(sn -> {
+                tabletUpdatePublish.setTabletSn(sn);
+                mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
+                        JSONObject.toJSONString(tabletUpdatePublish));
+            });
+        });
+
+        return null;
     }
+
+    @Override
+    public GeneralResult setScooterModel(String tabletSn, Integer scooterModel) {
+        String scooterNo = scooterMapper.getScooterNoByTabletSn(tabletSn);
+        if (StringUtils.isBlank(scooterNo)) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
+
+        /**
+         * 消息通知下发,通知平板端进行车型设置操作
+         */
+        SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
+        publish.setTabletSn(tabletSn);
+        publish.setType(scooterModel);
+
+        ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
+                    JSONObject.toJSONString(publish));
+        });
+
+        return null;
+    }
+
 
     /**
      * 组装车辆操作记录数据

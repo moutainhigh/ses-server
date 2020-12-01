@@ -117,10 +117,8 @@
         ifnull(ecu.total_miles, 0) totalmileage
         from sco_scooter s
         left join sco_scooter_ecu ecu
-        on s.scooter_no = ecu.scooter_no
+        on s.tablet_sn = ecu.sn
         where s.id = #{id}
-        order by ecu.created_time desc
-        limit 1
     </select>
 
     <!--根据scooterNo查询车辆锁状态-->
