@@ -57,6 +57,7 @@
     <sql id="where_productionProductPartList">
         where parts.dr = 0
         and parts.disable=0
+        and parts.qc_flag=1
         <if test="secId != null">
             and parts.parts_sec=#{secId}
         </if>
@@ -185,23 +186,11 @@
     </select>
 
     <select id="productionProductPartListCount" resultType="int">
-        select count(1) from (select parts.id                as id,
-        parts.parts_no          as partsNum,
-        parts.parts_sec         as secId,
-        sec.name                as sec,
-        parts.procurement_cycle as productionCycle,
-        parts.dwg               as dwgUrl,
-        parts.cn_name           as cnName,
-        parts.en_name           as enName,
-        parts.fr_name           as frName,
-        1                       as qty,
-        count(templete.id) as templeteCount
+        select count(1)
         from ope_production_parts parts
         inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
         inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
-        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
-        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty) as result
     </select>
 
     <select id="productionProductPartList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult">
@@ -214,14 +203,11 @@
         parts.cn_name           as cnName,
         parts.en_name           as enName,
         parts.fr_name           as frName,
-        1                       as qty,
-        count(templete.id) as templeteCount
+        1                       as qty
         from ope_production_parts parts
         inner join ope_product_price sheet on sheet.product_id = parts.id and sheet.product_price_type = 1
         inner join ope_parts_sec sec on parts.parts_sec = sec.id and sec.dr = 0
-        inner join ope_production_quality_tempate templete on parts.id=templete.production_id and templete.production_type=parts.parts_type and templete.dr=0
         <include refid="where_productionProductPartList" />
-        group by  id,partsNum,secId,sec,productionCycle,dwgUrl,cnName,enName,frName,qty
         order by parts.created_time desc
         limit #{startRow},#{pageSize}
 
