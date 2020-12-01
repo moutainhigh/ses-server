@@ -116,21 +116,21 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             if (Strings.isNullOrEmpty(list.getDefName())){
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
             }
-            if (list.getDefName().length() > 20){
+            if (list.getDefName().length() > 50){
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
             }
-            // 校验正则
-            Pattern p= Pattern.compile(RegexpConstant.specialCharacters);
-            Matcher m=p.matcher(list.getDefName());
-            if (!m.matches()){
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
-            }
-            // 再校验value值，长度10位，仅数值和小数点
+//            // 校验正则
+//            Pattern p= Pattern.compile(RegexpConstant.specialCharacters);
+//            Matcher m=p.matcher(list.getDefName());
+//            if (!m.matches()){
+//                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+//            }
+//            // 再校验value值，长度10位，仅数值和小数点
             if (Objects.isNull(list.getDefValue())){
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
-            String defValue = String.valueOf(list.getDefValue());
-            if (defValue.length() > 10){
+//            String defValue = String.valueOf(list.getDefValue());
+            if (list.getDefValue().length() > 50){
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
         }
@@ -304,11 +304,11 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
         }
         // 先对名称进行正则校验
-        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
-        Matcher m = p.matcher(enter.getSpecificatName());
-        if (!m.matches()){
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
-        }
+//        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
+//        Matcher m = p.matcher(enter.getSpecificatName());
+//        if (!m.matches()){
+//            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
+//        }
         QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
         if(enter.getId() != null){

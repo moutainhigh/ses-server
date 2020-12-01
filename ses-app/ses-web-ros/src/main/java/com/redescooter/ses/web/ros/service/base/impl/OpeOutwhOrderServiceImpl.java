@@ -1,10 +1,15 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
+
+import java.util.List;
+
 import com.redescooter.ses.web.ros.dao.base.OpeOutwhOrderMapper;
 import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderService;
 
@@ -25,17 +30,8 @@ public class OpeOutwhOrderServiceImpl extends ServiceImpl<OpeOutwhOrderMapper, O
     public int insertOrUpdate(OpeOutwhOrder record) {
         return baseMapper.insertOrUpdate(record);
     }
-
     @Override
     public int insertOrUpdateSelective(OpeOutwhOrder record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
-
-
-
-
-
-
-
-

@@ -199,8 +199,4 @@ public class OpeAllocate implements Serializable {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
-
-    public static OpeAllocateBuilder builder() {
-        return new OpeAllocateBuilder();
-    }
 }

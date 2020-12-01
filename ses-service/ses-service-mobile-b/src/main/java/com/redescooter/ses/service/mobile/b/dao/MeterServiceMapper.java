@@ -1,7 +1,6 @@
 package com.redescooter.ses.service.mobile.b.dao;
 
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
-import com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -20,7 +19,7 @@ public interface MeterServiceMapper {
      * @Return: MeterExpressOrderResult
      * @desc: 查询当前司机正在进行的订单
      */
-    MeterExpressOrderResult meterExpressOrderByStatus(@Param("driverId") Long driverId, @Param("status") String status);
+    MeterDeliveryOrderReuslt meterExpressOrderByStatus(@Param("driverId") Long driverId, @Param("status") String status);
 
     /**
      * @Description

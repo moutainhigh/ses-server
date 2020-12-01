@@ -2,24 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.service.mobile.b.dao.MeterServiceMapper">
 
-    <select id="meterExpressOrderByStatus" resultType="com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult">
+    <select id="meterExpressOrderByStatus" resultType="com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt">
         select exorder.id                  as id,
-               exorder.batch_no            as batchNo,
-               exorder.order_no            as orderNo,
-               exorder.status              as status,
-               exorder.recipient_country   as recipientCountry,
-               exorder.recipient_province  as recipientProvince,
-               exorder.recipient_city      as recipientCity,
-               exorder.recipient_postcode  as recipientPostcode,
-               exorder.recipient_address   as recipientAddress,
-               exorder.recipient_latitude  as recipientLatitude,
-               exorder.recipient_longitude as recipientLongitude,
-               exorder.recipient_geohash   as recipientGeohash,
-               exorder.expect_time_begin   as expectTimeBegin,
-               exorder.expect_time_end     as expectTimeEnd
+        exorder.order_no            as orderNo,
+        exorder.status              as status,
+        exorder.recipient_address   as recipientAddress,
+        exorder.recipient_latitude  as latitude,
+        exorder.recipient_longitude as longitude,
+        exorder.recipient_geohash   as geohash
         from cor_express_order exorder
-                 left join cor_express_delivery_detail detail on exorder.id = detail.express_order_id and detail.dr = 0
-                 left join cor_express_delivery delivery on delivery.id = detail.express_delivery_id and delivery.dr = 0
+        left join cor_express_delivery_detail detail on exorder.id = detail.express_order_id and detail.dr = 0
+        left join cor_express_delivery delivery on delivery.id = detail.express_delivery_id and delivery.dr = 0
         where exorder.dr = 0
           and delivery.driver_id = #{driverId}
           and exorder.status =#{status}
@@ -44,7 +37,7 @@
                recipient_email   as recipientEmail,
                recipient_tel     as recipientTel,
                recipient_address as recipientAddress,
-               longitude            aslongitude,
+               longitude         as longitude,
                latitude          as latitude,
                geohash           as geohash,
                status            as status

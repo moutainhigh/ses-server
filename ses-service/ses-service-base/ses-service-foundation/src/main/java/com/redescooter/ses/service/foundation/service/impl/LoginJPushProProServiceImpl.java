@@ -46,7 +46,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
 
         //由于是做登录操作，故设置值为0
         jpushUserEnter.setStatus(LoginPushStatusEnums.LOGIN_IN.getValue());
-        if (enter.getClientType().equals(ClientTypeEnums.APP_ANDROID.getCode())) {
+        if (enter.getClientType().equals(ClientTypeEnums.APP_ANDROID.getValue())) {
             jpushUserEnter.setPlatformType(PlatformTypeEnums.ANDROID.getValue());
         }
         if (StringUtils.equals(enter.getClientType(),ClientTypeEnums.APP_IOS.getValue())) {

@@ -93,9 +93,9 @@
         sheet.standard_currency   as unit
         from ope_production_parts product
         inner join ope_supplier supplier on supplier.id = product.supplier_id and supplier.dr = 0
-        inner join ope_product_price sheet
-        on sheet.product_id = product.id and product_price_type = 1
+        inner join ope_product_price sheet on sheet.product_id = product.id and product_price_type = 1 and sheet.dr = 0
         <where>
+            product.disable=0
             <if test="enter.supplierId != null">
                 and supplier.id=#{enter.supplierId}
             </if>

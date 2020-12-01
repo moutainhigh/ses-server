@@ -35,28 +35,28 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteService {
-    
+
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
-    
+
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
-    
+
     @Autowired
     private OpeProductionCombinBomService opeProductionCombinBomService;
-    
+
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
-    
+
     @Autowired
     private OpeProductionQualityTempateBService opeProductionQualityTempateBService;
-    
+
     @Autowired
     private ProductionQcTempleteServiceMapper productionQcTmepleteServiceMapper;
-    
+
     @Reference
     private IdAppService idAppService;
-    
+
     /**
      * 部件质检模板保存
      *
@@ -87,12 +87,12 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        
+
         // 数据保存集合
         List<OpeProductionQualityTempate> saveOpeProductionQcTemplateList = new ArrayList<>();
-        
+
         List<OpeProductionQualityTempateB> saveOpeProductQcTemplateBList = new ArrayList<>();
-        
+
         // 入参校验
         for (Map.Entry<QcItemTemplateEnter, List<QcResultEnter>> entry : qcResultEnterMap.entrySet()) {
             QcItemTemplateEnter key = entry.getKey();
@@ -102,7 +102,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.TEMPLATE_QC_ITEMNAME_IS_EMPTY.getMessage());
             }
-            
+
             int sequence = 0;
             for (QcResultEnter item : value) {
                 if (StringUtils.isBlank(item.getResult())) {
@@ -117,7 +117,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(),
                             ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
-                
+
                 // 结果集 排序校验
                 if (sequence == 0) {
                     sequence = item.getResultSequence();
@@ -130,10 +130,10 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 }
             }
         }
-        
+
         // 校验 产品 和 质检模板
         List<OpeProductionQualityTempate> opeProductionQualityTempateList = deleteOpeProductionQualityTempate(enter);
-        
+
         // 构建 数据库对象
         buildProductTemplate(enter, saveOpeProductionQcTemplateList, saveOpeProductQcTemplateBList, qcResultEnterMap,
                 opeProductionQualityTempateList);
@@ -147,7 +147,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         }
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 质检模板详情
      *
@@ -158,9 +158,9 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     public List<QcTemplateDetailResult> detail(QcTempleteDetailEnter enter) {
         // 产品校验
         checkOpeProductionProduction(enter.getId(), enter.getProductionProductType());
-        
+
         List<QcTemplateDetailResult> result = productionQcTmepleteServiceMapper.detail(enter);
-        
+
         if (CollectionUtils.isEmpty(result)) {
             return new ArrayList<>();
         }
@@ -176,7 +176,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         result.stream().sorted(Comparator.comparing(QcTemplateDetailResult::getCreateTime)).collect(Collectors.toList());
         return result;
     }
-    
+
     /**
      * 产品 质检模板复制 快速保存
      *
@@ -197,13 +197,13 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 opeProductionQualityTempateBService.list(new LambdaQueryWrapper<OpeProductionQualityTempateB>()
                         .in(OpeProductionQualityTempateB::getProductQualityTempateId,
                                 opeProductionQualityTempateList.stream().map(OpeProductionQualityTempate::getId).collect(Collectors.toList())));
-        
+
         if (CollectionUtils.isEmpty(productionQualityTempateBList)) {
             throw new SesWebRosException(ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getCode(),
                     ExceptionCodeEnums.QC_TEMPLATE_IS_NOT_EXIT.getMessage());
         }
-        
-        
+
+
         for (OpeProductionQualityTempate opeProductionQualityTempate : opeProductionQualityTempateList) {
             opeProductionQualityTempate.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE));
             opeProductionQualityTempate.setProductionId(enter.getId());
@@ -214,7 +214,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             opeProductionQualityTempate.setUpdatedTime(new Date());
         }
         opeProductionQualityTempateService.saveBatch(opeProductionQualityTempateList);
-        
+
         for (OpeProductionQualityTempate templete : opeProductionQualityTempateList) {
             productionQualityTempateBList.forEach(item -> {
                 item.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE_B));
@@ -225,12 +225,12 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 item.setUpdatedTime(new Date());
             });
         }
-        
+
         opeProductionQualityTempateBService.saveBatch(productionQualityTempateBList);
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 产品质检模板封装
      *
@@ -254,7 +254,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                         ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
-        
+
         qcResultEnterMap.forEach((key, value) -> {
             Long templateId = idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE);
             if (CollectionUtils.isNotEmpty(opeProductionQcTemplateList)) {
@@ -282,9 +282,38 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 });
             }
         });
-        
+
+
+
+        //更改质检模版标示
+        switch (enter.getProductionProductType()) {
+            case 4:
+                OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(enter.getId());
+//                if (Objects.isNull(productionScooterBom.getQcFlag()) || !productionScooterBom.getQcFlag()) {
+                    productionScooterBom.setQcFlag(Boolean.TRUE);
+                    opeProductionScooterBomService.updateById(productionScooterBom);
+//                }
+                break;
+            case 5:
+                OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(enter.getId());
+                //更改质检模版标示
+//                if (Objects.isNull(productionCombinBom.getQcFlag() || !productionCombinBom.getQcFlag())) {
+                    productionCombinBom.setQcFlag(Boolean.TRUE);
+                    opeProductionCombinBomService.updateById(productionCombinBom);
+//                }
+                break;
+            default:
+                OpeProductionParts opeProductionPart = opeProductionPartsService.getById(enter.getId());
+                //更改质检模版标示
+//                if (Objects.isNull(opeProductionPart.getQcFlag()) || !opeProductionPart.getQcFlag()) {
+                    opeProductionPart.setQcFlag(Boolean.TRUE);
+                    opeProductionPartsService.updateById(opeProductionPart);
+//                }
+                break;
+        }
+
     }
-    
+
     /**
      * 质检模板赋值
      *
@@ -312,7 +341,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         opeProductionQualityTempate.setUpdatedTime(new Date());
         return opeProductionQualityTempate;
     }
-    
+
     /**
      * 质检结果为空
      *
@@ -338,7 +367,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         opeProductionQualityTempateB.setUpdatedTime(new Date());
         return opeProductionQualityTempateB;
     }
-    
+
     /**
      * 校验 产品 和 质检模板
      *
@@ -348,7 +377,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     private List<OpeProductionQualityTempate> deleteOpeProductionQualityTempate(SaveQcTemplateEnter enter) {
         // 产品校验
         checkOpeProductionProduction(enter.getId(), enter.getProductionProductType());
-        
+
         // 查询是否存在质检模板
         List<OpeProductionQualityTempate> opeProductionQualityTempateList =
                 opeProductionQualityTempateService.list(new LambdaQueryWrapper<OpeProductionQualityTempate>()
@@ -358,7 +387,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             // 质检项删除
             opeProductionQualityTempateService.removeByIds(opeProductionQualityTempateList.stream()
                     .map(OpeProductionQualityTempate::getId).collect(Collectors.toList()));
-            
+
             // 质检结果删除
             List<OpeProductionQualityTempateB> opeProductionQualityTempateBList =
                     opeProductionQualityTempateBService.list(new LambdaQueryWrapper<OpeProductionQualityTempateB>()
@@ -371,7 +400,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         }
         return opeProductionQualityTempateList;
     }
-    
+
     /**
      * 产品校验
      *
@@ -403,6 +432,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             if (productionCombinBom == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+
             }
         }
     }

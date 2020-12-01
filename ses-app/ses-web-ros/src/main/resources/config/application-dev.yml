@@ -376,6 +376,120 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
+      InWhouse-order-API:
+        group-name: InWhouse-order-API
+        title: 入库单
+        description: 入库单
+        base-package: com.redescooter.ses
+        path-regex: /sys/inWhouse/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      Allocate-order-API:
+        group-name: Allocate-order-API
+        title: 调拨单
+        description: 调拨单
+        base-package: com.redescooter.ses
+        path-regex: /sys/allocate/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      Purchase-order-API:
+        group-name: Purchase-order-API
+        title: 采购单
+        description: 采购单
+        base-package: com.redescooter.ses
+        path-regex: /sys/purchase/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
+      Sale-Combin-api:
+        #用户组api，可以配置多个组
+
+        #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 组装销售
+        #api组的标题，会在swagger-ui的标题处显示
+        description: 组装销售
+        #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /sale/combin/.*
+        #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.8.2                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+        Sale-Parts-api:
+          #用户组api，可以配置多个组
+          group-name: Sale-Parts-api
+          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+          title: 部件销售
+          #api组的标题，会在swagger-ui的标题处显示
+          description: 部件销售
+          #api组的描述，会在swagger-ui的描述中显示
+          base-package: com.redescooter.ses
+          path-regex: /sale/parts/.*
+          #匹配到本组的api接口，匹配uri，可以用用正则表达式
+          path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+          version: v1.8.2                                                                                                 #Api版本
+          license: RedE 公司内部传阅                                                                                        #授权协议
+          license-url: '#'                                                                                                #授权协议地址
+          terms-of-service-url:                                                                                           #服务条款地址
+          contact: #文档联系人
+            name: 李加廷                                                                                                   #联系人名字
+            email: jerry@redescooter.com                                                                                  #联系人邮箱
+            url: https://github.com/mrjerryli
+
+      RestProduction-Parts-api:
+        #用户组api，可以配置多个组
+        group-name: RestProduction-api
+        #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 生产单据API
+        #api组的标题，会在swagger-ui的标题处显示
+        description: 生产单据API
+        #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /restproduction/.*
+        #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.8.2                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+
+
 ## stripe pay
 stripe:
   currency: eur

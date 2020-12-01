@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.mobile.b.service.meter;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
-import com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 
 /**
@@ -20,7 +20,7 @@ public interface MeterService {
      * @Return:
      * @desc: 快递仪表当前正在进行的订单
      */
-    MeterExpressOrderResult meterExpressOrder(MeterOrderEnter enter);
+    MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter);
     /**
      * @Description
      * @Author: alex
@@ -29,5 +29,14 @@ public interface MeterService {
      * @Return: MeterDeliveryOrderReuslt
      * @desc: 餐厅仪表当前正在进行的订单
      */
-    MeterDeliveryOrderReuslt meterDeliveryOrder(MeterOrderEnter enter);
+    MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter);
+    /**
+    * @Description
+    * @Author: aleax
+    * @Date:   2020/11/17 2:59 下午
+    * @Param:  enter
+    * @Return: MeterDeliveryOrderReuslt
+    * @desc: 仪表订单
+    */
+    MeterDeliveryOrderReuslt meterOrder(MeterOrderEnter enter);
 }

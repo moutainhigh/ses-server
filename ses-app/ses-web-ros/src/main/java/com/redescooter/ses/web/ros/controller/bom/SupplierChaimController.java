@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.bom;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -56,6 +57,7 @@ public class SupplierChaimController {
 
     @PostMapping(value = "/editProductPrice")
     @ApiOperation(value = "产品价格修改", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> editProductPrice(@ModelAttribute @ApiParam("请求参数") EditProductPriceEnter enter) {
         return new Response<>(supplierChaimRosService.editProductPrice(enter));
     }

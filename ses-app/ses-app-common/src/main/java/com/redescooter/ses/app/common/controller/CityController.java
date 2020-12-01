@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,4 +50,11 @@ public class CityController {
         return new Response<>(cityBaseService.queryChildlevel(enter));
     }
 
+
+    @IgnoreLoginCheck
+    @PostMapping("/countryCityPostCode")
+    @ApiOperation(value = "Get PostCode")
+    public Response<List<CountryCityResult>> countryCityPostCode(@ModelAttribute @ApiParam("Parameter") CityNameEnter cityNameEnter) {
+        return new Response<>(cityBaseService.countryCityPostCode(cityNameEnter));
+    }
 }

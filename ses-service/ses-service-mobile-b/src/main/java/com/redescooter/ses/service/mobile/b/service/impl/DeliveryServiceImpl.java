@@ -307,7 +307,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (delivery == null) {
             throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
+//        if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
+        if (!DeliveryStatusEnums.PENDING.getValue().equals(delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 修改订单状态
@@ -344,7 +345,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         //APP推送
         PushMsgBo pushApp = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnums.PC.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())

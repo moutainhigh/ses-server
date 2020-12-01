@@ -450,6 +450,42 @@ public enum ExceptionCodeEnums {
 
     QUANTITY_ILLEGAL(10216, "数量违法"),
 
+    SELECT_COMBIN_NAME(10217, "请先选择组装件名称"),
+
+    PRODUCT_NAME_NOT_NULL(10218, "产品名称不能为空"),
+
+    COLOR_VALUE_EXIST(10219, "色值已存在"),
+
+    ORDER_NOT_EXIST(10220, "单据不存在"),
+
+    ORDER_STATUS_ERROR(10221, "单据状态的不满足"),
+
+    ORDER_TRACE_IS_NOT_EXIST(10222, "单据记录不存在"),
+
+    STOCK_NOT_CANCEL(10223, "正在备货中，无法取消"),
+
+    PRODUCT_DOES_NOT_EXIST(10224, "产品不存在"),
+
+    PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
+
+    QTY_IS_ILLEGAL(10226,"数量不合法"),
+
+    DEPT_NAME_EXIST(10227,"当前父级部门下面部门名称重复"),
+
+    ROLE_NAME_EXIST(10228,"角色名称已存在"),
+
+    PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
+
+    PARENT_DEPT_NOT_EXIST(10230,"父级部门不存在！"),
+
+    PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
+
+    TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
+
+    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+
+
+
     ;
 
 

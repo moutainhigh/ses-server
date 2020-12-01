@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.specificat;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.specificat.ColorService;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
@@ -31,6 +32,7 @@ public class ColorController {
 
     @PostMapping(value = "/colorSave")
     @ApiOperation(value = "颜色新增", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> colorSave(@ModelAttribute @ApiParam("请求参数") ColorSaveOrEditEnter enter) {
         return new Response(colorService.colorSave(enter));
     }

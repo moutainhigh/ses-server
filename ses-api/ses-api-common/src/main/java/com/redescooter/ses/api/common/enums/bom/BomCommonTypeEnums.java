@@ -67,5 +67,8 @@ public enum BomCommonTypeEnums {
         return null;
     }
 
+    public static void main(String[] args) {
+        System.out.println(getEnumsByValue("parts").getCode());;
+    }
 
 }

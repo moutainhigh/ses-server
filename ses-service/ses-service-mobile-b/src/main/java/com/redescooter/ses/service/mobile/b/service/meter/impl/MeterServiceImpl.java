@@ -6,11 +6,14 @@ import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
-import com.redescooter.ses.api.mobile.b.vo.meter.MeterExpressOrderResult;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.MeterServiceMapper;
@@ -51,6 +54,9 @@ public class MeterServiceImpl implements MeterService {
     @Autowired
     private CorExpressOrderService corExpressOrderService;
 
+    @Autowired
+    private UserBaseService userBaseService;
+
     /**
      * @Description
      * @Author: alex
@@ -61,13 +67,12 @@ public class MeterServiceImpl implements MeterService {
      * @param enter
      */
     @Override
-    public MeterExpressOrderResult meterExpressOrder(MeterOrderEnter enter) {
-        CorDriver corDriver = this.getDriverByScooterNo(enter);
+    public MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter) {
         //查询当前正在进行的订单
-        MeterExpressOrderResult result= meterServiceMapper.meterExpressOrderByStatus(corDriver.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
         if (result!=null){
             //查询所有订单的统计数据
-            int  count=meterServiceMapper.meterExpressOrderByCount(corDriver.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
             result.setRemainingOrderNum(count);
         }
         return result;
@@ -83,14 +88,59 @@ public class MeterServiceImpl implements MeterService {
      * @param enter
      */
     @Override
-    public MeterDeliveryOrderReuslt meterDeliveryOrder(MeterOrderEnter enter) {
-        CorDriver corDriver = this.getDriverByScooterNo(enter);
-        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(corDriver.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
+    public MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter) {
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
         if (Objects.nonNull(result)) {
-            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(corDriver.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
+            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
         }
         return result;
     }
+
+    /**
+     * @Description
+     * @Author: aleax
+     * @Date: 2020/11/17 2:59 下午
+     * @Param: enter
+     * @Return: MeterDeliveryOrderReuslt
+     * @desc: 仪表订单
+     * @param enter
+     */
+    @Override
+    public MeterDeliveryOrderReuslt meterOrder(MeterOrderEnter enter) {
+        CorDriver corDriver = this.getDriverByScooterNo(enter);
+        if (corDriver==null){
+            return null;
+        }
+        GeneralEnter generalEnter = new GeneralEnter();
+        generalEnter.setUserId(corDriver.getUserId());
+        QueryUserResult queryUserResult = userBaseService.queryUserById(generalEnter);
+        if (queryUserResult == null) {
+            return null;
+        }
+        MeterDeliveryOrderReuslt result=null;
+        IdEnter idEnter = new IdEnter();
+        switch (queryUserResult.getUserType()){
+            case 4:
+                //餐厅APP端
+                idEnter.setUserId(corDriver.getUserId());
+                result = meterDeliveryOrder(idEnter);
+                break;
+            case 5:
+                //快递APP端
+                idEnter.setId(corDriver.getId());
+                result = meterExpressOrder(idEnter);
+                break;
+            case 6:
+                //TOC 个人端
+                break;
+            default:
+                break;
+        }
+
+        //获取账户类型
+        return result;
+    }
+
     /**
     * @Description
     * @Author: alex
@@ -101,7 +151,9 @@ public class MeterServiceImpl implements MeterService {
     */
     private CorDriver getDriverByScooterNo(MeterOrderEnter enter){
         BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
-
+        if (baseScooterResult==null){
+            return null;
+        }
         QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_SCOOTER_ID,baseScooterResult.getId());
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());

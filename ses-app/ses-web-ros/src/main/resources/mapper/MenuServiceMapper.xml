@@ -70,5 +70,12 @@
         where ur.user_id = #{userId} and r.role_status = 1
     </select>
 
+    <select id="menusByUserId" resultType="com.redescooter.ses.web.ros.dm.OpeSysMenu">
+        SELECT menu.* from ope_sys_menu menu
+        LEFT JOIN ope_sys_role_menu rm on rm.menu_id = menu.id
+        LEFT JOIN ope_sys_user_role ru on ru.role_id = rm.role_id
+        where menu.dr = 0 and ru.user_id = #{userId}
+    </select>
+
 </mapper>
 

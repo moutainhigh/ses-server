@@ -109,7 +109,6 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         QueryUserResult queryUserResult = new QueryUserResult();
         BeanUtils.copyProperties(plaUser, queryUserResult);
-
         return queryUserResult;
     }
 

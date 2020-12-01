@@ -1,9 +1,11 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -20,7 +22,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_production_parts")
-public class OpeProductionParts implements Serializable {
+public class OpeProductionParts {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
@@ -33,7 +36,6 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -133,6 +135,13 @@ public class OpeProductionParts implements Serializable {
     @TableField(value = "dwg")
     @ApiModelProperty(value = "图纸")
     private String dwg;
+
+    /**
+     * 是否有质检模板，0：否，1：是
+     */
+    @TableField(value = "qc_flag")
+    @ApiModelProperty(value = "是否有质检模板，0：否，1：是")
+    private Boolean qcFlag;
 
     /**
      * 备注
@@ -302,8 +311,6 @@ public class OpeProductionParts implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -335,6 +342,8 @@ public class OpeProductionParts implements Serializable {
     public static final String COL_PROCUREMENT_CYCLE = "procurement_cycle";
 
     public static final String COL_DWG = "dwg";
+
+    public static final String COL_QC_FLAG = "qc_flag";
 
     public static final String COL_REMARK = "remark";
 

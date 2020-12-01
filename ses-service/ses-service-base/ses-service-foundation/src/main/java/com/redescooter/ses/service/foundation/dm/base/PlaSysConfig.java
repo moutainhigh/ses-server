@@ -16,7 +16,7 @@ public class PlaSysConfig implements Serializable {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "ID")
-    private Integer id;
+    private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除

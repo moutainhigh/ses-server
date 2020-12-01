@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.production;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.production.allocate.AllocateService;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
@@ -87,6 +88,7 @@ public class AllocateController {
 
     @PostMapping(value = "/partsList")
     @ApiOperation(value = "新增调拨单部件列表", response = ProductPartsResult.class)
+    @AvoidDuplicateSubmit
     public Response<List<ProductPartsResult>> allocatePartsList(@ModelAttribute @ApiParam("请求参数") ProductPartsListEnter enter) {
         return new Response<>(allocateService.allocatePartsList(enter));
     }

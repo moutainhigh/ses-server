@@ -28,17 +28,26 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "所属部门名称")
     private String deptName;
 
+    @ApiModelProperty(value = "部门状态 1：正常，2：禁用")
+    private Integer deptStatus;
+
     @ApiModelProperty(value = "所属岗位id")
     private String positionId;
 
     @ApiModelProperty(value = "所属岗位名称")
     private String positionName;
 
+    @ApiModelProperty(value = "岗位状态  1：正常，2：禁用")
+    private Integer positionStatus;
+
     @ApiModelProperty(value = "所属角色名称")
     private String roleName;
 
     @ApiModelProperty(value = "所属角色id")
     private String roleId;
+
+    @ApiModelProperty("角色状态")
+    private String roleStatus;
 
     @ApiModelProperty(value = "联系电话")
     private String telephone;

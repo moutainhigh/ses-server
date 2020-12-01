@@ -26,18 +26,6 @@ public class MeterDeliveryOrderReuslt extends GeneralResult {
     @ApiModelProperty(value = "订单号")
     private String orderNo;
 
-    @ApiModelProperty(value = "订单号")
-    private Long scooterId;
-
-    @ApiModelProperty(value = "收件人")
-    private String recipient;
-
-    @ApiModelProperty(value = "收件人邮箱")
-    private String recipientEmail;
-
-    @ApiModelProperty(value = "收件人电话")
-    private String recipientTel;
-
     @ApiModelProperty(value = "收件人地址")
     private String recipientAddress;
 

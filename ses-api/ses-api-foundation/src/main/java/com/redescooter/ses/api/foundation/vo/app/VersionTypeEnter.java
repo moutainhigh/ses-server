@@ -22,12 +22,14 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class VersionTypeEnter extends GeneralEnter {
  
-  @ApiModelProperty(value = "版本类型")
+  @ApiModelProperty(value = "版本类型 1.IOS 2. ANDROID")
   @NotNull(code = ValidationExceptionCode.CLIENT_TYPE_IS_EMPTY,message = "版本类型为空")
   private Integer type;
 
-  @ApiModelProperty(value = "应用code")
+  @ApiModelProperty(value = "应用code 版本应用编码")
   @NotNull(code = ValidationExceptionCode.CLIENT_CODE_IS_EMPTY,message = "客户端代码为空")
   private String code;
+
+
 
 }

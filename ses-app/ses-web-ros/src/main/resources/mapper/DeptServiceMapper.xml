@@ -148,7 +148,10 @@
          name as name
         from ope_sys_dept
         where dr = 0
-        and tenant_id = #{tenantId} and id != 1000000 and dept_status = 1
+        and tenant_id = #{enter.tenantId} and id != 1000000
+        <if test="enter.type != null and enter.type == 2">
+            and dept_status = 1
+        </if>
     </select>
 
     <select id="getChildDept" resultType="com.redescooter.ses.web.ros.dm.OpeSysDept">

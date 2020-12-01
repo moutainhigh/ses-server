@@ -1,13 +1,13 @@
 package com.redescooter.ses.web.ros.dm;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.*;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_production_scooter_bom")
-public class OpeProductionScooterBom implements Serializable {
+public class OpeProductionScooterBom {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
@@ -35,7 +36,6 @@ public class OpeProductionScooterBom implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -102,10 +102,10 @@ public class OpeProductionScooterBom implements Serializable {
     private Integer disable;
 
     /**
-     * 状态，1：未激活，2：已激活，2：已失效
+     * 状态，1：已激活，2：未激活，:3：已失效，4：已作废
      */
     @TableField(value = "bom_status")
-    @ApiModelProperty(value = "状态，1：未激活，2：已激活，2：已失效")
+    @ApiModelProperty(value = "状态，1：已激活，2：未激活，:3：已失效，4：已作废")
     private Integer bomStatus;
 
     /**
@@ -156,6 +156,13 @@ public class OpeProductionScooterBom implements Serializable {
     @TableField(value = "fr_name")
     @ApiModelProperty(value = "法文名称")
     private String frName;
+
+    /**
+     * 是否有质检模板，0：否，1：是
+     */
+    @TableField(value = "qc_flag")
+    @ApiModelProperty(value = "是否有质检模板，0：否，1：是")
+    private Boolean qcFlag;
 
     /**
      * 创建人
@@ -220,8 +227,6 @@ public class OpeProductionScooterBom implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -259,6 +264,8 @@ public class OpeProductionScooterBom implements Serializable {
     public static final String COL_EN_NAME = "en_name";
 
     public static final String COL_FR_NAME = "fr_name";
+
+    public static final String COL_QC_FLAG = "qc_flag";
 
     public static final String COL_CREATED_BY = "created_by";
 

@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.ros.service.base;
 
+import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
+
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public interface OpeOutwhOrderService extends IService<OpeOutwhOrder> {
 
 
@@ -18,11 +17,3 @@ public interface OpeOutwhOrderService extends IService<OpeOutwhOrder> {
     int insertOrUpdateSelective(OpeOutwhOrder record);
 
 }
-
-
-
-
-
-
-
-
