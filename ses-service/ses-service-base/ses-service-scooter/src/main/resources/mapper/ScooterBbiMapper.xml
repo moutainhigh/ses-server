@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterBbiMapper">
+
+    <!--根据scooterNo和batchNo查询车辆bbi信息-->
+    <select id="getScooterBbiByScooterNoAndBatchNo" resultType="com.redescooter.ses.api.scooter.vo.emqx.ScooterBbiReportedDTO">
+        select id, scooter_no scooterNo, batch_no batchNo, breakdown, current_shift_i currentShiftI,
+        `date`, `enable`, factory_no factoryNo,main_switch_open mainSwitchOpen, shift_i shiftI
+        from sco_scooter_bbi
+        where dr = 0 and scooter_no = #{scooterNo} and batch_no = #{batchNo}
+    </select>
+
+    <!--根据id修改车辆BBI信息-->
+    <update id="updateScooterBbiById" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterBbiReportedDTO">
+        update sco_scooter_bbi
+        <set>
+            <if test="batchNo != null">
+                batch_no = #{batchNo,jdbcType=BIGINT},
+            </if>
+            <if test="breakdown != null">
+                breakdown = #{breakdown,jdbcType=BOOLEAN},
+            </if>
+            <if test="currentShiftI != null">
+                current_shift_i = #{currentShiftI,jdbcType=INTEGER},
+            </if>
+            <if test="date != null">
+                `date` = #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="enable != null">
+                `enable` = #{enable,jdbcType=BOOLEAN},
+            </if>
+            <if test="factoryNo != null">
+                factory_no = #{factoryNo,jdbcType=INTEGER},
+            </if>
+            <if test="mainSwitchOpen != null">
+                main_switch_open = #{mainSwitchOpen,jdbcType=BOOLEAN},
+            </if>
+            <if test="shiftI != null">
+                shift_i = #{shiftI,jdbcType=INTEGER},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--新增车辆BBI信息-->
+    <insert id="insertScooterBbi" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterBbiReportedDTO">
+        insert into sco_scooter_bbi
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="scooterNo != null">
+                scooter_no,
+            </if>
+            <if test="batchNo != null">
+                batch_no,
+            </if>
+            <if test="breakdown != null">
+                breakdown,
+            </if>
+            <if test="currentShiftI != null">
+                current_shift_i,
+            </if>
+            <if test="date != null">
+                `date`,
+            </if>
+            <if test="enable != null">
+                `enable`,
+            </if>
+            <if test="factoryNo != null">
+                factory_no,
+            </if>
+            <if test="mainSwitchOpen != null">
+                main_switch_open,
+            </if>
+            <if test="shiftI != null">
+                shift_i,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="scooterNo != null">
+                #{scooterNo,jdbcType=VARCHAR},
+            </if>
+            <if test="batchNo != null">
+                #{batchNo,jdbcType=BIGINT},
+            </if>
+            <if test="breakdown != null">
+                #{breakdown,jdbcType=BOOLEAN},
+            </if>
+            <if test="currentShiftI != null">
+                #{currentShiftI,jdbcType=INTEGER},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="enable != null">
+                #{enable,jdbcType=BOOLEAN},
+            </if>
+            <if test="factoryNo != null">
+                #{factoryNo,jdbcType=INTEGER},
+            </if>
+            <if test="mainSwitchOpen != null">
+                #{mainSwitchOpen,jdbcType=BOOLEAN},
+            </if>
+            <if test="shiftI != null">
+                #{shiftI,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

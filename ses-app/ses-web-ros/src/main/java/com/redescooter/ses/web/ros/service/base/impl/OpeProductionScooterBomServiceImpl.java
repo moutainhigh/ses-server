@@ -11,7 +11,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 
 @Service
 public class OpeProductionScooterBomServiceImpl extends
-    ServiceImpl<OpeProductionScooterBomMapper, OpeProductionScooterBom> implements OpeProductionScooterBomService {
+        ServiceImpl<OpeProductionScooterBomMapper, OpeProductionScooterBom> implements OpeProductionScooterBomService {
 
     @Override
     public int updateBatch(List<OpeProductionScooterBom> list) {
@@ -33,5 +33,7 @@ public class OpeProductionScooterBomServiceImpl extends
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
+
 
 

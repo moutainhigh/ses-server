@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.mobile.c.dao.ScooterRideStatDetailMapper">
+
+    <!--新增车辆骑行统计数据详情-->
+    <insert id="insertScooterRideStatDetail" parameterType="com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStatDetail">
+        insert into con_scooter_ride_stat_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="bizType != null">
+                biz_type,
+            </if>
+            <if test="bizId != null">
+                biz_id,
+            </if>
+            <if test="scooterId != null">
+                scooter_id,
+            </if>
+            <if test="duration != null">
+                duration,
+            </if>
+            <if test="co2HistoryTotal != null">
+                co2_history_total,
+            </if>
+            <if test="co2Increment != null">
+                co2_increment,
+            </if>
+            <if test="svgSpeed != null">
+                svg_speed,
+            </if>
+            <if test="mileage != null">
+                mileage,
+            </if>
+            <if test="savedMoney != null">
+                saved_money,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="dr != null">
+                #{dr},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId},
+            </if>
+            <if test="bizType != null">
+                #{bizType},
+            </if>
+            <if test="bizId != null">
+                #{bizId},
+            </if>
+            <if test="scooterId != null">
+                #{scooterId},
+            </if>
+            <if test="duration != null">
+                #{duration},
+            </if>
+            <if test="co2HistoryTotal != null">
+                #{co2HistoryTotal},
+            </if>
+            <if test="co2Increment != null">
+                #{co2Increment},
+            </if>
+            <if test="svgSpeed != null">
+                #{svgSpeed},
+            </if>
+            <if test="mileage != null">
+                #{mileage},
+            </if>
+            <if test="savedMoney != null">
+                #{savedMoney},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="createBy != null">
+                #{createBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

@@ -50,4 +50,13 @@ spring:                                                                         
 iot:
   address: 106.14.206.178:7332
 
+# MQTT配置信息
+mqtt:
+  ca: "C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\my_root_ca.pem"
+  clientCrt: "C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\client.pem"
+  clientKey: "C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\client.key"
+  timeout: 10
+  keepalive: 30
+  clientId: mqttx_5246732a
+  url: ssl://client.redemotors.com
 

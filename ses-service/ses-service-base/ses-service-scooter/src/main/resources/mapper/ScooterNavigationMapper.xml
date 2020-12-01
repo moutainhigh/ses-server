@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterNavigationMapper">
+
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation">
+        <id column="id" property="id" />
+        <result column="dr" property="dr" />
+        <result column="scooter_id" property="scooterId" />
+        <result column="scooter_no" property="scooterNo" />
+        <result column="destination" property="destination" />
+        <result column="destination_longitude" property="destinationLongitude" />
+        <result column="destination_latitude" property="destinationLatitude" />
+        <result column="status" property="status" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+        <result column="def1" property="def1" />
+        <result column="def2" property="def2" />
+        <result column="def3" property="def3" />
+        <result column="def5" property="def5" />
+        <result column="def6" property="def6" />
+    </resultMap>
+
+    <!--新增车辆导航信息-->
+    <insert id="insertScooterNavigation" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation">
+        insert into sco_scooter_navigation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="scooterId != null">
+                scooter_id,
+            </if>
+            <if test="scooterNo != null">
+                scooter_no,
+            </if>
+            <if test="destination != null">
+                destination,
+            </if>
+            <if test="destinationLongitude != null">
+                destination_longitude,
+            </if>
+            <if test="destinationLatitude != null">
+                destination_latitude,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="scooterId != null">
+                #{scooterId},
+            </if>
+            <if test="scooterNo != null">
+                #{scooterNo},
+            </if>
+            <if test="destination != null">
+                #{destination},
+            </if>
+            <if test="destinationLongitude != null">
+                #{destinationLongitude},
+            </if>
+            <if test="destinationLatitude != null">
+                #{destinationLatitude},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!--修改车辆导航信息-->
+    <update id="updateScooterNavigation" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation">
+        update sco_scooter_navigation
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="scooterId != null">
+                scooter_id = #{scooterId},
+            </if>
+            <if test="scooterNo != null">
+                scooter_no = #{scooterNo},
+            </if>
+            <if test="destination != null">
+                destination = #{destination},
+            </if>
+            <if test="destinationLongitude != null">
+                destination_longitude = #{destinationLongitude},
+            </if>
+            <if test="destinationLatitude != null">
+                destination_latitude = #{destinationLatitude},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据scooterId、status查询车辆导航信息-->
+    <select id="getScooterNavigationByScooterIdAndStatus" resultMap="BaseResultMap">
+        select * from sco_scooter_navigation
+	    where scooter_id = #{scooterId} and `status` = #{status}
+    </select>
+
+</mapper>

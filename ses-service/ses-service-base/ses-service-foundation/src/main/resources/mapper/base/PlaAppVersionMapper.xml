@@ -19,7 +19,7 @@
     <result column="new_version_name" jdbcType="VARCHAR" property="newVersionName" />
     <result column="min_version_num" jdbcType="INTEGER" property="minVersionNum" />
     <result column="nin_version_name" jdbcType="VARCHAR" property="ninVersionName" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
