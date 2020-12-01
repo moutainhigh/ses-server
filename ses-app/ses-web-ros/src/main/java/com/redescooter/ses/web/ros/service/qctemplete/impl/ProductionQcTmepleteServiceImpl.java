@@ -289,26 +289,26 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         switch (enter.getProductionProductType()) {
             case 4:
                 OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(enter.getId());
-                if (!productionScooterBom.getQcFlag() || Objects.isNull(productionScooterBom.getQcFlag())) {
+//                if (Objects.isNull(productionScooterBom.getQcFlag()) || !productionScooterBom.getQcFlag()) {
                     productionScooterBom.setQcFlag(Boolean.TRUE);
                     opeProductionScooterBomService.updateById(productionScooterBom);
-                }
+//                }
                 break;
             case 5:
                 OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(enter.getId());
                 //更改质检模版标示
-                if (!productionCombinBom.getQcFlag() || Objects.isNull(productionCombinBom.getQcFlag())) {
+//                if (Objects.isNull(productionCombinBom.getQcFlag() || !productionCombinBom.getQcFlag())) {
                     productionCombinBom.setQcFlag(Boolean.TRUE);
                     opeProductionCombinBomService.updateById(productionCombinBom);
-                }
+//                }
                 break;
             default:
                 OpeProductionParts opeProductionPart = opeProductionPartsService.getById(enter.getId());
                 //更改质检模版标示
-                if (!opeProductionPart.getQcFlag() || Objects.isNull(opeProductionPart.getQcFlag())) {
+//                if (Objects.isNull(opeProductionPart.getQcFlag()) || !opeProductionPart.getQcFlag()) {
                     opeProductionPart.setQcFlag(Boolean.TRUE);
                     opeProductionPartsService.updateById(opeProductionPart);
-                }
+//                }
                 break;
         }
 
@@ -416,11 +416,6 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             if (opeProductionPart == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-            }
-            //更改质检模版标示
-            if (!opeProductionPart.getQcFlag() || Objects.isNull(opeProductionPart.getQcFlag())) {
-                opeProductionPart.setQcFlag(Boolean.TRUE);
-                opeProductionPartsService.updateById(opeProductionPart);
             }
         }
         // 车辆校验
