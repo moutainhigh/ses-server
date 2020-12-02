@@ -209,7 +209,7 @@
     <select id="whNum" resultType="int">
         select  count(*)
         from ope_out_whouse_order wh
-        left join ope_invoice_order invoice on invoice.id = wh.invoice_id
+        left join ope_invoice_order invoice on invoice.id = wh.relation_id
         left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
         where wh.dr = 0 and purchase.id = #{purchaseId} and wh.out_wh_status in (10,20)
     </select>
