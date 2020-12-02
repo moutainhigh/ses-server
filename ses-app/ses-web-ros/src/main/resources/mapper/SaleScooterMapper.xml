@@ -18,8 +18,9 @@
             and scooter.sale_stutas = #{enter.saleStutas}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and scooter.product_name like concat('%', #{enter.keyword}, '%') or
+            and (scooter.product_name like concat('%', #{enter.keyword}, '%') or
             scooter.product_code like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

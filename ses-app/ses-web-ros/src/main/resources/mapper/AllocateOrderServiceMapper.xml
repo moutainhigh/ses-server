@@ -16,8 +16,9 @@
             and allocate.allocate_status = #{enter.allocateStatus}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and allocate.allocate_no like concat('%', #{enter.keyword}, '%') or
+            and ( allocate.allocate_no like concat('%', #{enter.keyword}, '%') or
             staff.full_name like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

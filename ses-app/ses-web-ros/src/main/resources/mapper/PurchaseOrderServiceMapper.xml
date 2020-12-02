@@ -19,9 +19,10 @@
             and purchase.purchase_status = #{enter.purchaseStatus}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and purchase.purchase_no like concat('%', #{enter.keyword}, '%') or
+            and ( purchase.purchase_no like concat('%', #{enter.keyword}, '%') or
             staff2.full_name like concat('%', #{enter.keyword}, '%') or
             supp.supplier_name like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

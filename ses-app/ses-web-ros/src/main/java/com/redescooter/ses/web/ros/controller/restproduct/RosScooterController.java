@@ -145,6 +145,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/qcTempleteSave")
     @ApiOperation(value = "保存质检模板", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> qcTempleteSave(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
         return new Response<>(productionQcTmepleteService.save(enter));
     }

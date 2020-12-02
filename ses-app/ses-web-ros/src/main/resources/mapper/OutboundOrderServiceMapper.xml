@@ -15,7 +15,7 @@
             staff.first_name like concat ('%',#{keyword},'%') or
             staff.last_name like concat ('%',#{keyword},'%') or
             whorder.out_wh_no like concat ('%',#{keyword},'%') or
-            whorder.invoice_no like concat ('%',#{keyword},'%')
+            whorder.relation_no like concat ('%',#{keyword},'%')
             )
         </if>
     </sql>
