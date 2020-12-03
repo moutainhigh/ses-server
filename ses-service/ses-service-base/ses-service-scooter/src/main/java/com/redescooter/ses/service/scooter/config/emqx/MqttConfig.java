@@ -14,10 +14,6 @@ import org.springframework.context.annotation.Bean;
 public class MqttConfig {
 
     /**
-     * 客户端Id,唯一不重复
-     */
-    private String clientId;
-    /**
      * 超时时间
      */
     private int timeout;
@@ -46,7 +42,7 @@ public class MqttConfig {
     @Bean
     public MqttClientUtil getMqttPushClient(){
         MqttClientUtil mqttClientUtil = new MqttClientUtil();
-        mqttClientUtil.connect(url, clientId, timeout, keepalive, ca, clientCrt, clientKey);
+        mqttClientUtil.connect(url, timeout, keepalive, ca, clientCrt, clientKey);
         return mqttClientUtil;
     }
 
