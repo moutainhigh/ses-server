@@ -13,8 +13,7 @@
         <if test="keyword != null and keyword != ''">
             and (
             invorder.invoice_no like concat('%',#{keyword},'%') or
-            staff.first_name like concat('%',#{keyword},'%') or
-            staff.last_name like concat('%',#{keyword},'%')
+            staff.full_name like concat('%',#{keyword},'%')
             )
         </if>
         order by invorder.created_time desc
