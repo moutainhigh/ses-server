@@ -56,10 +56,12 @@ public enum ExceptionCodeEnums {
 
     COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
 
+    APP_VERSION_TYPE_IS_EMPTY(10020, "应用类型为空"),
+
+    RELEASE_TYPE_IS_EMPTY(10021, "发布类型为空")
     ;
 
     private int code;
-
     private String message;
 
 }

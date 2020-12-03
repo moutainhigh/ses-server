@@ -40,6 +40,11 @@ spring:                                                                         
         - 192.168.2.200:7003
         - 192.168.2.200:7004
         - 192.168.2.200:7005
+
+  # 开启Swagger
+  swagger:                                                                                                              #swagger在线文档配置
+    enabled: true
+
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1

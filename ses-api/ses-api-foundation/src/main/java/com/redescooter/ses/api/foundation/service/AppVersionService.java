@@ -2,6 +2,8 @@ package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 
+import java.util.List;
+
 /**
  * 应用版本管理业务接口
  * @author assert
@@ -17,5 +19,7 @@ public interface AppVersionService {
      * @date 2020/11/30
     */
     AppVersionDTO getNewAppVersionById(Long id);
+
+    List<AppVersionDTO> queryAppVersion();
 
 }

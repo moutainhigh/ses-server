@@ -12,7 +12,11 @@ public enum AppVersionTypeEnum {
      */
     IOS(1, "IOS"),
     ANDROID(2, "安卓"),
-    SCS(3, "车载平板");
+    SCS(3, "车载平板"),
+    SaaS(4, "SaaS"),
+    SERVER(5, "后台服务"),
+    ROS(6, "ROS内部管理系统")
+    ;
 
     private Integer type;
     private String msg;

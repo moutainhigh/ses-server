@@ -76,7 +76,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
       appVersion.setNewVersionNum(""); // todo 这个需要参数传进来
       appVersion.setPackageSize(String.valueOf(size));
       appVersion.setNewVersionName(""); // todo 这个需要参数传进来
-      appVersion.setStatus(AppVersionStatusEnum.PUBLISHED.getStatus());
+      appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
       appVersion.setCreatedBy(0L);
       plaAppVersionService.insertOrUpdate(appVersion);
     }

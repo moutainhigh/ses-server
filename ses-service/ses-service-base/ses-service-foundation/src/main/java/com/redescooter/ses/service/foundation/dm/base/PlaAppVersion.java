@@ -131,6 +131,27 @@ public class PlaAppVersion implements Serializable {
     private Integer status;
 
     /**
+     * 更新内容标题
+     */
+    @TableField(value = "title")
+    @ApiModelProperty(value = "更新内容标题")
+    private String title;
+
+    /**
+     * 发布环境 1-dev环境 2-test环境 3-pre环境 4-pro环境
+     */
+    @TableField(value = "release_environment")
+    @ApiModelProperty(value = "发布环境 1-dev环境 2-test环境 3-pre环境 4-pro环境")
+    private Integer releaseEnvironment;
+
+    /**
+     * 标签
+     */
+    @TableField(value = "label")
+    @ApiModelProperty(value = "标签")
+    private String label;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -226,6 +247,12 @@ public class PlaAppVersion implements Serializable {
     public static final String COL_NIN_VERSION_NAME = "nin_version_name";
 
     public static final String COL_STATUS = "status";
+
+    public static final String COL_TITLE = "title";
+
+    public static final String COL_RELEASE_ENVIRONMENT = "release_environment";
+
+    public static final String COL_LABEL = "label";
 
     public static final String COL_CREATED_BY = "created_by";
 
