@@ -9,6 +9,7 @@
     <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
     <result column="battery" jdbcType="INTEGER" property="battery" />
     <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+    <result column="bluetooth_name" jdbcType="VARCHAR" property="bluetoothName" />
     <result column="iccid" jdbcType="VARCHAR" property="iccid" />
     <result column="latitude" jdbcType="DECIMAL" property="latitude" />
     <result column="longitude" jdbcType="DECIMAL" property="longitude" />
@@ -27,7 +28,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, scooter_no, battery, bluetooth_mac_address, iccid, latitude, longitude, mobile_signal, 
+    id, dr, scooter_no, battery, bluetooth_mac_address, bluetooth_name, iccid, latitude, longitude, mobile_signal,
     scooter_lock, sn, speed, standby_voltage, torsion, total_miles, version_code, created_by, 
     created_time, updated_by, updated_time
   </sql>
@@ -46,14 +47,14 @@
   <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu">
     <!--@mbg.generated-->
     insert into sco_scooter_ecu (id, dr, scooter_no, 
-      battery, bluetooth_mac_address, iccid, 
+      battery, bluetooth_mac_address,bluetooth_name, iccid,
       latitude, longitude, mobile_signal, 
       scooter_lock, sn, speed, 
       standby_voltage, torsion, total_miles, 
       version_code, created_by, created_time, 
       updated_by, updated_time)
     values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, 
-      #{battery,jdbcType=INTEGER}, #{bluetoothMacAddress,jdbcType=VARCHAR}, #{iccid,jdbcType=VARCHAR}, 
+      #{battery,jdbcType=INTEGER}, #{bluetoothMacAddress,jdbcType=VARCHAR}, #{bluetoothName,jdbcType=VARCHAR},#{iccid,jdbcType=VARCHAR},
       #{latitude,jdbcType=DECIMAL}, #{longitude,jdbcType=DECIMAL}, #{mobileSignal,jdbcType=INTEGER}, 
       #{scooterLock,jdbcType=BOOLEAN}, #{sn,jdbcType=VARCHAR}, #{speed,jdbcType=FLOAT}, 
       #{standbyVoltage,jdbcType=FLOAT}, #{torsion,jdbcType=INTEGER}, #{totalMiles,jdbcType=INTEGER}, 
@@ -78,6 +79,9 @@
       </if>
       <if test="bluetoothMacAddress != null">
         bluetooth_mac_address,
+      </if>
+      <if test="bluetoothName != null">
+        bluetooth_name,
       </if>
       <if test="iccid != null">
         iccid,
@@ -140,6 +144,9 @@
       </if>
       <if test="bluetoothMacAddress != null">
         #{bluetoothMacAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="bluetoothName != null">
+        #{bluetoothName,jdbcType=VARCHAR},
       </if>
       <if test="iccid != null">
         #{iccid,jdbcType=VARCHAR},
@@ -204,6 +211,9 @@
       <if test="bluetoothMacAddress != null">
         bluetooth_mac_address = #{bluetoothMacAddress,jdbcType=VARCHAR},
       </if>
+      <if test="bluetoothName != null">
+        bluetooth_name = #{bluetoothName,jdbcType=VARCHAR},
+      </if>
       <if test="iccid != null">
         iccid = #{iccid,jdbcType=VARCHAR},
       </if>
@@ -259,6 +269,7 @@
       scooter_no = #{scooterNo,jdbcType=VARCHAR},
       battery = #{battery,jdbcType=INTEGER},
       bluetooth_mac_address = #{bluetoothMacAddress,jdbcType=VARCHAR},
+      bluetooth_name = #{bluetoothName,jdbcType=VARCHAR},
       iccid = #{iccid,jdbcType=VARCHAR},
       latitude = #{latitude,jdbcType=DECIMAL},
       longitude = #{longitude,jdbcType=DECIMAL},

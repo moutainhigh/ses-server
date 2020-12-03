@@ -3,13 +3,13 @@ package com.redescooter.ses.service.scooter.config.emqx;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.ssl.SslUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 
 /**
@@ -37,13 +37,14 @@ public class MqttClientUtil implements MqttCallback {
     /**
      * 建立连接
      * @param host
-     * @param clientId
      * @param timeout
      * @param keepalive
      */
-    public void connect(String host, String clientId, int timeout, int keepalive, String ca, String clientCrt, String clientKey){
+    public void connect(String host, int timeout, int keepalive, String ca, String clientCrt, String clientKey){
         MqttClient client;
         try {
+            // clientId随机生成,保证不重复(如果clientId重复会导致将上台客户机挤下线)
+            String clientId = "mqttx_" + RandomUtils.nextInt(0, 999999);
             client = new MqttClient(host, clientId, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);

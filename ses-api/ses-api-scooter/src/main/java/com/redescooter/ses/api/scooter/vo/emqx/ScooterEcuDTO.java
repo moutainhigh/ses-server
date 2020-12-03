@@ -32,6 +32,11 @@ public class ScooterEcuDTO {
     private String bluetoothMacAddress;
 
     /**
+     * 蓝牙名称(本来应该是bluetoothName的,沟通失误造成的..)
+     */
+    private String bluetooth_name;
+
+    /**
     * Sim卡唯一标识
     */
     private String iccid;

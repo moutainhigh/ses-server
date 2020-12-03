@@ -131,4 +131,11 @@ mybatis-plus:
     local-cache-scope: session
     call-setters-on-nulls: false
 
-
+# MQTT配置信息(本地启动使用本地证书)
+mqtt:
+  ca: /root/certs/my_root_ca.pem
+  clientCrt: /root/certs/client.pem
+  clientKey: /root/certs/client.key
+  timeout: 10
+  keepalive: 30
+  url: ssl://client.redemotors.com

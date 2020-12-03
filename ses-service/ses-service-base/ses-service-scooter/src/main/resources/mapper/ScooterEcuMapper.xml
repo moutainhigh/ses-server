@@ -7,6 +7,7 @@
         <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
         <result column="battery" jdbcType="INTEGER" property="battery" />
         <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+        <result column="bluetooth_name" jdbcType="VARCHAR" property="bluetooth_name" />
         <result column="iccid" jdbcType="VARCHAR" property="iccid" />
         <result column="latitude" jdbcType="DECIMAL" property="latitude" />
         <result column="longitude" jdbcType="DECIMAL" property="longitude" />
@@ -31,6 +32,9 @@
             </if>
             <if test="bluetoothMacAddress != null">
                 bluetooth_mac_address = #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetooth_name != null">
+                bluetooth_name = #{bluetooth_name,jdbcType=VARCHAR},
             </if>
             <if test="iccid != null">
                 iccid = #{iccid,jdbcType=VARCHAR},
@@ -87,6 +91,9 @@
             <if test="bluetoothMacAddress != null">
                 bluetooth_mac_address,
             </if>
+            <if test="bluetooth_name != null">
+                bluetooth_name,
+            </if>
             <if test="iccid != null">
                 iccid,
             </if>
@@ -139,6 +146,9 @@
             </if>
             <if test="bluetoothMacAddress != null">
                 #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetooth_name != null">
+                #{bluetooth_name,jdbcType=VARCHAR},
             </if>
             <if test="iccid != null">
                 #{iccid,jdbcType=VARCHAR},
