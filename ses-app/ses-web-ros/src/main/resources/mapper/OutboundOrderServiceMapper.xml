@@ -12,8 +12,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            staff.first_name like concat ('%',#{keyword},'%') or
-            staff.last_name like concat ('%',#{keyword},'%') or
+            staff.full_name like concat ('%',#{keyword},'%') or
             whorder.out_wh_no like concat ('%',#{keyword},'%') or
             whorder.relation_no like concat ('%',#{keyword},'%')
             )
