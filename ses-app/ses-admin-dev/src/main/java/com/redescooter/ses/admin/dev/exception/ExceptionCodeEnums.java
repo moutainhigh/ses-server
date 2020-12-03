@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @ClassName:ExceptionCodeEnums
  * @description: ExceptionCodeEnums
- * @author: Alex
+ * @author: Aleks
  * @Version：1.3
  * @create: 2019/11/01 11:22
  */
@@ -24,37 +24,31 @@ public enum ExceptionCodeEnums {
 
     PASSWORD_EMPTY(10003, "密码为空"),
 
-    ACCOUNT_NOT_ACTIVATED(10004, "账户未激活"),
+    PASSROD_WRONG(10004, "密码错误"),
 
-    PASSROD_WRONG(10005, "密码错误"),
+    INCONSISTENT_PASSWORD(10005, "密码不一致"),
 
-    THE_ACCOUNT_HAS_BEEN_FROZEN(10006, "账户被冻结"),
+    ACCOUNT_ALREADY_EXIST(10006, "账户已经存在了"),
 
-    ACCOUNT_CANCELLED(10007, "账户被注销了"),
+    SYSTEMID_IS_NOT_MATCH(10007, "systemid 不匹配"),
 
-    TOKEN_MESSAGE_IS_FALSE(10008, "token中的信息不正确"),
+    APPID_IS_NOT_MATCH(10008, "appid 不匹配"),
 
-    ACCOUNT_EXPIRED(10009, "账号过期"),
+    LANGUAGE_CANNOT_EMPTY(10009, "语言为空"),
 
-    INCONSISTENT_PASSWORD(10010, "密码不一致"),
+    CLIENTTYPE_CANNOT_EMPTY(10010, "客户端类型为空"),
 
-    ACCOUNT_ALREADY_EXIST(10011, "账户已经存在了"),
+    CLIENTIP_CANNOT_EMPTY(10011, "客户端IP 为空"),
 
-    SYSTEMID_IS_NOT_MATCH(10012, "systemid 不匹配"),
+    TIMEZONE_CANNOT_EMPTY(10012, "时区为空"),
 
-    APPID_IS_NOT_MATCH(10013, "appid 不匹配"),
+    VERSION_CANNOT_EMPTY(10013, "版本号为空"),
 
-    LANGUAGE_CANNOT_EMPTY(10014, "语言为空"),
+    COUNTRY_CANNOT_EMPTY(10014, "国家为空"),
 
-    CLIENTTYPE_CANNOT_EMPTY(10015, "客户端类型为空"),
+    LOGIN_PSD_ERROER_NUM_MANY(10015, "密码错误次数过多，请一分钟之后再登陆"),
 
-    CLIENTIP_CANNOT_EMPTY(10016, "客户端IP 为空"),
-
-    TIMEZONE_CANNOT_EMPTY(10017, "时区为空"),
-
-    VERSION_CANNOT_EMPTY(10018, "版本号为空"),
-
-    COUNTRY_CANNOT_EMPTY(10019, "国家为空"),
+    LOGIN_PSD_ERROER_NEED_CODE(10016, "密码错误"),
 
     ;
 
