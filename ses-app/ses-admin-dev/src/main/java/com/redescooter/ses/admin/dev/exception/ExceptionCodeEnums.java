@@ -50,6 +50,13 @@ public enum ExceptionCodeEnums {
 
     LOGIN_PSD_ERROER_NEED_CODE(10016, "密码错误"),
 
+    EMAIL_IS_NOT_ILLEGAL(10017, "邮箱不合法"),
+
+    EAMIL_CODE_TIME_OUT(10018, "请先获取验证码或验证码已过期"),
+
+    CODE_IS_WRONG(10019, "验证码错误"),
+
+    TOKEN_MESSAGE_IS_FALSE(10020, "token过期"),
     ;
 
     private int code;
