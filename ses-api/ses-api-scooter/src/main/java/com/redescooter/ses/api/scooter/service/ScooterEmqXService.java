@@ -4,8 +4,8 @@ import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 
-import java.util.List;
 
 /**
  * 车辆EMQ X服务相关接口
@@ -37,12 +37,12 @@ public interface ScooterEmqXService {
 
     /**
      * 车辆平板批量升级 -- 通过EMQ X进行通知到平板端
-     * @param tabletSnList
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @param paramDTO
+     * @return void
      * @author assert
-     * @date 2020/11/30
+     * @date 2020/12/4
     */
-    GeneralResult updateScooterTablet(List<String> tabletSnList);
+    void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO);
 
     /**
      * 设置车辆型号 -- 通过EMQ X进行通知到平板端

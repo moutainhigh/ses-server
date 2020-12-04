@@ -1,8 +1,16 @@
 package com.redescooter.ses.api.foundation.service;
 
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
+import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
+
 
 /**
  * 应用版本管理业务接口
@@ -18,8 +26,78 @@ public interface AppVersionService {
      * @author assert
      * @date 2020/11/30
     */
-    AppVersionDTO getNewAppVersionById(Long id);
+    AppVersionDTO getAppVersionById(Long id);
 
-    List<AppVersionDTO> queryAppVersion();
+    /**
+     * 查询应用版本列表信息
+     * @param paramDTO
+     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @author assert
+     * @date 2020/12/3
+    */
+    PageResult<AppVersionDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO);
+
+    /**
+     * 创建应用版本
+     * @param appVersionDTO
+     * @return int
+     * @author assert
+     * @date 2020/12/3
+    */
+    int insertAppVersion(AppVersionDTO appVersionDTO);
+
+    /**
+     * 修改应用版本信息
+     * @param appVersionDTO
+     * @return int
+     * @author assert
+     * @date 2020/12/4
+    */
+    int updateAppVersion(AppVersionDTO appVersionDTO);
+
+    /**
+     * 发布版本
+     * @param paramDTO
+     * @return int
+     * @author assert
+     * @date 2020/12/3
+    */
+    int releaseAppVersion(ReleaseAppVersionParamDTO paramDTO);
+
+    /**
+     * 根据id删除版本信息
+     * @param id
+     * @return int
+     * @author assert
+     * @date 2020/12/3
+    */
+    int deleteAppVersionById(Long id);
+
+    /**
+     * 获取所有应用版本类型数量
+     * @param
+     * @return java.util.Map<java.lang.String,java.lang.Integer>
+     * @author assert
+     * @date 2020/12/3
+    */
+    Map<String, Integer> getAppVersionTypeCount();
+
+    /**
+     * 查询所有应用正在使用的版本
+     * @param
+     * @return java.util.Map<java.lang.String,com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @author assert
+     * @date 2020/12/4
+    */
+    Map<String, List<AppVersionDTO>> getAllActiveAppVersion();
+
+    /**
+     * 上传应用更新包
+     * @param file
+     * @return com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO
+     * @author assert
+     * @date 2020/12/4
+    */
+    FileUploadResultDTO fileUpload(MultipartFile file);
 
 }

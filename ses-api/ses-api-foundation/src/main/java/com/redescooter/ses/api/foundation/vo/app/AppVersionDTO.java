@@ -3,6 +3,8 @@ package com.redescooter.ses.api.foundation.vo.app;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "应用版本信息DTO")
-public class AppVersionDTO {
+public class AppVersionDTO implements Serializable {
 
     /**
      * 主键id
@@ -102,7 +104,7 @@ public class AppVersionDTO {
     /**
      * 版本状态 0未发布 1已发布 2生效中
      */
-    @ApiModelProperty(value = "版本状态 0未发布 1已发布 2使用中", dataType = "Integer", required = true)
+    @ApiModelProperty(value = "版本状态 0未发布 1已发布 2使用中", dataType = "Integer", example = "0",required = true)
     private Integer status;
 
     /**
@@ -122,6 +124,12 @@ public class AppVersionDTO {
      */
     @ApiModelProperty(value = "标签", dataType = "String", required = true)
     private String label;
+
+    /**
+     * 数据数量
+     */
+    @ApiModelProperty(value = "数据数量", dataType = "Integer")
+    private Integer dataCount;
 
     /**
      * 创建人

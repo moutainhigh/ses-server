@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.InsertRideStatDataDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.mobile.b.service.RideStatBService;
@@ -233,11 +234,15 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
-    public GeneralResult updateScooterTablet(List<String> tabletSnList) {
+    public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
-        AppVersionDTO appVersion = appVersionService.getNewAppVersionById(null);
+        AppVersionDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());
+        List<String> tabletSnList = paramDTO.getTabletSnList();
 
-        List<ScooterEcuDTO> scooterEcuList = scooterEcuMapper.batchGetScooterEcuByScooterId(null);
+        // 全部升级
+        if (4 == paramDTO.getType()) {
+            tabletSnList = scooterMapper.getAllScooterTabletSn();
+        }
 
         /**
          * 消息通知下发,通知平板端进行升级操作
@@ -246,15 +251,15 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         tabletUpdatePublish.setDownloadLink(appVersion.getUpdateLink());
         tabletUpdatePublish.setVersionCode(appVersion.getCode());
 
+        List<String> newTabletSns = tabletSnList;
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            tabletSnList.forEach(sn -> {
+            newTabletSns.forEach(sn -> {
                 tabletUpdatePublish.setTabletSn(sn);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });
         });
 
-        return null;
     }
 
     @Override

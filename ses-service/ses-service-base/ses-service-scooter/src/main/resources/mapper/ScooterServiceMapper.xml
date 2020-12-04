@@ -142,4 +142,10 @@
 	    where tablet_sn = #{tabletSn}
     </update>
 
+    <!--查询所有车辆平板序列号-->
+    <select id="getAllScooterTabletSn" resultType="java.lang.String">
+        select tablet_sn from sco_scooter
+	    where dr = 0
+    </select>
+
 </mapper>
