@@ -1,5 +1,6 @@
 package com.redescooter.ses.admin.dev.service.base;
 
+import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
@@ -63,4 +64,13 @@ public interface AdminTokenService {
      * @return
      **/
     GeneralResult modifyPassword(ModifyPasswordEnter enter);
+
+    /**
+     * @Author Aleks
+     * @Description  获取登陆用户的信息
+     * @Date  2020/12/4 11:50
+     * @Param [enter]
+     * @return
+     **/
+    UserInfoResult userInfo(GeneralEnter enter);
 }

@@ -1,6 +1,7 @@
 package com.redescooter.ses.admin.dev.controller;
 
 import com.redescooter.ses.admin.dev.service.base.AdminTokenService;
+import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -58,16 +59,23 @@ public class AdminTokenController {
 
     @IgnoreLoginCheck
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
-    @PostMapping(value = "/chanage")
-    public Response<GeneralResult> chanagePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+    @PostMapping(value = "/changePassword")
+    public Response<GeneralResult> changePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(adminTokenService.modifyPassword(enter));
     }
 
 
     @ApiOperation(value = "登出", response = GeneralResult.class)
-    @PostMapping(value = "/logout")
+    @PostMapping(value = "/loginOut")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(adminTokenService.logout(enter));
+    }
+
+
+    @ApiOperation(value = "获取用户个人信息", response = UserInfoResult.class)
+    @PostMapping(value = "/getUserInfo")
+    public Response<UserInfoResult> userInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(adminTokenService.userInfo(enter));
     }
 
 

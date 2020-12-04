@@ -30,7 +30,7 @@ public interface ParameterSettingService {
 
     /**
      * 导出参数列表
-     * @param enter
+     * @param
      * @return
      */
     List<ParameterResult> export(List<Long> ids, String systemType);

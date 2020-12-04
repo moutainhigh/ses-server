@@ -118,6 +118,8 @@ public enum ExceptionCodeEnums {
 
     ENABLE_NOT_DELETE(10053, "生效的数据不能删除"),
 
+    WORK_ORDER_NOT_EXIST(10054, "工单不存在"),
+
     ;
 
     private int code;

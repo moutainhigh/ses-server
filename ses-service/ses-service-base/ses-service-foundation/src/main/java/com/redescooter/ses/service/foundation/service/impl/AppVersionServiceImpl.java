@@ -6,6 +6,7 @@ import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
 import org.apache.dubbo.config.annotation.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author assert
@@ -20,6 +21,11 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Override
     public AppVersionDTO getNewAppVersionById(Long id) {
         return appVersionMapper.getNewAppVersionById(id);
+    }
+
+    @Override
+    public List<AppVersionDTO> queryAppVersion() {
+        return null;
     }
 
 }

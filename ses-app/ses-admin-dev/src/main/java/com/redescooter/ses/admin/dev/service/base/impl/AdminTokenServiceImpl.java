@@ -7,6 +7,7 @@ import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.base.AdmSysUserService;
 import com.redescooter.ses.admin.dev.service.base.AdminTokenService;
+import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
@@ -459,6 +460,18 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         String token = enter.getToken();
         jedisCluster.del(token);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+
+    @Override
+    public UserInfoResult userInfo(GeneralEnter enter) {
+        UserInfoResult userInfo = new UserInfoResult();
+        userInfo.setFirstName("rede");
+        userInfo.setLastName("rede");
+        userInfo.setFullName("rede rede");
+        userInfo.setPicture("https://rede.oss-cn-shanghai.aliyuncs.com/1600658459971.jpg");
+        return userInfo;
     }
 
 }

@@ -37,7 +37,7 @@ public class ControllerAspect {
     private MessageSource messageSource;
 
     @Autowired
-    private AdminTokenService tokenService;
+    private AdminTokenService adminTokenService;
 
 
     @Around("execution(* com.redescooter.ses.admin.dev.controller..*.*(..))")

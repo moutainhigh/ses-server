@@ -33,8 +33,29 @@ public class OrderNoGenerateUtil {
     }
 
 
+    /**
+     * @Author Aleks
+     * @Description  生成6位递增的流水号 000001开始
+     * @Date  2020/12/4 18:00
+     * @Param [orderNo]
+     * @return
+     **/
+    public static String createWorkOrderNo(String orderNo){
+        String code = "";
+        if (!Strings.isNullOrEmpty(orderNo)){
+            Integer i = Integer.parseInt(orderNo);
+            i++;
+            code = String.format("%6d", i).replace(" ", "0");
+        }else {
+            code = "000001";
+        }
+        return code;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(orderNoGenerate("RTO20201110099","RTO"));
+//        System.out.println(orderNoGenerate("RTO20201110099","RTO"));
+        System.out.println(createWorkOrderNo("000009"));
     }
 
 }
