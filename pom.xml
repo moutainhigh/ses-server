@@ -58,10 +58,10 @@
         <!--json 转义-->
         <org.apache.commons.version>1.8</org.apache.commons.version>
         <hsr-geohash.version>1.0.10</hsr-geohash.version>
-        <druid-spring-boot-starter.version>1.1.23</druid-spring-boot-starter.version>
+        <druid-spring-boot-starter.version>1.2.3</druid-spring-boot-starter.version>
         <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
         <dynamic-datasource.version>2.5.7</dynamic-datasource.version>
-        <mybatis-plus-boot-starter.version>3.4.0</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
         <jedis.version>3.2.0</jedis.version>
         <httpclient.version>4.5.10</httpclient.version>
         <jasypt.version>2.1.1</jasypt.version>
