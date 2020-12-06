@@ -35,7 +35,7 @@ start() {
   if [ $? -eq "0" ]; then
     echo "${APP_NAME} is already running. pid=${pid} ."
   else
-    nohup java -server -jar -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m -Xms1024m -Xmx1024m -Xmn256m -Xss1m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC ${APP_PACH}${APP_NAME} > ${APP_PACH}+'nohup.out' 2>&1 &
+    nohup java -server -jar -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m -Xms1024m -Xmx1024m -Xmn256m -Xss1m -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC ${APP_PACH}${APP_NAME} >./nohup.out 2>&1 &
     echo "${APP_NAME} is  running....."
   fi
 }
