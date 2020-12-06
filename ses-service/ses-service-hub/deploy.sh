@@ -2,10 +2,10 @@
 #Date   : 2019/05/30
 #Author : jerry
 #Mail   : jerry@redescooter.com
-#Function : ses-web-ros启动
+#Function : ses-service-hub启动
 #Version  ： V1.1
 #这里可替换为你自己的执行程序，其他代码无需更改
-APP_NAME=ses-web-ros.jar
+APP_NAME=ses-service-hub.jar
 
 APP_PACH=/root/java_service/pre/lib/
 readonly APP_PACH
