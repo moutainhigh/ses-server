@@ -44,11 +44,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
@@ -428,7 +428,7 @@ public class InquiryServiceImpl implements InquiryService {
                 i ++;
             }
             String sheetName = "Inquiry";
-            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice", "totalPrice", "time"};
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice","amountPaid", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
@@ -492,20 +492,9 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setCustomerCode("0");
         opeCustomer.setIndustryType(opeCustomerInquiry.getIndustry());
         opeCustomer.setCustomerType(opeCustomerInquiry.getCustomerType());
-//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-//            opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
-//            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
-//            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
-//        }
-//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-//            opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
-//            opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
-//            opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-//        }
         opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
         opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
         opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-//        opeCustomer.setCertificateType("0");
         opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
         opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());

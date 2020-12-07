@@ -43,6 +43,9 @@ public class InquiryExportResult {
     @ApiModelProperty("尾款")
     private Double balance;
 
+    @ApiModelProperty("已付金额")
+    private Double amountPaid;
+
     @ApiModelProperty("总金额")
     private Double amount;
 
