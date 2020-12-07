@@ -1,5 +1,6 @@
 package com.redescooter.ses.admin.dev.controller;
 
+import com.redescooter.ses.admin.dev.service.FileUploadService;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,9 @@ public class AppVersionController {
 
     @Reference
     private AppVersionService appVersionService;
+    @Resource
+    private FileUploadService fileUploadService;
+
 
     /**
      * 查询应用版本列表
@@ -117,7 +122,7 @@ public class AppVersionController {
      * @date 2020/12/3
     */
     @ApiOperation(value = "获取所有应用版本类型数量", notes = "返回map的key等同于页面tab名称")
-    @GetMapping(value = "/getAppVersionTypeCount")
+    @GetMapping(value = "/countByType")
     public Response<Map<String, Integer>> getAppVersionTypeCount() {
         return new Response<>(appVersionService.getAppVersionTypeCount());
     }
@@ -145,7 +150,21 @@ public class AppVersionController {
     @ApiOperation(value = "上传应用更新包")
     @PostMapping(value = "/fileUpload")
     public Response<FileUploadResultDTO> fileUpload(@RequestParam("file") MultipartFile file) {
-        return new Response<>(appVersionService.fileUpload(file));
+        // 文件上传操作在当前服务中完成,禁止跨服务操作
+        return new Response<>(fileUploadService.fileUpload(file));
+    }
+
+    /**
+     * 根据type查询当前应用所有版本号信息
+     * @param type
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<java.lang.String>>
+     * @author assert
+     * @date 2020/12/7
+    */
+    @ApiOperation(value = "获取当前应用所有版本号信息", notes = "根据type查询当前应用所有版本号信息")
+    @GetMapping(value = "/getAppVersionByType/{type}")
+    public Response<List<String>> getAppVersionByType(@PathVariable("type") Integer type) {
+        return new Response<>(appVersionService.getAppVersionByType(type));
     }
 
 }

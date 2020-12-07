@@ -3,10 +3,7 @@ package com.redescooter.ses.api.foundation.service;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
-import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -92,12 +89,12 @@ public interface AppVersionService {
     Map<String, List<AppVersionDTO>> getAllActiveAppVersion();
 
     /**
-     * 上传应用更新包
-     * @param file
-     * @return com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO
+     * 根据type查询当前应用所有版本号信息
+     * @param type
+     * @return java.util.List<java.lang.String>
      * @author assert
-     * @date 2020/12/4
+     * @date 2020/12/7
     */
-    FileUploadResultDTO fileUpload(MultipartFile file);
+    List<String> getAppVersionByType(Integer type);
 
 }

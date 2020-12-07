@@ -8,23 +8,19 @@ import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
-import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
-import com.redescooter.ses.tool.utils.FileUtil;
-import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,9 +40,6 @@ public class AppVersionServiceImpl implements AppVersionService {
     private ScooterEmqXService scooterEmqXService;
     @Resource
     private TransactionTemplate transactionTemplate;
-
-//    @Value("${fileUpload.path}")
-//    private String updatePackageUploadPath;
 
 
     @Override
@@ -68,12 +61,27 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertAppVersion(AppVersionDTO appVersionDTO) {
+        appVersionDTO.setCreatedTime(new Date());
+        appVersionDTO.setUpdatedTime(new Date());
         return appVersionMapper.insertAppVersion(appVersionDTO);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateAppVersion(AppVersionDTO appVersionDTO) {
+        AppVersionDTO appVersion = appVersionMapper.getAppVersionById(appVersionDTO.getId());
+        if (null == appVersion) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
+        }
+
+        // 只能修改未发布的版本信息
+        if (!AppVersionStatusEnum.UNRELEASED.getStatus().equals(appVersion.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getCode(),
+                    ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getMessage());
+        }
+
+        appVersionDTO.setUpdatedTime(new Date());
         return appVersionMapper.updateAppVersion(appVersionDTO);
     }
 
@@ -129,7 +137,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         /**
          * 查询不同应用类型的版本数量
          */
-        List<AppVersionDTO> appVersionList = appVersionMapper.queryAppVersion(null);
+        List<AppVersionDTO> appVersionList = appVersionMapper.getAppVersions();
 
         Map<String, List<AppVersionDTO>> appVersionMap = getAppVersionByType(appVersionList);
         for (Map.Entry<String, List<AppVersionDTO>> version : appVersionMap.entrySet()) {
@@ -153,19 +161,8 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
-    public FileUploadResultDTO fileUpload(MultipartFile file) {
-        FileUploadResultDTO result = new FileUploadResultDTO();
-        result.setFileUrl("");
-        result.setFileSize("");
-
-        /**
-         * TODO 上传文件到服务器
-         */
-        ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-//            FileUtil.uploadFile(file, uploadPath);
-        });
-
-        return result;
+    public List<String> getAppVersionByType(Integer type) {
+        return appVersionMapper.getAppVersionByType(type);
     }
 
 

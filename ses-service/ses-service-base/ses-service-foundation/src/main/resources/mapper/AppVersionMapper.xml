@@ -45,21 +45,16 @@
             </choose>
         </if>
         <if test="status != null">
-            and `statsu` = #{status}
+            and `status` = #{status}
         </if>
-        <if test="versionCode != null">
-            and `code` = #{versionCode}
+        <if test="versionNumber != null and versionNumber != ''">
+            and `new_version_num` = #{versionNumber}
         </if>
         <if test="keyWord != null and keyWord != ''">
             and (
                 update_content like concat('%',#{keyWord},'%')
                 or label like concat('%',#{keyWord},'%')
             )
-        </if>
-        <if test="timeSortType != null">
-            order by created_time
-            <if test="timeSortType == 1"> asc </if>
-            <if test="timeSortType == 2"> desc </if>
         </if>
         limit #{startRow}, #{pageSize}
     </select>
@@ -280,7 +275,7 @@
     <!--根据id删除版本信息-->
     <update id="deleteAppVersionById" parameterType="java.lang.Long">
         update pla_app_version
-	    set dr = 1
+	    set dr = 1, updated_time = now()
 	    where id = #{id}
     </update>
 
@@ -316,10 +311,10 @@
             </choose>
         </if>
         <if test="status != null">
-            and `statsu` = #{status}
+            and `status` = #{status}
         </if>
-        <if test="versionCode != null">
-            and `code` = #{versionCode}
+        <if test="versionNumber != null and versionNumber != ''">
+            and `new_version_num` = #{versionNumber}
         </if>
         <if test="keyWord != null and keyWord != ''">
             and (
@@ -327,6 +322,23 @@
             or label like concat('%',#{keyWord},'%')
             )
         </if>
+    </select>
+
+    <!--查询全部应用版本信息(只返回type、id字段)-->
+    <select id="getAppVersions" resultType="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+        select id,`type` from pla_app_version
+        where dr = 0
+    </select>
+
+    <!--根据type查询当前应用所有版本号信息-->
+    <select id="getAppVersionByType" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select distinct new_version_num
+	    from pla_app_version
+	    where dr = 0
+	    <choose>
+            <when test="type == 1">and `type` in (1,2)</when>
+            <otherwise>and `type` = #{type}</otherwise>
+        </choose>
     </select>
 
 </mapper>

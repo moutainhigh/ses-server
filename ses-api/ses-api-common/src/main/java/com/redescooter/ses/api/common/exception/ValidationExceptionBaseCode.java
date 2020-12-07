@@ -49,7 +49,6 @@ public interface ValidationExceptionBaseCode {
      */
     // 发布类型为空
     int RELEASE_TYPE_IS_EMPTY = 10031;
-
     // 应用类型为空
     int APP_TYPE_IS_EMPTY = 10032;
 

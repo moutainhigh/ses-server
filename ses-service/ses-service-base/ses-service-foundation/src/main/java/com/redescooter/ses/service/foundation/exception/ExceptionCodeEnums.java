@@ -120,6 +120,8 @@ public enum ExceptionCodeEnums {
 
     WORK_ORDER_NOT_EXIST(10054, "工单不存在"),
 
+    VERSION_STATUS_IS_NOT_UNRELEASED(10055, "版本状态不是未发布")
+
     ;
 
     private int code;

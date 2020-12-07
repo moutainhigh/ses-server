@@ -97,4 +97,22 @@ public interface AppVersionMapper {
     */
     int countByAppVersion(QueryAppVersionParamDTO paramDTO);
 
+    /**
+     * 查询全部应用版本信息(只返回type、id字段)
+     * @param
+     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @author assert
+     * @date 2020/12/7
+    */
+    List<AppVersionDTO> getAppVersions();
+
+    /**
+     * 根据type查询当前应用所有版本号信息
+     * @param type
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2020/12/7
+    */
+    List<String> getAppVersionByType(Integer type);
+
 }

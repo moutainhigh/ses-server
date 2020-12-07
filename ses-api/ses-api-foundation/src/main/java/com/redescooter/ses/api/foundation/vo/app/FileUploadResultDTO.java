@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 文件上传返回结果 DTO
  * @author assert
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "文件上传返回结果")
-public class FileUploadResultDTO {
+public class FileUploadResultDTO implements Serializable {
 
     @ApiModelProperty(value = "文件url地址", dataType = "String")
     private String fileUrl;
