@@ -146,7 +146,7 @@
                        when (opp.color = 5) then '#130c0e' end              as colorValue,
                inquiry.scooter_quantity                                     as qty,
                ocib.product_qty                                             as batteryQty,
-               inquiry.total_price                                          as amount,
+               inquiry.total_price                                          as totalPrice,
                inquiry.prepaid_deposit                                      as paid,
                inquiry.amount_paid                                          as amountPaid,
                inquiry.amount_discount                                      as discount,

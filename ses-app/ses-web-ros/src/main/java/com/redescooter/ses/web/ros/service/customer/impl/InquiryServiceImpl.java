@@ -31,7 +31,6 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
-import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
@@ -89,9 +88,6 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Reference
     private IdAppService idAppService;
-
-    @Autowired
-    private ExcelService excelService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -428,7 +424,7 @@ public class InquiryServiceImpl implements InquiryService {
                 i ++;
             }
             String sheetName = "Inquiry";
-            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "lastPrice","amountPaid", "totalPrice", "time"};
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation","amountPaid", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
@@ -436,7 +432,6 @@ public class InquiryServiceImpl implements InquiryService {
                 if (!new File(excelFolder).exists()) {
                     new File(excelFolder).mkdir();
                 }
-                log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
@@ -474,8 +469,9 @@ public class InquiryServiceImpl implements InquiryService {
         map.put("productName", opeCustomerInquiry.getProductName()==null?"--":opeCustomerInquiry.getProductName());
         map.put("color", opeCustomerInquiry.getColorName()==null?"--":opeCustomerInquiry.getColorName());
         map.put("batteryQty", opeCustomerInquiry.getBatteryQty()==null?0:opeCustomerInquiry.getBatteryQty());
-        map.put("lastPrice", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
-        map.put("totalPrice", opeCustomerInquiry.getAmount()==null?0.00:opeCustomerInquiry.getAmount());
+        map.put("amountObligation", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
+        map.put("amountPaid", opeCustomerInquiry.getAmountPaid()==null?0.00:opeCustomerInquiry.getAmountPaid());
+        map.put("totalPrice", opeCustomerInquiry.getTotalPrice()==null?0.00:opeCustomerInquiry.getTotalPrice());
         map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }
