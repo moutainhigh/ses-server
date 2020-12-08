@@ -9,6 +9,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefGroupMapper;
+import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefMapper;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatDef;
@@ -20,13 +22,21 @@ import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatDefService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.vo.specificat.*;
+import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
+import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefDTO;
+import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefGroupDTO;
+import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+import spark.utils.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,24 +51,26 @@ import java.util.regex.Pattern;
  * @Date2020/9/28 14:46
  * @Version V1.0
  **/
+@Slf4j
 @Service
 public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
-    @Autowired
+    @Resource
     private OpeSpecificatTypeService opeSpecificatTypeService;
-
     @Reference
     private IdAppService idAppService;
-
-    @Autowired
+    @Resource
     private SpecificatDefService specificatDefService;
-
-    @Autowired
+    @Resource
     private SpecificatTypeServiceMapper specificatTypeServiceMapper;
-
-
-    @Autowired
+    @Resource
     private OpeSaleScooterService opeSaleScooterService;
+    @Resource
+    private SpecificatDefGroupMapper specificatDefGroupMapper;
+    @Resource
+    private SpecificatDefMapper specificatDefMapper;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -331,4 +343,87 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         List<SpecificatTypeDataResult> resultList = specificatTypeServiceMapper.specificatTypeData();
         return resultList;
     }
+
+//    if (Strings.isNullOrEmpty(enter.getSt())){
+//        throw new SesWebRosException(ExceptionCodeEnums.DEF_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NOT_NULL.getMessage());
+//    }
+//    List<SpecificatDefEnter> enters = new ArrayList<>();
+//        try {
+//        enters = JSONArray.parseArray(enter.getSt(), SpecificatDefEnter.class);
+//    } catch (Exception e) {
+//        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+//    }
+
+    @Override
+    public GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO) {
+        Long userId = paramDTO.getUserId();
+        /**
+         * 请求参数校验 -- TODO 先写整体逻辑,时间紧
+         */
+        if (StringUtils.isBlank(paramDTO.getSt())) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_IS_NOT_NULL.getCode(),
+                    ExceptionCodeEnums.DEF_GROUP_IS_NOT_NULL.getMessage());
+        }
+
+        SpecificGroupDTO specificGroup = null;
+
+        /**
+         * 组装新增数据 -- 规格类型、规格自定义项分组、规则自定义项
+         */
+        // 规格类型数据
+        Long id = idAppService.getId(SequenceName.OPE_SPECIFICAT_TYPE);
+        paramDTO.setId(id);
+        paramDTO.setCode(createTypeCode());
+        paramDTO.setCreatedBy(userId);
+        paramDTO.setCreatedTime(new Date());
+        paramDTO.setUpdatedBy(userId);
+        paramDTO.setUpdatedTime(new Date());
+
+        // 规格自定义项集合
+        List<SpecificDefDTO> specificDefList = new ArrayList<>();
+
+        // 规格自定义项分组数据
+        List<SpecificDefGroupDTO> specificDefGroupList = JSONArray.parseArray(paramDTO.getSt(), SpecificDefGroupDTO.class);
+        specificDefGroupList.forEach(defGroup -> {
+            Long defGroupId = idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF_GROUP);
+            defGroup.setId(defGroupId);
+            defGroup.setSpecificatId(id);
+            defGroup.setCreatedBy(userId);
+            defGroup.setCreatedTime(new Date());
+            defGroup.setUpdatedBy(userId);
+            defGroup.setUpdatedTime(new Date());
+
+            // 规格自定义项数据
+            List<SpecificDefDTO> temp = defGroup.getGroupList();
+            temp.forEach(t -> {
+                t.setId(idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF));
+                t.setSpecificId(id);
+                t.setSpecificDefGroupId(defGroupId);
+                t.setCreatedBy(userId);
+                t.setCreatedTime(new Date());
+                t.setUpdatedBy(userId);
+                t.setUpdatedTime(new Date());
+
+                specificDefList.add(t);
+            });
+        });
+
+        /**
+         * 新增规格类型相关数据
+         */
+        transactionTemplate.execute(specificTypeStatus -> {
+            try {
+                specificatTypeServiceMapper.insertSpecificatType(paramDTO);
+                specificatDefGroupMapper.batchInsertSpecificatDefGroup(specificDefGroupList);
+                specificatDefMapper.batchInsertSpecificatDef(specificDefList);
+            } catch (Exception e) {
+                specificTypeStatus.setRollbackOnly();
+                log.error("【新增规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
+            }
+            return 1;
+        });
+
+        return new GeneralResult(paramDTO.getRequestId());
+    }
+
 }

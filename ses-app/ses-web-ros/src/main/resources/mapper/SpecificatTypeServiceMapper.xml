@@ -66,4 +66,64 @@
         where dr = 0
     </select>
 
+    <!--新增规格类型-->
+    <insert id="insertSpecificatType" parameterType="com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO">
+        insert into operation.ope_specificat_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="specificatName != null and specificatName != ''">
+                specificat_name,
+            </if>
+            <if test="code != null and code != ''">
+                specificat_code,
+            </if>
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="specificatName != null and specificatName != ''">
+                #{specificatName,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null and code != ''">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+
+
 </mapper>

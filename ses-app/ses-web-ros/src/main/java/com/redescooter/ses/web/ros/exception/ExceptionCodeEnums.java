@@ -484,7 +484,7 @@ public enum ExceptionCodeEnums {
 
     DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
 
-
+    DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空")
 
     ;
 
