@@ -10,9 +10,12 @@ import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
+import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -40,6 +43,8 @@ public class AppVersionServiceImpl implements AppVersionService {
     private ScooterEmqXService scooterEmqXService;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private IdAppService idAppService;
 
 
     @Override
@@ -61,7 +66,18 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertAppVersion(AppVersionDTO appVersionDTO) {
+        Integer vCode = 1;
+        String versionCode = appVersionMapper.getAppVersionMaxCodeByType(appVersionDTO.getType());
+        if (StringUtils.isNotBlank(versionCode)) {
+            // 版本编码 +1
+            vCode = Integer.valueOf(versionCode) + 1;
+        }
+
+        appVersionDTO.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
+        appVersionDTO.setCode(vCode.toString());
+        appVersionDTO.setCreatedBy(appVersionDTO.getUserId());
         appVersionDTO.setCreatedTime(new Date());
+        appVersionDTO.setUpdatedBy(appVersionDTO.getUserId());
         appVersionDTO.setUpdatedTime(new Date());
         return appVersionMapper.insertAppVersion(appVersionDTO);
     }
@@ -81,6 +97,7 @@ public class AppVersionServiceImpl implements AppVersionService {
                     ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getMessage());
         }
 
+        appVersionDTO.setUpdatedBy(appVersionDTO.getUserId());
         appVersionDTO.setUpdatedTime(new Date());
         return appVersionMapper.updateAppVersion(appVersionDTO);
     }
@@ -128,6 +145,13 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteAppVersionById(Long id) {
+        AppVersionDTO appVersion = appVersionMapper.getAppVersionById(id);
+        // 只能删除未发布的版本信息
+        if (!AppVersionStatusEnum.UNRELEASED.getStatus().equals(appVersion.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getCode(),
+                    ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getMessage());
+        }
+
         return appVersionMapper.deleteAppVersionById(id);
     }
 
@@ -148,21 +172,18 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
-    public Map<String, List<AppVersionDTO>> getAllActiveAppVersion() {
-        // 项目中自己写的@NotNull注解谨慎使用
-//        QueryAppVersionParamDTO param = new QueryAppVersionParamDTO();
-//        param.setStatus(AppVersionStatusEnum.ACTIVE.getStatus());
-        /**
-         * 查询所有应用正在使用的版本
-         */
-        List<AppVersionDTO> appVersionList = appVersionMapper.getActiveAppVersion(AppVersionStatusEnum.ACTIVE.getStatus());
-
-        return getAppVersionByType(appVersionList);
+    public List<AppVersionDTO> getAllActiveAppVersion() {
+        return appVersionMapper.getActiveAppVersion(AppVersionStatusEnum.ACTIVE.getStatus());
     }
 
     @Override
     public List<String> getAppVersionByType(Integer type) {
         return appVersionMapper.getAppVersionByType(type);
+    }
+
+    @Override
+    public List<String> getAppVersionLabelByLabel(String label) {
+        return appVersionMapper.getAppVersionLabelByLabel(label);
     }
 
 

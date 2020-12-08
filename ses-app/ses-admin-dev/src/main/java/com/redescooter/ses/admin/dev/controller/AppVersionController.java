@@ -130,13 +130,13 @@ public class AppVersionController {
     /**
      * 查询所有应用正在使用的版本
      * @param
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map<java.lang.String,com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>>
      * @author assert
-     * @date 2020/12/4
+     * @date 2020/12/8
     */
     @ApiOperation(value = "查询所有应用正在使用的版本")
     @GetMapping(value = "/getAllActiveAppVersion")
-    public Response<Map<String, List<AppVersionDTO>>> getAllActiveAppVersion() {
+    public Response<List<AppVersionDTO>> getAllActiveAppVersion() {
         return new Response<>(appVersionService.getAllActiveAppVersion());
     }
 
@@ -165,6 +165,19 @@ public class AppVersionController {
     @GetMapping(value = "/getAppVersionByType/{type}")
     public Response<List<String>> getAppVersionByType(@PathVariable("type") Integer type) {
         return new Response<>(appVersionService.getAppVersionByType(type));
+}
+
+    /**
+     * 根据标签全模糊检索应用标签信息
+     * @param label
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<java.lang.String>>
+     * @author assert
+     * @date 2020/12/8
+    */
+    @ApiOperation(value = "查询应用版本标签信息", notes = "根据标签全模糊检索应用标签信息")
+    @GetMapping(value = "/getAppVersionLabelByLabel/{label}")
+    public Response<List<String>> getAppVersionLabelByLabel(@PathVariable("label") String label) {
+        return new Response<>(appVersionService.getAppVersionLabelByLabel(label));
     }
 
 }

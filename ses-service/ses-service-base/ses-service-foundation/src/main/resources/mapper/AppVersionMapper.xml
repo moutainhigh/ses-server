@@ -72,7 +72,7 @@
             <if test="appId != null">
                 app_id,
             </if>
-            <if test="systemType != null">
+            <if test="systemId != null">
                 system_type,
             </if>
             <if test="type != null">
@@ -141,7 +141,7 @@
             <if test="appId != null">
                 #{appId,jdbcType=VARCHAR},
             </if>
-            <if test="systemType != null">
+            <if test="systemId != null">
                 #{systemType,jdbcType=INTEGER},
             </if>
             <if test="type != null">
@@ -339,6 +339,19 @@
             <when test="type == 1">and `type` in (1,2)</when>
             <otherwise>and `type` = #{type}</otherwise>
         </choose>
+    </select>
+
+    <!--根据type查询应用版本最大版本编码-->
+    <select id="getAppVersionMaxCodeByType" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select max(`code`) versionCode
+	    from pla_app_version
+	    where `type` = #{type} and dr = 0
+    </select>
+
+    <!--根据标签全模糊检索应用标签信息-->
+    <select id="getAppVersionLabelByLabel" parameterType="java.lang.String" resultType="java.lang.String">
+        select distinct `label` from pla_app_version
+	    where dr = 0 and label like concat('%',#{label},'%')
     </select>
 
 </mapper>

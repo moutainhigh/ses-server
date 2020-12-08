@@ -1,10 +1,10 @@
 package com.redescooter.ses.api.foundation.vo.app;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "应用版本信息DTO")
-public class AppVersionDTO implements Serializable {
+public class AppVersionDTO extends GeneralEnter {
 
     /**
      * 主键id
@@ -23,21 +23,9 @@ public class AppVersionDTO implements Serializable {
     private Long id;
 
     /**
-     * 系统ID
-     */
-    @ApiModelProperty(value = "系统Id", dataType = "String")
-    private String systemId;
-
-    /**
-     * 应用ID
-     */
-    @ApiModelProperty(value = "应用Id", dataType = "String")
-    private String appId;
-
-    /**
      * IOS or ANDROID or SCS(关注type字段即可,systemType无需关注)
      */
-    @ApiModelProperty(value = "系统类型(无需关注)", dataType = "Integer")
+    @ApiModelProperty(value = "系统类型", dataType = "Integer")
     private Integer systemType;
 
     /**
@@ -50,7 +38,7 @@ public class AppVersionDTO implements Serializable {
     /**
      * 版本应用编码
      */
-    @ApiModelProperty(value = "版本应用编码", dataType = "String", required = true)
+    @ApiModelProperty(value = "版本应用编码", dataType = "String")
     private String code;
 
     /**

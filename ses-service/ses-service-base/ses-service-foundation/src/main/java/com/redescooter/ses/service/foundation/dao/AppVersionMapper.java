@@ -113,6 +113,24 @@ public interface AppVersionMapper {
      * @author assert
      * @date 2020/12/7
     */
-    List<String> getAppVersionByType(Integer type);
+    List<String> getAppVersionByType(@Param("type") Integer type);
+
+    /**
+     * 根据type查询应用版本最大版本编码
+     * @param type
+     * @return java.lang.String
+     * @author assert
+     * @date 2020/12/8
+    */
+    String getAppVersionMaxCodeByType(Integer type);
+
+    /**
+     * 根据标签全模糊检索应用标签信息
+     * @param label
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2020/12/8
+    */
+    List<String> getAppVersionLabelByLabel(String label);
 
 }

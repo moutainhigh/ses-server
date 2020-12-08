@@ -82,11 +82,11 @@ public interface AppVersionService {
     /**
      * 查询所有应用正在使用的版本
      * @param
-     * @return java.util.Map<java.lang.String,com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
      * @author assert
-     * @date 2020/12/4
+     * @date 2020/12/8
     */
-    Map<String, List<AppVersionDTO>> getAllActiveAppVersion();
+    List<AppVersionDTO> getAllActiveAppVersion();
 
     /**
      * 根据type查询当前应用所有版本号信息
@@ -96,5 +96,14 @@ public interface AppVersionService {
      * @date 2020/12/7
     */
     List<String> getAppVersionByType(Integer type);
+
+    /**
+     * 根据标签全模糊检索应用标签信息
+     * @param label
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2020/12/8
+    */
+    List<String> getAppVersionLabelByLabel(String label);
 
 }
