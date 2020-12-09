@@ -269,8 +269,8 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          * 消息通知下发,通知平板端进行车型设置操作
          */
         SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
-        publish.setTabletSn(tabletSn);
-        publish.setType(scooterModel);
+//        publish.setTabletSn(tabletSn);
+//        publish.setType(scooterModel);
 
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
