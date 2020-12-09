@@ -480,6 +480,10 @@ public enum ExceptionCodeEnums {
 
     PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
 
+    TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
+
+    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+
 
 
     ;

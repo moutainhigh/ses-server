@@ -99,4 +99,45 @@
         </if>
         limit 1
     </select>
+
+    <!--根据Id更新车辆锁状态-->
+    <update id="updateScooterStatusById">
+        update sco_scooter
+        set `status` = #{status,jdbcType=VARCHAR}, updated_by = #{userId,jdbcType=BIGINT}, updated_time = now()
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--根据Id查询车辆信息-->
+    <select id="getScooterInfoById" parameterType="java.lang.Long" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+        select s.id id,s.picture pictures,s.scooter_no scooterNo,s.tablet_sn tabletSn,s.`status` `status`,
+        s.available_status availableStatus,s.box_status boxStatus,s.model model,s.license_plate licensePlate,
+        s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
+        s.scooter_id_picture scooterIdPicture,s.insurance insurance,s.insure_time insureTime,s.revision revision,
+        ecu.id scooterEcuId,ecu.longitude longitule,ecu.latitude latitude,ecu.battery battery,
+        ifnull(ecu.total_miles, 0) totalmileage
+        from sco_scooter s
+        left join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn
+        where s.id = #{id}
+    </select>
+
+    <!--根据scooterNo查询车辆锁状态-->
+    <select id="getScooterStatusByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
+        select `status` from sco_scooter
+        where tablet_sn = #{tabletSn} and dr = '0'
+    </select>
+
+    <!--根据tabletSn查询车辆编号-->
+    <select id="getScooterNoByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
+        select scooter_no from sco_scooter
+	    where tablet_sn = #{tabletSn} and dr = '0'
+    </select>
+
+    <!--根据tabletSn更新车辆锁状态-->
+    <update id="updateScooterStatusByTabletSn">
+        update sco_scooter
+	    set `status` = #{status}, updated_time = #{date}
+	    where tablet_sn = #{tabletSn}
+    </update>
+
 </mapper>

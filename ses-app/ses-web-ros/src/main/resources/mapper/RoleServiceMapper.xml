@@ -47,6 +47,7 @@
             r.role_name,
             r.role_code,
             p.position_name,
+            p.position_status,
             r.sort,
             r.role_status,
             r.role_desc,
@@ -93,7 +94,7 @@
     </select>
 
     <sql id="roleListCondition">
-        and r.id != 1000000
+            and r.system_root is null
         <if test="enter.positionId != null and enter.positionId != ''">
             and r.position_id = #{enter.positionId}
         </if>
@@ -135,7 +136,7 @@
         from ope_sys_role role
         left join ope_sys_position pos on pos.id = role.position_id
         left join ope_sys_dept dept on dept.id = pos.dept_id
-        where role.dr = 0 and pos.dr = 0 and dept.dr = 0
+        where role.dr = 0 and pos.dr = 0 and dept.dr = 0 and role.system_root is null
         <if test="enter.positionId != null and enter.positionId != ''">
             and role.position_id = #{enter.positionId}
         </if>

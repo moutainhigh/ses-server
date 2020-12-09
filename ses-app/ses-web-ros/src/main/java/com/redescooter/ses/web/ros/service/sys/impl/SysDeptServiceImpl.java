@@ -463,6 +463,10 @@ public class SysDeptServiceImpl implements SysDeptService {
         if (deptResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
+        if (deptResult.getPId().equals(Constant.DEPT_TREE_ROOT_ID) && enter.getDeptStatus() == 2){
+            // 如果是顶级部门 不能禁用
+            throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getMessage());
+        }
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             // 禁用部门  部门下面的子部门全部禁用
             List<OpeSysDept> childDepts = deptServiceMapper.getChildDept(deptResult.getId());
@@ -578,11 +582,11 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, byId.getPId()));
-        if (one == null){
-            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getCode(), ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getMessage());
-        }
-        if (one.getDeptStatus() != null && one.getDeptStatus() == 2){
-            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getCode(), ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getMessage());
+        if (one != null){
+//            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getCode(), ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getMessage());
+            if (one.getDeptStatus() != null && one.getDeptStatus() == 2){
+                throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getCode(), ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getMessage());
+            }
         }
         BeanUtils.copyProperties(byId, result);
         if (one != null) {

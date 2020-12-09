@@ -38,7 +38,7 @@ public class EasyPoiUtils {
      * @throws Exception
      */
 
-    public static void downLoadExcel(String fileName, Workbook workbook ,HttpServletResponse response) {
+    public static void downLoadExcel(String fileName, Workbook workbook, HttpServletResponse response) {
         try {
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
@@ -77,7 +77,7 @@ public class EasyPoiUtils {
      * 根据Map创建对应的Excel(一个excel 创建多个sheet)
      *
      * @param list     list 多个Map key title 对应表格Title key entity 对应表格对应实体 key data
-     *                  Collection 数据
+     *                 Collection 数据
      * @param path     路径
      * @param filename 　文件名
      * @throws IOException

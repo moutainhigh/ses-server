@@ -1,22 +1,32 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Builder;
-import lombok.Data;
 
+/**
+ * 岗位表
+ */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysPosition")
 @Data
 @TableName(value = "ope_sys_position")
-public class OpeSysPosition implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class OpeSysPosition {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键")
     private Long id;
 
@@ -24,8 +34,8 @@ public class OpeSysPosition implements Serializable {
      * 逻辑删除标识 0：正常，1：删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0：正常，1：删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -76,6 +86,13 @@ public class OpeSysPosition implements Serializable {
     @TableField(value = "remark")
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    /**
+     * 系统内置标识
+     */
+    @TableField(value = "system_root")
+    @ApiModelProperty(value = "系统内置标识")
+    private String systemRoot;
 
     /**
      * 创建人
@@ -140,8 +157,6 @@ public class OpeSysPosition implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private String def5;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -160,6 +175,8 @@ public class OpeSysPosition implements Serializable {
 
     public static final String COL_REMARK = "remark";
 
+    public static final String COL_SYSTEM_ROOT = "system_root";
+
     public static final String COL_CREATED_BY = "created_by";
 
     public static final String COL_CREATED_TIME = "created_time";
@@ -177,5 +194,4 @@ public class OpeSysPosition implements Serializable {
     public static final String COL_DEF4 = "def4";
 
     public static final String COL_DEF5 = "def5";
-
 }

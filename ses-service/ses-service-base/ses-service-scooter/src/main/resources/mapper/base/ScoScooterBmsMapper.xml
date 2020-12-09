@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterBmsMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterBms">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_bms-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
+    <result column="batch_no" jdbcType="BIGINT" property="batchNo" />
+    <result column="battery_type" jdbcType="INTEGER" property="batteryType" />
+    <result column="breakdown" jdbcType="BOOLEAN" property="breakdown" />
+    <result column="charge" jdbcType="BOOLEAN" property="charge" />
+    <result column="charge_amount" jdbcType="INTEGER" property="chargeAmount" />
+    <result column="charge_mos_open" jdbcType="BOOLEAN" property="chargeMosOpen" />
+    <result column="charge_over_i_protect" jdbcType="BOOLEAN" property="chargeOverIProtect" />
+    <result column="charge_over_i_protect_amount" jdbcType="INTEGER" property="chargeOverIProtectAmount" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="device_version_no" jdbcType="INTEGER" property="deviceVersionNo" />
+    <result column="discharge" jdbcType="BOOLEAN" property="discharge" />
+    <result column="discharge_amount" jdbcType="INTEGER" property="dischargeAmount" />
+    <result column="discharge_mos_open" jdbcType="BOOLEAN" property="dischargeMosOpen" />
+    <result column="discharge_over_i_protect" jdbcType="BOOLEAN" property="dischargeOverIProtect" />
+    <result column="discharge_over_i_protect_amount" jdbcType="INTEGER" property="dischargeOverIProtectAmount" />
+    <result column="electricity" jdbcType="FLOAT" property="electricity" />
+    <result column="factory" jdbcType="VARCHAR" property="factory" />
+    <result column="factory_no" jdbcType="BIGINT" property="factoryNo" />
+    <result column="health" jdbcType="FLOAT" property="health" />
+    <result column="high_t_protect" jdbcType="BOOLEAN" property="highTProtect" />
+    <result column="high_t_protect_amount" jdbcType="INTEGER" property="highTProtectAmount" />
+    <result column="lack_v_protect" jdbcType="BOOLEAN" property="lackVProtect" />
+    <result column="lack_v_protect_amount" jdbcType="INTEGER" property="lackVProtectAmount" />
+    <result column="low_t_protect" jdbcType="BOOLEAN" property="lowTProtect" />
+    <result column="low_t_protect_amount" jdbcType="INTEGER" property="lowTProtectAmount" />
+    <result column="mos_charge_breakdown" jdbcType="BOOLEAN" property="mosChargeBreakdown" />
+    <result column="mos_discharge_breakdown" jdbcType="BOOLEAN" property="mosDischargeBreakdown" />
+    <result column="over_charge_amount" jdbcType="INTEGER" property="overChargeAmount" />
+    <result column="over_discharge_amount" jdbcType="INTEGER" property="overDischargeAmount" />
+    <result column="over_v_protect" jdbcType="BOOLEAN" property="overVProtect" />
+    <result column="over_v_protect_amount" jdbcType="INTEGER" property="overVProtectAmount" />
+    <result column="pack_factory" jdbcType="INTEGER" property="packFactory" />
+    <result column="short_protect" jdbcType="BOOLEAN" property="shortProtect" />
+    <result column="short_protect_amount" jdbcType="INTEGER" property="shortProtectAmount" />
+    <result column="soc" jdbcType="FLOAT" property="soc" />
+    <result column="soft_ware_version" jdbcType="INTEGER" property="softWareVersion" />
+    <result column="temperature" jdbcType="FLOAT" property="temperature" />
+    <result column="total_charge" jdbcType="BIGINT" property="totalCharge" />
+    <result column="total_discharge" jdbcType="BIGINT" property="totalDischarge" />
+    <result column="v12_connected" jdbcType="BOOLEAN" property="v12Connected" />
+    <result column="v5_connected" jdbcType="BOOLEAN" property="v5Connected" />
+    <result column="voltage" jdbcType="FLOAT" property="voltage" />
+    <result column="voltage_balance" jdbcType="BOOLEAN" property="voltageBalance" />
+    <result column="ware_no" jdbcType="INTEGER" property="wareNo" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, scooter_no, batch_no, battery_type, breakdown, charge, charge_amount, charge_mos_open, 
+    charge_over_i_protect, charge_over_i_protect_amount, `date`, device_version_no, discharge, 
+    discharge_amount, discharge_mos_open, discharge_over_i_protect, discharge_over_i_protect_amount, 
+    electricity, factory, factory_no, health, high_t_protect, high_t_protect_amount, 
+    lack_v_protect, lack_v_protect_amount, low_t_protect, low_t_protect_amount, mos_charge_breakdown, 
+    mos_discharge_breakdown, over_charge_amount, over_discharge_amount, over_v_protect, 
+    over_v_protect_amount, pack_factory, short_protect, short_protect_amount, soc, soft_ware_version, 
+    temperature, total_charge, total_discharge, v12_connected, v5_connected, voltage, 
+    voltage_balance, ware_no, created_by, created_time, updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sco_scooter_bms
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sco_scooter_bms
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBms">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bms (id, dr, scooter_no, 
+      batch_no, battery_type, breakdown, 
+      charge, charge_amount, charge_mos_open, 
+      charge_over_i_protect, charge_over_i_protect_amount, 
+      `date`, device_version_no, discharge, 
+      discharge_amount, discharge_mos_open, discharge_over_i_protect, 
+      discharge_over_i_protect_amount, electricity, 
+      factory, factory_no, health, 
+      high_t_protect, high_t_protect_amount, lack_v_protect, 
+      lack_v_protect_amount, low_t_protect, low_t_protect_amount, 
+      mos_charge_breakdown, mos_discharge_breakdown, 
+      over_charge_amount, over_discharge_amount, 
+      over_v_protect, over_v_protect_amount, pack_factory, 
+      short_protect, short_protect_amount, soc, 
+      soft_ware_version, temperature, total_charge, 
+      total_discharge, v12_connected, v5_connected, 
+      voltage, voltage_balance, ware_no, 
+      created_by, created_time, updated_by, 
+      updated_time)
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, 
+      #{batchNo,jdbcType=BIGINT}, #{batteryType,jdbcType=INTEGER}, #{breakdown,jdbcType=BOOLEAN}, 
+      #{charge,jdbcType=BOOLEAN}, #{chargeAmount,jdbcType=INTEGER}, #{chargeMosOpen,jdbcType=BOOLEAN}, 
+      #{chargeOverIProtect,jdbcType=BOOLEAN}, #{chargeOverIProtectAmount,jdbcType=INTEGER}, 
+      #{date,jdbcType=TIMESTAMP}, #{deviceVersionNo,jdbcType=INTEGER}, #{discharge,jdbcType=BOOLEAN}, 
+      #{dischargeAmount,jdbcType=INTEGER}, #{dischargeMosOpen,jdbcType=BOOLEAN}, #{dischargeOverIProtect,jdbcType=BOOLEAN}, 
+      #{dischargeOverIProtectAmount,jdbcType=INTEGER}, #{electricity,jdbcType=FLOAT}, 
+      #{factory,jdbcType=VARCHAR}, #{factoryNo,jdbcType=BIGINT}, #{health,jdbcType=FLOAT}, 
+      #{highTProtect,jdbcType=BOOLEAN}, #{highTProtectAmount,jdbcType=INTEGER}, #{lackVProtect,jdbcType=BOOLEAN}, 
+      #{lackVProtectAmount,jdbcType=INTEGER}, #{lowTProtect,jdbcType=BOOLEAN}, #{lowTProtectAmount,jdbcType=INTEGER}, 
+      #{mosChargeBreakdown,jdbcType=BOOLEAN}, #{mosDischargeBreakdown,jdbcType=BOOLEAN}, 
+      #{overChargeAmount,jdbcType=INTEGER}, #{overDischargeAmount,jdbcType=INTEGER}, 
+      #{overVProtect,jdbcType=BOOLEAN}, #{overVProtectAmount,jdbcType=INTEGER}, #{packFactory,jdbcType=INTEGER}, 
+      #{shortProtect,jdbcType=BOOLEAN}, #{shortProtectAmount,jdbcType=INTEGER}, #{soc,jdbcType=FLOAT}, 
+      #{softWareVersion,jdbcType=INTEGER}, #{temperature,jdbcType=FLOAT}, #{totalCharge,jdbcType=BIGINT}, 
+      #{totalDischarge,jdbcType=BIGINT}, #{v12Connected,jdbcType=BOOLEAN}, #{v5Connected,jdbcType=BOOLEAN}, 
+      #{voltage,jdbcType=FLOAT}, #{voltageBalance,jdbcType=BOOLEAN}, #{wareNo,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBms">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bms
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="scooterNo != null">
+        scooter_no,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="batteryType != null">
+        battery_type,
+      </if>
+      <if test="breakdown != null">
+        breakdown,
+      </if>
+      <if test="charge != null">
+        charge,
+      </if>
+      <if test="chargeAmount != null">
+        charge_amount,
+      </if>
+      <if test="chargeMosOpen != null">
+        charge_mos_open,
+      </if>
+      <if test="chargeOverIProtect != null">
+        charge_over_i_protect,
+      </if>
+      <if test="chargeOverIProtectAmount != null">
+        charge_over_i_protect_amount,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+      <if test="deviceVersionNo != null">
+        device_version_no,
+      </if>
+      <if test="discharge != null">
+        discharge,
+      </if>
+      <if test="dischargeAmount != null">
+        discharge_amount,
+      </if>
+      <if test="dischargeMosOpen != null">
+        discharge_mos_open,
+      </if>
+      <if test="dischargeOverIProtect != null">
+        discharge_over_i_protect,
+      </if>
+      <if test="dischargeOverIProtectAmount != null">
+        discharge_over_i_protect_amount,
+      </if>
+      <if test="electricity != null">
+        electricity,
+      </if>
+      <if test="factory != null">
+        factory,
+      </if>
+      <if test="factoryNo != null">
+        factory_no,
+      </if>
+      <if test="health != null">
+        health,
+      </if>
+      <if test="highTProtect != null">
+        high_t_protect,
+      </if>
+      <if test="highTProtectAmount != null">
+        high_t_protect_amount,
+      </if>
+      <if test="lackVProtect != null">
+        lack_v_protect,
+      </if>
+      <if test="lackVProtectAmount != null">
+        lack_v_protect_amount,
+      </if>
+      <if test="lowTProtect != null">
+        low_t_protect,
+      </if>
+      <if test="lowTProtectAmount != null">
+        low_t_protect_amount,
+      </if>
+      <if test="mosChargeBreakdown != null">
+        mos_charge_breakdown,
+      </if>
+      <if test="mosDischargeBreakdown != null">
+        mos_discharge_breakdown,
+      </if>
+      <if test="overChargeAmount != null">
+        over_charge_amount,
+      </if>
+      <if test="overDischargeAmount != null">
+        over_discharge_amount,
+      </if>
+      <if test="overVProtect != null">
+        over_v_protect,
+      </if>
+      <if test="overVProtectAmount != null">
+        over_v_protect_amount,
+      </if>
+      <if test="packFactory != null">
+        pack_factory,
+      </if>
+      <if test="shortProtect != null">
+        short_protect,
+      </if>
+      <if test="shortProtectAmount != null">
+        short_protect_amount,
+      </if>
+      <if test="soc != null">
+        soc,
+      </if>
+      <if test="softWareVersion != null">
+        soft_ware_version,
+      </if>
+      <if test="temperature != null">
+        temperature,
+      </if>
+      <if test="totalCharge != null">
+        total_charge,
+      </if>
+      <if test="totalDischarge != null">
+        total_discharge,
+      </if>
+      <if test="v12Connected != null">
+        v12_connected,
+      </if>
+      <if test="v5Connected != null">
+        v5_connected,
+      </if>
+      <if test="voltage != null">
+        voltage,
+      </if>
+      <if test="voltageBalance != null">
+        voltage_balance,
+      </if>
+      <if test="wareNo != null">
+        ware_no,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="batteryType != null">
+        #{batteryType,jdbcType=INTEGER},
+      </if>
+      <if test="breakdown != null">
+        #{breakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="charge != null">
+        #{charge,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeAmount != null">
+        #{chargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="chargeMosOpen != null">
+        #{chargeMosOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeOverIProtect != null">
+        #{chargeOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeOverIProtectAmount != null">
+        #{chargeOverIProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceVersionNo != null">
+        #{deviceVersionNo,jdbcType=INTEGER},
+      </if>
+      <if test="discharge != null">
+        #{discharge,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeAmount != null">
+        #{dischargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="dischargeMosOpen != null">
+        #{dischargeMosOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeOverIProtect != null">
+        #{dischargeOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeOverIProtectAmount != null">
+        #{dischargeOverIProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="electricity != null">
+        #{electricity,jdbcType=FLOAT},
+      </if>
+      <if test="factory != null">
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryNo != null">
+        #{factoryNo,jdbcType=BIGINT},
+      </if>
+      <if test="health != null">
+        #{health,jdbcType=FLOAT},
+      </if>
+      <if test="highTProtect != null">
+        #{highTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="highTProtectAmount != null">
+        #{highTProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="lackVProtect != null">
+        #{lackVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="lackVProtectAmount != null">
+        #{lackVProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="lowTProtect != null">
+        #{lowTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="lowTProtectAmount != null">
+        #{lowTProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="mosChargeBreakdown != null">
+        #{mosChargeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosDischargeBreakdown != null">
+        #{mosDischargeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="overChargeAmount != null">
+        #{overChargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="overDischargeAmount != null">
+        #{overDischargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="overVProtect != null">
+        #{overVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="overVProtectAmount != null">
+        #{overVProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="packFactory != null">
+        #{packFactory,jdbcType=INTEGER},
+      </if>
+      <if test="shortProtect != null">
+        #{shortProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="shortProtectAmount != null">
+        #{shortProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="soc != null">
+        #{soc,jdbcType=FLOAT},
+      </if>
+      <if test="softWareVersion != null">
+        #{softWareVersion,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        #{temperature,jdbcType=FLOAT},
+      </if>
+      <if test="totalCharge != null">
+        #{totalCharge,jdbcType=BIGINT},
+      </if>
+      <if test="totalDischarge != null">
+        #{totalDischarge,jdbcType=BIGINT},
+      </if>
+      <if test="v12Connected != null">
+        #{v12Connected,jdbcType=BOOLEAN},
+      </if>
+      <if test="v5Connected != null">
+        #{v5Connected,jdbcType=BOOLEAN},
+      </if>
+      <if test="voltage != null">
+        #{voltage,jdbcType=FLOAT},
+      </if>
+      <if test="voltageBalance != null">
+        #{voltageBalance,jdbcType=BOOLEAN},
+      </if>
+      <if test="wareNo != null">
+        #{wareNo,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBms">
+    <!--@mbg.generated-->
+    update sco_scooter_bms
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="batteryType != null">
+        battery_type = #{batteryType,jdbcType=INTEGER},
+      </if>
+      <if test="breakdown != null">
+        breakdown = #{breakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="charge != null">
+        charge = #{charge,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeAmount != null">
+        charge_amount = #{chargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="chargeMosOpen != null">
+        charge_mos_open = #{chargeMosOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeOverIProtect != null">
+        charge_over_i_protect = #{chargeOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="chargeOverIProtectAmount != null">
+        charge_over_i_protect_amount = #{chargeOverIProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviceVersionNo != null">
+        device_version_no = #{deviceVersionNo,jdbcType=INTEGER},
+      </if>
+      <if test="discharge != null">
+        discharge = #{discharge,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeAmount != null">
+        discharge_amount = #{dischargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="dischargeMosOpen != null">
+        discharge_mos_open = #{dischargeMosOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeOverIProtect != null">
+        discharge_over_i_protect = #{dischargeOverIProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="dischargeOverIProtectAmount != null">
+        discharge_over_i_protect_amount = #{dischargeOverIProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="electricity != null">
+        electricity = #{electricity,jdbcType=FLOAT},
+      </if>
+      <if test="factory != null">
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="factoryNo != null">
+        factory_no = #{factoryNo,jdbcType=BIGINT},
+      </if>
+      <if test="health != null">
+        health = #{health,jdbcType=FLOAT},
+      </if>
+      <if test="highTProtect != null">
+        high_t_protect = #{highTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="highTProtectAmount != null">
+        high_t_protect_amount = #{highTProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="lackVProtect != null">
+        lack_v_protect = #{lackVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="lackVProtectAmount != null">
+        lack_v_protect_amount = #{lackVProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="lowTProtect != null">
+        low_t_protect = #{lowTProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="lowTProtectAmount != null">
+        low_t_protect_amount = #{lowTProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="mosChargeBreakdown != null">
+        mos_charge_breakdown = #{mosChargeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosDischargeBreakdown != null">
+        mos_discharge_breakdown = #{mosDischargeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="overChargeAmount != null">
+        over_charge_amount = #{overChargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="overDischargeAmount != null">
+        over_discharge_amount = #{overDischargeAmount,jdbcType=INTEGER},
+      </if>
+      <if test="overVProtect != null">
+        over_v_protect = #{overVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="overVProtectAmount != null">
+        over_v_protect_amount = #{overVProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="packFactory != null">
+        pack_factory = #{packFactory,jdbcType=INTEGER},
+      </if>
+      <if test="shortProtect != null">
+        short_protect = #{shortProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="shortProtectAmount != null">
+        short_protect_amount = #{shortProtectAmount,jdbcType=INTEGER},
+      </if>
+      <if test="soc != null">
+        soc = #{soc,jdbcType=FLOAT},
+      </if>
+      <if test="softWareVersion != null">
+        soft_ware_version = #{softWareVersion,jdbcType=INTEGER},
+      </if>
+      <if test="temperature != null">
+        temperature = #{temperature,jdbcType=FLOAT},
+      </if>
+      <if test="totalCharge != null">
+        total_charge = #{totalCharge,jdbcType=BIGINT},
+      </if>
+      <if test="totalDischarge != null">
+        total_discharge = #{totalDischarge,jdbcType=BIGINT},
+      </if>
+      <if test="v12Connected != null">
+        v12_connected = #{v12Connected,jdbcType=BOOLEAN},
+      </if>
+      <if test="v5Connected != null">
+        v5_connected = #{v5Connected,jdbcType=BOOLEAN},
+      </if>
+      <if test="voltage != null">
+        voltage = #{voltage,jdbcType=FLOAT},
+      </if>
+      <if test="voltageBalance != null">
+        voltage_balance = #{voltageBalance,jdbcType=BOOLEAN},
+      </if>
+      <if test="wareNo != null">
+        ware_no = #{wareNo,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBms">
+    <!--@mbg.generated-->
+    update sco_scooter_bms
+    set dr = #{dr,jdbcType=INTEGER},
+      scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=BIGINT},
+      battery_type = #{batteryType,jdbcType=INTEGER},
+      breakdown = #{breakdown,jdbcType=BOOLEAN},
+      charge = #{charge,jdbcType=BOOLEAN},
+      charge_amount = #{chargeAmount,jdbcType=INTEGER},
+      charge_mos_open = #{chargeMosOpen,jdbcType=BOOLEAN},
+      charge_over_i_protect = #{chargeOverIProtect,jdbcType=BOOLEAN},
+      charge_over_i_protect_amount = #{chargeOverIProtectAmount,jdbcType=INTEGER},
+      `date` = #{date,jdbcType=TIMESTAMP},
+      device_version_no = #{deviceVersionNo,jdbcType=INTEGER},
+      discharge = #{discharge,jdbcType=BOOLEAN},
+      discharge_amount = #{dischargeAmount,jdbcType=INTEGER},
+      discharge_mos_open = #{dischargeMosOpen,jdbcType=BOOLEAN},
+      discharge_over_i_protect = #{dischargeOverIProtect,jdbcType=BOOLEAN},
+      discharge_over_i_protect_amount = #{dischargeOverIProtectAmount,jdbcType=INTEGER},
+      electricity = #{electricity,jdbcType=FLOAT},
+      factory = #{factory,jdbcType=VARCHAR},
+      factory_no = #{factoryNo,jdbcType=BIGINT},
+      health = #{health,jdbcType=FLOAT},
+      high_t_protect = #{highTProtect,jdbcType=BOOLEAN},
+      high_t_protect_amount = #{highTProtectAmount,jdbcType=INTEGER},
+      lack_v_protect = #{lackVProtect,jdbcType=BOOLEAN},
+      lack_v_protect_amount = #{lackVProtectAmount,jdbcType=INTEGER},
+      low_t_protect = #{lowTProtect,jdbcType=BOOLEAN},
+      low_t_protect_amount = #{lowTProtectAmount,jdbcType=INTEGER},
+      mos_charge_breakdown = #{mosChargeBreakdown,jdbcType=BOOLEAN},
+      mos_discharge_breakdown = #{mosDischargeBreakdown,jdbcType=BOOLEAN},
+      over_charge_amount = #{overChargeAmount,jdbcType=INTEGER},
+      over_discharge_amount = #{overDischargeAmount,jdbcType=INTEGER},
+      over_v_protect = #{overVProtect,jdbcType=BOOLEAN},
+      over_v_protect_amount = #{overVProtectAmount,jdbcType=INTEGER},
+      pack_factory = #{packFactory,jdbcType=INTEGER},
+      short_protect = #{shortProtect,jdbcType=BOOLEAN},
+      short_protect_amount = #{shortProtectAmount,jdbcType=INTEGER},
+      soc = #{soc,jdbcType=FLOAT},
+      soft_ware_version = #{softWareVersion,jdbcType=INTEGER},
+      temperature = #{temperature,jdbcType=FLOAT},
+      total_charge = #{totalCharge,jdbcType=BIGINT},
+      total_discharge = #{totalDischarge,jdbcType=BIGINT},
+      v12_connected = #{v12Connected,jdbcType=BOOLEAN},
+      v5_connected = #{v5Connected,jdbcType=BOOLEAN},
+      voltage = #{voltage,jdbcType=FLOAT},
+      voltage_balance = #{voltageBalance,jdbcType=BOOLEAN},
+      ware_no = #{wareNo,jdbcType=INTEGER},
+      created_by = #{createdBy,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+</mapper>

@@ -2,16 +2,17 @@
 <configuration>
 
     <!-- 彩色日志依赖的渲染类 -->
-    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
-    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
     <conversionRule conversionWord="wEx"
-                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
     <!-- 彩色日志格式 -->
     <property name="PATTERN"
-              value="${PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+              value="${PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
-<!--    <property name="PATTERN" value="%date [%-5p] [%F:%L] - %m%n"></property>-->
-<!--    <property name="PATTERN-INF" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n"></property>-->
+    <!--    <property name="PATTERN" value="%date [%-5p] [%F:%L] - %m%n"></property>-->
+    <!--    <property name="PATTERN-INF" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) |-%-5level [%thread] %c [%L] -| %msg%n"></property>-->
 
     <springProperty scope="context" name="project-name" source="spring.application.name"/>
     <springProperty scope="context" name="filePath" source="log.file.path"/>
@@ -76,18 +77,18 @@
     <!--如果想要记录更详细的 SQL 日志，只需要把下面的日志级别改成 TRACE 就可以了-->
     <!--即将 mapper 接口打入 logger 就行。-->
     <logger name="com.lj.provider.mapper" level="DEBUG"/>
-    <logger name="org.mybatis.spring" level="DEBUG" />
-    <logger name="org.apache.mybatis" level="DEBUG" />
-    <logger name="java.sql.PreparedStatement" level="DEBUG" />
-    <logger name="java.sql.Statement" level="DEBUG" />
-    <logger name="java.sql.Connection" level="DEBUG" />
-    <logger name="java.sql.ResultSet" level="DEBUG" />
+    <logger name="org.mybatis.spring" level="DEBUG"/>
+    <logger name="org.apache.mybatis" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG"/>
+    <logger name="java.sql.Statement" level="DEBUG"/>
+    <logger name="java.sql.Connection" level="DEBUG"/>
+    <logger name="java.sql.ResultSet" level="DEBUG"/>
 
     <logger name="com.lj.provider.mapper" level="INFO"/>
-    <logger name="com.alibaba" level="INFO" />
-    <logger name="org.apache.commons" level="INFO" />
-    <logger name="org.apache.zookeeper" level="INFO" />
-    <logger name="org.springframework" level="INFO" />
-    <logger name="org.quartz" level="INFO" />
+    <logger name="com.alibaba" level="INFO"/>
+    <logger name="org.apache.commons" level="INFO"/>
+    <logger name="org.apache.zookeeper" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.quartz" level="INFO"/>
 
 </configuration>

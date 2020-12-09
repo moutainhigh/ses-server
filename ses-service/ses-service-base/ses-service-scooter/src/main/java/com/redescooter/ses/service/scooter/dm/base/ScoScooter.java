@@ -1,17 +1,12 @@
 package com.redescooter.ses.service.scooter.dm.base;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-scooter-dm-base-ScoScooter")
 @Data
@@ -39,6 +34,10 @@ public class ScoScooter implements Serializable {
     @TableField(value = "scooter_no")
     @ApiModelProperty(value = "车辆编号")
     private String scooterNo;
+
+    @TableField(value = "tablet_sn")
+    @ApiModelProperty(value = "车辆平板序列号")
+    private String tabletSn;
 
     /**
      * 车辆图片
@@ -194,6 +193,8 @@ public class ScoScooter implements Serializable {
     public static final String COL_DR = "dr";
 
     public static final String COL_SCOOTER_NO = "scooter_no";
+
+    public static final String COL_TABLET_SN = "tablet_sn";
 
     public static final String COL_PICTURE = "picture";
 

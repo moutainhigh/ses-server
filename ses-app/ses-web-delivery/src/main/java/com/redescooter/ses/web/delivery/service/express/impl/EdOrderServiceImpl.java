@@ -630,6 +630,7 @@ public class EdOrderServiceImpl implements EdOrderService {
             saverOrder.setRecipientLongitude(order.getSenderLongitude());
             saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getSenderLongitude().toString(), order.getSenderLatitude().toString()));
         }
+        SesStringUtils.objStringTrim(saverOrder);
         return saverOrder;
     }
 }

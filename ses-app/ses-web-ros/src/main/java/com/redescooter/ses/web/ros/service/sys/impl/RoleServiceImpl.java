@@ -452,23 +452,25 @@ public class RoleServiceImpl implements RoleService {
                 }
             }
         }
-        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds);
+        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds);
+        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
-        // 查询这些角色下的员工数量
-        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
-        qw.in(OpeSysUserRole.COL_ROLE_ID,roleIds);
-        List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
-        if(CollectionUtils.isNotEmpty(staffList)){
-            // 按角色id分组
-            Map<Long,List<OpeSysUserRole>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysUserRole::getRoleId));
-            for (RoleListResult result : list) {
-                for (Long roleId : map.keySet()) {
-                    if(Objects.equals(result.getId(),roleId)){
-                        result.setNum(map.get(roleId).size());
+        if (CollectionUtils.isNotEmpty(roleIds)){
+            // 查询这些角色下的员工数量
+            QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+            qw.in(OpeSysUserRole.COL_ROLE_ID,roleIds);
+            List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
+            if(CollectionUtils.isNotEmpty(staffList)){
+                // 按角色id分组
+                Map<Long,List<OpeSysUserRole>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysUserRole::getRoleId));
+                for (RoleListResult result : list) {
+                    for (Long roleId : map.keySet()) {
+                        if(Objects.equals(result.getId(),roleId)){
+                            result.setNum(map.get(roleId).size());
+                        }
                     }
                 }
             }

@@ -93,7 +93,7 @@ public class DriverDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "驾照等级")
     private String driverLicenseLevel;
 
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态 VACATION 休假，WORKING 上班中OFFWORK 下班中")
     private String status;
 
 }

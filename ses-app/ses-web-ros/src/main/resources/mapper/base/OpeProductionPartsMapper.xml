@@ -4,53 +4,54 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionParts">
     <!--@mbg.generated-->
     <!--@Table ope_production_parts-->
-    <id column="id" property="id" />
-    <result column="dr" property="dr" />
-    <result column="tenant_id" property="tenantId" />
-    <result column="dept_id" property="deptId" />
-    <result column="parts_no" property="partsNo" />
-    <result column="parts_type" property="partsType" />
-    <result column="parts_sec" property="partsSec" />
-    <result column="disable" property="disable" />
-    <result column="sn_class" property="snClass" />
-    <result column="id_calss" property="idCalss" />
-    <result column="parts_is_assembly" property="partsIsAssembly" />
-    <result column="parts_is_for_assembly" property="partsIsForAssembly" />
-    <result column="parts_qty" property="partsQty" />
-    <result column="supplier_id" property="supplierId" />
-    <result column="procurement_cycle" property="procurementCycle" />
-    <result column="dwg" property="dwg" />
-    <result column="remark" property="remark" />
-    <result column="announ_user_id" property="announUserId" />
-    <result column="op_announ_user_id" property="opAnnounUserId" />
-    <result column="cn_name" property="cnName" />
-    <result column="en_name" property="enName" />
-    <result column="fr_name" property="frName" />
-    <result column="level" property="level" />
-    <result column="main_drawing" property="mainDrawing" />
-    <result column="ecn_number" property="ecnNumber" />
-    <result column="item" property="item" />
-    <result column="sell_calss" property="sellCalss" />
-    <result column="drawing_size" property="drawingSize" />
-    <result column="weight" property="weight" />
-    <result column="supplier_id_2" property="supplierId2" />
-    <result column="rate_typ" property="rateTyp" />
-    <result column="created_by" property="createdBy" />
-    <result column="created_time" property="createdTime" />
-    <result column="updated_by" property="updatedBy" />
-    <result column="updated_time" property="updatedTime" />
-    <result column="def1" property="def1" />
-    <result column="def2" property="def2" />
-    <result column="def3" property="def3" />
-    <result column="def4" property="def4" />
-    <result column="def5" property="def5" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+    <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+    <result column="parts_sec" jdbcType="BIGINT" property="partsSec" />
+    <result column="disable" jdbcType="INTEGER" property="disable" />
+    <result column="sn_class" jdbcType="INTEGER" property="snClass" />
+    <result column="id_calss" jdbcType="INTEGER" property="idCalss" />
+    <result column="parts_is_assembly" jdbcType="INTEGER" property="partsIsAssembly" />
+    <result column="parts_is_for_assembly" jdbcType="INTEGER" property="partsIsForAssembly" />
+    <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
+    <result column="supplier_id" jdbcType="BIGINT" property="supplierId" />
+    <result column="procurement_cycle" jdbcType="INTEGER" property="procurementCycle" />
+    <result column="dwg" jdbcType="VARCHAR" property="dwg" />
+    <result column="qc_flag" jdbcType="BOOLEAN" property="qcFlag" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="announ_user_id" jdbcType="BIGINT" property="announUserId" />
+    <result column="op_announ_user_id" jdbcType="BIGINT" property="opAnnounUserId" />
+    <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+    <result column="en_name" jdbcType="VARCHAR" property="enName" />
+    <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="main_drawing" jdbcType="VARCHAR" property="mainDrawing" />
+    <result column="ecn_number" jdbcType="VARCHAR" property="ecnNumber" />
+    <result column="item" jdbcType="VARCHAR" property="item" />
+    <result column="sell_calss" jdbcType="VARCHAR" property="sellCalss" />
+    <result column="drawing_size" jdbcType="VARCHAR" property="drawingSize" />
+    <result column="weight" jdbcType="DOUBLE" property="weight" />
+    <result column="supplier_id_2" jdbcType="BIGINT" property="supplierId2" />
+    <result column="rate_typ" jdbcType="VARCHAR" property="rateTyp" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
     id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-    dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, `level`, 
-    main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
+    dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
+    `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
     rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
     def5
   </sql>
@@ -60,203 +61,208 @@
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dr}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="tenant_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.tenantId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="dept_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.deptId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="parts_no = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsNo}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsNo,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="parts_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsType}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_sec = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsSec}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsSec,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="`disable` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.disable}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.disable,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="sn_class = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.snClass}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.snClass,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="id_calss = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.idCalss}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.idCalss,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_is_assembly = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsIsAssembly}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsIsAssembly,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_is_for_assembly = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsIsForAssembly}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsIsForAssembly,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.partsQty}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="supplier_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.supplierId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="procurement_cycle = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.procurementCycle}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.procurementCycle,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="dwg = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.dwg}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dwg,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="qc_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcFlag,jdbcType=BOOLEAN}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.remark}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="announ_user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.announUserId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.announUserId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="op_announ_user_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.opAnnounUserId}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opAnnounUserId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="cn_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.cnName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cnName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="en_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.enName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="fr_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.frName}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.frName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="`level` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.level}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.level,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="main_drawing = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.mainDrawing}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.mainDrawing,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="ecn_number = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.ecnNumber}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.ecnNumber,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="item = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.item}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.item,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="sell_calss = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.sellCalss}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.sellCalss,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="drawing_size = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.drawingSize}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.drawingSize,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="weight = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.weight}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.weight,jdbcType=DOUBLE}
         </foreach>
       </trim>
       <trim prefix="supplier_id_2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.supplierId2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.supplierId2,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="rate_typ = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.rateTyp}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.rateTyp,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.createdTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedBy}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.updatedTime}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def1}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def2}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def3}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def4}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id} then #{item.def5}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id}
+      #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
@@ -264,20 +270,26 @@
     insert into ope_production_parts
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
       id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, `level`, 
-      main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
+      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
+      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
       rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.partsNo}, #{item.partsType}, 
-        #{item.partsSec}, #{item.disable}, #{item.snClass}, #{item.idCalss}, #{item.partsIsAssembly}, 
-        #{item.partsIsForAssembly}, #{item.partsQty}, #{item.supplierId}, #{item.procurementCycle}, 
-        #{item.dwg}, #{item.remark}, #{item.announUserId}, #{item.opAnnounUserId}, #{item.cnName}, 
-        #{item.enName}, #{item.frName}, #{item.level}, #{item.mainDrawing}, #{item.ecnNumber}, 
-        #{item.item}, #{item.sellCalss}, #{item.drawingSize}, #{item.weight}, #{item.supplierId2}, 
-        #{item.rateTyp}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
-        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.deptId,jdbcType=BIGINT}, #{item.partsNo,jdbcType=VARCHAR}, #{item.partsType,jdbcType=INTEGER}, 
+        #{item.partsSec,jdbcType=BIGINT}, #{item.disable,jdbcType=INTEGER}, #{item.snClass,jdbcType=INTEGER}, 
+        #{item.idCalss,jdbcType=INTEGER}, #{item.partsIsAssembly,jdbcType=INTEGER}, #{item.partsIsForAssembly,jdbcType=INTEGER}, 
+        #{item.partsQty,jdbcType=INTEGER}, #{item.supplierId,jdbcType=BIGINT}, #{item.procurementCycle,jdbcType=INTEGER}, 
+        #{item.dwg,jdbcType=VARCHAR}, #{item.qcFlag,jdbcType=BOOLEAN}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.announUserId,jdbcType=BIGINT}, #{item.opAnnounUserId,jdbcType=BIGINT}, #{item.cnName,jdbcType=VARCHAR}, 
+        #{item.enName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER}, 
+        #{item.mainDrawing,jdbcType=VARCHAR}, #{item.ecnNumber,jdbcType=VARCHAR}, #{item.item,jdbcType=VARCHAR}, 
+        #{item.sellCalss,jdbcType=VARCHAR}, #{item.drawingSize,jdbcType=VARCHAR}, #{item.weight,jdbcType=DOUBLE}, 
+        #{item.supplierId2,jdbcType=BIGINT}, #{item.rateTyp,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionParts">
@@ -285,59 +297,67 @@
     insert into ope_production_parts
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
       id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, `level`, 
-      main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
+      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
+      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
       rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def4, def5)
     values
-    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{partsNo}, #{partsType}, #{partsSec}, #{disable}, 
-      #{snClass}, #{idCalss}, #{partsIsAssembly}, #{partsIsForAssembly}, #{partsQty}, 
-      #{supplierId}, #{procurementCycle}, #{dwg}, #{remark}, #{announUserId}, #{opAnnounUserId}, 
-      #{cnName}, #{enName}, #{frName}, #{level}, #{mainDrawing}, #{ecnNumber}, #{item}, 
-      #{sellCalss}, #{drawingSize}, #{weight}, #{supplierId2}, #{rateTyp}, #{createdBy}, 
-      #{createdTime}, #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, 
-      #{def5})
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
+      #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, #{partsSec,jdbcType=BIGINT}, 
+      #{disable,jdbcType=INTEGER}, #{snClass,jdbcType=INTEGER}, #{idCalss,jdbcType=INTEGER}, 
+      #{partsIsAssembly,jdbcType=INTEGER}, #{partsIsForAssembly,jdbcType=INTEGER}, #{partsQty,jdbcType=INTEGER}, 
+      #{supplierId,jdbcType=BIGINT}, #{procurementCycle,jdbcType=INTEGER}, #{dwg,jdbcType=VARCHAR}, 
+      #{qcFlag,jdbcType=BOOLEAN}, #{remark,jdbcType=VARCHAR}, #{announUserId,jdbcType=BIGINT}, 
+      #{opAnnounUserId,jdbcType=BIGINT}, #{cnName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
+      #{frName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{mainDrawing,jdbcType=VARCHAR}, 
+      #{ecnNumber,jdbcType=VARCHAR}, #{item,jdbcType=VARCHAR}, #{sellCalss,jdbcType=VARCHAR}, 
+      #{drawingSize,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{supplierId2,jdbcType=BIGINT}, 
+      #{rateTyp,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+      )
     on duplicate key update 
-    id = #{id}, 
-    dr = #{dr}, 
-    tenant_id = #{tenantId}, 
-    dept_id = #{deptId}, 
-    parts_no = #{partsNo}, 
-    parts_type = #{partsType}, 
-    parts_sec = #{partsSec}, 
-    `disable` = #{disable}, 
-    sn_class = #{snClass}, 
-    id_calss = #{idCalss}, 
-    parts_is_assembly = #{partsIsAssembly}, 
-    parts_is_for_assembly = #{partsIsForAssembly}, 
-    parts_qty = #{partsQty}, 
-    supplier_id = #{supplierId}, 
-    procurement_cycle = #{procurementCycle}, 
-    dwg = #{dwg}, 
-    remark = #{remark}, 
-    announ_user_id = #{announUserId}, 
-    op_announ_user_id = #{opAnnounUserId}, 
-    cn_name = #{cnName}, 
-    en_name = #{enName}, 
-    fr_name = #{frName}, 
-    `level` = #{level}, 
-    main_drawing = #{mainDrawing}, 
-    ecn_number = #{ecnNumber}, 
-    item = #{item}, 
-    sell_calss = #{sellCalss}, 
-    drawing_size = #{drawingSize}, 
-    weight = #{weight}, 
-    supplier_id_2 = #{supplierId2}, 
-    rate_typ = #{rateTyp}, 
-    created_by = #{createdBy}, 
-    created_time = #{createdTime}, 
-    updated_by = #{updatedBy}, 
-    updated_time = #{updatedTime}, 
-    def1 = #{def1}, 
-    def2 = #{def2}, 
-    def3 = #{def3}, 
-    def4 = #{def4}, 
-    def5 = #{def5}
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    dept_id = #{deptId,jdbcType=BIGINT}, 
+    parts_no = #{partsNo,jdbcType=VARCHAR}, 
+    parts_type = #{partsType,jdbcType=INTEGER}, 
+    parts_sec = #{partsSec,jdbcType=BIGINT}, 
+    `disable` = #{disable,jdbcType=INTEGER}, 
+    sn_class = #{snClass,jdbcType=INTEGER}, 
+    id_calss = #{idCalss,jdbcType=INTEGER}, 
+    parts_is_assembly = #{partsIsAssembly,jdbcType=INTEGER}, 
+    parts_is_for_assembly = #{partsIsForAssembly,jdbcType=INTEGER}, 
+    parts_qty = #{partsQty,jdbcType=INTEGER}, 
+    supplier_id = #{supplierId,jdbcType=BIGINT}, 
+    procurement_cycle = #{procurementCycle,jdbcType=INTEGER}, 
+    dwg = #{dwg,jdbcType=VARCHAR}, 
+    qc_flag = #{qcFlag,jdbcType=BOOLEAN}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    announ_user_id = #{announUserId,jdbcType=BIGINT}, 
+    op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT}, 
+    cn_name = #{cnName,jdbcType=VARCHAR}, 
+    en_name = #{enName,jdbcType=VARCHAR}, 
+    fr_name = #{frName,jdbcType=VARCHAR}, 
+    `level` = #{level,jdbcType=INTEGER}, 
+    main_drawing = #{mainDrawing,jdbcType=VARCHAR}, 
+    ecn_number = #{ecnNumber,jdbcType=VARCHAR}, 
+    item = #{item,jdbcType=VARCHAR}, 
+    sell_calss = #{sellCalss,jdbcType=VARCHAR}, 
+    drawing_size = #{drawingSize,jdbcType=VARCHAR}, 
+    weight = #{weight,jdbcType=DOUBLE}, 
+    supplier_id_2 = #{supplierId2,jdbcType=BIGINT}, 
+    rate_typ = #{rateTyp,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionParts">
     <!--@mbg.generated-->
@@ -390,6 +410,9 @@
       </if>
       <if test="dwg != null">
         dwg,
+      </if>
+      <if test="qcFlag != null">
+        qc_flag,
       </if>
       <if test="remark != null">
         remark,
@@ -467,247 +490,253 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        #{dr},
+        #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        #{tenantId},
+        #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="deptId != null">
-        #{deptId},
+        #{deptId,jdbcType=BIGINT},
       </if>
       <if test="partsNo != null">
-        #{partsNo},
+        #{partsNo,jdbcType=VARCHAR},
       </if>
       <if test="partsType != null">
-        #{partsType},
+        #{partsType,jdbcType=INTEGER},
       </if>
       <if test="partsSec != null">
-        #{partsSec},
+        #{partsSec,jdbcType=BIGINT},
       </if>
       <if test="disable != null">
-        #{disable},
+        #{disable,jdbcType=INTEGER},
       </if>
       <if test="snClass != null">
-        #{snClass},
+        #{snClass,jdbcType=INTEGER},
       </if>
       <if test="idCalss != null">
-        #{idCalss},
+        #{idCalss,jdbcType=INTEGER},
       </if>
       <if test="partsIsAssembly != null">
-        #{partsIsAssembly},
+        #{partsIsAssembly,jdbcType=INTEGER},
       </if>
       <if test="partsIsForAssembly != null">
-        #{partsIsForAssembly},
+        #{partsIsForAssembly,jdbcType=INTEGER},
       </if>
       <if test="partsQty != null">
-        #{partsQty},
+        #{partsQty,jdbcType=INTEGER},
       </if>
       <if test="supplierId != null">
-        #{supplierId},
+        #{supplierId,jdbcType=BIGINT},
       </if>
       <if test="procurementCycle != null">
-        #{procurementCycle},
+        #{procurementCycle,jdbcType=INTEGER},
       </if>
       <if test="dwg != null">
-        #{dwg},
+        #{dwg,jdbcType=VARCHAR},
+      </if>
+      <if test="qcFlag != null">
+        #{qcFlag,jdbcType=BOOLEAN},
       </if>
       <if test="remark != null">
-        #{remark},
+        #{remark,jdbcType=VARCHAR},
       </if>
       <if test="announUserId != null">
-        #{announUserId},
+        #{announUserId,jdbcType=BIGINT},
       </if>
       <if test="opAnnounUserId != null">
-        #{opAnnounUserId},
+        #{opAnnounUserId,jdbcType=BIGINT},
       </if>
       <if test="cnName != null">
-        #{cnName},
+        #{cnName,jdbcType=VARCHAR},
       </if>
       <if test="enName != null">
-        #{enName},
+        #{enName,jdbcType=VARCHAR},
       </if>
       <if test="frName != null">
-        #{frName},
+        #{frName,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-        #{level},
+        #{level,jdbcType=INTEGER},
       </if>
       <if test="mainDrawing != null">
-        #{mainDrawing},
+        #{mainDrawing,jdbcType=VARCHAR},
       </if>
       <if test="ecnNumber != null">
-        #{ecnNumber},
+        #{ecnNumber,jdbcType=VARCHAR},
       </if>
       <if test="item != null">
-        #{item},
+        #{item,jdbcType=VARCHAR},
       </if>
       <if test="sellCalss != null">
-        #{sellCalss},
+        #{sellCalss,jdbcType=VARCHAR},
       </if>
       <if test="drawingSize != null">
-        #{drawingSize},
+        #{drawingSize,jdbcType=VARCHAR},
       </if>
       <if test="weight != null">
-        #{weight},
+        #{weight,jdbcType=DOUBLE},
       </if>
       <if test="supplierId2 != null">
-        #{supplierId2},
+        #{supplierId2,jdbcType=BIGINT},
       </if>
       <if test="rateTyp != null">
-        #{rateTyp},
+        #{rateTyp,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy},
+        #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        #{createdTime},
+        #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        #{updatedTime},
+        #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        #{def1},
+        #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        #{def2},
+        #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        #{def3},
+        #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def4 != null">
-        #{def4},
+        #{def4,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        #{def5},
+        #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id},
+        id = #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
-        dr = #{dr},
+        dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        tenant_id = #{tenantId},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="deptId != null">
-        dept_id = #{deptId},
+        dept_id = #{deptId,jdbcType=BIGINT},
       </if>
       <if test="partsNo != null">
-        parts_no = #{partsNo},
+        parts_no = #{partsNo,jdbcType=VARCHAR},
       </if>
       <if test="partsType != null">
-        parts_type = #{partsType},
+        parts_type = #{partsType,jdbcType=INTEGER},
       </if>
       <if test="partsSec != null">
-        parts_sec = #{partsSec},
+        parts_sec = #{partsSec,jdbcType=BIGINT},
       </if>
       <if test="disable != null">
-        `disable` = #{disable},
+        `disable` = #{disable,jdbcType=INTEGER},
       </if>
       <if test="snClass != null">
-        sn_class = #{snClass},
+        sn_class = #{snClass,jdbcType=INTEGER},
       </if>
       <if test="idCalss != null">
-        id_calss = #{idCalss},
+        id_calss = #{idCalss,jdbcType=INTEGER},
       </if>
       <if test="partsIsAssembly != null">
-        parts_is_assembly = #{partsIsAssembly},
+        parts_is_assembly = #{partsIsAssembly,jdbcType=INTEGER},
       </if>
       <if test="partsIsForAssembly != null">
-        parts_is_for_assembly = #{partsIsForAssembly},
+        parts_is_for_assembly = #{partsIsForAssembly,jdbcType=INTEGER},
       </if>
       <if test="partsQty != null">
-        parts_qty = #{partsQty},
+        parts_qty = #{partsQty,jdbcType=INTEGER},
       </if>
       <if test="supplierId != null">
-        supplier_id = #{supplierId},
+        supplier_id = #{supplierId,jdbcType=BIGINT},
       </if>
       <if test="procurementCycle != null">
-        procurement_cycle = #{procurementCycle},
+        procurement_cycle = #{procurementCycle,jdbcType=INTEGER},
       </if>
       <if test="dwg != null">
-        dwg = #{dwg},
+        dwg = #{dwg,jdbcType=VARCHAR},
+      </if>
+      <if test="qcFlag != null">
+        qc_flag = #{qcFlag,jdbcType=BOOLEAN},
       </if>
       <if test="remark != null">
-        remark = #{remark},
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="announUserId != null">
-        announ_user_id = #{announUserId},
+        announ_user_id = #{announUserId,jdbcType=BIGINT},
       </if>
       <if test="opAnnounUserId != null">
-        op_announ_user_id = #{opAnnounUserId},
+        op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT},
       </if>
       <if test="cnName != null">
-        cn_name = #{cnName},
+        cn_name = #{cnName,jdbcType=VARCHAR},
       </if>
       <if test="enName != null">
-        en_name = #{enName},
+        en_name = #{enName,jdbcType=VARCHAR},
       </if>
       <if test="frName != null">
-        fr_name = #{frName},
+        fr_name = #{frName,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-        `level` = #{level},
+        `level` = #{level,jdbcType=INTEGER},
       </if>
       <if test="mainDrawing != null">
-        main_drawing = #{mainDrawing},
+        main_drawing = #{mainDrawing,jdbcType=VARCHAR},
       </if>
       <if test="ecnNumber != null">
-        ecn_number = #{ecnNumber},
+        ecn_number = #{ecnNumber,jdbcType=VARCHAR},
       </if>
       <if test="item != null">
-        item = #{item},
+        item = #{item,jdbcType=VARCHAR},
       </if>
       <if test="sellCalss != null">
-        sell_calss = #{sellCalss},
+        sell_calss = #{sellCalss,jdbcType=VARCHAR},
       </if>
       <if test="drawingSize != null">
-        drawing_size = #{drawingSize},
+        drawing_size = #{drawingSize,jdbcType=VARCHAR},
       </if>
       <if test="weight != null">
-        weight = #{weight},
+        weight = #{weight,jdbcType=DOUBLE},
       </if>
       <if test="supplierId2 != null">
-        supplier_id_2 = #{supplierId2},
+        supplier_id_2 = #{supplierId2,jdbcType=BIGINT},
       </if>
       <if test="rateTyp != null">
-        rate_typ = #{rateTyp},
+        rate_typ = #{rateTyp,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy},
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
       <if test="createdTime != null">
-        created_time = #{createdTime},
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
-        updated_time = #{updatedTime},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="def1 != null">
-        def1 = #{def1},
+        def1 = #{def1,jdbcType=VARCHAR},
       </if>
       <if test="def2 != null">
-        def2 = #{def2},
+        def2 = #{def2,jdbcType=VARCHAR},
       </if>
       <if test="def3 != null">
-        def3 = #{def3},
+        def3 = #{def3,jdbcType=VARCHAR},
       </if>
       <if test="def4 != null">
-        def4 = #{def4},
+        def4 = #{def4,jdbcType=VARCHAR},
       </if>
       <if test="def5 != null">
-        def5 = #{def5},
+        def5 = #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>

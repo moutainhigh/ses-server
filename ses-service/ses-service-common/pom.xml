@@ -39,15 +39,30 @@
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-emqx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-foundation</artifactId>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-proxy</artifactId>
         </dependency>
+        <!--scooter车辆业务接口-->
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-scooter</artifactId>
+        </dependency>
+        <!--b端业务接口-->
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-mobile-b</artifactId>
+        </dependency>
+        <!--c端业务接口-->
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-api-mobile-c</artifactId>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>

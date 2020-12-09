@@ -47,17 +47,17 @@ public class PlaAppVersion implements Serializable {
     private String appId;
 
     /**
-     * IOS or ANDROID
+     * IOS or ANDROID or SCS
      */
     @TableField(value = "system_type")
-    @ApiModelProperty(value = "IOS or ANDROID")
+    @ApiModelProperty(value = "IOS or ANDROID or SCS")
     private Integer systemType;
 
     /**
-     * 版本类型：1.IOS 2. ANDROID
+     * 版本类型：1.IOS 2. ANDROID 3.SCS(车载平板)
      */
     @TableField(value = "type")
-    @ApiModelProperty(value = "版本类型：1.IOS 2. ANDROID")
+    @ApiModelProperty(value = "版本类型：1.IOS 2. ANDROID 3.SCS")
     private Integer type;
 
     /**
@@ -127,8 +127,8 @@ public class PlaAppVersion implements Serializable {
      * 状态 NEW:新版本；Closed：已关闭
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态 NEW:新版本；Closed：已关闭")
-    private String status;
+    @ApiModelProperty(value = "版本状态 0未发布 1已发布 2生效中")
+    private Integer status;
 
     /**
      * 创建人

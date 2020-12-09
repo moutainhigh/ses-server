@@ -50,4 +50,13 @@ spring:                                                                         
 iot:
   address: 106.14.206.178:7332
 
+# MQTT配置信息(本地启动使用本地证书)
+mqtt:
+  ca: /root/certs/my_root_ca.pem
+  clientCrt: /root/certs/client.pem
+  clientKey: /root/certs/client.key
+  timeout: 10
+  keepalive: 30
+  clientId: mqttx_5246732a
+  url: ssl://client.redemotors.com
 

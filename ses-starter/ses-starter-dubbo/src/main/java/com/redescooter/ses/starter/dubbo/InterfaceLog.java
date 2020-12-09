@@ -79,7 +79,7 @@ public class InterfaceLog implements Serializable {
     public String toString() {
         String slfStr;
         try {
-            slfStr = JSON.toJSONString(this,SerializerFeature.WriteMapNullValue);
+            slfStr = JSON.toJSONString(this, SerializerFeature.WriteMapNullValue);
         } catch (Exception e) {
             slfStr = toSimpleString();
         }

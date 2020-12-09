@@ -46,6 +46,7 @@ import redis.clients.jedis.JedisCluster;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MenuServiceImpl
@@ -192,7 +193,16 @@ public class MenuServiceImpl implements MenuService {
             add(enter.getId());
         }};
         if (CollUtil.isNotEmpty(roleIds)) {
-            return this.buildMenuTree(sysMenuService.list(), roleIds, Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
+            boolean flag = false;
+            // 查看当前的登陆用户是否为超级管理员
+            OpeSysUser user = sysUserService.getById(enter.getUserId());
+            if (user == null){
+                throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            }
+            if (user.getLoginName().equals(Constant.ADMIN_USER_NAME)){
+                flag = true;
+            }
+            return this.buildMenuTree(flag?sysMenuService.list():menuServiceMapper.menusByUserId(user.getId()), roleIds, Constant.MENU_TREE_ROOT_ID,flag);
         }
         return new ArrayList<>();
     }
@@ -365,9 +375,9 @@ public class MenuServiceImpl implements MenuService {
             for (OpeSysMenu menu : menus) {
                 trees.add(buildMenuTreeResult(menu));
             }
-            if (adminBoolean) {
-                trees.forEach(t -> t.setChecked(Boolean.TRUE));
-            } else {
+//            if (adminBoolean) {
+//                trees.forEach(t -> t.setChecked(Boolean.TRUE));
+//            } else {
                 if (CollUtil.isNotEmpty(roleIds)) {
                     List<Long> list = this.getMenuIdsByRoleIds(roleIds);
                     //判断该角色所属权限
@@ -375,7 +385,7 @@ public class MenuServiceImpl implements MenuService {
                         list.forEach(li -> trees.stream().filter(t -> li.longValue() == t.getId()).forEach(t -> t.setChecked(Boolean.TRUE)));
                     }
                 }
-            }
+//            }
         }
         return TreeUtil.build(trees, root);
     }

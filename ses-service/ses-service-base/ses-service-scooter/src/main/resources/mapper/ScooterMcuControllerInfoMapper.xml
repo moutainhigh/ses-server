@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterMcuControllerInfoMapper">
+
+    <!--修改车辆MCU控制器信息-->
+    <update id="updateMcuControllerByMcuId" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuControllerInfoDTO">
+        update sco_scooter_mcu_controller_info
+        set control_over_t_protect = #{controlOverTProtect},
+        motor_over_t_protect = #{motorOverTProtect},
+        control_block_protect = #{controlBlockProtect},
+        control_over_load = #{controlOverLoad},
+        control_over_i_protect = #{controlOverIProtect},
+        static_power = #{staticPower},mos_breakdown = #{mosBreakdown},
+        updated_time = now()
+        where mcu_id = #{mcuId}
+    </update>
+
+    <!--新增车辆MCU控制器信息-->
+    <insert id="insertMcuController" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuControllerInfoDTO">
+        insert into sco_scooter_mcu_controller_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="mcuId != null">
+                mcu_id,
+            </if>
+            <if test="controlOverTProtect != null">
+                control_over_t_protect,
+            </if>
+            <if test="motorOverTProtect != null">
+                motor_over_t_protect,
+            </if>
+            <if test="controlBlockProtect != null">
+                control_block_protect,
+            </if>
+            <if test="controlOverLoad != null">
+                control_over_load,
+            </if>
+            <if test="controlOverIProtect != null">
+                control_over_i_protect,
+            </if>
+            <if test="staticPower != null">
+                static_power,
+            </if>
+            <if test="mosBreakdown != null">
+                mos_breakdown,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="mcuId != null">
+                #{mcuId,jdbcType=BIGINT},
+            </if>
+            <if test="controlOverTProtect != null">
+                #{controlOverTProtect,jdbcType=BOOLEAN},
+            </if>
+            <if test="motorOverTProtect != null">
+                #{motorOverTProtect,jdbcType=BOOLEAN},
+            </if>
+            <if test="controlBlockProtect != null">
+                #{controlBlockProtect,jdbcType=BOOLEAN},
+            </if>
+            <if test="controlOverLoad != null">
+                #{controlOverLoad,jdbcType=BOOLEAN},
+            </if>
+            <if test="controlOverIProtect != null">
+                #{controlOverIProtect,jdbcType=BOOLEAN},
+            </if>
+            <if test="staticPower != null">
+                #{staticPower,jdbcType=BOOLEAN},
+            </if>
+            <if test="mosBreakdown != null">
+                #{mosBreakdown,jdbcType=BOOLEAN},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

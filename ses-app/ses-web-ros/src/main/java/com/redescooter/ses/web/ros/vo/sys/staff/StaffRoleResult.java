@@ -19,4 +19,7 @@ public class StaffRoleResult {
     @ApiModelProperty("角色名称")
     private String roleName;
 
+    @ApiModelProperty("角色状态")
+    private String roleStatus;
+
 }

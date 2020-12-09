@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 import com.redescooter.ses.service.scooter.constant.ScooterDefaultData;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
@@ -197,4 +198,28 @@ public class ScooterServiceImpl implements ScooterService {
     public BaseScooterResult scooterInfoByScooterNo(Long id, String scooterNo) {
         return scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int updateScooterStatusByJson(ScooterLockReportedDTO scooterLock) {
+        String lockStatus = scooterServiceMapper.getScooterStatusByTabletSn(scooterLock.getTabletSn());
+        if (StringUtils.isBlank(lockStatus)) {
+            // 这里别抛出异常,这里抛出异常可能会导致emq x连接中断
+            log.error("【车辆开关状态上报失败】----车辆不存在");
+            return 0;
+        }
+
+        if (!scooterLock.getStatus().equals(lockStatus)) {
+            scooterServiceMapper.updateScooterStatusByTabletSn(scooterLock.getTabletSn(),
+                    scooterLock.getStatus().toString(), new Date());
+        }
+
+        return 1;
+    }
+
+    @Override
+    public BaseScooterResult getScooterInfoById(Long scooterId) {
+        return scooterServiceMapper.getScooterInfoById(scooterId);
+    }
+
 }

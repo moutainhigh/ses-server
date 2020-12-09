@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterBbiMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_bbi-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
+    <result column="batch_no" jdbcType="BIGINT" property="batchNo" />
+    <result column="breakdown" jdbcType="BOOLEAN" property="breakdown" />
+    <result column="current_shift_i" jdbcType="INTEGER" property="currentShiftI" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="enable" jdbcType="BOOLEAN" property="enable" />
+    <result column="factory_no" jdbcType="INTEGER" property="factoryNo" />
+    <result column="main_switch_open" jdbcType="BOOLEAN" property="mainSwitchOpen" />
+    <result column="shift_i" jdbcType="INTEGER" property="shiftI" />
+    <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, scooter_no, batch_no, breakdown, current_shift_i, `date`, `enable`, factory_no, 
+    main_switch_open, shift_i, created_by, created_time, updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sco_scooter_bbi
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sco_scooter_bbi
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bbi (id, dr, scooter_no, 
+      batch_no, breakdown, current_shift_i, 
+      `date`, `enable`, factory_no, 
+      main_switch_open, shift_i, created_by, 
+      created_time, updated_by, updated_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, 
+      #{batchNo,jdbcType=BIGINT}, #{breakdown,jdbcType=BOOLEAN}, #{currentShiftI,jdbcType=INTEGER}, 
+      #{date,jdbcType=TIMESTAMP}, #{enable,jdbcType=BOOLEAN}, #{factoryNo,jdbcType=INTEGER}, 
+      #{mainSwitchOpen,jdbcType=BOOLEAN}, #{shiftI,jdbcType=INTEGER}, #{createdBy,jdbcType=INTEGER}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bbi
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="scooterNo != null">
+        scooter_no,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="breakdown != null">
+        breakdown,
+      </if>
+      <if test="currentShiftI != null">
+        current_shift_i,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+      <if test="enable != null">
+        `enable`,
+      </if>
+      <if test="factoryNo != null">
+        factory_no,
+      </if>
+      <if test="mainSwitchOpen != null">
+        main_switch_open,
+      </if>
+      <if test="shiftI != null">
+        shift_i,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="breakdown != null">
+        #{breakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="currentShiftI != null">
+        #{currentShiftI,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enable != null">
+        #{enable,jdbcType=BOOLEAN},
+      </if>
+      <if test="factoryNo != null">
+        #{factoryNo,jdbcType=INTEGER},
+      </if>
+      <if test="mainSwitchOpen != null">
+        #{mainSwitchOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="shiftI != null">
+        #{shiftI,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi">
+    <!--@mbg.generated-->
+    update sco_scooter_bbi
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="breakdown != null">
+        breakdown = #{breakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="currentShiftI != null">
+        current_shift_i = #{currentShiftI,jdbcType=INTEGER},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enable != null">
+        `enable` = #{enable,jdbcType=BOOLEAN},
+      </if>
+      <if test="factoryNo != null">
+        factory_no = #{factoryNo,jdbcType=INTEGER},
+      </if>
+      <if test="mainSwitchOpen != null">
+        main_switch_open = #{mainSwitchOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="shiftI != null">
+        shift_i = #{shiftI,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi">
+    <!--@mbg.generated-->
+    update sco_scooter_bbi
+    set dr = #{dr,jdbcType=INTEGER},
+      scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=BIGINT},
+      breakdown = #{breakdown,jdbcType=BOOLEAN},
+      current_shift_i = #{currentShiftI,jdbcType=INTEGER},
+      `date` = #{date,jdbcType=TIMESTAMP},
+      `enable` = #{enable,jdbcType=BOOLEAN},
+      factory_no = #{factoryNo,jdbcType=INTEGER},
+      main_switch_open = #{mainSwitchOpen,jdbcType=BOOLEAN},
+      shift_i = #{shiftI,jdbcType=INTEGER},
+      created_by = #{createdBy,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>
