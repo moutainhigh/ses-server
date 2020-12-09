@@ -75,6 +75,8 @@ public class AppVersionServiceImpl implements AppVersionService {
 
         appVersionDTO.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
         appVersionDTO.setCode(vCode.toString());
+        appVersionDTO.setIsForce(1);
+        appVersionDTO.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
         appVersionDTO.setCreatedBy(appVersionDTO.getUserId());
         appVersionDTO.setCreatedTime(new Date());
         appVersionDTO.setUpdatedBy(appVersionDTO.getUserId());
