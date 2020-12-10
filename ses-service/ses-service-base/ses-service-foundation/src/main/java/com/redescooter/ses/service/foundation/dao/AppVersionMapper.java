@@ -85,11 +85,11 @@ public interface AppVersionMapper {
     /**
      * 查询所有应用正在使用的版本
      * @param status
-     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
      * @date 2020/12/4
     */
-    List<AppVersionDTO> getActiveAppVersion(Integer status);
+    List<QueryAppVersionResultDTO> getActiveAppVersion(Integer status);
 
     /**
      * 查询应用版本数量

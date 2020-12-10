@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
@@ -55,10 +56,10 @@ public class AdminTokenServiceImpl implements AdminTokenService {
 
     @Autowired
     private AdmSysUserService admSysUserService;
-
     @Autowired
     private JedisCluster jedisCluster;
-
+    @Reference
+    private UserTokenService userTokenService;
     @Reference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -472,6 +473,11 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         userInfo.setFullName("rede rede");
         userInfo.setPicture("https://rede.oss-cn-shanghai.aliyuncs.com/1600658459971.jpg");
         return userInfo;
+    }
+
+    @Override
+    public UserToken checkAndGetSession(GeneralEnter enter) {
+        return userTokenService.checkToken(enter);
     }
 
 }

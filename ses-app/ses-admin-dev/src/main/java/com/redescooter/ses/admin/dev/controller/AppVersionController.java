@@ -132,13 +132,13 @@ public class AppVersionController {
     /**
      * 查询所有应用正在使用的版本
      * @param
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
      * @date 2020/12/8
     */
     @ApiOperation(value = "查询所有应用正在使用的版本")
     @GetMapping(value = "/getAllActiveAppVersion")
-    public Response<List<AppVersionDTO>> getAllActiveAppVersion() {
+    public Response<List<QueryAppVersionResultDTO>> getAllActiveAppVersion() {
         return new Response<>(appVersionService.getAllActiveAppVersion());
     }
 

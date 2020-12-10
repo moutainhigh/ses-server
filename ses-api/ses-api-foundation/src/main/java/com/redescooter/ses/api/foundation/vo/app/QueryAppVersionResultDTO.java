@@ -65,13 +65,19 @@ public class QueryAppVersionResultDTO implements Serializable {
     @ApiModelProperty(value = "标签", dataType = "String")
     private String label;
 
-    @ApiModelProperty(value = "创建人", dataType = "Long")
+    @ApiModelProperty(value = "创建人id", dataType = "Long")
     private Long createdBy;
+
+    @ApiModelProperty(value = "创建人姓名", dataType = "String")
+    private String createdName;
+
+    @ApiModelProperty(value = "创建人头像", dataType = "String")
+    private String headPortrait;
 
     @ApiModelProperty(value = "创建时间", dataType = "Date")
     private Date createdTime;
 
-    @ApiModelProperty(value = "更新人", dataType = "Long")
+    @ApiModelProperty(value = "更新人id", dataType = "Long")
     private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间", dataType = "Date")

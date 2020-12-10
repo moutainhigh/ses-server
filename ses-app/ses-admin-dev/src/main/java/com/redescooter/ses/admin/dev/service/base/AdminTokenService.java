@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
+import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
 /**
  * @ClassNameAdminTokenService
@@ -73,4 +74,14 @@ public interface AdminTokenService {
      * @return
      **/
     UserInfoResult userInfo(GeneralEnter enter);
+
+    /**
+     * 用户登录token处理
+     * @param enter
+     * @return com.redescooter.ses.api.foundation.vo.user.UserToken
+     * @author assert
+     * @date 2020/12/10
+    */
+    UserToken checkAndGetSession(GeneralEnter enter);
+
 }

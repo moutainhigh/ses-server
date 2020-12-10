@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import com.redescooter.ses.api.mobile.b.service.RideStatBService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.RideStatCService;
@@ -236,11 +237,11 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     @Override
     public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
-        AppVersionDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());
+        QueryAppVersionResultDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());
         List<String> tabletSnList = paramDTO.getTabletSnList();
 
         // 全部升级
-        if (4 == paramDTO.getType()) {
+        if (4 == paramDTO.getReleaseType()) {
             tabletSnList = scooterMapper.getAllScooterTabletSn();
         }
 

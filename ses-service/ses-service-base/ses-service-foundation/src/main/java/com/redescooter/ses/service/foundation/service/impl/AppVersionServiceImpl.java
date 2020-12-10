@@ -11,6 +11,8 @@ import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
+import com.redescooter.ses.api.hub.service.operation.SysUserService;
+import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
@@ -45,6 +47,8 @@ public class AppVersionServiceImpl implements AppVersionService {
     private AppVersionMapper appVersionMapper;
     @Reference
     private ScooterEmqXService scooterEmqXService;
+    @Reference
+    private SysUserService sysUserService;
     @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
@@ -53,7 +57,14 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     @Override
     public QueryAppVersionResultDTO getAppVersionById(Long id) {
-        return appVersionMapper.getAppVersionById(id);
+        QueryAppVersionResultDTO appVersionResult = appVersionMapper.getAppVersionById(id);
+        if (null != appVersionResult) {
+            // 去operation库查询用户的姓名和头像
+            SysUserStaffDTO userStaff = sysUserService.getSysUserStaffByUserId(appVersionResult.getCreatedBy());
+            appVersionResult.setCreatedName(userStaff.getFullName());
+            appVersionResult.setHeadPortrait(userStaff.getEmployeePicture());
+        }
+        return appVersionResult;
     }
 
     @Override
@@ -192,7 +203,7 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
-    public List<AppVersionDTO> getAllActiveAppVersion() {
+    public List<QueryAppVersionResultDTO> getAllActiveAppVersion() {
         return appVersionMapper.getActiveAppVersion(AppVersionStatusEnum.ACTIVE.getStatus());
     }
 
