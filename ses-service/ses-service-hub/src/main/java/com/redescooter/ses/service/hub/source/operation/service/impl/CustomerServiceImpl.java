@@ -7,6 +7,7 @@ import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.commons.lang3.StringUtils;

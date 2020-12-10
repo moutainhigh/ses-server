@@ -3,11 +3,13 @@ package com.redescooter.ses.admin.dev.controller;
 import com.redescooter.ses.admin.dev.service.FileUploadService;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
@@ -39,13 +41,13 @@ public class AppVersionController {
     /**
      * 查询应用版本列表
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
      * @date 2020/12/3
     */
     @ApiOperation(value = "查询应用版本列表")
     @GetMapping(value = "/query")
-    public Response<PageResult<AppVersionDTO>> queryAppVersion(@ModelAttribute QueryAppVersionParamDTO paramDTO) {
+    public Response<PageResult<QueryAppVersionResultDTO>> queryAppVersion(@ModelAttribute QueryAppVersionParamDTO paramDTO) {
         return new Response<>(appVersionService.queryAppVersion(paramDTO));
     }
 
@@ -70,7 +72,7 @@ public class AppVersionController {
      * @date 2020/12/4
     */
     @ApiOperation(value = "修改应用版本信息")
-    @PutMapping(value = "/update")
+    @PostMapping(value = "/update")
     public Response<Integer> updateAppVersion(@ModelAttribute AppVersionDTO appVersionDTO) {
         return new Response<>(appVersionService.updateAppVersion(appVersionDTO));
     }
@@ -104,13 +106,13 @@ public class AppVersionController {
     /**
      * 根据id查询应用版本详情
      * @param id
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
      * @date 2020/12/4
     */
     @ApiOperation(value = "查询应用版本详情", notes = "根据id查询应用版本详情")
     @GetMapping(value = "/detail/{id}")
-    public Response<AppVersionDTO> getAppVersionById(@PathVariable("id") Long id) {
+    public Response<QueryAppVersionResultDTO> getAppVersionById(@PathVariable("id") Long id) {
         return new Response<>(appVersionService.getAppVersionById(id));
     }
 
@@ -155,15 +157,15 @@ public class AppVersionController {
     }
 
     /**
-     * 根据type查询当前应用所有版本号信息
+     * 根据type查询当前应用版本号信息
      * @param type
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<java.lang.String>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<SelectBaseResultDTO>>
      * @author assert
      * @date 2020/12/7
     */
-    @ApiOperation(value = "获取当前应用所有版本号信息", notes = "根据type查询当前应用所有版本号信息")
+    @ApiOperation(value = "获取当前应用版本号信息", notes = "根据type查询当前应用所有版本号信息")
     @GetMapping(value = "/getAppVersionByType/{type}")
-    public Response<List<String>> getAppVersionByType(@PathVariable("type") Integer type) {
+    public Response<List<SelectBaseResultDTO>> getAppVersionByType(@PathVariable("type") Integer type) {
         return new Response<>(appVersionService.getAppVersionByType(type));
 }
 

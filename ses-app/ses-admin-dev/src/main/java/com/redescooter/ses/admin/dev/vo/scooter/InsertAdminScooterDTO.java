@@ -79,7 +79,7 @@ public class InsertAdminScooterDTO extends GeneralEnter {
     /**
      * 创建时间
      */
-    @ApiModelProperty(value="创建时间", dataType = "Date")
+    @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
     /**
@@ -91,7 +91,7 @@ public class InsertAdminScooterDTO extends GeneralEnter {
     /**
      * 更新时间
      */
-    @ApiModelProperty(value="更新时间", dataType = "Date")
+    @ApiModelProperty(value="更新时间")
     private Date updatedTime;
 
 }

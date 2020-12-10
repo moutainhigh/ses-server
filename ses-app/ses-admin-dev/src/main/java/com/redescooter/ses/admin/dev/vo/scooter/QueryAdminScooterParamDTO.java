@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "查询车辆列表入参")
-public class QueryAdminScooterDTO extends PageDTO {
+public class QueryAdminScooterParamDTO extends PageDTO {
 
     @ApiModelProperty(value = "-现在列表查询暂时只有分页参数", dataType = "String")
     private String temp;

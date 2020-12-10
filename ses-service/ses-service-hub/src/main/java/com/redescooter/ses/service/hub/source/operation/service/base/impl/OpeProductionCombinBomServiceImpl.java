@@ -2,6 +2,7 @@ package com.redescooter.ses.service.hub.source.operation.service.base.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.service.hub.source.operation.dao.base.OpeProductionCombinBomMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeProductionCombinBom;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionCombinBomService;
 import org.springframework.stereotype.Service;

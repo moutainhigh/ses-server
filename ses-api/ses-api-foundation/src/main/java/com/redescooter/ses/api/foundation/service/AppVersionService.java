@@ -1,9 +1,11 @@
 package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -19,20 +21,20 @@ public interface AppVersionService {
     /**
      * 根据id查询新应用版本信息
      * @param id
-     * @return com.redescooter.ses.api.foundation.vo.app.AppVersionDTO
+     * @return com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO
      * @author assert
      * @date 2020/11/30
     */
-    AppVersionDTO getAppVersionById(Long id);
+    QueryAppVersionResultDTO getAppVersionById(Long id);
 
     /**
      * 查询应用版本列表信息
      * @param paramDTO
-     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
-     * @date 2020/12/3
+     * @date 2020/12/9
     */
-    PageResult<AppVersionDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO);
+    PageResult<QueryAppVersionResultDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO);
 
     /**
      * 创建应用版本
@@ -95,7 +97,7 @@ public interface AppVersionService {
      * @author assert
      * @date 2020/12/7
     */
-    List<String> getAppVersionByType(Integer type);
+    List<SelectBaseResultDTO> getAppVersionByType(Integer type);
 
     /**
      * 根据标签全模糊检索应用标签信息

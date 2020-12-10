@@ -31,4 +31,7 @@ public class QueryAppVersionParamDTO extends PageDTO {
     @NotNull(code = ValidationExceptionBaseCode.APP_TYPE_IS_EMPTY, message = "应用类型不能为空")
     private Integer type;
 
+    @ApiModelProperty(value = "平台类型 1-IOS 2-安卓", dataType = "Integer")
+    private Integer platformType;
+
 }

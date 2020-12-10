@@ -3,11 +3,14 @@ package com.redescooter.ses.admin.dev.controller;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
+import com.redescooter.ses.api.hub.service.operation.ColorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,18 +29,21 @@ public class ScooterController {
 
     @Resource
     private AdminScooterService adminScooterService;
+    @Reference
+    private ColorService colorService;
+
 
     /**
      * 查询车辆列表
-     * @param adminScooterDTO
+     * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
      * @author assert
      * @date 2020/12/9
     */
     @ApiOperation(value = "查询车辆列表")
     @GetMapping(value = "/query")
-    public Response<PageResult<AdminScooterDTO>> queryAdminScooter(@ModelAttribute QueryAdminScooterDTO adminScooterDTO) {
-        return new Response<>(adminScooterService.queryAdminScooter(adminScooterDTO));
+    public Response<PageResult<AdminScooterDTO>> queryAdminScooter(@ModelAttribute QueryAdminScooterParamDTO paramDTO) {
+        return new Response<>(adminScooterService.queryAdminScooter(paramDTO));
     }
 
     /**
@@ -53,6 +59,30 @@ public class ScooterController {
         return new Response<>(adminScooterService.insertAdminScooter(adminScooterDTO));
     }
 
+    /**
+     * 查询颜色信息列表(下拉列表使用)
+     * @param
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
+     * @author assert
+     * @date 2020/12/9
+    */
+    @ApiOperation(value = "查询颜色信息列表", notes = "查询颜色信息列表(下拉列表使用)")
+    @GetMapping(value = "/colors")
+    public Response<SelectBaseResultDTO> getScooterColorList() {
+        return null;
+    }
 
+    /**
+     * 查询车辆型号分组列表(下拉列表使用)
+     * @param
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
+     * @author assert
+     * @date 2020/12/9
+    */
+    @ApiOperation(value = "查询车辆型号分组列表", notes = "查询车辆型号分组列表(下拉列表使用)")
+    @GetMapping(value = "/groups")
+    public Response<SelectBaseResultDTO> getScooterGroupList() {
+        return null;
+    }
 
 }

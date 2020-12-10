@@ -4,14 +4,17 @@ import com.redescooter.ses.api.common.enums.base.AppVersionStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -48,15 +52,24 @@ public class AppVersionServiceImpl implements AppVersionService {
 
 
     @Override
-    public AppVersionDTO getAppVersionById(Long id) {
+    public QueryAppVersionResultDTO getAppVersionById(Long id) {
         return appVersionMapper.getAppVersionById(id);
     }
 
     @Override
-    public PageResult<AppVersionDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO) {
+    public PageResult<QueryAppVersionResultDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO) {
         PageEnter enter = new PageEnter();
         enter.setPageNo(paramDTO.getPageNo());
         enter.setPageSize(paramDTO.getPageSize());
+
+        if (AppVersionTypeEnum.IOS.getType().equals(paramDTO.getType())) {
+            // 自定义值-9表示查询ios和安卓信息
+            paramDTO.setType(9);
+            // 只针对于[App]页面查询逻辑
+            if (null != paramDTO.getPlatformType()) {
+                paramDTO.setType(paramDTO.getPlatformType());
+            }
+        }
 
         int count = appVersionMapper.countByAppVersion(paramDTO);
 
@@ -67,27 +80,30 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Override
     public int insertAppVersion(AppVersionDTO appVersionDTO) {
         Integer vCode = 1;
+        PlaAppVersion appVersion = new PlaAppVersion();
+        BeanUtils.copyProperties(appVersionDTO, appVersion);
+
         String versionCode = appVersionMapper.getAppVersionMaxCodeByType(appVersionDTO.getType());
         if (StringUtils.isNotBlank(versionCode)) {
             // 版本编码 +1
             vCode = Integer.valueOf(versionCode) + 1;
         }
 
-        appVersionDTO.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
-        appVersionDTO.setCode(vCode.toString());
-        appVersionDTO.setIsForce(1);
-        appVersionDTO.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
-        appVersionDTO.setCreatedBy(appVersionDTO.getUserId());
-        appVersionDTO.setCreatedTime(new Date());
-        appVersionDTO.setUpdatedBy(appVersionDTO.getUserId());
-        appVersionDTO.setUpdatedTime(new Date());
-        return appVersionMapper.insertAppVersion(appVersionDTO);
+        appVersion.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
+        appVersion.setCode(vCode.toString());
+        appVersion.setIsForce(1);
+        appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
+        appVersion.setCreatedBy(appVersionDTO.getUserId());
+        appVersion.setCreatedTime(new Date());
+        appVersion.setUpdatedBy(appVersionDTO.getUserId());
+        appVersion.setUpdatedTime(new Date());
+        return appVersionMapper.insertAppVersion(appVersion);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateAppVersion(AppVersionDTO appVersionDTO) {
-        AppVersionDTO appVersion = appVersionMapper.getAppVersionById(appVersionDTO.getId());
+        QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(appVersionDTO.getId());
         if (null == appVersion) {
             throw new FoundationException(ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
@@ -99,14 +115,16 @@ public class AppVersionServiceImpl implements AppVersionService {
                     ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getMessage());
         }
 
-        appVersionDTO.setUpdatedBy(appVersionDTO.getUserId());
-        appVersionDTO.setUpdatedTime(new Date());
-        return appVersionMapper.updateAppVersion(appVersionDTO);
+        PlaAppVersion plaAppVersion = new PlaAppVersion();
+        BeanUtils.copyProperties(appVersionDTO, plaAppVersion);
+        plaAppVersion.setUpdatedBy(appVersionDTO.getUserId());
+        plaAppVersion.setUpdatedTime(new Date());
+        return appVersionMapper.updateAppVersion(plaAppVersion);
     }
 
     @Override
     public int releaseAppVersion(ReleaseAppVersionParamDTO paramDTO) {
-        AppVersionDTO appVersion = appVersionMapper.getAppVersionById(paramDTO.getId());
+        QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(paramDTO.getId());
         if (null == appVersion) {
             // 异常向上抛出请保证异常码能被捕捉(异常码配置在最上层-Controller项目messages.properties文件中)
             throw new FoundationException(ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(),
@@ -123,7 +141,7 @@ public class AppVersionServiceImpl implements AppVersionService {
                 if (AppVersionTypeEnum.SCS.getType().equals(paramDTO.getType())) {
                     scooterEmqXService.updateScooterTablet(paramDTO);
                     // SCS(车载平板)允许多个 “生效中” 的版本, 只会在全部升级时才会把之前版本状态改成 “已发布”
-                    if (4 == paramDTO.getType()) {
+                    if (4 == paramDTO.getReleaseType()) {
                         appVersionMapper.updateAppVersionStatusByType(paramDTO.getType(),
                                 AppVersionStatusEnum.RELEASED.getStatus(), paramDTO.getId());
                     }
@@ -147,7 +165,7 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteAppVersionById(Long id) {
-        AppVersionDTO appVersion = appVersionMapper.getAppVersionById(id);
+        QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(id);
         // 只能删除未发布的版本信息
         if (!AppVersionStatusEnum.UNRELEASED.getStatus().equals(appVersion.getStatus())) {
             throw new FoundationException(ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getCode(),
@@ -179,7 +197,7 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
-    public List<String> getAppVersionByType(Integer type) {
+    public List<SelectBaseResultDTO> getAppVersionByType(Integer type) {
         return appVersionMapper.getAppVersionByType(type);
     }
 

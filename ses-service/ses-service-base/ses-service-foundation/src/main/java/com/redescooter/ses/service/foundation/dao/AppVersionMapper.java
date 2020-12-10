@@ -1,7 +1,10 @@
 package com.redescooter.ses.service.foundation.dao;
 
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
+import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
+import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,20 +19,20 @@ public interface AppVersionMapper {
     /**
      * 根据id查询新应用版本信息
      * @param id
-     * @return com.redescooter.ses.api.foundation.vo.app.AppVersionDTO
+     * @return com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO
      * @author assert
      * @date 2020/11/30
      */
-    AppVersionDTO getAppVersionById(Long id);
+    QueryAppVersionResultDTO getAppVersionById(Long id);
 
     /**
      * 查询应用版本列表信息
      * @param paramDTO
-     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.AppVersionDTO>
+     * @return java.util.List<com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO>
      * @author assert
      * @date 2020/12/3
     */
-    List<AppVersionDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO);
+    List<QueryAppVersionResultDTO> queryAppVersion(QueryAppVersionParamDTO paramDTO);
 
     /**
      * 创建应用版本
@@ -38,7 +41,7 @@ public interface AppVersionMapper {
      * @author assert
      * @date 2020/12/4
     */
-    int insertAppVersion(AppVersionDTO appVersionDTO);
+    int insertAppVersion(PlaAppVersion appVersionDTO);
 
     /**
      * 修改应用版本信息
@@ -47,7 +50,7 @@ public interface AppVersionMapper {
      * @author assert
      * @date 2020/12/4
     */
-    int updateAppVersion(AppVersionDTO appVersionDTO);
+    int updateAppVersion(PlaAppVersion appVersionDTO);
 
     /**
      * 根据id删除版本信息
@@ -107,13 +110,13 @@ public interface AppVersionMapper {
     List<AppVersionDTO> getAppVersions();
 
     /**
-     * 根据type查询当前应用所有版本号信息
+     * 根据type查询当前应用版本号信息
      * @param type
      * @return java.util.List<java.lang.String>
      * @author assert
      * @date 2020/12/7
     */
-    List<String> getAppVersionByType(@Param("type") Integer type);
+    List<SelectBaseResultDTO> getAppVersionByType(@Param("type") Integer type);
 
     /**
      * 根据type查询应用版本最大版本编码

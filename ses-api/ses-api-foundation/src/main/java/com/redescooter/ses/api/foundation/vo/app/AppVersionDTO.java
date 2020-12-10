@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * 应用版本管理 DTO
  * @author assert
@@ -23,12 +21,6 @@ public class AppVersionDTO extends GeneralEnter {
     private Long id;
 
     /**
-     * IOS or ANDROID or SCS(关注type字段即可,systemType无需关注)
-     */
-    @ApiModelProperty(value = "系统类型", dataType = "Integer")
-    private Integer systemType;
-
-    /**
      * 版本类型：1-IOS 2-ANDROID 3-SCS(车载平板) 4-SaaS 5-Server(后台服务) 6-ROS
      */
     @ApiModelProperty(value = "版本类型 1-IOS 2-ANDROID 3-SCS(车载平板) 4-SaaS 5-Server(后台服务) 6-ROS",
@@ -36,15 +28,9 @@ public class AppVersionDTO extends GeneralEnter {
     private Integer type;
 
     /**
-     * 版本应用编码
-     */
-    @ApiModelProperty(value = "版本应用编码", dataType = "String")
-    private String code;
-
-    /**
      * 是否强制更新 1时true，0时false
      */
-    @ApiModelProperty(value = "是否强制更新 0否 1是", dataType = "Integer", required = true)
+    @ApiModelProperty(value = "是否强制更新 0否 1是", dataType = "Integer", hidden = true)
     private Integer isForce;
 
     /**
@@ -78,24 +64,6 @@ public class AppVersionDTO extends GeneralEnter {
     private String newVersionName;
 
     /**
-     * 最小版本
-     */
-    @ApiModelProperty(value = "最小版本", dataType = "Integer")
-    private Integer minVersionNum;
-
-    /**
-     * 最小版本号名称
-     */
-    @ApiModelProperty(value = "最小版本号名称", dataType = "String")
-    private String ninVersionName;
-
-    /**
-     * 版本状态 0未发布 1已发布 2生效中
-     */
-    @ApiModelProperty(value = "版本状态 0未发布 1已发布 2使用中", dataType = "Integer", example = "0",required = true)
-    private Integer status;
-
-    /**
      * 更新内容标题
      */
     @ApiModelProperty(value = "更新内容标题", dataType = "String", required = true)
@@ -112,35 +80,5 @@ public class AppVersionDTO extends GeneralEnter {
      */
     @ApiModelProperty(value = "标签", dataType = "String", required = true)
     private String label;
-
-    /**
-     * 数据数量
-     */
-    @ApiModelProperty(value = "数据数量", dataType = "Integer")
-    private Integer dataCount;
-
-    /**
-     * 创建人
-     */
-    @ApiModelProperty(value = "创建人", dataType = "Long")
-    private Long createdBy;
-
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty(value = "创建时间", dataType = "Date")
-    private Date createdTime;
-
-    /**
-     * 更新人
-     */
-    @ApiModelProperty(value = "更新人", dataType = "Long")
-    private Long updatedBy;
-
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty(value = "更新时间", dataType = "Date")
-    private Date updatedTime;
 
 }

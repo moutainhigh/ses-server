@@ -5,7 +5,7 @@ import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
 
     @Override
-    public PageResult<AdminScooterDTO> queryAdminScooter(QueryAdminScooterDTO adminScooterDTO) {
+    public PageResult<AdminScooterDTO> queryAdminScooter(QueryAdminScooterParamDTO paramDTO) {
         return null;
     }
 

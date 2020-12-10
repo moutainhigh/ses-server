@@ -2,7 +2,7 @@ package com.redescooter.ses.admin.dev.service.scooter;
 
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 
 /**
@@ -14,12 +14,12 @@ public interface AdminScooterService {
 
     /**
      * 查询车辆列表
-     * @param adminScooterDTO
+     * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
      * @author assert
      * @date 2020/12/9
     */
-    PageResult<AdminScooterDTO> queryAdminScooter(QueryAdminScooterDTO adminScooterDTO);
+    PageResult<AdminScooterDTO> queryAdminScooter(QueryAdminScooterParamDTO paramDTO);
 
     /**
      * 创建车辆信息

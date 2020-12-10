@@ -2,10 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.service.foundation.dao.AppVersionMapper">
 
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="system_id" jdbcType="VARCHAR" property="systemId" />
-        <result column="app_id" jdbcType="VARCHAR" property="appId" />
         <result column="system_type" jdbcType="INTEGER" property="systemType" />
         <result column="type" jdbcType="INTEGER" property="type" />
         <result column="code" jdbcType="VARCHAR" property="code" />
@@ -40,7 +38,9 @@
         where dr = 0
         <if test="type != null">
             <choose>
-                <when test="type == 1">and `type` in(1,2)</when>
+                <when test="type == 9">
+                    and `type` in(1,2)
+                </when>
                 <otherwise>and `type` = #{type}</otherwise>
             </choose>
         </if>
@@ -60,7 +60,7 @@
     </select>
 
     <!--创建新版本-->
-    <insert id="insertAppVersion" parameterType="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+    <insert id="insertAppVersion" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
         insert into pla_app_version
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -202,7 +202,7 @@
     </insert>
 
     <!--修改应用版本信息-->
-    <update id="updateAppVersion" parameterType="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+    <update id="updateAppVersion" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
         update pla_app_version
         <set>
             <if test="systemId != null">
@@ -306,7 +306,7 @@
         where dr = 0
         <if test="type != null">
             <choose>
-                <when test="type == 1">and `type` in(1,2)</when>
+                <when test="type == 9">and `type` in(1,2)</when>
                 <otherwise>and `type` = #{type}</otherwise>
             </choose>
         </if>
@@ -330,15 +330,12 @@
         where dr = 0
     </select>
 
-    <!--根据type查询当前应用所有版本号信息-->
-    <select id="getAppVersionByType" parameterType="java.lang.Integer" resultType="java.lang.String">
-        select distinct new_version_num
+    <!--根据type查询当前应用版本号信息-->
+    <select id="getAppVersionByType" parameterType="java.lang.Integer"
+            resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+        select `code` id,new_version_num name
 	    from pla_app_version
-	    where dr = 0
-	    <choose>
-            <when test="type == 1">and `type` in (1,2)</when>
-            <otherwise>and `type` = #{type}</otherwise>
-        </choose>
+	    where dr = 0 and `type` = #{type}
     </select>
 
     <!--根据type查询应用版本最大版本编码-->
