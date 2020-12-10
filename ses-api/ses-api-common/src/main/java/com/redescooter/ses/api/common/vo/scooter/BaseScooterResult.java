@@ -87,4 +87,11 @@ public class BaseScooterResult extends GeneralResult {
 
     @ApiModelProperty(value = "据下次保养的公里数")
     private BigDecimal nextMaintenanceKm = BigDecimal.ZERO;
+
+    @ApiModelProperty(value = "蓝牙mac地址")
+    private String bluetoothMacAddress;
+
+    @ApiModelProperty(value = "蓝牙名称")
+    private String bluetoothName;
+
 }
