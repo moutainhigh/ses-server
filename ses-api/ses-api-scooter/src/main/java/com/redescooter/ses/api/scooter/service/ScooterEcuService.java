@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.scooter.service;
 
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 
 /**
@@ -16,5 +17,14 @@ public interface ScooterEcuService {
      * @date 2020/11/20
      */
     int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu);
+
+    /**
+     * 同步车辆仪表ECU数据
+     * @param syncScooterEcuData
+     * @return int
+     * @author assert
+     * @date 2020/12/10
+    */
+    int syncScooterEcuData(SyncScooterEcuDataDTO syncScooterEcuData);
 
 }

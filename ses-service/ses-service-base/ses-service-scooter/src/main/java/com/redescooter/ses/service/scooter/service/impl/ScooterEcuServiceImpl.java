@@ -1,15 +1,19 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -65,6 +69,23 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
         });
         return 1;
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int syncScooterEcuData(SyncScooterEcuDataDTO syncScooterEcuData) {
+        ScooterEcuDTO scooterEcu = new ScooterEcuDTO();
+        BeanUtils.copyProperties(syncScooterEcuData, scooterEcu);
+
+        scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
+        scooterEcu.setScooterLock(true);
+        scooterEcu.setCreatedBy(syncScooterEcuData.getUserId());
+        scooterEcu.setCreatedTime(new Date());
+        scooterEcu.setUpdatedBy(syncScooterEcuData.getUserId());
+        scooterEcu.setUpdatedTime(new Date());
+
+        return scooterEcuMapper.insertScooterEcu(scooterEcu);
+    }
+
 
     /**
      * 根据ecu上报信息更新车辆锁状态

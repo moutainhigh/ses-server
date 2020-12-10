@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
@@ -28,6 +29,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -220,6 +222,24 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public BaseScooterResult getScooterInfoById(Long scooterId) {
         return scooterServiceMapper.getScooterInfoById(scooterId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int syncScooterData(SyncScooterDataDTO syncScooterData) {
+        ScoScooter scooter = new ScoScooter();
+        BeanUtils.copyProperties(syncScooterData, scooter);
+
+        scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
+        scooter.setTotalMileage(0L);
+        scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
+        scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+        scooter.setCreatedBy(syncScooterData.getUserId());
+        scooter.setCreatedTime(new Date());
+        scooter.setUpdatedBy(syncScooterData.getUserId());
+        scooter.setUpdatedTime(new Date());
+
+        return scooterServiceMapper.insertScooter(scooter);
     }
 
 }

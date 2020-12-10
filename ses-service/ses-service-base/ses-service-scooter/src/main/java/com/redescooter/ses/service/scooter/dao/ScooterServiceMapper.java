@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.scooter.dao;
 
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -90,5 +91,14 @@ public interface ScooterServiceMapper {
      * @date 2020/12/4
     */
     List<String> getAllScooterTabletSn();
+
+    /**
+     * 新增车辆信息
+     * @param scooter
+     * @return int
+     * @author assert
+     * @date 2020/12/10
+    */
+    int insertScooter(ScoScooter scooter);
 
 }

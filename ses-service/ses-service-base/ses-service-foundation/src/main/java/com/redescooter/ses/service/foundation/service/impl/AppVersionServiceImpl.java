@@ -51,7 +51,7 @@ public class AppVersionServiceImpl implements AppVersionService {
     private SysUserService sysUserService;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Resource
+    @Reference
     private IdAppService idAppService;
 
 

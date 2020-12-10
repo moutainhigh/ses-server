@@ -97,8 +97,18 @@ public class ScooterEcuDTO {
     private Date createdTime;
 
     /**
+     * 创建人
+     */
+    private Long createdBy;
+
+    /**
      * 修改时间
      */
     private Date updatedTime;
+
+    /**
+     * 修改人
+     */
+    private Long updatedBy;
 
 }

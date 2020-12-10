@@ -6,15 +6,19 @@
     <!--@Table adm_scooter-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="r_sn" jdbcType="VARCHAR" property="rSn" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
     <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
     <result column="color_id" jdbcType="BIGINT" property="colorId" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
     <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+    <result column="mac_name" jdbcType="VARCHAR" property="macName" />
     <result column="scooter_controller" jdbcType="INTEGER" property="scooterController" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
@@ -24,268 +28,40 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, r_sn, group_id, color_id, mac_address, scooter_controller, remark, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, sn, group_id, group_name, color_id, color_name, color_value, mac_address, 
+    mac_name, scooter_controller, remark, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def4, def5
   </sql>
-  <update id="updateBatch" parameterType="java.util.List">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
-    update adm_scooter
-    <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="r_sn = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.rSn,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="group_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.groupId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="color_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.colorId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="mac_address = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.macAddress,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="scooter_controller = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.scooterController,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="remark = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-        </foreach>
-      </trim>
-      <trim prefix="def1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def4 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
-        </foreach>
-      </trim>
-    </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
-  </update>
-  <update id="updateBatchSelective" parameterType="java.util.List">
+    select 
+    <include refid="Base_Column_List" />
+    from adm_scooter
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--@mbg.generated-->
-    update adm_scooter
-    <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.dr != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="r_sn = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.rSn != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.rSn,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="group_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.groupId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.groupId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="color_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.colorId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.colorId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="mac_address = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.macAddress != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.macAddress,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="scooter_controller = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.scooterController != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.scooterController,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="remark = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.remark != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def3 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def4 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def4 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="def5 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.def5 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
-          </if>
-        </foreach>
-      </trim>
-    </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
-  </update>
-  <insert id="batchInsert" parameterType="map">
+    delete from adm_scooter
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
     <!--@mbg.generated-->
-    insert into adm_scooter
-    (id, dr, r_sn, group_id, color_id, mac_address, scooter_controller, remark, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
-    values
-    <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.rSn,jdbcType=VARCHAR}, 
-        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.macAddress,jdbcType=VARCHAR}, 
-        #{item.scooterController,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
-    </foreach>
+    insert into adm_scooter (id, dr, sn, group_id, 
+      group_name, color_id, color_name, 
+      color_value, mac_address, mac_name, 
+      scooter_controller, remark, created_by, 
+      created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, 
+      def5)
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{sn,jdbcType=VARCHAR}, #{groupId,jdbcType=BIGINT}, 
+      #{groupName,jdbcType=VARCHAR}, #{colorId,jdbcType=BIGINT}, #{colorName,jdbcType=VARCHAR}, 
+      #{colorValue,jdbcType=VARCHAR}, #{macAddress,jdbcType=VARCHAR}, #{macName,jdbcType=VARCHAR}, 
+      #{scooterController,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+      #{def5,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
-    <!--@mbg.generated-->
-    insert into adm_scooter
-    (id, dr, r_sn, group_id, color_id, mac_address, scooter_controller, remark, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
-    values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{rSn,jdbcType=VARCHAR}, #{groupId,jdbcType=BIGINT}, 
-      #{colorId,jdbcType=BIGINT}, #{macAddress,jdbcType=VARCHAR}, #{scooterController,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
-      )
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    r_sn = #{rSn,jdbcType=VARCHAR}, 
-    group_id = #{groupId,jdbcType=BIGINT}, 
-    color_id = #{colorId,jdbcType=BIGINT}, 
-    mac_address = #{macAddress,jdbcType=VARCHAR}, 
-    scooter_controller = #{scooterController,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
-    def5 = #{def5,jdbcType=DECIMAL}
-  </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+  <insert id="insertSelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
     <!--@mbg.generated-->
     insert into adm_scooter
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -295,17 +71,29 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="rSn != null">
-        r_sn,
+      <if test="sn != null">
+        sn,
       </if>
       <if test="groupId != null">
         group_id,
       </if>
+      <if test="groupName != null">
+        group_name,
+      </if>
       <if test="colorId != null">
         color_id,
       </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="colorValue != null">
+        color_value,
+      </if>
       <if test="macAddress != null">
         mac_address,
+      </if>
+      <if test="macName != null">
+        mac_name,
       </if>
       <if test="scooterController != null">
         scooter_controller,
@@ -341,25 +129,36 @@
         def5,
       </if>
     </trim>
-    values
-    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="rSn != null">
-        #{rSn,jdbcType=VARCHAR},
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
       </if>
       <if test="groupId != null">
         #{groupId,jdbcType=BIGINT},
       </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
       <if test="colorId != null">
         #{colorId,jdbcType=BIGINT},
       </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorValue != null">
+        #{colorValue,jdbcType=VARCHAR},
+      </if>
       <if test="macAddress != null">
         #{macAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="macName != null">
+        #{macName,jdbcType=VARCHAR},
       </if>
       <if test="scooterController != null">
         #{scooterController,jdbcType=INTEGER},
@@ -374,7 +173,7 @@
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+        #{updatedBy,jdbcType=INTEGER},
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
@@ -395,25 +194,37 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
-    <trim suffixOverrides=",">
-      <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
-      </if>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    update adm_scooter
+    <set>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="rSn != null">
-        r_sn = #{rSn,jdbcType=VARCHAR},
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
       </if>
       <if test="groupId != null">
         group_id = #{groupId,jdbcType=BIGINT},
       </if>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
       <if test="colorId != null">
         color_id = #{colorId,jdbcType=BIGINT},
       </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorValue != null">
+        color_value = #{colorValue,jdbcType=VARCHAR},
+      </if>
       <if test="macAddress != null">
         mac_address = #{macAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="macName != null">
+        mac_name = #{macName,jdbcType=VARCHAR},
       </if>
       <if test="scooterController != null">
         scooter_controller = #{scooterController,jdbcType=INTEGER},
@@ -428,7 +239,7 @@
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_by = #{updatedBy,jdbcType=INTEGER},
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
@@ -448,6 +259,32 @@
       <if test="def5 != null">
         def5 = #{def5,jdbcType=DECIMAL},
       </if>
-    </trim>
-  </insert>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    update adm_scooter
+    set dr = #{dr,jdbcType=INTEGER},
+      sn = #{sn,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=BIGINT},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      color_id = #{colorId,jdbcType=BIGINT},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      color_value = #{colorValue,jdbcType=VARCHAR},
+      mac_address = #{macAddress,jdbcType=VARCHAR},
+      mac_name = #{macName,jdbcType=VARCHAR},
+      scooter_controller = #{scooterController,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=INTEGER},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def4 = #{def4,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

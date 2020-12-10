@@ -30,4 +30,13 @@ public interface AdminScooterService {
     */
     int insertAdminScooter(InsertAdminScooterDTO adminScooterDTO);
 
+    /**
+     * 根据id查询车辆详情
+     * @param id
+     * @return com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO
+     * @author assert
+     * @date 2020/12/10
+    */
+    AdminScooterDTO getAdminScooterDetailById(Long id);
+
 }

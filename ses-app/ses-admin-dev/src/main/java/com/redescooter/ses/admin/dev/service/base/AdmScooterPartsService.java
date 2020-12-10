@@ -1,20 +1,23 @@
 package com.redescooter.ses.admin.dev.service.base;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
+    /**
+*@author assert
+*@date 2020/12/10 22:43
+*/
+public interface AdmScooterPartsService{
 
-import java.util.List;
-public interface AdmScooterPartsService extends IService<AdmScooterParts> {
 
+    int deleteByPrimaryKey(Long id);
 
-    int updateBatch(List<AdmScooterParts> list);
+    int insert(AdmScooterParts record);
 
-    int updateBatchSelective(List<AdmScooterParts> list);
+    int insertSelective(AdmScooterParts record);
 
-    int batchInsert(List<AdmScooterParts> list);
+    AdmScooterParts selectByPrimaryKey(Long id);
 
-    int insertOrUpdate(AdmScooterParts record);
+    int updateByPrimaryKeySelective(AdmScooterParts record);
 
-    int insertOrUpdateSelective(AdmScooterParts record);
+    int updateByPrimaryKey(AdmScooterParts record);
 
 }

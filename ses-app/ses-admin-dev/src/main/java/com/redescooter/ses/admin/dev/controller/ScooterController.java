@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
+import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 车辆相关接口管理
@@ -31,6 +33,8 @@ public class ScooterController {
     private AdminScooterService adminScooterService;
     @Reference
     private ColorService colorService;
+    @Reference
+    private SpecificService specificService;
 
 
     /**
@@ -68,8 +72,8 @@ public class ScooterController {
     */
     @ApiOperation(value = "查询颜色信息列表", notes = "查询颜色信息列表(下拉列表使用)")
     @GetMapping(value = "/colors")
-    public Response<SelectBaseResultDTO> getScooterColorList() {
-        return null;
+    public Response<List<SelectBaseResultDTO>> getScooterColorList() {
+        return new Response<>(colorService.getScooterColorList());
     }
 
     /**
@@ -81,8 +85,21 @@ public class ScooterController {
     */
     @ApiOperation(value = "查询车辆型号分组列表", notes = "查询车辆型号分组列表(下拉列表使用)")
     @GetMapping(value = "/groups")
-    public Response<SelectBaseResultDTO> getScooterGroupList() {
-        return null;
+    public Response<List<SelectBaseResultDTO>> getScooterGroupList() {
+        return new Response<>(specificService.getSpecificGroupList());
+    }
+
+    /**
+     * 根据id查询车辆详情
+     * @param id
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
+     * @author assert
+     * @date 2020/12/10
+    */
+    @ApiOperation(value = "查询车辆详情", notes = "根据id查询车辆详情")
+    @GetMapping(value = "/detail/{id}")
+    public Response<AdminScooterDTO> getAdminScooterDetailById(@PathVariable("id") Long id) {
+        return new Response<>(adminScooterService.getAdminScooterDetailById(id));
     }
 
 }

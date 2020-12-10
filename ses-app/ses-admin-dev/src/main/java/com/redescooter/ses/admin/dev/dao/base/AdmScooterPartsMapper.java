@@ -1,21 +1,21 @@
 package com.redescooter.ses.admin.dev.dao.base;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+/**
+ * @author assert
+ * @date 2020/12/10 22:43
+ */
+public interface AdmScooterPartsMapper {
+    int deleteByPrimaryKey(Long id);
 
-@Mapper
-public interface AdmScooterPartsMapper extends BaseMapper<AdmScooterParts> {
-    int updateBatch(List<AdmScooterParts> list);
+    int insert(AdmScooterParts record);
 
-    int updateBatchSelective(List<AdmScooterParts> list);
+    int insertSelective(AdmScooterParts record);
 
-    int batchInsert(@Param("list") List<AdmScooterParts> list);
+    AdmScooterParts selectByPrimaryKey(Long id);
 
-    int insertOrUpdate(AdmScooterParts record);
+    int updateByPrimaryKeySelective(AdmScooterParts record);
 
-    int insertOrUpdateSelective(AdmScooterParts record);
+    int updateByPrimaryKey(AdmScooterParts record);
 }

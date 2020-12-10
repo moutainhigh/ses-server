@@ -127,8 +127,14 @@
             <if test="versionCode != null">
                 version_code,
             </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
             <if test="createdTime != null">
                 created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
             </if>
             <if test="updatedTime != null">
                 updated_time,
@@ -183,8 +189,14 @@
             <if test="versionCode != null">
                 #{versionCode,jdbcType=VARCHAR},
             </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
             <if test="createdTime != null">
                 #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
             </if>
             <if test="updatedTime != null">
                 #{updatedTime,jdbcType=TIMESTAMP},

@@ -57,6 +57,15 @@ public enum ExceptionCodeEnums {
     CODE_IS_WRONG(10019, "验证码错误"),
 
     TOKEN_MESSAGE_IS_FALSE(10020, "token过期"),
+
+    // 业务异常 10031 - 99999
+    GROUP_NOT_EXISTS(10031, "分组不存在"),
+
+    COLOR_NOT_EXISTS(10032, "颜色不存在"),
+
+    SCOOTER_TABLET_SN_EXISTS(10033, "车辆平板已存在"),
+
+    DATA_FORMAT_ERROR(10034, "数据格式有误")
     ;
 
     private int code;

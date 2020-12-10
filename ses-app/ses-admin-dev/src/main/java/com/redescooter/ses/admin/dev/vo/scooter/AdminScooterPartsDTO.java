@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * 车辆配件 DTO
  * @author assert
@@ -44,29 +42,5 @@ public class AdminScooterPartsDTO {
      */
     @ApiModelProperty(value="数量", dataType = "Integer")
     private Integer qty;
-
-    /**
-     * 创建人
-     */
-    @ApiModelProperty(value="创建人", dataType = "Long")
-    private Long createdBy;
-
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty(value="创建时间", dataType = "Date")
-    private Date createdTime;
-
-    /**
-     * 更新人
-     */
-    @ApiModelProperty(value="更新人", dataType = "Long")
-    private Long updatedBy;
-
-    /**
-     * 更新时间
-     */
-    @ApiModelProperty(value="更新时间", dataType = "Date")
-    private Date updatedTime;
 
 }
