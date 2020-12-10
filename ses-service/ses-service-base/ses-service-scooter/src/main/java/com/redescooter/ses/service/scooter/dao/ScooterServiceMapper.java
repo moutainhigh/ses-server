@@ -82,4 +82,13 @@ public interface ScooterServiceMapper {
     int updateScooterStatusByTabletSn(@Param("tabletSn") String tabletSn, @Param("status") String status,
                                       @Param("date") Date date);
 
+    /**
+     * 查询所有车辆平板序列号
+     * @param
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2020/12/4
+    */
+    List<String> getAllScooterTabletSn();
+
 }

@@ -30,10 +30,10 @@
             <if test="battery != null">
                 battery = #{battery,jdbcType=INTEGER},
             </if>
-            <if test="bluetoothMacAddress != null and bluetoothMacAddress != ''">
+            <if test="bluetoothMacAddress != null">
                 bluetooth_mac_address = #{bluetoothMacAddress,jdbcType=VARCHAR},
             </if>
-            <if test="bluetooth_name != null and bluetooth_name != ''">
+            <if test="bluetooth_name != null">
                 bluetooth_name = #{bluetooth_name,jdbcType=VARCHAR},
             </if>
             <if test="iccid != null">
@@ -91,7 +91,7 @@
             <if test="bluetoothMacAddress != null">
                 bluetooth_mac_address,
             </if>
-            <if test="bluetooth_name != null and bluetooth_name != ''">
+            <if test="bluetooth_name != null">
                 bluetooth_name,
             </if>
             <if test="iccid != null">
@@ -147,7 +147,7 @@
             <if test="bluetoothMacAddress != null">
                 #{bluetoothMacAddress,jdbcType=VARCHAR},
             </if>
-            <if test="bluetooth_name != null and bluetooth_name != ''">
+            <if test="bluetooth_name != null">
                 #{bluetooth_name,jdbcType=VARCHAR},
             </if>
             <if test="iccid != null">

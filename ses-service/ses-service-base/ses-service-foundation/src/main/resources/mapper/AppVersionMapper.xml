@@ -2,10 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.service.foundation.dao.AppVersionMapper">
 
-    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="system_id" jdbcType="VARCHAR" property="systemId" />
-        <result column="app_id" jdbcType="VARCHAR" property="appId" />
         <result column="system_type" jdbcType="INTEGER" property="systemType" />
         <result column="type" jdbcType="INTEGER" property="type" />
         <result column="code" jdbcType="VARCHAR" property="code" />
@@ -18,6 +16,9 @@
         <result column="min_version_num" jdbcType="INTEGER" property="minVersionNum" />
         <result column="nin_version_name" jdbcType="VARCHAR" property="ninVersionName" />
         <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="release_environment" jdbcType="INTEGER" property="releaseEnvironment" />
+        <result column="label" jdbcType="VARCHAR" property="label" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -25,9 +26,329 @@
     </resultMap>
 
     <!--根据type查询新应用版本信息-->
-    <select id="getNewAppVersionById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getAppVersionById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from pla_app_version
 	    where id = #{id} and dr = 0
     </select>
-    
+
+    <!--查询应用版本列表信息-->
+    <select id="queryAppVersion" parameterType="com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO"
+            resultMap="BaseResultMap">
+        select * from pla_app_version
+        where dr = 0
+        <if test="type != null">
+            <choose>
+                <when test="type == 9">
+                    and `type` in(1,2)
+                </when>
+                <otherwise>and `type` = #{type}</otherwise>
+            </choose>
+        </if>
+        <if test="status != null">
+            and `status` = #{status}
+        </if>
+        <if test="versionNumber != null and versionNumber != ''">
+            and `new_version_num` = #{versionNumber}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and (
+                update_content like concat('%',#{keyWord},'%')
+                or label like concat('%',#{keyWord},'%')
+            )
+        </if>
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--创建新版本-->
+    <insert id="insertAppVersion" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
+        insert into pla_app_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="systemId != null">
+                system_id,
+            </if>
+            <if test="appId != null">
+                app_id,
+            </if>
+            <if test="systemId != null">
+                system_type,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="isForce != null">
+                is_force,
+            </if>
+            <if test="updateContent != null">
+                update_content,
+            </if>
+            <if test="updateLink != null">
+                update_link,
+            </if>
+            <if test="newVersionNum != null">
+                new_version_num,
+            </if>
+            <if test="packageSize != null">
+                package_size,
+            </if>
+            <if test="newVersionName != null">
+                new_version_name,
+            </if>
+            <if test="minVersionNum != null">
+                min_version_num,
+            </if>
+            <if test="ninVersionName != null">
+                nin_version_name,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="releaseEnvironment != null">
+                release_environment,
+            </if>
+            <if test="label != null">
+                label,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="systemId != null">
+                #{systemId,jdbcType=VARCHAR},
+            </if>
+            <if test="appId != null">
+                #{appId,jdbcType=VARCHAR},
+            </if>
+            <if test="systemId != null">
+                #{systemType,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="isForce != null">
+                #{isForce,jdbcType=INTEGER},
+            </if>
+            <if test="updateContent != null">
+                #{updateContent,jdbcType=VARCHAR},
+            </if>
+            <if test="updateLink != null">
+                #{updateLink,jdbcType=VARCHAR},
+            </if>
+            <if test="newVersionNum != null">
+                #{newVersionNum,jdbcType=INTEGER},
+            </if>
+            <if test="packageSize != null">
+                #{packageSize,jdbcType=VARCHAR},
+            </if>
+            <if test="newVersionName != null">
+                #{newVersionName,jdbcType=VARCHAR},
+            </if>
+            <if test="minVersionNum != null">
+                #{minVersionNum,jdbcType=INTEGER},
+            </if>
+            <if test="ninVersionName != null">
+                #{ninVersionName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="releaseEnvironment != null">
+                #{releaseEnvironment,jdbcType=INTEGER},
+            </if>
+            <if test="label != null">
+                #{label,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--修改应用版本信息-->
+    <update id="updateAppVersion" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersion">
+        update pla_app_version
+        <set>
+            <if test="systemId != null">
+                system_id = #{systemId},
+            </if>
+            <if test="appId != null">
+                app_id = #{appId},
+            </if>
+            <if test="systemType != null">
+                system_type = #{systemType},
+            </if>
+            <if test="type != null">
+                `type` = #{type},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="isForce != null">
+                is_force = #{isForce},
+            </if>
+            <if test="updateContent != null">
+                update_content = #{updateContent},
+            </if>
+            <if test="updateLink != null">
+                update_link = #{updateLink},
+            </if>
+            <if test="newVersionNum != null">
+                new_version_num = #{newVersionNum},
+            </if>
+            <if test="packageSize != null">
+                package_size = #{packageSize},
+            </if>
+            <if test="newVersionName != null">
+                new_version_name = #{newVersionName},
+            </if>
+            <if test="minVersionNum != null">
+                min_version_num = #{minVersionNum},
+            </if>
+            <if test="ninVersionName != null">
+                nin_version_name = #{ninVersionName},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="releaseEnvironment != null">
+                release_environment = #{releaseEnvironment},
+            </if>
+            <if test="label != null">
+                label = #{label},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id删除版本信息-->
+    <update id="deleteAppVersionById" parameterType="java.lang.Long">
+        update pla_app_version
+	    set dr = 1, updated_time = now()
+	    where id = #{id}
+    </update>
+
+    <!--根据id修改应用版本状态-->
+    <update id="updateAppVersionStatusById">
+        update pla_app_version
+	    set `status` = #{status}
+	    where id = #{id}
+    </update>
+
+    <!--根据type修改应用版本状态为已发布-->
+    <update id="updateAppVersionStatusByType" parameterType="java.lang.Integer">
+        update pla_app_version
+	    set `status` = #{status}
+	    where `type` = #{type} and id != #{id}
+    </update>
+
+    <!--查询所有应用正在使用的版本-->
+    <select id="getActiveAppVersion" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from pla_app_version
+        where dr = 0 and `status` = #{status}
+    </select>
+
+    <!--查询应用版本数量-->
+    <select id="countByAppVersion" parameterType="com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from pla_app_version
+        where dr = 0
+        <if test="type != null">
+            <choose>
+                <when test="type == 9">and `type` in(1,2)</when>
+                <otherwise>and `type` = #{type}</otherwise>
+            </choose>
+        </if>
+        <if test="status != null">
+            and `status` = #{status}
+        </if>
+        <if test="versionNumber != null and versionNumber != ''">
+            and `new_version_num` = #{versionNumber}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and (
+            update_content like concat('%',#{keyWord},'%')
+            or label like concat('%',#{keyWord},'%')
+            )
+        </if>
+    </select>
+
+    <!--查询全部应用版本信息(只返回type、id字段)-->
+    <select id="getAppVersions" resultType="com.redescooter.ses.api.foundation.vo.app.AppVersionDTO">
+        select id,`type` from pla_app_version
+        where dr = 0
+    </select>
+
+    <!--根据type查询当前应用版本号信息-->
+    <select id="getAppVersionByType" parameterType="java.lang.Integer"
+            resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+        select `code` id,new_version_num name
+	    from pla_app_version
+	    where dr = 0 and `type` = #{type}
+    </select>
+
+    <!--根据type查询应用版本最大版本编码-->
+    <select id="getAppVersionMaxCodeByType" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select max(`code`) versionCode
+	    from pla_app_version
+	    where `type` = #{type} and dr = 0
+    </select>
+
+    <!--根据标签全模糊检索应用标签信息-->
+    <select id="getAppVersionLabelByLabel" parameterType="java.lang.String" resultType="java.lang.String">
+        select distinct `label` from pla_app_version
+	    where dr = 0 and label like concat('%',#{label},'%')
+    </select>
+
 </mapper>

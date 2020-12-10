@@ -108,7 +108,8 @@
     </update>
 
     <!--根据Id查询车辆信息-->
-    <select id="getScooterInfoById" parameterType="java.lang.Long" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+    <select id="getScooterInfoById" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
         select s.id id,s.picture pictures,s.scooter_no scooterNo,s.tablet_sn tabletSn,s.`status` `status`,
         s.available_status availableStatus,s.box_status boxStatus,s.model model,s.license_plate licensePlate,
         s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
@@ -140,5 +141,11 @@
 	    set `status` = #{status}, updated_time = #{date}
 	    where tablet_sn = #{tabletSn}
     </update>
+
+    <!--查询所有车辆平板序列号-->
+    <select id="getAllScooterTabletSn" resultType="java.lang.String">
+        select tablet_sn from sco_scooter
+	    where dr = 0
+    </select>
 
 </mapper>

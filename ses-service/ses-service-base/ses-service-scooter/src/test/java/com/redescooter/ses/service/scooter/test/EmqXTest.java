@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.service.scooter.base.BaseTest;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
@@ -11,9 +12,7 @@ import org.junit.Test;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * EMQ X测试类
@@ -22,8 +21,8 @@ import java.util.Map;
  */
 public class EmqXTest {
 
-//    @Resource
-//    private MqttClientUtil mqttClientUtil;
+    @Resource
+    private MqttClientUtil mqttClientUtil;
 
     /**
      * 车辆平板升级测试
@@ -36,23 +35,22 @@ public class EmqXTest {
         tabletUpdatePublish.setVersionCode("5");
         tabletUpdatePublish.setUpdateOrRollBack(false);
 
-//        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
-//                JSONObject.toJSONString(tabletUpdatePublish));
+        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
+                JSONObject.toJSONString(tabletUpdatePublish));
     }
 
     /**
-     * 设置车辆类型测试(车辆软体设置)
+     * 设置车辆类型测试
      */
     @Test
     public void scooterModelTest() {
         String tabletSn = "IBJBAIZHTWMBK7PB";
         SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
         publish.setTabletSn(tabletSn);
-        publish.setType(ScooterModelEnum.SCOOTER_E50.getType());
-//        publish.setSpecificDefGroupList(buildSpecificDefGroupData());
+        publish.setType(ScooterModelEnum.SCOOTER_E100.getType());
+        publish.setSpecificDefGroupList(buildSpecificDefGroupData());
 
-        System.out.println(JSONObject.toJSONString(publish));
-
+        System.out.println("json：" + JSONObject.toJSONString(publish));
 //        mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
 //                JSONObject.toJSONString(publish));
     }
@@ -61,38 +59,36 @@ public class EmqXTest {
      * 组装自定义规格分组信息
      * @return
      */
-//    private List<SpecificDefGroupPublishDTO> buildSpecificDefGroupData() {
-//        List<SpecificDefGroupPublishDTO> groupList = new ArrayList<>();
-//
-//        double speedRatio = 22.0 / 130.0;
-//        SpecificDefGroupPublishDTO batteryOne = SpecificDefGroupPublishDTO.builder()
-//                .batteryBatchNo("1")
-//                .wheelDiameter("52")
-//                .speedRatio(String.valueOf(speedRatio))
-//                .limitSpeedBos("55")
-//                .limiting("35")
-//                .speedLimit("45")
-//                .socRedWarning("20")
-//                .orangeWarning("5")
-//                .stallSOC("0")
-//                .setSOCTo0AtStallUndervoltage("62")
-//                .stallVoltageUndervoltage("58")
-//                .voltageLegalRecognitionMin("50")
-//                .voltageLegalRecognitionMax("84")
-//                .controllerUndervoltage("58")
-//                .controllerUndervoltageRecovery("62")
-//                .build();
-//
-//
-//
-//
-//        // 设置规格自定义项分组信息 -- 现在默认一辆车有四节电池
-//        groupList.add(batteryOne);
-//        groupList.add(new SpecificDefGroupPublishDTO());
-//        groupList.add(new SpecificDefGroupPublishDTO());
-//        groupList.add(new SpecificDefGroupPublishDTO());
-//
-//        return groupList;
-//    }
+    private List<SpecificDefGroupPublishDTO> buildSpecificDefGroupData() {
+        List<SpecificDefGroupPublishDTO> groupList = new ArrayList<>();
+
+        double speedRatio = 22.0 / 130.0;
+        SpecificDefGroupPublishDTO batteryOne = SpecificDefGroupPublishDTO.builder()
+                .batteryBatchNo("1")
+                .wheelDiameter("52")
+                .speedRatio(String.valueOf(speedRatio))
+                .limitSpeedBos("55")
+                .limiting("35")
+                .speedLimit("45")
+                .socRedWarning("20")
+                .orangeWarning("5")
+                .stallSOC("0")
+                .setSOCTo0AtStallUndervoltage("62")
+                .stallVoltageUndervoltage("58")
+                .voltageLegalRecognitionMin("50")
+                .voltageLegalRecognitionMax("84")
+                .controllerUndervoltage("58")
+                .controllerUndervoltageRecovery("62")
+                .build();
+
+
+        // 设置规格自定义项分组信息 -- 现在默认一辆车有四节电池
+        groupList.add(batteryOne);
+        groupList.add(new SpecificDefGroupPublishDTO());
+        groupList.add(new SpecificDefGroupPublishDTO());
+        groupList.add(new SpecificDefGroupPublishDTO());
+
+        return groupList;
+    }
 
 }

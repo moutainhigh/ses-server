@@ -10,9 +10,9 @@ public enum AppVersionStatusEnum {
     /**
      * 应用版本状态
      */
-    UNPUBLISHED(0, "未发布"),
-    PUBLISHED(1, "已发布"),
-    USING(2, "使用中/生效中")
+    UNRELEASED(0, "未发布"),
+    RELEASED(1, "已发布"),
+    ACTIVE(2, "使用中/生效中")
     ;
 
     private Integer status;

@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:42181
   metadata-report:
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.200:42181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -17,9 +17,9 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://47.105.215.239:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: rede,1qaz2wsx
+    password: 1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -155,6 +155,21 @@ spring:                                                                         
         description: 个人统计模块接口
         base-package: com.redescooter.ses
         path-regex: /id/dashboard/.*
+        path-mapping: /
+        version: 1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        contact:
+          name: Jerry
+          email: Jerry@redescooter.com
+          url: https://github.com/mrjerryli#联系地址
+
+      WorkOrder-api:
+        group-name: 8.WorkOrder-API
+        title: 工单
+        description: 工单
+        base-package: com.redescooter.ses
+        path-regex: /work/order/.*
         path-mapping: /
         version: 1.2.1
         license: RedE 公司内部传阅

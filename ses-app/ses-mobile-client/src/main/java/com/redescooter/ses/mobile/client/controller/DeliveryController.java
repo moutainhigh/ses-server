@@ -40,7 +40,7 @@ public class DeliveryController {
     @Reference
     private DeliveryService deliveryService;
 
-    @ApiOperation(value = "订单列表")
+    @ApiOperation(value = "餐厅订单列表")
     @RequestMapping(value = "/list")
     public Response<DeliveryListResult> list(@ModelAttribute DeliveryListEnter enter) {
         return new Response<>(deliveryService.list(enter));

@@ -36,6 +36,11 @@ public class ScoScooterEcu {
     private String bluetoothMacAddress;
 
     /**
+     * 蓝牙名称
+     */
+    private String bluetoothName;
+
+    /**
      * Sim卡唯一标识
      */
     private String iccid;

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.SysUserMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.hub.vo.SysUserStaffDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="position_id" jdbcType="BIGINT" property="positionId" />
+        <result column="role_id" jdbcType="BIGINT" property="roleId" />
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="entry_date" jdbcType="DATE" property="entryDate" />
+        <result column="country_name" jdbcType="VARCHAR" property="countryName" />
+        <result column="address_1" jdbcType="VARCHAR" property="address1" />
+        <result column="address_2" jdbcType="VARCHAR" property="address2" />
+        <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+        <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+        <result column="certificat_picture_1" jdbcType="VARCHAR" property="certificatPicture1" />
+        <result column="certificat_picture_2" jdbcType="VARCHAR" property="certificatPicture2" />
+        <result column="open_account" jdbcType="CHAR" property="openAccount" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="employee_picture" jdbcType="VARCHAR" property="employeePicture" />
+        <result column="first_name" jdbcType="VARCHAR" property="firstName" />
+        <result column="last_name" jdbcType="VARCHAR" property="lastName" />
+        <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="gender" jdbcType="INTEGER" property="gender" />
+        <result column="sys_user_id" jdbcType="BIGINT" property="sysUserId" />
+        <result column="if_safe_code" jdbcType="INTEGER" property="ifSafeCode" />
+        <result column="safe_code" jdbcType="VARCHAR" property="safeCode" />
+        <result column="system_root" jdbcType="VARCHAR" property="systemRoot" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--根据userId查询用户员工信息-->
+    <select id="getSysUserStaffByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_sys_staff
+	    where dr = 0 and sys_user_id = #{userId}
+    </select>
+
+</mapper>

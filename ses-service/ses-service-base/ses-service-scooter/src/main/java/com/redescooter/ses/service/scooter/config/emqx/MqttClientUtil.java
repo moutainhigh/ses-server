@@ -37,12 +37,14 @@ public class MqttClientUtil implements MqttCallback {
     /**
      * 建立连接
      * @param host
+     * @param clientId
      * @param timeout
      * @param keepalive
      */
     public void connect(String host, int timeout, int keepalive, String ca, String clientCrt, String clientKey){
         MqttClient client;
         try {
+            // clientId随机生成,保证不重复(如果clientId重复会导致将上台客户机挤下线)
             String clientId = "mqttx_" + RandomUtils.nextInt(0, 999999);
             client = new MqttClient(host, clientId, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();

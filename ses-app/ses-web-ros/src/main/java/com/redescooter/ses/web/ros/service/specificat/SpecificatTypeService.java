@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.specificat;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.specificat.*;
+import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
 
 import java.util.List;
 
@@ -82,4 +83,14 @@ public interface SpecificatTypeService {
      * @return
      **/
     List<SpecificatTypeDataResult> specificatTypeData(GeneralEnter enter);
+
+    /**
+     * 新增规格类型,新接口(new)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2020/12/7
+    */
+    GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO);
+
 }

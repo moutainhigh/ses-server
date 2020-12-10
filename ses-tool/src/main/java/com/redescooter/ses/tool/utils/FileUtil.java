@@ -21,8 +21,6 @@ public class FileUtil {
      * @param path  指定路径
      */
     public static String uploadFile(MultipartFile mFile, String path) {
-        // phth进行修改
-        path = path + System.currentTimeMillis() + ".apk";
         try {
             InputStream in = mFile.getInputStream();
             byte[] buffer = new byte[1024];
