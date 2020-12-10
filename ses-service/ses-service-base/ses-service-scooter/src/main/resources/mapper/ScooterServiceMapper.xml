@@ -114,7 +114,8 @@
         s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
         s.scooter_id_picture scooterIdPicture,s.insurance insurance,s.insure_time insureTime,s.revision revision,
         ecu.id scooterEcuId,ecu.longitude longitule,ecu.latitude latitude,ecu.battery battery,
-        ifnull(ecu.total_miles, 0) totalmileage
+        ifnull(ecu.total_miles, 0) totalmileage,ecu.bluetooth_mac_address bluetoothMacAddress,
+        ecu.bluetooth_name bluetoothName
         from sco_scooter s
         left join sco_scooter_ecu ecu
         on s.tablet_sn = ecu.sn
