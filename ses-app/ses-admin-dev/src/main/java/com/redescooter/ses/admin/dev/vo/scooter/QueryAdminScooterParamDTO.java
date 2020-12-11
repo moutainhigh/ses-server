@@ -14,7 +14,13 @@ import lombok.Data;
 @ApiModel(value = "查询车辆列表入参")
 public class QueryAdminScooterParamDTO extends PageDTO {
 
-    @ApiModelProperty(value = "-现在列表查询暂时只有分页参数", dataType = "String")
-    private String temp;
+    @ApiModelProperty(value = "分组id", dataType = "Long")
+    private Long groupId;
+
+    @ApiModelProperty(value = "颜色id", dataType = "Long")
+    private Long colorId;
+
+    @ApiModelProperty(value = "关键字(序列号、蓝牙名称、蓝牙地址)", dataType = "String")
+    private String keyWord;
 
 }

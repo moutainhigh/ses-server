@@ -25,9 +25,4 @@ public class ScooterTabletUpdatePublishDTO {
      */
     private String versionCode;
 
-    /**
-     * true升级 false回滚,布尔值禁止使用is开头
-     */
-    private boolean updateOrRollBack;
-
 }

@@ -21,6 +21,8 @@ import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
+import com.redescooter.ses.api.hub.service.operation.SysUserService;
+import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -59,6 +61,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     private ScooterEcuService scooterEcuService;
     @Reference
     private IdAppService idAppService;
+    @Reference
+    private SysUserService sysUserService;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -69,7 +73,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         enter.setPageNo(paramDTO.getPageNo());
         enter.setPageSize(paramDTO.getPageSize());
 
-        int count = adminScooterMapper.countByAdminScooter();
+        int count = adminScooterMapper.countByAdminScooter(paramDTO);
         return PageResult.create(enter, count, adminScooterMapper.queryAdminScooter(paramDTO));
     }
 
@@ -160,8 +164,14 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
     @Override
     public AdminScooterDTO getAdminScooterDetailById(Long id) {
+        AdminScooterDTO adminScooter = adminScooterMapper.getAdminScooterDetailById(id);
+        if (null != adminScooter) {
+            // 去operation库查询用户的姓名和头像
+            SysUserStaffDTO userStaff = sysUserService.getSysUserStaffByUserId(adminScooter.getCreatedBy());
+            adminScooter.setCreator(userStaff.getFullName());
+        }
 
-        return adminScooterMapper.getAdminScooterDetailById(id);
+        return adminScooter;
     }
 
 
@@ -215,7 +225,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         int month = cal.get(Calendar.MONTH ) + 1;
 
         // 查询当前数据库车辆数量
-        int count = adminScooterMapper.countByAdminScooter();
+        int count = adminScooterMapper.countByAdminScooter(null);
 
         // 编号规则：区域 + 产品范围 + 结构类型 + 额定功率 + 生产地点 + 年份 + 月份 + 生产流水号(数量从1开始)
         StringBuilder sb = new StringBuilder();

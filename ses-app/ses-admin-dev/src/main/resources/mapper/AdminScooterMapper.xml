@@ -154,9 +154,21 @@
     </insert>
 
     <!--获取车辆数量-->
-    <select id="countByAdminScooter" resultType="java.lang.Integer">
+    <select id="countByAdminScooter" resultType="java.lang.Integer"
+            parameterType="com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO">
         select count(*) from adm_scooter
 	    where dr = 0
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test="colorId != null">
+            and color_id = #{colorId}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and `sn` like concat('%',#{keyWord},'%')
+            or mac_address like concat('%',#{keyWord},'%')
+            or mac_name like concat('%',#{keyWord},'%')
+        </if>
     </select>
 
     <!--查询车辆列表-->
@@ -164,6 +176,17 @@
             resultMap="BaseResultMap">
         select * from adm_scooter
         where dr = 0
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test="colorId != null">
+            and color_id = #{colorId}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and `sn` like concat('%',#{keyWord},'%')
+            or mac_address like concat('%',#{keyWord},'%')
+            or mac_name like concat('%',#{keyWord},'%')
+        </if>
         limit #{startRow}, #{pageSize}
     </select>
 

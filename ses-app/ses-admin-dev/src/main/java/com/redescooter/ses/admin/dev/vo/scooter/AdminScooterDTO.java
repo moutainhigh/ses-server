@@ -58,6 +58,9 @@ public class AdminScooterDTO {
     @ApiModelProperty(value="创建人", dataType = "Long")
     private Long createdBy;
 
+    @ApiModelProperty(value = "创建人名称", dataType = "String")
+    private String creator;
+
     @ApiModelProperty(value="创建时间", dataType = "Date")
     private Date createdTime;
 
