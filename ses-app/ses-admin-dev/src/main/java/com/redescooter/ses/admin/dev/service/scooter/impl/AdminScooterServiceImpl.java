@@ -2,7 +2,6 @@ package com.redescooter.ses.admin.dev.service.scooter.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.admin.dev.constant.SequenceName;
-import com.redescooter.ses.admin.dev.convert.scooter.AdminScooterConvert;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterMapper;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
