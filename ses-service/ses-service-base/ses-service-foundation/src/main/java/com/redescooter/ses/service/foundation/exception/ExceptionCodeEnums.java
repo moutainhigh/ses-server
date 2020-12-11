@@ -120,7 +120,9 @@ public enum ExceptionCodeEnums {
 
     WORK_ORDER_NOT_EXIST(10054, "工单不存在"),
 
-    VERSION_STATUS_IS_NOT_UNRELEASED(10055, "版本状态不是未发布")
+    VERSION_STATUS_IS_NOT_UNRELEASED(10055, "版本状态不是未发布"),
+
+    VERSION_CODE_EXISTS(10056, "版本编码已存在")
 
     ;
 

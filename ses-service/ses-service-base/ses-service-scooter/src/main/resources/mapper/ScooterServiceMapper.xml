@@ -136,9 +136,9 @@
     </select>
 
     <!--根据tabletSn更新车辆锁状态-->
-    <update id="updateScooterStatusByTabletSn">
+    <update id="updateScooterStatusAndTotalMilesByEcu">
         update sco_scooter
-	    set `status` = #{status}, updated_time = #{date}
+	    set `status` = #{status}, total_mileage = #{totalMiles}, updated_time = #{date}
 	    where tablet_sn = #{tabletSn}
     </update>
 

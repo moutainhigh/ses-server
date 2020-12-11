@@ -69,8 +69,9 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                     scooterEcuMapper.insertScooterEcu(scooterEcu);
                 }
 
-                // 同时更新scooter表车辆锁状态
-                updateScooterStatusByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock());
+                // 同时更新scooter表车辆锁状态和车辆行驶总里程
+                updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
+                        scooterEcu.getTotalMiles());
 
             } catch (Exception e) {
                 log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
@@ -99,11 +100,12 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
 
     /**
-     * 根据ecu上报信息更新车辆锁状态
+     * 根据ecu上报信息更新车辆锁状态、行驶总里程
      * @param tabletSn 平板序列号
      * @param scooterLock 车辆是否锁住 true是 false否
+     * @param totalMiles 行驶总里程(单位/km)
      */
-    private void updateScooterStatusByEcu(String tabletSn, boolean scooterLock) {
+    private void updateScooterStatusAndTotalMilesByEcu(String tabletSn, boolean scooterLock, Integer totalMiles) {
         String lockStatus = null;
         if (scooterLock) {
             lockStatus = ScooterLockStatusEnums.LOCK.getValue();
@@ -113,7 +115,7 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
         String lockStatusOld = scooterServiceMapper.getScooterStatusByTabletSn(tabletSn);
         if (!lockStatus.equals(lockStatusOld)) {
-            scooterServiceMapper.updateScooterStatusByTabletSn(tabletSn, lockStatus, new Date());
+            scooterServiceMapper.updateScooterStatusAndTotalMilesByEcu(tabletSn, lockStatus, totalMiles, new Date());
         }
 
     }

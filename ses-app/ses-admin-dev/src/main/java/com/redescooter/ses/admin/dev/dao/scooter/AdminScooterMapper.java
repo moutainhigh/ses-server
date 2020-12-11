@@ -33,12 +33,12 @@ public interface AdminScooterMapper {
 
     /**
      * 获取车辆数量
-     * @param
+     * @param paramDTO
      * @return int
      * @author assert
      * @date 2020/12/10
     */
-    int countByAdminScooter();
+    int countByAdminScooter(QueryAdminScooterParamDTO paramDTO);
 
     /**
      * 查询车辆列表

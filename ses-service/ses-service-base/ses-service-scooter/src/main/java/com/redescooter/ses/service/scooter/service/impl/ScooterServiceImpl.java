@@ -212,8 +212,8 @@ public class ScooterServiceImpl implements ScooterService {
         }
 
         if (!scooterLock.getStatus().equals(lockStatus)) {
-            scooterServiceMapper.updateScooterStatusByTabletSn(scooterLock.getTabletSn(),
-                    scooterLock.getStatus().toString(), new Date());
+//            scooterServiceMapper.updateScooterStatusByTabletSn(scooterLock.getTabletSn(),
+//                    scooterLock.getStatus().toString(), new Date());
         }
 
         return 1;

@@ -133,9 +133,9 @@ mybatis-plus:
 
 # MQTT配置信息(本地启动使用本地证书)
 mqtt:
-  ca: /root/certs/my_root_ca.pem
-  clientCrt: /root/certs/client.pem
-  clientKey: /root/certs/client.key
+  ca: C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\my_root_ca.pem
+  clientCrt: C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\client.pem
+  clientKey: C:\\Users\\Admin\\Desktop\\上海力爱帝\\文档\\EMQ相关文档\\EMQ-SSL证书\\client.key
   timeout: 10
   keepalive: 30
   url: ssl://client.redemotors.com
