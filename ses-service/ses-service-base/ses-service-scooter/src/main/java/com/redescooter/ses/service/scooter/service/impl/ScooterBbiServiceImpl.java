@@ -114,9 +114,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
                                 });
 
                                 int subLength = 4 - bmsWareNos.size();
-                                scooterBmsMapper.batchInsertScooterBms(
-                                        insertScooterBmsList.size() > subLength ? insertScooterBmsList.subList(0, subLength) : insertScooterBmsList
-                                );
+                                scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList.subList(0, subLength));
                             }
 
                             // set UpdatedTime or update

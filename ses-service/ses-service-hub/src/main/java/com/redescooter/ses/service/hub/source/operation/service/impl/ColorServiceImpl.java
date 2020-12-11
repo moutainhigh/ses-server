@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.service.hub.source.operation.dao.ColorMapper;
@@ -25,8 +26,8 @@ public class ColorServiceImpl implements ColorService {
     }
 
     @Override
-    public List<ColorDTO> getColorList() {
-        return colorMapper.getColorList();
+    public List<SelectBaseResultDTO> getScooterColorList() {
+        return colorMapper.getScooterColorList();
     }
 
 }

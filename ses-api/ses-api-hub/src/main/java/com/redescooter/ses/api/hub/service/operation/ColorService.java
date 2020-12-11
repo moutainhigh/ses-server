@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.hub.service.operation;
 
+import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public interface ColorService {
     ColorDTO getColorInfoById(Long id);
 
     /**
-     * 查询颜色信息列表
+     * 查询颜色信息列表(下拉列表使用)
      * @param
-     * @return java.util.List<com.redescooter.ses.api.common.vo.scooter.ColorDTO>
+     * @return java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
      * @author assert
-     * @date 2020/12/9
+     * @date 2020/12/10
     */
-    List<ColorDTO> getColorList();
+    List<SelectBaseResultDTO> getScooterColorList();
 
 }

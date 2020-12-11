@@ -1,33 +1,48 @@
 package com.redescooter.ses.admin.dev.service.base.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.admin.dev.dao.base.AdmScooterPartsMapper;
-import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
-import com.redescooter.ses.admin.dev.service.base.AdmScooterPartsService;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import javax.annotation.Resource;
+import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
+import com.redescooter.ses.admin.dev.dao.base.AdmScooterPartsMapper;
+import com.redescooter.ses.admin.dev.service.base.AdmScooterPartsService;
+/**
+*@author assert
+*@date 2020/12/10 22:43
+*/
 @Service
-public class AdmScooterPartsServiceImpl extends ServiceImpl<AdmScooterPartsMapper, AdmScooterParts> implements AdmScooterPartsService{
+public class AdmScooterPartsServiceImpl implements AdmScooterPartsService{
+
+    @Resource
+    private AdmScooterPartsMapper admScooterPartsMapper;
 
     @Override
-    public int updateBatch(List<AdmScooterParts> list) {
-        return baseMapper.updateBatch(list);
+    public int deleteByPrimaryKey(Long id) {
+        return admScooterPartsMapper.deleteByPrimaryKey(id);
     }
+
     @Override
-    public int updateBatchSelective(List<AdmScooterParts> list) {
-        return baseMapper.updateBatchSelective(list);
+    public int insert(AdmScooterParts record) {
+        return admScooterPartsMapper.insert(record);
     }
+
     @Override
-    public int batchInsert(List<AdmScooterParts> list) {
-        return baseMapper.batchInsert(list);
+    public int insertSelective(AdmScooterParts record) {
+        return admScooterPartsMapper.insertSelective(record);
     }
+
     @Override
-    public int insertOrUpdate(AdmScooterParts record) {
-        return baseMapper.insertOrUpdate(record);
+    public AdmScooterParts selectByPrimaryKey(Long id) {
+        return admScooterPartsMapper.selectByPrimaryKey(id);
     }
+
     @Override
-    public int insertOrUpdateSelective(AdmScooterParts record) {
-        return baseMapper.insertOrUpdateSelective(record);
+    public int updateByPrimaryKeySelective(AdmScooterParts record) {
+        return admScooterPartsMapper.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public int updateByPrimaryKey(AdmScooterParts record) {
+        return admScooterPartsMapper.updateByPrimaryKey(record);
+    }
+
 }

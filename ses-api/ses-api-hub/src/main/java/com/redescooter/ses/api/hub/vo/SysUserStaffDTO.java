@@ -1,6 +1,5 @@
 package com.redescooter.ses.api.hub.vo;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;

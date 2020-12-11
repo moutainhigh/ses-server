@@ -3,6 +3,7 @@ package com.redescooter.ses.api.scooter.service;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 
@@ -74,5 +75,14 @@ public interface ScooterService {
      * @date 2020/11/26
     */
     BaseScooterResult getScooterInfoById(Long scooterId);
+
+    /**
+     * 同步车辆数据
+     * @param syncScooterData
+     * @return int
+     * @author assert
+     * @date 2020/12/10
+    */
+    int syncScooterData(SyncScooterDataDTO syncScooterData);
 
 }

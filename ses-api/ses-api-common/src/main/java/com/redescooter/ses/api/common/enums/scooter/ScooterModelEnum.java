@@ -26,6 +26,21 @@ public enum ScooterModelEnum {
         this.model = model;
     }
 
+    /**
+     * 根据model获取type
+     * @param model
+     * @return
+     */
+    public static int getScooterModelType(String model) {
+        int scooterModel = 0;
+        for (ScooterModelEnum m : ScooterModelEnum.values()) {
+            if (m.getModel().equals(model)) {
+                scooterModel = m.getType();
+            }
+        }
+        return scooterModel;
+    }
+
     public Integer getType() {
         return type;
     }

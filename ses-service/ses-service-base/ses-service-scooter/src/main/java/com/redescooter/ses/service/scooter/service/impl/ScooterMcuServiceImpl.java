@@ -45,13 +45,13 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
             return 0;
         }
 
-        /**
-         * 检查数据是否存在,存在则修改,反之新增
-         */
-        ScooterMcuReportedDTO scooterMcu = scooterMcuMapper.getScooterMcuByScooterNoAndBatchNo(scooterNo,
-                scooterReportedMcu.getBatchNo());
-
         try {
+            /**
+             * 检查数据是否存在,存在则修改,反之新增
+             */
+            ScooterMcuReportedDTO scooterMcu = scooterMcuMapper.getScooterMcuByScooterNoAndBatchNo(scooterNo,
+                    scooterReportedMcu.getBatchNo());
+
             transactionTemplate.execute(scooterMcuTransaction -> {
                 try {
                     if (null != scooterMcu) {
