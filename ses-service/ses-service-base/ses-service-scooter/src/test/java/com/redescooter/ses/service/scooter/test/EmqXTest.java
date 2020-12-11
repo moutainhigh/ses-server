@@ -19,7 +19,7 @@ import java.util.List;
  * @author assert
  * @date 2020/12/1 11:41
  */
-public class EmqXTest {
+public class EmqXTest extends BaseTest {
 
     @Resource
     private MqttClientUtil mqttClientUtil;
@@ -31,9 +31,8 @@ public class EmqXTest {
     public void scooterTabletUpdateTest() {
         ScooterTabletUpdatePublishDTO tabletUpdatePublish = new ScooterTabletUpdatePublishDTO();
         tabletUpdatePublish.setTabletSn("OF894HSG4T9LHECY");
-        tabletUpdatePublish.setDownloadLink("http://test.redescooter.net/download/appCode5.apk");
-        tabletUpdatePublish.setVersionCode("5");
-        tabletUpdatePublish.setUpdateOrRollBack(false);
+        tabletUpdatePublish.setDownloadLink("https://test.redescooter.net/download/ecu_1.0.5_6.apk");
+        tabletUpdatePublish.setVersionCode("6");
 
         mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
                 JSONObject.toJSONString(tabletUpdatePublish));
@@ -44,15 +43,14 @@ public class EmqXTest {
      */
     @Test
     public void scooterModelTest() {
-        String tabletSn = "IBJBAIZHTWMBK7PB";
+        String tabletSn = "EUE6LREA4595T4Z9";
         SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
         publish.setTabletSn(tabletSn);
         publish.setType(ScooterModelEnum.SCOOTER_E100.getType());
         publish.setSpecificDefGroupList(buildSpecificDefGroupData());
 
-        System.out.println("json：" + JSONObject.toJSONString(publish));
-//        mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
-//                JSONObject.toJSONString(publish));
+        mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
+                JSONObject.toJSONString(publish));
     }
 
     /**
@@ -64,12 +62,12 @@ public class EmqXTest {
 
         double speedRatio = 22.0 / 130.0;
         SpecificDefGroupPublishDTO batteryOne = SpecificDefGroupPublishDTO.builder()
-                .batteryBatchNo("1")
+                .batteryBatchNo("5")
                 .wheelDiameter("52")
                 .speedRatio(String.valueOf(speedRatio))
                 .limitSpeedBos("55")
                 .limiting("35")
-                .speedLimit("45")
+                .speedLimit("80")
                 .socRedWarning("20")
                 .orangeWarning("5")
                 .stallSOC("0")

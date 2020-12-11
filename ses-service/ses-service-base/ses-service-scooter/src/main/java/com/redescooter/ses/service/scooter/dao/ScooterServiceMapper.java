@@ -74,14 +74,15 @@ public interface ScooterServiceMapper {
 
     /**
      * 根据tabletSn更新车辆锁状态
-     * @param tabletSn
-     * @param status
+     * @param tabletSn 平板序列号
+     * @param status 车辆是否锁住 true是 false否
+     * @param totalMiles 行驶总里程
      * @return int
      * @author assert
      * @date 2020/11/27
     */
-    int updateScooterStatusByTabletSn(@Param("tabletSn") String tabletSn, @Param("status") String status,
-                                      @Param("date") Date date);
+    int updateScooterStatusAndTotalMilesByEcu(@Param("tabletSn") String tabletSn, @Param("status") String status,
+                                      @Param("totalMiles") Integer totalMiles, @Param("date") Date date);
 
     /**
      * 查询所有车辆平板序列号
