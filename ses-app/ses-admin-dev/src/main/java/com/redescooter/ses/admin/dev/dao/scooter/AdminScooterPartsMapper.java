@@ -1,6 +1,6 @@
 package com.redescooter.ses.admin.dev.dao.scooter;
 
-import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
+import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,6 +19,6 @@ public interface AdminScooterPartsMapper {
      * @author assert
      * @date 2020/12/10
     */
-    int batchInsertAdminScooterParts(@Param("scooterPartsList") List<AdmScooterParts> scooterPartsList);
+    int batchInsertAdminScooterParts(@Param("scooterPartsList") List<AdminScooterPartsDTO> scooterPartsList);
 
 }

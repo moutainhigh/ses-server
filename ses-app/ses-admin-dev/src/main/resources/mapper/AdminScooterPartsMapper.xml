@@ -3,12 +3,12 @@
 <mapper namespace="com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper">
 
     <!--批量新增车辆配件信息-->
-    <insert id="batchInsertAdminScooterParts" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <insert id="batchInsertAdminScooterParts" parameterType="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO">
         insert into adm_scooter_parts(id, scooter_id, `name`, sn, qty, created_by, created_time, updated_by, updated_time)
         <foreach collection="scooterPartsList" item="item" open="values" separator=",">
-            (#{item.id,jdbcType=BIGINT}, #{item.scooterId,jdbcType=BIGINT},#{item.name,jdbcType=VARCHAR},
-            #{item.sn,jdbcType=VARCHAR}, #{item.qty,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},
-            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}
+            (
+                #{item.id}, #{item.scooterId}, #{item.name}, #{item.sn}, #{item.qty},
+                #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}
             )
         </foreach>
     </insert>

@@ -2,10 +2,10 @@ package com.redescooter.ses.admin.dev.service.scooter.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.admin.dev.constant.SequenceName;
+import com.redescooter.ses.admin.dev.convert.scooter.AdminScooterConvert;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterMapper;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
-import com.redescooter.ses.admin.dev.dm.AdmScooterParts;
 import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
@@ -76,7 +76,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
     @Override
     public int insertAdminScooter(InsertAdminScooterDTO adminScooterDTO) {
-        List<AdminScooterPartsDTO> scooterPartsList = null;
+        List<AdminScooterPartsDTO> scooterPartsList = new ArrayList<>();
         Long userId = adminScooterDTO.getUserId();
         try {
             scooterPartsList = JSONArray.parseArray(adminScooterDTO.getScooterPartsList(), AdminScooterPartsDTO.class);
@@ -107,12 +107,10 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         }
 
         /**
-         * 组装车辆、车辆配件数据,需要把对象从dto转到do(先不用mapStruct)
+         * 组装车辆、车辆配件数据,需要把对象从dto转到do
          */
         AdmScooter admScooter = new AdmScooter();
-        List<AdmScooterParts> admScooterPartsList = new ArrayList<>();
         BeanUtils.copyProperties(adminScooterDTO, admScooter);
-        BeanUtils.copyProperties(scooterPartsList, admScooterPartsList);
 
         Long id = idAppService.getId(SequenceName.ADM_SCOOTER);
         admScooter.setId(id);
@@ -125,7 +123,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         admScooter.setUpdatedBy(userId);
         admScooter.setUpdatedTime(new Date());
 
-        admScooterPartsList.forEach(parts -> {
+        scooterPartsList.forEach(parts -> {
             parts.setId(idAppService.getId(SequenceName.ADM_SCOOTER_PARTS));
             parts.setScooterId(id);
             parts.setCreatedBy(userId);
@@ -134,6 +132,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
             parts.setUpdatedTime(new Date());
         });
 
+        List<AdminScooterPartsDTO> newList = scooterPartsList;
+
         /**
          * -这里的事务操作分成：1.自身(adm_scooter表新增数据) 2.scooter-service-scooter服务(sco_scooter、sco_scooter_ecu表新增数据)
          * -目前还没有集成分布式事务解决方案,所以这里可能会导致事务不一致的情况出现
@@ -141,7 +141,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         transactionTemplate.execute(adminScooterStatus -> {
             try {
                 adminScooterMapper.insertAdminScooter(admScooter);
-                adminScooterPartsMapper.batchInsertAdminScooterParts(admScooterPartsList);
+                adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
 
                 // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter、sco_scooter_ecu
                 String scooterNo = generateScooterNo();
