@@ -37,7 +37,6 @@ public class MqttClientUtil implements MqttCallback {
     /**
      * 建立连接
      * @param host
-     * @param clientId
      * @param timeout
      * @param keepalive
      */

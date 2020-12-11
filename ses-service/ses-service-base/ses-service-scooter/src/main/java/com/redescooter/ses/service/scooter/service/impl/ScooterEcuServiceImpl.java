@@ -9,6 +9,7 @@ import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -41,28 +42,38 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
             return 0;
         }
 
-        /**
-         * 检查数据是否存在,如果存在则更新,反之新增
-         */
-        transactionTemplate.execute(ecuStatus -> {
-            ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
-            if (null != scooterEcuDb) {
-                scooterEcu.setId(scooterEcuDb.getId());
-                scooterEcu.setUpdatedTime(new Date());
-                scooterEcuMapper.updateScooterEcu(scooterEcu);
-            } else {
-                scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
-                scooterEcu.setScooterNo(scooterNo);
-                scooterEcu.setCreatedTime(new Date());
-                scooterEcu.setUpdatedTime(new Date());
-                scooterEcuMapper.insertScooterEcu(scooterEcu);
-            }
+        try {
+            /**
+             * 检查数据是否存在,如果存在则更新,反之新增
+             */
+            transactionTemplate.execute(ecuStatus -> {
+                try {
+                    ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
+                    if (null != scooterEcuDb) {
+                        scooterEcu.setId(scooterEcuDb.getId());
+                        scooterEcu.setUpdatedTime(new Date());
+                        scooterEcuMapper.updateScooterEcu(scooterEcu);
+                    } else {
+                        scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
+                        scooterEcu.setScooterNo(scooterNo);
+                        scooterEcu.setCreatedTime(new Date());
+                        scooterEcu.setUpdatedTime(new Date());
+                        scooterEcuMapper.insertScooterEcu(scooterEcu);
+                    }
 
-            // 同时更新scooter表车辆锁状态
-            updateScooterStatusByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock());
+                    // 同时更新scooter表车辆锁状态
+                    updateScooterStatusByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock());
+                } catch (Exception e) {
+                    log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+                    ecuStatus.setRollbackOnly();
+                }
+                return 1;
+            });
+        } catch (Exception e) {
+            // 这里不要抛出异常,这里会往上抛到emq那边导致连接中断
+            log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
 
-            return 1;
-        });
         return 1;
     }
 

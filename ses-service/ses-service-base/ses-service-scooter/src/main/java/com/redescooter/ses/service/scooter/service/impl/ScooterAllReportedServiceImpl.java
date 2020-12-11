@@ -32,22 +32,27 @@ public class ScooterAllReportedServiceImpl implements ScooterAllReportedService 
 
     @Override
     public int insertScooterAllInfo(ScooterAllReportedDTO scooterAll) {
-        transactionTemplate.execute(scooterAllStatus -> {
-            try {
-                // ECU仪表数据
-                scooterEcuService.insertScooterEcuByEmqX(scooterAll.getEcu());
-                // BBI、BMS、BatteryWare 电池相关数据
-                scooterBbiService.insertScooterBbiByEmqX(scooterAll.getBbi());
-                // MCU控制器数据
-                scooterMcuService.insertScooterMcuByEmqX(scooterAll.getMcu());
-                // LOCK车锁状态 ---- 已废弃,车辆锁状态直接从ecu中拿
+        try {
+            transactionTemplate.execute(scooterAllStatus -> {
+                try {
+                    // ECU仪表数据
+                    scooterEcuService.insertScooterEcuByEmqX(scooterAll.getEcu());
+                    // BBI、BMS、BatteryWare 电池相关数据
+                    scooterBbiService.insertScooterBbiByEmqX(scooterAll.getBbi());
+                    // MCU控制器数据
+                    scooterMcuService.insertScooterMcuByEmqX(scooterAll.getMcu());
+                    // LOCK车锁状态 ---- 已废弃,车辆锁状态直接从ecu中拿
 //                scooterService.updateScooterStatusByJson(scooterAll.getLock());
-            } catch (Exception e) {
-                log.error("【车辆整车数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
-                scooterAllStatus.setRollbackOnly();
-            }
-            return 1;
-        });
+                } catch (Exception e) {
+                    log.error("【车辆整车数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+                    scooterAllStatus.setRollbackOnly();
+                }
+                return 1;
+            });
+        } catch (Exception e) {
+            log.error("【车辆整车数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
+
         return 1;
     }
 
