@@ -351,4 +351,10 @@
 	    where dr = 0 and label like concat('%',#{label},'%')
     </select>
 
+    <!--根据versionCode、type查询版本是否存在-->
+    <select id="existsAppVersionByCodeAndType" resultType="java.lang.String">
+        select `code` from pla_app_version
+	    where `code` = #{versionCode} and `type` = #{type}
+    </select>
+
 </mapper>

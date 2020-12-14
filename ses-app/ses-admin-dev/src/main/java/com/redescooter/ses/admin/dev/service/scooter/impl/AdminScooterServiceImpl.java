@@ -8,11 +8,9 @@ import com.redescooter.ses.admin.dev.dm.AdmScooter;
 import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
-import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
-import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.*;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
@@ -24,7 +22,9 @@ import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.hub.service.operation.SysUserService;
 import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -65,6 +65,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     private SysUserService sysUserService;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Reference
+    private ScooterEmqXService scooterEmqXService;
 
 
     @Override
@@ -174,6 +176,31 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         return adminScooter;
     }
 
+    @Override
+    public GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO) {
+        /**
+         * 参数校验 -- 检查数据库中是否存在对应数据
+         */
+        AdminScooterDTO adminScooter = adminScooterMapper.getAdminScooterDetailById(paramDTO.getId());
+        if (null == adminScooter) {
+            throw new SesAdminDevException(ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getCode(),
+                    ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getMessage());
+        }
+
+        SpecificGroupDTO specificGroup = specificService.getSpecificGroupById(paramDTO.getGroupId());
+        if (null == specificGroup) {
+            throw new SesAdminDevException(ExceptionCodeEnums.GROUP_NOT_EXISTS.getCode(),
+                    ExceptionCodeEnums.GROUP_NOT_EXISTS.getMessage());
+        }
+
+        SetScooterModelPublishDTO publishDTO = new SetScooterModelPublishDTO();
+        publishDTO.setTabletSn(adminScooter.getSn());
+        publishDTO.setType(ScooterModelEnum.getScooterModelType(specificGroup.getGroupName()));
+        publishDTO.setSpecificDefGroupList(null);
+
+        return new GeneralResult(paramDTO.getRequestId());
+    }
+
 
     /**
      * 组装同步车辆数据
@@ -234,7 +261,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         sb.append("D");
         sb.append("0");
         sb.append("0");
-        sb.append(year.substring(2, 4)); // 年份,就这样截取吧,这样也能正常使用差不多八百年了
+        sb.append(year.substring(2, 4)); // 年份,就这样截取吧,这样也能正常使用差不多八十年了
         sb.append(month);
         sb.append(count);
 

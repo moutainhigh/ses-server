@@ -58,4 +58,13 @@ public interface AdminScooterMapper {
     */
     AdminScooterDTO getAdminScooterDetailById(Long id);
 
+    /**
+     * 根据id查询车辆信息
+     * @param id
+     * @return com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO
+     * @author assert
+     * @date 2020/12/14
+    */
+    AdminScooterDTO getAdminScooterById(Long id);
+
 }

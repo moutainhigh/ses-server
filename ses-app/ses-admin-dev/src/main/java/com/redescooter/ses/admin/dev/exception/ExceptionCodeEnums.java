@@ -65,7 +65,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_TABLET_SN_EXISTS(10033, "车辆平板已存在"),
 
-    DATA_FORMAT_ERROR(10034, "数据格式有误")
+    DATA_FORMAT_ERROR(10034, "数据格式有误"),
+
+    SCOOTER_NOT_EXISTS(10035, "车辆不存在")
     ;
 
     private int code;

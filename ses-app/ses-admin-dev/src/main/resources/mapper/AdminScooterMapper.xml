@@ -21,7 +21,7 @@
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     </resultMap>
 
-    <!--scooterDetailResultMap-->
+    <!--scooterDetailResultMap(查询详情时使用)-->
     <resultMap id="ScooterDetailResultMap" type="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="sn" jdbcType="VARCHAR" property="sn" />
@@ -197,6 +197,12 @@
 	    left join adm_scooter_parts sp
 	    on s.id = sp.scooter_id and sp.dr = 0
 	    where s.dr = 0 and s.id = #{id}
+    </select>
+
+    <!--根据id查询车辆信息-->
+    <select id="getAdminScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from adm_scooter
+        where id = #{id} and dr = 0
     </select>
 
 </mapper>

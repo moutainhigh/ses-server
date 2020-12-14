@@ -14,7 +14,7 @@ spring:                                                                         
   servlet:
     multipart:
       max-request-size: 1000MB
-      max-file-size: 20MB
+      max-file-size: 100MB
       enabled: true
   datasource:                                                                                                           #数据库连接
     url: jdbc:mysql://192.168.2.200:3306/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true

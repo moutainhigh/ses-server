@@ -136,4 +136,14 @@ public interface AppVersionMapper {
     */
     List<String> getAppVersionLabelByLabel(String label);
 
+    /**
+     * 根据versionCode、type查询版本是否存在
+     * @param versionCode
+     * @param type
+     * @return com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO
+     * @author assert
+     * @date 2020/12/14
+    */
+    String existsAppVersionByCodeAndType(@Param("versionCode") String versionCode, @Param("type") Integer type);
+
 }

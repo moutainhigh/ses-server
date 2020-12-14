@@ -4,6 +4,8 @@ import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
@@ -100,6 +102,19 @@ public class ScooterController {
     @GetMapping(value = "/detail/{id}")
     public Response<AdminScooterDTO> getAdminScooterDetailById(@PathVariable("id") Long id) {
         return new Response<>(adminScooterService.getAdminScooterDetailById(id));
+    }
+
+    /**
+     * 设置车辆软体模式(车辆型号)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/14
+    */
+    @ApiOperation(value = "设置车辆软体模式", notes = "设置车辆软体模式(车辆型号E50、E100等..)")
+    @PostMapping(value = "/setScooterModel")
+    public Response<GeneralResult> setScooterModel(@ModelAttribute SetScooterModelParamDTO paramDTO) {
+        return null;
     }
 
 }
