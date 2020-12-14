@@ -28,9 +28,9 @@ spring:
       enabled: true
   #数据库连接
   datasource:
-    url: RedE(FX3lmjTSKoUogngjOp8aP+ibnxnHCb9mzSg19T5JjUdUBrVCLz2TueDpTQI/IUjCNQGM4aa+zN4VtQ55REB8EGeejOPurQkuScZdsVraD8PJ1lRFq9x8ptTTpZZzBwIlcZzeFaSJm3eYfu4ioFGmSWnZeLWEm3AePBR1veLeM1S63UzMcjzIrCnspBmuy0XymmAJKQBuegLWlAo+jVXzZMEFfR4HuzqjzPUdYjq20emzpGbpCg6VKInSMh4Nq1QpczJKH+FrPDNDyiG5x9FwrV5v/PXoIjsrzYdg1UjyYn+FFi5hC7qdRhDe+kjtO3BB)
-    username: RedE(NqQr1ppQnSUFwW3C88oKrA==)
-    password: RedE(bH6R75pS0stRNmMwnN8eMS5papPsmLksEPyTlJkaMvKYy3mnEzxS6mOtAQfBt/oh)
+    url: jdbc:mysql://172.31.5.73:4269/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
     druid:
       initial-size: 8
       min-idle: 1

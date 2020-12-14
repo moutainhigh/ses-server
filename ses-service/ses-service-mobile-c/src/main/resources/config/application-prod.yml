@@ -20,9 +20,9 @@ jasypt:
 spring:
   #数据库连接
   datasource:                                                                                                           #数据库连接
-    url: RedE(UDZYEghnNUjE0bmRmhjFyNyLVo6NeoaHqeW7IodzVfALduJNDFKpwT8HuCBgkXIwiZLYXOfxro2FmbYaFNHMmwghzp/cfVFFH01Xgnrn66fkk7ZXM/9qjsaOggNQQpTR567gS0RHdv5ZZAc+vHcikKmT64aGis9uMz+eMVAOZgvam1PAOWflBQiv6tnWHuvyPywffsjcpJKs6XhzRFG99Jy8hk3TPOAD/PAfuy9S61WGgtSfcdFcvnYMs5PdMuvAphSoM+DJWlAph8ltqddrW/ssmFYOjoMnYcACD0KP7K//7OabllUBQnDKc0javFXu)
-    username: RedE(Iwkdtl5vHRu4yp//nI36SA==)
-    password: RedE(y0jh9YjayhLACExUtMkmgqbPFubjOpMXpAyX5wlDtqAiJ8MGvouJt/L8SasnIHRH)
+    url: jdbc:mysql://172.31.5.73:4269/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
     druid:
       initial-size: 8
       min-idle: 1

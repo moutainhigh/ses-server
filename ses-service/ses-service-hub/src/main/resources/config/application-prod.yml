@@ -24,19 +24,19 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(FX3lmjTSKoUogngjOp8aP+ibnxnHCb9mzSg19T5JjUdUBrVCLz2TueDpTQI/IUjCNQGM4aa+zN4VtQ55REB8EGeejOPurQkuScZdsVraD8PJ1lRFq9x8ptTTpZZzBwIlcZzeFaSJm3eYfu4ioFGmSWnZeLWEm3AePBR1veLeM1S63UzMcjzIrCnspBmuy0XymmAJKQBuegLWlAo+jVXzZMEFfR4HuzqjzPUdYjq20emzpGbpCg6VKInSMh4Nq1QpczJKH+FrPDNDyiG5x9FwrV5v/PXoIjsrzYdg1UjyYn+FFi5hC7qdRhDe+kjtO3BB)
-          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
-          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
+          url: jdbc:mysql://172.31.5.73:4269/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          username: rede
+          password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(fAAsjYNI9GEWNIQBH9DBhOaL5/SiTRFY9xDeZiR9eApKJaSCWomr+Gr3zWjR6gxweHaZoADZZV2SOU6viQGJo/nxAwextEXz/PM+3pt+BgVbVng5xsNX3gXG+0gqItzKHGOnBejS5zI5/Nbi1naBDp8W8w89JqcLPj8//2VU2PDQj+X9Ycxo2db40C0cTaU7ClMiD9VOV5Rv/tXsv1il3UJXreRYP8KRZga7v4vWMPLSXLTTbi0vB8lJzxdraEVy9VaIbRIyu/L1HZ3aMw8I6UjCujLTF27hLNvE5pga5ecJMOE+BY0LE22X5QLbVtIl)
-          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
-          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
+          url: jdbc:mysql://172.31.5.73:4269/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          username: rede
+          password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: RedE(UDZYEghnNUjE0bmRmhjFyNyLVo6NeoaHqeW7IodzVfALduJNDFKpwT8HuCBgkXIwiZLYXOfxro2FmbYaFNHMmwghzp/cfVFFH01Xgnrn66fkk7ZXM/9qjsaOggNQQpTR567gS0RHdv5ZZAc+vHcikKmT64aGis9uMz+eMVAOZgvam1PAOWflBQiv6tnWHuvyPywffsjcpJKs6XhzRFG99Jy8hk3TPOAD/PAfuy9S61WGgtSfcdFcvnYMs5PdMuvAphSoM+DJWlAph8ltqddrW/ssmFYOjoMnYcACD0KP7K//7OabllUBQnDKc0javFXu)
-          username: RedE(Yr0vWxWbNSSkjlTHm4//fA==)
-          password: RedE(cfEFXZfdGfZHyT8KdMVRyzN7OcA/nX3Zo/iNQUcCdOl6KuPa9FMTHFoLmki5Sz32)
+          url: jdbc:mysql://172.31.5.73:4269/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          username: rede
+          password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
   #REDIS集群配置
   redis:
     cluster:
