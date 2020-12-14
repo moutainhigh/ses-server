@@ -4,10 +4,7 @@ import com.redescooter.ses.admin.dev.service.base.AdminTokenService;
 import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import io.swagger.annotations.Api;
@@ -77,6 +74,16 @@ public class AdminTokenController {
     public Response<UserInfoResult> userInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(adminTokenService.userInfo(enter));
     }
+
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "忘记密码发送邮箱", response = BooleanResult.class)
+    @PostMapping(value = "/sendForgetPasswordEmail")
+    public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
+        return new Response<>();
+    }
+
+
 
 
 }
