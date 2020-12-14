@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.redescooter.ses.api.mobile.b.vo.MonthlyDeliveryChartResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -88,17 +90,19 @@ public class IdDashboardServiceImpl implements IdDashboardService {
     public AllScooterChartResult scooterChart(DateTimeParmEnter enter) {
 
         Map<String, ScooterChartResult> allMap = new LinkedHashMap<>();
-
+        List<String> dayList = new LinkedList();
+        // 获取指定日期格式向前N天时间集合
+//            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         List<ScooterChartResult> list = idDashboardServiceMapper.scooterChart(enter);
-
-        if (list.size() == 0) {
-            return new AllScooterChartResult();
+        ScooterChartResult result = null;
+        if (CollectionUtils.isEmpty(list)) {
+            for (String str : dayList) {
+                result = new ScooterChartResult();
+                result.setTimes(str);
+                allMap.put(str, result);
+            }
         } else {
-            ScooterChartResult result = null;
-            List<String> dayList = new LinkedList();
-            // 获取指定日期格式向前N天时间集合
-            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
             for (String str : dayList) {
                 for (ScooterChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
@@ -113,9 +117,9 @@ public class IdDashboardServiceImpl implements IdDashboardService {
             }
         }
 
-        AllScooterChartResult result = new AllScooterChartResult();
-        result.setAllMap(allMap);
-        result.setRequestId(enter.getRequestId());
-        return result;
+        AllScooterChartResult scooterChartResult = new AllScooterChartResult();
+        scooterChartResult.setAllMap(allMap);
+        scooterChartResult.setRequestId(enter.getRequestId());
+        return scooterChartResult;
     }
 }
