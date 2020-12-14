@@ -17,12 +17,17 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Value("${fileUpload.path}")
     private String updatePackageUploadPath;
+    @Value("${fileUpload.download}")
+    private String downloadPath;
 
     @Override
     public FileUploadResultDTO fileUpload(MultipartFile file) {
         FileUploadResultDTO result = new FileUploadResultDTO();
-        String path = updatePackageUploadPath + System.currentTimeMillis() + ".apk";
-        result.setFileUrl(path);
+
+        String fileName = System.currentTimeMillis() + ".apk";
+        String path = updatePackageUploadPath + fileName;
+
+        result.setFileUrl(downloadPath + fileName);
         result.setFileSize(String.valueOf(file.getSize() / 1024 / 1024));
 
         /**
