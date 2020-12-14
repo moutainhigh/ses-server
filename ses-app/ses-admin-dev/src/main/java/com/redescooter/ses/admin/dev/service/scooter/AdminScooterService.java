@@ -3,6 +3,8 @@ package com.redescooter.ses.admin.dev.service.scooter;
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 
 /**
@@ -38,5 +40,14 @@ public interface AdminScooterService {
      * @date 2020/12/10
     */
     AdminScooterDTO getAdminScooterDetailById(Long id);
+
+    /**
+     * 设置车辆软体模式(车辆型号)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2020/12/14
+    */
+    GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO);
 
 }

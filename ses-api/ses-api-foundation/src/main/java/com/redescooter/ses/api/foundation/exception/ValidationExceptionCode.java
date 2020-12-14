@@ -51,4 +51,17 @@ public interface ValidationExceptionCode {
     //启用按钮为空
     int ENABLE_IS_EMPTY = 10017;
 
+    // 版本类型不能为空
+    int VERSION_TYPE_IS_NOT_EMPTY = 10018;
+    // 版本更新内容不能为空
+    int VERSION_UPDATE_CONTENT_IS_NOT_EMPTY = 10019;
+    // 版本更新包地址不能为空
+    int VERSION_UPDATE_LINK_IS_NOT_EMPTY = 10020;
+    // 版本号不能为空
+    int VERSION_NUMBER_IS_NOT_EMPTY = 10021;
+    // 版本编码不能为空
+    int VERSION_CODE_IS_NOT_EMPTY = 10022;
+    // 版本发布环境不能为空
+    int VERSION_RELEASE_ENVIRONMENT_IS_NOT_EMPTY = 10023;
+
 }
