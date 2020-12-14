@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
+import com.redescooter.ses.api.foundation.vo.app.InsertAppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import com.redescooter.ses.api.hub.service.operation.SysUserService;
@@ -89,19 +90,39 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int insertAppVersion(AppVersionDTO appVersionDTO) {
-        Integer vCode = 1;
+    public int insertAppVersion(InsertAppVersionDTO appVersionDTO) {
+
         PlaAppVersion appVersion = new PlaAppVersion();
         BeanUtils.copyProperties(appVersionDTO, appVersion);
 
-        String versionCode = appVersionMapper.getAppVersionMaxCodeByType(appVersionDTO.getType());
-        if (StringUtils.isNotBlank(versionCode)) {
-            // 版本编码 +1
-            vCode = Integer.valueOf(versionCode) + 1;
+        String versionCode = null;
+        /**
+         * 安卓和车载平板的应用版本编码通过前端页面传递,其它的都是通过后台生成
+         */
+        if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
+                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
+            // 检查版本编码是否存在
+            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getVersionCode(),
+                    appVersionDTO.getType());
+            if (StringUtils.isNotBlank(versionCodeData)) {
+                throw new FoundationException(ExceptionCodeEnums.VERSION_CODE_EXISTS.getCode(),
+                        ExceptionCodeEnums.VERSION_CODE_EXISTS.getMessage());
+            }
+            versionCode = appVersionDTO.getVersionCode();
+
+        } else {
+            Integer vCode = 1;
+
+            String maxVersionCode = appVersionMapper.getAppVersionMaxCodeByType(appVersionDTO.getType());
+            if (StringUtils.isNotBlank(maxVersionCode)) {
+                // 版本编码 +1
+                vCode = Integer.valueOf(maxVersionCode) + 1;
+            }
+            versionCode = vCode.toString();
         }
 
         appVersion.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
-        appVersion.setCode(vCode.toString());
+        appVersion.setCode(versionCode);
         appVersion.setIsForce(1);
         appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
         appVersion.setCreatedBy(appVersionDTO.getUserId());
@@ -113,11 +134,25 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int updateAppVersion(AppVersionDTO appVersionDTO) {
+    public int updateAppVersion(InsertAppVersionDTO appVersionDTO) {
         QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(appVersionDTO.getId());
         if (null == appVersion) {
             throw new FoundationException(ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
+        }
+
+        /**
+         * 检查版本编码是否存在,只针对于安卓和车载平板
+         */
+        if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
+                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
+
+            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getVersionCode(),
+                    appVersionDTO.getType());
+            if (StringUtils.isNotBlank(versionCodeData) && !versionCodeData.equals(appVersion.getCode())) {
+                throw new FoundationException(ExceptionCodeEnums.VERSION_CODE_EXISTS.getCode(),
+                        ExceptionCodeEnums.VERSION_CODE_EXISTS.getMessage());
+            }
         }
 
         // 只能修改未发布的版本信息
@@ -128,6 +163,7 @@ public class AppVersionServiceImpl implements AppVersionService {
 
         PlaAppVersion plaAppVersion = new PlaAppVersion();
         BeanUtils.copyProperties(appVersionDTO, plaAppVersion);
+        plaAppVersion.setCode(appVersionDTO.getVersionCode());
         plaAppVersion.setUpdatedBy(appVersionDTO.getUserId());
         plaAppVersion.setUpdatedTime(new Date());
         return appVersionMapper.updateAppVersion(plaAppVersion);

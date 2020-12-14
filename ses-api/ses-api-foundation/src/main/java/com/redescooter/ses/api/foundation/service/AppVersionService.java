@@ -3,7 +3,7 @@ package com.redescooter.ses.api.foundation.service;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
-import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
+import com.redescooter.ses.api.foundation.vo.app.InsertAppVersionDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 
@@ -43,7 +43,7 @@ public interface AppVersionService {
      * @author assert
      * @date 2020/12/3
     */
-    int insertAppVersion(AppVersionDTO appVersionDTO);
+    int insertAppVersion(InsertAppVersionDTO appVersionDTO);
 
     /**
      * 修改应用版本信息
@@ -52,7 +52,7 @@ public interface AppVersionService {
      * @author assert
      * @date 2020/12/4
     */
-    int updateAppVersion(AppVersionDTO appVersionDTO);
+    int updateAppVersion(InsertAppVersionDTO appVersionDTO);
 
     /**
      * 发布版本

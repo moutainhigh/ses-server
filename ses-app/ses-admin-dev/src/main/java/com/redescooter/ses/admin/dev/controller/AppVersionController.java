@@ -6,10 +6,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
-import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
-import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
-import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
-import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
+import com.redescooter.ses.api.foundation.vo.app.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.dubbo.config.annotation.Reference;
@@ -60,7 +57,7 @@ public class AppVersionController {
     */
     @ApiOperation(value = "创建应用版本")
     @PostMapping(value = "/insert")
-    public Response<Integer> insertAppVersion(@ModelAttribute AppVersionDTO appVersionDTO) {
+    public Response<Integer> insertAppVersion(@ModelAttribute InsertAppVersionDTO appVersionDTO) {
         return new Response<>(appVersionService.insertAppVersion(appVersionDTO));
     }
 
@@ -73,7 +70,7 @@ public class AppVersionController {
     */
     @ApiOperation(value = "修改应用版本信息")
     @PostMapping(value = "/update")
-    public Response<Integer> updateAppVersion(@ModelAttribute AppVersionDTO appVersionDTO) {
+    public Response<Integer> updateAppVersion(@ModelAttribute InsertAppVersionDTO appVersionDTO) {
         return new Response<>(appVersionService.updateAppVersion(appVersionDTO));
     }
 

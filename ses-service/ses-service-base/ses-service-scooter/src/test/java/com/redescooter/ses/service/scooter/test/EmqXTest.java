@@ -31,7 +31,7 @@ public class EmqXTest extends BaseTest {
     public void scooterTabletUpdateTest() {
         ScooterTabletUpdatePublishDTO tabletUpdatePublish = new ScooterTabletUpdatePublishDTO();
         tabletUpdatePublish.setTabletSn("OF894HSG4T9LHECY");
-        tabletUpdatePublish.setDownloadLink("https://test.redescooter.net/download/signed_app-pre.apk");
+        tabletUpdatePublish.setDownloadLink("http://test.redescooter.net/download/scs_versionCode7_versionName1.0.6.apk");
         tabletUpdatePublish.setVersionCode("7");
 
         mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
