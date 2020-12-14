@@ -46,7 +46,6 @@ public class InsertAppVersionDTO extends GeneralEnter {
     /**
      * 更新包地址
      */
-    @NotNull(code = ValidationExceptionCode.VERSION_UPDATE_LINK_IS_NOT_EMPTY, message = "更新包地址不能为空")
     @ApiModelProperty(value = "更新包地址", dataType = "String", required = true)
     private String updateLink;
 

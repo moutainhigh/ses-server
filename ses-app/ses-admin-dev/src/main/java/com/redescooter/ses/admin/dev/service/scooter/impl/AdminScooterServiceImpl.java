@@ -25,6 +25,7 @@ import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -192,6 +193,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
             throw new SesAdminDevException(ExceptionCodeEnums.GROUP_NOT_EXISTS.getCode(),
                     ExceptionCodeEnums.GROUP_NOT_EXISTS.getMessage());
         }
+
+        List<SpecificDefGroupPublishDTO> specificDefGroupList = null;
 
         SetScooterModelPublishDTO publishDTO = new SetScooterModelPublishDTO();
         publishDTO.setTabletSn(adminScooter.getSn());
