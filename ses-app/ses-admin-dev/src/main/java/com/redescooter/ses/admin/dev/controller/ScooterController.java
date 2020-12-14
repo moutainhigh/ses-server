@@ -114,7 +114,7 @@ public class ScooterController {
     @ApiOperation(value = "设置车辆软体模式", notes = "设置车辆软体模式(车辆型号E50、E100等..)")
     @PostMapping(value = "/setScooterModel")
     public Response<GeneralResult> setScooterModel(@ModelAttribute SetScooterModelParamDTO paramDTO) {
-        return null;
+        return new Response<>(adminScooterService.setScooterModel(paramDTO));
     }
 
 }
