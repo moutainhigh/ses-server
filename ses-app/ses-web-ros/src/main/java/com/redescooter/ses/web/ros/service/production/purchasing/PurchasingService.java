@@ -98,14 +98,6 @@ public interface PurchasingService {
     GeneralResult purchasingExport(Long id,HttpServletResponse response);
 
     /**
-     * 采购单信息导出
-     *
-     * @param enter
-     * @return
-     */
-//    GeneralResult export(IdEnter enter);
-
-    /**
      * 付款详情
      *
      * @param enter
@@ -177,31 +169,6 @@ public interface PurchasingService {
     GeneralResult startQc(IdEnter enter);
 
     /**
-     * 再次qc 质检
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult againQc(IdEnter enter);
-
-    /**
-     * qc完成
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult completeQc(IdEnter enter);
-
-    /**
-     * 入库
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult purchasingInWh(IdEnter enter);
-
-
-    /**
      * qc状态
      *
      * @return
@@ -231,14 +198,6 @@ public interface PurchasingService {
      * @return
      */
     GeneralResult savePurchasingNode(SaveNodeEnter enter);
-
-    /**
-     * 退货 （退掉质检未通过的）
-     *
-     * @param enter
-     * @return
-     */
-    GeneralResult returnedPurchase(IdEnter enter);
 
     /**
      * 取消 采购单

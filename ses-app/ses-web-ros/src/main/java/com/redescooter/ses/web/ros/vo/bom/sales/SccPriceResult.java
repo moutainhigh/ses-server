@@ -35,11 +35,17 @@ public class SccPriceResult extends GeneralResult {
     @ApiModelProperty(value = "法国报价")
     private BigDecimal productFrPrice;
 
+    @ApiModelProperty(value = "报价单位Id")
+    private Integer productFrUnitId;
+
     @ApiModelProperty(value = "报价单位")
     private String productFrUnit;
 
     @ApiModelProperty(value = "英国报价")
     private BigDecimal productEnPrice;
+
+    @ApiModelProperty(value = "英国报价Id")
+    private Integer productEnUnitId;
 
     @ApiModelProperty(value = "报价单位")
     private String productEnUnit;

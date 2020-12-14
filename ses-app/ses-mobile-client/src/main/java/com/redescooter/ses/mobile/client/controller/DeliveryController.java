@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2019/12/30 10:05
  */
 @Slf4j
-@Api(tags = {"订单模块"})
+@Api(tags = {"餐厅订单模块"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/delivery", method = RequestMethod.POST)

@@ -32,6 +32,9 @@ public class RoleDetailResult extends GeneralResult {
     @ApiModelProperty("所属岗位")
     private String positionName;
 
+    @ApiModelProperty(value = "岗位状态  1：正常，2：禁用")
+    private Integer positionStatus;
+
     @ApiModelProperty("角色排序")
     private Integer sort;
 

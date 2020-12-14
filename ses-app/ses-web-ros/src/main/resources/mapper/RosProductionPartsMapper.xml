@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper">
+
+  <select id="partsTotal" resultType="int">
+     select
+       count(*)
+     from ope_production_parts parts
+     where parts.dr = 0
+    <include refid="partsListCondition"></include>
+  </select>
+
+
+  <sql id="partsListCondition">
+    <if test="enter.partsSec != null">
+      and parts.parts_sec = #{enter.partsSec}
+    </if>
+    <if test="enter.partsType != null">
+      and parts.parts_type=#{enter.partsType}
+    </if>
+    <if test="enter.snClass != null">
+      and parts.sn_class=#{enter.snClass}
+    </if>
+    <if test="enter.keyword != '' and enter.keyword != null">
+      and (
+      parts.parts_no like concat ("%",#{enter.keyword},"%") or
+      parts.cn_name like concat ("%",#{enter.keyword},"%") or
+      parts.en_name like concat ("%",#{enter.keyword},"%")
+      )
+    </if>
+  </sql>
+
+
+  <select id="partsList" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult">
+    select
+    parts.id,
+    parts.parts_no,
+    parts.parts_sec,
+    sec.name as  partsSecName,
+    parts.parts_type,
+    parts.sn_class,
+    parts.id_calss,
+    parts.parts_is_assembly,
+    parts.parts_is_for_assembly,
+    parts.cn_name,
+    parts.en_name,
+    parts.fr_name,
+    parts.procurement_cycle,
+    parts.dwg,
+    parts.supplier_id,
+    supplier.supplier_name,
+    parts.disable,
+    parts.id_calss
+    from ope_production_parts parts
+    left join ope_parts_sec sec on parts.parts_sec = sec.id
+    left join ope_supplier supplier on  parts.supplier_id = supplier.id
+    where parts.dr = 0
+    <include refid="partsListCondition"></include>
+    order by parts.created_time desc limit #{enter.startRow},#{enter.pageSize}
+  </select>
+
+  <select id="partsExport" resultType="com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult">
+    select
+    parts.id,
+    parts.parts_no,
+    parts.parts_sec,
+    sec.name as  partsSecName,
+    parts.parts_type,
+    parts.sn_class,
+    parts.id_calss,
+    parts.parts_is_assembly,
+    parts.parts_is_for_assembly,
+    parts.cn_name,
+    parts.en_name,
+    parts.fr_name,
+    parts.procurement_cycle,
+    parts.dwg as dwgUrl,
+    parts.supplier_id,
+    supplier.supplier_name,
+    parts.disable,
+    parts.id_calss
+    from ope_production_parts parts
+    left join ope_parts_sec sec on parts.parts_sec = sec.id
+    left join ope_supplier supplier on  parts.supplier_id = supplier.id
+    where parts.dr = 0
+    <if test="ids != null and ids.size() > 0">
+      and parts.id in
+      <foreach collection="ids" separator="," open="(" close=")" item="item">
+        #{item}
+      </foreach>
+    </if>
+    order by parts.created_time desc
+  </select>
+
+
+  <select id="partsNameData" resultType="com.redescooter.ses.web.ros.vo.restproduct.PartsNameData">
+    select
+      distinct
+      parts.en_name as partsName
+    from ope_production_parts parts
+    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0
+  </select>
+
+  <select id="partsNoData" resultType="com.redescooter.ses.web.ros.vo.restproduct.PartsNoData">
+    select
+      parts.parts_no,
+      parts.id as partsId
+    from ope_production_parts parts
+    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0 and parts.en_name like concat ("%",#{enter.partsName},"%")
+  </select>
+
+
+</mapper>

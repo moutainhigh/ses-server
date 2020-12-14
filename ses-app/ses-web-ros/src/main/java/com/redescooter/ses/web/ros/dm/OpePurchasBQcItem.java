@@ -21,7 +21,7 @@ public class OpePurchasBQcItem {
      */
     @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="主键")
-    private Integer id;
+    private Long id;
 
     /**
      * 删除标志

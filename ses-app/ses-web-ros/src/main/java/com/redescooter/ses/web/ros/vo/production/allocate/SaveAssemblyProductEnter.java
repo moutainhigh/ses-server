@@ -27,4 +27,17 @@ public class SaveAssemblyProductEnter extends GeneralEnter {
     @ApiModelProperty(value = "产品信息 格式:id：100，qty：123")
     private String productList;
 
+    @ApiModelProperty(value = "产品信息 id")
+    private Long id;
+
+    @ApiModelProperty(value = "数量 qty")
+    private Integer qty;
+
+    @ApiModelProperty(value = "颜色 Id")
+    private Long colorId;
+
+    @ApiModelProperty(value = "分组 Id")
+    private Long groupId;
+
+
 }

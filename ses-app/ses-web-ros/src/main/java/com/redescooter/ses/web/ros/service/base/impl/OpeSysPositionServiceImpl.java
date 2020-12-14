@@ -19,7 +19,7 @@ public class OpeSysPositionServiceImpl extends ServiceImpl<OpeSysPositionMapper,
 
     @Override
     public int updateBatchSelective(List<OpeSysPosition> list) {
-        return baseMapper.updateBatchSelective(list);
+        return 0;
     }
 
     @Override
@@ -37,4 +37,5 @@ public class OpeSysPositionServiceImpl extends ServiceImpl<OpeSysPositionMapper,
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+
 

@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
-    @Autowired
+    @Reference
     private IdAppService idAppService;
     @Reference
     private CityBaseService ctiyBaseService;
@@ -324,6 +324,8 @@ public class RoleServiceImpl implements RoleService {
         if(!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100){
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
+        // 校验角色名称是否重复
+        checkRoleName(enter.getRoleName(),null);
         String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
         enter.setRoleName(roleName);
         OpeSysRole role = new OpeSysRole();
@@ -337,6 +339,21 @@ public class RoleServiceImpl implements RoleService {
         role.setUpdateTime(new Date());
         sysRoleService.save(role);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 校验角色名称是否重复（新增和编辑都要走这里）
+    public void checkRoleName(String roleName, Long roleId){
+        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
+        qw.eq(OpeSysRole.COL_ROLE_NAME,roleName);
+        if (roleId != null){
+            // 编辑
+            qw.ne(OpeSysRole.COL_ID,roleId);
+        }
+        int count = sysRoleService.count(qw);
+        if (count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.ROLE_NAME_EXIST.getCode(), ExceptionCodeEnums.ROLE_NAME_EXIST.getMessage());
+        }
     }
 
 
@@ -362,6 +379,8 @@ public class RoleServiceImpl implements RoleService {
         if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100) {
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
+        // 校验角色名称是否重复
+        checkRoleName(enter.getRoleName(),enter.getId());
         OpeSysRole role = sysRoleService.getById(enter.getId());
         if (role == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
@@ -433,23 +452,25 @@ public class RoleServiceImpl implements RoleService {
                 }
             }
         }
-        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds);
+        int totalRows = roleServiceMapper.totalRows(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds);
+        List<RoleListResult> list = roleServiceMapper.roleList(enter,flag?null:deptIds,Constant.SYSTEM_ROOT);
         List<Long> roleIds = list.stream().map(RoleListResult::getId).collect(Collectors.toList());
-        // 查询这些角色下的员工数量
-        QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
-        qw.in(OpeSysUserRole.COL_ROLE_ID,roleIds);
-        List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
-        if(CollectionUtils.isNotEmpty(staffList)){
-            // 按角色id分组
-            Map<Long,List<OpeSysUserRole>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysUserRole::getRoleId));
-            for (RoleListResult result : list) {
-                for (Long roleId : map.keySet()) {
-                    if(Objects.equals(result.getId(),roleId)){
-                        result.setNum(map.get(roleId).size());
+        if (CollectionUtils.isNotEmpty(roleIds)){
+            // 查询这些角色下的员工数量
+            QueryWrapper<OpeSysUserRole> qw = new QueryWrapper<>();
+            qw.in(OpeSysUserRole.COL_ROLE_ID,roleIds);
+            List<OpeSysUserRole> staffList = sysUserRoleService.list(qw);
+            if(CollectionUtils.isNotEmpty(staffList)){
+                // 按角色id分组
+                Map<Long,List<OpeSysUserRole>> map = staffList.stream().collect(Collectors.groupingBy(OpeSysUserRole::getRoleId));
+                for (RoleListResult result : list) {
+                    for (Long roleId : map.keySet()) {
+                        if(Objects.equals(result.getId(),roleId)){
+                            result.setNum(map.get(roleId).size());
+                        }
                     }
                 }
             }
@@ -515,13 +536,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleDataResult> roleData(PositionIdEnter enter) {
         List<RoleDataResult> resultList = new ArrayList<>();
-        QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
-        qw.eq(OpeSysRole.COL_TENANT_ID,enter.getTenantId());
-        qw.eq(OpeSysRole.COL_ROLE_STATUS, DeptStatusEnums.COMPANY.getValue());
-        if(enter.getPositionId() != null){
-            qw.eq(OpeSysRole.COL_POSITION_ID,enter.getPositionId());
-        }
-        List<OpeSysRole> roles = sysRoleService.list(qw);
+
+        List<OpeSysRole> roles = roleServiceMapper.rolesByDeptAndPosition(enter);
         if(CollectionUtils.isNotEmpty(roles)){
             for (OpeSysRole role : roles) {
                 RoleDataResult result = new RoleDataResult();
@@ -558,7 +574,7 @@ public class RoleServiceImpl implements RoleService {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_ROLE_ID, role.getId());
         qw.eq(OpeSysStaff.COL_STATUS, 1);
-        List<OpeSysStaff> staffList = opeSysStaffMapper.selectList(qw);
+        List<OpeSysStaff> staffList = roleServiceMapper.roleStaffs(role.getId());
         if(CollectionUtils.isEmpty(staffList)){
             return;
         }

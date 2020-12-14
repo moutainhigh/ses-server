@@ -59,4 +59,7 @@ public interface RegexpConstant {
      String lng="^[\\-\\+]?(0(\\.\\d{1,10})?|([1-9](\\d)?)(\\.\\d{1,10})?|1[0-7]\\d{1}(\\.\\d{1,10})?|180\\.0{1,10})$";
 
     //表达式 原帖地址：https://blog.csdn.net/gdhck123/article/details/86703978
+
+    // 规格类型名称的正则表达式 （只允许大写字母、数字、-组成）
+    String SPECIFICATNAME = "^[0-9A-Z-]+$";
 }

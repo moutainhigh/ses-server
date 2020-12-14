@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper">
+
+    <sql id="where_List">
+        where enorder.dr = 0
+        <if test="status != null">
+            and enorder.entrust_status =#{status}
+        </if>
+        <if test="classType != null">
+           and enorder.entrust_type =#{classType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            enorder.invoice_no like concat('%',#{keyword},'%') or
+            enorder.entrust_no like concat('%',#{keyword},'%') or
+            consignee.full_name like concat('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select count(enorder.entrust_type) as totalCount,
+               enorder.entrust_type        as status
+        from ope_entrust_order enorder
+        group by status
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_entrust_order enorder
+        left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
+        left join ope_sys_staff createBy on createBy.id = enorder.created_by and createBy.dr = 0
+        <include refid="where_List"/>
+    </select>
+
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult">
+        select enorder.id                       as id,
+               enorder.invoice_id               as invoiceId,
+               enorder.invoice_no               as invoiceNo,
+               enorder.entrust_no               as consignOrderNo,
+               enorder.entrust_status           as status,
+               enorder.consignor_qty            as qty,
+               enorder.delivery_date            as deliveryDate,
+               enorder.consignee_user           as consigneeId,
+               consignee.first_name             as consigneeFirstName,
+               consignee.last_name              as consigneeLastName,
+               enorder.consignee_country_code   as consigneeCountryCode,
+               enorder.consignee_user_telephone as consigneeTelephone,
+               enorder.consignee_user_mail      as consigneeMail,
+               enorder.created_by               as createById,
+               createBy.first_name              as createByFirstName,
+               createBy.last_name               as createByLastName,
+               enorder.created_time             as createByDate
+        from ope_entrust_order enorder
+                     left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
+                     left join ope_sys_staff createBy on createBy.id = enorder.created_by and createBy.dr = 0
+       <include refid="where_List"/>
+        order by enorder.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult">
+        select enorder.id                          as id,
+               entrust_no                  as consignOrderNo,
+               entrust_status              as status,
+               delivery_date               as deliveryDate,
+               trans_type                  as transportType,
+               consignee_user              as consigneeUserId,
+               consignee_country_code      as consigneeUserCountryCode,
+               consignee_user_telephone    as consigneeUserTelephone,
+               consignee_user_mail         as consigneeUserMail,
+               consignor_user              as consignorUserId,
+               consignor_country_code      as consignorUserCountryCode,
+               consignor_telephone         as consignorUserTelephone,
+               consignor_mail              as consignorUserMail,
+               notify_user                 as notifyUserId,
+               notify_user_name            as notifyUserName,
+               notify_country_code         as notifyUserCountryCode,
+               notify_user_telephone       as notifyUserTelephone,
+               notify_user_mail            as notifyUserMail,
+               enorder.consignee_post_code as zipcodeName,
+               enorder.consignee_post_code as zipcodeName,
+               enorder.consignee_address   as address,
+               enorder.invoice_id   as invoiceId,
+               consignee.first_name as consigneeUserFirstName,
+               consignee.last_name as consigneeUserLastName,
+               consignor.first_name as consignorUserFirstName,
+               consignor.last_name as consignorUserLastName
+        from ope_entrust_order enorder
+                     left join ope_sys_staff consignee on consignee.id = enorder.consignee_user and consignee.dr = 0
+                     left join ope_sys_staff consignor on consignor.id = enorder.consignor_user and consignor.dr = 0
+        where enorder.dr = 0
+          and enorder.id=#{id}
+    </select>
+</mapper>

@@ -1,7 +1,7 @@
 package com.redescooter.ses.api.common.vo.base;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
  * @Version：1.3
  * @create: 2019/12/18 16:32
  */
-@ApiModel(value = "主键参数", description = "主键参数")
+@ApiModel(value = "Primary key parameters", description = "Primary key parameters")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class IdEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键",required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+    @ApiModelProperty(value = "ID",required = true)
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 }

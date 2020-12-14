@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper">
+
+    <sql id="WHERE_ORDERLIST">
+        where whorder.dr = 0
+        <if test="status != null">
+            and  whorder.out_wh_status =#{status}
+        </if>
+        <if test="classType != null">
+           and  whorder.out_wh_type=#{classType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            and (
+            staff.full_name like concat ('%',#{keyword},'%') or
+            whorder.out_wh_no like concat ('%',#{keyword},'%') or
+            whorder.relation_no like concat ('%',#{keyword},'%')
+            )
+        </if>
+    </sql>
+    <select id="countByType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_wh_type as status
+             , count(1)     as totalCount
+        from ope_out_whouse_order
+        where dr = 0
+        group by status
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_out_whouse_order whorder
+        left join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        <include refid="WHERE_ORDERLIST"/>
+    </select>
+
+    <select
+    id="list" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult">
+        select whorder.id            as id,
+                whorder.relation_id    as invoiceId,
+                whorder.relation_no    as invoiceNo,
+               whorder.out_wh_no     as outWhNo,
+               whorder.out_wh_status as outWhStatus,
+               whorder.out_wh_type   as outWhType,
+               whorder.out_type      as outType,
+               whorder.out_wh_qty    as outWhQty,
+               whorder.country_code  as countryCode,
+               whorder.telephone     as telephone,
+               whorder.created_by    as createById,
+               whorder.created_time  as createDate,
+               staff.first_name      as createByFirstName,
+               staff.last_name       as createByLastName
+        from ope_out_whouse_order whorder
+        left join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        <include refid="WHERE_ORDERLIST"/>
+        order by whorder.created_time desc
+        limit #{startRow},#{pageSize}
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult">
+        select whorder.id            as id,
+                whorder.relation_id    as invoiceId,
+                whorder.relation_no    as invoiceNo,
+               whorder.out_wh_no     as outWhNo,
+               whorder.out_wh_status as outWhStatus,
+               whorder.out_wh_type   as outWhType,
+               whorder.out_type      as outType,
+               whorder.out_wh_qty    as outWhQty,
+               whorder.country_code  as countryCode,
+               whorder.telephone     as telephone,
+               whorder.created_by    as createById,
+               whorder.created_time  as createDate,
+               whorder.mail          as mail,
+               staff.first_name      as createByFirstName,
+               staff.last_name       as createByLastName
+        from ope_out_whouse_order whorder
+                     inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        where whorder.dr=0
+        and whorder.id=#{id}
+    </select>
+
+    <select id="productionScooterByBussId" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select scooterB.id        as id,
+               scooterB.group_id  as categoryId,
+               spgroup.group_name as categoryName,
+               scooterB.color_id  as colorId,
+               color.color_name   as colorName,
+               color.color_value   as colorValue,
+               scooterB.qty       as totalQty
+        from ope_out_wh_scooter_b scooterB
+                     left join ope_specificat_group spgroup on scooterb.group_id = spgroup.id and spgroup.dr = 0
+                     left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        where scooterB.out_wh_id=#{id}
+    </select>
+
+    <select id="productionCombinByBussId" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select combinB.id     as id,
+               combin.en_name as name,
+               combin.bom_no  as serialN,
+               combinB.qty    as totalQty
+        from ope_out_wh_combin_b combinB
+                     left join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
+        where combinB.out_wh_id=#{id}
+    </select>
+
+    <select
+    id="productionPartByBussId" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
+        select partB.id         as id,
+               parts.en_name    as name,
+               parts.parts_no   as serialN,
+               parts.parts_type as partType,
+               partB.qty        as totalQty
+        from ope_out_wh_parts_b partB
+                     left join ope_production_parts parts on parts.id = partB.parts_id and parts.dr = 0
+        where partB.out_wh_id=#{id}
+    </select>
+</mapper>

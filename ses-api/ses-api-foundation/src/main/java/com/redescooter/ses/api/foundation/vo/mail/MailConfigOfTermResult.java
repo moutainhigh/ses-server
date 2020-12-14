@@ -27,7 +27,7 @@ public class MailConfigOfTermResult extends GeneralResult {
      * 主键
      */
     @ApiModelProperty(value="主键")
-    private Integer id;
+    private Long id;
 
     /**
      * normal正常，Disabled失效的

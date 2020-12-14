@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeOutWhouseOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder">
+    <!--@mbg.generated-->
+    <!--@Table operation.ope_out_whouse_order-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="relation_id" jdbcType="BIGINT" property="relationId" />
+    <result column="relation_no" jdbcType="VARCHAR" property="relationNo" />
+    <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+    <result column="out_wh_no" jdbcType="VARCHAR" property="outWhNo" />
+    <result column="out_wh_status" jdbcType="INTEGER" property="outWhStatus" />
+    <result column="out_wh_type" jdbcType="INTEGER" property="outWhType" />
+    <result column="out_type" jdbcType="INTEGER" property="outType" />
+    <result column="out_wh_qty" jdbcType="INTEGER" property="outWhQty" />
+    <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="mail" jdbcType="VARCHAR" property="mail" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, relation_id, relation_no, relation_type, out_wh_no, out_wh_status, 
+    out_wh_type, out_type, out_wh_qty, already_out_wh_qty, country_code, telephone, mail, 
+    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update operation.ope_out_whouse_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="relation_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="relation_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="relation_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="out_wh_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outWhNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="out_wh_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outWhStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="out_wh_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outWhType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="out_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="out_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.outWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="already_out_wh_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.alreadyOutWhQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telephone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.mail,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into operation.ope_out_whouse_order
+    (id, dr, tenant_id, dept_id, relation_id, relation_no, relation_type, out_wh_no, 
+      out_wh_status, out_wh_type, out_type, out_wh_qty, already_out_wh_qty, country_code, 
+      telephone, mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.deptId,jdbcType=BIGINT}, #{item.relationId,jdbcType=BIGINT}, #{item.relationNo,jdbcType=VARCHAR}, 
+        #{item.relationType,jdbcType=INTEGER}, #{item.outWhNo,jdbcType=VARCHAR}, #{item.outWhStatus,jdbcType=INTEGER}, 
+        #{item.outWhType,jdbcType=INTEGER}, #{item.outType,jdbcType=INTEGER}, #{item.outWhQty,jdbcType=INTEGER}, 
+        #{item.alreadyOutWhQty,jdbcType=INTEGER}, #{item.countryCode,jdbcType=VARCHAR}, 
+        #{item.telephone,jdbcType=VARCHAR}, #{item.mail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder">
+    <!--@mbg.generated-->
+    insert into operation.ope_out_whouse_order
+    (id, dr, tenant_id, dept_id, relation_id, relation_no, relation_type, out_wh_no, 
+      out_wh_status, out_wh_type, out_type, out_wh_qty, already_out_wh_qty, country_code, 
+      telephone, mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+      def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
+      #{relationId,jdbcType=BIGINT}, #{relationNo,jdbcType=VARCHAR}, #{relationType,jdbcType=INTEGER}, 
+      #{outWhNo,jdbcType=VARCHAR}, #{outWhStatus,jdbcType=INTEGER}, #{outWhType,jdbcType=INTEGER}, 
+      #{outType,jdbcType=INTEGER}, #{outWhQty,jdbcType=INTEGER}, #{alreadyOutWhQty,jdbcType=INTEGER}, 
+      #{countryCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{mail,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    dept_id = #{deptId,jdbcType=BIGINT}, 
+    relation_id = #{relationId,jdbcType=BIGINT}, 
+    relation_no = #{relationNo,jdbcType=VARCHAR}, 
+    relation_type = #{relationType,jdbcType=INTEGER}, 
+    out_wh_no = #{outWhNo,jdbcType=VARCHAR}, 
+    out_wh_status = #{outWhStatus,jdbcType=INTEGER}, 
+    out_wh_type = #{outWhType,jdbcType=INTEGER}, 
+    out_type = #{outType,jdbcType=INTEGER}, 
+    out_wh_qty = #{outWhQty,jdbcType=INTEGER}, 
+    already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    telephone = #{telephone,jdbcType=VARCHAR}, 
+    mail = #{mail,jdbcType=VARCHAR}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder">
+    <!--@mbg.generated-->
+    insert into operation.ope_out_whouse_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="relationId != null">
+        relation_id,
+      </if>
+      <if test="relationNo != null">
+        relation_no,
+      </if>
+      <if test="relationType != null">
+        relation_type,
+      </if>
+      <if test="outWhNo != null">
+        out_wh_no,
+      </if>
+      <if test="outWhStatus != null">
+        out_wh_status,
+      </if>
+      <if test="outWhType != null">
+        out_wh_type,
+      </if>
+      <if test="outType != null">
+        out_type,
+      </if>
+      <if test="outWhQty != null">
+        out_wh_qty,
+      </if>
+      <if test="alreadyOutWhQty != null">
+        already_out_wh_qty,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="mail != null">
+        mail,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="relationId != null">
+        #{relationId,jdbcType=BIGINT},
+      </if>
+      <if test="relationNo != null">
+        #{relationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="relationType != null">
+        #{relationType,jdbcType=INTEGER},
+      </if>
+      <if test="outWhNo != null">
+        #{outWhNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outWhStatus != null">
+        #{outWhStatus,jdbcType=INTEGER},
+      </if>
+      <if test="outWhType != null">
+        #{outWhType,jdbcType=INTEGER},
+      </if>
+      <if test="outType != null">
+        #{outType,jdbcType=INTEGER},
+      </if>
+      <if test="outWhQty != null">
+        #{outWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="alreadyOutWhQty != null">
+        #{alreadyOutWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="relationId != null">
+        relation_id = #{relationId,jdbcType=BIGINT},
+      </if>
+      <if test="relationNo != null">
+        relation_no = #{relationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="relationType != null">
+        relation_type = #{relationType,jdbcType=INTEGER},
+      </if>
+      <if test="outWhNo != null">
+        out_wh_no = #{outWhNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outWhStatus != null">
+        out_wh_status = #{outWhStatus,jdbcType=INTEGER},
+      </if>
+      <if test="outWhType != null">
+        out_wh_type = #{outWhType,jdbcType=INTEGER},
+      </if>
+      <if test="outType != null">
+        out_type = #{outType,jdbcType=INTEGER},
+      </if>
+      <if test="outWhQty != null">
+        out_wh_qty = #{outWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="alreadyOutWhQty != null">
+        already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null">
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

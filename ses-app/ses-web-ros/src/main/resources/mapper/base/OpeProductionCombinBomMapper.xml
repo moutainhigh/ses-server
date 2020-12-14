@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductionCombinBomMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    <!--@Table ope_production_combin_bom-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="version_identificat" jdbcType="VARCHAR" property="versionIdentificat" />
+    <result column="bom_no" jdbcType="VARCHAR" property="bomNo" />
+    <result column="procurement_cycle" jdbcType="INTEGER" property="procurementCycle" />
+    <result column="effective_date" jdbcType="DATE" property="effectiveDate" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="color_id" jdbcType="BIGINT" property="colorId" />
+    <result column="disable" jdbcType="INTEGER" property="disable" />
+    <result column="bom_status" jdbcType="INTEGER" property="bomStatus" />
+    <result column="announ_user_id" jdbcType="BIGINT" property="announUserId" />
+    <result column="op_announ_user_id" jdbcType="BIGINT" property="opAnnounUserId" />
+    <result column="versoin" jdbcType="VARCHAR" property="versoin" />
+    <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
+    <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+    <result column="en_name" jdbcType="VARCHAR" property="enName" />
+    <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+    <result column="qc_flag" jdbcType="BOOLEAN" property="qcFlag" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+    group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+    parts_qty, cn_name, en_name, fr_name, qc_flag, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_production_combin_bom
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="version_identificat = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.versionIdentificat,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="bom_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.bomNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="procurement_cycle = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.procurementCycle,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="effective_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.effectiveDate,jdbcType=DATE}
+        </foreach>
+      </trim>
+      <trim prefix="group_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.groupId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.colorId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="`disable` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.disable,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="bom_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.bomStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="announ_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.announUserId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="op_announ_user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.opAnnounUserId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="versoin = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.versoin,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="parts_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="cn_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cnName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="en_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.enName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="fr_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.frName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="qc_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcFlag,jdbcType=BOOLEAN}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      parts_qty, cn_name, en_name, fr_name, qc_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.deptId,jdbcType=BIGINT}, #{item.versionIdentificat,jdbcType=VARCHAR}, #{item.bomNo,jdbcType=VARCHAR}, 
+        #{item.procurementCycle,jdbcType=INTEGER}, #{item.effectiveDate,jdbcType=DATE}, 
+        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.disable,jdbcType=INTEGER}, 
+        #{item.bomStatus,jdbcType=INTEGER}, #{item.announUserId,jdbcType=BIGINT}, #{item.opAnnounUserId,jdbcType=BIGINT}, 
+        #{item.versoin,jdbcType=VARCHAR}, #{item.partsQty,jdbcType=INTEGER}, #{item.cnName,jdbcType=VARCHAR}, 
+        #{item.enName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.qcFlag,jdbcType=BOOLEAN}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    (id, dr, tenant_id, dept_id, version_identificat, bom_no, procurement_cycle, effective_date, 
+      group_id, color_id, `disable`, bom_status, announ_user_id, op_announ_user_id, versoin, 
+      parts_qty, cn_name, en_name, fr_name, qc_flag, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
+      #{versionIdentificat,jdbcType=VARCHAR}, #{bomNo,jdbcType=VARCHAR}, #{procurementCycle,jdbcType=INTEGER}, 
+      #{effectiveDate,jdbcType=DATE}, #{groupId,jdbcType=BIGINT}, #{colorId,jdbcType=BIGINT}, 
+      #{disable,jdbcType=INTEGER}, #{bomStatus,jdbcType=INTEGER}, #{announUserId,jdbcType=BIGINT}, 
+      #{opAnnounUserId,jdbcType=BIGINT}, #{versoin,jdbcType=VARCHAR}, #{partsQty,jdbcType=INTEGER}, 
+      #{cnName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{frName,jdbcType=VARCHAR}, 
+      #{qcFlag,jdbcType=BOOLEAN}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    dept_id = #{deptId,jdbcType=BIGINT}, 
+    version_identificat = #{versionIdentificat,jdbcType=VARCHAR}, 
+    bom_no = #{bomNo,jdbcType=VARCHAR}, 
+    procurement_cycle = #{procurementCycle,jdbcType=INTEGER}, 
+    effective_date = #{effectiveDate,jdbcType=DATE}, 
+    group_id = #{groupId,jdbcType=BIGINT}, 
+    color_id = #{colorId,jdbcType=BIGINT}, 
+    `disable` = #{disable,jdbcType=INTEGER}, 
+    bom_status = #{bomStatus,jdbcType=INTEGER}, 
+    announ_user_id = #{announUserId,jdbcType=BIGINT}, 
+    op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT}, 
+    versoin = #{versoin,jdbcType=VARCHAR}, 
+    parts_qty = #{partsQty,jdbcType=INTEGER}, 
+    cn_name = #{cnName,jdbcType=VARCHAR}, 
+    en_name = #{enName,jdbcType=VARCHAR}, 
+    fr_name = #{frName,jdbcType=VARCHAR}, 
+    qc_flag = #{qcFlag,jdbcType=BOOLEAN}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductionCombinBom">
+    <!--@mbg.generated-->
+    insert into ope_production_combin_bom
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="versionIdentificat != null">
+        version_identificat,
+      </if>
+      <if test="bomNo != null">
+        bom_no,
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle,
+      </if>
+      <if test="effectiveDate != null">
+        effective_date,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="colorId != null">
+        color_id,
+      </if>
+      <if test="disable != null">
+        `disable`,
+      </if>
+      <if test="bomStatus != null">
+        bom_status,
+      </if>
+      <if test="announUserId != null">
+        announ_user_id,
+      </if>
+      <if test="opAnnounUserId != null">
+        op_announ_user_id,
+      </if>
+      <if test="versoin != null">
+        versoin,
+      </if>
+      <if test="partsQty != null">
+        parts_qty,
+      </if>
+      <if test="cnName != null">
+        cn_name,
+      </if>
+      <if test="enName != null">
+        en_name,
+      </if>
+      <if test="frName != null">
+        fr_name,
+      </if>
+      <if test="qcFlag != null">
+        qc_flag,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="versionIdentificat != null">
+        #{versionIdentificat,jdbcType=VARCHAR},
+      </if>
+      <if test="bomNo != null">
+        #{bomNo,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementCycle != null">
+        #{procurementCycle,jdbcType=INTEGER},
+      </if>
+      <if test="effectiveDate != null">
+        #{effectiveDate,jdbcType=DATE},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="colorId != null">
+        #{colorId,jdbcType=BIGINT},
+      </if>
+      <if test="disable != null">
+        #{disable,jdbcType=INTEGER},
+      </if>
+      <if test="bomStatus != null">
+        #{bomStatus,jdbcType=INTEGER},
+      </if>
+      <if test="announUserId != null">
+        #{announUserId,jdbcType=BIGINT},
+      </if>
+      <if test="opAnnounUserId != null">
+        #{opAnnounUserId,jdbcType=BIGINT},
+      </if>
+      <if test="versoin != null">
+        #{versoin,jdbcType=VARCHAR},
+      </if>
+      <if test="partsQty != null">
+        #{partsQty,jdbcType=INTEGER},
+      </if>
+      <if test="cnName != null">
+        #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="frName != null">
+        #{frName,jdbcType=VARCHAR},
+      </if>
+      <if test="qcFlag != null">
+        #{qcFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=BIGINT},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="versionIdentificat != null">
+        version_identificat = #{versionIdentificat,jdbcType=VARCHAR},
+      </if>
+      <if test="bomNo != null">
+        bom_no = #{bomNo,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementCycle != null">
+        procurement_cycle = #{procurementCycle,jdbcType=INTEGER},
+      </if>
+      <if test="effectiveDate != null">
+        effective_date = #{effectiveDate,jdbcType=DATE},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId,jdbcType=BIGINT},
+      </if>
+      <if test="disable != null">
+        `disable` = #{disable,jdbcType=INTEGER},
+      </if>
+      <if test="bomStatus != null">
+        bom_status = #{bomStatus,jdbcType=INTEGER},
+      </if>
+      <if test="announUserId != null">
+        announ_user_id = #{announUserId,jdbcType=BIGINT},
+      </if>
+      <if test="opAnnounUserId != null">
+        op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT},
+      </if>
+      <if test="versoin != null">
+        versoin = #{versoin,jdbcType=VARCHAR},
+      </if>
+      <if test="partsQty != null">
+        parts_qty = #{partsQty,jdbcType=INTEGER},
+      </if>
+      <if test="cnName != null">
+        cn_name = #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="frName != null">
+        fr_name = #{frName,jdbcType=VARCHAR},
+      </if>
+      <if test="qcFlag != null">
+        qc_flag = #{qcFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+</mapper>

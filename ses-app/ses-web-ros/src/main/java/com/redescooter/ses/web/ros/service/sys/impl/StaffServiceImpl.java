@@ -29,6 +29,8 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -116,6 +118,8 @@ public class StaffServiceImpl implements StaffService {
         if (Strings.isNullOrEmpty(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         // 校验邮箱是否存在
         checkEmail(enter.getEmail(), enter.getId());
         // 校验部门、岗位是否是可用状态
@@ -223,6 +227,8 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
+        // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+        checkDept(enter);
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getId());
         // 员工状态变化  影响到账号
@@ -238,6 +244,16 @@ public class StaffServiceImpl implements StaffService {
         }
         if (!Strings.isNullOrEmpty(enter.getEntryDate())) {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
+        }
+        // 编辑的时候  如果是第一次开启验证码  则需要随机生成
+        if(Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1){
+            String code = null;
+            try {
+                code = RsaUtils.encrypt(getRundom(), publicKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            staff.setSafeCode(code);
         }
         opeSysStaffService.updateById(staff);
         // 员工角色关系表插入数据
@@ -260,7 +276,21 @@ public class StaffServiceImpl implements StaffService {
         }
     }
 
-    ;
+
+    // 校验部门 选择的部门只能是当前操作人的部门及其子部门
+    public void checkDept(StaffSaveOrEditEnter enter){
+        // 先找到当前操作人的部门
+        OpeSysStaff opUser = opeSysStaffService.getById(enter.getUserId());
+        if (opUser == null){
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        // 递归找操作人部门及其子部门
+        List<Long> deptIds = deptServiceMapper.getChildDeptIds(opUser.getDeptId());
+        deptIds.add(opUser.getDeptId());
+        if (!deptIds.contains(enter.getDeptId())){
+            throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
+        }
+    }
 
 
     void checkDeptPos(Long deptId, Long positionId) {
@@ -305,6 +335,7 @@ public class StaffServiceImpl implements StaffService {
         if (staffRoleResult != null) {
             staffDetail.setRoleId(staffRoleResult.getRoleId());
             staffDetail.setRoleName(staffRoleResult.getRoleName());
+            staffDetail.setRoleStatus(staffRoleResult.getRoleStatus());
         }
         return staffDetail;
     }
@@ -332,11 +363,11 @@ public class StaffServiceImpl implements StaffService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds);
+        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if (staffRoleResult != null) {
@@ -727,6 +758,12 @@ public class StaffServiceImpl implements StaffService {
         Map<String, String> map = new HashMap<>();
         map.put("deptIds", StringUtils.join(list, ","));
         jedisCluster.hmset(key, map);
+    }
+
+    @Override
+    public List<UserDataResult> userData(UserDataEnter enter) {
+        List<UserDataResult> list = staffServiceMapper.userData(enter);
+        return list;
     }
 
 

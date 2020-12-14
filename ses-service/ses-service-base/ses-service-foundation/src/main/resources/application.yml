@@ -1,6 +1,15 @@
 #Springboot 基础配置
 server:
-  port: ${random.int[10000,19999]}
+  ##port: ${random.int[10000,19999]}
+  port: 18090
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+  shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
 spring:
   application:
     name: @project.artifactId@
@@ -10,6 +19,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -27,9 +38,10 @@ spring:
       filters: stat
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       use-global-data-source-stat: true
-      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
         login-username: admin
-        login-password: admin@RedE2019
+        login-password: admin
         enabled: false
         url-pattern: /druid/*
   #REDIS集群配置
@@ -46,59 +58,80 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
-  swagger:                                                                                                              #swagger配置
-    enabled: false                                                                                                      #是否启用swagger
-  http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
-
-dubbo:                                                                                                                  #DUBBO 配置
+  # swagger配置
+  swagger:
+    enabled: false                                       # 是否启用swagger
+#DUBBO 配置
+dubbo:
   application:
     id: @project.artifactId@
     name: @project.artifactId@
-    qos-enable: false                                                                                                   #是否启动QoS
-    qos-accept-foreign-ip: false                                                                                        #是否允许远程访问                                                                                                      #注册中心不存在时，是否报错
-  registry:
-    check: false                                                                                                        #注册中心不存在时，是否报错
-    group: ses
+    #是否启动QoS
+    qos-enable: false
+    #是否允许远程访问
+    qos-accept-foreign-ip: false
+    logger: log4j
+  #Dubbo服务暴露与发现消费所在的package
   scan:
-    base-packages: com.redescooter.ses                                                                                  #服务暴露与发现消费所在的package
-  provider:                                                                                                             #服务提供者缺省值配置
-    timeout: 30000
-    threads: 300
-  consumer:                                                                                                             #服务消费者缺省值配置
-    check: false                                                                                                        #启动时检查提供者是否存在，true报错，false忽略
-    timeout: 20000
+    base-packages: com.redescooter.ses
+  #注册中心配置
+  registry:
+    simplified: true
+    #注册中心不存在时，是否报错
+    check: false
+    register: true
+    subscribe: true
+    dynamic: true
+    group: ses
+    protocol: zookeeper
+    timeout: 60000
+    session: 60000
+  #元数据配置
+  metadata-report:
+    group: ses
+    cycle-report: true
+    timeout: 60000
+  #服务提供者缺省值配置
+  provider:
+    dynamic: true
+    deprecated: true
+    timeout: 60000
+    threads: 600
+  #服务消费者缺省值配置
+  consumer:
+    #启动时检查提供者是否存在，true报错，false忽略
+    check: false
+    lazy: true
+    timeout: 60000
     filter: dubboAccessLogFilter
+    threads: 600
   protocol:
+    register: true
     port: -1
-    threads: 300
+    threads: 600
     name: dubbo
-
-mybatis:                                                                                                                #MYBATIS配置
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl                                                               #打印sql
-mybatis-plus:                                                                                                           #mybaits-plus配置，此配置 不影响原始的mybatis
-  mapper-locations: classpath*:mapper/base/*Mapper.xml,classpath*:mapper/*Mapper.xml
+  reference:
+    check: false
+#mybaits-plus配置，此配置 不影响原始的mybatis
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*Mapper.xml
   typeAliasesPackage: com.redescooter.ses.service.foundation.dm.base
   global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-    id-type: 3
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 1
-    #驼峰下划线转换
-    db-column-underline: true
-    #配置逻辑删除字段为1是删除
-    logic-delete-value: 1
-    #配置逻辑删除字段为0是未删除
-    logic-not-delete-value: 0
-    #刷新mapper 调试神器
-    refresh-mapper: true
-    #数据库大写下划线转换
-    #capital-mode: true
+    banner: true
+    db-config:
+      id-type: uuid
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      table-underline: true
+      capital-mode: true
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
+    aggressive-lazy-loading: true
+    lazy-loading-enabled: true
+    auto-mapping-unknown-column-behavior: warning
+    local-cache-scope: session
+    call-setters-on-nulls: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+
+

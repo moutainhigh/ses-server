@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,9 +24,9 @@ public interface StaffServiceMapper {
 
     StaffRoleResult staffRoleMsg(@Param("staffId") Long staffId);
 
-    int totalRows(@Param("enter") StaffListEnter enter, @Param("userIds") List<Long>  userIds, @Param("deptIds")Set<Long> deptIds);
+    int totalRows(@Param("enter") StaffListEnter enter, @Param("userIds") List<Long>  userIds, @Param("deptIds")Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
-    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter,List<Long>  userIds,@Param("deptIds")Set<Long> deptIds);
+    List<StaffListResult> staffList(@Param("enter") StaffListEnter enter,List<Long>  userIds,@Param("deptIds")Set<Long> deptIds,@Param("systemRoot")String systemRoot);
 
     List<StaffDataResult> principalData(@Param("tenantId")Long tenantId);
 
@@ -36,4 +38,10 @@ public interface StaffServiceMapper {
      * @return
      **/
      List<OpeSysRoleData> roleDatas(@Param("id") Long id);
+
+
+    List<StaffDataResult> announUser(@Param("tenantId") Long tenantId);
+
+
+    List<UserDataResult> userData(@Param("enter") UserDataEnter enter);
 }

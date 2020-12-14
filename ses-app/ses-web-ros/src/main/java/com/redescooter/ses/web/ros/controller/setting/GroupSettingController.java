@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.web.ros.service.setting.RosGroupService;
@@ -54,14 +55,9 @@ public class GroupSettingController {
         return new Response<>(rosGroupService.export(id,response));
     }
 
-    @ApiOperation(value = "导入", response = GeneralResult.class)
-    @PostMapping(value = "/importParament")
-    public Response<GeneralResult> importParament(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(rosGroupService.importGroup(enter));
-    }
-
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveGroupEnter enter) {
         return new Response<>(rosGroupService.save(enter));
     }

@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeProductPriceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeProductPrice">
+    <!--@mbg.generated-->
+    <!--@Table ope_product_price-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="user_id" property="userId" />
+    <result column="status" property="status" />
+    <result column="price" property="price" />
+    <result column="price_type" property="priceType" />
+    <result column="currency_type" property="currencyType" />
+    <result column="standard_currency" property="standardCurrency" />
+    <result column="exchange_rate" property="exchangeRate" />
+    <result column="product_id" property="productId" />
+    <result column="product_price_type" property="productPriceType" />
+    <result column="begin_date" property="beginDate" />
+    <result column="end_date" property="endDate" />
+    <result column="revision" property="revision" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, user_id, `status`, price, price_type, currency_type, standard_currency, 
+    exchange_rate, product_id, product_price_type, begin_date, end_date, revision, created_by, 
+    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_product_price
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.userId}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.price}
+        </foreach>
+      </trim>
+      <trim prefix="price_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.priceType}
+        </foreach>
+      </trim>
+      <trim prefix="currency_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.currencyType}
+        </foreach>
+      </trim>
+      <trim prefix="standard_currency = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.standardCurrency}
+        </foreach>
+      </trim>
+      <trim prefix="exchange_rate = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.exchangeRate}
+        </foreach>
+      </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.productId}
+        </foreach>
+      </trim>
+      <trim prefix="product_price_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.productPriceType}
+        </foreach>
+      </trim>
+      <trim prefix="begin_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.beginDate}
+        </foreach>
+      </trim>
+      <trim prefix="end_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.endDate}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.revision}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_product_price
+    (id, dr, tenant_id, user_id, `status`, price, price_type, currency_type, standard_currency, 
+      exchange_rate, product_id, product_price_type, begin_date, end_date, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.userId}, #{item.status}, #{item.price}, 
+        #{item.priceType}, #{item.currencyType}, #{item.standardCurrency}, #{item.exchangeRate}, 
+        #{item.productId}, #{item.productPriceType}, #{item.beginDate}, #{item.endDate}, 
+        #{item.revision}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeProductPrice">
+    <!--@mbg.generated-->
+    insert into ope_product_price
+    (id, dr, tenant_id, user_id, `status`, price, price_type, currency_type, standard_currency, 
+      exchange_rate, product_id, product_price_type, begin_date, end_date, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    (#{id}, #{dr}, #{tenantId}, #{userId}, #{status}, #{price}, #{priceType}, #{currencyType}, 
+      #{standardCurrency}, #{exchangeRate}, #{productId}, #{productPriceType}, #{beginDate}, 
+      #{endDate}, #{revision}, #{createdBy}, #{createdTime}, #{updatedBy}, #{updatedTime}, 
+      #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    user_id = #{userId}, 
+    `status` = #{status}, 
+    price = #{price}, 
+    price_type = #{priceType}, 
+    currency_type = #{currencyType}, 
+    standard_currency = #{standardCurrency}, 
+    exchange_rate = #{exchangeRate}, 
+    product_id = #{productId}, 
+    product_price_type = #{productPriceType}, 
+    begin_date = #{beginDate}, 
+    end_date = #{endDate}, 
+    revision = #{revision}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeProductPrice">
+    <!--@mbg.generated-->
+    insert into ope_product_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="priceType != null">
+        price_type,
+      </if>
+      <if test="currencyType != null">
+        currency_type,
+      </if>
+      <if test="standardCurrency != null">
+        standard_currency,
+      </if>
+      <if test="exchangeRate != null">
+        exchange_rate,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productPriceType != null">
+        product_price_type,
+      </if>
+      <if test="beginDate != null">
+        begin_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="userId != null">
+        #{userId},
+      </if>
+      <if test="status != null">
+        #{status},
+      </if>
+      <if test="price != null">
+        #{price},
+      </if>
+      <if test="priceType != null">
+        #{priceType},
+      </if>
+      <if test="currencyType != null">
+        #{currencyType},
+      </if>
+      <if test="standardCurrency != null">
+        #{standardCurrency},
+      </if>
+      <if test="exchangeRate != null">
+        #{exchangeRate},
+      </if>
+      <if test="productId != null">
+        #{productId},
+      </if>
+      <if test="productPriceType != null">
+        #{productPriceType},
+      </if>
+      <if test="beginDate != null">
+        #{beginDate},
+      </if>
+      <if test="endDate != null">
+        #{endDate},
+      </if>
+      <if test="revision != null">
+        #{revision},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId},
+      </if>
+      <if test="status != null">
+        `status` = #{status},
+      </if>
+      <if test="price != null">
+        price = #{price},
+      </if>
+      <if test="priceType != null">
+        price_type = #{priceType},
+      </if>
+      <if test="currencyType != null">
+        currency_type = #{currencyType},
+      </if>
+      <if test="standardCurrency != null">
+        standard_currency = #{standardCurrency},
+      </if>
+      <if test="exchangeRate != null">
+        exchange_rate = #{exchangeRate},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId},
+      </if>
+      <if test="productPriceType != null">
+        product_price_type = #{productPriceType},
+      </if>
+      <if test="beginDate != null">
+        begin_date = #{beginDate},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate},
+      </if>
+      <if test="revision != null">
+        revision = #{revision},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>

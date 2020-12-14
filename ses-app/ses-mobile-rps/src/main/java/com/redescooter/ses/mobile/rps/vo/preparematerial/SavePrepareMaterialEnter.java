@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.preparematerial;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SavePrepareMaterialEnter extends GeneralEnter {
     @ApiModelProperty(value = "Id")
-    @NotNull(code = com.redescooter.ses.api.common.exception.ValidationExceptionCode.ID_IS_EMPTY, message = "Id不为空")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "Id不为空")
     private Long id;
 
     @ApiModelProperty(value = "来源类型")

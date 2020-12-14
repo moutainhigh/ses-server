@@ -382,7 +382,109 @@ public enum ExceptionCodeEnums {
 
     OLD_PSD_ERROR(10182, "旧密码错误，请重新输入"),
 
-    DELETE_THE_ORDER_FIRST(10183, "请先删除订单"),
+    PLEASE_COMPLETE_MSG(10183, "请完善信息"),
+
+    DRAFT_NOT_EXIST(10184, "草稿不存在"),
+
+    BOM_IS_NOT_EXIST(10185, "BOM不存在"),
+
+    BOM_HAS_REACHED_EFFECTIVE_TIME(10186, "Bom未到生效时间"),
+
+    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少又一个部件"),
+
+    PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
+
+    BOM_HAS_DUPLICATE_EFFECTIVE_DATE(10189, "bom有重复的日期"),
+
+    BOM_NUM_REPEAT(10190, "bom编号已重复"),
+
+    BOM_MSG_IS_NOT_COMPLETE(10191, "Bom信息不完整"),
+
+    SAFE_CODE_FAILURE(10192, "安全码失效，请重新给校验"),
+
+    PARTS_NO_REPEAT(10193, "部件号重复"),
+
+    PARTS_IS_DISABLE(10194, "部件已被禁用"),
+
+    GROUP_NOT_EXIST(10195, "分组不存在"),
+
+    GROUP_BE_USED(10196, "分组已经被使用，不能删除"),
+
+    DEF_NOT_NULL(10197, "自定义项不能为空"),
+
+    DEF_NUM_ERROR(10198, "自定义项最多8个"),
+
+    SPECIFICAT_TYPE_NOT_EXIST(10199, "规格类型不存在"),
+
+    COLOR_VALUE_NOT_NULL(10200, "色值不能为空"),
+
+    COLOR_VALUE_LENGTH_ERROR(10201, "色值长度错误"),
+
+    SPECIFICAT_TYPE_NAME_NOT_NULL(10202, "规格类型名称不能为空"),
+
+    SPECIFICAT_TYPE_NAME_EXIST(10203, "规格类型名称已经存在"),
+
+    DEF_NAME_NOT_NULL(10204, "自定义名称不能为空"),
+
+    DEF_NAME_ILLEGAL(10205, "自定义名称非法"),
+
+    DEF_VALUE_ILLEGAL(10206, "自定义值非法"),
+
+    THE_NUMBER_OF_PARTS_LEAST_GREATER_THAN_ONE(10207, "部件数量至少大于1"),
+
+    DELETE_THE_ORDER_FIRST(10208, "请先删除订单"),
+
+    PARTS_MSG_NOT_PERFECT(10209, "部品信息不完善，请完善信息"),
+
+    COLOR_NOT_EXIST(10210, "颜色不存在"),
+
+    SPECIFICAT_TYPE_NAME_ILLEGAL(10211, "规格名称仅支持大写字母、数字和“-”"),
+
+    PRODUCT_CODE_NOT_NULL(10212, "产品编码不能为空"),
+
+    COLOR_IS_USED(10213, "颜色已被使用，不能删除"),
+
+    SPECIFICAT_TYPE_IS_USED(10214, "规格类型已被使用，不能删除"),
+
+    WEIGHT_ILLEGAL(10215, "重量违法"),
+
+    QUANTITY_ILLEGAL(10216, "数量违法"),
+
+    SELECT_COMBIN_NAME(10217, "请先选择组装件名称"),
+
+    PRODUCT_NAME_NOT_NULL(10218, "产品名称不能为空"),
+
+    COLOR_VALUE_EXIST(10219, "色值已存在"),
+
+    ORDER_NOT_EXIST(10220, "单据不存在"),
+
+    ORDER_STATUS_ERROR(10221, "单据状态的不满足"),
+
+    ORDER_TRACE_IS_NOT_EXIST(10222, "单据记录不存在"),
+
+    STOCK_NOT_CANCEL(10223, "正在备货中，无法取消"),
+
+    PRODUCT_DOES_NOT_EXIST(10224, "产品不存在"),
+
+    PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
+
+    QTY_IS_ILLEGAL(10226,"数量不合法"),
+
+    DEPT_NAME_EXIST(10227,"当前父级部门下面部门名称重复"),
+
+    ROLE_NAME_EXIST(10228,"角色名称已存在"),
+
+    PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
+
+    PARENT_DEPT_NOT_EXIST(10230,"父级部门不存在！"),
+
+    PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
+
+    TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
+
+    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+
+
 
     ;
 

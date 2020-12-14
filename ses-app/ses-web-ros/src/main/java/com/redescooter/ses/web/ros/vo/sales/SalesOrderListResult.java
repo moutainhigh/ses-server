@@ -59,6 +59,9 @@ public class SalesOrderListResult extends GeneralResult {
     @ApiModelProperty(value = "订单预付款")
     private Double paid;
 
+    @ApiModelProperty(value = "优惠抵扣金额")
+    private Double amountDiscount;
+
     @ApiModelProperty(value = "订单余额")
     private Double balance;
 

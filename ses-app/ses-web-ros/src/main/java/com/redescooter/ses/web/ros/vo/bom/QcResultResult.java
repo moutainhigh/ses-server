@@ -24,6 +24,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QcResultResult extends GeneralResult {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
+
+    @ApiModelProperty(value = "模板Id")
+    private Long qualityTempateId;
+
     @ApiModelProperty(value = "通过表示")
     private Boolean passFlag;
 

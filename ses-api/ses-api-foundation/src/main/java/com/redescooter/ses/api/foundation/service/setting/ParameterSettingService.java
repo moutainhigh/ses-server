@@ -1,10 +1,7 @@
 package com.redescooter.ses.api.foundation.service.setting;
 
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
-import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.vo.setting.*;
 
 import java.util.List;
 
@@ -36,7 +33,7 @@ public interface ParameterSettingService {
      * @param enter
      * @return
      */
-    GeneralResult export(GeneralEnter enter);
+    List<ParameterResult> export(List<Long> ids, String systemType);
 
     /**
      * 导出参数列表
@@ -64,5 +61,20 @@ public interface ParameterSettingService {
      * @param enter
      * @return
      */
-    List<ParameterGroupResultList> groupList(StringEnter enter);
+    List<ParameterGroupResultList> groupList(BooleanEnter enter);
+
+    /**
+     * 参数名查询
+     * @param parameterNames
+     * @param systemType
+     * @return
+     */
+    List<ParameterResult> checkParameterName(List<String> parameterNames, String systemType);
+
+    /**
+     * 批量保存参数列表
+     * @param saveParameterBatchEnterList
+     * @param systemType
+     */
+    void saveParameterBatchByImport(List<SaveParameterBatchEnter> saveParameterBatchEnterList, String systemType);
 }

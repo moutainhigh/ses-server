@@ -119,6 +119,14 @@ public interface WebsiteOrderFormService {
      *
      * @param enter
      */
-    GeneralResult email(StorageEamilEnter enter);
+    GeneralResult email(CheckEmailEnter enter);
+
+    /**
+     * 在次支付校验
+     * 
+     * @param enter
+     * @return
+     */
+    BooleanResult payAgainCheck(IdEnter enter);
 
 }

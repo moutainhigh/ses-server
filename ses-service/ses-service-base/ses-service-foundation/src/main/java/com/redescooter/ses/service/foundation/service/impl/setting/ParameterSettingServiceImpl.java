@@ -2,13 +2,11 @@ package com.redescooter.ses.service.foundation.service.impl.setting;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
-import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
-import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.vo.setting.*;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.ParameterSettingServiceMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
@@ -104,12 +102,12 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 导出参数列表
-     * @param enter
+     * @param ids
      * @return
      */
     @Override
-    public GeneralResult export(GeneralEnter enter) {
-        return new GeneralResult(enter.getRequestId());
+    public List<ParameterResult> export(List<Long> ids, String systemType) {
+        return parameterSettingServiceMapper.export(ids, systemType);
     }
 
     /**
@@ -169,11 +167,18 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
      * @return
      */
     @Override
-    public List<ParameterGroupResultList> groupList(StringEnter enter) {
+    public List<ParameterGroupResultList> groupList(BooleanEnter enter) {
         List<ParameterGroupResultList> result = new ArrayList<>();
-        QueryWrapper<PlaSysGroupSetting> queryWrapper = new QueryWrapper();
-        queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, enter.getSt());
-        queryWrapper.eq(PlaSysGroupSetting.COL_ENABLE, Boolean.TRUE);
+        SystemTypeEnums systemTypeEnumsByCode = SystemTypeEnums.getSystemTypeEnumsByCode(enter.getSystemId());
+        if (systemTypeEnumsByCode == null) {
+            return result;
+        }
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(PlaSysGroupSetting.COL_SYSTEM_TYPE, systemTypeEnumsByCode.getValue());
+        if (enter.getDisable()) {
+            queryWrapper.eq(PlaSysGroupSetting.COL_ENABLE, Boolean.TRUE);
+        }
         List<PlaSysGroupSetting> list = plaSysGroupSettingService.list(queryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             return result;
@@ -182,6 +187,51 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
             result.add(ParameterGroupResultList.builder().id(item.getId()).name(item.getGroupName()).build());
         });
         return result;
+    }
+
+    /**
+     * 参数名查询
+     * @param parameterNames
+     * @param systemType
+     * @return
+     */
+    @Override
+    public List<ParameterResult> checkParameterName(List<String> parameterNames, String systemType) {
+        return parameterSettingServiceMapper.checkParameterName(parameterNames, systemType);
+    }
+
+    /**
+     * 批量保存参数列表
+     * @param saveParameterBatchEnterList
+     * @param systemType
+     */
+    @Transactional
+    @Override
+    public void saveParameterBatchByImport(List<SaveParameterBatchEnter> saveParameterBatchEnterList, String systemType) {
+
+        List<PlaSysParamSetting> saveList = new ArrayList<>();
+        saveParameterBatchEnterList.forEach(item -> {
+            PlaSysParamSetting sysParamSetting = PlaSysParamSetting.builder()
+                    .id(idAppService.getId(SequenceName.PLA_SYS_PARAM_SETTING))
+                    .dr(0)
+                    .systemType(systemType)
+                    .groupId(item.getGroupId())
+                    .parameterName(item.getParameterName())
+                    .paramKey(item.getKey())
+                    .paramValue(item.getValue())
+                    .enable(item.getEnable())
+                    .desc(null)
+                    .createdBy(item.getUserId())
+                    .createdTime(new Date())
+                    .updatedBy(item.getUserId())
+                    .updatedTime(new Date())
+                    .build();
+            saveList.add(sysParamSetting);
+        });
+        if (CollectionUtils.isNotEmpty(saveList)) {
+            plaSysParamSettingService.saveBatch(saveList);
+        }
+
     }
 
     private PlaSysParamSetting buildParament(SaveParamentEnter enter) {

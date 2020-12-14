@@ -159,4 +159,7 @@ public class UserInfoResult extends GeneralResult {
     @ApiModelProperty(value = "证件背面")
     private String certificatePositiveAnnex;
 
+    @ApiModelProperty("Do you need to reset your password")
+    private boolean resetPsd;
+
 }

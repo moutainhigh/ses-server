@@ -1,10 +1,14 @@
 package com.redescooter.ses.web.delivery;
 
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.delivery.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorDeliveryTraceMapper;
+import com.redescooter.ses.web.delivery.service.express.TaskService;
+import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
+import com.redescooter.ses.web.delivery.vo.task.OrderResult;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.junit.Test;
@@ -164,4 +168,23 @@ public class SesWebDeliveryApplicationTests {
 //            return lat;
 //        }
 //    }
+
+    @Autowired
+    private TaskService taskService;
+    @Test
+    public void taskOrderList(){
+        OrderListEnter orderListEnter = new OrderListEnter();
+        orderListEnter.setPageNo(1);
+        orderListEnter.setPageSize(15);
+        orderListEnter.setTenantId(1000004L);
+        PageResult<OrderResult> orderResultPageResult = taskService.orderList(orderListEnter);
+        orderResultPageResult.getList().stream()
+                .forEach(item->{
+                    if (item.getId().toString().equals("10399673538814209")){
+                    System.out.println(item.getId());}
+                    if (item.getId().toString().equals("10399673538814208")){
+                        System.out.println(item.getId());
+                    }
+                });
+    }
 }

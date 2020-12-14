@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
@@ -13,6 +14,9 @@ import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.JedisCluster;
+
+import java.util.Map;
 
 /**
  * @ClassNameUserProfileServiceImpl
@@ -29,6 +33,9 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
 
     @Autowired
     private OpeSysStaffService opeSysStaffService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
     /**
      * 用户信息
      *
@@ -86,6 +93,19 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
         result.setCertificateType(staff.getCertificateType()==null?"1":staff.getCertificateType().toString());
         result.setCertificateNegativeAnnex(staff.getCertificatPicture1());
         result.setCertificatePositiveAnnex(staff.getCertificatPicture2());
+        // 从缓存获取 需不需要重置密码（第一次登陆）
+        boolean flag = false;
+        String key = JedisConstant.FIRST_LOGIN_RESET_PSD + staff.getId();
+        if (jedisCluster.exists(key)) {
+            // 如果缓存存在
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String value = map.get("flag");
+            if ("1".equals(value)){
+                flag = true;
+            }
+            jedisCluster.del(key);
+        }
+        result.setResetPsd(flag);
         return result;
     }
 

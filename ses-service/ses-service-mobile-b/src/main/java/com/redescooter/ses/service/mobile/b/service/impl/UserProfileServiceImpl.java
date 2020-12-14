@@ -17,6 +17,7 @@ import com.redescooter.ses.api.mobile.b.vo.SaveUserProfileEnter;
 import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -97,7 +98,18 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
             CorUserProfile update = new CorUserProfile();
             update.setId(enter.getId());
-            update.setPicture(enter.getPicture());
+            if (StringUtils.isNotBlank(enter.getPicture())){
+                update.setPicture(enter.getPicture());
+            }
+            if (!StringUtils.isAllBlank(enter.getCertificateType(),enter.getCertificateNegativeAnnex(),enter.getCertificatePositiveAnnex())){
+                update.setCertificateType(enter.getCertificateType());
+                update.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
+                update.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
+            }
+            if (StringUtils.isAllBlank(enter.getCountryCode1(),enter.getTelNumber1())){
+                update.setCountryCode1(enter.getCountryCode1());
+                update.setTelNumber1(enter.getTelNumber1());
+            }
             corUserProfileMapper.updateById(update);
         } else {
             // 更新2C用户信息

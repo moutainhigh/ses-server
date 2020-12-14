@@ -28,6 +28,7 @@ public class OpeSaleArea implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识")
+    @TableLogic
     private Integer dr;
 
     /**

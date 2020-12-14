@@ -4,7 +4,7 @@
     <sql id="where_ExpressOrder_List">
         where a.tenant_id=#{tenantId}
         and a.dr=0
-        <if test="status != null and status != ''">
+        <if test="status != null">
             and a.status=#{status}
         </if>
         <if test="city != null and city != ''">
@@ -32,7 +32,7 @@
 
         select count(*) as totalCount, status
         from cor_express_order
-        where tenant_id=#{tenantId}
+        where tenant_id=#{tenantId} and dr = 0
         group by status
 
     </select>
@@ -40,7 +40,7 @@
 
         select count(*)
         from cor_express_order a
-        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0
+        left join cor_express_delivery_detail b on a.id = b.express_order_id and b.dr = 0 and b.status != 4
         left join cor_express_delivery c on b.express_delivery_id = c.id and c.dr = 0
         left join cor_driver d on c.driver_id = d.id and d.dr = 0
         left join cor_express_order_trace trace

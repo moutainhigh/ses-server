@@ -4,7 +4,6 @@ import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
@@ -32,23 +31,23 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
-import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.inquiry.SaveInquiryEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
@@ -90,9 +89,6 @@ public class InquiryServiceImpl implements InquiryService {
     @Reference
     private IdAppService idAppService;
 
-    @Autowired
-    private ExcelService excelService;
-
     @Value("${Request.privateKey}")
     private String privateKey;
 
@@ -127,7 +123,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     /**
-     * @param saveInquiryEnter
+     * @param saveAboutUsEnter
      * @desc: 保存询价单
      * @param: enter
      * @retrn: GeneralResult
@@ -137,9 +133,9 @@ public class InquiryServiceImpl implements InquiryService {
      */
     @Transactional
     @Override
-    public GeneralResult saveInquiry(SaveInquiryEnter saveInquiryEnter) {
+    public GeneralResult saveAboutUs(SaveAboutUsEnter saveAboutUsEnter) {
         //入参去空格
-        SaveInquiryEnter enter = SesStringUtils.objStringTrim(saveInquiryEnter);
+        SaveAboutUsEnter enter = SesStringUtils.objStringTrim(saveAboutUsEnter);
         //邮箱解密
         //电话解密
         if (!StringUtils.isAllBlank(enter.getTelephone(), enter.getEmail())) {
@@ -176,9 +172,9 @@ public class InquiryServiceImpl implements InquiryService {
         }
         // 官网联系我们
         contactUsService.websiteContactUs(enter);
-    
+
         //Monday 同步数据
-        MondayGeneralEnter mondayGeneralEnter=new MondayGeneralEnter();
+        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(enter.getFirstName());
         mondayGeneralEnter.setLastName(enter.getLastName());
         mondayGeneralEnter.setTelephone(enter.getTelephone());
@@ -417,20 +413,25 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
-        List<InquiryResult> list = inquiryServiceMapper.exportInquiry(enter);
-        log.info("总共的数据量："+list.size());
+        List<InquiryExportResult> list = inquiryServiceMapper.exportInquiry(enter);
+        log.info("总共的数据量：" + list.size());
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
-            for (InquiryResult inquiry : list) {
-                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(),8));
-                dataMap.add(toMap(inquiry));
+            Integer i = 1;
+            for (InquiryExportResult inquiry : list) {
+                inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
+                dataMap.add(toMap(inquiry, i));
+                i ++;
             }
-            String sheetName = "询价单";
-            String[] headers = {"NAME", "SURNAME", "EMAIL", "TELEPHONE", "CODE POSTAL", "VOTER MESSAGE", "CITY NAME", "CREATE TIME"};
+            String sheetName = "Inquiry";
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation","amountPaid", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
-                log.info("路劲是这个！！！！！！！！！！！！！！！" + excelFolder);
+                /**文件夹不存在，则进行创建**/
+                if (!new File(excelFolder).exists()) {
+                    new File(excelFolder).mkdir();
+                }
                 File file = new File(path);
                 FileInputStream inputStream = new FileInputStream(file);
                 MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(),
@@ -457,16 +458,21 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
 
-    private Map<String, Object> toMap(InquiryResult opeCustomerInquiry) {
+    private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry, Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerFirstName()) ? "--" : opeCustomerInquiry.getCustomerFirstName());
-        map.put("SURNAME NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCustomerLastName()) ? "--" : opeCustomerInquiry.getCustomerLastName());
-        map.put("EMAIL", Strings.isNullOrEmpty(opeCustomerInquiry.getEmail()) ? "--" : opeCustomerInquiry.getEmail());
-        map.put("TELEPHONE", Strings.isNullOrEmpty(opeCustomerInquiry.getTelephone()) ? "--" : "+33-" + opeCustomerInquiry.getTelephone());
-        map.put("CODE POSTAL", Strings.isNullOrEmpty(opeCustomerInquiry.getDistrictName()) ? "--" : opeCustomerInquiry.getDistrictName());
-        map.put("VOTER MESSAGE", Strings.isNullOrEmpty(opeCustomerInquiry.getRemark()) ? "--" : opeCustomerInquiry.getRemark());
-        map.put("CITY NAME", Strings.isNullOrEmpty(opeCustomerInquiry.getCityName()) ? "--" : opeCustomerInquiry.getCityName());
-        map.put("CREATE TIME", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(),""));
+        map.put("ID", i);
+        map.put("fullName", opeCustomerInquiry.getCustomerFullName()==null?"--":opeCustomerInquiry.getCustomerFullName());
+        map.put("email", opeCustomerInquiry.getEmail()==null?"--":opeCustomerInquiry.getEmail());
+        map.put("bankCardname", opeCustomerInquiry.getBankCardName()==null?"--":opeCustomerInquiry.getBankCardName());
+        map.put("district", opeCustomerInquiry.getPostcode()==null?"--":opeCustomerInquiry.getPostcode());
+        map.put("address", opeCustomerInquiry.getAddress()==null?"--":opeCustomerInquiry.getAddress());
+        map.put("productName", opeCustomerInquiry.getProductName()==null?"--":opeCustomerInquiry.getProductName());
+        map.put("color", opeCustomerInquiry.getColorName()==null?"--":opeCustomerInquiry.getColorName());
+        map.put("batteryQty", opeCustomerInquiry.getBatteryQty()==null?0:opeCustomerInquiry.getBatteryQty());
+        map.put("amountObligation", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
+        map.put("amountPaid", opeCustomerInquiry.getAmountPaid()==null?0.00:opeCustomerInquiry.getAmountPaid());
+        map.put("totalPrice", opeCustomerInquiry.getTotalPrice()==null?0.00:opeCustomerInquiry.getTotalPrice());
+        map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }
 
@@ -477,29 +483,14 @@ public class InquiryServiceImpl implements InquiryService {
         opeCustomer.setDr(0);
         opeCustomer.setTenantId(0L);
         opeCustomer.setTimeZone(enter.getTimeZone());
-        opeCustomer.setCountry(opeCustomerInquiry.getCountry());
-        opeCustomer.setCountryCode(opeCustomerInquiry.getCountryCode());
-        opeCustomer.setCity(opeCustomerInquiry.getCity());
-        opeCustomer.setDistrust(opeCustomerInquiry.getDistrict());
         opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
         opeCustomer.setSalesId(0L);
         opeCustomer.setCustomerCode("0");
         opeCustomer.setIndustryType(opeCustomerInquiry.getIndustry());
         opeCustomer.setCustomerType(opeCustomerInquiry.getCustomerType());
-//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
-//            opeCustomer.setCompanyName(opeCustomerInquiry.getCompanyName());
-//            opeCustomer.setContactFirstName(opeCustomerInquiry.getContactFirst());
-//            opeCustomer.setContactLastName(opeCustomerInquiry.getContactLast());
-//        }
-//        if (StringUtils.equals(opeCustomerInquiry.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
-//            opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
-//            opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
-//            opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-//        }
         opeCustomer.setCustomerFirstName(opeCustomerInquiry.getFirstName());
         opeCustomer.setCustomerLastName(opeCustomerInquiry.getLastName());
         opeCustomer.setCustomerFullName(new StringBuilder(opeCustomerInquiry.getFirstName()).append(" ").append(opeCustomerInquiry.getLastName()).toString());
-//        opeCustomer.setCertificateType("0");
         opeCustomer.setScooterQuantity(opeCustomerInquiry.getScooterQuantity());
         opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
         opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());

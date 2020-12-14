@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.admin;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysLog;
 import com.redescooter.ses.web.ros.service.base.OpeSysLogService;
@@ -11,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -47,6 +50,9 @@ public class Advice {
 
     @Autowired
     private StaffServiceMapper staffServiceMapper;
+
+    @Reference
+    private IdAppService idAppService;
 
 
     @Around(value = "@annotation(com.redescooter.ses.api.common.annotation.LogAnnotation)")
@@ -148,16 +154,21 @@ public class Advice {
             sysLog.setIfSuccess(0);
             throw e;
         } finally {
-            log.info("不管这次请求成功还是失败，都要走这里");
-            // 日志开始的时间
-            LocalDateTime endTime = LocalDateTime.now();
-            log.info("开始时间：" + endTime);
-            Duration duration = Duration.between(startTime, endTime);
-            sysLog.setTimeConsum(duration.toMillis());
-            sysLog.setCreatedTime(new Date());
-            sysLog.setUpdatedTime(new Date());
-            sysLog.setId(System.currentTimeMillis());
-            opeSysLogService.save(sysLog);
+//            log.info("不管这次请求成功还是失败，都要走这里");
+            try {
+                // 日志开始的时间
+                LocalDateTime endTime = LocalDateTime.now();
+                log.info("开始时间：" + endTime);
+                Duration duration = Duration.between(startTime, endTime);
+                sysLog.setTimeConsum(duration.toMillis());
+                sysLog.setCreatedTime(new Date());
+                sysLog.setUpdatedTime(new Date());
+                sysLog.setId(idAppService.getId(SequenceName.OPE_SYS_LOG));
+                if(sysLog.getIfSuccess() == null){
+                    sysLog.setIfSuccess(0);
+                }
+                opeSysLogService.save(sysLog);
+            }catch (Exception e){}
         }
 
     }

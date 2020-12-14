@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,23 +11,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 用户员工表
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysStaff")
-@TableName(value = "ope_sys_staff")
 @Data
 @Builder
+@TableName(value = "ope_sys_staff")
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpeSysStaff implements Serializable {
+public class OpeSysStaff {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键")
     private Long id;
 
@@ -36,6 +36,7 @@ public class OpeSysStaff implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -228,6 +229,13 @@ public class OpeSysStaff implements Serializable {
     private String safeCode;
 
     /**
+     * 系统内置标识
+     */
+    @TableField(value = "system_root")
+    @ApiModelProperty(value = "系统内置标识")
+    private String systemRoot;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -290,8 +298,6 @@ public class OpeSysStaff implements Serializable {
     @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
-    private static final long serialVersionUID = 1L;
-
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
@@ -349,6 +355,8 @@ public class OpeSysStaff implements Serializable {
     public static final String COL_IF_SAFE_CODE = "if_safe_code";
 
     public static final String COL_SAFE_CODE = "safe_code";
+
+    public static final String COL_SYSTEM_ROOT = "system_root";
 
     public static final String COL_CREATED_BY = "created_by";
 

@@ -3,8 +3,7 @@ package com.redescooter.ses.web.ros.service.excel;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-
-import javax.servlet.http.HttpServletResponse;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 
 
 /**
@@ -25,17 +24,10 @@ public interface ExcelService<T extends GeneralEnter> {
     ImportExcelPartsResult readExcelDataByParts(ImportPartsEnter enter);
 
     /**
-     * 零部件模板下载
+     * 零部件表格导入
      *
+     * @param enter
      * @return
      */
-    void download(String fileName, String path);
-
-    /**
-     * 询价单数据导出
-     * @param fileName
-     * @param path
-     */
-    void downloadInquiryExcel(String fileName, String path);
-
+    ImportExcelPartsResult readExcelDataByParameter(ImportParameterEnter enter);
 }

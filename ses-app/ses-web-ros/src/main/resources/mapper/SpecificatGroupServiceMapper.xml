@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatGroupServiceMapper">
+
+
+    <select id="listNum" resultType="int">
+        select count(*) from ope_specificat_group gp where gp.dr = 0
+        <include refid="groupListCondition">
+        </include>
+    </select>
+
+    <sql id="groupListCondition">
+        <if test="enter.groupName != null and enter.groupName != ''">
+            and gp.group_name like concat ('%', #{enter.groupName}, '%')
+        </if>
+    </sql>
+
+    <select id="groupList" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult">
+        select
+           gp.id,
+           gp.group_name,
+           gp.production_type,
+           gp.created_time,
+           gp.updated_time,
+           staff1.full_name as createdName,
+           staff2.full_name as updatedName
+        from ope_specificat_group gp
+        left join ope_sys_staff staff1 on staff1.id = gp.created_by
+        left join ope_sys_staff staff2 on staff2.id = gp.updated_by
+        where gp.dr = 0
+        <include refid="groupListCondition">
+        </include>
+        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+
+    <select id="specificatGroupData"
+            resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
+        select
+           gp.id as groupId,
+           gp.group_name,
+           gp.production_type
+        from ope_specificat_group gp
+        where gp.dr = 0
+    </select>
+
+
+</mapper>

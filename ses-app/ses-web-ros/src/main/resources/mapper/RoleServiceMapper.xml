@@ -47,6 +47,7 @@
             r.role_name,
             r.role_code,
             p.position_name,
+            p.position_status,
             r.sort,
             r.role_status,
             r.role_desc,
@@ -66,7 +67,8 @@
 
     <select id="totalRows" resultType="int">
         select count(*) from ope_sys_role r
-        right JOIN ope_sys_position p on r.position_id =  p.id
+        left JOIN ope_sys_position p on r.position_id =  p.id
+        left join ope_sys_dept dept on dept.id = p.dept_id
         where r.dr = 0 and p.dr = 0
         <include refid="roleListCondition"></include>
     </select>
@@ -84,6 +86,7 @@
           r.position_id
         from ope_sys_role r
         left join ope_sys_position p on r.position_id = p.id
+        left join ope_sys_dept dept on dept.id = p.dept_id
         where r.dr = 0
         <include refid="roleListCondition"></include>
         order by r.sort,r.create_time desc
@@ -91,8 +94,12 @@
     </select>
 
     <sql id="roleListCondition">
+            and r.system_root is null
         <if test="enter.positionId != null and enter.positionId != ''">
             and r.position_id = #{enter.positionId}
+        </if>
+        <if test="enter.deptId != null and enter.deptId != ''">
+            and dept.id = #{enter.deptId}
         </if>
         <if test="enter.roleStatus != null">
             and r.role_status = #{enter.roleStatus}
@@ -114,4 +121,30 @@
             </choose>
         </if>
     </sql>
+
+    <select id="roleStaffs" resultType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
+        select
+          *
+        from ope_sys_staff staff
+        left join ope_sys_user_role ur on ur.user_id = staff.id
+        where staff.dr = 0 and ur.role_id = #{roleId} and staff.status = 1
+    </select>
+
+    <select id="rolesByDeptAndPosition" resultType="com.redescooter.ses.web.ros.dm.OpeSysRole">
+        select
+          role.*
+        from ope_sys_role role
+        left join ope_sys_position pos on pos.id = role.position_id
+        left join ope_sys_dept dept on dept.id = pos.dept_id
+        where role.dr = 0 and pos.dr = 0 and dept.dr = 0 and role.system_root is null
+        <if test="enter.positionId != null and enter.positionId != ''">
+            and role.position_id = #{enter.positionId}
+        </if>
+        <if test="enter.deptId != null and enter.deptId != ''">
+            and dept.id = #{enter.deptId}
+        </if>
+        <if test="enter.type == 2">
+            and role.role_status = 1
+        </if>
+    </select>
 </mapper>

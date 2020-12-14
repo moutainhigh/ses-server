@@ -1,8 +1,7 @@
 package com.redescooter.ses.web.ros.vo.website;
 
-import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +14,7 @@ import lombok.*;
  * @Date2020/5/20 16:55
  * @Version V1.0
  **/
-@ApiModel(value = "存储邮箱名称", description = "存储邮箱名称")
+@ApiModel(value = "Mail subscription", description = "Mail subscription")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -23,10 +22,10 @@ import lombok.*;
 @Builder
 public class StorageEamilEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "主键", required = true)
-    @NotNull(code = ValidationExceptionCode.ID_IS_EMPTY, message = "主键不能为空")
+    @ApiModelProperty(value = "id", required = true)
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主键不能为空")
     private Long id;
 
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value = "email")
     private String email;
 }

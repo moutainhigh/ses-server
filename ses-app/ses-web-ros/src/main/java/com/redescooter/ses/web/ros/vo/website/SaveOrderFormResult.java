@@ -16,7 +16,7 @@ import io.swagger.annotations.*;
  * @Version：1.3
  * @create: 2020/05/14 09:57
  */
-@ApiModel(value = "保存询价单出参", description = "保存询价单出参")
+@ApiModel(value = "Inquiry result return", description = "Inquiry result return")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数

@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     private StaffService staffService;
     @Autowired
     private OpeSysStaffService opeSysStaffService;
-    @Autowired
+    @Reference
     private IdAppService idAppService;
     @Autowired
     private SysDeptService sysDeptService;
@@ -68,7 +69,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      */
     @Override
     public List<PositionTypeResult> selectPositionType(DeptIdEnter enter) {
-        return positionServiceMapper.positionTypeList(enter.getTenantId(),enter.getDeptId());
+        return positionServiceMapper.positionTypeList(enter);
     }
 
     /**
@@ -96,27 +97,29 @@ public class SysPositionServiceImpl implements SysPositionService {
         if (page.getKeyWord() != null && page.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(page);
         }
-        int totalRows = positionServiceMapper.listcount(page,flag?null:deptIds);
+        int totalRows = positionServiceMapper.listcount(page,flag?null:deptIds,Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(page);
         }
-        List<PositionResult> list = positionServiceMapper.list(page,flag?null:deptIds);
+        List<PositionResult> list = positionServiceMapper.list(page,flag?null:deptIds,Constant.SYSTEM_ROOT);
 
         //获取岗位下的人员
         List<Long> positionIds = list.stream().map(PositionResult::getId).collect(Collectors.toList());
-        QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        qw.in(OpeSysStaff.COL_POSITION_ID, positionIds);
-        List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
-        if (CollectionUtils.isNotEmpty(staffs)) {
-            Map<Long, List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
-            for (Long positionId : map.keySet()) {
-                for (PositionResult result : list) {
-                    if (Objects.deepEquals(result.getId(), positionId)) {
-                        result.setPositionPersonnel(map.get(positionId).size());
+        if (CollectionUtils.isNotEmpty(positionIds)){
+            QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
+            qw.in(OpeSysStaff.COL_POSITION_ID, positionIds);
+            List<OpeSysStaff> staffs = opeSysStaffService.list(qw);
+            if (CollectionUtils.isNotEmpty(staffs)) {
+                Map<Long, List<OpeSysStaff>> map = staffs.stream().collect(Collectors.groupingBy(OpeSysStaff::getPositionId));
+                for (Long positionId : map.keySet()) {
+                    for (PositionResult result : list) {
+                        if (Objects.deepEquals(result.getId(), positionId)) {
+                            result.setPositionPersonnel(map.get(positionId).size());
+                        }
                     }
+
+
                 }
-
-
             }
         }
         return PageResult.create(page, totalRows, list);
@@ -204,7 +207,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     void checkPositionName(Long id,String positionName,Long deptId){
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
         qw.eq(OpeSysPosition.COL_POSITION_NAME,positionName);
-        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
+//        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
         if(id != null){
             qw.ne(OpeSysPosition.COL_ID,id);
         }

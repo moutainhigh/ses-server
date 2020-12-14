@@ -97,6 +97,14 @@ public class StripeServiceImpl implements StripeService {
     @Value("${Request.publicKey}")
     private String publicSecret;
 
+    /**
+     * 欧元 最小单位为 欧分
+     * 优惠时间内，预定金价格为190
+     * 优惠时间已过，恢复原价590
+     **/
+    static Long payAmount = 59000L;
+    //static Long payAmount=19000L;
+
     @SneakyThrows
     @Override
     public StringResult paymentIntent(IdEnter enter) {
@@ -107,19 +115,21 @@ public class StripeServiceImpl implements StripeService {
 
         if (payOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
+                    ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
         Map<String, String> map = new HashMap<>();
         map.put(integrationCheck, PaymentEvent);
         map.put("order_id", String.valueOf(payOrder.getId()));
         map.put("order_no", payOrder.getOrderNo());
 
-        //暂时支付为190 欧元 优惠500欧元 最小单位为 欧分
-        Long payAmount=19000L;
         try {
-            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder().setReceiptEmail(ReceiptEmail)
-                .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
-                .setAmount(payAmount).putAllMetadata(map).build();
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setReceiptEmail(ReceiptEmail)
+                    .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
+                    /**欧元转换欧分**/
+                    .setAmount(payOrder.getPrepaidDeposit().multiply(new BigDecimal("100")).longValue())
+                    .putAllMetadata(map)
+                    .build();
 
             PaymentIntent intent = PaymentIntent.create(params);
        /*   String decrypt =null;
@@ -306,10 +316,17 @@ public class StripeServiceImpl implements StripeService {
         if (customerInquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        // 订单数据保存
-        //todo 定金支付成功后优惠500 欧元
-        BigDecimal price = new BigDecimal("690");
-        customerInquiry.setTotalPrice(customerInquiry.getTotalPrice().subtract(price));
+
+        BigDecimal price = customerInquiry.getPrepaidDeposit();
+
+        /**
+         * 已付金额
+         */
+        customerInquiry.setAmountPaid(customerInquiry.getAmountPaid().add(price));
+        /**
+         * 待付金额
+         */
+        customerInquiry.setAmountObligation(customerInquiry.getAmountObligation().subtract(price).subtract(customerInquiry.getAmountDiscount()));
 
         customerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         customerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
@@ -349,7 +366,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setUserRequestId("0");
         enter.setToUserId(0L);
         enter.setUserId(0L);
-        enter.setPrice(String.valueOf(customerInquiry.getTotalPrice().intValue()));
+        enter.setPrice(customerInquiry.getAmountObligation().toString());
         enter.setFullName(customerInquiry.getFirstName()+" "+customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);

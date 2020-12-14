@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproduction.SaleScooterMapper">
+
+
+
+    <select id="saleScooterTotal" resultType="int">
+        select count(*) from ope_sale_scooter scooter
+        where scooter.dr = 0
+        <include refid="saleScooterListCondition"></include>
+    </select>
+
+    <sql id="saleScooterListCondition">
+        <if test="enter.specificatId != null">
+            and scooter.group_id = #{enter.specificatId}
+        </if>
+        <if test="enter.saleStutas != null">
+            and scooter.sale_stutas = #{enter.saleStutas}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (scooter.product_name like concat('%', #{enter.keyword}, '%') or
+            scooter.product_code like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </sql>
+
+    <select id="saleScooterList" resultType="com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult">
+       select
+        scooter.id,
+        scooter.product_name,
+        scooter.product_code,
+        scooter.specificat_id,
+        specificattype.specificat_name,
+        scooter.group_id,
+        specificatgroup.group_name,
+        scooter.color_id,
+        color.color_name,
+        color.color_value,
+        scooter.sale_stutas
+       from ope_sale_scooter scooter
+       left join ope_specificat_type specificattype on scooter.specificat_id = specificattype.id
+       left join ope_specificat_group specificatgroup on scooter.group_id = specificatgroup.id
+       left join ope_color color on scooter.color_id = color.id
+        where scooter.dr = 0
+        <include refid="saleScooterListCondition"></include>
+        order by scooter.created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+</mapper>

@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 
 
-@ApiModel(value = "登录成功", description = "登录成功")
+@ApiModel(value = "Token Result", description = "Token Result")
 @Data //生成getter,setter等函数
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
@@ -21,10 +21,10 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 public class TokenResult extends GeneralResult {
 
-    @ApiModelProperty(value = "token值")
+    @ApiModelProperty(value = "token")
     private String token;
 
-    @ApiModelProperty("是否需要重置密码")
-    private boolean resetPsd;
+//    @ApiModelProperty("Do you need to reset your password")
+//    private boolean resetPsd;
 
 }
