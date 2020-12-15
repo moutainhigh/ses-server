@@ -242,4 +242,9 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.insertScooter(scooter);
     }
 
+    @Override
+    public int countByScooter() {
+        return scooterServiceMapper.countByScooter();
+    }
+
 }

@@ -102,4 +102,13 @@ public interface ScooterServiceMapper {
     */
     int insertScooter(ScoScooter scooter);
 
+    /**
+     * 查询车辆数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2020/12/15
+     */
+    int countByScooter();
+
 }

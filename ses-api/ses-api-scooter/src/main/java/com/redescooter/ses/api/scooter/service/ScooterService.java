@@ -85,4 +85,13 @@ public interface ScooterService {
     */
     int syncScooterData(SyncScooterDataDTO syncScooterData);
 
+    /**
+     * 查询车辆数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2020/12/15
+    */
+    int countByScooter();
+
 }

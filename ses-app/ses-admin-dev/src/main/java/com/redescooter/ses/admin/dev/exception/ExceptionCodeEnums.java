@@ -67,7 +67,9 @@ public enum ExceptionCodeEnums {
 
     DATA_FORMAT_ERROR(10034, "数据格式有误"),
 
-    SCOOTER_NOT_EXISTS(10035, "车辆不存在")
+    SCOOTER_NOT_EXISTS(10035, "车辆不存在"),
+
+    SPECIFIC_TYPE_NOT_EXISTS(10036, "规格类型不存在")
     ;
 
     private int code;

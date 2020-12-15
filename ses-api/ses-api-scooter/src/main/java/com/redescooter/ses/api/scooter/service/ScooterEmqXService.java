@@ -1,10 +1,10 @@
 package com.redescooter.ses.api.scooter.service;
 
-import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 
 
 /**
@@ -46,12 +46,11 @@ public interface ScooterEmqXService {
 
     /**
      * 设置车辆型号 -- 通过EMQ X进行通知到平板端
-     * @param tabletSn
-     * @param scooterModel 详情参考：{@link ScooterModelEnum}
+     * @param publishDTO
      * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
      * @date 2020/12/1
     */
-    GeneralResult setScooterModel(String tabletSn, Integer scooterModel);
+    GeneralResult setScooterModel(SetScooterModelPublishDTO publishDTO);
 
 }

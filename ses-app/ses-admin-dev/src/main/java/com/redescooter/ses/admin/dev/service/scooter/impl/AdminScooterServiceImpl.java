@@ -2,6 +2,7 @@ package com.redescooter.ses.admin.dev.service.scooter.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.admin.dev.constant.SequenceName;
+import com.redescooter.ses.admin.dev.constant.SpecificDefNameConstant;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterMapper;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
@@ -11,16 +12,19 @@ import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.*;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.hub.service.operation.SysUserService;
 import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -35,10 +39,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author assert
@@ -120,7 +122,6 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
         Long id = idAppService.getId(SequenceName.ADM_SCOOTER);
         admScooter.setId(id);
-        admScooter.setScooterController(ScooterModelEnum.getScooterModelType(specificGroup.getGroupName()));
         admScooter.setColorName(color.getColorName());
         admScooter.setColorValue(color.getColorValue());
         admScooter.setGroupName(specificGroup.getGroupName());
@@ -179,6 +180,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
     @Override
     public GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO) {
+        List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = new ArrayList<>();
         /**
          * 参数校验 -- 检查数据库中是否存在对应数据
          */
@@ -188,20 +190,78 @@ public class AdminScooterServiceImpl implements AdminScooterService {
                     ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getMessage());
         }
 
-        SpecificGroupDTO specificGroup = specificService.getSpecificGroupById(paramDTO.getGroupId());
-        if (null == specificGroup) {
-            throw new SesAdminDevException(ExceptionCodeEnums.GROUP_NOT_EXISTS.getCode(),
-                    ExceptionCodeEnums.GROUP_NOT_EXISTS.getMessage());
+        SpecificTypeDTO specificType = specificService.getSpecificTypeById(paramDTO.getModelId());
+        if (null == specificType) {
+            throw new SesAdminDevException(ExceptionCodeEnums.SPECIFIC_TYPE_NOT_EXISTS.getCode(),
+                    ExceptionCodeEnums.SPECIFIC_TYPE_NOT_EXISTS.getMessage());
         }
 
-        List<SpecificDefGroupPublishDTO> specificDefGroupList = null;
+        /**
+         * 查询当前车辆电池信息,这里主要是为了拿车辆电池的出厂号/流水号信息(用于设置软体时使用)
+         * TODO -------------
+         */
 
+
+        /**
+         * 查询车辆型号自定义项信息
+         */
+        List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificType.getId());
+
+        /**
+         * {specificatId, List<SpecificDefDTO>}
+         */
+        Map<Long, List<SpecificDefDTO>> specificDefGroupMap = specificDefList.stream().collect(
+                Collectors.groupingBy(SpecificDefDTO::getSpecificatId)
+        );
+
+        for (Map.Entry<Long, List<SpecificDefDTO>> map : specificDefGroupMap.entrySet()) {
+            /**
+             * {defName, defValue}
+             */
+            Map<String, String> specificDefMap = map.getValue().stream().collect(
+                    Collectors.toMap(SpecificDefDTO::getDefName, SpecificDefDTO::getDefValue)
+            );
+
+            /**
+             * 组装自定义项数据
+             */
+            SpecificDefGroupPublishDTO defGroupPublish = SpecificDefGroupPublishDTO.builder()
+                    .wheelDiameter(specificDefMap.get(SpecificDefNameConstant.WHEEL_DIAMETER))
+                    .speedRatio(specificDefMap.get(SpecificDefNameConstant.SPEED_RATIO))
+                    .limitSpeedBos(specificDefMap.get(SpecificDefNameConstant.LIMIT_SPEED_BOS))
+                    .limiting(specificDefMap.get(SpecificDefNameConstant.LIMITING))
+                    .speedLimit(specificDefMap.get(SpecificDefNameConstant.SPEED_LIMIT))
+                    .socRedWarning(specificDefMap.get(SpecificDefNameConstant.SOC_RED_WARNING))
+                    .orangeWarning(specificDefMap.get(SpecificDefNameConstant.ORANGE_WARNING))
+                    .stallSOC(specificDefMap.get(SpecificDefNameConstant.STALL_SOC))
+                    .setSOCTo0AtStallUndervoltage(specificDefMap.get(SpecificDefNameConstant.SET_SOC_TO_0_AT_STALL_UNDER_VOLTAGE))
+                    .stallVoltageUndervoltage(specificDefMap.get(SpecificDefNameConstant.STALL_VOLTAGE_UNDER_VOLTAGE))
+                    .voltageLegalRecognitionMin(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MAX))
+                    .voltageLegalRecognitionMax(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MIN))
+                    .controllerUndervoltage(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE))
+                    .controllerUndervoltageRecovery(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE_RECOVERY))
+                    .build();
+
+            specificDefGroupPublishList.add(defGroupPublish);
+        }
+
+        /**
+         * 发送EMQ消息,通知车辆那边进行升级处理
+         */
         SetScooterModelPublishDTO publishDTO = new SetScooterModelPublishDTO();
         publishDTO.setTabletSn(adminScooter.getSn());
-        publishDTO.setType(ScooterModelEnum.getScooterModelType(specificGroup.getGroupName()));
-        publishDTO.setSpecificDefGroupList(null);
+        publishDTO.setType(ScooterModelEnum.getScooterModelType(specificType.getSpecificatName()));
+        publishDTO.setSpecificDefGroupList(specificDefGroupPublishList);
+
+        scooterEmqXService.setScooterModel(publishDTO);
 
         return new GeneralResult(paramDTO.getRequestId());
+    }
+
+    @Override
+    public GeneralResult resetScooterModel(IdEnter enter) {
+
+        return null;
     }
 
 
@@ -255,7 +315,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         int month = cal.get(Calendar.MONTH ) + 1;
 
         // 查询当前数据库车辆数量
-        int count = adminScooterMapper.countByAdminScooter(null);
+        int count = scooterService.countByScooter();
 
         // 编号规则：区域 + 产品范围 + 结构类型 + 额定功率 + 生产地点 + 年份 + 月份 + 生产流水号(数量从1开始)
         StringBuilder sb = new StringBuilder();
