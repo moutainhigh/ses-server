@@ -10,15 +10,10 @@
         from con_driver_ride_stat_detail drsd
         where drsd.dr = 0
         and drsd.driver_id = #{userId}
-        <if test="dateTime == null">
-            and (DATE_FORMAT(drsd.create_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(now(), INTERVAL 1 month),
-            '%Y-%m-%d')
-            and DATE_FORMAT(now(), '%Y-%m-%d'))
-        </if>
-        <if test="dateTime != null">
-            and (DATE_FORMAT(drsd.create_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(#{dateTime} , INTERVAL 1
-            month),'%Y-%m-%d')
-            and DATE_FORMAT(#{dateTime}, '%Y-%m-%d'))
+        <if test="startDateTime != null">
+            <if test="endDateTime != null">
+                and drsd.create_time between #{startDateTime} and #{endDateTime}
+            </if>
         </if>
         group by times
     </select>
