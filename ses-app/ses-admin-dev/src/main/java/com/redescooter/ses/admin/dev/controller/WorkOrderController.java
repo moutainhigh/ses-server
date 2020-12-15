@@ -32,14 +32,14 @@ public class WorkOrderController {
     @PostMapping(value = "/workOrderList")
     @ApiOperation(value = "工单列表", response = WorkOrderListResult.class)
     public Response<PageResult<WorkOrderListResult>> workOrderList(@ModelAttribute @ApiParam("请求参数") WorkOrderListEnter enter) {
-        return new Response(workOrderService.workOrderList(enter));
+        return new Response<>(workOrderService.workOrderList(enter));
     }
 
 
     @PostMapping(value = "/workOrderSave")
     @ApiOperation(value = "工单新增", response = GeneralResult.class)
     public Response<GeneralResult> workOrderSave(@ModelAttribute @ApiParam("请求参数") WorkOrderSaveOrUpdateEnter enter) {
-        return new Response(workOrderService.workOrderSave(enter));
+        return new Response<>(workOrderService.workOrderSave(enter));
     }
 
 
@@ -53,27 +53,27 @@ public class WorkOrderController {
     @PostMapping(value = "/workOrderDelete")
     @ApiOperation(value = "工单删除", response = GeneralResult.class)
     public Response<GeneralResult> workOrderDelete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response(workOrderService.workOrderDelete(enter));
+        return new Response<>(workOrderService.workOrderDelete(enter));
     }
 
 
     @PostMapping(value = "/workOrderDetail")
     @ApiOperation(value = "工单详情", response = GeneralResult.class)
     public Response<WorkOrderDetailResult> workOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response(workOrderService.workOrderDetail(enter));
+        return new Response<>(workOrderService.workOrderDetail(enter));
     }
 
 
     @PostMapping(value = "/workOrderStatusFlow")
     @ApiOperation(value = "工单状态流转(只能往当前状态的后面的状态跳  随便跳)", response = GeneralResult.class)
     public Response<GeneralResult> workOrderStatusFlow(@ModelAttribute @ApiParam("请求参数") StatusFlowEnter enter) {
-        return new Response(workOrderService.workOrderStatusFlow(enter));
+        return new Response<>(workOrderService.workOrderStatusFlow(enter));
     }
 
 
     @PostMapping(value = "/workOrderReply")
     @ApiOperation(value = "工单回复", response = GeneralResult.class)
     public Response<GeneralResult> workOrderReply(@ModelAttribute @ApiParam("请求参数") workOrderReplyEnter enter) {
-        return new Response(workOrderService.workOrderReply(enter));
+        return new Response<>(workOrderService.workOrderReply(enter));
     }
 }

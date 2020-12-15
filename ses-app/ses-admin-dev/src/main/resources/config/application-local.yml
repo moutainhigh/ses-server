@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
-  metadata-report:
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://192.168.2.200:52181
+#  metadata-report:
+#    address: zookeeper://192.168.2.200:52181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -89,3 +89,8 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
+# 应用更新包文件上传下载路径
+fileUpload:
+  path: /usr/local/nginx/soft/download/
+  download: http://192.168.2.200/download/
