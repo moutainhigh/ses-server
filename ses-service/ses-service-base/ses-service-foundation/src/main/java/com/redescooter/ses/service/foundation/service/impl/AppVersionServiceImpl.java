@@ -62,8 +62,10 @@ public class AppVersionServiceImpl implements AppVersionService {
         if (null != appVersionResult) {
             // 去operation库查询用户的姓名和头像
             SysUserStaffDTO userStaff = sysUserService.getSysUserStaffByUserId(appVersionResult.getCreatedBy());
-            appVersionResult.setCreatedName(userStaff.getFullName());
-            appVersionResult.setHeadPortrait(userStaff.getEmployeePicture());
+            if (userStaff != null){
+                appVersionResult.setCreatedName(userStaff.getFullName());
+                appVersionResult.setHeadPortrait(userStaff.getEmployeePicture());
+            }
         }
         return appVersionResult;
     }
