@@ -1,5 +1,6 @@
 package com.redescooter.ses.admin.dev.service.base.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.admin.dev.dm.AdmSysUser;
@@ -11,10 +12,10 @@ import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -451,10 +452,10 @@ public class AdminTokenServiceImpl implements AdminTokenService {
 
     /**
      * @Author Aleks
-     * @Description  
+     * @Description
      * @Date  2020/12/3 14:06
      * @Param
-     * @return 
+     * @return
      **/
     @Override
     public GeneralResult logout(GeneralEnter enter) {
@@ -478,6 +479,41 @@ public class AdminTokenServiceImpl implements AdminTokenService {
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {
         return userTokenService.checkToken(enter);
+    }
+
+
+    @Override
+    public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter) {
+        if (Strings.isNullOrEmpty(enter.getMail())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.EMAIL_NOT_NULL.getCode(), ExceptionCodeEnums.EMAIL_NOT_NULL.getMessage());
+        }
+        String decryptMail = null;
+        if (StringUtils.isNotEmpty(enter.getMail())) {
+            try {
+                //邮箱解密
+                decryptMail = RsaUtils.decrypt(enter.getMail(), privateKey);
+            } catch (Exception e) {
+                throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setMail(decryptMail);
+
+            AdmSysUser user = admSysUserService.getOne(new LambdaQueryWrapper<AdmSysUser>().eq(AdmSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(AdmSysUser::getLoginName,
+                    enter.getMail()).last("limit 1"));
+            if (user == null){
+                throw new SesAdminDevException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            }
+            BaseMailTaskEnter sendEnter = new BaseMailTaskEnter();
+            sendEnter.setName(enter.getMail().substring(0, enter.getMail().indexOf("@")));
+            sendEnter.setEvent(MailTemplateEventEnums.OMS_FORGET_PSD_SEND_MAIL.getEvent());
+            sendEnter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+            sendEnter.setMailAppId(AppIDEnums.SES_DEV.getValue());
+            sendEnter.setToMail(enter.getMail());
+            sendEnter.setRequestId(enter.getRequestId());
+            sendEnter.setUserRequestId(enter.getRequestId());
+            sendEnter.setToUserId(user.getId());
+            mailMultiTaskService.addSetPasswordWebUserTask(sendEnter);
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

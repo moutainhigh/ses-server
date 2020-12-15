@@ -16,6 +16,7 @@ import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderLogServic
 import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         BeanUtils.copyProperties(enter,workOrder);
         workOrder.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER));
         workOrder.setOrderNo(createWorkOrderNo());
+        workOrder.setWorkOrderStatus(1);
         workOrder.setCreatedBy(enter.getUserId());
         workOrder.setCreatedTime(new Date());
         workOrder.setUpdatedBy(enter.getUserId());
@@ -97,7 +99,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         String workOrderNo = "";
         // 判断有没有工单  没有的话 直接返回“000001”  有的话 需要进行自动递增
         QueryWrapper<PlaWorkOrder> qw = new QueryWrapper<>();
-        qw.ne(PlaWorkOrder.COL_DR,0);
+        qw.eq(PlaWorkOrder.COL_DR,0);
         qw.orderByDesc(PlaWorkOrder.COL_ORDER_NO);
         qw.last("limit 1");
         PlaWorkOrder workOrder = plaWorkOrderService.getOne(qw);
@@ -153,6 +155,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         result = workOrderMapper.workOrderDetail(enter);
         // 找到工单的聊天记录
         List<WorkOrderLogResult> logs = workOrderMapper.workOrderLogs(enter.getId());
+        if(CollectionUtils.isNotEmpty(logs)){
+            for (WorkOrderLogResult log : logs) {
+                log.setCreatedByName(workOrder.getContactEmail());
+            }
+        }
         result.setLogs(logs);
         return result;
     }

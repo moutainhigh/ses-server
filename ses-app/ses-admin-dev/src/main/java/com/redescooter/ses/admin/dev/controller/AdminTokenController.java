@@ -80,7 +80,7 @@ public class AdminTokenController {
     @ApiOperation(value = "忘记密码发送邮箱", response = BooleanResult.class)
     @PostMapping(value = "/sendForgetPasswordEmail")
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
-        return new Response<>();
+        return new Response<>(adminTokenService.sendForgetPasswordEmail(enter));
     }
 
 

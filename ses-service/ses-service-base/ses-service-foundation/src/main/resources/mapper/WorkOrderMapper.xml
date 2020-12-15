@@ -54,8 +54,8 @@
             user.LOGIN_NAME AS createdByName
         from
         pla_work_order workorder
-        left join pla_user user on user.id = order.created_by
-        where workorder.dr = 0 and user.dr = 0
+        left join pla_user user on user.id = workorder.created_by
+        where workorder.dr = 0
         and workorder.id = #{enter.id}
     </select>
 
@@ -67,6 +67,6 @@
             user.LOGIN_NAME AS createdByName
         from pla_work_order_log log
         left join pla_user user on user.id = log.created_by
-        where log.dr = 0 and user.dr = 0 and log.work_order_id = #{workOrderId}
+        where log.dr = 0 and log.work_order_id = #{workOrderId}
     </select>
 </mapper>

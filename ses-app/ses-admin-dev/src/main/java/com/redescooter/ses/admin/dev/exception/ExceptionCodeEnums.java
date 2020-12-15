@@ -67,7 +67,13 @@ public enum ExceptionCodeEnums {
 
     DATA_FORMAT_ERROR(10034, "数据格式有误"),
 
-    SCOOTER_NOT_EXISTS(10035, "车辆不存在")
+    SCOOTER_NOT_EXISTS(10035, "车辆不存在"),
+
+    EMAIL_NOT_NULL(10037, "邮箱不能为空"),
+
+    DATA_EXCEPTION(10038, "数据异常"),
+
+
     ;
 
     private int code;
