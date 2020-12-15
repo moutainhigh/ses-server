@@ -43,6 +43,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -238,7 +239,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
         QueryAppVersionResultDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());
-        List<String> tabletSnList = paramDTO.getTabletSnList();
+        List<String> tabletSnList = Arrays.asList(paramDTO.getTabletSnList().split(","));
 
         // 全部升级
         if (4 == paramDTO.getReleaseType()) {
@@ -264,26 +265,16 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
-    public GeneralResult setScooterModel(String tabletSn, Integer scooterModel) {
-        String scooterNo = scooterMapper.getScooterNoByTabletSn(tabletSn);
-        if (StringUtils.isBlank(scooterNo)) {
-            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
-        }
-
+    public GeneralResult setScooterModel(SetScooterModelPublishDTO publishDTO) {
         /**
          * 消息通知下发,通知平板端进行车型设置操作
          */
-        SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
-//        publish.setTabletSn(tabletSn);
-//        publish.setType(scooterModel);
-
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
-                    JSONObject.toJSONString(publish));
+            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()),
+                    JSONObject.toJSONString(publishDTO));
         });
 
-        return null;
+        return new GeneralResult();
     }
 
 

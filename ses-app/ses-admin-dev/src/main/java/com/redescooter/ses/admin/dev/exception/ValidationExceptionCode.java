@@ -23,7 +23,9 @@ public interface ValidationExceptionCode {
     int MAC_ADDRESS_IS_NOT_EMPTY = 10005;
     // 车辆配件不能为空
     int SCOOTER_PARTS_IS_NOT_EMPTY = 10006;
+    // 型号id不能为空
+    int MODEL_ID_IS_NOT_EMPTY = 10007;
     // id不能为空
-    int ID_IS_NOT_EMPTY = 100007;
+    int ID_IS_NOT_EMPTY = 10008;
 
 }

@@ -62,7 +62,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         if (null != appVersionResult) {
             // 去operation库查询用户的姓名和头像
             SysUserStaffDTO userStaff = sysUserService.getSysUserStaffByUserId(appVersionResult.getCreatedBy());
-            if (userStaff != null){
+            if (null != userStaff) {
                 appVersionResult.setCreatedName(userStaff.getFullName());
                 appVersionResult.setHeadPortrait(userStaff.getEmployeePicture());
             }
@@ -180,12 +180,17 @@ public class AppVersionServiceImpl implements AppVersionService {
                     ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
         }
 
+        // 已发布的版本不能再次发布
+        if (!AppVersionStatusEnum.UNRELEASED.getStatus().equals(appVersion.getStatus())) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getCode(),
+                    ExceptionCodeEnums.VERSION_STATUS_IS_NOT_UNRELEASED.getMessage());
+        }
+
         /**
          * 发布版本除了SCS(车载平板)需要调用emq服务通知平板进行更新其余直接修改版本状态为 “生效中”
          * 单服务内 -- 多事务操作推荐使用编程式事务
          */
         transactionTemplate.execute(releaseAppVersion -> {
-            int result = 1;
             try {
                 if (AppVersionTypeEnum.SCS.getType().equals(paramDTO.getType())) {
                     scooterEmqXService.updateScooterTablet(paramDTO);
@@ -201,11 +206,10 @@ public class AppVersionServiceImpl implements AppVersionService {
                 }
                 appVersionMapper.updateAppVersionStatusById(paramDTO.getId(), AppVersionStatusEnum.ACTIVE.getStatus());
             } catch (Exception e) {
-                result = 0;
-                releaseAppVersion.setRollbackOnly();
                 log.error("【发布版本失败】----{}", ExceptionUtils.getStackTrace(e));
+                releaseAppVersion.setRollbackOnly();
             }
-            return result;
+            return 1;
         });
 
         return 1;

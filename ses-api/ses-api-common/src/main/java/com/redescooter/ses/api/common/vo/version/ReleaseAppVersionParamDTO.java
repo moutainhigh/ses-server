@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 发布版本入参DTO
@@ -32,10 +31,10 @@ public class ReleaseAppVersionParamDTO implements Serializable {
     @NotNull(code = ValidationExceptionBaseCode.RELEASE_TYPE_IS_EMPTY, message = "发布类型不能为空")
     private Integer releaseType;
 
-    @ApiModelProperty(value = "平板序列号集合", dataType = "List<String>")
-    private List<String> tabletSnList;
+    @ApiModelProperty(value = "平板序列号集合(用“,”号隔开)", dataType = "String")
+    private String tabletSnList;
 
-    @ApiModelProperty(value = "区域id集合", dataType = "List<Long>")
-    private List<Long> areaIdList;
+    @ApiModelProperty(value = "区域id集合(用“,”号隔开)", dataType = "String")
+    private String areaIdList;
 
 }

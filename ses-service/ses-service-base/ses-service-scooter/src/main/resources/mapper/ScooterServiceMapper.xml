@@ -278,4 +278,10 @@
         </trim>
     </insert>
 
+    <!--查询车辆数量-->
+    <select id="countByScooter" resultType="java.lang.Integer">
+        select count(*) from sco_scooter
+	    where dr = 0
+    </select>
+
 </mapper>

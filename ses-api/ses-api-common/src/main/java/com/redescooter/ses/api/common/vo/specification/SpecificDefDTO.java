@@ -1,9 +1,10 @@
-package com.redescooter.ses.web.ros.vo.specificat.dto;
+package com.redescooter.ses.api.common.vo.specification;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,13 +14,13 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "规格自定义项")
-public class SpecificDefDTO {
+public class SpecificDefDTO implements Serializable {
 
     @ApiModelProperty(value = "主键id", dataType = "Long")
     private Long id;
 
     @ApiModelProperty(value = "所属规格id", dataType = "Long")
-    private Long specificId;
+    private Long specificatId;
 
     @ApiModelProperty(value = "自定义项分组id(入参时无需传递)", dataType = "Long")
     private Long specificDefGroupId;

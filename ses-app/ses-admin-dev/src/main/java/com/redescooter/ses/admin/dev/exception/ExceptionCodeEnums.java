@@ -69,6 +69,8 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_NOT_EXISTS(10035, "车辆不存在"),
 
+    SPECIFIC_TYPE_NOT_EXISTS(10036, "规格类型不存在"),
+
     EMAIL_NOT_NULL(10037, "邮箱不能为空"),
 
     DATA_EXCEPTION(10038, "数据异常"),

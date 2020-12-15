@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.dao.specificat;
 
-import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefGroupDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

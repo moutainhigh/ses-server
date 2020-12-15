@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.dao.specificat;
 
-import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+
 
 /**
  * 规格自定义项相关 Mapper接口

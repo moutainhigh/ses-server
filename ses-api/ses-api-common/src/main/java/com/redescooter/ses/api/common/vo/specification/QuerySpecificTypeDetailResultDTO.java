@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.vo.specificat.dto;
+package com.redescooter.ses.api.common.vo.specification;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

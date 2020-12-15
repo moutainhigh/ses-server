@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -23,8 +25,6 @@ import com.redescooter.ses.web.ros.service.specificat.SpecificatDefService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.vo.specificat.*;
 import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
-import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefDTO;
-import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefGroupDTO;
 import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -397,7 +397,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             List<SpecificDefDTO> temp = defGroup.getGroupList();
             temp.forEach(t -> {
                 t.setId(idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF));
-                t.setSpecificId(id);
+                t.setSpecificatId(id);
                 t.setSpecificDefGroupId(defGroupId);
                 t.setCreatedBy(userId);
                 t.setCreatedTime(new Date());

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.SpecificDefGroupMapper">
+
+    <!--SpecificDefGroupDetailResultMap(查询自定义项分组详情)-->
+    <resultMap id="SpecificDefGroupDetailResultMap" type="com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="specificat_id" jdbcType="INTEGER" property="specificatId" />
+        <!--一对多映射(自定义项信息)-->
+        <collection property="groupList" ofType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
+            <result column="sd_id" jdbcType="BIGINT" property="id" />
+            <result column="def_name" jdbcType="VARCHAR" property="defName" />
+            <result column="def_value" jdbcType="VARCHAR" property="defValue" />
+        </collection>
+    </resultMap>
+
+    <!--根据specificId查询自定义项分组信息-->
+    <select id="getSpecificDefGroupBySpecificId" parameterType="java.lang.Long" resultMap="SpecificDefGroupDetailResultMap">
+        select sdg.*,sd.id sd_id, sd.def_name, sd.def_value
+	    from ope_specificat_def_group sdg
+	    left join ope_specificat_def sd
+	    on sdg.id = sd.def_group_id and sdg.dr = 0
+	    where sdg.dr = 0 and sdg.specificat_id = #{specificId}
+    </select>
+
+</mapper>

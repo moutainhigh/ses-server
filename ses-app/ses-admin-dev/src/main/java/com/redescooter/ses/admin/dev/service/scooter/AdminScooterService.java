@@ -5,6 +5,7 @@ import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 
 /**
@@ -49,5 +50,14 @@ public interface AdminScooterService {
      * @date 2020/12/14
     */
     GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO);
+
+    /**
+     * 重置车辆软体(将车辆重置成E50)
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2020/12/15
+    */
+    GeneralResult resetScooterModel(IdEnter enter);
 
 }
