@@ -54,13 +54,6 @@ public class AdminTokenController {
     }
 
 
-    @IgnoreLoginCheck
-    @ApiOperation(value = "修改密码", response = GeneralResult.class)
-    @PostMapping(value = "/changePassword")
-    public Response<GeneralResult> changePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
-        return new Response<>(adminTokenService.modifyPassword(enter));
-    }
-
 
     @ApiOperation(value = "登出", response = GeneralResult.class)
     @PostMapping(value = "/loginOut")
@@ -84,6 +77,10 @@ public class AdminTokenController {
     }
 
 
-
-
+    @IgnoreLoginCheck
+    @ApiOperation(value = "修改密码", response = GeneralResult.class)
+    @PostMapping(value = "/changePassword")
+    public Response<GeneralResult> changePassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+        return new Response<>(adminTokenService.modifyPassword(enter));
+    }
 }

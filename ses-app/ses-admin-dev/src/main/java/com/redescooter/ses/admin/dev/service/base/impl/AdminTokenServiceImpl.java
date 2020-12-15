@@ -358,12 +358,11 @@ public class AdminTokenServiceImpl implements AdminTokenService {
             throw new SesAdminDevException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
 
-        GetUserEnter getUser = getGetUserEnter(enter);
+
         QueryWrapper<AdmSysUser> emailUser = new QueryWrapper<>();
-        emailUser.eq(AdmSysUser.COL_LOGIN_NAME, getUser.getEmail());
-        emailUser.eq(AdmSysUser.COL_APP_ID, getUser.getAppId());
-        emailUser.eq(AdmSysUser.COL_SYSTEM_ID, getUser.getSystemId());
-        emailUser.eq(AdmSysUser.COL_ID, getUser.getUserId());
+        emailUser.eq(AdmSysUser.COL_LOGIN_NAME, enter.getLoginName());
+        emailUser.eq(AdmSysUser.COL_APP_ID, enter.getAppId());
+        emailUser.eq(AdmSysUser.COL_SYSTEM_ID, enter.getSystemId());
         emailUser.last("limit 1");
         AdmSysUser opeSysUser = admSysUserService.getOne(emailUser);
         if (opeSysUser == null) {
@@ -504,9 +503,9 @@ public class AdminTokenServiceImpl implements AdminTokenService {
             }
             BaseMailTaskEnter sendEnter = new BaseMailTaskEnter();
             sendEnter.setName(enter.getMail().substring(0, enter.getMail().indexOf("@")));
-            sendEnter.setEvent(MailTemplateEventEnums.OMS_FORGET_PSD_SEND_MAIL.getEvent());
+            sendEnter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
             sendEnter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
-            sendEnter.setMailAppId(AppIDEnums.SES_DEV.getValue());
+            sendEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
             sendEnter.setToMail(enter.getMail());
             sendEnter.setRequestId(enter.getRequestId());
             sendEnter.setUserRequestId(enter.getRequestId());
