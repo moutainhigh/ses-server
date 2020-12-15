@@ -102,13 +102,13 @@ public class AppVersionServiceImpl implements AppVersionService {
         if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
                 || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
             // 检查版本编码是否存在
-            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getVersionCode(),
+            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getCode(),
                     appVersionDTO.getType());
             if (StringUtils.isNotBlank(versionCodeData)) {
                 throw new FoundationException(ExceptionCodeEnums.VERSION_CODE_EXISTS.getCode(),
                         ExceptionCodeEnums.VERSION_CODE_EXISTS.getMessage());
             }
-            versionCode = appVersionDTO.getVersionCode();
+            versionCode = appVersionDTO.getCode();
 
         } else {
             Integer vCode = 1;
@@ -147,7 +147,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
                 || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
 
-            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getVersionCode(),
+            String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getCode(),
                     appVersionDTO.getType());
             if (StringUtils.isNotBlank(versionCodeData) && !versionCodeData.equals(appVersion.getCode())) {
                 throw new FoundationException(ExceptionCodeEnums.VERSION_CODE_EXISTS.getCode(),
@@ -163,7 +163,7 @@ public class AppVersionServiceImpl implements AppVersionService {
 
         PlaAppVersion plaAppVersion = new PlaAppVersion();
         BeanUtils.copyProperties(appVersionDTO, plaAppVersion);
-        plaAppVersion.setCode(appVersionDTO.getVersionCode());
+        plaAppVersion.setCode(appVersionDTO.getCode());
         plaAppVersion.setUpdatedBy(appVersionDTO.getUserId());
         plaAppVersion.setUpdatedTime(new Date());
         return appVersionMapper.updateAppVersion(plaAppVersion);
