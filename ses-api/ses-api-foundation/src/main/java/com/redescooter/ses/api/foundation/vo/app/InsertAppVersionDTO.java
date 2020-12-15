@@ -60,7 +60,7 @@ public class InsertAppVersionDTO extends GeneralEnter {
      * 版本编码
      */
     @ApiModelProperty(value = "版本编码", dataType = "String", required = true)
-    private String versionCode;
+    private String code;
 
     /**
      * 安装包大小
