@@ -341,18 +341,18 @@ public class AdminTokenServiceImpl implements AdminTokenService {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
 
-//        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
-//            String newPassword = "";
-//            String confirmPassword = "";
-//            try {
-//                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
-//                confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
-//            } catch (Exception e) {
-//                throw new SesAdminDevException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-//            }
-//            enter.setNewPassword(newPassword);
-//            enter.setOldPassword(confirmPassword);
-//        }
+        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
+            String newPassword = "";
+            String confirmPassword = "";
+            try {
+                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
+                confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
+            } catch (Exception e) {
+                throw new SesAdminDevException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(newPassword);
+            enter.setOldPassword(confirmPassword);
+        }
 
         if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
             throw new SesAdminDevException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
@@ -489,13 +489,13 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         }
         String decryptMail = null;
         if (StringUtils.isNotEmpty(enter.getMail())) {
-//            try {
-//                //邮箱解密
-//                decryptMail = RsaUtils.decrypt(enter.getMail(), privateKey);
-//            } catch (Exception e) {
-//                throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-//            }
-//            enter.setMail(decryptMail);
+            try {
+                //邮箱解密
+                decryptMail = RsaUtils.decrypt(enter.getMail(), privateKey);
+            } catch (Exception e) {
+                throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setMail(decryptMail);
 
             AdmSysUser user = admSysUserService.getOne(new LambdaQueryWrapper<AdmSysUser>().eq(AdmSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(AdmSysUser::getLoginName,
                     enter.getMail()).last("limit 1"));
