@@ -341,28 +341,29 @@ public class AdminTokenServiceImpl implements AdminTokenService {
             enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         }
 
-        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
-            String newPassword = "";
-            String confirmPassword = "";
-            try {
-                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
-                confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
-            } catch (Exception e) {
-                throw new SesAdminDevException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-            }
-            enter.setNewPassword(newPassword);
-            enter.setOldPassword(confirmPassword);
-        }
+//        if (StringUtils.isNotEmpty(enter.getNewPassword()) && StringUtils.isNotEmpty(enter.getOldPassword())) {
+//            String newPassword = "";
+//            String confirmPassword = "";
+//            try {
+//                newPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
+//                confirmPassword = RsaUtils.decrypt(enter.getOldPassword(), privateKey);
+//            } catch (Exception e) {
+//                throw new SesAdminDevException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+//            }
+//            enter.setNewPassword(newPassword);
+//            enter.setOldPassword(confirmPassword);
+//        }
 
         if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
             throw new SesAdminDevException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
 
-
+        GetUserEnter getUser = getGetUserEnter(enter);
         QueryWrapper<AdmSysUser> emailUser = new QueryWrapper<>();
-        emailUser.eq(AdmSysUser.COL_LOGIN_NAME, enter.getLoginName());
-        emailUser.eq(AdmSysUser.COL_APP_ID, enter.getAppId());
-        emailUser.eq(AdmSysUser.COL_SYSTEM_ID, enter.getSystemId());
+        emailUser.eq(AdmSysUser.COL_LOGIN_NAME, getUser.getEmail());
+        emailUser.eq(AdmSysUser.COL_APP_ID, getUser.getAppId());
+        emailUser.eq(AdmSysUser.COL_SYSTEM_ID, getUser.getSystemId());
+        emailUser.eq(AdmSysUser.COL_ID, getUser.getUserId());
         emailUser.last("limit 1");
         AdmSysUser opeSysUser = admSysUserService.getOne(emailUser);
         if (opeSysUser == null) {
@@ -488,13 +489,13 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         }
         String decryptMail = null;
         if (StringUtils.isNotEmpty(enter.getMail())) {
-            try {
-                //邮箱解密
-                decryptMail = RsaUtils.decrypt(enter.getMail(), privateKey);
-            } catch (Exception e) {
-                throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-            enter.setMail(decryptMail);
+//            try {
+//                //邮箱解密
+//                decryptMail = RsaUtils.decrypt(enter.getMail(), privateKey);
+//            } catch (Exception e) {
+//                throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+//            }
+//            enter.setMail(decryptMail);
 
             AdmSysUser user = admSysUserService.getOne(new LambdaQueryWrapper<AdmSysUser>().eq(AdmSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(AdmSysUser::getLoginName,
                     enter.getMail()).last("limit 1"));
@@ -503,9 +504,9 @@ public class AdminTokenServiceImpl implements AdminTokenService {
             }
             BaseMailTaskEnter sendEnter = new BaseMailTaskEnter();
             sendEnter.setName(enter.getMail().substring(0, enter.getMail().indexOf("@")));
-            sendEnter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
-            sendEnter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
-            sendEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+            sendEnter.setEvent(MailTemplateEventEnums.OMS_FORGET_PSD_SEND_MAIL.getEvent());
+            sendEnter.setMailSystemId(SystemIDEnums.REDE_DEV.getSystemId());
+            sendEnter.setMailAppId(AppIDEnums.SES_DEV.getValue());
             sendEnter.setToMail(enter.getMail());
             sendEnter.setRequestId(enter.getRequestId());
             sendEnter.setUserRequestId(enter.getRequestId());
