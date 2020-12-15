@@ -5,10 +5,7 @@ import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import io.swagger.annotations.Api;
@@ -92,6 +89,19 @@ public class ScooterController {
     }
 
     /**
+     * 查询车辆型号列表(下拉框列表使用)
+     * @param
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>>
+     * @author assert
+     * @date 2020/12/15
+    */
+    @ApiOperation(value = "查询车辆型号列表", notes = "查询车辆型号列表(下拉框列表使用)")
+    @GetMapping(value = "/models")
+    public Response<List<SelectBaseResultDTO>> getScooterModelList() {
+        return new Response<>(specificService.getScooterModelList());
+    }
+
+    /**
      * 根据id查询车辆详情
      * @param id
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
@@ -115,6 +125,19 @@ public class ScooterController {
     @PostMapping(value = "/setScooterModel")
     public Response<GeneralResult> setScooterModel(@ModelAttribute SetScooterModelParamDTO paramDTO) {
         return new Response<>(adminScooterService.setScooterModel(paramDTO));
+    }
+
+    /**
+     * 重置车辆软体(将车辆重置成E50)
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/15
+    */
+    @ApiOperation(value = "重置车辆软体", notes = "重置车辆软体(将车辆重置成E50)")
+    @PostMapping(value = "/resetScooterModel")
+    public Response<GeneralResult> resetScooterModel(@ModelAttribute IdEnter enter) {
+        return new Response<>(adminScooterService.resetScooterModel(enter));
     }
 
 }

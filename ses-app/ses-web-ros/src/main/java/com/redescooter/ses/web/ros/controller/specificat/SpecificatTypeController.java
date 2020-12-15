@@ -2,10 +2,10 @@ package com.redescooter.ses.web.ros.controller.specificat;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.vo.specificat.*;
 import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
-import com.redescooter.ses.web.ros.vo.specificat.dto.QuerySpecificTypeDetailResultDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

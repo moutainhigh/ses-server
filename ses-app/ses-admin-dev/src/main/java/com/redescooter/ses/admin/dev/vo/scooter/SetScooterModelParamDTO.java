@@ -20,8 +20,8 @@ public class SetScooterModelParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "主键Id", dataType = "Long", required = true)
     private Long id;
 
-    @NotNull(code = ValidationExceptionCode.GROUP_IS_NOT_EMPTY, message = "分组不能为空")
-    @ApiModelProperty(value="分组id(车型)", dataType = "Long", required = true)
-    private Long groupId;
+    @NotNull(code = ValidationExceptionCode.MODEL_ID_IS_NOT_EMPTY, message = "分组不能为空")
+    @ApiModelProperty(value="车辆型号Id", dataType = "Long", required = true)
+    private Long modelId;
 
 }

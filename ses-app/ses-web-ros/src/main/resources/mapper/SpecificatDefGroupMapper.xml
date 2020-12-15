@@ -3,10 +3,10 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatDefGroupMapper">
 
     <!--新增规格自定义项分组-->
-    <insert id="batchInsertSpecificatDefGroup" parameterType="com.redescooter.ses.web.ros.vo.specificat.dto.SpecificDefGroupDTO">
+    <insert id="batchInsertSpecificatDefGroup" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO">
         insert into ope_specificat_def_group (id, `name`, specificat_id,created_by, created_time, updated_by,updated_time)
         <foreach collection="specificDefGroupList" item="item" open="values" separator=",">
-            (#{item.id}, #{item.groupName}, #{item.createdBy}, #{item.specificatId},
+            (#{item.id}, #{item.name}, #{item.createdBy}, #{item.specificatId},
             #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
         </foreach>
     </insert>
