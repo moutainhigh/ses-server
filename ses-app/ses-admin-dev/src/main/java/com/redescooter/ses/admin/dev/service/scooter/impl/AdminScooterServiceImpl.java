@@ -36,7 +36,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -178,9 +180,9 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         return adminScooter;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO) {
-        List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = new ArrayList<>();
         /**
          * 参数校验 -- 检查数据库中是否存在对应数据
          */
@@ -190,78 +192,50 @@ public class AdminScooterServiceImpl implements AdminScooterService {
                     ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getMessage());
         }
 
-        SpecificTypeDTO specificType = specificService.getSpecificTypeById(paramDTO.getModelId());
+        /**
+         * type 1时表示当前是设置软体操作, type 2时表示重置车辆软体(也就是设置成默认的E50型号)
+         */
+        SpecificTypeDTO specificType = null;
+        if (1 == paramDTO.getType()) {
+            specificType = specificService.getSpecificTypeById(paramDTO.getModelId());
+        } else {
+            specificType = specificService.getSpecificTypeByName(ScooterModelEnum.SCOOTER_E50.getModel());
+        }
+
         if (null == specificType) {
             throw new SesAdminDevException(ExceptionCodeEnums.SPECIFIC_TYPE_NOT_EXISTS.getCode(),
                     ExceptionCodeEnums.SPECIFIC_TYPE_NOT_EXISTS.getMessage());
         }
 
-        /**
-         * 查询当前车辆电池信息,这里主要是为了拿车辆电池的出厂号/流水号信息(用于设置软体时使用)
-         * TODO -------------
-         */
-
+        Integer scooterModel = ScooterModelEnum.getScooterModelType(specificType.getSpecificatName());
 
         /**
-         * 查询车辆型号自定义项信息
+         * 如果设置的型号与当前车辆的型号一致则不做操作
          */
-        List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificType.getId());
-
-        /**
-         * {specificatId, List<SpecificDefDTO>}
-         */
-        Map<Long, List<SpecificDefDTO>> specificDefGroupMap = specificDefList.stream().collect(
-                Collectors.groupingBy(SpecificDefDTO::getSpecificatId)
-        );
-
-        for (Map.Entry<Long, List<SpecificDefDTO>> map : specificDefGroupMap.entrySet()) {
-            /**
-             * {defName, defValue}
-             */
-            Map<String, String> specificDefMap = map.getValue().stream().collect(
-                    Collectors.toMap(SpecificDefDTO::getDefName, SpecificDefDTO::getDefValue)
-            );
-
-            /**
-             * 组装自定义项数据
-             */
-            SpecificDefGroupPublishDTO defGroupPublish = SpecificDefGroupPublishDTO.builder()
-                    .wheelDiameter(specificDefMap.get(SpecificDefNameConstant.WHEEL_DIAMETER))
-                    .speedRatio(specificDefMap.get(SpecificDefNameConstant.SPEED_RATIO))
-                    .limitSpeedBos(specificDefMap.get(SpecificDefNameConstant.LIMIT_SPEED_BOS))
-                    .limiting(specificDefMap.get(SpecificDefNameConstant.LIMITING))
-                    .speedLimit(specificDefMap.get(SpecificDefNameConstant.SPEED_LIMIT))
-                    .socRedWarning(specificDefMap.get(SpecificDefNameConstant.SOC_RED_WARNING))
-                    .orangeWarning(specificDefMap.get(SpecificDefNameConstant.ORANGE_WARNING))
-                    .stallSOC(specificDefMap.get(SpecificDefNameConstant.STALL_SOC))
-                    .setSOCTo0AtStallUndervoltage(specificDefMap.get(SpecificDefNameConstant.SET_SOC_TO_0_AT_STALL_UNDER_VOLTAGE))
-                    .stallVoltageUndervoltage(specificDefMap.get(SpecificDefNameConstant.STALL_VOLTAGE_UNDER_VOLTAGE))
-                    .voltageLegalRecognitionMin(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MAX))
-                    .voltageLegalRecognitionMax(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MIN))
-                    .controllerUndervoltage(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE))
-                    .controllerUndervoltageRecovery(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE_RECOVERY))
-                    .build();
-
-            specificDefGroupPublishList.add(defGroupPublish);
+        if (null != adminScooter.getScooterController() && adminScooter.getScooterController().equals(scooterModel)) {
+            return new GeneralResult(paramDTO.getRequestId());
         }
 
         /**
-         * 发送EMQ消息,通知车辆那边进行升级处理
+         * 更新车辆型号信息,同步车辆型号信息到scooter库sco_scooter表中去
          */
-        SetScooterModelPublishDTO publishDTO = new SetScooterModelPublishDTO();
-        publishDTO.setTabletSn(adminScooter.getSn());
-        publishDTO.setType(ScooterModelEnum.getScooterModelType(specificType.getSpecificatName()));
-        publishDTO.setSpecificDefGroupList(specificDefGroupPublishList);
+        adminScooterMapper.updateAdminScooterModelById(paramDTO.getId(), scooterModel, new Date());
+        scooterService.syncScooterModel(paramDTO.getId(), scooterModel);
 
-        scooterEmqXService.setScooterModel(publishDTO);
+        List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = buildSetScooterModelData(specificType.getId());
+        if (!CollectionUtils.isEmpty(specificDefGroupPublishList)) {
+            /**
+             * 发送EMQ消息,通知车辆那边进行升级处理
+             */
+            SetScooterModelPublishDTO publishDTO = new SetScooterModelPublishDTO();
+            publishDTO.setTabletSn(adminScooter.getSn());
+            publishDTO.setScooterModel(scooterModel);
+            publishDTO.setSpecificDefGroupList(specificDefGroupPublishList);
+
+            scooterEmqXService.setScooterModel(publishDTO);
+        }
 
         return new GeneralResult(paramDTO.getRequestId());
-    }
-
-    @Override
-    public GeneralResult resetScooterModel(IdEnter enter) {
-
-        return null;
     }
 
 
@@ -329,6 +303,66 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         sb.append(count);
 
         return sb.toString();
+    }
+
+    /**
+     * 组装设置车辆型号数据
+     * @param specificTypeId
+     * @return
+     */
+    private List<SpecificDefGroupPublishDTO> buildSetScooterModelData(Long specificTypeId) {
+        List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = new ArrayList<>();
+
+        /**
+         * 查询当前车辆电池信息,这里主要是为了拿车辆电池的出厂号/流水号信息(用于设置软体时使用)
+         * -TODO 先不给电池的出厂号/流水号(车辆那边现在不是强制性需要)
+         */
+
+        /**
+         * 查询车辆型号自定义项信息
+         */
+        List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificTypeId);
+        if (!CollectionUtils.isEmpty(specificDefList)) {
+            /**
+             * {specificDefGroupId, List<SpecificDefDTO>}
+             */
+            Map<Long, List<SpecificDefDTO>> specificDefGroupMap = specificDefList.stream().collect(
+                    Collectors.groupingBy(SpecificDefDTO::getSpecificDefGroupId)
+            );
+
+            for (Map.Entry<Long, List<SpecificDefDTO>> map : specificDefGroupMap.entrySet()) {
+                /**
+                 * {defName, defValue}
+                 */
+                Map<String, String> specificDefMap = map.getValue().stream().collect(
+                        Collectors.toMap(SpecificDefDTO::getDefName, SpecificDefDTO::getDefValue)
+                );
+
+                /**
+                 * 组装自定义项数据 -- 自定义项名称固定值
+                 */
+                SpecificDefGroupPublishDTO defGroupPublish = SpecificDefGroupPublishDTO.builder()
+                        .wheelDiameter(specificDefMap.get(SpecificDefNameConstant.WHEEL_DIAMETER))
+                        .speedRatio(specificDefMap.get(SpecificDefNameConstant.SPEED_RATIO))
+                        .limitSpeedBos(specificDefMap.get(SpecificDefNameConstant.LIMIT_SPEED_BOS))
+                        .limiting(specificDefMap.get(SpecificDefNameConstant.LIMITING))
+                        .speedLimit(specificDefMap.get(SpecificDefNameConstant.SPEED_LIMIT))
+                        .socRedWarning(specificDefMap.get(SpecificDefNameConstant.SOC_RED_WARNING))
+                        .orangeWarning(specificDefMap.get(SpecificDefNameConstant.ORANGE_WARNING))
+                        .stallSOC(specificDefMap.get(SpecificDefNameConstant.STALL_SOC))
+                        .setSOCTo0AtStallUndervoltage(specificDefMap.get(SpecificDefNameConstant.SET_SOC_TO_0_AT_STALL_UNDER_VOLTAGE))
+                        .stallVoltageUndervoltage(specificDefMap.get(SpecificDefNameConstant.STALL_VOLTAGE_UNDER_VOLTAGE))
+                        .voltageLegalRecognitionMin(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MAX))
+                        .voltageLegalRecognitionMax(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MIN))
+                        .controllerUndervoltage(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE))
+                        .controllerUndervoltageRecovery(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE_RECOVERY))
+                        .build();
+
+                specificDefGroupPublishList.add(defGroupPublish);
+            }
+        }
+
+        return specificDefGroupPublishList;
     }
 
 }

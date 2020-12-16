@@ -33,4 +33,13 @@ public interface SpecificTypeMapper {
      */
     SpecificTypeDTO getSpecificTypeById(Long id);
 
+    /**
+     * 根据name查询规格类型信息
+     * @param name
+     * @return com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO
+     * @author assert
+     * @date 2020/12/16
+     */
+    SpecificTypeDTO getSpecificTypeByName(String name);
+
 }

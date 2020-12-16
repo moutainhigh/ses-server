@@ -247,4 +247,15 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.countByScooter();
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int syncScooterModel(Long id, Integer scooterModel) {
+        return scooterServiceMapper.updateScooterModelById(id, scooterModel, new Date());
+    }
+
+    @Override
+    public BaseScooterResult getScooterByTabletSn(String tabletSn) {
+        return scooterServiceMapper.getScooterByTabletSn(tabletSn);
+    }
+
 }

@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="specificat_id" jdbcType="BIGINT" property="specificatId" />
+        <result column="def_group_id" jdbcType="BIGINT" property="specificDefGroupId" />
         <result column="def_name" jdbcType="VARCHAR" property="defName" />
         <result column="def_value" jdbcType="VARCHAR" property="defValue" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />

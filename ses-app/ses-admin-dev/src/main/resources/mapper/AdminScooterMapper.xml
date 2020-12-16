@@ -205,4 +205,11 @@
         where id = #{id} and dr = 0
     </select>
 
+    <!--根据id修改车辆型号-->
+    <update id="updateAdminScooterModelById">
+        update adm_scooter
+	    set scooter_controller = #{scooterModel}, updated_time = #{updateTime}
+	    where id = #{id}
+    </update>
+
 </mapper>

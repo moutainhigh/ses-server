@@ -40,7 +40,7 @@ import java.util.Objects;
 public class MeterServiceImpl implements MeterService {
 
     @Reference
-    private ScooterService scooterService;
+    private ScooterService  scooterService;
 
     @Reference
     private UserBaseService userBaseService;
@@ -58,57 +58,64 @@ public class MeterServiceImpl implements MeterService {
     private CorExpressOrderService corExpressOrderService;
 
     /**
-     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/16 5:38 下午
      * @Param: enter
      * @Return:
      * @desc: 快递仪表当前正在进行的订单
+     * @param enter
      */
     @Override
     public MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter) {
         //查询当前正在进行的订单
-        MeterDeliveryOrderReuslt result = meterServiceMapper.meterExpressOrderByStatus(enter.getId(), ExpressOrderStatusEnums.SHIPPING.getValue());
-        if (result != null) {
-            //查询所有订单的统计数据
-            int count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(), ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
-            result.setRemainingOrderNum(count);
-        }
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
+//        if (result!=null){
+//            //查询所有订单的统计数据
+//            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+//            result.setRemainingOrderNum(count);
+//        }
+        int  count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),
+                ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+        result.setRemainingOrderNum(count);
         return result;
     }
 
     /**
-     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/16 5:47 下午
      * @Param: enter
      * @Return: MeterDeliveryOrderReuslt
      * @desc: 餐厅仪表当前正在进行的订单
+     * @param enter
      */
     @Override
     public MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter) {
-        MeterDeliveryOrderReuslt result = meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
-        if (Objects.nonNull(result)) {
-            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(), DeliveryStatusEnums.PENDING.getValue(), DeliveryStatusEnums.DELIVERING.getValue()));
-        }
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
+//        if (Objects.nonNull(result)) {
+//            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
+//        }
+        int count = meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),
+                DeliveryStatusEnums.DELIVERING.getValue());
+        result.setRemainingOrderNum(count);
+
         return result;
     }
 
     /**
-     * @param enter
      * @Description
      * @Author: aleax
      * @Date: 2020/11/17 2:59 下午
      * @Param: enter
      * @Return: MeterDeliveryOrderReuslt
      * @desc: 仪表订单
+     * @param enter
      */
     @Override
     public MeterDeliveryOrderReuslt meterOrder(MeterOrderEnter enter) {
         CorDriver corDriver = this.getDriverByScooterNo(enter);
-        if (corDriver == null) {
+        if (corDriver==null){
             return null;
         }
         GeneralEnter generalEnter = new GeneralEnter();
@@ -117,9 +124,9 @@ public class MeterServiceImpl implements MeterService {
         if (queryUserResult == null) {
             return null;
         }
-        MeterDeliveryOrderReuslt result = null;
+        MeterDeliveryOrderReuslt result=null;
         IdEnter idEnter = new IdEnter();
-        switch (queryUserResult.getUserType()) {
+        switch (queryUserResult.getUserType()){
             case 4:
                 //餐厅APP端
                 idEnter.setUserId(corDriver.getUserId());
@@ -142,26 +149,30 @@ public class MeterServiceImpl implements MeterService {
     }
 
     /**
-     * @Description
-     * @Author: alex
-     * @Date: 2020/11/16 5:55 下午
-     * @Param: enter
-     * @Return: CorDriver
-     * @desc: 根据车辆信息获取司机信息
-     */
-    private CorDriver getDriverByScooterNo(MeterOrderEnter enter) {
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/16 5:55 下午
+    * @Param:  enter
+    * @Return: CorDriver
+    * @desc: 根据车辆信息获取司机信息
+    */
+    private CorDriver getDriverByScooterNo(MeterOrderEnter enter){
+        /**
+         * -scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn()) 这个业务方法现在废弃使用
+         * -因为这个方法的数据库查询用到了sco_scooter_status表,但是现在这个表不再继续使用
+         */
 //        BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
-        BaseScooterResult baseScooterResult = scooterService.getScooterInfoById(enter.getId());
-        if (baseScooterResult == null) {
+        BaseScooterResult baseScooterResult = scooterService.getScooterByTabletSn(enter.getSn());
+        if (null == baseScooterResult){
             return null;
         }
         QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
-        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_SCOOTER_ID, baseScooterResult.getId());
+        corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_SCOOTER_ID,baseScooterResult.getId());
         corDriverScooterQueryWrapper.eq(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
         corDriverScooterQueryWrapper.last("limit 1");
         CorDriverScooter corDriverScooter = corDriverScooterService.getOne(corDriverScooterQueryWrapper);
-        if (corDriverScooter == null) {
-            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(), ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+        if (corDriverScooter==null){
+            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
         }
         CorDriver corDriver = corDriverService.getById(corDriverScooter.getDriverId());
         return corDriver;
