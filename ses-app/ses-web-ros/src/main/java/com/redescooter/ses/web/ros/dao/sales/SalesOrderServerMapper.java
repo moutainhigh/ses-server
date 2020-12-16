@@ -2,11 +2,14 @@ package com.redescooter.ses.web.ros.dao.sales;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,4 +51,14 @@ public interface SalesOrderServerMapper {
      * @return
      */
     SalesOrderDetailsResult details(IdEnter enter);
+
+    /**
+     *  查询前一年的数据
+     * @param start
+     * @param end
+     * @return
+     */
+    List<CustomerOrderResult> orderListByYear(@Param("start") Date start, @Param("end") Date end);
+
+    List<CustomerOrderResult> orderListByDay(@Param("dateTime") Date dateTime);
 }

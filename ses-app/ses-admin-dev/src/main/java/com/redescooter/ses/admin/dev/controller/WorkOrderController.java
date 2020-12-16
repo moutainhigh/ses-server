@@ -58,7 +58,7 @@ public class WorkOrderController {
 
 
     @PostMapping(value = "/workOrderDetail")
-    @ApiOperation(value = "工单详情", response = GeneralResult.class)
+    @ApiOperation(value = "工单详情", response = WorkOrderDetailResult.class)
     public Response<WorkOrderDetailResult> workOrderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(workOrderService.workOrderDetail(enter));
     }

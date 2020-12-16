@@ -150,7 +150,8 @@ public class MeterServiceImpl implements MeterService {
      * @desc: 根据车辆信息获取司机信息
      */
     private CorDriver getDriverByScooterNo(MeterOrderEnter enter) {
-        BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
+//        BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
+        BaseScooterResult baseScooterResult = scooterService.getScooterInfoById(enter.getId());
         if (baseScooterResult == null) {
             return null;
         }

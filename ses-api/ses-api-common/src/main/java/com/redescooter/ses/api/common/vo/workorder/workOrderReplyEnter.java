@@ -23,4 +23,7 @@ public class workOrderReplyEnter extends GeneralEnter {
 
     @ApiModelProperty("消息类型 1：留言， 2：回复")
     private  Integer messageType;
+
+    @ApiModelProperty("是否是图片,发送图片")
+    private Boolean isPhotos = false;
 }

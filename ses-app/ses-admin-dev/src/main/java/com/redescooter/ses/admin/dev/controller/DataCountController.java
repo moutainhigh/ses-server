@@ -1,9 +1,17 @@
 package com.redescooter.ses.admin.dev.controller;
 
+import com.redescooter.ses.api.common.service.OrderCountService;
+import com.redescooter.ses.api.common.vo.count.OrderCountEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.count.OrderCountResult;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @ClassNameDataCountController
@@ -19,5 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataCountController {
 
 
+    @Reference
+    private OrderCountService orderCountService;
+
+    @PostMapping(value = "/orderCount")
+    @ApiOperation(value = "订单的统计", response = OrderCountResult.class)
+    public Response<List<OrderCountResult>> workOrderSave(@ModelAttribute @ApiParam("请求参数") OrderCountEnter enter) {
+        return new Response<>(orderCountService.orderCount(enter));
+    }
 
 }
