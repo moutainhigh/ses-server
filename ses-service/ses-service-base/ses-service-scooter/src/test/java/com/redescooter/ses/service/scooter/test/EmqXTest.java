@@ -43,10 +43,10 @@ public class EmqXTest extends BaseTest {
      */
     @Test
     public void scooterModelTest() {
-        String tabletSn = "EUE6LREA4595T4Z9";
+        String tabletSn = "DECQ6HEUKJJFQGOJ";
         SetScooterModelPublishDTO publish = new SetScooterModelPublishDTO();
         publish.setTabletSn(tabletSn);
-        publish.setType(ScooterModelEnum.SCOOTER_E100.getType());
+        publish.setScooterModel(ScooterModelEnum.SCOOTER_E125.getType());
         publish.setSpecificDefGroupList(buildSpecificDefGroupData());
 
         mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
@@ -60,13 +60,34 @@ public class EmqXTest extends BaseTest {
     private List<SpecificDefGroupPublishDTO> buildSpecificDefGroupData() {
         List<SpecificDefGroupPublishDTO> groupList = new ArrayList<>();
 
-        double speedRatio = 22.0 / 130.0;
+        /**
+         * 组装 E125型号相关的配置信息
+         */
+        // 电池1
+        double speedRatio = 22.0 / 105.0;
         SpecificDefGroupPublishDTO batteryOne = SpecificDefGroupPublishDTO.builder()
-                .batteryBatchNo("5")
                 .wheelDiameter("52")
                 .speedRatio(String.valueOf(speedRatio))
                 .limitSpeedBos("55")
                 .limiting("35")
+                .speedLimit("45")
+                .socRedWarning("20")
+                .orangeWarning("5")
+                .stallSOC("0")
+                .setSOCTo0AtStallUndervoltage("62")
+                .stallVoltageUndervoltage("58")
+                .voltageLegalRecognitionMin("50")
+                .voltageLegalRecognitionMax("84")
+                .controllerUndervoltage("58")
+                .controllerUndervoltageRecovery("62")
+                .build();
+
+        // 电池2
+        SpecificDefGroupPublishDTO batteryTwo = SpecificDefGroupPublishDTO.builder()
+                .wheelDiameter("52")
+                .speedRatio(String.valueOf(speedRatio))
+                .limitSpeedBos("75")
+                .limiting("50")
                 .speedLimit("80")
                 .socRedWarning("20")
                 .orangeWarning("5")
@@ -79,9 +100,44 @@ public class EmqXTest extends BaseTest {
                 .controllerUndervoltageRecovery("62")
                 .build();
 
+        // 电池3
+        SpecificDefGroupPublishDTO batteryThree = SpecificDefGroupPublishDTO.builder()
+                .wheelDiameter("52")
+                .speedRatio(String.valueOf(speedRatio))
+                .limitSpeedBos("135")
+                .limiting("90")
+                .speedLimit("120")
+                .socRedWarning("20")
+                .orangeWarning("5")
+                .stallSOC("0")
+                .setSOCTo0AtStallUndervoltage("62")
+                .stallVoltageUndervoltage("58")
+                .voltageLegalRecognitionMin("50")
+                .voltageLegalRecognitionMax("84")
+                .controllerUndervoltage("58")
+                .controllerUndervoltageRecovery("62")
+                .build();
+
+        // 电池4
+        SpecificDefGroupPublishDTO batteryFour = SpecificDefGroupPublishDTO.builder()
+                .wheelDiameter("52")
+                .speedRatio(String.valueOf(speedRatio))
+                .limitSpeedBos("165")
+                .limiting("120")
+                .speedLimit("120")
+                .socRedWarning("20")
+                .orangeWarning("5")
+                .stallSOC("0")
+                .setSOCTo0AtStallUndervoltage("62")
+                .stallVoltageUndervoltage("58")
+                .voltageLegalRecognitionMin("50")
+                .voltageLegalRecognitionMax("84")
+                .controllerUndervoltage("58")
+                .controllerUndervoltageRecovery("62")
+                .build();
 
         // 设置规格自定义项分组信息 -- 现在默认一辆车有四节电池
-        groupList.add(batteryOne);
+        groupList.add(batteryFour);
         groupList.add(new SpecificDefGroupPublishDTO());
         groupList.add(new SpecificDefGroupPublishDTO());
         groupList.add(new SpecificDefGroupPublishDTO());

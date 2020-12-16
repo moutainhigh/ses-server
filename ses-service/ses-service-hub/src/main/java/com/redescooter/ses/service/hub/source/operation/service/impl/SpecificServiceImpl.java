@@ -62,4 +62,9 @@ public class SpecificServiceImpl implements SpecificService {
         return specificDefMapper.getSpecificDefBySpecificId(specificId);
     }
 
+    @Override
+    public SpecificTypeDTO getSpecificTypeByName(String name) {
+        return specificTypeMapper.getSpecificTypeByName(name);
+    }
+
 }

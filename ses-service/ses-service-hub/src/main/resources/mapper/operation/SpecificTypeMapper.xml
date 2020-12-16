@@ -27,4 +27,10 @@
 	    where dr = 0 and id = #{id}
     </select>
 
+    <!--根据name查询规格类型信息-->
+    <select id="getSpecificTypeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_specificat_type
+	    where dr = 0 and specificat_name = #{name}
+    </select>
+
 </mapper>

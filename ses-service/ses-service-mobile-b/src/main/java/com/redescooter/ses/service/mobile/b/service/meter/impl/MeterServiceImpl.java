@@ -70,11 +70,14 @@ public class MeterServiceImpl implements MeterService {
     public MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter) {
         //查询当前正在进行的订单
         MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
-        if (result!=null){
-            //查询所有订单的统计数据
-            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
-            result.setRemainingOrderNum(count);
-        }
+//        if (result!=null){
+//            //查询所有订单的统计数据
+//            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+//            result.setRemainingOrderNum(count);
+//        }
+        int  count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),
+                ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+        result.setRemainingOrderNum(count);
         return result;
     }
 
@@ -90,9 +93,13 @@ public class MeterServiceImpl implements MeterService {
     @Override
     public MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter) {
         MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
-        if (Objects.nonNull(result)) {
-            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
-        }
+//        if (Objects.nonNull(result)) {
+//            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
+//        }
+        int count = meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),
+                DeliveryStatusEnums.DELIVERING.getValue());
+        result.setRemainingOrderNum(count);
+
         return result;
     }
 
@@ -150,8 +157,13 @@ public class MeterServiceImpl implements MeterService {
     * @desc: 根据车辆信息获取司机信息
     */
     private CorDriver getDriverByScooterNo(MeterOrderEnter enter){
-        BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
-        if (baseScooterResult==null){
+        /**
+         * -scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn()) 这个业务方法现在废弃使用
+         * -因为这个方法的数据库查询用到了sco_scooter_status表,但是现在这个表不再继续使用
+         */
+//        BaseScooterResult baseScooterResult = scooterService.scooterInfoByScooterNo(enter.getId(), enter.getSn());
+        BaseScooterResult baseScooterResult = scooterService.getScooterByTabletSn(enter.getSn());
+        if (null == baseScooterResult){
             return null;
         }
         QueryWrapper<CorDriverScooter> corDriverScooterQueryWrapper = new QueryWrapper<>();
