@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.common.vo.count;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import lombok.*;
  * @create: 2020/12/16 17:00
  */
 @Data
+@ApiModel(value = "OMS订单统计出参")
 public class OrderCountResult extends GeneralResult {
 
     @ApiModelProperty("时间")

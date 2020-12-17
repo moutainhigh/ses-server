@@ -14,6 +14,11 @@ import java.util.List;
  */
 public interface OrderCountService {
 
+    /**
+     * 订单统计
+     * @param enter
+     * @return
+     */
     List<OrderCountResult> orderCount(OrderCountEnter enter);
 
 
