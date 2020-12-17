@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.distributor.OpeDistributorExMapper">
+
+    <!-- 门店列表 -->
+    <select id="getList" resultType="com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult">
+        select *
+        from ope_distributor
+        where dr = 0 and user_id = #{param.userId}
+        <include refid="listCondition">
+        </include>
+        order by created_time desc
+        limit #{param.startRow}, #{param.pageSize}
+    </select>
+
+    <!-- 门店列表条数 -->
+    <select id="getListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_distributor
+        where dr = 0 and user_id = #{param.userId}
+        <include refid="listCondition">
+        </include>
+    </select>
+
+    <sql id="listCondition">
+        <if test="param.status != null and param.status != ''">
+            <if test="param.status == 0">
+                and 1 = 1
+            </if>
+            <if test="param.status == 1">
+                and status = #{param.status}
+            </if>
+            <if test="param.status == 2">
+                and status = #{param.status}
+            </if>
+        </if>
+        <if test="param.city != null and param.city != ''">
+            and city = #{param.city}
+        </if>
+        <if test="param.cp != null and param.cp != ''">
+            and cp = #{param.cp}
+        </if>
+        <if test="param.keyword != null and param.keyword != ''">
+            and (
+            name like concat('%', #{param.keyword}, '%') or
+            code like concat('%', #{param.keyword}, '%') or
+            tel like concat('%', #{param.keyword}, '%') or
+            email like concat('%', #{param.keyword}, '%')
+            )
+        </if>
+    </sql>
+
+</mapper>
