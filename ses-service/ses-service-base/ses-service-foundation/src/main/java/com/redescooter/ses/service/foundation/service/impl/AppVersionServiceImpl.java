@@ -97,6 +97,15 @@ public class AppVersionServiceImpl implements AppVersionService {
         PlaAppVersion appVersion = new PlaAppVersion();
         BeanUtils.copyProperties(appVersionDTO, appVersion);
 
+        /**
+         * 检查版本号是否存在
+         */
+        String versionNumber = appVersionMapper.existsAppVersionByVersionNumberAndType(appVersionDTO.getNewVersionNum(), appVersionDTO.getType());
+        if (StringUtils.isNotBlank(versionNumber)) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getCode(),
+                    ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getMessage());
+        }
+
         String versionCode = null;
         /**
          * 安卓和车载平板的应用版本编码通过前端页面传递,其它的都是通过后台生成
@@ -141,6 +150,15 @@ public class AppVersionServiceImpl implements AppVersionService {
         if (null == appVersion) {
             throw new FoundationException(ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
+        }
+
+        /**
+         * 检查版本号是否存在
+         */
+        String versionNumber = appVersionMapper.existsAppVersionByVersionNumberAndType(appVersionDTO.getNewVersionNum(), appVersionDTO.getType());
+        if (StringUtils.isNotBlank(versionNumber) && !versionNumber.equals(appVersion.getNewVersionNum())) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getCode(),
+                    ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getMessage());
         }
 
         /**

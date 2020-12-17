@@ -39,13 +39,13 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     @Override
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
-        String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
-        if (StringUtils.isBlank(scooterNo)) {
-            log.error("【车辆ECU控制器数据上报失败】----车辆不存在");
-            return 0;
-        }
-
         try {
+            String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
+            if (StringUtils.isBlank(scooterNo)) {
+                log.error("【车辆ECU控制器数据上报失败】----车辆不存在");
+                return 0;
+            }
+
             /**
              * 检查数据是否存在,如果存在则更新,反之新增
              */
