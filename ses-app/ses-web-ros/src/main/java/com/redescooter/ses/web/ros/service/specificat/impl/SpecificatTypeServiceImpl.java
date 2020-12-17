@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -338,6 +339,18 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         });
 
         return new GeneralResult(paramDTO.getRequestId());
+    }
+
+    @Override
+    public GeneralResult updateSpecificType(InsertSpecificTypeParamDTO paramDTO) {
+
+        return new GeneralResult(paramDTO.getRequestId());
+    }
+
+    @Override
+    public QuerySpecificTypeDetailResultDTO getSpecificTypeDetailById(IdEnter enter) {
+
+        return null;
     }
 
 
