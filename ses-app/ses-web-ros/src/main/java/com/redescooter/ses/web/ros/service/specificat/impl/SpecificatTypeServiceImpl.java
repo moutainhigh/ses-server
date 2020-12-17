@@ -29,13 +29,13 @@ import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
 import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import spark.utils.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -268,6 +268,9 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 自定义项分组、自定义项校验
+        checkSpecificationDef(specificDefGroupList);
+
         SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
         if (null != specificGroup) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
@@ -277,8 +280,6 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
         }
-
-
 
         /**
          * 组装新增数据 -- 规格类型、规格自定义项分组、规则自定义项
@@ -378,21 +379,37 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
      * @param specificDefGroupList
      */
     private void checkSpecificationDef(List<SpecificDefGroupDTO> specificDefGroupList) {
+        List<SpecificDefDTO> specificDefList = new ArrayList<>();
         /**
          * 自定义项分组名称相关校验
          */
-        specificDefGroupList.forEach(def -> {
-            if (StringUtils.isBlank(def.getName())) {
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
+        specificDefGroupList.forEach(defGroup -> {
+            if (StringUtils.isBlank(defGroup.getName())) {
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getMessage());
             }
-            if (def.getName().length() > 50) {
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            if (defGroup.getName().length() > 50) {
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getMessage());
             }
+            specificDefList.addAll(defGroup.getGroupList());
         });
 
         /**
          * 自定义项名称和值
          */
+        specificDefList.forEach(def -> {
+            if (StringUtils.isBlank(def.getDefName())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
+            }
+            if (def.getDefName().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            }
+            if (StringUtils.isBlank(def.getDefValue())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+            if (def.getDefValue().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+        });
 
     }
 
