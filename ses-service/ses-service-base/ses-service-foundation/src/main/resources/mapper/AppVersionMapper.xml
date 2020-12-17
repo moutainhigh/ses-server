@@ -56,6 +56,7 @@
                 or label like concat('%',#{keyWord},'%')
             )
         </if>
+        order by created_time desc
         limit #{startRow}, #{pageSize}
     </select>
 
@@ -297,6 +298,7 @@
     <select id="getActiveAppVersion" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select * from pla_app_version
         where dr = 0 and `status` = #{status}
+        order by created_time desc
     </select>
 
     <!--查询应用版本数量-->
@@ -355,6 +357,12 @@
     <select id="existsAppVersionByCodeAndType" resultType="java.lang.String">
         select `code` from pla_app_version
 	    where `code` = #{versionCode} and `type` = #{type}
+    </select>
+
+    <!--根据versionNumber、type查询版本是否存在-->
+    <select id="existsAppVersionByVersionNumberAndType" resultType="java.lang.String">
+        select new_version_num from pla_app_version
+        where new_version_num = #{versionNumber} and `type` = #{type}
     </select>
 
 </mapper>

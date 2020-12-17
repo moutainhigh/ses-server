@@ -122,8 +122,9 @@ public enum ExceptionCodeEnums {
 
     VERSION_STATUS_IS_NOT_UNRELEASED(10055, "版本状态不是未发布"),
 
-    VERSION_CODE_EXISTS(10056, "版本编码已存在")
+    VERSION_CODE_EXISTS(10056, "版本编码已存在"),
 
+    VERSION_NUMBER_EXISTS(10057, "版本号已存在")
     ;
 
     private int code;
