@@ -40,8 +40,8 @@ public class OrderCountServiceImpl implements OrderCountService {
 
     @Override
     public List<OrderCountResult> orderCount(OrderCountEnter enter) {
-        // 先判断本次查询的是年，季度，月，周
-        // 暂时先默认查询的是当年，当年的季度，当月，当周的数据
+        // 先判断本次查询的是年，月，日
+        // 暂时先默认查询的是年，月，日
         List<OrderCountResult> resultList = new LinkedList();
         // 如果没有传  就默认是当年的数据
         enter.setDateTime(enter.getDateTime() == null?new Date():enter.getDateTime());

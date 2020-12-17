@@ -60,5 +60,11 @@ public class DataCountController {
     }
 
 
+    @PostMapping(value = "/scooterCount")
+    @ApiOperation(value = "车辆销售统计", response = ScooterCountResult.class)
+    public Response<ScooterCountResult> scooterCount(@ModelAttribute @ApiParam("请求参数") ScooterCountEnter enter) {
+        return new Response<>(dataCountService.scooterCount(enter));
+    }
+
 
 }

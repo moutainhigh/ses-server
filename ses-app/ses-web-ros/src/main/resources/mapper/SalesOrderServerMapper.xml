@@ -137,4 +137,25 @@
           and opi.id = #{id}
         limit 1
     </select>
+
+
+    <select id="orderListByYear" resultType="com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult">
+        select
+        DATE_FORMAT(created_time, '%Y-%m') as times ,count(created_time) as total
+        from ope_customer_inquiry
+        where dr = 0 and
+        (DATE_FORMAT(created_time, '%Y-%m') between   DATE_FORMAT(#{start}, '%Y-%m')  and DATE_FORMAT(#{end}, '%Y-%m'))
+        GROUP BY times
+
+    </select>
+
+
+    <select id="orderListByDay" resultType="com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult">
+        select
+        DATE_FORMAT(created_time, '%Y-%m') as times ,count(created_time) as total
+        from ope_customer_inquiry
+        where dr = 0 and
+        (DATE_FORMAT(created_time, '%Y-%m-%d') = DATE_FORMAT(#{dateTime}, '%Y-%m-%d'))
+        GROUP BY times
+    </select>
 </mapper>

@@ -2,16 +2,17 @@ package com.redescooter.ses.admin.dev.service.datacount.impl;
 
 import com.redescooter.ses.admin.dev.service.datacount.DataCountService;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
-import com.redescooter.ses.api.common.vo.count.CustomerCountEnter;
-import com.redescooter.ses.api.common.vo.count.CustomerCountResult;
+import com.redescooter.ses.api.common.vo.count.*;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
 import lombok.*;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -166,5 +167,48 @@ public class DataCountServiceImpl implements DataCountService {
         toCUser.setCustomerType(3);
         resultList.add(toCUser);
         return resultList;
+    }
+
+
+    /**
+     * 车辆销售统计
+     * @param enter
+     * @return
+     */
+    @Override
+    public ScooterCountResult scooterCount(ScooterCountEnter enter) {
+        ScooterCountResult result = new ScooterCountResult();
+        // 如果没有传  就默认是当年的数据
+        enter.setDateTime(enter.getDateTime() == null?new Date():enter.getDateTime());
+        List<String> dateList = new LinkedList();
+        dateList = OrderChartUtils.countDateList(enter.getType(), enter.getDateTime());
+
+        // 构建三个集合 返回三种不同的车型
+        List<OrderCountResult> E50s = new ArrayList<>();
+        List<OrderCountResult> E100s = new ArrayList<>();
+        List<OrderCountResult> E125s = new ArrayList<>();
+
+        // todo 目前还没有这块的业务 先默认写死
+        // 如果没有数据 每个月数量默认为0
+        for (String dateStr : dateList) {
+            OrderCountResult E50 = new OrderCountResult();
+            E50.setDateTime(dateStr);
+            E50.setTotalCount(100);
+            E50s.add(E50);
+
+            OrderCountResult E100 = new OrderCountResult();
+            E100.setDateTime(dateStr);
+            E100.setTotalCount(150);
+            E100s.add(E100);
+
+            OrderCountResult E125 = new OrderCountResult();
+            E125.setDateTime(dateStr);
+            E125.setTotalCount(200);
+            E125s.add(E125);
+        }
+        result.setScooterE50s(E50s);
+        result.setScooterE100s(E100s);
+        result.setScooterE125s(E125s);
+        return result;
     }
 }
