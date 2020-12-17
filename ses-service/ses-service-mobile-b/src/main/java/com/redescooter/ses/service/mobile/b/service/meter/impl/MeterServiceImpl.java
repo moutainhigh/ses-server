@@ -69,12 +69,14 @@ public class MeterServiceImpl implements MeterService {
     @Override
     public MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter) {
         //查询当前正在进行的订单
-        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
+//        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
 //        if (result!=null){
 //            //查询所有订单的统计数据
 //            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
 //            result.setRemainingOrderNum(count);
 //        }
+        MeterDeliveryOrderReuslt result = new MeterDeliveryOrderReuslt();
+
         int  count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),
                 ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
         result.setRemainingOrderNum(count);
@@ -92,10 +94,12 @@ public class MeterServiceImpl implements MeterService {
      */
     @Override
     public MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter) {
-        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
+//        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
 //        if (Objects.nonNull(result)) {
 //            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
 //        }
+        MeterDeliveryOrderReuslt result = new MeterDeliveryOrderReuslt();
+
         int count = meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),
                 DeliveryStatusEnums.DELIVERING.getValue());
         result.setRemainingOrderNum(count);
