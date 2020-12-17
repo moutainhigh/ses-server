@@ -2,6 +2,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @date 2020/12/1 10:59
  */
 @Data
-public class SetScooterModelPublishDTO {
+public class SetScooterModelPublishDTO implements Serializable {
 
     /**
      * 平板序列号

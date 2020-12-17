@@ -177,6 +177,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
             adminScooter.setCreator(userStaff.getFullName());
         }
 
+        adminScooter.setScooterModel(ScooterModelEnum.getScooterModelByType(adminScooter.getScooterController()));
+
         return adminScooter;
     }
 

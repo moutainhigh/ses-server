@@ -1,5 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.app;
 
+import com.redescooter.ses.api.common.annotation.NotEmpty;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.exception.ValidationExceptionCode;
@@ -39,7 +40,7 @@ public class InsertAppVersionDTO extends GeneralEnter {
     /**
      * 更新提示内容
      */
-    @NotNull(code = ValidationExceptionCode.VERSION_UPDATE_CONTENT_IS_NOT_EMPTY, message = "更新内容不能为空")
+    @NotEmpty(code = ValidationExceptionCode.VERSION_UPDATE_CONTENT_IS_NOT_EMPTY, message = "更新内容不能为空")
     @ApiModelProperty(value = "更新内容", dataType = "String", required = true)
     private String updateContent;
 
@@ -52,7 +53,7 @@ public class InsertAppVersionDTO extends GeneralEnter {
     /**
      * 新版本号
      */
-    @NotNull(code = ValidationExceptionCode.VERSION_NUMBER_IS_NOT_EMPTY, message = "版本号不能为空")
+    @NotEmpty(code = ValidationExceptionCode.VERSION_NUMBER_IS_NOT_EMPTY, message = "版本号不能为空")
     @ApiModelProperty(value = "新版本号", dataType = "String", required = true)
     private String newVersionNum;
 

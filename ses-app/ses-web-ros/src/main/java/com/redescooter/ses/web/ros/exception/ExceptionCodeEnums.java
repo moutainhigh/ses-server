@@ -484,8 +484,11 @@ public enum ExceptionCodeEnums {
 
     DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
 
-    DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空")
+    DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空"),
 
+    DEF_GROUP_NAME_NOT_NULL(10235, "自定义分组名称不能为空"),
+
+    DEF_GROUP_NAME_ILLEGAL(10236, "自定义分组名称非法")
     ;
 
 

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 
 /**
  * 规格自定义项分组 -- 用于EMQ X指令下发时使用
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpecificDefGroupPublishDTO {
+public class SpecificDefGroupPublishDTO implements Serializable {
 
     /**
      * 分组名称(电池出厂号/流水号)

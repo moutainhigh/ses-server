@@ -249,4 +249,11 @@ public interface ValidationExceptionCode extends ValidationExceptionBaseCode {
     int ENABLE_IS_EMPTY = 10140;
     // 时间不能为空
     int DATE_IS_NOT_EMPTY = 10141;
+    // 规格名称不能为空
+    int SPECIFICATION_NAME_IS_NOT_EMPTY = 10142;
+    // 自定义项不能为空
+    int DEF_IS_NOT_EMPTY = 10143;
+    // 规格类型名称非法
+    int SPECIFICATION_TYPE_NAME_ILLEGAL = 10144;
+
 }

@@ -13,6 +13,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefGroupMapper;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefMapper;
+import com.redescooter.ses.web.ros.dao.specificat.SpecificatGroupServiceMapper;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatDef;
@@ -28,13 +29,13 @@ import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
 import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import spark.utils.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -71,6 +72,8 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     private SpecificatDefMapper specificatDefMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private SpecificatGroupServiceMapper specificatGroupServiceMapper;
 
 
     @Override
@@ -112,110 +115,6 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         specificatDefService.saveSpecificatDef(enters,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
-
-
-    /**
-     * @Author Aleks
-     * @Description  校验自定义项的名称和value值
-     * @Date  2020/10/10 14:31
-     * @Param [lists]
-     * @return
-     **/
-    public void
-    checkDef(List<SpecificatDefEnter> lists){
-        for (SpecificatDefEnter list : lists) {
-            // 先校验名称：长度20位，不能有特殊字符
-            if (Strings.isNullOrEmpty(list.getDefName())){
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
-            }
-            if (list.getDefName().length() > 50){
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
-            }
-//            // 校验正则
-//            Pattern p= Pattern.compile(RegexpConstant.specialCharacters);
-//            Matcher m=p.matcher(list.getDefName());
-//            if (!m.matches()){
-//                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
-//            }
-//            // 再校验value值，长度10位，仅数值和小数点
-            if (Objects.isNull(list.getDefValue())){
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
-            }
-//            String defValue = String.valueOf(list.getDefValue());
-            if (list.getDefValue().length() > 50){
-                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
-            }
-        }
-    }
-
-
-    public static void main(String[] args) {
-        String test ="^[0-9A-Z-]+$";
-        String str = "xWSX-";
-        Pattern p= Pattern.compile(test);
-        Matcher m = p.matcher(str);
-        if (!m.matches()){
-            System.out.println("false");
-        }else {
-            System.out.println("true");
-        }
-
-    }
-
-
-
-    /**
-     * @Author Aleks
-     * @Description  校验规格类型的名称是否重复
-     * @Date  2020/10/9 10:34
-     * @Param
-     * @return
-     **/
-    public void checkSpecificatName(SpecificatTypeSaveOrEditEnter enter){
-        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
-        }
-        // 先对名称进行正则校验
-        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
-        Matcher m = p.matcher(enter.getSpecificatName());
-        if (!m.matches()){
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
-        }
-        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
-        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
-        if(enter.getId() != null){
-            // 这个时候是修改 需要排除本身去校验
-            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
-        }
-        int count = opeSpecificatTypeService.count(qw);
-        if(count > 0){
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
-        }
-    }
-
-
-    /**
-     * @Author Aleks
-     * @Description  生成规格类型的编码 RTYYYYMMDD000
-     * @Date  2020/9/29 11:39
-     * @Param []
-     * @return
-     **/
-    public String createTypeCode(){
-        String code = "RT"+DateUtil.getSimpleDateStamp()+"000";
-        QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
-        qw.orderByDesc(OpeSpecificatType.COL_SPECIFICAT_CODE);
-        qw.last("limit 1");
-        OpeSpecificatType specificatType = opeSpecificatTypeService.getOne(qw);
-        if(specificatType != null && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())){
-            String oldCode = specificatType.getSpecificatCode();
-            Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
-            i ++;
-            code = "RT"+DateUtil.getSimpleDateStamp()+String.format("%3d", i).replace(" ", "0");
-        }
-        return code;
-    }
-
 
     @Override
     @Transactional
@@ -356,16 +255,31 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     @Override
     public GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO) {
+        List<SpecificDefGroupDTO> specificDefGroupList = new ArrayList<>();
         Long userId = paramDTO.getUserId();
+
         /**
-         * 请求参数校验 -- TODO 先写整体逻辑,时间紧
+         * -请求参数完整性、唯一性和数据格式校验
          */
-        if (StringUtils.isBlank(paramDTO.getSt())) {
-            throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_IS_NOT_NULL.getCode(),
-                    ExceptionCodeEnums.DEF_GROUP_IS_NOT_NULL.getMessage());
+        try {
+            specificDefGroupList = JSONArray.parseArray(paramDTO.getSt(), SpecificDefGroupDTO.class);
+        } catch (Exception e) {
+            log.error("【新增规格类型失败】----参数数据格式有误");
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        SpecificGroupDTO specificGroup = null;
+        // 自定义项分组、自定义项校验
+        checkSpecificationDef(specificDefGroupList);
+
+        SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
+        if (null != specificGroup) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+
+        int count = specificatTypeServiceMapper.getSpecificTypeCountByName(paramDTO.getSpecificatName());
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
+        }
 
         /**
          * 组装新增数据 -- 规格类型、规格自定义项分组、规则自定义项
@@ -383,7 +297,6 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         List<SpecificDefDTO> specificDefList = new ArrayList<>();
 
         // 规格自定义项分组数据
-        List<SpecificDefGroupDTO> specificDefGroupList = JSONArray.parseArray(paramDTO.getSt(), SpecificDefGroupDTO.class);
         specificDefGroupList.forEach(defGroup -> {
             Long defGroupId = idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF_GROUP);
             defGroup.setId(defGroupId);
@@ -408,13 +321,14 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             });
         });
 
+        List<SpecificDefGroupDTO> newSpecificDefGroupList = specificDefGroupList;
         /**
-         * 新增规格类型相关数据
+         * -新增规格类型相关数据
          */
         transactionTemplate.execute(specificTypeStatus -> {
             try {
                 specificatTypeServiceMapper.insertSpecificatType(paramDTO);
-                specificatDefGroupMapper.batchInsertSpecificatDefGroup(specificDefGroupList);
+                specificatDefGroupMapper.batchInsertSpecificatDefGroup(newSpecificDefGroupList);
                 specificatDefMapper.batchInsertSpecificatDef(specificDefList);
             } catch (Exception e) {
                 specificTypeStatus.setRollbackOnly();
@@ -424,6 +338,132 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         });
 
         return new GeneralResult(paramDTO.getRequestId());
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  校验自定义项的名称和value值
+     * @Date  2020/10/10 14:31
+     * @Param [lists]
+     * @return
+     **/
+    public void checkDef(List<SpecificatDefEnter> lists){
+        for (SpecificatDefEnter list : lists) {
+            // 先校验名称：长度20位，不能有特殊字符
+            if (Strings.isNullOrEmpty(list.getDefName())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
+            }
+            if (list.getDefName().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            }
+//            // 校验正则
+//            Pattern p= Pattern.compile(RegexpConstant.specialCharacters);
+//            Matcher m=p.matcher(list.getDefName());
+//            if (!m.matches()){
+//                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+//            }
+//            // 再校验value值，长度10位，仅数值和小数点
+            if (Objects.isNull(list.getDefValue())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+//            String defValue = String.valueOf(list.getDefValue());
+            if (list.getDefValue().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 自定义项名称、值非空长度校验
+     * @param specificDefGroupList
+     */
+    private void checkSpecificationDef(List<SpecificDefGroupDTO> specificDefGroupList) {
+        List<SpecificDefDTO> specificDefList = new ArrayList<>();
+        /**
+         * 自定义项分组名称相关校验
+         */
+        specificDefGroupList.forEach(defGroup -> {
+            if (StringUtils.isBlank(defGroup.getName())) {
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getMessage());
+            }
+            if (defGroup.getName().length() > 50) {
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getMessage());
+            }
+            specificDefList.addAll(defGroup.getGroupList());
+        });
+
+        /**
+         * 自定义项名称和值
+         */
+        specificDefList.forEach(def -> {
+            if (StringUtils.isBlank(def.getDefName())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
+            }
+            if (def.getDefName().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
+            }
+            if (StringUtils.isBlank(def.getDefValue())){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+            if (def.getDefValue().length() > 50){
+                throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
+            }
+        });
+
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  校验规格类型的名称是否重复
+     * @Date  2020/10/9 10:34
+     * @Param
+     * @return
+     **/
+    public void checkSpecificatName(SpecificatTypeSaveOrEditEnter enter){
+        if(Strings.isNullOrEmpty(enter.getSpecificatName())){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_NOT_NULL.getMessage());
+        }
+        // 先对名称进行正则校验
+        Pattern p= Pattern.compile(RegexpConstant.SPECIFICATNAME);
+        Matcher m = p.matcher(enter.getSpecificatName());
+        if (!m.matches()){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_ILLEGAL.getMessage());
+        }
+        QueryWrapper<OpeSpecificatType>  qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME,enter.getSpecificatName());
+        if(enter.getId() != null){
+            // 这个时候是修改 需要排除本身去校验
+            qw.ne(OpeSpecificatType.COL_ID,enter.getId());
+        }
+        int count = opeSpecificatTypeService.count(qw);
+        if(count > 0){
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
+        }
+    }
+
+
+    /**
+     * @Author Aleks
+     * @Description  生成规格类型的编码 RTYYYYMMDD000
+     * @Date  2020/9/29 11:39
+     * @Param []
+     * @return
+     **/
+    public String createTypeCode(){
+        String code = "RT"+DateUtil.getSimpleDateStamp()+"000";
+        QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
+        qw.orderByDesc(OpeSpecificatType.COL_SPECIFICAT_CODE);
+        qw.last("limit 1");
+        OpeSpecificatType specificatType = opeSpecificatTypeService.getOne(qw);
+        if(specificatType != null && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())){
+            String oldCode = specificatType.getSpecificatCode();
+            Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
+            i ++;
+            code = "RT"+DateUtil.getSimpleDateStamp()+String.format("%3d", i).replace(" ", "0");
+        }
+        return code;
     }
 
 }
