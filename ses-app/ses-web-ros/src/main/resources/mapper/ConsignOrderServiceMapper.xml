@@ -14,8 +14,7 @@
             and (
             enorder.invoice_no like concat('%',#{keyword},'%') or
             enorder.entrust_no like concat('%',#{keyword},'%') or
-            consignee.first_name like concat('%',#{keyword},'%') or
-            consignee.last_name like concat('%',#{keyword},'%')
+            consignee.full_name like concat('%',#{keyword},'%')
             )
         </if>
     </sql>

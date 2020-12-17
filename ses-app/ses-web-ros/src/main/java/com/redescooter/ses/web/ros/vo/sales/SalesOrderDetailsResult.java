@@ -92,5 +92,7 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "倒计时")
     private Long ttl = 180L;
 
+    @ApiModelProperty("预付定金")
+    private Double prepaidDeposit;
 
 }
