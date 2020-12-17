@@ -36,8 +36,6 @@ public class DataCountController {
     @Reference
     private AppDownLoadCountService appDownLoadCountService;
 
-
-
     @PostMapping(value = "/orderCount")
     @ApiOperation(value = "订单的统计", response = OrderCountResult.class)
     public Response<List<OrderCountResult>> workOrderSave(@ModelAttribute @ApiParam("请求参数") OrderCountEnter enter) {
