@@ -47,13 +47,13 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
 
     @Override
     public int insertScooterBbiByEmqX(ScooterBbiReportedDTO scooterReportedBbi) {
-        String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
-        if (StringUtils.isBlank(scooterNo)) {
-            log.error("【车辆电池相关信息数据上报失败】----车辆不存在");
-            return 0;
-        }
-
         try {
+            String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
+            if (StringUtils.isBlank(scooterNo)) {
+                log.error("【车辆电池相关信息数据上报失败】----车辆不存在");
+                return 0;
+            }
+
             /**
              * 检查数据库中是否存在车辆电池相关信息,有则更新 无则新增
              */

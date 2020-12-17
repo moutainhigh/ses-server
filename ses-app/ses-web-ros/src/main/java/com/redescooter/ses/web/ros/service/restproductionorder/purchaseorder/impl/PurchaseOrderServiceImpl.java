@@ -109,8 +109,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
         BeanUtils.copyProperties(enter,purchaseOrder);
-        if (purchaseOrder.getPlannedPaymentTime() != null){
-            purchaseOrder.setPaymentTime(DateUtil.addDays(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        if (enter.getPlannedPaymentTime() != null && enter.getPlannedPaymentTime() != null && enter.getPaymentDay() != null){
+            purchaseOrder.setPaymentTime(DateUtil.addDays(enter.getPlannedPaymentTime(),enter.getPaymentDay()));
         }
         purchaseOrder.setPurchaseType(enter.getClassType());
         purchaseOrder.setCreatedBy(enter.getUserId());
@@ -295,7 +295,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter,purchaseOrder);
-        purchaseOrder.setPaymentTime(DateUtil.dateAddHour(purchaseOrder.getPlannedPaymentTime(),purchaseOrder.getPaymentDay()));
+        if (enter.getPlannedPaymentTime() != null && enter.getPaymentDay() != null){
+            purchaseOrder.setPaymentTime(DateUtil.addDays(enter.getPlannedPaymentTime(),enter.getPaymentDay()));
+        }
         purchaseOrder.setUpdatedBy(enter.getUserId());
         purchaseOrder.setUpdatedTime(new Date());
         // 统计采购单产品里面的数量和总金额

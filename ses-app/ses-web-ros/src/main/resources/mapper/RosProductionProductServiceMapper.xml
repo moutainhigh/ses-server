@@ -55,7 +55,7 @@
     </sql>
 
     <sql id="where_productionProductPartList">
-        where parts.dr = 0
+        where parts.dr = 0 and sheet.dr = 0
         and parts.disable=0
         and parts.qc_flag=1
         <if test="secId != null">

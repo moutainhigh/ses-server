@@ -97,12 +97,22 @@ public class AppVersionServiceImpl implements AppVersionService {
         PlaAppVersion appVersion = new PlaAppVersion();
         BeanUtils.copyProperties(appVersionDTO, appVersion);
 
+        /**
+         * 检查版本号是否存在
+         */
+        String versionNumber = appVersionMapper.existsAppVersionByVersionNumberAndType(appVersionDTO.getNewVersionNum(), appVersionDTO.getType());
+        if (StringUtils.isNotBlank(versionNumber)) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getCode(),
+                    ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getMessage());
+        }
+
         String versionCode = null;
         /**
-         * 安卓和车载平板的应用版本编码通过前端页面传递,其它的都是通过后台生成
+         * 安卓、IOS和车载平板的应用版本编码通过前端页面传递,其它的都是通过后台生成
          */
         if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
-                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
+                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())
+                || AppVersionTypeEnum.IOS.getType().equals(appVersionDTO.getType())) {
             // 检查版本编码是否存在
             String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getCode(),
                     appVersionDTO.getType());
@@ -144,10 +154,20 @@ public class AppVersionServiceImpl implements AppVersionService {
         }
 
         /**
+         * 检查版本号是否存在
+         */
+        String versionNumber = appVersionMapper.existsAppVersionByVersionNumberAndType(appVersionDTO.getNewVersionNum(), appVersionDTO.getType());
+        if (StringUtils.isNotBlank(versionNumber) && !versionNumber.equals(appVersion.getNewVersionNum())) {
+            throw new FoundationException(ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getCode(),
+                    ExceptionCodeEnums.VERSION_NUMBER_EXISTS.getMessage());
+        }
+
+        /**
          * 检查版本编码是否存在,只针对于安卓和车载平板
          */
         if (AppVersionTypeEnum.ANDROID.getType().equals(appVersionDTO.getType())
-                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())) {
+                || AppVersionTypeEnum.SCS.getType().equals(appVersionDTO.getType())
+                || AppVersionTypeEnum.IOS.getType().equals(appVersionDTO.getType())) {
 
             String versionCodeData = appVersionMapper.existsAppVersionByCodeAndType(appVersionDTO.getCode(),
                     appVersionDTO.getType());

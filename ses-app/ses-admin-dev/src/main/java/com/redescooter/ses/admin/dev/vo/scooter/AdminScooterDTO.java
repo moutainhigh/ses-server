@@ -46,6 +46,9 @@ public class AdminScooterDTO {
     @ApiModelProperty(value="车辆的配置控制器(车辆型号) 1-E25  2-E50  3-E100  4-E125", dataType = "Integer")
     private Integer scooterController;
 
+    @ApiModelProperty(value = "车辆型号", dataType = "String")
+    private String scooterModel;
+
     @ApiModelProperty(value="备注", dataType = "String")
     private String remark;
 
