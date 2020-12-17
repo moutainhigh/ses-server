@@ -104,7 +104,7 @@ public interface SpecificatTypeService {
     GeneralResult updateSpecificType(InsertSpecificTypeParamDTO paramDTO);
 
     /**
-     * 根据id查询规格类型详情 -- new
+     * 根据id查询规格类型详情,新接口(new)
      * @param enter
      * @return com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO
      * @author assert

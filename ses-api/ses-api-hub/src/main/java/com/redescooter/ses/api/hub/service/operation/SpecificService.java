@@ -52,7 +52,7 @@ public interface SpecificService {
     SpecificTypeDTO getSpecificTypeById(Long id);
 
     /**
-     * 根据specificId查询自定义项分组信息
+     * 根据specificId查询自定义项分组信息(暂时用不到,可以先留在这里以后或许能用得上)
      * @param specificId
      * @return java.util.List<com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO>
      * @author assert
