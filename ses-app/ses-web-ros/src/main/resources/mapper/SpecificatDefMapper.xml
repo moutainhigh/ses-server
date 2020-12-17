@@ -12,4 +12,14 @@
         </foreach>
     </insert>
 
+    <!--批量修改自定义项信息-->
+    <update id="batchUpdateSpecificatDef" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
+        <foreach collection="specificDefList" item="item" separator=";">
+            update ope_specificat_def_group
+            set def_name = #{item.defName}, def_value = #{item.defValue}, updated_by = #{item.updatedBy},
+            updated_time = #{item.updatedTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
 </mapper>

@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -256,31 +257,18 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     @Override
     public GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO) {
-        List<SpecificDefGroupDTO> specificDefGroupList = new ArrayList<>();
         Long userId = paramDTO.getUserId();
 
         /**
-         * -请求参数完整性、唯一性和数据格式校验
+         * 规格类型名称唯一性校验
          */
-        try {
-            specificDefGroupList = JSONArray.parseArray(paramDTO.getSt(), SpecificDefGroupDTO.class);
-        } catch (Exception e) {
-            log.error("【新增规格类型失败】----参数数据格式有误");
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-
-        // 自定义项分组、自定义项校验
-        checkSpecificationDef(specificDefGroupList);
-
-        SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
-        if (null != specificGroup) {
-            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
-        }
-
-        int count = specificatTypeServiceMapper.getSpecificTypeCountByName(paramDTO.getSpecificatName());
-        if (count > 0) {
+        String specificName = specificatTypeServiceMapper.existsSpecificTypeByName(paramDTO.getSpecificatName());
+        if (StringUtils.isNotBlank(specificName)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
         }
+
+        // 请求参数校验
+        List<SpecificDefGroupDTO> specificDefGroupList = checkSpecificationDef(paramDTO, 1);
 
         /**
          * 组装新增数据 -- 规格类型、规格自定义项分组、规则自定义项
@@ -323,6 +311,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         });
 
         List<SpecificDefGroupDTO> newSpecificDefGroupList = specificDefGroupList;
+
         /**
          * -新增规格类型相关数据
          */
@@ -343,14 +332,87 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     @Override
     public GeneralResult updateSpecificType(InsertSpecificTypeParamDTO paramDTO) {
+        Long userId = paramDTO.getUserId();
+
+        if (null == paramDTO.getId()) {
+            throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
+        }
+
+        SpecificTypeDTO specificType = specificatTypeServiceMapper.getSpecificTypeById(paramDTO.getId());
+        if (null == specificType) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+        }
+
+        // 规格类型名称唯一性校验
+        String specificName = specificatTypeServiceMapper.existsSpecificTypeByName(paramDTO.getSpecificatName());
+        if (StringUtils.isNotBlank(specificName) && !specificName.equals(specificType.getSpecificatName())) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
+        }
+
+        /**
+         * 请求入参自定义项分组、自定义项校验
+         */
+        List<SpecificDefGroupDTO> specificDefGroupList = checkSpecificationDef(paramDTO, 2);
+
+        /**
+         * 组装修改数据 -- 规格类型、规格自定义项分组、规则自定义项
+         */
+        // 规格类型数据
+        paramDTO.setUpdatedBy(userId);
+        paramDTO.setUpdatedTime(new Date());
+
+        // 规格自定义项集合
+        List<SpecificDefDTO> specificDefList = new ArrayList<>();
+
+        // 规格自定义项分组数据
+        specificDefGroupList.forEach(defGroup -> {
+            defGroup.setUpdatedBy(userId);
+            defGroup.setUpdatedTime(new Date());
+
+            // 规格自定义项数据
+            List<SpecificDefDTO> temp = defGroup.getGroupList();
+            temp.forEach(t -> {
+                t.setUpdatedBy(userId);
+                t.setUpdatedTime(new Date());
+
+                specificDefList.add(t);
+            });
+        });
+
+        List<SpecificDefGroupDTO> newSpecificDefGroupList = specificDefGroupList;
+
+        /**
+         * 修改规格类型相关数据
+         */
+        transactionTemplate.execute(updateSpecificType -> {
+            try {
+                specificatTypeServiceMapper.updateSpecificatType(paramDTO);
+                specificatDefGroupMapper.batchUpdateSpecificatDefGroup(newSpecificDefGroupList);
+                specificatDefMapper.batchUpdateSpecificatDef(specificDefList);
+            } catch (Exception e) {
+                log.error("【修改规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
+                updateSpecificType.setRollbackOnly();
+            }
+            return 1;
+        });
 
         return new GeneralResult(paramDTO.getRequestId());
     }
 
     @Override
     public QuerySpecificTypeDetailResultDTO getSpecificTypeDetailById(IdEnter enter) {
+        QuerySpecificTypeDetailResultDTO specificType = specificatTypeServiceMapper.getSpecificTypeDetailById(enter.getId());
+        if (null == specificType) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+        }
 
-        return null;
+        /**
+         * 查询规格类型自定义项分组和自定义项信息
+         */
+        List<SpecificDefGroupDTO> specificDefGroupList = specificatDefGroupMapper.getSpecificDefGroupBySpecificId(enter.getId());
+        specificType.setSpecificDefGroupList(specificDefGroupList);
+
+        return specificType;
     }
 
 
@@ -388,11 +450,29 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     }
 
     /**
-     * 自定义项名称、值非空长度校验
-     * @param specificDefGroupList
+     * 新增/修改规格类型请求参数相关校验
+     * @param paramDTO
+     * @param type 1新增 2修改
      */
-    private void checkSpecificationDef(List<SpecificDefGroupDTO> specificDefGroupList) {
+    private List<SpecificDefGroupDTO> checkSpecificationDef(InsertSpecificTypeParamDTO paramDTO, Integer type) {
         List<SpecificDefDTO> specificDefList = new ArrayList<>();
+        List<SpecificDefGroupDTO> specificDefGroupList = new ArrayList<>();
+
+        /**
+         * 检查规格分组是否存在
+         */
+        SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
+        if (null != specificGroup) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+
+        try {
+            specificDefGroupList = JSONArray.parseArray(paramDTO.getSt(), SpecificDefGroupDTO.class);
+        } catch (Exception e) {
+            log.error(String.format("%s----参数数据格式有误", type == 1 ? "【新增规格类型失败】" : "【修改规格类型失败】"));
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
         /**
          * 自定义项分组名称相关校验
          */
@@ -424,6 +504,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             }
         });
 
+        return specificDefGroupList;
     }
 
 

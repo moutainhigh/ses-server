@@ -29,9 +29,9 @@ public class InsertSpecificTypeParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "规格名称", dataType = "String")
     private String specificatName;
 
-    @ApiModelProperty(value = "规格编码", dataType = "String")
+    @ApiModelProperty(value = "规格编码", dataType = "String", hidden = true)
     private String code;
-
+    
     @NotNull(code = ValidationExceptionCode.GROUP_ID_IS_EMPTY, message = "分组id不能为空")
     @ApiModelProperty(value = "分组id", dataType = "Long")
     private Long groupId;
