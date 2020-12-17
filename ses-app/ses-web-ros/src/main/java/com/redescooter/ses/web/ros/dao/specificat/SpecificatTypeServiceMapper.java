@@ -36,4 +36,13 @@ public interface SpecificatTypeServiceMapper {
     */
     int insertSpecificatType(InsertSpecificTypeParamDTO specificType);
 
+    /**
+     * 根据name查询规格类型数量
+     * @param name
+     * @return int
+     * @author assert
+     * @date 2020/12/17
+    */
+    int getSpecificTypeCountByName(String name);
+
 }

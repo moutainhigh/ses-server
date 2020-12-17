@@ -124,6 +124,10 @@
         </trim>
     </insert>
 
-
+    <!--根据name查询规格类型数量-->
+    <select id="getSpecificTypeCountByName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from ope_specificat_type
+	    where dr = 0 and specificat_name = #{name}
+    </select>
 
 </mapper>
