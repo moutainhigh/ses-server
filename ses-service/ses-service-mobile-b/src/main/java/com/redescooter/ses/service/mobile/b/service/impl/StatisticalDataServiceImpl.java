@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
+import com.redescooter.ses.api.mobile.c.vo.ScooterChartResult;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -308,19 +309,23 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
         corDriverRideStatQueryWrapper.last("LIMIT 1");
         CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
-
+// 获取指定日期格式向前N天时间集合
+        List<String> dayList = new LinkedList();
+//        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
+        MobileBScooterChartResult result = null;
         if (corDriverRideStat == null) {
+            for (String str : dayList) {
+                result = new MobileBScooterChartResult();
+                result.setTimes(str);
+                map.put(str, result);
+            }
             return new AllMobileBScooterChartResult(map);
         }
 
         enter.setUserId(corDriver.getId());
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
-        // 获取指定日期格式向前N天时间集合
-        List<String> dayList = new LinkedList();
-//        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
-        if (list.size() > 0) {
-            MobileBScooterChartResult result = null;
+        if (CollectionUtils.isNotEmpty(list)) {
 
             for (String str : dayList) {
                 for (MobileBScooterChartResult chart : list) {
@@ -333,6 +338,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                     result.setTimes(str);
                     map.put(str, result);
                 }
+            }
+        }else {
+            for (String str : dayList) {
+                result = new MobileBScooterChartResult();
+                result.setTimes(str);
+                map.put(str, result);
             }
         }
         return new AllMobileBScooterChartResult(map);

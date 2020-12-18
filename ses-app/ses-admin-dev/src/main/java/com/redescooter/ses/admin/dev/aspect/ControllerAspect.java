@@ -1,5 +1,7 @@
 package com.redescooter.ses.admin.dev.aspect;
 
+import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
+import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.base.AdminTokenService;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -122,22 +124,22 @@ public class ControllerAspect {
             enter.setLanguage(Locale.ENGLISH.getLanguage());
         }
         enter.setTimestamp((new Date()).getTime());
-//        if (StringUtils.isBlank(enter.getCountry())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
-//        }
-//
-//        if (StringUtils.isBlank(enter.getClientType())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
-//        }
-//        if (StringUtils.isBlank(enter.getClientIp())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
-//        }
-//        if (StringUtils.isBlank(enter.getTimeZone())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
-//        }
-//        if (StringUtils.isBlank(enter.getVersion())) {
-//            throw new SesMobileClientException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
-//        }
+        if (StringUtils.isBlank(enter.getCountry())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
+        }
+
+        if (StringUtils.isBlank(enter.getClientType())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getClientIp())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getTimeZone())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(enter.getVersion())) {
+            throw new SesAdminDevException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
+        }
     }
 }
 

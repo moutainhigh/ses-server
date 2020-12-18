@@ -1,6 +1,7 @@
 package com.redescooter.ses.admin.dev.service.base;
 
 import com.redescooter.ses.admin.dev.vo.user.UserInfoResult;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
@@ -84,4 +85,15 @@ public interface AdminTokenService {
     */
     UserToken checkAndGetSession(GeneralEnter enter);
 
+
+
+
+    /**
+     * @Author Aleks
+     * @Description  忘记密码 发送邮件
+     * @Date  2020/12/15 15:08
+     * @Param [enter]
+     * @return
+     **/
+    GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter);
 }

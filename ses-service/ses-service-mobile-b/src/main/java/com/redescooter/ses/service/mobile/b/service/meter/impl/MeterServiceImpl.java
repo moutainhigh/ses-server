@@ -45,6 +45,8 @@ public class MeterServiceImpl implements MeterService {
     @Reference
     private ScooterService  scooterService;
     @Reference
+    private UserBaseService userBaseService;
+    @Reference
     private ScooterEmqXService scooterEmqXService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;
@@ -54,8 +56,6 @@ public class MeterServiceImpl implements MeterService {
     private MeterServiceMapper meterServiceMapper;
     @Autowired
     private CorExpressOrderService corExpressOrderService;
-    @Autowired
-    private UserBaseService userBaseService;
 
 
     /**

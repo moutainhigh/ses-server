@@ -26,8 +26,9 @@
             and tp.group_id = #{enter.groupId}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and tp.specificat_name like concat('%', #{enter.keyword}, '%') or
+            and (tp.specificat_name like concat('%', #{enter.keyword}, '%') or
             tp.specificat_code like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

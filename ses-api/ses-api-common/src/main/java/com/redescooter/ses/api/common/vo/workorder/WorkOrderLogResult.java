@@ -27,6 +27,9 @@ public class WorkOrderLogResult implements Serializable {
     @ApiModelProperty("内容")
     private String remark;
 
+    @ApiModelProperty("图片地址")
+    private String url;
+
     @ApiModelProperty(value="创建时间")
     private Date createdTime;
 
