@@ -359,61 +359,28 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
          * 请求入参自定义项分组、自定义项校验
          */
         List<SpecificDefGroupDTO> specificDefGroupList = checkSpecificationDef(paramDTO, 2);
+        List<SpecificDefDTO> specificDefList = new ArrayList<>();
 
-        /**
-         * 区分当前自定义项分组是修改还是新增
-         */
-        List<Long> defGroupIds = specificatDefGroupMapper.getSpecificDefGroupIdBySpecificId(paramDTO.getId());
-
-        List<SpecificDefGroupDTO> updateSpecificDefGroupList = specificDefGroupList.stream().filter(
-            defGroup -> defGroupIds.contains(defGroup.getId())
-        ).collect(Collectors.toList());
-
-        List<SpecificDefGroupDTO> insertSpecificDefGroupList = specificDefGroupList.stream().filter(
-                defGroup -> !defGroupIds.contains(defGroup.getId())
-        ).collect(Collectors.toList());
-
-        /**
-         * 组装新增/修改数据
-         */
-        List<SpecificDefGroupDTO> defGroupList = new ArrayList<>();
-        List<SpecificDefDTO> defList = new ArrayList<>();
-
-        updateSpecificDefGroupList.forEach(u -> {
-            u.setUpdatedBy(userId);
-            u.setUpdatedTime(new Date());
-
-            defGroupList.add(u);
-
-            u.getGroupList().forEach(uDef -> {
-                uDef.setUpdatedBy(userId);
-                uDef.setUpdatedTime(new Date());
-
-                defList.add(uDef);
-            });
-        });
-
-        insertSpecificDefGroupList.forEach(i -> {
+        specificDefGroupList.forEach(defGroup -> {
             Long defGroupId = idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF_GROUP);
-            i.setId(defGroupId);
-            i.setSpecificatId(paramDTO.getId());
-            i.setCreatedBy(userId);
-            i.setCreatedTime(new Date());
-            i.setUpdatedBy(userId);
-            i.setUpdatedTime(new Date());
+            defGroup.setId(defGroupId);
+            defGroup.setSpecificatId(paramDTO.getId());
+            defGroup.setCreatedBy(userId);
+            defGroup.setCreatedTime(new Date());
+            defGroup.setUpdatedBy(userId);
+            defGroup.setUpdatedTime(new Date());
 
-            defGroupList.add(i);
+            // 规格自定义项数据
+            defGroup.getGroupList().forEach(def -> {
+                def.setId(idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF));
+                def.setSpecificatId(paramDTO.getId());
+                def.setSpecificDefGroupId(defGroupId);
+                def.setCreatedBy(userId);
+                def.setCreatedTime(new Date());
+                def.setUpdatedBy(userId);
+                def.setUpdatedTime(new Date());
 
-            i.getGroupList().forEach(iDef -> {
-                iDef.setId(idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF));
-                iDef.setSpecificatId(paramDTO.getId());
-                iDef.setSpecificDefGroupId(defGroupId);
-                iDef.setCreatedBy(userId);
-                iDef.setCreatedTime(new Date());
-                iDef.setUpdatedBy(userId);
-                iDef.setUpdatedTime(new Date());
-
-                defList.add(iDef);
+                specificDefList.add(def);
             });
         });
 
@@ -428,8 +395,8 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
                 specificatDefGroupMapper.deleteSpecificDefGroupBySpecificId(paramDTO.getId());
                 specificatDefMapper.deleteSpecificatDefById(paramDTO.getId());
 
-                specificatDefGroupMapper.batchInsertSpecificatDefGroup(defGroupList);
-                specificatDefMapper.batchInsertSpecificatDef(defList);
+                specificatDefGroupMapper.batchInsertSpecificatDefGroup(specificDefGroupList);
+                specificatDefMapper.batchInsertSpecificatDef(specificDefList);
             } catch (Exception e) {
                 log.error("【修改规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
                 updateSpecificType.setRollbackOnly();
