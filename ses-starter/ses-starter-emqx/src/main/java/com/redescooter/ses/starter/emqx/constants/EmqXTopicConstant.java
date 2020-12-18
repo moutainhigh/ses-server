@@ -25,6 +25,11 @@ public interface EmqXTopicConstant {
      */
     String SET_SCOOTER_MODEL_TOPIC = "scooter-%s/set-model";
 
+    /**
+     * 同步订单数量
+     */
+    String SYNC_ORDER_QUANTITY_TOPIC = "scooter-%s/syncOrderQuantity";
+
     // 消息订阅主题Topic(车辆平板端往后台上报车辆数据)
     /**
      * 车辆-ECU(仪表)数据上报
