@@ -221,7 +221,15 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         /**
          * 更新车辆型号信息,同步车辆型号信息到scooter库sco_scooter表中去
          */
-        adminScooterMapper.updateAdminScooterModelById(paramDTO.getId(), scooterModel, new Date());
+        AdminScooterDTO scooter = new AdminScooterDTO();
+        scooter.setId(paramDTO.getId());
+        scooter.setScooterController(scooterModel);
+        scooter.setGroupId(specificType.getGroupId());
+        scooter.setGroupName(specificType.getGroupName());
+        scooter.setUpdatedBy(paramDTO.getUserId());
+        scooter.setUpdatedTime(new Date());
+
+        adminScooterMapper.updateAdminScooter(scooter);
         scooterService.syncScooterModel(paramDTO.getId(), scooterModel);
 
         List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = buildSetScooterModelData(specificType.getId());
