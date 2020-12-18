@@ -1,10 +1,9 @@
 package com.redescooter.ses.mobile.client.controller.meter;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import io.swagger.annotations.Api;
@@ -35,6 +34,19 @@ public class MeterController {
     @RequestMapping(value = "/meterOrder")
     public Response<MeterDeliveryOrderReuslt> meterOrder(@ModelAttribute MeterOrderEnter enter) {
         return new Response<>(meterService.meterOrder(enter));
+    }
+
+    /**
+     * 同步订单数量到平板(车辆每次开锁时调用)
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/18
+    */
+    @ApiOperation(value = "同步订单数量到平板", notes = "同步订单数量到平板(车辆每次开锁时调用)")
+    @PostMapping(value = "/syncOrderQuantity")
+    public Response<GeneralResult> syncOrderQuantity(@ModelAttribute MeterOrderEnter enter) {
+        return new Response<>(meterService.syncOrderQuantity(enter));
     }
 
 }

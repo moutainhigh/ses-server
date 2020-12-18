@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetai
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
@@ -15,7 +16,9 @@ import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
 import com.redescooter.ses.service.mobile.b.dao.MeterServiceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriver;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
@@ -34,28 +37,26 @@ import java.util.Objects;
  * @description: MeterServiceImpl
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/16 17:54
+ * @create: 2020/11/16 17:54 
  */
 @Service
 public class MeterServiceImpl implements MeterService {
 
     @Reference
     private ScooterService  scooterService;
-
     @Reference
     private UserBaseService userBaseService;
-
+    @Reference
+    private ScooterEmqXService scooterEmqXService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;
-
     @Autowired
     private CorDriverService corDriverService;
-
     @Autowired
     private MeterServiceMapper meterServiceMapper;
-
     @Autowired
     private CorExpressOrderService corExpressOrderService;
+
 
     /**
      * @Description
@@ -151,6 +152,23 @@ public class MeterServiceImpl implements MeterService {
         //获取账户类型
         return result;
     }
+
+    @Override
+    public GeneralResult syncOrderQuantity(MeterOrderEnter enter) {
+        MeterDeliveryOrderReuslt result = meterOrder(enter);
+
+        /**
+         * 通过emq将当前用户配送中、待配送的订单数量同步给车载平板
+         */
+        SyncOrderQuantityPublishDTO publishDTO = new SyncOrderQuantityPublishDTO();
+        publishDTO.setTabletSn(enter.getSn());
+        publishDTO.setQuantity(result.getRemainingOrderNum());
+
+        scooterEmqXService.syncOrderQuantity(publishDTO);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     /**
     * @Description
