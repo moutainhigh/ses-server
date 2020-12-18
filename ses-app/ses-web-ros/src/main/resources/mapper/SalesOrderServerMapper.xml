@@ -150,6 +150,17 @@
     </select>
 
 
+    <select id="orderListByMonth" resultType="com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult">
+        select
+        DATE_FORMAT(created_time, '%Y-%m-%d') as times ,count(created_time) as total
+        from ope_customer_inquiry
+        where dr = 0 and
+        (DATE_FORMAT(created_time, '%Y-%m-%d') between   DATE_FORMAT(#{start}, '%Y-%m-%d')  and DATE_FORMAT(#{end}, '%Y-%m-%d'))
+        GROUP BY times
+
+    </select>
+
+
     <select id="orderListByDay" resultType="com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult">
         select
         DATE_FORMAT(created_time, '%Y-%m') as times ,count(created_time) as total

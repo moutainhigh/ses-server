@@ -60,7 +60,7 @@ public class OrderCountServiceImpl implements OrderCountService {
             case 2:
                 // 查询当月每天的数据
                 Date startMonthTime = DateUtil.addDays(enter.getDateTime(), -30);
-                orderResults = salesOrderServerMapper.orderListByYear(startMonthTime,enter.getDateTime());
+                orderResults = salesOrderServerMapper.orderListByMonth(startMonthTime,enter.getDateTime());
                 break;
             case 3:
                 // 查询当天的数据

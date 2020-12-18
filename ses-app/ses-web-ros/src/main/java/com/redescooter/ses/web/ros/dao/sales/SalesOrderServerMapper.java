@@ -60,5 +60,13 @@ public interface SalesOrderServerMapper {
      */
     List<CustomerOrderResult> orderListByYear(@Param("start") Date start, @Param("end") Date end);
 
+    /**
+     * 查询前一月的数据
+     * @param start
+     * @param end
+     * @return
+     */
+    List<CustomerOrderResult> orderListByMonth(@Param("start") Date start, @Param("end") Date end);
+
     List<CustomerOrderResult> orderListByDay(@Param("dateTime") Date dateTime);
 }
