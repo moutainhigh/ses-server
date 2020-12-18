@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum DistributorTypeEnum {
 
-    SALE("1", "销售"),
+    SALE("1", "Sales"),
 
-    REPAIR("2", "维修");
+    REPAIR("2", "Repair");
 
     private String code;
 

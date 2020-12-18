@@ -315,7 +315,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从第2位开始截取
-            list.forEach(o -> codeList.add(Integer.valueOf(o.getCode().substring(2))));
+            list.forEach(o -> codeList.add(Integer.valueOf(o.getCode().substring(1))));
             // 倒序排列
             codeList.sort(Comparator.reverseOrder());
             int code = codeList.get(0) + 1;
