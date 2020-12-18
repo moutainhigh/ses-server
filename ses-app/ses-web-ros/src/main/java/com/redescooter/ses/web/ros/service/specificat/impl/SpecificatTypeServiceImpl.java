@@ -129,9 +129,13 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         if(count > 0){
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getMessage());
         }
+        // 删除规格类型
         opeSpecificatTypeService.removeById(enter.getId());
+        // 删除规格自定义项分组
+        specificatDefGroupMapper.deleteSpecificDefGroupBySpecificId(enter.getId());
         // 删除规格的自定义项
         specificatDefService.deleSpecificatDef(enter.getId());
+
         return new GeneralResult(enter.getRequestId());
     }
 

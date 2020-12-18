@@ -39,4 +39,13 @@ public interface SpecificatDefGroupMapper {
     */
     List<SpecificDefGroupDTO> getSpecificDefGroupBySpecificId(Long specificId);
 
+    /**
+     * 根据specificId删除自定义项分组信息
+     * @param specificId
+     * @return int
+     * @author assert
+     * @date 2020/12/18
+    */
+    int deleteSpecificDefGroupBySpecificId(Long specificId);
+
 }

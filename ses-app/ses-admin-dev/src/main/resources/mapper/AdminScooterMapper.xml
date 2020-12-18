@@ -205,10 +205,53 @@
         where id = #{id} and dr = 0
     </select>
 
-    <!--根据id修改车辆型号-->
-    <update id="updateAdminScooterModelById">
+    <!--修改车辆信息-->
+    <update id="updateAdminScooter" parameterType="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO">
         update adm_scooter
-	    set scooter_controller = #{scooterModel}, updated_time = #{updateTime}
+	    <set>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId},
+            </if>
+            <if test="groupName != null and groupName != ''">
+                group_name = #{groupName},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId},
+            </if>
+            <if test="colorName != null and colorName != ''">
+                color_name = #{colorName},
+            </if>
+            <if test="colorValue != null and colorValue != ''">
+                color_value = #{colorValue},
+            </if>
+            <if test="macAddress != null and macAddress != ''">
+                mac_address = #{macAddress},
+            </if>
+            <if test="macName != null and macName != ''">
+                mac_name = #{macName},
+            </if>
+            <if test="scooterController != null">
+                scooter_controller = #{scooterController},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
 	    where id = #{id}
     </update>
 

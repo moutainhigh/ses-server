@@ -34,6 +34,11 @@ public class SpecificTypeDTO implements Serializable {
     private Long groupId;
 
     /**
+     * 所属分组名称
+     */
+    private String groupName;
+
+    /**
      * 备注
      */
     private String remark;

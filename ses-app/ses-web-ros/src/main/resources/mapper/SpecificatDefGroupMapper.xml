@@ -46,4 +46,11 @@
         where sdg.dr = 0 and sdg.specificat_id = #{specificId}
     </select>
 
+    <!--根据specificId删除自定义项分组信息-->
+    <update id="deleteSpecificDefGroupBySpecificId" parameterType="java.lang.Long">
+        update ope_specificat_def_group
+        set dr = 1
+        where specificat_id = #{specificId}
+    </update>
+
 </mapper>

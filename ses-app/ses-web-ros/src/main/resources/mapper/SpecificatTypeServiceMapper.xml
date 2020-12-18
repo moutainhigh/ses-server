@@ -154,25 +154,25 @@
         update ope_specificat_type
         <set>
             <if test="specificatName != null and specificatName != ''">
-                specificat_name,
+                specificat_name = #{specificatName},
             </if>
             <if test="code != null and code != ''">
-                specificat_code,
+                specificat_code = #{code},
             </if>
             <if test="groupId != null">
-                group_id,
+                group_id = #{groupId},
             </if>
             <if test="createdBy != null">
-                created_by,
+                created_by = #{createdBy},
             </if>
             <if test="createdTime != null">
-                created_time,
+                created_time = #{createdTime},
             </if>
             <if test="updatedBy != null">
-                updated_by,
+                updated_by = #{updatedBy},
             </if>
             <if test="updatedTime != null">
-                updated_time,
+                updated_time = #{updatedTime},
             </if>
         </set>
         where id = #{id}
