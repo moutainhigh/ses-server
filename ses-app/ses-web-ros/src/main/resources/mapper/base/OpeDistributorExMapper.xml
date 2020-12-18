@@ -23,7 +23,7 @@
     </select>
 
     <sql id="listCondition">
-        <if test="param.status != null and param.status != ''">
+        <if test="param.status != null">
             <if test="param.status == 0">
                 and 1 = 1
             </if>
@@ -42,10 +42,10 @@
         </if>
         <if test="param.keyword != null and param.keyword != ''">
             and (
-            name like concat('%', #{param.keyword}, '%') or
-            code like concat('%', #{param.keyword}, '%') or
-            tel like concat('%', #{param.keyword}, '%') or
-            email like concat('%', #{param.keyword}, '%')
+                name like concat('%', #{param.keyword}, '%') or
+                code like concat('%', #{param.keyword}, '%') or
+                tel like concat('%', #{param.keyword}, '%') or
+                email like concat('%', #{param.keyword}, '%')
             )
         </if>
     </sql>

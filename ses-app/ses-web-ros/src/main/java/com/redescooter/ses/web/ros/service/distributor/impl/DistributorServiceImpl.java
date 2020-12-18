@@ -142,6 +142,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response<GeneralResult> add(DistributorAddEnter enter) {
+        logger.info("新增门店的入参是:[{}]", enter);
         if (enter.getEmail().indexOf("@") == -1) {
             throw new SesWebRosException(ExceptionCodeEnums.STORE_EMAIL_MUST_CHAR.getCode(), ExceptionCodeEnums.STORE_EMAIL_MUST_CHAR.getMessage());
         }
@@ -195,6 +196,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Response<GeneralResult> update(DistributorUpdateEnter enter) {
+        logger.info("编辑门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
         BeanUtils.copyProperties(enter, model);
         model.setUpdatedBy(enter.getUserId());
@@ -235,6 +237,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      */
     @Override
     public Response<DistributorDetailResult> getDetail(IdEnter enter) {
+        logger.info("门店详情的入参是:[{}]", enter);
         OpeDistributor model = opeDistributorMapper.selectById(enter.getId());
         DistributorDetailResult result = new DistributorDetailResult();
         BeanUtils.copyProperties(model, result);
@@ -283,7 +286,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      */
     @Override
     public Response<List<DistributorSaleProductResult>> getSaleProduct(GeneralEnter enter) {
-        List<DistributorSaleProductResult> result = Lists.newArrayList();
+        List<DistributorSaleProductResult> result = Lists.newLinkedList();
         LambdaQueryWrapper<OpeSpecificatType> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSpecificatType::getDr, DelStatusEnum.VALID.getCode());
         List<OpeSpecificatType> list = opeSpecificatTypeMapper.selectList(wrapper);
