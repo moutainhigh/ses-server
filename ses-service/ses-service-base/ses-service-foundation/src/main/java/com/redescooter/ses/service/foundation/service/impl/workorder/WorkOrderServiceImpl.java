@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl.workorder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -21,12 +22,14 @@ import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderLogServic
 import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +85,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      **/
     @Override
     public GeneralResult workOrderSave(WorkOrderSaveOrUpdateEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        // 校验字段的长度
+        checkLength(enter);
         PlaWorkOrder workOrder = new PlaWorkOrder();
         BeanUtils.copyProperties(enter,workOrder);
         workOrder.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER));
@@ -93,6 +99,16 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         workOrder.setUpdatedTime(new Date());
         plaWorkOrderService.saveOrUpdate(workOrder);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    public void checkLength(WorkOrderSaveOrUpdateEnter enter){
+        if (Strings.isNullOrEmpty(enter.getTitle()) || enter.getTitle().length() > 100){
+            throw new FoundationException(ExceptionCodeEnums.TITLE_LENGTH_ERROR.getCode(), ExceptionCodeEnums.TITLE_LENGTH_ERROR.getMessage());
+        }
+        if(!Strings.isNullOrEmpty(enter.getRemark()) && enter.getRemark().length() > 1000){
+            throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
+        }
     }
 
 
@@ -205,6 +221,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         if (workOrder == null){
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
+        if (Strings.isNullOrEmpty(enter.getRemark()) || enter.getRemark().length() > 1000){
+            throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
+        }
         PlaWorkOrderLog workOrderLog = new PlaWorkOrderLog();
         workOrderLog.setCreatedBy(enter.getUserId());
         workOrderLog.setCreatedTime(new Date());
@@ -214,7 +233,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         workOrderLog.setMessageType(enter.getMessageType());
         workOrderLog.setRemark(enter.getRemark());
         workOrderLog.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER_LOG));
-        workOrderLog.setDef1(enter.getIsPhotos()?enter.getRemark():null);
+        workOrderLog.setDef1(enter.getUrls());
         plaWorkOrderLogService.saveOrUpdate(workOrderLog);
         // 邮件暂时不发
         MailContactUsMessageEnter sendEnter = new MailContactUsMessageEnter();
@@ -226,6 +245,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         sendEnter.setToMail(workOrder.getContactEmail());
         sendEnter.setUserRequestId(enter.getRequestId());
         sendEnter.setToUserId(enter.getUserId());
+        if (!Strings.isNullOrEmpty(enter.getUrls())){
+            sendEnter.setImgList(Arrays.asList(enter.getUrls().split(",")));
+        }
         mailMultiTaskService.contactUsReplyMessageEmail(sendEnter);
 
         return new GeneralResult(enter.getRequestId());
