@@ -466,7 +466,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
          * 检查规格分组是否存在
          */
         SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
-        if (null != specificGroup) {
+        if (null == specificGroup) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
 
