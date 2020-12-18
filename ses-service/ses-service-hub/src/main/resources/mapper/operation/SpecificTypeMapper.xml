@@ -7,6 +7,7 @@
         <result column="specificat_name" jdbcType="VARCHAR" property="specificatName" />
         <result column="specificat_code" jdbcType="VARCHAR" property="specificatCode" />
         <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -23,14 +24,20 @@
 
     <!--根据id查询规格类型信息-->
     <select id="getSpecificTypeById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select * from ope_specificat_type
-	    where dr = 0 and id = #{id}
+        select st.*, sg.group_name
+        from ope_specificat_type st
+        inner join ope_specificat_group sg
+        on st.group_id = sg.id and sg.dr = 0
+        where st.dr = 0 and st.id = #{id}
     </select>
 
     <!--根据name查询规格类型信息-->
     <select id="getSpecificTypeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select * from ope_specificat_type
-	    where dr = 0 and specificat_name = #{name}
+        select st.*, sg.group_name
+        from ope_specificat_type st
+        inner join ope_specificat_group sg
+        on st.group_id = sg.id and sg.dr = 0
+        where st.dr = 0 and st.specificat_name = #{name}
     </select>
 
 </mapper>

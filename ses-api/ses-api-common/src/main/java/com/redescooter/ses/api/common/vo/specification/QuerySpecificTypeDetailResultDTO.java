@@ -32,13 +32,13 @@ public class QuerySpecificTypeDetailResultDTO {
     private String groupName;
 
     @ApiModelProperty(value = "创建人名称", dataType = "String")
-    private String createdName;
+    private String creator;
 
     @ApiModelProperty(value="创建时间", dataType = "Date")
     private Date createdTime;
 
-    @ApiModelProperty(value = "更新人", dataType = "String")
-    private String updatedName;
+    @ApiModelProperty(value = "修改人名称", dataType = "String")
+    private String updater;
 
     @ApiModelProperty(value = "修改时间", dataType = "Date")
     private Date updatedTime;

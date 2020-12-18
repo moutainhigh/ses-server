@@ -3,7 +3,6 @@ package com.redescooter.ses.admin.dev.controller;
 import com.redescooter.ses.admin.dev.service.datacount.DataCountService;
 import com.redescooter.ses.api.common.service.OrderCountService;
 import com.redescooter.ses.api.common.vo.count.*;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.foundation.service.count.AppDownLoadCountService;
 import io.swagger.annotations.Api;
@@ -36,8 +35,6 @@ public class DataCountController {
 
     @Reference
     private AppDownLoadCountService appDownLoadCountService;
-
-
 
     @PostMapping(value = "/orderCount")
     @ApiOperation(value = "订单的统计", response = OrderCountResult.class)

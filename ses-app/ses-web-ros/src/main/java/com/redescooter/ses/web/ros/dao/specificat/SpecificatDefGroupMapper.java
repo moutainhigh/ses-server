@@ -21,4 +21,31 @@ public interface SpecificatDefGroupMapper {
     */
     int batchInsertSpecificatDefGroup(@Param("specificDefGroupList") List<SpecificDefGroupDTO> specificDefGroupList);
 
+    /**
+     * 批量修改规格自定义项分组信息
+     * @param specificDefGroupList
+     * @return int
+     * @author assert
+     * @date 2020/12/17
+    */
+    int batchUpdateSpecificatDefGroup(@Param("specificDefGroupList") List<SpecificDefGroupDTO> specificDefGroupList);
+
+    /**
+     * 根据specificId查询自定义项分组详情
+     * @param specificId
+     * @return java.util.List<com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO>
+     * @author assert
+     * @date 2020/12/17
+    */
+    List<SpecificDefGroupDTO> getSpecificDefGroupBySpecificId(Long specificId);
+
+    /**
+     * 根据specificId删除自定义项分组信息
+     * @param specificId
+     * @return int
+     * @author assert
+     * @date 2020/12/18
+    */
+    int deleteSpecificDefGroupBySpecificId(Long specificId);
+
 }

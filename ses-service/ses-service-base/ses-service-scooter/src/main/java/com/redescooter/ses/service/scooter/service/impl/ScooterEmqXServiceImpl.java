@@ -277,6 +277,19 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         return new GeneralResult();
     }
 
+    @Override
+    public GeneralResult syncOrderQuantity(SyncOrderQuantityPublishDTO publishDTO) {
+        /**
+         * 消息通知下发,将当前配送中、待配送的订单数量同步给车载平板
+         */
+        ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+            mqttClientUtil.publish(String.format(EmqXTopicConstant.SYNC_ORDER_QUANTITY_TOPIC, publishDTO.getTabletSn()),
+                    JSONObject.toJSONString(publishDTO));
+        });
+
+        return new GeneralResult();
+    }
+
 
     /**
      * 组装车辆操作记录数据

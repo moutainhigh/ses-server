@@ -1,14 +1,12 @@
 package com.redescooter.ses.admin.dev.service.datacount.impl;
 
 import com.redescooter.ses.admin.dev.service.datacount.DataCountService;
-import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.vo.count.*;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
-import lombok.*;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +29,7 @@ public class DataCountServiceImpl implements DataCountService {
 
     /**
      * 客户统计
+     *
      * @param enter
      * @return
      */
@@ -77,7 +76,7 @@ public class DataCountServiceImpl implements DataCountService {
         saas.add(1);
         saas.add(2);
         // 当前时间注册的数量
-        saasUser.setCount(userTokenService.registerCount(saas,dateStr));
+        saasUser.setCount(userTokenService.registerCount(saas, dateStr));
         // 总的数量
         saasUser.setTotalCount(userTokenService.totalUserCount(saas));
         saasUser.setCustomerType(1);
@@ -91,7 +90,7 @@ public class DataCountServiceImpl implements DataCountService {
         toB.add(3);
         toB.add(4);
         // 当前时间注册的数量
-        toBUser.setCount(userTokenService.registerCount(toB,dateStr));
+        toBUser.setCount(userTokenService.registerCount(toB, dateStr));
         // 总的数量
         toBUser.setTotalCount(userTokenService.totalUserCount(toB));
         toBUser.setCustomerType(2);
@@ -102,7 +101,7 @@ public class DataCountServiceImpl implements DataCountService {
         List<Integer> toC = new ArrayList<>();
         toC.add(5);
         // 当前时间注册的数量
-        toCUser.setCount(userTokenService.registerCount(toC,dateStr));
+        toCUser.setCount(userTokenService.registerCount(toC, dateStr));
         // 总的数量
         toCUser.setTotalCount(userTokenService.totalUserCount(toC));
         toCUser.setCustomerType(3);
@@ -136,7 +135,7 @@ public class DataCountServiceImpl implements DataCountService {
         saas.add(1);
         saas.add(2);
         // 当前时间活跃的数量
-        saasUser.setCount(userTokenService.activeCount(saas,dateStr));
+        saasUser.setCount(userTokenService.activeCount(saas, dateStr));
         // 总的数量
         saasUser.setTotalCount(userTokenService.totalUserCount(saas));
         saasUser.setCustomerType(1);
@@ -150,7 +149,7 @@ public class DataCountServiceImpl implements DataCountService {
         toB.add(3);
         toB.add(4);
         // 当前时间活跃的数量
-        toBUser.setCount(userTokenService.activeCount(toB,dateStr));
+        toBUser.setCount(userTokenService.activeCount(toB, dateStr));
         // 总的数量
         toBUser.setTotalCount(userTokenService.totalUserCount(toB));
         toBUser.setCustomerType(2);
@@ -161,7 +160,7 @@ public class DataCountServiceImpl implements DataCountService {
         List<Integer> toC = new ArrayList<>();
         toC.add(5);
         // 当当前时间活跃的数量
-        toCUser.setCount(userTokenService.activeCount(toC,dateStr));
+        toCUser.setCount(userTokenService.activeCount(toC, dateStr));
         // 总的数量
         toCUser.setTotalCount(userTokenService.totalUserCount(toC));
         toCUser.setCustomerType(3);
@@ -172,6 +171,7 @@ public class DataCountServiceImpl implements DataCountService {
 
     /**
      * 车辆销售统计
+     *
      * @param enter
      * @return
      */
@@ -179,7 +179,7 @@ public class DataCountServiceImpl implements DataCountService {
     public ScooterCountResult scooterCount(ScooterCountEnter enter) {
         ScooterCountResult result = new ScooterCountResult();
         // 如果没有传  就默认是当年的数据
-        enter.setDateTime(enter.getDateTime() == null?new Date():enter.getDateTime());
+        enter.setDateTime(enter.getDateTime() == null ? new Date() : enter.getDateTime());
         List<String> dateList = new LinkedList();
         dateList = OrderChartUtils.countDateList(enter.getType(), enter.getDateTime());
 
