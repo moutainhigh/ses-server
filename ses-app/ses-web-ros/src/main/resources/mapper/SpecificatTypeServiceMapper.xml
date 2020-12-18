@@ -138,7 +138,7 @@
 
     <!--根据name检查规格类型是否存在-->
     <select id="existsSpecificTypeByName" parameterType="java.lang.String" resultType="java.lang.String">
-        select count(*) from ope_specificat_type
+        select specificat_name from ope_specificat_type
 	    where dr = 0 and specificat_name = #{name}
     </select>
 
