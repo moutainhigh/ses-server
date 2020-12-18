@@ -22,4 +22,10 @@
         </foreach>
     </update>
 
+    <!--根据id物理删除自定义项信息-->
+    <delete id="deleteSpecificatDefById" parameterType="java.lang.Long">
+        delete from ope_specificat_def
+	    where specificat_id = #{specificId}
+    </delete>
+
 </mapper>

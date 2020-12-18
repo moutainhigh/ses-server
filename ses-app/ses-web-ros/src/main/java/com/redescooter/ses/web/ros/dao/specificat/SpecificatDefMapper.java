@@ -31,4 +31,13 @@ public interface SpecificatDefMapper {
     */
     int batchUpdateSpecificatDef(@Param("specificDefList") List<SpecificDefDTO> specificDefList);
 
+    /**
+     * 根据id物理删除自定义项信息
+     * @param specificId
+     * @return int
+     * @author assert
+     * @date 2020/12/18
+    */
+    int deleteSpecificatDefById(Long specificId);
+
 }

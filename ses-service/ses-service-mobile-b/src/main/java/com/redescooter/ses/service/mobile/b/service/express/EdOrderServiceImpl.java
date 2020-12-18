@@ -2,7 +2,6 @@ package com.redescooter.ses.service.mobile.b.service.express;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
@@ -20,6 +19,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
+import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.foundation.service.PushService;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderDeliveryTraceService;
@@ -29,6 +29,7 @@ import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.EdRfuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.EdOrderServiceMapper;
@@ -59,6 +60,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,38 +70,30 @@ import java.util.Map;
 @Service
 public class EdOrderServiceImpl implements EdOrderService {
 
-    @Autowired
-    private EdOrderServiceMapper edOrderServiceMapper;
-
-    @Autowired
-    private CorExpressOrderService corExpressOrderService;
-
-    @Autowired
-    private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
-
-    @Autowired
-    private CorTenantScooterService corTenantScooterService;
-
-    @Autowired
-    private EdOrderDeliveryTraceService edOrderDeliveryTraceService;
-
-    @Autowired
-    private CorExpressDeliveryService corExpressDeliveryService;
-
-    @Autowired
-    private CorUserProfileService corUserProfileService;
-
-    @Autowired
-    private JedisService jedisService;
-
     @Reference
     private IdAppService idAppService;
-
     @Reference
     private ScooterIotService scooterIotService;
-
     @Reference
     private PushService pushService;
+    @Reference
+    private ScooterEmqXService scooterEmqXService;
+    @Resource
+    private EdOrderServiceMapper edOrderServiceMapper;
+    @Resource
+    private CorExpressOrderService corExpressOrderService;
+    @Resource
+    private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
+    @Resource
+    private CorTenantScooterService corTenantScooterService;
+    @Resource
+    private EdOrderDeliveryTraceService edOrderDeliveryTraceService;
+    @Resource
+    private CorExpressDeliveryService corExpressDeliveryService;
+    @Resource
+    private CorUserProfileService corUserProfileService;
+    @Resource
+    private JedisService jedisService;
 
 
     /**
@@ -211,15 +205,27 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 获取正在骑行的车辆记录
         CorDriverScooter corDriverScooter = edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(), enter.getTenantId());
-        // 开启导航
-        IotScooterEnter iotScooterEnter = new IotScooterEnter();
-        BeanUtils.copyProperties(enter, iotScooterEnter);
-        iotScooterEnter.setId(corDriverScooter.getScooterId());
-        iotScooterEnter.setEvent(CommonEvent.START.getValue());
-        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
-        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
-        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
-        scooterIotService.navigation(iotScooterEnter);
+
+        /**
+         * 开始订单 -- 开启导航
+         * TODO
+         */
+        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
+        scooterNavigation.setEvent(CommonEvent.START.getValue());
+        scooterNavigation.setLat(enter.getLat());
+        scooterNavigation.setLng(enter.getLng());
+
+        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), null);
+
+//        // 开启导航
+//        IotScooterEnter iotScooterEnter = new IotScooterEnter();
+//        BeanUtils.copyProperties(enter, iotScooterEnter);
+//        iotScooterEnter.setId(corDriverScooter.getScooterId());
+//        iotScooterEnter.setEvent(CommonEvent.START.getValue());
+//        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
+//        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
+//        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
+//        scooterIotService.navigation(iotScooterEnter);
 
         // 查询车辆信息
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();

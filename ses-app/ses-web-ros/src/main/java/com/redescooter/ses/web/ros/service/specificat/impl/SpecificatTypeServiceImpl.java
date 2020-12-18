@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameSpecificatTypeServiceImpl
@@ -62,19 +64,19 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     private OpeSpecificatTypeService opeSpecificatTypeService;
     @Reference
     private IdAppService idAppService;
-    @Resource
+    @Autowired
     private SpecificatDefService specificatDefService;
-    @Resource
+    @Autowired
     private SpecificatTypeServiceMapper specificatTypeServiceMapper;
-    @Resource
+    @Autowired
     private OpeSaleScooterService opeSaleScooterService;
-    @Resource
+    @Autowired
     private SpecificatDefGroupMapper specificatDefGroupMapper;
-    @Resource
+    @Autowired
     private SpecificatDefMapper specificatDefMapper;
-    @Resource
+    @Autowired
     private TransactionTemplate transactionTemplate;
-    @Resource
+    @Autowired
     private SpecificatGroupServiceMapper specificatGroupServiceMapper;
 
 
@@ -359,31 +361,61 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         List<SpecificDefGroupDTO> specificDefGroupList = checkSpecificationDef(paramDTO, 2);
 
         /**
-         * 组装修改数据 -- 规格类型、规格自定义项分组、规则自定义项
+         * 区分当前自定义项分组是修改还是新增
          */
-        // 规格类型数据
-        paramDTO.setUpdatedBy(userId);
-        paramDTO.setUpdatedTime(new Date());
+        List<Long> defGroupIds = specificatDefGroupMapper.getSpecificDefGroupIdBySpecificId(paramDTO.getId());
 
-        // 规格自定义项集合
-        List<SpecificDefDTO> specificDefList = new ArrayList<>();
+        List<SpecificDefGroupDTO> updateSpecificDefGroupList = specificDefGroupList.stream().filter(
+            defGroup -> defGroupIds.contains(defGroup.getId())
+        ).collect(Collectors.toList());
 
-        // 规格自定义项分组数据
-        specificDefGroupList.forEach(defGroup -> {
-            defGroup.setUpdatedBy(userId);
-            defGroup.setUpdatedTime(new Date());
+        List<SpecificDefGroupDTO> insertSpecificDefGroupList = specificDefGroupList.stream().filter(
+                defGroup -> !defGroupIds.contains(defGroup.getId())
+        ).collect(Collectors.toList());
 
-            // 规格自定义项数据
-            List<SpecificDefDTO> temp = defGroup.getGroupList();
-            temp.forEach(t -> {
-                t.setUpdatedBy(userId);
-                t.setUpdatedTime(new Date());
+        /**
+         * 组装新增/修改数据
+         */
+        List<SpecificDefGroupDTO> defGroupList = new ArrayList<>();
+        List<SpecificDefDTO> defList = new ArrayList<>();
 
-                specificDefList.add(t);
+        updateSpecificDefGroupList.forEach(u -> {
+            u.setUpdatedBy(userId);
+            u.setUpdatedTime(new Date());
+
+            defGroupList.add(u);
+
+            u.getGroupList().forEach(uDef -> {
+                uDef.setUpdatedBy(userId);
+                uDef.setUpdatedTime(new Date());
+
+                defList.add(uDef);
             });
         });
 
-        List<SpecificDefGroupDTO> newSpecificDefGroupList = specificDefGroupList;
+        insertSpecificDefGroupList.forEach(i -> {
+            Long defGroupId = idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF_GROUP);
+            i.setId(defGroupId);
+            i.setSpecificatId(paramDTO.getId());
+            i.setCreatedBy(userId);
+            i.setCreatedTime(new Date());
+            i.setUpdatedBy(userId);
+            i.setUpdatedTime(new Date());
+
+            defGroupList.add(i);
+
+            i.getGroupList().forEach(iDef -> {
+                iDef.setId(idAppService.getId(SequenceName.OPE_SPECIFICAT_DEF));
+                iDef.setSpecificatId(paramDTO.getId());
+                iDef.setSpecificDefGroupId(defGroupId);
+                iDef.setCreatedBy(userId);
+                iDef.setCreatedTime(new Date());
+                iDef.setUpdatedBy(userId);
+                iDef.setUpdatedTime(new Date());
+
+                defList.add(iDef);
+            });
+        });
 
         /**
          * 修改规格类型相关数据
@@ -391,8 +423,13 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         transactionTemplate.execute(updateSpecificType -> {
             try {
                 specificatTypeServiceMapper.updateSpecificatType(paramDTO);
-                specificatDefGroupMapper.batchUpdateSpecificatDefGroup(newSpecificDefGroupList);
-                specificatDefMapper.batchUpdateSpecificatDef(specificDefList);
+
+                // 直接物理删除数据, 先不去区分是修改还是新增
+                specificatDefGroupMapper.deleteSpecificDefGroupBySpecificId(paramDTO.getId());
+                specificatDefMapper.deleteSpecificatDefById(paramDTO.getId());
+
+                specificatDefGroupMapper.batchInsertSpecificatDefGroup(defGroupList);
+                specificatDefMapper.batchInsertSpecificatDef(defList);
             } catch (Exception e) {
                 log.error("【修改规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
                 updateSpecificType.setRollbackOnly();
