@@ -19,8 +19,8 @@ public class CustomerCountResult extends GeneralResult {
     @ApiModelProperty("客户类型，1：saas,2:app-ToB,3:app-ToC")
     private Integer customerType;
 
-    @ApiModelProperty("数量")
-    private Integer totalCount = 0;
+//    @ApiModelProperty("数量")
+//    private Integer totalCount = 0;
 
     @ApiModelProperty("注册量or活跃量")
     private Integer count = 0;

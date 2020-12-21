@@ -78,7 +78,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当前时间注册的数量
         saasUser.setCount(userTokenService.registerCount(saas, dateStr));
         // 总的数量
-        saasUser.setTotalCount(userTokenService.totalUserCount(saas));
+//        saasUser.setTotalCount(userTokenService.totalUserCount(saas));
         saasUser.setCustomerType(1);
         resultList.add(saasUser);
 
@@ -92,7 +92,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当前时间注册的数量
         toBUser.setCount(userTokenService.registerCount(toB, dateStr));
         // 总的数量
-        toBUser.setTotalCount(userTokenService.totalUserCount(toB));
+//        toBUser.setTotalCount(userTokenService.totalUserCount(toB));
         toBUser.setCustomerType(2);
         resultList.add(toBUser);
 
@@ -103,7 +103,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当前时间注册的数量
         toCUser.setCount(userTokenService.registerCount(toC, dateStr));
         // 总的数量
-        toCUser.setTotalCount(userTokenService.totalUserCount(toC));
+//        toCUser.setTotalCount(userTokenService.totalUserCount(toC));
         toCUser.setCustomerType(3);
         resultList.add(toCUser);
         return resultList;
@@ -137,7 +137,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当前时间活跃的数量
         saasUser.setCount(userTokenService.activeCount(saas, dateStr));
         // 总的数量
-        saasUser.setTotalCount(userTokenService.totalUserCount(saas));
+//        saasUser.setTotalCount(userTokenService.totalUserCount(saas));
         saasUser.setCustomerType(1);
         resultList.add(saasUser);
 
@@ -151,7 +151,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当前时间活跃的数量
         toBUser.setCount(userTokenService.activeCount(toB, dateStr));
         // 总的数量
-        toBUser.setTotalCount(userTokenService.totalUserCount(toB));
+//        toBUser.setTotalCount(userTokenService.totalUserCount(toB));
         toBUser.setCustomerType(2);
         resultList.add(toBUser);
 
@@ -162,7 +162,7 @@ public class DataCountServiceImpl implements DataCountService {
         // 当当前时间活跃的数量
         toCUser.setCount(userTokenService.activeCount(toC, dateStr));
         // 总的数量
-        toCUser.setTotalCount(userTokenService.totalUserCount(toC));
+//        toCUser.setTotalCount(userTokenService.totalUserCount(toC));
         toCUser.setCustomerType(3);
         resultList.add(toCUser);
         return resultList;
