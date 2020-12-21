@@ -70,17 +70,17 @@ public class MeterServiceImpl implements MeterService {
     @Override
     public MeterDeliveryOrderReuslt meterExpressOrder(IdEnter enter) {
         //查询当前正在进行的订单
-//        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
-//        if (result!=null){
-//            //查询所有订单的统计数据
-//            int  count=meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
-//            result.setRemainingOrderNum(count);
-//        }
-        MeterDeliveryOrderReuslt result = new MeterDeliveryOrderReuslt();
+        MeterDeliveryOrderReuslt result= meterServiceMapper.meterExpressOrderByStatus(enter.getId(),ExpressOrderStatusEnums.SHIPPING.getValue());
 
-        int  count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),
+        if (null == result) {
+            result = new MeterDeliveryOrderReuslt();
+        }
+
+        int count = meterServiceMapper.meterExpressOrderByCount(enter.getId(), ExpressDeliveryDetailStatusEnums.COMPLETED.getValue(),
                 ExpressDeliveryDetailStatusEnums.REJECTED.getValue());
+
         result.setRemainingOrderNum(count);
+
         return result;
     }
 
@@ -95,12 +95,13 @@ public class MeterServiceImpl implements MeterService {
      */
     @Override
     public MeterDeliveryOrderReuslt meterDeliveryOrder(IdEnter enter) {
-//        MeterDeliveryOrderReuslt result= meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
-//        if (Objects.nonNull(result)) {
-//            result.setRemainingOrderNum(meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),DeliveryStatusEnums.DELIVERING.getValue()));
-//        }
-        MeterDeliveryOrderReuslt result = new MeterDeliveryOrderReuslt();
+        MeterDeliveryOrderReuslt result = meterServiceMapper.meterDeliveryOrderByStatus(enter.getUserId(), DeliveryStatusEnums.DELIVERING.getValue());
 
+        if (null == result) {
+            result = new MeterDeliveryOrderReuslt();
+        }
+
+        // 配送中、待配送的订单数量
         int count = meterServiceMapper.meterDeliveryOrderByCount(enter.getUserId(),DeliveryStatusEnums.PENDING.getValue(),
                 DeliveryStatusEnums.DELIVERING.getValue());
         result.setRemainingOrderNum(count);
@@ -129,7 +130,7 @@ public class MeterServiceImpl implements MeterService {
         if (queryUserResult == null) {
             return null;
         }
-        MeterDeliveryOrderReuslt result=null;
+        MeterDeliveryOrderReuslt result = null;
         IdEnter idEnter = new IdEnter();
         switch (queryUserResult.getUserType()){
             case 4:
@@ -149,6 +150,8 @@ public class MeterServiceImpl implements MeterService {
                 break;
         }
 
+        // 设置UserId, 用于做用户业务类型的判断
+        result.setUserId(corDriver.getUserId());
         //获取账户类型
         return result;
     }

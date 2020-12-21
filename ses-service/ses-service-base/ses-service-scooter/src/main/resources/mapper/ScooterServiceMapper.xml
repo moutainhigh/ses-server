@@ -306,4 +306,10 @@
         where s.tablet_sn = #{tabletSn}
     </select>
 
+    <!--根据tabletSn查询车辆id-->
+    <select id="getScooterIdByTabletSn" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from sco_scooter
+        where dr = 0 and tablet_sn = #{tabletSn}
+    </select>
+    
 </mapper>

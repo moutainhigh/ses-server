@@ -40,4 +40,8 @@ public class MeterDeliveryOrderReuslt extends GeneralResult {
 
     @ApiModelProperty(value="剩余订单数，包含当前正在进行的订单")
     private int remainingOrderNum;
+
+    @ApiModelProperty(value = "用户id", hidden = true)
+    private Long userId;
+
 }

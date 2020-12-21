@@ -112,5 +112,14 @@ public interface ScooterService {
      * @date 2020/11/26
      */
     BaseScooterResult getScooterByTabletSn(String tabletSn);
+    
+    /**
+     * 根据tabletSn查询车辆id
+     * @param tabletSn
+     * @return java.lang.Long
+     * @author assert
+     * @date 2020/12/21
+     */
+    Long getScooterIdByTabletSn(String tabletSn);
 
 }
