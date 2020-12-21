@@ -26,7 +26,10 @@ public class DistributorNameEnter extends GeneralEnter implements Serializable {
 
     private static final long serialVersionUID = 9023169191500563517L;
 
-    @ApiModelProperty(value = "新增时,传递-1,查询所有门店名称;修改时,传递-1之外的其他id,查询除了此门店外的其他所有门店名称", required = true)
+    @ApiModelProperty(value = "新增时传递1,修改时传递2", required = true)
     private String key;
+
+    @ApiModelProperty(value = "门店名称", required = true)
+    private String keyword;
 
 }

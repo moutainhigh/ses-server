@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.distributor;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -63,7 +64,7 @@ public interface DistributorService {
     /**
      * 门店名称
      */
-    Response<DistributorCityAndCPSelectorResult> getNameList(DistributorNameEnter enter);
+    Response<BooleanResult> getNameList(DistributorNameEnter enter);
 
     /**
      * 门店类型选择销售,可售卖产品的数据来源

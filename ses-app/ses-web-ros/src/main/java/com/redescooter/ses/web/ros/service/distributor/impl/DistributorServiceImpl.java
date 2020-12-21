@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.distributor.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -46,6 +48,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -87,9 +92,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
 
     /**
      * 城市下拉框,邮政编码下拉框,城市和邮政编码联动
-     * 若想得到城市下拉框,入参传1
-     * 若想得到邮政编码下拉框,入参传2
-     * 若想得到联动后的邮政编码下拉框,入参传城市名称
+     * 城市下拉框传1,邮政编码下拉框传2,城市和邮编联动传3
      */
     @Override
     public Response<DistributorCityAndCPSelectorResult> getCityAndCPSelector(DistributorCityAndCPSelectorEnter enter) {
@@ -101,7 +104,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         DistributorCityAndCPSelectorResult result = new DistributorCityAndCPSelectorResult();
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
-        if (!"1".equals(enter.getKey()) && !"2".equals(enter.getKey())) {
+        if ("3".equals(enter.getKey())) {
             wrapper.eq(OpeDistributor::getCity, enter.getKey());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
@@ -113,7 +116,22 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
                  collect = list.stream().map(o -> o.getCp()).distinct().collect(Collectors.toList());
             }
         }
-        result.setList(collect);
+
+        // 对list进行模糊搜索
+        if (StringUtils.isNotBlank(enter.getKeyword())) {
+            List<String> resultList = Lists.newLinkedList();
+            Pattern pattern = Pattern.compile(enter.getKeyword());
+            for (int i = 0; i < collect.size(); i++) {
+                String name = collect.get(i);
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find()) {
+                    resultList.add(name);
+                }
+            }
+            result.setList(resultList);
+        } else {
+            result.setList(collect);
+        }
         return new Response<>(result);
     }
 
@@ -255,8 +273,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         List<String> saleProductList = Lists.newArrayList();
         for (String s : splits) {
             OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(s);
-            String specificationName = opeSpecificatType.getSpecificatName();
-            saleProductList.add(specificationName);
+            if (null != opeSpecificatType) {
+                String specificationName = opeSpecificatType.getSpecificatName();
+                saleProductList.add(specificationName);
+            }
         }
         String saleProductMsg = saleProductList.stream().collect(Collectors.joining(splitChar));
         result.setTypeMsg(typeMsg);
@@ -270,24 +290,28 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
 
     /**
      * 门店名称
-     * 如果传递-1,则查询所有门店名称
-     * 如果传递-1之外的其他id,则查询除了此门店外的其他所有门店名称
+     * 新增时传递1,修改时传递2
      */
     @Override
-    public Response<DistributorCityAndCPSelectorResult> getNameList(DistributorNameEnter enter) {
-        DistributorCityAndCPSelectorResult result = new DistributorCityAndCPSelectorResult();
+    public Response<BooleanResult> getNameList(DistributorNameEnter enter) {
+        BooleanResult result = new BooleanResult();
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
-        if (!"-1".equals(enter.getKey())) {
+        if ("2".equals(enter.getKey())) {
             wrapper.ne(OpeDistributor::getId, enter.getKey());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
-        List<String> nameList = Lists.newArrayList();
+        Set<String> nameSet = Sets.newHashSet();
         if (CollectionUtils.isNotEmpty(list)) {
-            nameList = list.stream().map(o -> o.getName()).collect(Collectors.toList());
+            nameSet = list.stream().map(o -> o.getName()).collect(Collectors.toSet());
         }
-        result.setList(nameList);
+        // 如果包含门店名称,返回false
+        if (nameSet.contains(enter.getKeyword())) {
+            result.setSuccess(Boolean.FALSE);
+        } else {
+            result.setSuccess(Boolean.TRUE);
+        }
         return new Response<>(result);
     }
 

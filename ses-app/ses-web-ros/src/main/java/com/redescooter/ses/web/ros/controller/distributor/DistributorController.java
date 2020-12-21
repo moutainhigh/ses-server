@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.distributor;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -73,7 +74,7 @@ public class DistributorController {
      */
     @ApiOperation(value = "门店名称", notes = "门店名称")
     @PostMapping("/name")
-    public Response<DistributorCityAndCPSelectorResult> getNameList(@ModelAttribute DistributorNameEnter enter) {
+    public Response<BooleanResult> getNameList(@ModelAttribute DistributorNameEnter enter) {
         return distributorService.getNameList(enter);
     }
 
