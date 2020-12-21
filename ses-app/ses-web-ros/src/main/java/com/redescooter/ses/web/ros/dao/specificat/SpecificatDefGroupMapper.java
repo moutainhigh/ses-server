@@ -48,4 +48,13 @@ public interface SpecificatDefGroupMapper {
     */
     int deleteSpecificDefGroupBySpecificId(Long specificId);
 
+    /**
+     * 根据specificId查询自定义项分组id
+     * @param specificId
+     * @return java.util.List<java.lang.Long>
+     * @author assert
+     * @date 2020/12/18
+    */
+    List<Long> getSpecificDefGroupIdBySpecificId(Long specificId);
+
 }
