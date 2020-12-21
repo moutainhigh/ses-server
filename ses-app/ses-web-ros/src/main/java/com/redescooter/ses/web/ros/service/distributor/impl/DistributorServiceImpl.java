@@ -244,13 +244,23 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
 
         String splitChar = ",";
         String[] strings = result.getType().split(splitChar);
-        List<String> list = Lists.newArrayList();
+        List<String> typeList = Lists.newArrayList();
         for (String s : strings) {
             String msg = DistributorTypeEnum.showMsg(s);
-            list.add(msg);
+            typeList.add(msg);
         }
-        String collect = list.stream().collect(Collectors.joining(splitChar));
-        result.setTypeMsg(collect);
+        String typeMsg = typeList.stream().collect(Collectors.joining(splitChar));
+
+        String[] splits = result.getSaleProduct().split(splitChar);
+        List<String> saleProductList = Lists.newArrayList();
+        for (String s : splits) {
+            OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(s);
+            String specificationName = opeSpecificatType.getSpecificatName();
+            saleProductList.add(specificationName);
+        }
+        String saleProductMsg = saleProductList.stream().collect(Collectors.joining(splitChar));
+        result.setTypeMsg(typeMsg);
+        result.setSaleProductMsg(saleProductMsg);
         result.setStatusMsg(StatusEnum.showMsg(result.getStatus()));
         if (StringUtils.isBlank(result.getNote())) {
             result.setNote("-");

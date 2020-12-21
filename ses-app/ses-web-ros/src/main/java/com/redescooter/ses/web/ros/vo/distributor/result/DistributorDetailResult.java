@@ -129,4 +129,7 @@ public class DistributorDetailResult extends GeneralResult implements Serializab
     @ApiModelProperty(value = "状态文案")
     private String statusMsg;
 
+    @ApiModelProperty(value = "门店类型是销售可售卖的产品文案 若多选通过逗号分隔")
+    private String saleProductMsg;
+
 }
