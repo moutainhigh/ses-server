@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.distributor.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -48,6 +49,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -101,6 +103,8 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         }
 
         DistributorCityAndCPSelectorResult result = new DistributorCityAndCPSelectorResult();
+        List<Map<String, Object>> resultList = Lists.newArrayList();
+
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
         if ("3".equals(enter.getKey())) {
@@ -116,21 +120,31 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             }
         }
 
-        // 对list进行模糊搜索
         if (StringUtils.isNotBlank(enter.getKeyword())) {
-            List<String> resultList = Lists.newLinkedList();
+            // 对list进行模糊搜索
+            List<String> tempList = Lists.newLinkedList();
             Pattern pattern = Pattern.compile(enter.getKeyword());
             for (int i = 0; i < collect.size(); i++) {
                 String name = collect.get(i);
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.find()) {
-                    resultList.add(name);
+                    tempList.add(name);
                 }
             }
-            result.setList(resultList);
+
+            for (String s : tempList) {
+                Map<String, Object> map = Maps.newHashMap();
+                map.put("name", s);
+                resultList.add(map);
+            }
         } else {
-            result.setList(collect);
+            for (String s : collect) {
+                Map<String, Object> map = Maps.newHashMap();
+                map.put("name", s);
+                resultList.add(map);
+            }
         }
+        result.setList(resultList);
         return new Response<>(result);
     }
 

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 经销商城市和邮政编码下拉框出参
@@ -28,6 +29,6 @@ public class DistributorCityAndCPSelectorResult extends GeneralResult implements
     private static final long serialVersionUID = 7622578044355686003L;
 
     @ApiModelProperty(value = "下拉框的值")
-    private List<String> list;
+    private List<Map<String, Object>> list;
 
 }
