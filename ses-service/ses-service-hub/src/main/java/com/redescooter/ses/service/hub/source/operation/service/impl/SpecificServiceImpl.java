@@ -43,8 +43,8 @@ public class SpecificServiceImpl implements SpecificService {
     }
 
     @Override
-    public List<SelectBaseResultDTO> getScooterModelList() {
-        return specificTypeMapper.getScooterModelList();
+    public List<SelectBaseResultDTO> getScooterModelList(Long groupId) {
+        return specificTypeMapper.getScooterModelList(groupId);
     }
 
     @Override

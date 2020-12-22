@@ -16,10 +16,10 @@
     </resultMap>
 
     <!--查询车辆型号分组列表(下拉列表使用)-->
-    <select id="getScooterModelList" resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+    <select id="getScooterModelList" parameterType="java.lang.Long" resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
         select id, specificat_name `name`
 	    from ope_specificat_type
-	    where dr = 0
+	    where dr = 0 and group_id = #{groupId}
     </select>
 
     <!--根据id查询规格类型信息-->

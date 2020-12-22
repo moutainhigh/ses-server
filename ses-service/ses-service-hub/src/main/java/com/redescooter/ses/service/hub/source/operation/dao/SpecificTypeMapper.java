@@ -17,12 +17,12 @@ public interface SpecificTypeMapper {
 
     /**
      * 查询车辆型号分组列表(下拉列表使用)
-     * @param
+     * @param groupId
      * @return java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
      * @author assert
      * @date 2020/12/15
      */
-    List<SelectBaseResultDTO> getScooterModelList();
+    List<SelectBaseResultDTO> getScooterModelList(Long groupId);
 
     /**
      * 根据id查询规格类型信息
