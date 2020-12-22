@@ -239,8 +239,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId()
-                , corTenantScooter.getLatitude()
-                , corTenantScooter.getLatitude()
+                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
+                , corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule()
                 , ExpressOrderStatusEnums.SHIPPING.getValue(),
                 ExpressOrderEventEnums.SHIPPING.getValue(), null);
 
@@ -336,8 +336,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                     deliveryDetail.getExpressOrderId(),
                     corDriverScooter.getDriverId(),
                     corDriverScooter.getScooterId(),
-                    corTenantScooter.getLatitude(),
-                    corTenantScooter.getLatitude(),
+                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
+                    corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
                     ExpressOrderStatusEnums.REJECTED.getValue(),
                     ExpressOrderEventEnums.REJECTED.getValue(),
                     enter.getReason());
