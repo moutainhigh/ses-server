@@ -214,22 +214,22 @@ public class EdOrderServiceImpl implements EdOrderService {
         /**
          * 开始订单 -- 开启导航
          */
-        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
-        scooterNavigation.setEvent(CommonEvent.START.getValue());
-        scooterNavigation.setLat(enter.getLat());
-        scooterNavigation.setLng(enter.getLng());
+//        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
+//        scooterNavigation.setEvent(CommonEvent.START.getValue());
+//        scooterNavigation.setLat(enter.getLat());
+//        scooterNavigation.setLng(enter.getLng());
+//
+//        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
 
-        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
-
-//        // 开启导航
-//        IotScooterEnter iotScooterEnter = new IotScooterEnter();
-//        BeanUtils.copyProperties(enter, iotScooterEnter);
-//        iotScooterEnter.setId(corDriverScooter.getScooterId());
-//        iotScooterEnter.setEvent(CommonEvent.START.getValue());
-//        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
-//        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
-//        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
-//        scooterIotService.navigation(iotScooterEnter);
+        // 开启导航
+        IotScooterEnter iotScooterEnter = new IotScooterEnter();
+        BeanUtils.copyProperties(enter, iotScooterEnter);
+        iotScooterEnter.setId(corDriverScooter.getScooterId());
+        iotScooterEnter.setEvent(CommonEvent.START.getValue());
+        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
+        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
+        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
+        scooterIotService.navigation(iotScooterEnter);
 
         // 查询车辆信息
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();
@@ -243,8 +243,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId()
-                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
                 , corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule()
+                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
                 , ExpressOrderStatusEnums.SHIPPING.getValue(),
                 ExpressOrderEventEnums.SHIPPING.getValue(), null);
 
@@ -340,8 +340,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                     deliveryDetail.getExpressOrderId(),
                     corDriverScooter.getDriverId(),
                     corDriverScooter.getScooterId(),
-                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                     corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
+                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                     ExpressOrderStatusEnums.REJECTED.getValue(),
                     ExpressOrderEventEnums.REJECTED.getValue(),
                     enter.getReason());
@@ -487,25 +487,25 @@ public class EdOrderServiceImpl implements EdOrderService {
         /**
          * 完成订单 -- 结束导航
          */
-        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
-        scooterNavigation.setEvent(CommonEvent.END.getValue());
-        scooterNavigation.setLat(enter.getLat());
-        scooterNavigation.setLng(enter.getLng());
-        // 现在暂时不确定本次导航所花时间和行驶距离数据来源
-        scooterNavigation.setMileage(null);
-        scooterNavigation.setDuration(null);
+//        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
+//        scooterNavigation.setEvent(CommonEvent.END.getValue());
+//        scooterNavigation.setLat(enter.getLat());
+//        scooterNavigation.setLng(enter.getLng());
+//        // 现在暂时不确定本次导航所花时间和行驶距离数据来源
+//        scooterNavigation.setMileage(null);
+//        scooterNavigation.setDuration(null);
+//
+//        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
 
-        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
-
-//        // 结束导航
-//        IotScooterEnter iotScooterEnter = new IotScooterEnter();
-//        BeanUtils.copyProperties(enter, iotScooterEnter);
-//        iotScooterEnter.setId(corDriverScooter.getScooterId());
-//        iotScooterEnter.setEvent(CommonEvent.END.getValue());
-//        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
-//        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
-//        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
-//        scooterIotService.navigation(iotScooterEnter);
+        // 结束导航
+        IotScooterEnter iotScooterEnter = new IotScooterEnter();
+        BeanUtils.copyProperties(enter, iotScooterEnter);
+        iotScooterEnter.setId(corDriverScooter.getScooterId());
+        iotScooterEnter.setEvent(CommonEvent.END.getValue());
+        iotScooterEnter.setLatitude(new BigDecimal(enter.getLat()));
+        iotScooterEnter.setLongitude(new BigDecimal(enter.getLng()));
+        iotScooterEnter.setBluetoothCommunication(enter.getBluetoothCommunication());
+        scooterIotService.navigation(iotScooterEnter);
 
         QueryWrapper<CorUserProfile> corUserProfileQueryWrapper = new QueryWrapper<>();
         corUserProfileQueryWrapper.eq(CorUserProfile.COL_DR, 0);
@@ -524,8 +524,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId(),
-                corTenantScooter.getLatitude(),
-                corTenantScooter.getLatitude(),
+                corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
+                corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                 ExpressOrderStatusEnums.COMPLETED.getValue(),
                 ExpressOrderEventEnums.COMPLETED.getValue(), null
         );
@@ -604,9 +604,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(reason);
         baseExpressOrderTraceEnter.setEventTime(new Date());
-        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) == true ? lng : "0"));
-        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) == true ? lat : "0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) == true ? lng : "0", StringUtils.isNotBlank(lat) == true ? lat : "0"));
+        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)? lng : "0"));
+        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat)? lat : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng)? lng : "0",StringUtils.isNotBlank(lat)? lat : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);

@@ -165,14 +165,19 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          * 如果开启导航的时候有正在导航的则不做处理,没有正在导航的则开启导航
          */
         if (CommonEvent.START.getValue().equals(scooterNavigation.getEvent())) {
-            if (null == scoScooterNavigation) {
-                // 开启导航
-                ScoScooterNavigation scooterNavigationNew = buildScoScooterNavigationData(scooterNavigation, scooterResult);
-                scooterNavigationMapper.insertScooterNavigation(scooterNavigationNew);
-
-                actionType = ScooterActionTypeEnums.START_NAVIGATION.getValue();
-                navigationPublish.setType(1);
+            // 避免上次导航未结束或结束导航失败导致车辆还在导航,无法开启导航的情况出现
+            if (null != scoScooterNavigation) {
+                scoScooterNavigation.setStatus(NavigationStatus.END.getValue());
+                scoScooterNavigation.setUpdatedBy(scooterNavigation.getUserId());
+                scoScooterNavigation.setUpdatedTime(new Date());
+                scooterNavigationMapper.updateScooterNavigation(scoScooterNavigation);
             }
+            // 开启导航
+            ScoScooterNavigation scooterNavigationNew = buildScoScooterNavigationData(scooterNavigation, scooterResult);
+            scooterNavigationMapper.insertScooterNavigation(scooterNavigationNew);
+
+            actionType = ScooterActionTypeEnums.START_NAVIGATION.getValue();
+            navigationPublish.setType(1);
         } else {
             /**
              * 结束导航,结束导航的时候保存骑行数据(司机骑行数据、车辆骑行数据)
