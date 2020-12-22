@@ -604,9 +604,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(reason);
         baseExpressOrderTraceEnter.setEventTime(new Date());
-        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) == true ? lng : "0"));
-        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) == true ? lat : "0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) == true ? lng : "0", StringUtils.isNotBlank(lat) == true ? lat : "0"));
+        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)? lng : "0"));
+        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat)? lat : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lat)? lat : "0",StringUtils.isNotBlank(lng)? lng : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);
