@@ -248,7 +248,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         if (!Strings.isNullOrEmpty(enter.getUrls())){
             sendEnter.setImgList(Arrays.asList(enter.getUrls().split(",")));
         }
-        mailMultiTaskService.contactUsReplyMessageEmail(sendEnter);
+        try {
+            mailMultiTaskService.contactUsReplyMessageEmail(sendEnter);
+        }catch (Exception e){
+
+        }
 
         return new GeneralResult(enter.getRequestId());
     }
