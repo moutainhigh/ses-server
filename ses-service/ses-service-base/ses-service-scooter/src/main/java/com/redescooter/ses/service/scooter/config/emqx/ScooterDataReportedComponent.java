@@ -6,7 +6,6 @@ import com.redescooter.ses.api.scooter.vo.emqx.*;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 
@@ -36,7 +35,6 @@ public class ScooterDataReportedComponent {
      * @param data
      * @param topic
      */
-    @Async("scooterReportedSyncExecutor")
     public void insertScooterData(String data, String topic) {
         /**
          * 根据Topic进行业务分发

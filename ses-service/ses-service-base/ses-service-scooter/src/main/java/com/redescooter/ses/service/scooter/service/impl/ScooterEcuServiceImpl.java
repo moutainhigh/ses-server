@@ -11,6 +11,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +28,10 @@ import java.util.Date;
 @Service
 public class ScooterEcuServiceImpl implements ScooterEcuService {
 
+    @Reference
+    private IdAppService idAppService;
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
-    @Resource
-    private IdAppService idAppService;
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
     @Resource
