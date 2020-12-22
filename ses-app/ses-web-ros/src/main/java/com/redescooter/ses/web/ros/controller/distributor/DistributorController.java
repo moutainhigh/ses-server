@@ -52,9 +52,9 @@ public class DistributorController {
     }
 
     /**
-     * 城市下拉框,邮政编码下拉框,城市和邮政编码联动
+     * 城市下拉框,城市和邮政编码联动
      */
-    @ApiOperation(value = "城市下拉框,邮政编码下拉框,城市和邮政编码联动", notes = "城市下拉框,邮政编码下拉框,城市和邮政编码联动")
+    @ApiOperation(value = "城市下拉框,城市和邮政编码联动", notes = "城市下拉框,城市和邮政编码联动")
     @PostMapping("/city/cp")
     public Response<DistributorCityAndCPSelectorResult> getCityAndCPSelector(@ModelAttribute DistributorCityAndCPSelectorEnter enter) {
         return distributorService.getCityAndCPSelector(enter);

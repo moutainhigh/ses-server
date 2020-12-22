@@ -32,7 +32,7 @@ public interface DistributorService {
     Response<PageResult<DistributorListResult>> getList(DistributorListEnter enter);
 
     /**
-     * 城市下拉框,邮政编码下拉框,城市和邮政编码联动
+     * 城市下拉框,城市和邮政编码联动
      */
     Response<DistributorCityAndCPSelectorResult> getCityAndCPSelector(DistributorCityAndCPSelectorEnter enter);
 

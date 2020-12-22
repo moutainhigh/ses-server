@@ -92,8 +92,8 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     }
 
     /**
-     * 城市下拉框,邮政编码下拉框,城市和邮政编码联动
-     * 城市下拉框传1,邮政编码下拉框传2,城市和邮编联动传3
+     * 城市下拉框,城市和邮政编码联动
+     * 城市下拉框传1,城市和邮编联动传3
      */
     @Override
     public Response<DistributorCityAndCPSelectorResult> getCityAndCPSelector(DistributorCityAndCPSelectorEnter enter) {
@@ -108,7 +108,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
         if ("3".equals(enter.getKey())) {
-            wrapper.eq(OpeDistributor::getCity, enter.getKey());
+            wrapper.eq(OpeDistributor::getCity, enter.getCity());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         List<String> collect = Lists.newArrayList();
@@ -281,19 +281,21 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             typeList.add(msg);
         }
         String typeMsg = typeList.stream().collect(Collectors.joining(splitChar));
-
-        String[] splits = result.getSaleProduct().split(splitChar);
-        List<String> saleProductList = Lists.newArrayList();
-        for (String s : splits) {
-            OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(s);
-            if (null != opeSpecificatType) {
-                String specificationName = opeSpecificatType.getSpecificatName();
-                saleProductList.add(specificationName);
-            }
-        }
-        String saleProductMsg = saleProductList.stream().collect(Collectors.joining(splitChar));
         result.setTypeMsg(typeMsg);
-        result.setSaleProductMsg(saleProductMsg);
+
+        if (StringUtils.isNotBlank(result.getSaleProduct())) {
+            String[] splits = result.getSaleProduct().split(splitChar);
+            List<String> saleProductList = Lists.newArrayList();
+            for (String s : splits) {
+                OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(s);
+                if (null != opeSpecificatType) {
+                    String specificationName = opeSpecificatType.getSpecificatName();
+                    saleProductList.add(specificationName);
+                }
+            }
+            String saleProductMsg = saleProductList.stream().collect(Collectors.joining(splitChar));
+            result.setSaleProductMsg(saleProductMsg);
+        }
         result.setStatusMsg(StatusEnum.showMsg(result.getStatus()));
         if (StringUtils.isBlank(result.getNote())) {
             result.setNote("-");

@@ -26,10 +26,13 @@ public class DistributorCityAndCPSelectorEnter extends GeneralEnter implements S
 
     private static final long serialVersionUID = -7279182907360498065L;
 
-    @ApiModelProperty(value = "城市下拉框传1,邮政编码下拉框传2,城市和邮编联动传3", required = true)
+    @ApiModelProperty(value = "城市下拉框传1,城市和邮编联动传3", required = true)
     private String key;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
+
+    @ApiModelProperty(value = "当城市和邮编联动时,传递城市名称")
+    private String city;
 
 }
