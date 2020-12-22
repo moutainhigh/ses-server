@@ -243,8 +243,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId()
-                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
                 , corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule()
+                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
                 , ExpressOrderStatusEnums.SHIPPING.getValue(),
                 ExpressOrderEventEnums.SHIPPING.getValue(), null);
 
@@ -340,8 +340,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                     deliveryDetail.getExpressOrderId(),
                     corDriverScooter.getDriverId(),
                     corDriverScooter.getScooterId(),
-                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                     corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
+                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                     ExpressOrderStatusEnums.REJECTED.getValue(),
                     ExpressOrderEventEnums.REJECTED.getValue(),
                     enter.getReason());
@@ -524,8 +524,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId(),
-                corTenantScooter.getLatitude(),
-                corTenantScooter.getLatitude(),
+                corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
+                corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
                 ExpressOrderStatusEnums.COMPLETED.getValue(),
                 ExpressOrderEventEnums.COMPLETED.getValue(), null
         );
@@ -606,7 +606,7 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEventTime(new Date());
         baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)? lng : "0"));
         baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat)? lat : "0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lat)? lat : "0",StringUtils.isNotBlank(lng)? lng : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng)? lng : "0",StringUtils.isNotBlank(lat)? lat : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);
