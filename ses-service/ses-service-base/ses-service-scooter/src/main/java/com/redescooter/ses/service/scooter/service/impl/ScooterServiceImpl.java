@@ -258,4 +258,9 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.getScooterByTabletSn(tabletSn);
     }
 
+    @Override
+    public Long getScooterIdByTabletSn(String tabletSn) {
+        return scooterServiceMapper.getScooterIdByTabletSn(tabletSn);
+    }
+
 }
