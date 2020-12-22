@@ -187,6 +187,7 @@
             or mac_address like concat('%',#{keyWord},'%')
             or mac_name like concat('%',#{keyWord},'%')
         </if>
+        order by created_time desc
         limit #{startRow}, #{pageSize}
     </select>
 
