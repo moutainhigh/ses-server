@@ -79,7 +79,12 @@ public class ScooterIotServiceImpl implements ScooterIotService {
         if (null == scooterResult) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
-
+        if(scooterResult.getLatitude() == null){
+            scooterResult.setLatitude(enter.getLatitude());
+        }
+        if (scooterResult.getLongitule() == null){
+            scooterResult.setLongitule(enter.getLongitude());
+        }
         List<SaveScooterRecordEnter<BaseScooterEnter>> saveScooterRecordEnterList = new ArrayList<>();
         SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterResult);
         // 查询是否在正在进行的导航

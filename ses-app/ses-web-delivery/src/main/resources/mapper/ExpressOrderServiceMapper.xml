@@ -4,7 +4,7 @@
     <sql id="where_ExpressOrder_List">
         where a.tenant_id=#{tenantId}
         and a.dr=0
-        <if test="status != null">
+        <if test="status != null and status != ''">
             and a.status=#{status}
         </if>
         <if test="city != null and city != ''">
