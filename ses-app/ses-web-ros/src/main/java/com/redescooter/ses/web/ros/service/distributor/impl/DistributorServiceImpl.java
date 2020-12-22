@@ -311,7 +311,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getDr, DelStatusEnum.VALID.getCode());
         if ("2".equals(enter.getKey())) {
-            wrapper.ne(OpeDistributor::getName, enter.getKeyword());
+            wrapper.ne(OpeDistributor::getId, enter.getId());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         List<String> nameList = Lists.newArrayList();

@@ -32,4 +32,7 @@ public class DistributorNameEnter extends GeneralEnter implements Serializable {
     @ApiModelProperty(value = "门店名称", required = true)
     private String keyword;
 
+    @ApiModelProperty(value = "修改时 传递要修改门店的id")
+    private Long id;
+
 }
