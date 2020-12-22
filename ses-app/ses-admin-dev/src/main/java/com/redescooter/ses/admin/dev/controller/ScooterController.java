@@ -90,15 +90,15 @@ public class ScooterController {
 
     /**
      * 查询车辆型号列表(下拉框列表使用)
-     * @param
+     * @param groupId
      * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>>
      * @author assert
      * @date 2020/12/15
     */
     @ApiOperation(value = "查询车辆型号列表", notes = "查询车辆型号列表(下拉框列表使用)")
-    @GetMapping(value = "/models")
-    public Response<List<SelectBaseResultDTO>> getScooterModelList() {
-        return new Response<>(specificService.getScooterModelList());
+    @GetMapping(value = "/models/{groupId}")
+    public Response<List<SelectBaseResultDTO>> getScooterModelList(@PathVariable("groupId") Long groupId) {
+        return new Response<>(specificService.getScooterModelList(groupId));
     }
 
     /**

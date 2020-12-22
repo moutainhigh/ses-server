@@ -186,12 +186,14 @@ public class MqttClientUtil implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        if (null != message.getPayload()) {
-            /**
-             * scooter摩托车设备信息上报
-             */
-            scooterDataReported.insertScooterData(new String(message.getPayload()), topic);
-        }
+        /**
+         * scooter摩托车设备信息上报
+         */
+        EmqXThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+            if (null != message.getPayload()) {
+                scooterDataReported.insertScooterData(new String(message.getPayload()), topic);
+            }
+        });
     }
 
     @Override
