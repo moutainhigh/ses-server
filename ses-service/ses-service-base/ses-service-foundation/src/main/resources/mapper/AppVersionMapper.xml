@@ -356,7 +356,7 @@
     <!--根据versionCode、type查询版本是否存在-->
     <select id="existsAppVersionByCodeAndType" resultType="java.lang.String">
         select `code` from pla_app_version
-	    where dr = 0 `code` = #{versionCode} and `type` = #{type}
+	    where dr = 0 and `code` = #{versionCode} and `type` = #{type}
     </select>
 
     <!--根据versionNumber、type查询版本是否存在-->
