@@ -288,7 +288,7 @@
     </update>
 
     <!--根据type修改应用版本状态为已发布-->
-    <update id="updateAppVersionStatusByType" parameterType="java.lang.Integer">
+    <update id="updateAppVersionStatusByType">
         update pla_app_version
 	    set `status` = #{status}
 	    where `type` = #{type} and id != #{id}
