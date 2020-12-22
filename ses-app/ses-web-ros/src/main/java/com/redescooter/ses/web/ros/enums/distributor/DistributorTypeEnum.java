@@ -18,7 +18,7 @@ public enum DistributorTypeEnum {
     private String msg;
 
     public static String showMsg(String code) {
-        for (StatusEnum o : StatusEnum.values()) {
+        for (DistributorTypeEnum o : DistributorTypeEnum.values()) {
             if (o.getCode().equals(code)) {
                 return o.getMsg();
             }

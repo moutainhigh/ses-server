@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.distributor.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -44,11 +43,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -172,7 +171,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         model.setTenantId(enter.getTenantId());
         model.setUserId(enter.getUserId());
         model.setStatus(StatusEnum.DISABLE.getCode());
-        model.setCode(getCode(enter));
+        model.setCode(getCode());
         model.setName(enter.getName());
         model.setLogoUrl(enter.getLogoUrl());
         model.setCountryCode(enter.getCountryCode());
@@ -297,17 +296,16 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         BooleanResult result = new BooleanResult();
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeDistributor::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
         if ("2".equals(enter.getKey())) {
-            wrapper.ne(OpeDistributor::getId, enter.getKey());
+            wrapper.ne(OpeDistributor::getName, enter.getKeyword());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
-        Set<String> nameSet = Sets.newHashSet();
+        List<String> nameList = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(list)) {
-            nameSet = list.stream().map(o -> o.getName()).collect(Collectors.toSet());
+            nameList = list.stream().map(o -> o.getName()).collect(Collectors.toList());
         }
         // 如果包含门店名称,返回false
-        if (nameSet.contains(enter.getKeyword())) {
+        if (nameList.contains(enter.getKeyword())) {
             result.setSuccess(Boolean.FALSE);
         } else {
             result.setSuccess(Boolean.TRUE);
@@ -338,21 +336,27 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     /**
      * 获得门店编号
      */
-    public String getCode(GeneralEnter enter) {
+    public String getCode() {
         String msg = "R";
         StringBuffer result = new StringBuffer();
         result.append(msg);
 
         List<Integer> codeList = Lists.newArrayList();
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从第2位开始截取
-            list.forEach(o -> codeList.add(Integer.valueOf(o.getCode().substring(1))));
+            for (OpeDistributor o : list) {
+                String sub = o.getCode().substring(1);
+                codeList.add(Integer.valueOf(sub));
+            }
             // 倒序排列
             codeList.sort(Comparator.reverseOrder());
-            int code = codeList.get(0) + 1;
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            numberFormat.setGroupingUsed(false);
+            numberFormat.setMaximumIntegerDigits(4);
+            numberFormat.setMinimumIntegerDigits(4);
+            String code = numberFormat.format(new Double(codeList.get(0) + 1));
             result.append(code);
         } else {
             result.append("0001");
