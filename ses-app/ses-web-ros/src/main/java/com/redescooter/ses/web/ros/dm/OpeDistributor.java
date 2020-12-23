@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dm;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +38,7 @@ public class OpeDistributor implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "是否删除 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     @ApiModelProperty(value = "租户id")
