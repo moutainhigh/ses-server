@@ -8,6 +8,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,7 @@ import java.util.TimeZone;
 
 @Slf4j
 @EnableDubbo
+@EnableScheduling
 @EnableDubboConfig(multiple = true)
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 @EnableTransactionManagement

@@ -20,9 +20,6 @@ import io.swagger.annotations.*;
 @Builder
 public class MeterOrderEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "id")
-    private Long id;
-
-    @ApiModelProperty(value = "序列号")
+    @ApiModelProperty(value = "仪表序列号", dataType = "String")
     private String sn;
 }

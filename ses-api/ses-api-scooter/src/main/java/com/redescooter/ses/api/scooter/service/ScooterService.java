@@ -94,4 +94,32 @@ public interface ScooterService {
     */
     int countByScooter();
 
+    /**
+     * 同步车辆型号
+     * @param id
+     * @param scooterModel
+     * @return int
+     * @author assert
+     * @date 2020/12/16
+    */
+    int syncScooterModel(Long id, Integer scooterModel);
+
+    /**
+     * 根据tabletSn查询车辆信息
+     * @param tabletSn
+     * @return com.redescooter.ses.api.common.vo.scooter.BaseScooterResult
+     * @author assert
+     * @date 2020/11/26
+     */
+    BaseScooterResult getScooterByTabletSn(String tabletSn);
+    
+    /**
+     * 根据tabletSn查询车辆id
+     * @param tabletSn
+     * @return java.lang.Long
+     * @author assert
+     * @date 2020/12/21
+     */
+    Long getScooterIdByTabletSn(String tabletSn);
+
 }

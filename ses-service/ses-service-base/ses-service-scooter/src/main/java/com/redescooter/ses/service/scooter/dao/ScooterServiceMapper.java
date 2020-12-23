@@ -111,4 +111,33 @@ public interface ScooterServiceMapper {
      */
     int countByScooter();
 
+    /**
+     * 根据id修改车辆型号
+     * @param id
+     * @param scooterModel
+     * @param updateTime
+     * @return int
+     * @author assert
+     * @date 2020/12/16
+     */
+    int updateScooterModelById(@Param("id") Long id, @Param("scooterModel") Integer scooterModel, @Param("updateTime") Date updateTime);
+
+    /**
+     * 根据tabletSn查询车辆信息
+     * @param tabletSn
+     * @return com.redescooter.ses.api.common.vo.scooter.BaseScooterResult
+     * @author assert
+     * @date 2020/11/26
+     */
+    BaseScooterResult getScooterByTabletSn(String tabletSn);
+
+    /**
+     * 根据tabletSn查询车辆id
+     * @param tabletSn
+     * @return java.lang.Long
+     * @author assert
+     * @date 2020/12/21
+     */
+    Long getScooterIdByTabletSn(String tabletSn);
+
 }

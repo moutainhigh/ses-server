@@ -11,6 +11,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -25,6 +26,8 @@ import java.util.Date;
 @Service
 public class ScooterMcuServiceImpl implements ScooterMcuService {
 
+    @Reference
+    private IdAppService idAppService;
     @Resource
     private ScooterMcuMapper scooterMcuMapper;
     @Resource
@@ -32,20 +35,18 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
     @Resource
-    private IdAppService idAppService;
-    @Resource
     private TransactionTemplate transactionTemplate;
 
 
     @Override
     public int insertScooterMcuByEmqX(ScooterMcuReportedDTO scooterReportedMcu) {
-        String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedMcu.getTabletSn());
-        if (StringUtils.isBlank(scooterNo)) {
-            log.error("【车辆MCU控制器数据上报失败】----车辆不存在");
-            return 0;
-        }
-
         try {
+            String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedMcu.getTabletSn());
+            if (StringUtils.isBlank(scooterNo)) {
+                log.error("【车辆MCU控制器数据上报失败】----车辆不存在");
+                return 0;
+            }
+
             /**
              * 检查数据是否存在,存在则修改,反之新增
              */

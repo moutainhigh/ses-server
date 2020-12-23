@@ -2,6 +2,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  * @date 2020/12/1 10:59
  */
 @Data
-public class SetScooterModelPublishDTO {
+public class SetScooterModelPublishDTO implements Serializable {
 
     /**
      * 平板序列号
@@ -20,7 +21,7 @@ public class SetScooterModelPublishDTO {
     /**
      * 车辆类型 1-E25  2-E50  3-E100  4-E125
      */
-    private Integer type;
+    private Integer scooterModel;
 
     /**
      * 规格自定义项分组集合(可以理解成车辆电池集合,现在一辆车只有四块电池)

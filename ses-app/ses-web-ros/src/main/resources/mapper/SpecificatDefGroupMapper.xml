@@ -2,13 +2,60 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatDefGroupMapper">
 
+    <!--SpecificDefGroupDetailResultMap(自定义项分组详情ResultMap)-->
+    <resultMap id="SpecificDefGroupDetailResultMap" type="com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="specificat_id" jdbcType="INTEGER" property="specificatId" />
+        <!--一对多映射(自定义项信息)-->
+        <collection property="groupList" ofType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
+            <result column="sd_id" jdbcType="BIGINT" property="id" />
+            <result column="def_name" jdbcType="VARCHAR" property="defName" />
+            <result column="def_value" jdbcType="VARCHAR" property="defValue" />
+        </collection>
+    </resultMap>
+
     <!--新增规格自定义项分组-->
     <insert id="batchInsertSpecificatDefGroup" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO">
         insert into ope_specificat_def_group (id, `name`, specificat_id,created_by, created_time, updated_by,updated_time)
         <foreach collection="specificDefGroupList" item="item" open="values" separator=",">
-            (#{item.id}, #{item.name}, #{item.createdBy}, #{item.specificatId},
-            #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+            (#{item.id}, #{item.name}, #{item.specificatId}, #{item.createdBy},#{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
         </foreach>
     </insert>
+
+    <!--批量修改规格自定义项分组信息-->
+    <update id="batchUpdateSpecificatDefGroup" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO">
+        <foreach collection="specificDefGroupList" item="item" separator=";">
+            update ope_specificat_def_group
+            set `name` = #{item.name}, updated_by = #{item.updatedBy}, updated_time = #{item.updatedTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <!--根据specificId查询自定义项分组详情-->
+    <select id="getSpecificDefGroupBySpecificId" parameterType="java.lang.Long" resultMap="SpecificDefGroupDetailResultMap">
+        select sdg.*,sd.id sd_id, sd.def_name, sd.def_value
+        from ope_specificat_def_group sdg
+        left join ope_specificat_def sd
+        on sdg.id = sd.def_group_id and sdg.dr = 0
+        where sdg.dr = 0 and sdg.specificat_id = #{specificId}
+    </select>
+
+    <!--根据specificId删除自定义项分组信息-->
+    <update id="deleteSpecificDefGroupBySpecificId" parameterType="java.lang.Long">
+        update ope_specificat_def_group
+        set dr = 1
+        where specificat_id = #{specificId}
+    </update>
+
+    <!--根据specificId查询自定义项分组id-->
+    <select id="getSpecificDefGroupIdBySpecificId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select id from ope_specificat_def_group
+	    where dr = 0 and specificat_id = #{specificId}
+    </select>
 
 </mapper>

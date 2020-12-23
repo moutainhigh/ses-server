@@ -492,8 +492,11 @@ public enum ExceptionCodeEnums {
 
     STORE_EMAIL_MUST_CHAR(10237, "邮件地址必须带有@字符"),
 
-    INSERT_FAIL(10238, "新增失败")
+    INSERT_FAIL(10238, "新增失败"),
 
+    DEF_GROUP_NAME_NOT_NULL(10239, "自定义分组名称不能为空"),
+
+    DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法")
     ;
 
 

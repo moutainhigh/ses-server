@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.specificat;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
+import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,5 +22,14 @@ public interface SpecificatGroupServiceMapper {
     List<SpecificatGroupListResult> groupList(@Param("enter") SpecificatGroupListEnter enter);
 
   List<SpecificatGroupDataResult> specificatGroupData();
+
+  /**
+   * 根据id查询规格分组信息
+   * @param id
+   * @return com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO
+   * @author assert
+   * @date 2020/12/17
+  */
+  SpecificGroupDTO getSpecifiGroupById(Long id);
 
 }

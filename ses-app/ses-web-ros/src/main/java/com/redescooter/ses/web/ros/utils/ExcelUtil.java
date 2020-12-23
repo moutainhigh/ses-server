@@ -156,36 +156,12 @@ public class ExcelUtil {
         }
     }
 
-
-//    public static void main(String[] args) {
-//        List<Map<String, Object>> data = new ArrayList<>();
-//        // 使用 LinkedHashMap 保证有序，即标题和数据对应上
-//        Map<String, Object> map1 = new LinkedHashMap<>();
-//        map1.put("id", 1);
-//        map1.put("name", "张三");
-//        map1.put("age", 23);
-//        map1.put("sex", "男");
-//
-//        Map<String, Object> map2 = new LinkedHashMap<>();
-//        map2.put("id", 2);
-//        map2.put("name", "李四");
-//        map2.put("age", 20);
-//        map2.put("sex", "女");
-//
-//        data.add(map1);
-//        data.add(map2);
-//        String sheetName = "导出的数据";
-//        String[] headers = {"ID","名称","年龄","性别"};
-//        String exportExcelName = "表格";
-//        exportExcel(sheetName, data, headers, exportExcelName);
-//    }
-
-
     public static HSSFWorkbook getHSSFWorkbook(String sheetName, String[] title, String[][] values, HSSFWorkbook wb) {
 
         //第一步，创建一个HSSFWorkbook，对应一个Excel文件</span>
-        if (wb ==  null )
+        if (wb ==  null ) {
             wb  =  new HSSFWorkbook();
+        }
 
         //第二步，在workbook中添加一个sheet,对应Excel文件中的sheet</span>
         HSSFSheet sheet = wb.createSheet(sheetName);

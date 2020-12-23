@@ -37,7 +37,7 @@ public class QuerySpecificTypeDetailResultDTO {
     @ApiModelProperty(value="创建时间", dataType = "Date")
     private Date createdTime;
 
-    @ApiModelProperty(value = "更新人", dataType = "String")
+    @ApiModelProperty(value = "修改人名称", dataType = "String")
     private String updatedName;
 
     @ApiModelProperty(value = "修改时间", dataType = "Date")

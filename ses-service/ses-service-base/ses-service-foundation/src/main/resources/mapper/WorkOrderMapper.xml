@@ -18,6 +18,7 @@
         <if test="enter.keyword != null and enter.keyword != ''">
             and (contact_email like concat('%', #{enter.keyword}, '%')
             or order_no like concat('%', #{enter.keyword}, '%')
+            or title like concat('%', #{enter.keyword}, '%')
             )
         </if>
     </sql>
@@ -64,9 +65,11 @@
             log.message_type,
             log.remark,
             log.created_time,
+            log.def1 as url,
             user.LOGIN_NAME AS createdByName
         from pla_work_order_log log
         left join pla_user user on user.id = log.created_by
         where log.dr = 0 and log.work_order_id = #{workOrderId}
+        order by log.created_time
     </select>
 </mapper>

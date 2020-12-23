@@ -3,7 +3,10 @@ package com.redescooter.ses.admin.dev.dao.scooter;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
 import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,5 +69,14 @@ public interface AdminScooterMapper {
      * @date 2020/12/14
     */
     AdminScooterDTO getAdminScooterById(Long id);
+
+    /**
+     * 修改车辆信息
+     * @param scooter
+     * @return int
+     * @author assert
+     * @date 2020/12/16
+    */
+    int updateAdminScooter(AdminScooterDTO scooter);
 
 }

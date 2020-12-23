@@ -284,4 +284,32 @@
 	    where dr = 0
     </select>
 
+    <!--根据id修改车辆型号-->
+    <update id="updateScooterModelById">
+        update sco_scooter
+	    set model = #{scooterModel}, updated_time = #{updateTime}
+	    where id = #{id}
+    </update>
+
+    <!--根据tabletSn查询车辆信息-->
+    <select id="getScooterByTabletSn" parameterType="java.lang.String" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+        select s.id id,s.picture pictures,s.scooter_no scooterNo,s.tablet_sn tabletSn,s.`status` `status`,
+        s.available_status availableStatus,s.box_status boxStatus,s.model model,s.license_plate licensePlate,
+        s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
+        s.scooter_id_picture scooterIdPicture,s.insurance insurance,s.insure_time insureTime,s.revision revision,
+        ecu.id scooterEcuId,ecu.longitude longitule,ecu.latitude latitude,ecu.battery battery,
+        ifnull(ecu.total_miles, 0) totalmileage,ecu.bluetooth_mac_address bluetoothMacAddress,
+        ecu.bluetooth_name bluetoothName
+        from sco_scooter s
+        left join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn
+        where s.tablet_sn = #{tabletSn}
+    </select>
+
+    <!--根据tabletSn查询车辆id-->
+    <select id="getScooterIdByTabletSn" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from sco_scooter
+        where dr = 0 and tablet_sn = #{tabletSn}
+    </select>
+    
 </mapper>

@@ -35,12 +35,12 @@ public interface SpecificService {
 
     /**
      * 查询车辆型号分组列表(下拉列表使用)
-     * @param
+     * @param groupId
      * @return java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
      * @author assert
      * @date 2020/12/15
     */
-    List<SelectBaseResultDTO> getScooterModelList();
+    List<SelectBaseResultDTO> getScooterModelList(Long groupId);
 
     /**
      * 根据id查询规格类型信息
@@ -52,7 +52,7 @@ public interface SpecificService {
     SpecificTypeDTO getSpecificTypeById(Long id);
 
     /**
-     * 根据specificId查询自定义项分组信息
+     * 根据specificId查询自定义项分组信息(暂时用不到,可以先留在这里以后或许能用得上)
      * @param specificId
      * @return java.util.List<com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO>
      * @author assert
@@ -68,5 +68,14 @@ public interface SpecificService {
      * @date 2020/12/15
     */
     List<SpecificDefDTO> getSpecificDefBySpecificId(Long specificId);
+
+    /**
+     * 根据name查询规格类型信息
+     * @param name
+     * @return com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO
+     * @author assert
+     * @date 2020/12/16
+    */
+    SpecificTypeDTO getSpecificTypeByName(String name);
 
 }

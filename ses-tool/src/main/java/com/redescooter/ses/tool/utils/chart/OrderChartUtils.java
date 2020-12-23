@@ -55,4 +55,29 @@ public class OrderChartUtils {
         }
         return temp;
     }
+
+
+    /**
+     * @Author Aleks
+     * @Description  工单详情
+     * @Date  2020/12/4 18:16
+     * @Param [dto]
+     * @return
+     **/
+    public static List<String> countDateList(int type, Date date) {
+        ArrayList<String> list = new ArrayList<>();
+        switch (type) {
+            case 3:
+                list = DateUtil.get24HourList(DateUtil.getDateTimeStamp(date));
+                break;
+            case 2:
+                list = DateUtil.getDayList(date, 30, null);
+                break;
+            case 1:
+                list = DateUtil.getDayList(date, 365, DateUtil.DEFAULT_YYMM_FORMAT);
+                break;
+        }
+
+        return checkDayResultSingle(list);
+    }
 }

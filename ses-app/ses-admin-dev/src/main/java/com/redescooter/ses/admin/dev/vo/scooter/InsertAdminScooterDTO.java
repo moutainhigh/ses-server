@@ -1,6 +1,7 @@
 package com.redescooter.ses.admin.dev.vo.scooter;
 
 import com.redescooter.ses.admin.dev.exception.ValidationExceptionCode;
+import com.redescooter.ses.api.common.annotation.NotEmpty;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
@@ -46,14 +47,14 @@ public class InsertAdminScooterDTO extends GeneralEnter {
     /**
      * mac名称
      */
-    @NotNull(code = ValidationExceptionCode.MAC_NAME_IS_NOT_EMPTY, message = "mac名称不能为空")
+    @NotEmpty(code = ValidationExceptionCode.MAC_NAME_IS_NOT_EMPTY, message = "mac名称不能为空")
     @ApiModelProperty(value = "mac名称", dataType = "String", required = true)
     private String macName;
 
     /**
      * mac地址
      */
-    @NotNull(code = ValidationExceptionCode.MAC_ADDRESS_IS_NOT_EMPTY, message = "mac地址不能为空")
+    @NotEmpty(code = ValidationExceptionCode.MAC_ADDRESS_IS_NOT_EMPTY, message = "mac地址不能为空")
     @ApiModelProperty(value="mac地址", dataType = "String", required = true)
     private String macAddress;
 
@@ -72,7 +73,7 @@ public class InsertAdminScooterDTO extends GeneralEnter {
     /**
      * 车辆配件集合
      */
-    @NotNull(code = ValidationExceptionCode.SCOOTER_PARTS_IS_NOT_EMPTY, message = "车辆配件不能为空")
+    @NotEmpty(code = ValidationExceptionCode.SCOOTER_PARTS_IS_NOT_EMPTY, message = "车辆配件不能为空")
     @ApiModelProperty(value = "车辆配件集合(json数组对象字段: name、sn、qty)", required = true)
     private String scooterPartsList;
 

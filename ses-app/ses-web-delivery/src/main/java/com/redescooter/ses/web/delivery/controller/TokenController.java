@@ -2,12 +2,15 @@ package com.redescooter.ses.web.delivery.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderSaveOrUpdateEnter;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
+import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,9 @@ public class TokenController {
     @Reference
     private UserTokenService userTokenService;
 
+    @Reference
+    private WorkOrderService workOrderService;
+
     @IgnoreLoginCheck
     @ApiOperation(value = "登录接口", response = LoginResult.class)
     @PostMapping(value = "/login")
@@ -47,22 +53,22 @@ public class TokenController {
     public Response<GeneralResult> sendEmail(@ModelAttribute BaseSendMailEnter enter) {
         return new Response<>(userTokenService.sendEmail(enter));
     }
-    
+
     @IgnoreLoginCheck
     @ApiOperation(value = "验证码登录", response = LoginResult.class)
     @PostMapping(value = "/loginByCode")
     public Response<LoginResult> loginByCode(@ModelAttribute LoginEnter enter) {
         return new Response<>(userTokenService.loginByCode(enter));
     }
-    
+
     @IgnoreLoginCheck
     @ApiOperation(value = "验证码登录发送邮件", response = GeneralResult.class)
     @PostMapping(value = "/loginSendCode")
     public Response<GeneralResult> loginSendCode(@ModelAttribute LoginEnter enter) {
         return new Response<>(userTokenService.loginSendCode(enter));
     }
-    
-    
+
+
     @IgnoreLoginCheck
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
     @PostMapping(value = "/forgotPassword")
@@ -74,5 +80,12 @@ public class TokenController {
     @PostMapping(value = "/chanagePassword")
     public Response<GeneralResult> chanagePassword(@ModelAttribute ChanagePasswordEnter enter) {
         return new Response<>(userTokenService.chanagePassword(enter));
+    }
+
+
+    @PostMapping(value = "/workOrderSave")
+    @ApiOperation(value = "工单新增", response = GeneralResult.class)
+    public Response<GeneralResult> workOrderSave(@ModelAttribute @ApiParam("请求参数") WorkOrderSaveOrUpdateEnter enter) {
+        return new Response(workOrderService.workOrderSave(enter));
     }
 }

@@ -13,6 +13,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class ScooterBbiServiceImpl implements ScooterBbiService {
 
+    @Reference
+    private IdAppService idAppService;
     @Resource
     private ScooterBbiMapper scooterBbiMapper;
     @Resource
@@ -41,19 +44,17 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
     private ScooterServiceMapper scooterServiceMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Resource
-    private IdAppService idAppService;
 
 
     @Override
     public int insertScooterBbiByEmqX(ScooterBbiReportedDTO scooterReportedBbi) {
-        String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
-        if (StringUtils.isBlank(scooterNo)) {
-            log.error("【车辆电池相关信息数据上报失败】----车辆不存在");
-            return 0;
-        }
-
         try {
+            String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
+            if (StringUtils.isBlank(scooterNo)) {
+                log.error("【车辆电池相关信息数据上报失败】----车辆不存在");
+                return 0;
+            }
+
             /**
              * 检查数据库中是否存在车辆电池相关信息,有则更新 无则新增
              */

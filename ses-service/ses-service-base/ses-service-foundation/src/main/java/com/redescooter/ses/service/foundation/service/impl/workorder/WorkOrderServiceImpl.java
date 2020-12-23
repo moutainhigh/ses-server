@@ -1,12 +1,18 @@
 package com.redescooter.ses.service.foundation.service.impl.workorder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.workorder.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
+import com.redescooter.ses.api.foundation.vo.mail.MailContactUsMessageEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.WorkOrderMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder;
@@ -16,12 +22,14 @@ import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderLogServic
 import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.dubbo.config.annotation.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +51,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
     @Autowired
     private WorkOrderMapper workOrderMapper;
+
+    @Autowired
+    private MailMultiTaskService mailMultiTaskService;
 
     @Reference
     private IdAppService idAppService;
@@ -74,6 +85,9 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      **/
     @Override
     public GeneralResult workOrderSave(WorkOrderSaveOrUpdateEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        // 校验字段的长度
+        checkLength(enter);
         PlaWorkOrder workOrder = new PlaWorkOrder();
         BeanUtils.copyProperties(enter,workOrder);
         workOrder.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER));
@@ -85,6 +99,16 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         workOrder.setUpdatedTime(new Date());
         plaWorkOrderService.saveOrUpdate(workOrder);
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    public void checkLength(WorkOrderSaveOrUpdateEnter enter){
+        if (Strings.isNullOrEmpty(enter.getTitle()) || enter.getTitle().length() > 100){
+            throw new FoundationException(ExceptionCodeEnums.TITLE_LENGTH_ERROR.getCode(), ExceptionCodeEnums.TITLE_LENGTH_ERROR.getMessage());
+        }
+        if(!Strings.isNullOrEmpty(enter.getRemark()) && enter.getRemark().length() > 1000){
+            throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
+        }
     }
 
 
@@ -193,6 +217,13 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      **/
     @Override
     public GeneralResult workOrderReply(workOrderReplyEnter enter) {
+        PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
+        if (workOrder == null){
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
+        if (Strings.isNullOrEmpty(enter.getRemark()) || enter.getRemark().length() > 1000){
+            throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
+        }
         PlaWorkOrderLog workOrderLog = new PlaWorkOrderLog();
         workOrderLog.setCreatedBy(enter.getUserId());
         workOrderLog.setCreatedTime(new Date());
@@ -202,8 +233,27 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         workOrderLog.setMessageType(enter.getMessageType());
         workOrderLog.setRemark(enter.getRemark());
         workOrderLog.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER_LOG));
+        workOrderLog.setDef1(enter.getUrls());
         plaWorkOrderLogService.saveOrUpdate(workOrderLog);
-        // todo  邮件暂时不发 等待邮件模板
+        // 邮件暂时不发
+        MailContactUsMessageEnter sendEnter = new MailContactUsMessageEnter();
+        sendEnter.setMessage(enter.getRemark());
+        sendEnter.setName(workOrder.getContactEmail());
+        sendEnter.setEvent(MailTemplateEventEnums.ROS_CONTACTUS_REPLY_MESSAGE.getEvent());
+        sendEnter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        sendEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        sendEnter.setToMail(workOrder.getContactEmail());
+        sendEnter.setUserRequestId(enter.getRequestId());
+        sendEnter.setToUserId(enter.getUserId());
+        if (!Strings.isNullOrEmpty(enter.getUrls())){
+            sendEnter.setImgList(Arrays.asList(enter.getUrls().split(",")));
+        }
+        try {
+            mailMultiTaskService.contactUsReplyMessageEmail(sendEnter);
+        }catch (Exception e){
+
+        }
+
         return new GeneralResult(enter.getRequestId());
     }
 

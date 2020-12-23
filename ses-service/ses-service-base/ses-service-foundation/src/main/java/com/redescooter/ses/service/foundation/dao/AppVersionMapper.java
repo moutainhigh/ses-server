@@ -146,4 +146,14 @@ public interface AppVersionMapper {
     */
     String existsAppVersionByCodeAndType(@Param("versionCode") String versionCode, @Param("type") Integer type);
 
+    /**
+     * 根据versionNumber、type查询版本是否存在
+     * @param versionNumber
+     * @param type
+     * @return java.lang.String
+     * @author assert
+     * @date 2020/12/17
+    */
+    String existsAppVersionByVersionNumberAndType(@Param("versionNumber") String versionNumber, @Param("type") Integer type);
+
 }

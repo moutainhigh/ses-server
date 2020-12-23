@@ -62,7 +62,7 @@ public class AppVersionController {
     }
 
     /**
-     * 修改应用版本信息i
+     * 修改应用版本信息
      * @param appVersionDTO
      * @return com.redescooter.ses.api.common.vo.base.Response
      * @author assert

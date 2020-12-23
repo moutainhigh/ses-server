@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
 
 
 /**
@@ -52,5 +53,14 @@ public interface ScooterEmqXService {
      * @date 2020/12/1
     */
     GeneralResult setScooterModel(SetScooterModelPublishDTO publishDTO);
+
+    /**
+     * 同步订单数量 -- 通过EMQ X进行通知到平板端
+     * @param publishDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2020/12/18
+    */
+    GeneralResult syncOrderQuantity(SyncOrderQuantityPublishDTO publishDTO);
 
 }

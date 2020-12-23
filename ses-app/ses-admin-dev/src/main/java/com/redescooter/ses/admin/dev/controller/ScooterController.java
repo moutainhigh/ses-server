@@ -90,15 +90,15 @@ public class ScooterController {
 
     /**
      * 查询车辆型号列表(下拉框列表使用)
-     * @param
+     * @param groupId
      * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>>
      * @author assert
      * @date 2020/12/15
     */
     @ApiOperation(value = "查询车辆型号列表", notes = "查询车辆型号列表(下拉框列表使用)")
-    @GetMapping(value = "/models")
-    public Response<List<SelectBaseResultDTO>> getScooterModelList() {
-        return new Response<>(specificService.getScooterModelList());
+    @GetMapping(value = "/models/{groupId}")
+    public Response<List<SelectBaseResultDTO>> getScooterModelList(@PathVariable("groupId") Long groupId) {
+        return new Response<>(specificService.getScooterModelList(groupId));
     }
 
     /**
@@ -124,6 +124,7 @@ public class ScooterController {
     @ApiOperation(value = "设置车辆软体模式", notes = "设置车辆软体模式(车辆型号E50、E100等..)")
     @PostMapping(value = "/setScooterModel")
     public Response<GeneralResult> setScooterModel(@ModelAttribute SetScooterModelParamDTO paramDTO) {
+        paramDTO.setType(1);
         return new Response<>(adminScooterService.setScooterModel(paramDTO));
     }
 
@@ -137,7 +138,17 @@ public class ScooterController {
     @ApiOperation(value = "重置车辆软体", notes = "重置车辆软体(将车辆重置成E50)")
     @PostMapping(value = "/resetScooterModel")
     public Response<GeneralResult> resetScooterModel(@ModelAttribute IdEnter enter) {
-        return new Response<>(adminScooterService.resetScooterModel(enter));
+        /**
+         * 这里设置软体和重置软体代码逻辑基本一致为什么不用同一个接口.
+         * -虽然这两个接口意义上来说都属于对车辆软体的设置,但是一个接口只做一件事
+         */
+        SetScooterModelParamDTO paramDTO = new SetScooterModelParamDTO();
+        paramDTO.setId(enter.getId());
+        paramDTO.setModelId(0L);
+        paramDTO.setType(2);
+        paramDTO.setRequestId(enter.getRequestId());
+
+        return new Response<>(adminScooterService.setScooterModel(paramDTO));
     }
 
 }
