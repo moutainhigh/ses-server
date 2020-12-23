@@ -85,8 +85,10 @@ public class ScooterAllReportedServiceImpl implements ScooterAllReportedService 
                         if (null != result.getId()) {
                             ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
                             scooterNavigation.setEvent(CommonEvent.START.getValue());
-                            scooterNavigation.setLat(String.valueOf(scooterEcu.getLatitude()));
-                            scooterNavigation.setLng(String.valueOf(scooterEcu.getLongitude()));
+                            scooterNavigation.setLat(String.valueOf(result.getLatitude()));
+                            scooterNavigation.setLng(String.valueOf(result.getLongitude()));
+//                            scooterNavigation.setLat(String.valueOf(scooterEcu.getLatitude()));
+//                            scooterNavigation.setLng(String.valueOf(scooterEcu.getLongitude()));
 
                             Long scooterId = scooterService.getScooterIdByTabletSn(scooterEcu.getTabletSn());
 
