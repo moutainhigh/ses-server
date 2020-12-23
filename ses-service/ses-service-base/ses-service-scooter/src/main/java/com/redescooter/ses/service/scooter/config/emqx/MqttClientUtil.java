@@ -3,7 +3,6 @@ package com.redescooter.ses.service.scooter.config.emqx;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.ssl.SslUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -44,7 +43,7 @@ public class MqttClientUtil implements MqttCallback {
         MqttClient client;
         try {
             // clientId随机生成,保证不重复(如果clientId重复会导致将上台客户机挤下线)
-            String clientId = "mqttx_" + RandomUtils.nextInt(0, 999999);
+            String clientId = System.currentTimeMillis() + "";
             client = new MqttClient(host, clientId, new MemoryPersistence());
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);

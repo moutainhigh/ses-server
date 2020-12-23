@@ -183,12 +183,18 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
              * 结束导航,结束导航的时候保存骑行数据(司机骑行数据、车辆骑行数据)
              */
             if (null != scoScooterNavigation) {
-                if (SesStringUtils.isBlank(scooterNavigation.getMileage())){
-                    throw new MobileCException(ExceptionCodeEnums.MILEAGE_IS_EMPTY.getCode(),ExceptionCodeEnums.MILEAGE_IS_EMPTY.getMessage());
+                Double distance = 0.0;
+                if (null != scooterResult.getLatitude() && null != scooterResult.getLongitule()) {
+                    // 计算本次导航行驶公里数
+                    distance = MapUtil.getDistance(scooterNavigation.getLat(), scooterNavigation.getLng(),
+                            scooterResult.getLatitude().toString(), scooterResult.getLongitule().toString());
                 }
-                if (null == scooterNavigation.getDuration() || 0 == scooterNavigation.getDuration()){
-                    throw new MobileCException(ExceptionCodeEnums.DURATION_IS_EMPTY.getCode(),ExceptionCodeEnums.DURATION_IS_EMPTY.getMessage());
-                }
+
+                // 计算导航所花时间,单位/s
+                Long duration = (scoScooterNavigation.getCreatedTime().getTime() - new Date().getTime()) / 1000;
+
+                scooterNavigation.setMileage(String.valueOf(distance));
+                scooterNavigation.setDuration(duration);
 
                 /**
                  * 根据用户类型(b/c)进行不同业务处理

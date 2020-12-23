@@ -28,9 +28,9 @@ public class ScooterNavigationDTO extends GeneralEnter {
     @NotNull(code = ValidationExceptionBaseCode.LAT_IS_EMPTY, message = "维度 不能为空")
     private String lat;
 
-    @ApiModelProperty(value = "行驶公里数，结束导航时传递 单位/m")
+    @ApiModelProperty(value = "行驶公里数,后台计算无需传递", hidden = true)
     private String mileage;
 
-    @ApiModelProperty(value = "耗时时间，结束导航时传递 单位/s")
+    @ApiModelProperty(value = "耗时时间,后台计算无需传递", hidden = true)
     private Long duration;
 }
