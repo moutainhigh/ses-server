@@ -733,6 +733,12 @@ public class DateUtil {
      * @return
      **/
     public static List<String> getBetweenDates(Date start, Date end) {
+        if (start == null){
+            start = parse(getDateTime(new Date(), "yyyy-MM-dd") + " 00:00:00", "yyyy-MM-dd HH:mm:ss");
+        }
+        if (end == null){
+            end = parse(getDateTime(new Date(), "yyyy-MM-dd") + " 23:59:59", "yyyy-MM-dd HH:mm:ss");
+        }
         List<String> result = new ArrayList<String>();
         Calendar tempStart = Calendar.getInstance();
         tempStart.setTime(start);
