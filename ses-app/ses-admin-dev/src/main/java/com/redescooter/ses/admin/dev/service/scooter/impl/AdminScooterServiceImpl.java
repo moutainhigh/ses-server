@@ -10,15 +10,14 @@ import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.*;
+import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
-import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
-import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
-import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
+import com.redescooter.ses.api.common.vo.scooter.*;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
@@ -192,6 +191,15 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         if (null == adminScooter) {
             throw new SesAdminDevException(ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getCode(),
                     ExceptionCodeEnums.SCOOTER_NOT_EXISTS.getMessage());
+        }
+
+        /**
+         * 只允许车辆关闭状态时进行软体设置
+         */
+        String scooterLockStatus = scooterService.getScooterStatusByTabletSn(adminScooter.getSn());
+        if (ScooterLockStatusEnums.UNLOCK.getValue().equals(scooterLockStatus)) {
+            throw new SesAdminDevException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(),
+                    ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
         }
 
         /**

@@ -122,4 +122,13 @@ public interface ScooterService {
      */
     Long getScooterIdByTabletSn(String tabletSn);
 
+    /**
+     * 根据tabletSn查询车辆锁状态
+     * @param tabletSn
+     * @return java.lang.String
+     * @author assert
+     * @date 2020/11/23
+     */
+    String getScooterStatusByTabletSn(String tabletSn);
+
 }

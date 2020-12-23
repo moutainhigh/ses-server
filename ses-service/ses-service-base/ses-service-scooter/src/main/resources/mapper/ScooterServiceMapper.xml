@@ -126,7 +126,7 @@
     <!--根据scooterNo查询车辆锁状态-->
     <select id="getScooterStatusByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
         select `status` from sco_scooter
-        where tablet_sn = #{tabletSn} and dr = '0'
+        where dr = 0 and tablet_sn = #{tabletSn}
     </select>
 
     <!--根据tabletSn查询车辆编号-->
