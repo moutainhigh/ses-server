@@ -250,14 +250,8 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         if (StatusEnum.ENABLE.getCode().equals(distributor.getStatus())) {
             throw new SesWebRosException(ExceptionCodeEnums.ENABLE_STORE_NOT_DELETE.getCode(), ExceptionCodeEnums.ENABLE_STORE_NOT_DELETE.getMessage());
         }
-
-        OpeDistributor model = new OpeDistributor();
-        model.setId(enter.getId());
-        model.setDr(DelStatusEnum.INVALID.getCode());
-        model.setUpdatedBy(enter.getUserId());
-        model.setUpdatedTime(new Date());
-        int i = opeDistributorMapper.updateById(model);
-        if (i > 0) {
+        boolean b = this.removeById(enter.getId());
+        if (b) {
             return new Response<>();
         }
         throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
