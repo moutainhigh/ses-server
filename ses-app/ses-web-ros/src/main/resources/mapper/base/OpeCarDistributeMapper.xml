@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeCarDistribute">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="user_id" property="userId"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="specificat_type_id" property="specificatTypeId"/>
+        <result column="seat_number" property="seatNumber"/>
+        <result column="vin_code" property="vinCode"/>
+        <result column="license_plate" property="licensePlate"/>
+        <result column="rsn" property="rsn"/>
+        <result column="color_id" property="colorId"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, tenant_id, user_id, customer_id, specificat_type_id, seat_number, vin_code, license_plate, rsn, color_id, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    </sql>
+
+</mapper>
