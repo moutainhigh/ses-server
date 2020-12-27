@@ -320,9 +320,6 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             result.setSaleProductMsg(saleProductMsg);
         }
         result.setStatusMsg(StatusEnum.showMsg(result.getStatus()));
-        if (StringUtils.isBlank(result.getNote())) {
-            result.setNote("-");
-        }
         return new Response<>(result);
     }
 
