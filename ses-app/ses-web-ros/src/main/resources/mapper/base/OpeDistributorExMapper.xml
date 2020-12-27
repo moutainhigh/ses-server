@@ -63,4 +63,11 @@
         </if>
     </sql>
 
+    <!-- 门店类型选择销售,可售卖产品的数据来源 -->
+    <select id="getSaleProduct" resultType="com.redescooter.ses.web.ros.vo.distributor.result.DistributorSaleProductResult">
+        select id, product_name as specificationName
+        from ope_sale_scooter
+        where dr = 0 and sale_stutas = 1
+    </select>
+
 </mapper>
