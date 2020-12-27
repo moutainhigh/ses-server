@@ -2,20 +2,19 @@ package com.redescooter.ses.web.ros.service.distributor.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.distributor.OpeDistributorExMapper;
 import com.redescooter.ses.web.ros.dao.distributor.OpeDistributorMapper;
+import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeDistributor;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
@@ -24,12 +23,7 @@ import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.distributor.DistributorService;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorAddEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorCityAndCPSelectorEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorEnableOrDisableEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorListEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorNameEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorUpdateEnter;
+import com.redescooter.ses.web.ros.vo.distributor.enter.*;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorCityAndCPSelectorResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorDetailResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult;
@@ -43,13 +37,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.JedisCluster;
 
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -73,6 +64,12 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     @Autowired
     private OpeSpecificatTypeMapper opeSpecificatTypeMapper;
 
+    @Autowired
+    private StaffServiceMapper staffServiceMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
     @Reference
     private IdAppService idAppService;
 
@@ -83,11 +80,27 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     public Response<PageResult<DistributorListResult>> getList(DistributorListEnter enter) {
         logger.info("门店列表的入参是:[{}]", enter);
         SesStringUtils.objStringTrim(enter);
-        int count = opeDistributorExMapper.getListCount(enter);
+
+        Set<Long> deptIds =  new HashSet<>();
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.add(Long.parseLong(s));
+                }
+            }
+        }
+
+        int count = opeDistributorExMapper.getListCount(enter,flag?null:deptIds);
         if (count == 0) {
             return new Response<>(PageResult.createZeroRowResult(enter));
         }
-        List<DistributorListResult> list = opeDistributorExMapper.getList(enter);
+        List<DistributorListResult> list = opeDistributorExMapper.getList(enter,flag?null:deptIds);
         return new Response<>(PageResult.create(enter, count, list));
     }
 
@@ -182,6 +195,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         OpeDistributor model = new OpeDistributor();
         model.setId(idAppService.getId(SequenceName.OPE_DISTRIBUTOR));
         model.setDr(DelStatusEnum.VALID.getCode());
+        model.setDeptId(enter.getOpeDeptId());
         model.setTenantId(enter.getTenantId());
         model.setUserId(enter.getUserId());
         model.setStatus(StatusEnum.DISABLE.getCode());

@@ -6,7 +6,7 @@
     <select id="getList" resultType="com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult">
         select *
         from ope_distributor
-        where dr = 0 and user_id = #{param.userId}
+        where dr = 0
         <include refid="listCondition">
         </include>
         order by created_time desc
@@ -17,7 +17,7 @@
     <select id="getListCount" resultType="java.lang.Integer">
         select count(*)
         from ope_distributor
-        where dr = 0 and user_id = #{param.userId}
+        where dr = 0
         <include refid="listCondition">
         </include>
     </select>
@@ -47,6 +47,19 @@
                 tel like concat('%', #{param.keyword}, '%') or
                 email like concat('%', #{param.keyword}, '%')
             )
+        </if>
+        <if test="deptIds != null">
+            <choose>
+                <when test="deptIds.size() > 0">
+                    and dept_id in
+                    <foreach collection="deptIds" separator="," open="(" close=")" item="item">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    and created_by = #{param.userId}
+                </otherwise>
+            </choose>
         </if>
     </sql>
 

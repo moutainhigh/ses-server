@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description
@@ -18,11 +19,11 @@ public interface OpeDistributorExMapper {
     /**
      * 门店列表
      */
-    List<DistributorListResult> getList(@Param("param") DistributorListEnter enter);
+    List<DistributorListResult> getList(@Param("param") DistributorListEnter enter,@Param("deptIds") Set<Long> deptIds);
 
     /**
      * 门店列表条数
      */
-    int getListCount(@Param("param") DistributorListEnter enter);
+    int getListCount(@Param("param") DistributorListEnter enter,@Param("deptIds") Set<Long> deptIds);
 
 }
