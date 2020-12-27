@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.distributor;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -92,6 +93,7 @@ public class DistributorController {
      */
     @ApiOperation(value = "新增门店", notes = "新增门店")
     @PostMapping("/add")
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> add(@ModelAttribute DistributorAddEnter enter) {
         return distributorService.add(enter);
     }
