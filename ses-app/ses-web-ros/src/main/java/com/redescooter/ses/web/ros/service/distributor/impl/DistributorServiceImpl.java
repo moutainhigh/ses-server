@@ -135,7 +135,6 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         List<Map<String, Object>> resultList = Lists.newArrayList();
 
         LambdaQueryWrapper<OpeDistributor> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeDistributor::getUserId, enter.getUserId());
         if ("3".equals(enter.getKey())) {
             wrapper.eq(OpeDistributor::getCity, enter.getCity());
         }
