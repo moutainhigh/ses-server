@@ -113,6 +113,7 @@ public class ControllerAspect {
             UserToken userToken = tokenService.checkAndGetSession(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
+            enter.setOpeDeptId(userToken.getDeptId());
         }
     }
 

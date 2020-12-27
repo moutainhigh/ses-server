@@ -486,9 +486,17 @@ public enum ExceptionCodeEnums {
 
     DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空"),
 
-    DEF_GROUP_NAME_NOT_NULL(10235, "自定义分组名称不能为空"),
+    UPDATE_FAIL(10235, "修改失败"),
 
-    DEF_GROUP_NAME_ILLEGAL(10236, "自定义分组名称非法")
+    ENABLE_STORE_NOT_DELETE(10236, "启用中的店铺，不可删除。"),
+
+    STORE_EMAIL_MUST_CHAR(10237, "邮件地址必须带有@字符"),
+
+    INSERT_FAIL(10238, "新增失败"),
+
+    DEF_GROUP_NAME_NOT_NULL(10239, "自定义分组名称不能为空"),
+
+    DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法")
     ;
 
 
