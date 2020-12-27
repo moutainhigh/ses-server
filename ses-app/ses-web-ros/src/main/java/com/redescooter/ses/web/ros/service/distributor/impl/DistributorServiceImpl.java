@@ -15,12 +15,13 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.distributor.OpeDistributorExMapper;
 import com.redescooter.ses.web.ros.dao.distributor.OpeDistributorMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeDistributor;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DistributorTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
@@ -82,6 +83,9 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
 
     @Autowired
     private StaffServiceMapper staffServiceMapper;
+
+    @Autowired
+    private OpeSaleScooterMapper opeSaleScooterMapper;
 
     @Autowired
     private JedisCluster jedisCluster;
@@ -310,9 +314,9 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             String[] splits = result.getSaleProduct().split(splitChar);
             List<String> saleProductList = Lists.newArrayList();
             for (String s : splits) {
-                OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(s);
-                if (null != opeSpecificatType) {
-                    String specificationName = opeSpecificatType.getSpecificatName();
+                OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(s);
+                if (null != opeSaleScooter) {
+                    String specificationName = opeSaleScooter.getProductName();
                     saleProductList.add(specificationName);
                 }
             }
@@ -320,9 +324,6 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             result.setSaleProductMsg(saleProductMsg);
         }
         result.setStatusMsg(StatusEnum.showMsg(result.getStatus()));
-        if (StringUtils.isBlank(result.getNote())) {
-            result.setNote("-");
-        }
         return new Response<>(result);
     }
 
