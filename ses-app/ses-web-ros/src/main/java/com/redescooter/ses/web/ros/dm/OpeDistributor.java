@@ -44,6 +44,9 @@ public class OpeDistributor implements Serializable {
     @ApiModelProperty(value = "租户id")
     private Long tenantId;
 
+    @ApiModelProperty(value = "部门ID")
+    private Long deptId;
+
     @ApiModelProperty(value = "用户id")
     private Long userId;
 
