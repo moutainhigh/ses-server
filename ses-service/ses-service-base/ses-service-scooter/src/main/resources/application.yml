@@ -136,6 +136,6 @@ mqtt:
   ca: /root/certs/my_root_ca.pem
   clientCrt: /root/certs/client.pem
   clientKey: /root/certs/client.key
-  timeout: 10
-  keepalive: 30
+  timeout: 60
+  keepalive: 60
   url: ssl://client.redemotors.com
