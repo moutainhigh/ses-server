@@ -237,6 +237,8 @@ public interface SequenceName {
 
     String OPE_PRODUCTION_PURCHASE_PARTS_B = "OPE_PRODUCTION_PURCHASE_PARTS_B";
 
+    String OPE_DISTRIBUTOR = "OPE_DISTRIBUTOR";
+
 
 
 }

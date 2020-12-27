@@ -256,4 +256,29 @@ public interface ValidationExceptionCode extends ValidationExceptionBaseCode {
     // 规格类型名称非法
     int SPECIFICATION_TYPE_NAME_ILLEGAL = 10144;
 
+
+    // 门店状态不能为空
+    int STORE_STATUS_IS_NOT_EMPTY = 10145;
+
+    // 门店名称不能为空
+    int STORE_NAME_IS_NOT_EMPTY = 10146;
+
+    // 门店电话不能为空
+    int STORE_TEL_IS_NOT_EMPTY = 10147;
+
+    // 门店地址不能为空
+    int STORE_ADDRESS_IS_NOT_EMPTY = 10148;
+
+    // 城市不能为空
+    int STORE_CITY_IS_NOT_EMPTY = 10149;
+
+    // 地区不能为空
+    int STORE_AREA_IS_NOT_EMPTY = 10150;
+
+    // 门店合同不能为空
+    int STORE_CONTRACT_IS_NOT_EMPTY = 10151;
+
+    // 门店类型不能为空
+    int STORE_TYPE_IS_NOT_EMPTY = 10152;
+
 }

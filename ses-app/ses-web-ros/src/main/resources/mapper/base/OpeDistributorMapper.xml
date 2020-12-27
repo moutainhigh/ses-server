@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.distributor.OpeDistributorMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeDistributor">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="logo_url" property="logoUrl"/>
+        <result column="country_code" property="countryCode"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="address" property="address"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
+        <result column="cp" property="cp"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="contract_url" property="contractUrl"/>
+        <result column="note" property="note"/>
+        <result column="type" property="type"/>
+        <result column="sale_product" property="saleProduct"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, tenant_id, dept_id, user_id, status, code, name, logo_url, country_code, tel, email, address, longitude, latitude, cp, city, area, contract_url, note, type, sale_product, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    </sql>
+
+</mapper>

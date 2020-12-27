@@ -125,7 +125,7 @@ public class ControllerAspect {
             UserToken userToken = tokenRosService.checkToken(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
-
+            enter.setOpeDeptId(userToken.getDeptId());
             //TODO 接口权限验证
             checkPermission(point, enter);
         }
