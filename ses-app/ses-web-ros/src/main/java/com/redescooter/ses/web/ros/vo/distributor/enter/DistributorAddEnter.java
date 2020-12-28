@@ -1,6 +1,10 @@
 package com.redescooter.ses.web.ros.vo.distributor.enter;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
@@ -45,6 +49,9 @@ public class DistributorAddEnter extends GeneralEnter implements Serializable {
 
     @ApiModelProperty(value = "邮件地址", required = true)
     @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮件地址为空")
+    @MinimumLength(value = "2", code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "邮件非法")
+    @MaximumLength(value = "50", code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "邮件非法")
+    @Regexp(value = RegexpConstant.email, code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL, message = "邮件非法")
     private String email;
 
     @ApiModelProperty(value = "地址", required = true)
