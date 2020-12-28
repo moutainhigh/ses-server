@@ -26,6 +26,9 @@ public class ToBeAssignNextStopDetailResult extends GeneralResult implements Ser
 
     private static final long serialVersionUID = -3335091688984467098L;
 
+    @ApiModelProperty(value = "主键")
+    private Long id;
+
     @ApiModelProperty(value = "型号")
     private String specificatName;
 
