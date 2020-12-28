@@ -30,7 +30,7 @@ public class ToBeAssignDetailCustomerInfoResult extends GeneralResult implements
     private Long customerId;
 
     @ApiModelProperty(value = "客户名称")
-    private String customerFullName;
+    private String fullName;
 
     @ApiModelProperty(value = "邮箱")
     private String email;
@@ -49,5 +49,11 @@ public class ToBeAssignDetailCustomerInfoResult extends GeneralResult implements
 
     @ApiModelProperty(value = "联系地址")
     private String address;
+
+    @ApiModelProperty(value = "行业类型文案")
+    private String industryTypeMsg;
+
+    @ApiModelProperty(value = "客户类型文案")
+    private String customerTypeMsg;
 
 }

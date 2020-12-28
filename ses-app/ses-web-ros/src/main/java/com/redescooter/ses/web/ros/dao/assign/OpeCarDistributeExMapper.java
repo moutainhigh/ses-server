@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.assign;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -37,4 +38,8 @@ public interface OpeCarDistributeExMapper {
      */
     List<AssignedListResult> getAssignedList(@Param("param") AssignedListEnter enter);
 
+    /**
+     * 根据客户id查询客户信息
+     */
+    ToBeAssignDetailCustomerInfoResult getCustomerInfo(@Param("customerId") Long customerId);
 }
