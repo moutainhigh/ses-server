@@ -239,6 +239,8 @@ public interface SequenceName {
 
     String OPE_DISTRIBUTOR = "OPE_DISTRIBUTOR";
 
+    String OPE_CAR_DISTRIBUTE_NODE = "OPE_CAR_DISTRIBUTE_NODE";
+
 
 
 }

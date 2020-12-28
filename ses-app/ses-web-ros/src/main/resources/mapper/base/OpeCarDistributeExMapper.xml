@@ -56,6 +56,22 @@
         limit #{param.startRow}, #{param.pageSize}
     </select>
 
+    <!-- 根据客户id查询客户信息 -->
+    <select id="getCustomerInfo" resultType="com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult">
+        select
+            a.customer_id,
+            a.full_name,
+            a.email,
+            a.telephone,
+            a.post_code,
+            a.address,
+            b.customer_type,
+            b.industry_type
+        from ope_customer_inquiry a
+        left join ope_customer b on a.customer_id = b.id
+        where a.dr = 0 and b.dr = 0 and a.customer_id = #{customerId}
+    </select>
+
     <!-- 待分配列表筛选条件 -->
     <sql id="toBeAssignList">
         <if test="param.generateDateStartTime != null">
