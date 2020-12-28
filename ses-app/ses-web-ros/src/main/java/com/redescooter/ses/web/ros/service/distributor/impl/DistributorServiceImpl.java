@@ -142,6 +142,24 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         if ("3".equals(enter.getKey())) {
             wrapper.eq(OpeDistributor::getCity, enter.getCity());
         }
+        // 加上数据权限
+        Set<Long> deptIds =  new HashSet<>();
+        // 通过这个来判断是不是管理员账号，默认为是管理员
+        boolean flag = true;
+        String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
+        if (jedisCluster.exists(key)){
+            flag = false;
+            Map<String, String> map = jedisCluster.hgetAll(key);
+            String ids = map.get("deptIds");
+            if(!Strings.isNullOrEmpty(ids)){
+                for (String s : ids.split(",")) {
+                    deptIds.add(Long.parseLong(s));
+                }
+            }
+        }
+        if(!flag){
+            wrapper.in(OpeDistributor::getDeptId,deptIds);
+        }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         List<String> collect = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(list)) {
