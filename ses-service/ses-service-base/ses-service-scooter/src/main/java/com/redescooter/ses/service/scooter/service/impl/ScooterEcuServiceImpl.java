@@ -19,6 +19,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author assert
@@ -97,6 +98,11 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
         scooterEcu.setUpdatedTime(new Date());
 
         return scooterEcuMapper.insertScooterEcu(scooterEcu);
+    }
+
+    @Override
+    public List<ScooterEcuDTO> getScooterEcuByTabletSnList(List<String> tabletSnList) {
+        return scooterEcuMapper.getScooterEcuByTabletSnList(tabletSnList);
     }
 
 

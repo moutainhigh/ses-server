@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaAppVersionUpdateLogMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog">
+    <!--@mbg.generated-->
+    <!--@Table pla_app_version_update_log-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tablet_sn" jdbcType="VARCHAR" property="tabletSn" />
+    <result column="app_version_id" jdbcType="BIGINT" property="appVersionId" />
+    <result column="app_version_type" jdbcType="INTEGER" property="appVersionType" />
+    <result column="is_update_success" jdbcType="BOOLEAN" property="isUpdateSuccess" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tablet_sn, app_version_id, app_version_type, is_update_success, created_by, 
+    created_time, updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from pla_app_version_update_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from pla_app_version_update_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog">
+    <!--@mbg.generated-->
+    insert into pla_app_version_update_log (id, dr, tablet_sn, 
+      app_version_id, app_version_type, is_update_success, 
+      created_by, created_time, updated_by, 
+      updated_time)
+    values (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{tabletSn,jdbcType=VARCHAR}, 
+      #{appVersionId,jdbcType=BIGINT}, #{appVersionType,jdbcType=INTEGER}, #{isUpdateSuccess,jdbcType=BOOLEAN}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog">
+    <!--@mbg.generated-->
+    insert into pla_app_version_update_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tabletSn != null">
+        tablet_sn,
+      </if>
+      <if test="appVersionId != null">
+        app_version_id,
+      </if>
+      <if test="appVersionType != null">
+        app_version_type,
+      </if>
+      <if test="isUpdateSuccess != null">
+        is_update_success,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tabletSn != null">
+        #{tabletSn,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionId != null">
+        #{appVersionId,jdbcType=BIGINT},
+      </if>
+      <if test="appVersionType != null">
+        #{appVersionType,jdbcType=INTEGER},
+      </if>
+      <if test="isUpdateSuccess != null">
+        #{isUpdateSuccess,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog">
+    <!--@mbg.generated-->
+    update pla_app_version_update_log
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tabletSn != null">
+        tablet_sn = #{tabletSn,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionId != null">
+        app_version_id = #{appVersionId,jdbcType=BIGINT},
+      </if>
+      <if test="appVersionType != null">
+        app_version_type = #{appVersionType,jdbcType=INTEGER},
+      </if>
+      <if test="isUpdateSuccess != null">
+        is_update_success = #{isUpdateSuccess,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog">
+    <!--@mbg.generated-->
+    update pla_app_version_update_log
+    set dr = #{dr,jdbcType=INTEGER},
+      tablet_sn = #{tabletSn,jdbcType=VARCHAR},
+      app_version_id = #{appVersionId,jdbcType=BIGINT},
+      app_version_type = #{appVersionType,jdbcType=INTEGER},
+      is_update_success = #{isUpdateSuccess,jdbcType=BOOLEAN},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -318,7 +318,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         sb.append("0");
         sb.append(year.substring(2, 4)); // 年份,就这样截取吧,这样也能正常使用差不多八十年了
         sb.append(month);
-        sb.append(count);
+        sb.append(count + 1);
 
         return sb.toString();
     }

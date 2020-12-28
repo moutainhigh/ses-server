@@ -46,4 +46,7 @@ public interface SequenceName {
     String PLA_WORK_ORDER = "pla_work_order";
 
     String PLA_WORK_ORDER_LOG = "pla_work_order_log";
+
+    String PLA_APP_VERSION_UPDATE_LOG = "PLA_APP_VERSION_UPDATE_LOG";
+
 }
