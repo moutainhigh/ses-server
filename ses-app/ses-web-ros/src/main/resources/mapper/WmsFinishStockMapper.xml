@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper">
+
+
+    <select id="totalRows" resultType="int">
+        select count(*) from ope_wms_scooter_stock stock
+        where stock.dr = 0
+        <include refid="listCondition"></include>
+    </select>
+
+    <select id="finishScooterList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult">
+        select
+            stock.id,
+            stock.able_stock_qty,
+            stock.used_stock_qty,
+            stock.wait_in_stock_qty,
+            stock.wait_out_stock_qty,
+            group1.group_name,
+            color.color_name,
+            color.color_value
+        from ope_wms_scooter_stock stock
+        left join ope_specificat_group group1 on group1.id = stock.group_id
+        left join ope_color color on color.id = stock.color_id
+        where stock.dr = 0
+        <include refid="listCondition"></include>
+        order by stock.able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="listCondition">
+        <if test="enter.groupId != null">
+           and stock.group_id = #{enter.groupId}
+        </if>
+        <if test="enter.colorId != null">
+           and stock.color_id = #{enter.colorId}
+        </if>
+    </sql>
+
+    <select id="finishScooterDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult">
+        select
+           stock.id,
+           group1.group_name,
+           color.color_name,
+           color.color_value
+        from ope_wms_scooter_stock stock
+        left join ope_specificat_group group1 on group1.id = stock.group_id
+        left join ope_color color on color.id = stock.color_id
+        where stock.dr = 0 and stock.id = #{id}
+    </select>
+
+    <select id="inStockRecord" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult">
+        select
+          record.in_wh_type,
+          record.in_wh_qty,
+          record.created_time,
+          staff.full_name as createdName
+        from ope_wms_stock_record record
+        left join ope_sys_staff staff on staff.id = record.created_by
+        where record.relation_id = #{id} and record.dr = 0
+    </select>
+</mapper>
