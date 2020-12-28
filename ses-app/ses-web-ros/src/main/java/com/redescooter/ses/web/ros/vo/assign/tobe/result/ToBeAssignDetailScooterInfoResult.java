@@ -26,28 +26,22 @@ public class ToBeAssignDetailScooterInfoResult extends GeneralResult implements 
 
     private static final long serialVersionUID = 861225200525751044L;
 
-    @ApiModelProperty(value = "型号")
+    @ApiModelProperty(value = "型号id")
+    private Long specificatId;
 
+    @ApiModelProperty(value = "型号名称")
+    private String specificatName;
 
+    @ApiModelProperty(value = "颜色名称")
+    private String colorName;
 
-    @ApiModelProperty(value = "颜色")
-
-
+    @ApiModelProperty(value = "颜色色值")
+    private String colorValue;
 
     @ApiModelProperty(value = "总数")
-
-
+    private Integer totalCount;
 
     @ApiModelProperty(value = "待完成分配数")
-
-
-
-
-
-
-
-
-
-
+    private Integer toBeAssignCount;
 
 }

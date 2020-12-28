@@ -1,10 +1,18 @@
 package com.redescooter.ses.web.ros.controller.assign;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,49 +50,44 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "待分配列表点击分配带出数据", notes = "待分配列表点击分配带出数据")
     @PostMapping("/info")
-    public Response<>
+    public Response<ToBeAssignDetailResult> getToBeAssignDetail(@ModelAttribute IdEnter enter) {
+        return new Response<>(toBeAssignService.getToBeAssignDetail(enter));
+    }
 
     /**
      * 填写完座位数点击下一步
      */
     @ApiOperation(value = "填写完座位数点击下一步", notes = "填写完座位数点击下一步")
     @PostMapping("/seat/next")
-    public Response<>
-
-    /**
-     * 得到各个型号的座位数和VIN Code
-     */
-    @ApiOperation(value = "得到各个型号的座位数和VIN Code", notes = "得到各个型号的座位数和VIN Code")
-    @PostMapping("/seat/vin")
-    public Response<>
+    public Response<ToBeAssignNextStopResult> getSeatNext(@ModelAttribute ToBeAssignSeatNextEnter enter) {
+        return new Response<>(toBeAssignService.getSeatNext(enter));
+    }
 
     /**
      * 填写完车牌点击下一步
      */
     @ApiOperation(value = "填写完车牌点击下一步", notes = "填写完车牌点击下一步")
     @PostMapping("/license/next")
-    public Response<>
-
-    /**
-     * 得到各个型号的座位数,VIN Code和车牌
-     */
-    @ApiOperation(value = "得到各个型号的座位数,VIN Code和车牌", notes = "得到各个型号的座位数,VIN Code和车牌")
-    @PostMapping("/seat/vin/license")
-    public Response<>
+    public Response<ToBeAssignNextStopResult> getLicensePlateNext(@ModelAttribute ToBeAssignLicensePlateNextEnter enter) {
+        return new Response<>(toBeAssignService.getLicensePlateNext(enter));
+    }
 
     /**
      * 根据R.SN获得颜色
      */
     @ApiOperation(value = "根据R.SN获得颜色", notes = "根据R.SN获得颜色")
     @PostMapping("/color")
-    public Response<>
+    public Response<ToBeAssignColorResult> getColorByRSN(@ModelAttribute StringEnter enter) {
+        return new Response<>(toBeAssignService.getColorByRSN(enter));
+    }
 
     /**
      * 填写完R.SN并点击提交
      */
     @ApiOperation(value = "填写完R.SN并点击提交", notes = "填写完R.SN并点击提交")
     @PostMapping("/submit")
-    public Response<>
-
+    public Response<ToBeAssignNextStopResult> submit(@ModelAttribute ToBeAssignSubmitEnter enter) {
+        return new Response<>(toBeAssignService.submit(enter));
+    }
 
 }
