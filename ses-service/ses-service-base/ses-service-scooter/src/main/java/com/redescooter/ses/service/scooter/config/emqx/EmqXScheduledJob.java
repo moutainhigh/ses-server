@@ -24,7 +24,7 @@ public class EmqXScheduledJob {
     /**
      * EMQ X定时检测断开重连
      */
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */2 * * * ?")
     public void reConnection() {
         MqttClient client = MqttClientUtil.getClient();
         if (!client.isConnected()) {
