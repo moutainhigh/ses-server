@@ -51,4 +51,11 @@ public interface TokenRpsService {
      * @return
      */
     GeneralResult sendCode(BaseSendMailEnter enter);
+
+    /**
+     * RPS用户登录
+     * @param enter
+     * @return
+     */
+    TokenResult rpsLogin(LoginEnter enter);
 }
