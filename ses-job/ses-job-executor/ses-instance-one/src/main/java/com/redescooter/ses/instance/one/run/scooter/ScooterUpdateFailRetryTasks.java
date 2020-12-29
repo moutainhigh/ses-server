@@ -27,7 +27,7 @@ public class ScooterUpdateFailRetryTasks {
 
     /**
      * xxl-job-admin管理平台
-     * 测试环境地址：http://192.168.2.200/job/toLogin 账号：admin 密码：123456
+     * 测试环境地址：http://192.168.2.200/job/(如果这个地址访问不通使用：http://192.168.2.200:48090/) 账号：admin 密码：123456
      * 测试环境地址：测试环境没有开放管理平台
      */
     @XxlJob("scooterUpdateFailRetryTasks")

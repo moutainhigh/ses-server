@@ -5,12 +5,11 @@ import com.redescooter.ses.api.common.vo.jiguang.JobResult;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.service.AppVersionUpdateLogService;
 import com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDetailDTO;
-import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import com.redescooter.ses.api.scooter.job.RunScooterTaskExecutorJobService;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
-import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
+import com.redescooter.ses.service.scooter.config.emqx.MqttConfig;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +38,7 @@ public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecu
     @Resource
     private ScooterEcuService scooterEcuService;
     @Resource
-    private MqttClientUtil mqttClientUtil;
+    private MqttConfig mqttConfig;
 
 
     @Override
@@ -60,7 +59,7 @@ public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecu
                 /**
                  * 发送车载平板升级EMQ X消息, 不同车可能对应不同的版本
                  */
-                mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, updateLog.getTabletSn()),
+                mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, updateLog.getTabletSn()),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });
 

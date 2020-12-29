@@ -1,6 +1,5 @@
 package com.redescooter.ses.service.scooter.config.emqx;
 
-import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.ssl.SslUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -18,7 +17,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class MqttClientUtil implements MqttCallback {
+public class MqttClientUtil {
 
     @Resource
     private ScooterDataReportedComponent scooterDataReported;
@@ -34,12 +33,16 @@ public class MqttClientUtil implements MqttCallback {
     }
 
     /**
-     * 建立连接
-     * @param host
-     * @param timeout
-     * @param keepalive
+     * 建立与EMQ X服务之间的连接
+     * @param host 服务地址
+     * @param timeout 连接超时时间
+     * @param keepalive 心跳时间
+     * @param ca 客户端CA文件
+     * @param clientCrt 客户端证书
+     * @param clientKey 客户端签名
+     * @param topics 需要订阅的消息主题
      */
-    public void connect(String host, int timeout, int keepalive, String ca, String clientCrt, String clientKey){
+    public void connect(String host, int timeout, int keepalive, String ca, String clientCrt, String clientKey, String[] topics){
         MqttClient client;
         try {
             // clientId随机生成,保证不重复(如果clientId重复会导致将上台客户机挤下线)
@@ -55,15 +58,42 @@ public class MqttClientUtil implements MqttCallback {
             try {
                 // 通过ssl证书方式连接
                 options.setSocketFactory(SslUtil.getSocketFactory(ca, clientCrt, clientKey,""));
-                client.setCallback(this);
+
+                client.setCallback(new MqttCallback() {
+                    @Override
+                    public void connectionLost(Throwable cause) {
+                        // EMQ X服务断开后会进入这个方法,可以在这里进行连接重试
+                        log.error("【EMQ X服务连接已断开】----{}", ExceptionUtils.getStackTrace(cause));
+                    }
+
+                    @Override
+                    public void messageArrived(String topic, MqttMessage message) throws Exception {
+                        /**
+                         * scooter摩托车设备信息上报
+                         */
+                        EmqXThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+                            if (null != message.getPayload()) {
+                                scooterDataReported.insertScooterData(new String(message.getPayload()), topic);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void deliveryComplete(IMqttDeliveryToken token) {
+                        // 消息发送成功会进入这个方法
+//                        log.info("deliveryComplete---------" + token.isComplete());
+                    }
+                });
+
                 client.connect(options);
 
                 /**
-                 * EMQ X初始化连接时需要订阅平板端上报的主题Topic
+                 * 订阅消息主题
                  */
-                this.subscribe(new String[]{EmqXTopicConstant.SCOOTER_ECU_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_BBI_REPORTED_TOPIC,
-                        EmqXTopicConstant.SCOOTER_BMS_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_MCU_REPORTED_TOPIC,
-                        EmqXTopicConstant.SCOOTER_ALL_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_LOCK_REPORTED_TOPIC});
+                if (null != topics) {
+                    this.subscribe(topics);
+                }
+
             } catch (Exception e) {
                 log.error("【EMQ X服务连接失败】----{}", ExceptionUtils.getStackTrace(e));
             }
@@ -157,47 +187,6 @@ public class MqttClientUtil implements MqttCallback {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-
-    /**
-     * MqttCallback接口实现方法
-     */
-    @Override
-    public void connectionLost(Throwable cause) {
-        log.error("【EMQ X服务连接已断开】----{}", ExceptionUtils.getStackTrace(cause));
-
-        /**
-         * EMQ X断开重连逻辑,暂时不开启,可以用于客户端被挤下线重连等....
-         */
-//        try {
-//            log.info("【MQTT服务】---连接断开,正在重连....");
-//            MqttClientUtil.getClient().connect();
-//            log.info("【MQTT服务】---重连成功");
-//            // 重连后重新订阅主题
-//            MqttClientUtil.getClient().subscribe(new String[]{EmqXTopicConstant.SCOOTER_ECU_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_BBI_REPORTED_TOPIC,
-//                    EmqXTopicConstant.SCOOTER_BMS_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_MCU_REPORTED_TOPIC,
-//                    EmqXTopicConstant.SCOOTER_ALL_REPORTED_TOPIC, EmqXTopicConstant.SCOOTER_LOCK_REPORTED_TOPIC});
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
-        /**
-         * scooter摩托车设备信息上报
-         */
-        EmqXThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            if (null != message.getPayload()) {
-                scooterDataReported.insertScooterData(new String(message.getPayload()), topic);
-            }
-        });
-    }
-
-    @Override
-    public void deliveryComplete(IMqttDeliveryToken token) {
-//        log.info("deliveryComplete---------" + token.isComplete());
     }
 
 }

@@ -6,7 +6,7 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.service.scooter.base.BaseTest;
-import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
+import com.redescooter.ses.service.scooter.config.emqx.MqttConfig;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class EmqXTest extends BaseTest {
 
     @Resource
-    private MqttClientUtil mqttClientUtil;
+    private MqttConfig mqttConfig;
 
     /**
      * 车辆平板升级测试
@@ -34,7 +34,7 @@ public class EmqXTest extends BaseTest {
         tabletUpdatePublish.setDownloadLink("http://test.redescooter.net/download/scs_versionCode7_versionName1.0.6.apk");
         tabletUpdatePublish.setVersionCode("7");
 
-        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
+        mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, "OF894HSG4T9LHECY"),
                 JSONObject.toJSONString(tabletUpdatePublish));
     }
 
@@ -49,7 +49,7 @@ public class EmqXTest extends BaseTest {
         publish.setScooterModel(ScooterModelEnum.SCOOTER_E125.getType());
         publish.setSpecificDefGroupList(buildSpecificDefGroupData());
 
-        mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
+        mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, tabletSn),
                 JSONObject.toJSONString(publish));
     }
 
