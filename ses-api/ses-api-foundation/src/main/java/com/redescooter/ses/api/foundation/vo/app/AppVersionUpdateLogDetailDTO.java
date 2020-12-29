@@ -2,6 +2,7 @@ package com.redescooter.ses.api.foundation.vo.app;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @date 2020/12/27 17:12
  */
 @Data
-public class AppVersionUpdateLogDetailDTO {
+public class AppVersionUpdateLogDetailDTO implements Serializable {
 
     /**
      * 主键id
