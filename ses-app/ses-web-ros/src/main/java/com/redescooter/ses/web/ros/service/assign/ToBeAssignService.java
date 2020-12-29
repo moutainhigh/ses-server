@@ -11,6 +11,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 
 /**
  * @Description
@@ -48,5 +49,10 @@ public interface ToBeAssignService {
      * 填写完R.SN并点击提交
      */
     ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter);
+
+    /**
+     * 查询客户走到哪个节点并带出数据
+     */
+    ToBeAssignNodeResult getNode(IdEnter enter);
 
 }

@@ -26,22 +26,13 @@ public class ToBeAssignSubmitDetailEnter extends GeneralEnter implements Seriali
 
     private static final long serialVersionUID = -5727715491909213573L;
 
-    @ApiModelProperty(value = "型号id")
-    private Long specificatId;
+    @ApiModelProperty(value = "主键", required = true)
+    private Long id;
 
-    @ApiModelProperty(value = "型号名称")
-    private String specificatName;
-
-    @ApiModelProperty(value = "座位数")
-    private Integer seatNumber;
-
-    @ApiModelProperty(value = "车牌")
-    private String licensePlate;
-
-    @ApiModelProperty(value = "R.SN")
+    @ApiModelProperty(value = "R.SN", required = true)
     private String rsn;
 
-    @ApiModelProperty(value = "颜色id")
+    @ApiModelProperty(value = "颜色id", required = true)
     private Long colorId;
 
 }

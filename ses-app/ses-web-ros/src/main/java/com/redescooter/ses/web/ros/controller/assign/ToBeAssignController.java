@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,15 @@ public class ToBeAssignController {
     @PostMapping("/submit")
     public Response<ToBeAssignNextStopResult> submit(@ModelAttribute ToBeAssignSubmitEnter enter) {
         return new Response<>(toBeAssignService.submit(enter));
+    }
+
+    /**
+     * 查询客户走到哪个节点并带出数据
+     */
+    @ApiOperation(value = "查询客户走到哪个节点并带出数据", notes = "查询客户走到哪个节点并带出数据")
+    @PostMapping("/node")
+    public Response<ToBeAssignNodeResult> getNode(@ModelAttribute IdEnter enter) {
+        return new Response<>(toBeAssignService.getNode(enter));
     }
 
 }

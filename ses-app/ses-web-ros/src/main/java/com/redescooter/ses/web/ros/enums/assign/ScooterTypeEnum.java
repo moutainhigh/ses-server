@@ -7,16 +7,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum NodeEnum {
+public enum ScooterTypeEnum {
 
-    VIN_CODE(1),
+    // 目前只有R2A
+    R2A("R2A", "二轮摩托车");
 
-    BIND_LICENSE_PLATE(2),
+    // R3A("R3A", "三轮摩托车");
 
-    BIND_RSN(3),
+    private String code;
 
-    FINISH(4);
-
-    private Integer code;
+    private String msg;
 
 }

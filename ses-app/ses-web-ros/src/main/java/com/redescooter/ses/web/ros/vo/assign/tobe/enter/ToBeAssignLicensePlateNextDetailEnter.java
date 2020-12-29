@@ -26,16 +26,10 @@ public class ToBeAssignLicensePlateNextDetailEnter extends GeneralEnter implemen
 
     private static final long serialVersionUID = -9140542539812452340L;
 
-    @ApiModelProperty(value = "型号id")
-    private Long specificatId;
+    @ApiModelProperty(value = "主键", required = true)
+    private Long id;
 
-    @ApiModelProperty(value = "型号名称")
-    private String specificatName;
-
-    @ApiModelProperty(value = "座位数")
-    private Integer seatNumber;
-
-    @ApiModelProperty(value = "车牌")
+    @ApiModelProperty(value = "车牌", required = true)
     private String licensePlate;
 
 }

@@ -30,4 +30,7 @@ public class ToBeAssignLicensePlateNextEnter extends GeneralEnter implements Ser
     @ApiModelProperty(value = "车辆信息", required = true)
     private List<ToBeAssignLicensePlateNextDetailEnter> list;
 
+    @ApiModelProperty(value = "客户id", required = true)
+    private Long customerId;
+
 }

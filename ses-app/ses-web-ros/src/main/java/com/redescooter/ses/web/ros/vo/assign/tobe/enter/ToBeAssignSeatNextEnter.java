@@ -30,4 +30,7 @@ public class ToBeAssignSeatNextEnter extends GeneralEnter implements Serializabl
     @ApiModelProperty(value = "车辆信息", required = true)
     private List<ToBeAssignSeatNextDetailEnter> list;
 
+    @ApiModelProperty(value = "客户id", required = true)
+    private Long customerId;
+
 }

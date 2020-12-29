@@ -26,13 +26,13 @@ public class ToBeAssignSeatNextDetailEnter extends GeneralEnter implements Seria
 
     private static final long serialVersionUID = -6549302334363065918L;
 
-    @ApiModelProperty(value = "型号id")
+    @ApiModelProperty(value = "型号id", required = true)
     private Long specificatId;
 
-    @ApiModelProperty(value = "型号名称")
+    @ApiModelProperty(value = "型号名称", required = true)
     private String specificatName;
 
-    @ApiModelProperty(value = "座位数")
+    @ApiModelProperty(value = "座位数", required = true)
     private Integer seatNumber;
 
 }

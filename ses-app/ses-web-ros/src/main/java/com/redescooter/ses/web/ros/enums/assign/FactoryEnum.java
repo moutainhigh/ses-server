@@ -7,16 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum NodeEnum {
+public enum FactoryEnum {
 
-    VIN_CODE(1),
+    AOGE("1", "中国奥格");
 
-    BIND_LICENSE_PLATE(2),
+    private String code;
 
-    BIND_RSN(3),
-
-    FINISH(4);
-
-    private Integer code;
+    private String msg;
 
 }
