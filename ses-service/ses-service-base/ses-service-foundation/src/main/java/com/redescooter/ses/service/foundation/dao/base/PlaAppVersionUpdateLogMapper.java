@@ -7,13 +7,13 @@ import com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog;
  * @date 2020/12/27 18:15
  */
 public interface PlaAppVersionUpdateLogMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(PlaAppVersionUpdateLog record);
 
     int insertSelective(PlaAppVersionUpdateLog record);
 
-    PlaAppVersionUpdateLog selectByPrimaryKey(Integer id);
+    PlaAppVersionUpdateLog selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(PlaAppVersionUpdateLog record);
 

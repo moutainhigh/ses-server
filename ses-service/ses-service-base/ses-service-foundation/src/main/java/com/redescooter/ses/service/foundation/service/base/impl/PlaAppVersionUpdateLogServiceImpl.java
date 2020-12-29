@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.base.impl;
 
+import com.redescooter.ses.service.foundation.service.base.PlaAppVersionUpdateLogService;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersionUpdateLog;
