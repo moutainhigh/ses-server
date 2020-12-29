@@ -20,7 +20,7 @@ import com.redescooter.ses.api.mobile.c.service.RideStatCService;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.vo.emqx.*;
-import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
+import com.redescooter.ses.service.scooter.config.emqx.MqttConfig;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterNavigationMapper;
@@ -72,7 +72,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
     @Resource
-    private MqttClientUtil mqttClientUtil;
+    private MqttConfig mqttConfig;
     @Resource
     private IdAppService idAppService;
     @Resource
@@ -128,7 +128,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                      * Topic：scooter-[车辆平板序列号]/device-lock
                      */
                     ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-                        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_LOCK_TOPIC, scooterResult.getTabletSn()),
+                        mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SCOOTER_LOCK_TOPIC, scooterResult.getTabletSn()),
                                 JSONObject.toJSONString(publishDTO));
                     });
                 }
@@ -240,7 +240,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
              * 消息通知下发,通知平板端进行导航操作
              */
             ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-                mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_NAVIGATION_TOPIC, scooterResult.getTabletSn()),
+                mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SCOOTER_NAVIGATION_TOPIC, scooterResult.getTabletSn()),
                         JSONObject.toJSONString(navigationPublish));
             });
         }
@@ -292,7 +292,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             newTabletSns.forEach(sn -> {
                 tabletUpdatePublish.setTabletSn(sn);
-                mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
+                mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });
         });
@@ -305,7 +305,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          * 消息通知下发,通知平板端进行车型设置操作
          */
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()),
+            mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()),
                     JSONObject.toJSONString(publishDTO));
         });
 
@@ -318,7 +318,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          * 消息通知下发,将当前配送中、待配送的订单数量同步给车载平板
          */
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            mqttClientUtil.publish(String.format(EmqXTopicConstant.SYNC_ORDER_QUANTITY_TOPIC, publishDTO.getTabletSn()),
+            mqttConfig.getMqttPushClient().publish(String.format(EmqXTopicConstant.SYNC_ORDER_QUANTITY_TOPIC, publishDTO.getTabletSn()),
                     JSONObject.toJSONString(publishDTO));
         });
 
