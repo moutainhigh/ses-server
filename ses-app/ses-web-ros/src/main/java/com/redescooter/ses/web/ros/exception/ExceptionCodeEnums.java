@@ -500,7 +500,9 @@ public enum ExceptionCodeEnums {
 
     SEAT_NOT_EMPTY(10241, "座位数不能为空"),
 
-    LICENSE_PLATE_NOT_EMPTY(10242, "车牌不能为空")
+    LICENSE_PLATE_NOT_EMPTY(10242, "车牌不能为空"),
+
+    RSN_NOT_EMPTY(10243, "R.SN不能为空")
 
 
 

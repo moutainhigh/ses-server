@@ -37,6 +37,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNe
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult;
@@ -323,7 +324,54 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
-        return null;
+        if (CollectionUtils.isEmpty(enter.getList())) {
+            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
+        }
+        ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
+        List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
+        ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
+
+        ToBeAssignSubmitDetailEnter detailEnter = enter.getList().get(0);
+        Long id = detailEnter.getId();
+        String rsn = detailEnter.getRsn();
+        Long colorId = detailEnter.getColorId();
+
+        // 修改主表
+        OpeCarDistribute model = new OpeCarDistribute();
+        model.setId(id);
+        model.setRsn(rsn);
+        model.setColorId(colorId);
+        model.setUpdatedBy(enter.getUserId());
+        model.setUpdatedTime(new Date());
+        opeCarDistributeMapper.updateById(model);
+
+        // node表node字段+1,flag标识改为已分配完
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(NodeEnum.FINISH.getCode());
+        node.setFlag(FlagEnum.YES.getCode());
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        opeCarDistributeNodeMapper.update(node, nodeWrapper);
+
+        // 查询主表
+        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
+        scooter.setId(opeCarDistribute.getId());
+        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
+        scooter.setVinCode(opeCarDistribute.getVinCode());
+        scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
+        scooter.setRsn(opeCarDistribute.getRsn());
+        OpeColor color = opeColorMapper.selectById(opeCarDistribute.getColorId());
+        scooter.setColorName(color.getColorName());
+        scooter.setColorValue(color.getColorValue());
+
+        scooterList.add(scooter);
+        result.setList(scooterList);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**

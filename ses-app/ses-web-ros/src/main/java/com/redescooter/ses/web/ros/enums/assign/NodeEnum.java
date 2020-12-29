@@ -13,7 +13,9 @@ public enum NodeEnum {
 
     BIND_LICENSE_PLATE(2),
 
-    BIND_RSN(3);
+    BIND_RSN(3),
+
+    FINISH(4);
 
     private Integer code;
 
