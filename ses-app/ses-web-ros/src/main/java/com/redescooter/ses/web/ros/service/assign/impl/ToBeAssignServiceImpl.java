@@ -32,6 +32,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextDetailEnter;
@@ -263,8 +264,49 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完车牌点击下一步
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
-        return null;
+        if (CollectionUtils.isEmpty(enter.getList())) {
+            throw new SesWebRosException(ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getCode(), ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getMessage());
+        }
+        ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
+        List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
+        ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
+
+        ToBeAssignLicensePlateNextDetailEnter detailEnter = enter.getList().get(0);
+        String licensePlate = detailEnter.getLicensePlate();
+        Long id = detailEnter.getId();
+
+        // 修改主表
+        OpeCarDistribute model = new OpeCarDistribute();
+        model.setId(id);
+        model.setLicensePlate(licensePlate);
+        model.setUpdatedBy(enter.getUserId());
+        model.setUpdatedTime(new Date());
+        opeCarDistributeMapper.updateById(model);
+
+        // node表node字段+1
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(NodeEnum.BIND_RSN.getCode());
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        opeCarDistributeNodeMapper.update(node, nodeWrapper);
+
+        // 查询主表
+        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
+        scooter.setId(opeCarDistribute.getId());
+        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
+        scooter.setVinCode(opeCarDistribute.getVinCode());
+        scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
+
+        scooterList.add(scooter);
+        result.setList(scooterList);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**

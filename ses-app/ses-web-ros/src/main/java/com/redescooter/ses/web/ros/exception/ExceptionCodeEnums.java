@@ -498,7 +498,9 @@ public enum ExceptionCodeEnums {
 
     DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法"),
 
-    SEAT_NOT_EMPTY(10241, "座位数不能为空")
+    SEAT_NOT_EMPTY(10241, "座位数不能为空"),
+
+    LICENSE_PLATE_NOT_EMPTY(10242, "车牌不能为空")
 
 
 
