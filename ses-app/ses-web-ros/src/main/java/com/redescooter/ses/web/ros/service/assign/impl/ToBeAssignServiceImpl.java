@@ -45,6 +45,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailScooter
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -323,6 +324,51 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
         return null;
+    }
+
+    /**
+     * 查询客户走到哪个节点并带出数据
+     */
+    @Override
+    public ToBeAssignNodeResult getNode(IdEnter enter) {
+        ToBeAssignNodeResult result = new ToBeAssignNodeResult();
+        List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
+        ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
+
+        // 根据客户id查询node表
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getId());
+        List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
+        if (CollectionUtils.isEmpty(nodeList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        OpeCarDistributeNode opeCarDistributeNode = nodeList.get(0);
+        Integer node = opeCarDistributeNode.getNode();
+
+        // 查询已分配的数据
+        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getId());
+        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            OpeCarDistribute model = list.get(0);
+            scooter.setId(model.getId());
+            scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(model.getSpecificatTypeId()).getSpecificatName());
+            scooter.setSeatNumber(model.getSeatNumber());
+            scooter.setVinCode(model.getVinCode());
+            scooter.setLicensePlate(model.getLicensePlate());
+            scooter.setRsn(model.getRsn());
+            OpeColor color = opeColorMapper.selectById(model.getColorId());
+            scooter.setColorName(color.getColorName());
+            scooter.setColorValue(color.getColorValue());
+        }
+
+        scooterList.add(scooter);
+        result.setNode(node);
+        result.setList(scooterList);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
