@@ -33,4 +33,13 @@ public interface ScooterEcuMapper {
     */
     List<ScooterEcuDTO> batchGetScooterEcuByScooterId(@Param("scooterIds") List<Long> scooterIds);
 
+    /**
+     * 根据tabletSnList查询车辆仪表ECU数据
+     * @param tabletSnList
+     * @return java.util.List<com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO>
+     * @author assert
+     * @date 2020/12/27
+     */
+    List<ScooterEcuDTO> getScooterEcuByTabletSnList(@Param("tabletSnList") List<String> tabletSnList);
+
 }
