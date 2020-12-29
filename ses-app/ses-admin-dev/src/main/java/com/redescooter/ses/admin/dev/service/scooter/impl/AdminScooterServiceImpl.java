@@ -126,6 +126,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         admScooter.setColorName(color.getColorName());
         admScooter.setColorValue(color.getColorValue());
         admScooter.setGroupName(specificGroup.getGroupName());
+        admScooter.setScooterController(ScooterModelEnum.SCOOTER_E50.getType());
         admScooter.setCreatedBy(userId);
         admScooter.setCreatedTime(new Date());
         admScooter.setUpdatedBy(userId);
