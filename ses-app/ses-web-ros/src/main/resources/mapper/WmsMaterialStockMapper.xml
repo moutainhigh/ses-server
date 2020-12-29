@@ -2,5 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper">
 
+    <select id="partsCotalRows" resultType="int">
+        select count(*)
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="listCondition"></include>
+    </select>
 
+    <select id="materialPartsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult">
+       select
+         id,
+         parts_no,
+         cn_name,
+         en_name,
+         fr_name,
+         able_stock_qty,
+         used_stock_qty,
+         wait_in_stock_qty,
+         wait_out_stock_qty
+       from ope_wms_parts_stock
+       where dr = 0
+        <include refid="listCondition"></include>
+        order by able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="listCondition">
+        and stock_type = 1
+        <if test="enter.partsType != null">
+            and parts_type = #{enter.partsType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="materialStockPartsDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult">
+        select
+          id,
+          parts_no,
+          parts_type
+        from ope_wms_parts_stock
+        where dr = 0 and id = #{enter.id}
+    </select>
 </mapper>

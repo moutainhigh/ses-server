@@ -1,9 +1,8 @@
 package com.redescooter.ses.web.ros.dao.wms.cn.china;
 
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -44,5 +43,53 @@ public interface WmsFinishStockMapper {
      * @return
      */
     List<WmsStockRecordResult> inStockRecord(@Param("id")Long id);
+
+
+    /**
+     * 车辆库存的总统计数量
+     * @param stockType
+     * @return
+     */
+    WmsStockCountResult wmsScooterStockCount(@Param("stockType") Integer stockType);
+
+
+    /**
+     * 组装件库存的总统计数量
+     * @param stockType
+     * @return
+     */
+    WmsStockCountResult wmsCombinStockCount(@Param("stockType") Integer stockType);
+
+
+    /**
+     * 部件库存的总统计数量
+     * @param stockType
+     * @return
+     */
+    WmsStockCountResult wmsPartsStockCount(@Param("stockType") Integer stockType);
+
+
+    /**
+     * 成品库组装件list统计
+     * @param enter
+     * @return
+     */
+    int combinCotalRows(@Param("enter") CombinationListEnter enter);
+
+
+    /**
+     * 成品库组装件list
+     * @param enter
+     * @return
+     */
+    List<WmsFinishCombinListResult> finishCombinList(@Param("enter") CombinationListEnter enter);
+
+
+    /**
+     * 成品库组装件详情
+     * @param enter
+     * @return
+     */
+    WmsfinishCombinDetailResult finishCombinDetail(@Param("enter") IdEnter enter);
 
 }
