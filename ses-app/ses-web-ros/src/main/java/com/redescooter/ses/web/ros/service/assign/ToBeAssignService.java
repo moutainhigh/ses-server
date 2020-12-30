@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.service.assign;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
@@ -28,7 +28,7 @@ public interface ToBeAssignService {
     /**
      * 待分配列表点击分配带出数据
      */
-    ToBeAssignDetailResult getToBeAssignDetail(IdEnter enter);
+    ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter);
 
     /**
      * 填写完座位数点击下一步
@@ -53,6 +53,6 @@ public interface ToBeAssignService {
     /**
      * 查询客户走到哪个节点并带出数据
      */
-    ToBeAssignNodeResult getNode(IdEnter enter);
+    ToBeAssignNodeResult getNode(CustomerIdEnter enter);
 
 }

@@ -502,8 +502,13 @@ public enum ExceptionCodeEnums {
 
     LICENSE_PLATE_NOT_EMPTY(10242, "车牌不能为空"),
 
-    RSN_NOT_EMPTY(10243, "R.SN不能为空")
+    RSN_NOT_EMPTY(10243, "R.SN不能为空"),
 
+    SPECIFICAT_ID_NOT_EMPTY(10244, "型号id不能为空"),
+
+    COLOR_ID_NOT_EMPTY(10245, "颜色id不能为空"),
+
+    ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息")
 
 
     ;

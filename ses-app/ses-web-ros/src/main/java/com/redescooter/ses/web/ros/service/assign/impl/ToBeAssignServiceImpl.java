@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -28,10 +28,12 @@ import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.NodeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.YearEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -61,6 +63,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 车辆待分配ServiceImpl
@@ -116,7 +119,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 待分配列表点击分配带出数据
      */
     @Override
-    public ToBeAssignDetailResult getToBeAssignDetail(IdEnter enter) {
+    public ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter) {
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
         List<ToBeAssignDetailScooterInfoResult> scooterInfoList = Lists.newArrayList();
         ToBeAssignDetailScooterInfoResult scooterInfo = new ToBeAssignDetailScooterInfoResult();
@@ -124,7 +127,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询该客户在node表是否存在,如果不存在,添加一条数据
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
-        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getId());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
             OpeCarDistributeNode node = new OpeCarDistributeNode();
@@ -132,7 +135,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setDr(DelStatusEnum.VALID.getCode());
             node.setTenantId(enter.getTenantId());
             node.setUserId(enter.getUserId());
-            node.setCustomerId(enter.getId());
+            node.setCustomerId(enter.getCustomerId());
             node.setNode(NodeEnum.VIN_CODE.getCode());
             node.setFlag(FlagEnum.NOT.getCode());
             node.setCreatedBy(enter.getUserId());
@@ -141,7 +144,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
 
         // 客户信息
-        ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getId());
+        ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
         if (null == customerInfo) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -157,7 +160,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 得到询价单的产品id
         LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
-        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getId());
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -173,24 +176,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         if (null == opeSaleScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        // 得到型号id和颜色id
         Long specificatId = opeSaleScooter.getSpecificatId();
         Long colorId = opeSaleScooter.getColorId();
 
-        // 拿着specificatId去ope_specificat_type查询
-        OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(specificatId);
-        if (null == opeSpecificatType) {
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
-        }
-        String specificatName = opeSpecificatType.getSpecificatName();
+        // 拿着型号id去ope_specificat_type查询
+        String specificatName = getSpecificatNameById(specificatId);
         scooterInfo.setSpecificatId(specificatId);
         scooterInfo.setSpecificatName(specificatName);
 
-        // 拿着colorId去ope_color查询
-        if (null != colorId) {
-            OpeColor opeColor = opeColorMapper.selectById(colorId);
-            scooterInfo.setColorName(opeColor.getColorName());
-            scooterInfo.setColorValue(opeColor.getColorValue());
-        }
+        // 拿着颜色id去ope_color查询
+        Map<String, String> map = getColorNameAndValueById(colorId);
+        scooterInfo.setColorName(map.get("colorName"));
+        scooterInfo.setColorValue(map.get("colorValue"));
 
         scooterInfo.setTotalCount(customerInquiry.getScooterQuantity());
         scooterInfo.setToBeAssignCount(customerInquiry.getScooterQuantity());
@@ -252,7 +250,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
 
@@ -276,8 +274,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
         ToBeAssignLicensePlateNextDetailEnter detailEnter = enter.getList().get(0);
-        String licensePlate = detailEnter.getLicensePlate();
         Long id = detailEnter.getId();
+        String licensePlate = detailEnter.getLicensePlate();
 
         // 修改主表
         OpeCarDistribute model = new OpeCarDistribute();
@@ -300,7 +298,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
         scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
@@ -323,6 +321,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完R.SN并点击提交
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
         if (CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
@@ -335,6 +334,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Long id = detailEnter.getId();
         String rsn = detailEnter.getRsn();
         Long colorId = detailEnter.getColorId();
+
+        // 此处调仓库管理接口,进行三层校验
+
 
         // 修改主表
         OpeCarDistribute model = new OpeCarDistribute();
@@ -359,14 +361,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
         scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
         scooter.setRsn(opeCarDistribute.getRsn());
-        OpeColor color = opeColorMapper.selectById(opeCarDistribute.getColorId());
-        scooter.setColorName(color.getColorName());
-        scooter.setColorValue(color.getColorValue());
+        Map<String, String> map = getColorNameAndValueById(opeCarDistribute.getColorId());
+        scooter.setColorName(map.get("colorName"));
+        scooter.setColorValue(map.get("colorValue"));
 
         scooterList.add(scooter);
         result.setList(scooterList);
@@ -378,7 +380,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 查询客户走到哪个节点并带出数据
      */
     @Override
-    public ToBeAssignNodeResult getNode(IdEnter enter) {
+    public ToBeAssignNodeResult getNode(CustomerIdEnter enter) {
         ToBeAssignNodeResult result = new ToBeAssignNodeResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
@@ -386,7 +388,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 根据客户id查询node表
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
-        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getId());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -397,19 +399,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询已分配的数据
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getId());
+        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             OpeCarDistribute model = list.get(0);
             scooter.setId(model.getId());
-            scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(model.getSpecificatTypeId()).getSpecificatName());
+            scooter.setSpecificatName(getSpecificatNameById(model.getSpecificatTypeId()));
             scooter.setSeatNumber(model.getSeatNumber());
             scooter.setVinCode(model.getVinCode());
             scooter.setLicensePlate(model.getLicensePlate());
             scooter.setRsn(model.getRsn());
-            OpeColor color = opeColorMapper.selectById(model.getColorId());
-            scooter.setColorName(color.getColorName());
-            scooter.setColorValue(color.getColorValue());
+            Map<String, String> map = getColorNameAndValueById(model.getColorId());
+            scooter.setColorName(map.get("colorName"));
+            scooter.setColorValue(map.get("colorValue"));
         }
 
         scooterList.add(scooter);
@@ -417,6 +419,46 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         result.setList(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
+    }
+
+    /**
+     * 根据型号id获取型号名称
+     */
+    public String getSpecificatNameById(Long specificatId) {
+        if (null == specificatId) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
+        }
+        OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
+        if (null != specificatType) {
+            String name = specificatType.getSpecificatName();
+            if (StringUtils.isNotBlank(name)) {
+                return name;
+            }
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+    }
+
+    /**
+     * 根据颜色id获取颜色名称和色值
+     */
+    public Map<String, String> getColorNameAndValueById(Long colorId) {
+        if (null == colorId) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
+        }
+        Map<String, String> map = Maps.newHashMapWithExpectedSize(2);
+        OpeColor color = opeColorMapper.selectById(colorId);
+        if (null != color) {
+            String colorName = color.getColorName();
+            String colorValue = color.getColorValue();
+            if (StringUtils.isNotBlank(colorName)) {
+                map.put("colorName", colorName);
+            }
+            if (StringUtils.isNotBlank(colorValue)) {
+                map.put("colorValue", colorValue);
+            }
+            return map;
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
     }
 
     /**
@@ -452,7 +494,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 年份字母和工厂编号
         Calendar cal = Calendar.getInstance();
         String year = String.valueOf(cal.get(Calendar.YEAR));
-        result.append(year);
+        String value = YearEnum.showValue(year);
+        result.append(value);
         result.append(FactoryEnum.AOGE.getCode());
 
         // 6位数递增序列号
@@ -460,7 +503,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
-            // 得到自增编号,从第2位开始截取
+            // 得到自增编号,从倒数第6位开始截取
             for (OpeCarDistribute o : list) {
                 String vinCode = o.getVinCode();
                 String sub = vinCode.substring(vinCode.length() - 6);

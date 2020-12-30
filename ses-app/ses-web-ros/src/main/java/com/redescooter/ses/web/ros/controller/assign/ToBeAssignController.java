@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.controller.assign;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
@@ -51,7 +51,7 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "待分配列表点击分配带出数据", notes = "待分配列表点击分配带出数据")
     @PostMapping("/info")
-    public Response<ToBeAssignDetailResult> getToBeAssignDetail(@ModelAttribute IdEnter enter) {
+    public Response<ToBeAssignDetailResult> getToBeAssignDetail(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(toBeAssignService.getToBeAssignDetail(enter));
     }
 
@@ -96,7 +96,7 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "查询客户走到哪个节点并带出数据", notes = "查询客户走到哪个节点并带出数据")
     @PostMapping("/node")
-    public Response<ToBeAssignNodeResult> getNode(@ModelAttribute IdEnter enter) {
+    public Response<ToBeAssignNodeResult> getNode(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(toBeAssignService.getNode(enter));
     }
 

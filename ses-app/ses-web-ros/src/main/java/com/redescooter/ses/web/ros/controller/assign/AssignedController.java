@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.service.assign.AssignedService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class AssignedController {
      */
     @ApiOperation(value = "已分配列表查看详情", notes = "已分配列表查看详情")
     @PostMapping("/detail")
-    public Response<AssignedDetailResult> getAssignedDetail(@ModelAttribute IdEnter enter) {
+    public Response<AssignedDetailResult> getAssignedDetail(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(assignedService.getAssignedDetail(enter));
     }
 
