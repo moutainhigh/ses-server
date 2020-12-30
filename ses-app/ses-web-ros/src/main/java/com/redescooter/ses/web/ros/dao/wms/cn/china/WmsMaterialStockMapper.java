@@ -38,4 +38,12 @@ public interface WmsMaterialStockMapper {
      */
     MaterialpartsStockDetailResult materialStockPartsDetail(@Param("id") Long id);
 
+
+    /**
+     * 原料库今日入库数据
+     * @param date
+     * @return
+     */
+    Integer materialTodayStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
+
 }

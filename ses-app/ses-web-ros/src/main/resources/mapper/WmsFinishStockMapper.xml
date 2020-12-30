@@ -58,7 +58,7 @@
           staff.full_name as createdName
         from ope_wms_stock_record record
         left join ope_sys_staff staff on staff.id = record.created_by
-        where record.relation_id = #{id} and record.dr = 0
+        where record.relation_id = #{id} and record.dr = 0 and record_type = 1
     </select>
 
     <select id="wmsScooterStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
@@ -134,5 +134,11 @@
           en_name
         from ope_wms_combin_stock
         where dr = 0 and id = #{id}
+    </select>
+
+    <select id="finishTodayStackCount" resultType="java.lang.Integer">
+        select sum(in_wh_qty) from ope_wms_stock_record
+        where dr = 0 and record_type = #{recordType} and relation_type in (1,2)
+              and created_time like like concat('%',#{date},'%')
     </select>
 </mapper>

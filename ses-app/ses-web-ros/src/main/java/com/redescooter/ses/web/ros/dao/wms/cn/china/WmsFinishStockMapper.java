@@ -87,9 +87,17 @@ public interface WmsFinishStockMapper {
 
     /**
      * 成品库组装件详情
-     * @param enter
+     * @param id
      * @return
      */
     WmsfinishCombinDetailResult finishCombinDetail(@Param("id") Long id);
+
+
+    /**
+     * 成品库今日入库数量
+     * @param date yyyy-mm-dd
+     * @return
+     */
+    Integer finishTodayStackCount(@Param("date")String date,@Param("recordType") Integer recordType);
 
 }

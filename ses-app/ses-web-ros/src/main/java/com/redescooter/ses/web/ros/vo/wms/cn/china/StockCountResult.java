@@ -23,7 +23,7 @@ public class StockCountResult extends GeneralResult {
     private Integer scooterNum = 0;
 
     @ApiModelProperty("组装件数量")
-    private Integer combingNum = 0;
+    private Integer combinNum = 0;
 
     @ApiModelProperty("部件数量")
     private Integer partsNum = 0;

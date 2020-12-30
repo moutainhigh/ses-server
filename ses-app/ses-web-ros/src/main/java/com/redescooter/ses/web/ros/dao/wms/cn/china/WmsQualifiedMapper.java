@@ -83,4 +83,12 @@ public interface WmsQualifiedMapper {
      * @return
      */
     MaterialpartsStockDetailResult partsDetail(@Param("id")Long id);
+
+
+    /**
+     * 不合格品库今日入库数据
+     * @param date
+     * @return
+     */
+    Integer qualifiedTodayStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
 }
