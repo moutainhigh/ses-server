@@ -108,7 +108,7 @@
           used_stock_qty,
           wait_in_stock_qty,
           wait_out_stock_qty
-        from from ope_wms_combin_stock
+        from ope_wms_combin_stock
         where dr = 0
         <include refid="combinListCondition"></include>
         order by able_stock_qty
@@ -133,6 +133,6 @@
           cn_name,
           en_name
         from ope_wms_combin_stock
-        where dr = 0 and id = #{enter.id}
+        where dr = 0 and id = #{id}
     </select>
 </mapper>

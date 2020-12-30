@@ -5,16 +5,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @description:
  * @author: Aleks
- * @create: 2020/12/29 18:46
+ * @create: 2020/12/30 12:00
  */
 @Data
-@ApiModel("原料库部件详情出参")
-public class MaterialpartsStockDetailResult extends GeneralResult {
+@ApiModel("不合格品库部件列表出参")
+public class WmsQualifiedPartsListResult extends GeneralResult {
 
     @ApiModelProperty("id")
     private Long id;
@@ -31,7 +29,11 @@ public class MaterialpartsStockDetailResult extends GeneralResult {
     @ApiModelProperty("中文名字")
     private String cnName;
 
-    @ApiModelProperty("入库记录")
-    private List<WmsStockRecordResult> recordList;
+    @ApiModelProperty("可用库存数量")
+    private Integer ableStockQty;
+
+    @ApiModelProperty("已用库存数量")
+    private Integer qty;
+
 
 }

@@ -90,6 +90,6 @@ public interface WmsFinishStockMapper {
      * @param enter
      * @return
      */
-    WmsfinishCombinDetailResult finishCombinDetail(@Param("enter") IdEnter enter);
+    WmsfinishCombinDetailResult finishCombinDetail(@Param("id") Long id);
 
 }

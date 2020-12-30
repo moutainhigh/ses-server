@@ -161,7 +161,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         if (combinStock == null){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
-        WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter);
+        WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
         result.setRecordList(record);

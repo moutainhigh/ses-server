@@ -33,9 +33,9 @@ public interface WmsMaterialStockMapper {
 
     /**
      * 原料库部件库存详情
-     * @param enter
+     * @param id
      * @return
      */
-    MaterialpartsStockDetailResult materialStockPartsDetail(@Param("enter") IdEnter enter);
+    MaterialpartsStockDetailResult materialStockPartsDetail(@Param("id") Long id);
 
 }

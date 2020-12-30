@@ -45,8 +45,10 @@
         select
           id,
           parts_no,
-          parts_type
+          parts_type,
+          en_name,
+          cn_name
         from ope_wms_parts_stock
-        where dr = 0 and id = #{enter.id}
+        where dr = 0 and id = #{id}
     </select>
 </mapper>

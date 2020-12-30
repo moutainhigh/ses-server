@@ -52,7 +52,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
         if (partsStock == null){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
-        MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter);
+        MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
         result.setRecordList(record);
