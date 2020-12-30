@@ -136,6 +136,6 @@
     <select id="qualifiedTodayStockCount" resultType="java.lang.Integer">
         select sum(in_wh_qty) from ope_wms_stock_record
         where dr = 0 and record_type = #{recordType} and relation_type in (4,5,6)
-           and created_time like like concat('%',#{date},'%')
+           and created_time like concat('%',#{date},'%')
     </select>
 </mapper>
