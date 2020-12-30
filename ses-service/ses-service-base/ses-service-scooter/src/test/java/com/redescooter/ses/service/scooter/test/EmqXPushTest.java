@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.scooter.test;
 
 import com.redescooter.ses.service.scooter.base.BaseTest;
-import com.redescooter.ses.service.scooter.config.emqx.MqttConfig;
+import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -14,11 +14,11 @@ import javax.annotation.Resource;
 public class EmqXPushTest extends BaseTest {
 
     @Resource
-    private MqttConfig mqttConfig;
+    private MqttClientUtil mqttClientUtil;
 
     @Test
     public void messagePushTest() {
-        mqttConfig.getMqttPushClient().publish("scooter-update", "{\"msg\":\"这是一条推送消息\"}");
+        mqttClientUtil.publish("scooter-update", "{\"msg\":\"这是一条推送消息\"}");
     }
 
 }
