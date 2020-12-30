@@ -174,19 +174,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         if (null == opeSaleScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
+        // 得到型号id和颜色id
         Long specificatId = opeSaleScooter.getSpecificatId();
         Long colorId = opeSaleScooter.getColorId();
 
-        // 拿着specificatId去ope_specificat_type查询
-        OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(specificatId);
-        if (null == opeSpecificatType) {
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
-        }
-        String specificatName = opeSpecificatType.getSpecificatName();
+        // 拿着型号id去ope_specificat_type查询
+        String specificatName = getSpecificatNameById(specificatId);
         scooterInfo.setSpecificatId(specificatId);
         scooterInfo.setSpecificatName(specificatName);
 
-        // 拿着colorId去ope_color查询
+        // 拿着颜色id去ope_color查询
         if (null != colorId) {
             OpeColor opeColor = opeColorMapper.selectById(colorId);
             scooterInfo.setColorName(opeColor.getColorName());
@@ -253,7 +250,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
 
@@ -277,8 +274,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
         ToBeAssignLicensePlateNextDetailEnter detailEnter = enter.getList().get(0);
-        String licensePlate = detailEnter.getLicensePlate();
         Long id = detailEnter.getId();
+        String licensePlate = detailEnter.getLicensePlate();
 
         // 修改主表
         OpeCarDistribute model = new OpeCarDistribute();
@@ -301,7 +298,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
         scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
@@ -360,7 +357,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询主表
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
         scooter.setId(opeCarDistribute.getId());
-        scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(opeCarDistribute.getSpecificatTypeId()).getSpecificatName());
+        scooter.setSpecificatName(getSpecificatNameById(opeCarDistribute.getSpecificatTypeId()));
         scooter.setSeatNumber(opeCarDistribute.getSeatNumber());
         scooter.setVinCode(opeCarDistribute.getVinCode());
         scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
@@ -403,7 +400,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         if (CollectionUtils.isNotEmpty(list)) {
             OpeCarDistribute model = list.get(0);
             scooter.setId(model.getId());
-            scooter.setSpecificatName(opeSpecificatTypeMapper.selectById(model.getSpecificatTypeId()).getSpecificatName());
+            scooter.setSpecificatName(getSpecificatNameById(model.getSpecificatTypeId()));
             scooter.setSeatNumber(model.getSeatNumber());
             scooter.setVinCode(model.getVinCode());
             scooter.setLicensePlate(model.getLicensePlate());
@@ -418,6 +415,23 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         result.setList(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
+    }
+
+    /**
+     * 根据型号id获取型号名称
+     */
+    public String getSpecificatNameById(Long specificatId) {
+        if (null == specificatId) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
+        }
+        OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
+        if (null != specificatType) {
+            String name = specificatType.getSpecificatName();
+            if (StringUtils.isNotBlank(name)) {
+                return name;
+            }
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
     }
 
     /**
