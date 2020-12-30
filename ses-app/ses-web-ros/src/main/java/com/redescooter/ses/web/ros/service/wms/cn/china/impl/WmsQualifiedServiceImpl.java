@@ -61,7 +61,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public WmsfinishScooterDetailResult scooterDetail(IdEnter enter) {
         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getById(enter.getId());
-        if (scooterStock == null){
+        if (scooterStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishScooterDetailResult result = wmsQualifiedMapper.scooterDetail(enter.getId());
@@ -87,7 +87,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public WmsfinishCombinDetailResult combinDetail(IdEnter enter) {
         OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getById(enter.getId());
-        if (combinStock == null){
+        if (combinStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsQualifiedMapper.combinDetail(enter.getId());
@@ -113,7 +113,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public MaterialpartsStockDetailResult partsDetail(IdEnter enter) {
         OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getById(enter.getId());
-        if (partsStock == null){
+        if (partsStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         MaterialpartsStockDetailResult result = wmsQualifiedMapper.partsDetail(enter.getId());
@@ -131,30 +131,24 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
             case 1:
                 // cscooter
                 QueryWrapper<OpeWmsQualifiedScooterStock> scooter = new QueryWrapper<>();
-                scooter.select("sum(qty) as qty");
+                scooter.select("IFNULL(sum(qty),0) AS qty");
                 OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooter);
-                if (scooterStock != null){
-                    qty = scooterStock.getQty();
-                }
+                qty = scooterStock.getQty();
             default:
                 break;
             case 2:
                 // combin
                 QueryWrapper<OpeWmsQualifiedCombinStock> combin = new QueryWrapper<>();
-                combin.select("sum(qty) as qty");
+                combin.select("IFNULL(sum(qty),0) AS qty");
                 OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getOne(combin);
-                if (combinStock != null){
-                    qty = combinStock.getQty();
-                }
+                qty = combinStock.getQty();
                 break;
             case 3:
                 // parts
                 QueryWrapper<OpeWmsQualifiedPartsStock> parts = new QueryWrapper<>();
-                parts.select("sum(qty) as qty");
+                parts.select("IFNULL(sum(qty),0) AS qty");
                 OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getOne(parts);
-                if (partsStock != null){
-                    qty = partsStock.getQty();
-                }
+                qty = partsStock.getQty();
                 break;
         }
         result.setQty(qty);
