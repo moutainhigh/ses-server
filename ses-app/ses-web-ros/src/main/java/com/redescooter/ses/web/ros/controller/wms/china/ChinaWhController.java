@@ -33,14 +33,14 @@ public class ChinaWhController {
     @PostMapping(value = "/inOrOutCount")
     @ApiOperation(value = "出入库统计", response = ChinaInOrOutCountResult.class)
     public Response<List<ChinaInOrOutCountResult>> inOrOutCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response();
+        return new Response<>(chinaWhService.inOrOutCount(enter));
     }
 
 
     @PostMapping(value = "/stockCount")
     @ApiOperation(value = "库存统计", response = StockCountResult.class)
     public Response<List<StockCountResult>> stockCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response();
+        return new Response<>(chinaWhService.stockCount(enter));
     }
 
 

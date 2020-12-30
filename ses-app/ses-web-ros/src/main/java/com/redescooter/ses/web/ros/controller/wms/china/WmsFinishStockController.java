@@ -24,7 +24,7 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/wms/stock")
-public class WmsStockController {
+public class WmsFinishStockController {
 
     @Autowired
     private WmsFinishStockService wmsFinishStockService;
