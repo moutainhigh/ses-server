@@ -1,6 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -120,6 +120,44 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
         result.setRecordList(record);
+        return result;
+    }
+
+    @Override
+    public WmsQualifiedQtyCountResult quailifiedQtyCount(WmsQualifiedQtyCountEnter enter) {
+        WmsQualifiedQtyCountResult result = new WmsQualifiedQtyCountResult();
+        Integer qty = 0;
+        switch (enter.getClassType()) {
+            case 1:
+                // cscooter
+                QueryWrapper<OpeWmsQualifiedScooterStock> scooter = new QueryWrapper<>();
+                scooter.select("sum(qty) as qty");
+                OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooter);
+                if (scooterStock != null){
+                    qty = scooterStock.getQty();
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeWmsQualifiedCombinStock> combin = new QueryWrapper<>();
+                combin.select("sum(qty) as qty");
+                OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getOne(combin);
+                if (combinStock != null){
+                    qty = combinStock.getQty();
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeWmsQualifiedPartsStock> parts = new QueryWrapper<>();
+                parts.select("sum(qty) as qty");
+                OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getOne(parts);
+                if (partsStock != null){
+                    qty = partsStock.getQty();
+                }
+                break;
+        }
+        result.setQty(qty);
         return result;
     }
 }

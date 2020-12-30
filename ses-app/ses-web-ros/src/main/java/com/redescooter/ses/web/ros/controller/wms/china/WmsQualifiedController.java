@@ -69,4 +69,11 @@ public class WmsQualifiedController {
     public Response<MaterialpartsStockDetailResult> partsDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(wmsQualifiedService.partsDetail(enter));
     }
+
+
+    @PostMapping(value = "/quailifiedQtyCount")
+    @ApiOperation(value = "不合格品库库存统计", response = MaterialpartsStockDetailResult.class)
+    public Response<WmsQualifiedQtyCountResult> quailifiedQtyCount(@ModelAttribute @ApiParam("请求参数") WmsQualifiedQtyCountEnter enter) {
+        return new Response<>(wmsQualifiedService.quailifiedQtyCount(enter));
+    }
 }

@@ -4,8 +4,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * @description:
@@ -60,4 +58,12 @@ public interface WmsQualifiedService {
      * @return
      */
     MaterialpartsStockDetailResult partsDetail(IdEnter enter);
+
+
+    /**
+     *  不合格品库库存统计
+     * @param enter
+     * @return
+     */
+    WmsQualifiedQtyCountResult quailifiedQtyCount(WmsQualifiedQtyCountEnter enter);
 }
