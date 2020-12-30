@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.dao.wms.cn.china;
 
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
