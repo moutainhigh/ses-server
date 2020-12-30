@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -34,6 +33,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -119,7 +119,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 待分配列表点击分配带出数据
      */
     @Override
-    public ToBeAssignDetailResult getToBeAssignDetail(IdEnter enter) {
+    public ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter) {
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
         List<ToBeAssignDetailScooterInfoResult> scooterInfoList = Lists.newArrayList();
         ToBeAssignDetailScooterInfoResult scooterInfo = new ToBeAssignDetailScooterInfoResult();
@@ -127,7 +127,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询该客户在node表是否存在,如果不存在,添加一条数据
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
-        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getId());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
             OpeCarDistributeNode node = new OpeCarDistributeNode();
@@ -135,7 +135,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setDr(DelStatusEnum.VALID.getCode());
             node.setTenantId(enter.getTenantId());
             node.setUserId(enter.getUserId());
-            node.setCustomerId(enter.getId());
+            node.setCustomerId(enter.getCustomerId());
             node.setNode(NodeEnum.VIN_CODE.getCode());
             node.setFlag(FlagEnum.NOT.getCode());
             node.setCreatedBy(enter.getUserId());
@@ -144,7 +144,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
 
         // 客户信息
-        ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getId());
+        ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
         if (null == customerInfo) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -160,7 +160,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 得到询价单的产品id
         LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
-        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getId());
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -321,6 +321,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完R.SN并点击提交
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
         if (CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
@@ -333,6 +334,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Long id = detailEnter.getId();
         String rsn = detailEnter.getRsn();
         Long colorId = detailEnter.getColorId();
+
+        // 此处调仓库管理接口,进行三层校验
+
 
         // 修改主表
         OpeCarDistribute model = new OpeCarDistribute();
@@ -376,7 +380,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 查询客户走到哪个节点并带出数据
      */
     @Override
-    public ToBeAssignNodeResult getNode(IdEnter enter) {
+    public ToBeAssignNodeResult getNode(CustomerIdEnter enter) {
         ToBeAssignNodeResult result = new ToBeAssignNodeResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
@@ -384,7 +388,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 根据客户id查询node表
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
-        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getId());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -395,7 +399,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 查询已分配的数据
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getId());
+        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             OpeCarDistribute model = list.get(0);

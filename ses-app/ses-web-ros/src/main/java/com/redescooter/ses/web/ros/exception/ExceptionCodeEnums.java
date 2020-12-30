@@ -506,7 +506,9 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_ID_NOT_EMPTY(10244, "型号id不能为空"),
 
-    COLOR_ID_NOT_EMPTY(10245, "颜色id不能为空")
+    COLOR_ID_NOT_EMPTY(10245, "颜色id不能为空"),
+
+    ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息")
 
 
     ;
