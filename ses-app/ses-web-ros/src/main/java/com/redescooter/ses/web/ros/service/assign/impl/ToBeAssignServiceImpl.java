@@ -121,8 +121,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     public ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter) {
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
-        List<ToBeAssignDetailScooterInfoResult> scooterInfoList = Lists.newArrayList();
-        ToBeAssignDetailScooterInfoResult scooterInfo = new ToBeAssignDetailScooterInfoResult();
+        List<ToBeAssignDetailScooterInfoResult> scooterList = Lists.newArrayList();
+        ToBeAssignDetailScooterInfoResult scooter = new ToBeAssignDetailScooterInfoResult();
 
         // 查询该客户在node表是否存在,如果不存在,添加一条数据
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
@@ -161,6 +161,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+        opeCustomerInquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -171,7 +172,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
-        // 拿着productId去ope_sale_scooter查询
+        // 拿着产品id去ope_sale_scooter查询
         OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
         if (null == opeSaleScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
@@ -182,21 +183,21 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 拿着型号id去ope_specificat_type查询
         String specificatName = getSpecificatNameById(specificatId);
-        scooterInfo.setSpecificatId(specificatId);
-        scooterInfo.setSpecificatName(specificatName);
+        scooter.setSpecificatId(specificatId);
+        scooter.setSpecificatName(specificatName);
 
         // 拿着颜色id去ope_color查询
         Map<String, String> map = getColorNameAndValueById(colorId);
-        scooterInfo.setColorName(map.get("colorName"));
-        scooterInfo.setColorValue(map.get("colorValue"));
+        scooter.setColorName(map.get("colorName"));
+        scooter.setColorValue(map.get("colorValue"));
 
-        scooterInfo.setTotalCount(customerInquiry.getScooterQuantity());
-        scooterInfo.setToBeAssignCount(customerInquiry.getScooterQuantity());
-        scooterInfo.setRequestId(enter.getRequestId());
-        scooterInfoList.add(scooterInfo);
+        scooter.setTotalCount(customerInquiry.getScooterQuantity());
+        scooter.setToBeAssignCount(customerInquiry.getScooterQuantity());
+        scooter.setRequestId(enter.getRequestId());
+        scooterList.add(scooter);
 
         result.setCustomerInfo(customerInfo);
-        result.setScooterInfo(scooterInfoList);
+        result.setScooterInfo(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
     }
@@ -207,7 +208,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getSeatNext(ToBeAssignSeatNextEnter enter) {
-        if (CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.SEAT_NOT_EMPTY.getCode(), ExceptionCodeEnums.SEAT_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
@@ -219,7 +220,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         String specificatName = detailEnter.getSpecificatName();
         Integer seatNumber = detailEnter.getSeatNumber();
 
-        // 生成VIN Code
+        // 生成VIN Code,只需车型名称和座位数量这两个变量
         String vinCode = generateVINCode(specificatName, seatNumber);
 
         // 新增主表
@@ -266,7 +267,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
-        if (CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getCode(), ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
@@ -323,7 +324,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
-        if (CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
@@ -389,6 +390,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        nodeWrapper.orderByDesc(OpeCarDistributeNode::getCreatedTime);
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
@@ -400,6 +402,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        wrapper.orderByDesc(OpeCarDistribute::getCreatedTime);
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             OpeCarDistribute model = list.get(0);
@@ -467,14 +470,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     public String generateRangeRandom() {
         String[] array = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "X"};
         int index = (int) (Math.random() * array.length);
-        String random = array[index];
-        return random;
+        return array[index];
     }
 
     /**
      * 生成VIN Code
      */
-    public String generateVINCode(String productName, Integer seatNumber) {
+    public String generateVINCode(String specificatName, Integer seatNumber) {
         String msg = "VXS";
         StringBuffer result = new StringBuffer();
 
@@ -483,7 +485,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         result.append(ScooterTypeEnum.R2A.getCode());
 
         // 车型编号和座位数量
-        String productType = ProductTypeEnum.showCode(productName);
+        String productType = ProductTypeEnum.showCode(specificatName);
         result.append(productType);
         result.append(seatNumber);
 
