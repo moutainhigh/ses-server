@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.NodeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.YearEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -452,7 +453,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 年份字母和工厂编号
         Calendar cal = Calendar.getInstance();
         String year = String.valueOf(cal.get(Calendar.YEAR));
-        result.append(year);
+        String value = YearEnum.showValue(year);
+        result.append(value);
         result.append(FactoryEnum.AOGE.getCode());
 
         // 6位数递增序列号
@@ -460,7 +462,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
-            // 得到自增编号,从第2位开始截取
+            // 得到自增编号,从倒数第6位开始截取
             for (OpeCarDistribute o : list) {
                 String vinCode = o.getVinCode();
                 String sub = vinCode.substring(vinCode.length() - 6);
