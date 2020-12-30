@@ -72,8 +72,8 @@ public class AssignedServiceImpl implements AssignedService {
     @Override
     public AssignedDetailResult getAssignedDetail(CustomerIdEnter enter) {
         AssignedDetailResult result = new AssignedDetailResult();
-        List<ToBeAssignNextStopDetailResult> scooterInfoList = Lists.newArrayList();
-        ToBeAssignNextStopDetailResult scooterInfo = new ToBeAssignNextStopDetailResult();
+        List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
+        ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
@@ -93,24 +93,25 @@ public class AssignedServiceImpl implements AssignedService {
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        wrapper.orderByDesc(OpeCarDistribute::getCreatedTime);
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_INFO_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSIGN_INFO_NOT_EXIST.getMessage());
         }
         OpeCarDistribute carDistribute = list.get(0);
-        scooterInfo.setId(carDistribute.getId());
-        scooterInfo.setSpecificatName(toBeAssignServiceImpl.getSpecificatNameById(carDistribute.getSpecificatTypeId()));
-        scooterInfo.setSeatNumber(carDistribute.getSeatNumber());
-        scooterInfo.setVinCode(carDistribute.getVinCode());
-        scooterInfo.setLicensePlate(carDistribute.getLicensePlate());
-        scooterInfo.setRsn(carDistribute.getRsn());
+        scooter.setId(carDistribute.getId());
+        scooter.setSpecificatName(toBeAssignServiceImpl.getSpecificatNameById(carDistribute.getSpecificatTypeId()));
+        scooter.setSeatNumber(carDistribute.getSeatNumber());
+        scooter.setVinCode(carDistribute.getVinCode());
+        scooter.setLicensePlate(carDistribute.getLicensePlate());
+        scooter.setRsn(carDistribute.getRsn());
         Map<String, String> map = toBeAssignServiceImpl.getColorNameAndValueById(carDistribute.getColorId());
-        scooterInfo.setColorName(map.get("colorName"));
-        scooterInfo.setColorValue(map.get("colorValue"));
+        scooter.setColorName(map.get("colorName"));
+        scooter.setColorValue(map.get("colorValue"));
 
-        scooterInfoList.add(scooterInfo);
+        scooterList.add(scooter);
         result.setCustomerInfo(customerInfo);
-        result.setScooterInfo(scooterInfoList);
+        result.setScooterInfo(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
     }
