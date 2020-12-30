@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -62,6 +63,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 车辆待分配ServiceImpl
@@ -184,11 +186,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         scooterInfo.setSpecificatName(specificatName);
 
         // 拿着颜色id去ope_color查询
-        if (null != colorId) {
-            OpeColor opeColor = opeColorMapper.selectById(colorId);
-            scooterInfo.setColorName(opeColor.getColorName());
-            scooterInfo.setColorValue(opeColor.getColorValue());
-        }
+        Map<String, String> map = getColorNameAndValueById(colorId);
+        scooterInfo.setColorName(map.get("colorName"));
+        scooterInfo.setColorValue(map.get("colorValue"));
 
         scooterInfo.setTotalCount(customerInquiry.getScooterQuantity());
         scooterInfo.setToBeAssignCount(customerInquiry.getScooterQuantity());
@@ -362,9 +362,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         scooter.setVinCode(opeCarDistribute.getVinCode());
         scooter.setLicensePlate(opeCarDistribute.getLicensePlate());
         scooter.setRsn(opeCarDistribute.getRsn());
-        OpeColor color = opeColorMapper.selectById(opeCarDistribute.getColorId());
-        scooter.setColorName(color.getColorName());
-        scooter.setColorValue(color.getColorValue());
+        Map<String, String> map = getColorNameAndValueById(opeCarDistribute.getColorId());
+        scooter.setColorName(map.get("colorName"));
+        scooter.setColorValue(map.get("colorValue"));
 
         scooterList.add(scooter);
         result.setList(scooterList);
@@ -405,9 +405,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             scooter.setVinCode(model.getVinCode());
             scooter.setLicensePlate(model.getLicensePlate());
             scooter.setRsn(model.getRsn());
-            OpeColor color = opeColorMapper.selectById(model.getColorId());
-            scooter.setColorName(color.getColorName());
-            scooter.setColorValue(color.getColorValue());
+            Map<String, String> map = getColorNameAndValueById(model.getColorId());
+            scooter.setColorName(map.get("colorName"));
+            scooter.setColorValue(map.get("colorValue"));
         }
 
         scooterList.add(scooter);
@@ -432,6 +432,29 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
         }
         throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+    }
+
+    /**
+     * 根据颜色id获取颜色名称和色值
+     */
+    public Map<String, String> getColorNameAndValueById(Long colorId) {
+        if (null == colorId) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
+        }
+        Map<String, String> map = Maps.newHashMapWithExpectedSize(2);
+        OpeColor color = opeColorMapper.selectById(colorId);
+        if (null != color) {
+            String colorName = color.getColorName();
+            String colorValue = color.getColorValue();
+            if (StringUtils.isNotBlank(colorName)) {
+                map.put("colorName", colorName);
+            }
+            if (StringUtils.isNotBlank(colorValue)) {
+                map.put("colorValue", colorValue);
+            }
+            return map;
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
     }
 
     /**
