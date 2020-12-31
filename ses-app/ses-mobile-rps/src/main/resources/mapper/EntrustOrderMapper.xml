@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper">
+
+    <!--委托单类型数量统计-->
+    <select id="getEntrustOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select entrust_type `status`, count(id) totalCount
+	    from ope_entrust_order
+	    where dr = 0 and entrust_status in (0, 10, 15)
+	    group by entrust_type
+    </select>
+
+</mapper>
