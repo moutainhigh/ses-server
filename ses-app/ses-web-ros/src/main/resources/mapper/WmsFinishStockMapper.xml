@@ -6,7 +6,7 @@
     <select id="totalRows" resultType="int">
         select count(*) from ope_wms_scooter_stock stock
         where stock.dr = 0
-        <include refid="listCondition"></include>
+        <include refid="listCondition"/>
     </select>
 
     <select id="finishScooterList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult">
@@ -23,7 +23,7 @@
         left join ope_specificat_group group1 on group1.id = stock.group_id
         left join ope_color color on color.id = stock.color_id
         where stock.dr = 0
-        <include refid="listCondition"></include>
+        <include refid="listCondition"/>
         order by stock.able_stock_qty
         limit #{enter.startRow},#{enter.pageSize}
     </select>
@@ -94,7 +94,7 @@
     <select id="combinCotalRows" resultType="int">
         select count(*) from ope_wms_combin_stock
         where dr = 0
-        <include refid="combinListCondition"></include>
+        <include refid="combinListCondition"/>
     </select>
 
     <select id="finishCombinList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult">
@@ -110,7 +110,7 @@
           wait_out_stock_qty
         from ope_wms_combin_stock
         where dr = 0
-        <include refid="combinListCondition"></include>
+        <include refid="combinListCondition"/>
         order by able_stock_qty
         limit #{enter.startRow},#{enter.pageSize}
     </select>

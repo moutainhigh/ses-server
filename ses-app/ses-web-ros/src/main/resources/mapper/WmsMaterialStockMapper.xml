@@ -6,7 +6,7 @@
         select count(*)
         from ope_wms_parts_stock
         where dr = 0
-        <include refid="listCondition"></include>
+        <include refid="listCondition"/>
     </select>
 
     <select id="materialPartsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult">
@@ -22,7 +22,7 @@
          wait_out_stock_qty
        from ope_wms_parts_stock
        where dr = 0
-        <include refid="listCondition"></include>
+        <include refid="listCondition"/>
         order by able_stock_qty
         limit #{enter.startRow},#{enter.pageSize}
     </select>
