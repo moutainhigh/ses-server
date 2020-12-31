@@ -120,6 +120,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter) {
+        logger.info("待分配列表点击分配带出数据的入参是:[{}]", enter);
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
         List<ToBeAssignDetailScooterInfoResult> scooterList = Lists.newArrayList();
         ToBeAssignDetailScooterInfoResult scooter = new ToBeAssignDetailScooterInfoResult();
@@ -208,6 +209,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getSeatNext(ToBeAssignSeatNextEnter enter) {
+        logger.info("填写完座位数点击下一步的入参是:[{}]", enter);
         if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.SEAT_NOT_EMPTY.getCode(), ExceptionCodeEnums.SEAT_NOT_EMPTY.getMessage());
         }
@@ -222,6 +224,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 生成VIN Code,只需车型名称和座位数量这两个变量
         String vinCode = generateVINCode(specificatName, seatNumber);
+        logger.info("生成的VIN Code是:[{}]", vinCode);
 
         // 新增主表
         long id = idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE);
@@ -267,6 +270,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
+        logger.info("填写完车牌点击下一步的入参是:[{}]", enter);
         if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getCode(), ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getMessage());
         }
@@ -324,6 +328,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
+        logger.info("填写完R.SN并点击提交的入参是:[{}]", enter);
         if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
         }
@@ -382,6 +387,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public ToBeAssignNodeResult getNode(CustomerIdEnter enter) {
+        logger.info("查询客户走到哪个节点并带出数据的入参是:[{}]", enter);
         ToBeAssignNodeResult result = new ToBeAssignNodeResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
