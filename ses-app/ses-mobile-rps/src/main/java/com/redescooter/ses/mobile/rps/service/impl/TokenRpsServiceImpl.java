@@ -24,11 +24,11 @@ import com.redescooter.ses.mobile.rps.dm.OpeSysUserRole;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.TokenRpsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSysRpsUserService;
 import com.redescooter.ses.mobile.rps.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.web.ros.service.base.OpeSysRpsUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -173,10 +173,10 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     @Override
     public UserToken checkToken(GeneralEnter enter) {
         UserToken userToken = getUserToken(enter.getToken());
-//        if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
-//                enter.getAppId())) {
-//            throw new SesMobileRpsException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-//        }
+        if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
+                enter.getAppId())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
         return userToken;
     }
 
