@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoun
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
+import com.redescooter.ses.mobile.rps.dao.product.ProductionQualityTemplateBMapper;
 import com.redescooter.ses.mobile.rps.dao.restproductionorder.outbound.OutBoundOrderSrviceMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -60,11 +61,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     @Resource
     private OpeOutWhouseOrderService opeOutWhouseOrderService;
     @Resource
-    private OpeProductionQualityTempateService opeProductionQualityTempateService;
-    @Resource
     private OpeProductionQualityTempateBService opeProductionQualityTempateBService;
-    @Resource
-    private OpeOrderQcItemService opeOrderQcItemService;
     @Resource
     private OpeProductionScooterBomService opeProductionScooterBomService;
     @Resource
@@ -80,13 +77,11 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     @Resource
     private OpeProductionPartsService opeProductionPartsService;
     @Resource
-    private OpeEntrustProductSerialNumService opeEntrustProductSerialNumService;
-    @Resource
     private OpeInvoiceProductSerialNumService opeInvoiceProductSerialNumService;
     @Resource
-    private OpeEntrustOrderService opeEntrustOrderService;
-    @Resource
     private InvoiceOrderService invoiceOrderService;
+    @Resource
+    private ProductionQualityTemplateBMapper productionQualityTemplateBMapper;
     @Reference
     private IdAppService idAppService;
 
@@ -306,7 +301,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
 
     /**
      * @Description
-     * @Author: alex
+     * @Author: alex -- [由于切分支没有提交修改的文件导致最后合并这些文件的作者都变成了我(assert)]
      * @Date: 2020/11/2 2:51 下午
      * @Param: enter
      * @Return: ProductQcTempleteResult
@@ -315,42 +310,50 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      */
     @Override
     public List<ProductQcTempleteItemResult> qcTemplete(QcTempleteEnter enter) {
-        List<ProductQcTempleteItemResult> productQcTempleteItemResultList = new ArrayList<>();
-        Integer produtionType=null;
-        switch (enter.getProductType()){
+        Integer productionType;
+        switch (enter.getProductType()) {
             case 1:
-                produtionType= Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue());
+                productionType = Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue());
                 break;
             case 2 :
-                produtionType= Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue());
+                productionType = Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue());
                 break;
             default:
-                produtionType= Integer.valueOf(BomCommonTypeEnums.PARTS.getValue());
+                productionType = Integer.valueOf(BomCommonTypeEnums.PARTS.getValue());
                 break;
-
         }
-        productQcTempleteItemResultList=outBoundOrderSrviceMapper.qcTemplete(enter,produtionType);
-        if (CollectionUtils.isEmpty(productQcTempleteItemResultList)){
+
+        /**
+         * query ope_production_quality_tempate info
+         */
+        enter.setProductType(productionType);
+        List<ProductQcTempleteItemResult> qcTemplateList = outBoundOrderSrviceMapper.qcTemplete(enter);
+        if (CollectionUtils.isEmpty(qcTemplateList)) {
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
         }
-        //查询质检结果项
-        List<OpeProductionQualityTempateB> productionQualityTempateBList =
-                opeProductionQualityTempateBService.list(new LambdaQueryWrapper<OpeProductionQualityTempateB>().in(OpeProductionQualityTempateB::getProductQualityTempateId,
-                        productQcTempleteItemResultList.stream().map(ProductQcTempleteItemResult::getId).collect(Collectors.toList())));
-        if (CollectionUtils.isEmpty(productionQualityTempateBList)){
+
+        /**
+         * query ope_production_quality_tempate_b info
+         */
+        List<Long> productionTemplateIdList = qcTemplateList.stream().map(ProductQcTempleteItemResult::getId).collect(Collectors.toList());
+
+        List<ProductQcTempleteResultResult> productionQualityTemplateBList = productionQualityTemplateBMapper.getProductionQualityTemplateBByTemplateId(productionTemplateIdList);
+        if (CollectionUtils.isEmpty(productionQualityTemplateBList)){
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
         }
-        productQcTempleteItemResultList.forEach(item->{
-            List<ProductQcTempleteResultResult> qcTempleteList=new ArrayList<>();
-            productionQualityTempateBList.forEach(tempateB -> {
-                qcTempleteList.add(new ProductQcTempleteResultResult(tempateB.getId(),tempateB.getProductQualityTempateId(),tempateB.getQcResult(),tempateB.getPassFlag(),tempateB.getUploadFlag(),
-                        tempateB.getResultsSequence()));
-            });
-            if (CollectionUtils.isEmpty(qcTempleteList)){
-                throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
-            }
-        });
-        return productQcTempleteItemResultList;
+
+        /**
+         * {productQualityTempateId, List<ProductQcTempleteResultResult>}
+         */
+        Map<Long, List<ProductQcTempleteResultResult>> templateBMap = productionQualityTemplateBList.stream().collect(
+                Collectors.groupingBy(ProductQcTempleteResultResult::getTemplateId)
+        );
+
+        qcTemplateList.forEach(template ->
+            template.setQcTempleteList(templateBMap.get(template.getId()))
+        );
+
+        return qcTemplateList;
     }
 
     /**
@@ -419,7 +422,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
         List<SaveProductQcInfoEnter> saveProductQcInfoEnters = new ArrayList<>();
 
         /**
-         * 质检结果判断
+         * 质检结果判断 -- T_T
          */
         boolean qcResult = true;
         for (SaveQcTempleteResultEnter item : templeteEnterList) {
@@ -427,7 +430,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
             }
 
-            if (!qcPassMap.get(item.getItemId()).equals(item.getQcResultId())) {
+            if (!qcPassMap.get(item.getItemId()).getPassFlag()) {
                 qcResult = false;
                 break;
             }
@@ -440,31 +443,16 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
             ).findFirst().orElse(null);
 
             SaveProductQcInfoEnter productQcInfoEnter = new SaveProductQcInfoEnter();
-
-//            item.getItemId(), itemResult.getItemName(), item.getQcResultId(), qcPassMap.get(item.getItemId()).getQcResult(), item.getImageUrls(), item.getRemark()
-
+            productQcInfoEnter.setProductQcTemplateBId(item.getItemId());
+            productQcInfoEnter.setProductQcTemplateBName(itemResult.getItemName());
+            productQcInfoEnter.setProductQcTemplateId(item.getQcResultId());
+            productQcInfoEnter.setProductQcTemplateName(qcPassMap.get(item.getItemId()).getQcResult());
+            productQcInfoEnter.setPicture(item.getImageUrls());
+            productQcInfoEnter.setRemark(item.getRemark());
             productQcInfoEnter.setUserId(enter.getUserId());
 
             saveProductQcInfoEnters.add(productQcInfoEnter);
-
         }
-
-        //质检结果判断
-//        Boolean qcResult=Boolean.TRUE;
-//        for (SaveQcTempleteResultEnter item : templeteEnterList) {
-//            if (!qcPassMap.containsKey(item.getItemId())) {
-//                throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
-//            }
-//            if (!qcPassMap.get(item.getItemId()).equals(item.getQcResultId())) {
-//                qcResult = Boolean.FALSE;
-//                break;
-//            }
-//            ProductQcTempleteItemResult productQcTempleteItemResult = productQcTempleteItemResultList.stream().filter(qcitem -> qcitem.getId().equals(item.getItemId())).findFirst().orElse(null);
-//
-//            SaveProductQcInfoEnter saveProductQcInfoEnter = new SaveProductQcInfoEnter(item.getItemId(),productQcTempleteItemResult.getItemName(),item.getQcResultId(),qcPassMap.get(item.getItemId()).getQcResult(),item.getImageUrls(),item.getRemark());
-//            saveProductQcInfoEnter.setUserId(enter.getUserId());
-//            saveProductQcInfoEnters.add(saveProductQcInfoEnter);
-//        }
 
         //todo booleanSerial 判断有序列号需要验证库存
 

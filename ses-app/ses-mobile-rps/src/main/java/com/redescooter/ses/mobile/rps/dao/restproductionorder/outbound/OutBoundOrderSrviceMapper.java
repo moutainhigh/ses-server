@@ -128,7 +128,7 @@ public interface OutBoundOrderSrviceMapper {
      * @Return: ProductQcTempleteItemResult
      * @desc: 质检模版查询
      */
-    List<ProductQcTempleteItemResult> qcTemplete(@Param("enter") QcTempleteEnter enter, @Param("produtionType") Integer produtionType);
+    List<ProductQcTempleteItemResult> qcTemplete(QcTempleteEnter enter);
 
     /**
      * @Description

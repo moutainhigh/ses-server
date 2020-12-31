@@ -200,21 +200,12 @@
         and serial.orderBId =#{id}
     </select>
 
+    <!--根据productionId和productType查询产品质检模板信息-->
     <select id="qcTemplete" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult">
-        select templete.id           as templateId,
-               templete.qc_item_name as itemName
+        select templete.id, templete.qc_item_name as itemName
         from ope_production_quality_tempate templete
-        where templete.dr = 0
-          and templete.production_id = #{enter.id}
-        <choose>
-            <when test="enter.productType != null and enter.productType==1 ">
-                and templete.production_type in (1,2,3)
-            </when>
-            <when test="enter.productType != null and enter.productType!=1 ">
-                and templete.production_type =#{produtionType}
-            </when>
-        </choose>
-
+        where templete.dr = 0 and templete.production_id = #{id}
+        and templete.production_type = #{productType}
     </select>
 
 </mapper>

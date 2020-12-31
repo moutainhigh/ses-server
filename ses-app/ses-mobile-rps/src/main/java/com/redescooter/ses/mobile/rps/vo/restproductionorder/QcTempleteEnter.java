@@ -19,9 +19,9 @@ import io.swagger.annotations.*;
 @EqualsAndHashCode(callSuper = false)
 public class QcTempleteEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "子单据Id")
+    @ApiModelProperty(value = "子单据Id", dataType = "Long", required = true)
     private Long id;
 
-    @ApiModelProperty(value = "产品类型")
+    @ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer", required = true)
     private Integer productType;
 }

@@ -17,7 +17,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class ProductQcTempleteResultResult extends GeneralResult {
 
-    @ApiModelProperty(value = "模板质检项Id")
+    @ApiModelProperty(value = "主键id")
     private Long id;
 
     @ApiModelProperty(value = "模板质检项Id")
