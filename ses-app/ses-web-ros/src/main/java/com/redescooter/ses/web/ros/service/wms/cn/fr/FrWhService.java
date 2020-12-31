@@ -1,6 +1,10 @@
 package com.redescooter.ses.web.ros.service.wms.cn.fr;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrStockCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrTodayInOrOutStockCountResult;
 
@@ -27,6 +31,53 @@ public interface FrWhService {
      * @return
      */
     FrStockCountResult stockCount(GeneralEnter enter);
+
+
+    /**
+     * 法国仓库车辆库存列表
+     * @param enter
+     * @return
+     */
+    PageResult<WmsFinishScooterListResult> frScooterList(WmsFinishScooterListEnter enter);
+
+
+    /**
+     * 法国仓库车辆库存详情
+     * @param enter
+     * @return
+     */
+    WmsfinishScooterDetailResult frScooterDetail(IdEnter enter);
+
+
+    /**
+     * 法国组装件库存列表
+     * @param enter
+     * @return
+     */
+    PageResult<WmsFinishCombinListResult> frCombinList(CombinationListEnter enter);
+
+
+    /**
+     * 法国组装件库存详情
+     * @param enter
+     * @return
+     */
+    WmsfinishCombinDetailResult frCombinDetail(IdEnter enter);
+
+
+    /**
+     * 法国部件的库存列表
+     */
+    PageResult<MaterialStockPartsListResult> frPartsList(MaterialStockPartsListEnter enter);
+
+
+    /**
+     * 法国部件的库存详情
+     * @param enter
+     * @return
+     */
+    MaterialpartsStockDetailResult frPartsDetail(IdEnter enter);
+
 
 
 }
