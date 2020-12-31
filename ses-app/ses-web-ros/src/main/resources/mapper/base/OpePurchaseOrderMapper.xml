@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpePurchaseOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    <!--@Table ope_purchase_order-->
+    <!--@Table operation.ope_purchase_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -14,6 +14,7 @@
     <result column="purchase_status" jdbcType="INTEGER" property="purchaseStatus" />
     <result column="purchase_qty" jdbcType="INTEGER" property="purchaseQty" />
     <result column="purchase_type" jdbcType="INTEGER" property="purchaseType" />
+    <result column="purchase_origin_type" jdbcType="INTEGER" property="purchaseOriginType" />
     <result column="trans_type" jdbcType="INTEGER" property="transType" />
     <result column="purchase_amount" jdbcType="DECIMAL" property="purchaseAmount" />
     <result column="consignee_user" jdbcType="BIGINT" property="consigneeUser" />
@@ -58,18 +59,18 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status, 
-    purchase_qty, purchase_type, trans_type, purchase_amount, consignee_user, consignee_country_code, 
-    consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-    factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
-    contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-    consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-    notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
-    payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def4, def5
+    purchase_qty, purchase_type, purchase_origin_type, trans_type, purchase_amount, consignee_user, 
+    consignee_country_code, consignee_user_telephone, consignee_user_mail, consignee_address, 
+    consignee_post_code, factory_id, delivery_date, contact_user, contact_user_name, 
+    contact_country_code, contact_telephone, contact_mail, consignor_user, consignor_country_code, 
+    consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code, 
+    notify_user_telephone, notify_user_mail, remark, payment_type, planned_payment_time, 
+    payment_day, payment_time, payment_status, purchase_contract, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_purchase_order
+    update operation.ope_purchase_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -114,6 +115,11 @@
       <trim prefix="purchase_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="purchase_origin_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchaseOriginType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="trans_type = case" suffix="end,">
@@ -324,29 +330,30 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_purchase_order
+    insert into operation.ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status, 
-      purchase_qty, purchase_type, trans_type, purchase_amount, consignee_user, consignee_country_code, 
-      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-      factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
-      contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-      notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
-      payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      purchase_qty, purchase_type, purchase_origin_type, trans_type, purchase_amount, 
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
+      consignee_address, consignee_post_code, factory_id, delivery_date, contact_user, 
+      contact_user_name, contact_country_code, contact_telephone, contact_mail, consignor_user, 
+      consignor_country_code, consignor_telephone, consignor_mail, notify_user, notify_user_name, 
+      notify_country_code, notify_user_telephone, notify_user_mail, remark, payment_type, 
+      planned_payment_time, payment_day, payment_time, payment_status, purchase_contract, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.deptId,jdbcType=BIGINT}, #{item.allocateNo,jdbcType=VARCHAR}, #{item.allocateId,jdbcType=BIGINT}, 
         #{item.purchaseNo,jdbcType=VARCHAR}, #{item.purchaseStatus,jdbcType=INTEGER}, #{item.purchaseQty,jdbcType=INTEGER}, 
-        #{item.purchaseType,jdbcType=INTEGER}, #{item.transType,jdbcType=INTEGER}, #{item.purchaseAmount,jdbcType=DECIMAL}, 
-        #{item.consigneeUser,jdbcType=BIGINT}, #{item.consigneeCountryCode,jdbcType=VARCHAR}, 
-        #{item.consigneeUserTelephone,jdbcType=VARCHAR}, #{item.consigneeUserMail,jdbcType=VARCHAR}, 
-        #{item.consigneeAddress,jdbcType=VARCHAR}, #{item.consigneePostCode,jdbcType=VARCHAR}, 
-        #{item.factoryId,jdbcType=BIGINT}, #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.contactUser,jdbcType=BIGINT}, 
-        #{item.contactUserName,jdbcType=VARCHAR}, #{item.contactCountryCode,jdbcType=VARCHAR}, 
-        #{item.contactTelephone,jdbcType=VARCHAR}, #{item.contactMail,jdbcType=VARCHAR}, 
-        #{item.consignorUser,jdbcType=BIGINT}, #{item.consignorCountryCode,jdbcType=VARCHAR}, 
+        #{item.purchaseType,jdbcType=INTEGER}, #{item.purchaseOriginType,jdbcType=INTEGER}, 
+        #{item.transType,jdbcType=INTEGER}, #{item.purchaseAmount,jdbcType=DECIMAL}, #{item.consigneeUser,jdbcType=BIGINT}, 
+        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR}, 
+        #{item.consigneeUserMail,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
+        #{item.consigneePostCode,jdbcType=VARCHAR}, #{item.factoryId,jdbcType=BIGINT}, 
+        #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.contactUser,jdbcType=BIGINT}, #{item.contactUserName,jdbcType=VARCHAR}, 
+        #{item.contactCountryCode,jdbcType=VARCHAR}, #{item.contactTelephone,jdbcType=VARCHAR}, 
+        #{item.contactMail,jdbcType=VARCHAR}, #{item.consignorUser,jdbcType=BIGINT}, #{item.consignorCountryCode,jdbcType=VARCHAR}, 
         #{item.consignorTelephone,jdbcType=VARCHAR}, #{item.consignorMail,jdbcType=VARCHAR}, 
         #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, #{item.notifyCountryCode,jdbcType=VARCHAR}, 
         #{item.notifyUserTelephone,jdbcType=VARCHAR}, #{item.notifyUserMail,jdbcType=VARCHAR}, 
@@ -360,22 +367,23 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert into ope_purchase_order
+    insert into operation.ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status, 
-      purchase_qty, purchase_type, trans_type, purchase_amount, consignee_user, consignee_country_code, 
-      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
-      factory_id, delivery_date, contact_user, contact_user_name, contact_country_code, 
-      contact_telephone, contact_mail, consignor_user, consignor_country_code, consignor_telephone, 
-      consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-      notify_user_mail, remark, payment_type, planned_payment_time, payment_day, payment_time, 
-      payment_status, purchase_contract, created_by, created_time, updated_by, updated_time, 
-      def1, def2, def3, def4, def5)
+      purchase_qty, purchase_type, purchase_origin_type, trans_type, purchase_amount, 
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
+      consignee_address, consignee_post_code, factory_id, delivery_date, contact_user, 
+      contact_user_name, contact_country_code, contact_telephone, contact_mail, consignor_user, 
+      consignor_country_code, consignor_telephone, consignor_mail, notify_user, notify_user_name, 
+      notify_country_code, notify_user_telephone, notify_user_mail, remark, payment_type, 
+      planned_payment_time, payment_day, payment_time, payment_status, purchase_contract, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
       #{allocateNo,jdbcType=VARCHAR}, #{allocateId,jdbcType=BIGINT}, #{purchaseNo,jdbcType=VARCHAR}, 
       #{purchaseStatus,jdbcType=INTEGER}, #{purchaseQty,jdbcType=INTEGER}, #{purchaseType,jdbcType=INTEGER}, 
-      #{transType,jdbcType=INTEGER}, #{purchaseAmount,jdbcType=DECIMAL}, #{consigneeUser,jdbcType=BIGINT}, 
-      #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
+      #{purchaseOriginType,jdbcType=INTEGER}, #{transType,jdbcType=INTEGER}, #{purchaseAmount,jdbcType=DECIMAL}, 
+      #{consigneeUser,jdbcType=BIGINT}, #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
       #{consigneeUserMail,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, #{consigneePostCode,jdbcType=VARCHAR}, 
       #{factoryId,jdbcType=BIGINT}, #{deliveryDate,jdbcType=TIMESTAMP}, #{contactUser,jdbcType=BIGINT}, 
       #{contactUserName,jdbcType=VARCHAR}, #{contactCountryCode,jdbcType=VARCHAR}, #{contactTelephone,jdbcType=VARCHAR}, 
@@ -399,6 +407,7 @@
     purchase_status = #{purchaseStatus,jdbcType=INTEGER}, 
     purchase_qty = #{purchaseQty,jdbcType=INTEGER}, 
     purchase_type = #{purchaseType,jdbcType=INTEGER}, 
+    purchase_origin_type = #{purchaseOriginType,jdbcType=INTEGER}, 
     trans_type = #{transType,jdbcType=INTEGER}, 
     purchase_amount = #{purchaseAmount,jdbcType=DECIMAL}, 
     consignee_user = #{consigneeUser,jdbcType=BIGINT}, 
@@ -442,7 +451,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert into ope_purchase_order
+    insert into operation.ope_purchase_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -473,6 +482,9 @@
       </if>
       <if test="purchaseType != null">
         purchase_type,
+      </if>
+      <if test="purchaseOriginType != null">
+        purchase_origin_type,
       </if>
       <if test="transType != null">
         trans_type,
@@ -627,6 +639,9 @@
       <if test="purchaseType != null">
         #{purchaseType,jdbcType=INTEGER},
       </if>
+      <if test="purchaseOriginType != null">
+        #{purchaseOriginType,jdbcType=INTEGER},
+      </if>
       <if test="transType != null">
         #{transType,jdbcType=INTEGER},
       </if>
@@ -779,6 +794,9 @@
       </if>
       <if test="purchaseType != null">
         purchase_type = #{purchaseType,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseOriginType != null">
+        purchase_origin_type = #{purchaseOriginType,jdbcType=INTEGER},
       </if>
       <if test="transType != null">
         trans_type = #{transType,jdbcType=INTEGER},

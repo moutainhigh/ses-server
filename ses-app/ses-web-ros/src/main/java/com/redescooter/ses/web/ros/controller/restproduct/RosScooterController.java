@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
@@ -84,6 +85,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/rosSaveProductionProduct")
     @ApiOperation(value = "车辆保存", response = BaseNameResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult>
         rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));
@@ -133,6 +135,7 @@ public class RosScooterController {
         checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.checkProductionInfo(enter));
     }
+
     @PostMapping(value = "/qcTempleteDetail")
     @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
     public Response<List<QcTemplateDetailResult>>
@@ -142,6 +145,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/qcTempleteSave")
     @ApiOperation(value = "保存质检模板", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> qcTempleteSave(@ModelAttribute @ApiParam("请求参数") SaveQcTemplateEnter enter) {
         return new Response<>(productionQcTmepleteService.save(enter));
     }

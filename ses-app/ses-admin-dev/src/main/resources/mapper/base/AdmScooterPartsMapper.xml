@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.admin.dev.dao.base.AdmScooterPartsMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <!--@mbg.generated-->
+    <!--@Table adm_scooter_parts-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="scooter_id" jdbcType="BIGINT" property="scooterId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DECIMAL" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, scooter_id, `name`, sn, qty, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from adm_scooter_parts
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from adm_scooter_parts
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <!--@mbg.generated-->
+    insert into adm_scooter_parts (id, dr, scooter_id, 
+      `name`, sn, qty, created_by, 
+      created_time, updated_by, updated_time, 
+      def1, def2, def3, def5, 
+      def6)
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterId,jdbcType=BIGINT}, 
+      #{name,jdbcType=VARCHAR}, #{sn,jdbcType=VARCHAR}, #{qty,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
+      #{def6,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <!--@mbg.generated-->
+    insert into adm_scooter_parts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="scooterId != null">
+        scooter_id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="qty != null">
+        qty,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterId != null">
+        #{scooterId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null">
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <!--@mbg.generated-->
+    update adm_scooter_parts
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterId != null">
+        scooter_id = #{scooterId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null">
+        qty = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooterParts">
+    <!--@mbg.generated-->
+    update adm_scooter_parts
+    set dr = #{dr,jdbcType=INTEGER},
+      scooter_id = #{scooterId,jdbcType=BIGINT},
+      `name` = #{name,jdbcType=VARCHAR},
+      sn = #{sn,jdbcType=VARCHAR},
+      qty = #{qty,jdbcType=INTEGER},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=VARCHAR},
+      def6 = #{def6,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

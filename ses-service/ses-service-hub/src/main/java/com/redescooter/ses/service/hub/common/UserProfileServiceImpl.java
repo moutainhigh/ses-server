@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
@@ -13,6 +14,8 @@ import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorUserProfileService;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -55,6 +58,7 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public void saveUserProfile2C(SaveUserProfileHubEnter enter) {
+        //TOC 修改个人信息
         SaveUserProfileEnter saveUserProfileEnter = new SaveUserProfileEnter();
         BeanUtils.copyProperties(enter, saveUserProfileEnter);
         userProfileProService.saveUserPofile(saveUserProfileEnter);

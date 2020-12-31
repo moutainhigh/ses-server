@@ -1,16 +1,21 @@
 package com.redescooter.ses.mobile.rps.dao.base;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+/**
+*@author assert
+*@date 2020/12/30 15:26
+*/
+public interface OpeOrderSerialBindMapper {
+    int deleteByPrimaryKey(Long id);
 
-public interface OpeOrderSerialBindMapper extends BaseMapper<OpeOrderSerialBind> {
-    int updateBatch(List<OpeOrderSerialBind> list);
+    int insert(OpeOrderSerialBind record);
 
-    int batchInsert(@Param("list") List<OpeOrderSerialBind> list);
+    int insertSelective(OpeOrderSerialBind record);
 
-    int insertOrUpdate(OpeOrderSerialBind record);
+    OpeOrderSerialBind selectByPrimaryKey(Long id);
 
-    int insertOrUpdateSelective(OpeOrderSerialBind record);
+    int updateByPrimaryKeySelective(OpeOrderSerialBind record);
+
+    int updateByPrimaryKey(OpeOrderSerialBind record);
 }

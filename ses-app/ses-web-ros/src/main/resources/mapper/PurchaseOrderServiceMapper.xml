@@ -19,9 +19,10 @@
             and purchase.purchase_status = #{enter.purchaseStatus}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and purchase.purchase_no like concat('%', #{enter.keyword}, '%') or
+            and ( purchase.purchase_no like concat('%', #{enter.keyword}, '%') or
             staff2.full_name like concat('%', #{enter.keyword}, '%') or
             supp.supplier_name like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 
@@ -91,9 +92,11 @@
           purchase.consignor_mail,
           purchase.payment_type,
           purchase.planned_payment_time,
+          purchase.payment_time,
           purchase.payment_day,
           purchase.purchase_contract,
-          purchase.purchase_type
+          purchase.purchase_type,
+          purchase.purchase_origin_type
         from ope_purchase_order purchase
         left join ope_sys_staff staff1 on staff1.id = purchase.consignor_user
         left join ope_sys_staff staff2 on staff2.id = purchase.consignee_user
@@ -168,7 +171,7 @@
           allocate.consignee_address
         from ope_allocate_order allocate
         left join ope_sys_staff staff on staff.id = allocate.consignee_user
-        where allocate.dr = 0 and allocate.allocate_status not in (0,60,70)
+        where allocate.dr = 0 and allocate.allocate_status not in (0,70)
         and allocate.allocate_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and allocate.allocate_no like concat('%', #{enter.keyword}, '%')
@@ -185,7 +188,7 @@
             purchase_type,
             delivery_date
         from ope_purchase_order
-        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%')
+        where dr = 0 and delivery_date like concat('%', #{enter.deliveryDate}, '%') and purchase_status != 70
     </select>
 
     <select id="purchaseTrace"
@@ -199,15 +202,39 @@
             staff.full_name as createdByName
             from ope_op_trace trace
             left join ope_sys_staff staff on trace.created_by = staff.id
-            where trace.dr = 0 and trace.relation_id = #{id}
+            where trace.dr = 0 and trace.relation_id = #{id} and order_type = 2
             order by trace.created_time desc
     </select>
 
     <select id="whNum" resultType="int">
         select  count(*)
         from ope_out_whouse_order wh
-        left join ope_invoice_order invoice on invoice.id = wh.invoice_id
+        left join ope_invoice_order invoice on invoice.id = wh.relation_id
         left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
         where wh.dr = 0 and purchase.id = #{purchaseId} and wh.out_wh_status in (10,20)
+    </select>
+
+    <select id="purchaseCombinB" resultType="com.redescooter.ses.web.ros.dm.OpePurchaseCombinB">
+        SELECT * FROM ope_purchase_combin_b combin
+        left join ope_purchase_order purchase on combin.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where combin.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
+
+    <select id="purchasePartsBS" resultType="com.redescooter.ses.web.ros.dm.OpePurchasePartsB">
+        SELECT * FROM ope_purchase_parts_b parts
+        left join ope_purchase_order purchase on parts.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where parts.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
+    </select>
+
+    <select id="purchaseScooterBS" resultType="com.redescooter.ses.web.ros.dm.OpePurchaseScooterB">
+        SELECT * FROM ope_purchase_scooter_b scooter
+        left join ope_purchase_order purchase on scooter.purchase_id = purchase.id
+        LEFT JOIN ope_allocate_order allocate on purchase.allocate_id = allocate.id
+        where scooter.dr = 0  and (purchase.purchase_status in (50,60) or purchase.id = #{purchaseId})
+        and allocate.id = #{allocateId}
     </select>
 </mapper>

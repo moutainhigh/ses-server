@@ -1,12 +1,14 @@
 package com.redescooter.ses.service.scooter;
 
+import com.redescooter.ses.service.scooter.config.emqx.MqttConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
@@ -14,9 +16,11 @@ import java.util.TimeZone;
 
 @Slf4j
 @EnableDubbo
+@EnableScheduling
 @EnableDubboConfig(multiple = true)
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 @EnableTransactionManagement
+@EnableConfigurationProperties({MqttConfig.class})
 public class SesServiceScooterApplication {
 
 	private static volatile boolean running = true;

@@ -2,6 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatTypeServiceMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="specificat_name" jdbcType="VARCHAR" property="specificatName" />
+        <result column="specificat_code" jdbcType="VARCHAR" property="specificatCode" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
 
     <select id="listNum" resultType="int">
         select count(*) from ope_specificat_type tp where tp.dr = 0
@@ -14,8 +26,9 @@
             and tp.group_id = #{enter.groupId}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and tp.specificat_name like concat('%', #{enter.keyword}, '%') or
+            and (tp.specificat_name like concat('%', #{enter.keyword}, '%') or
             tp.specificat_code like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 
@@ -64,6 +77,120 @@
         specificat_name
         from ope_specificat_type
         where dr = 0
+    </select>
+
+    <!--新增规格类型-->
+    <insert id="insertSpecificatType" parameterType="com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO">
+        insert into operation.ope_specificat_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="specificatName != null and specificatName != ''">
+                specificat_name,
+            </if>
+            <if test="code != null and code != ''">
+                specificat_code,
+            </if>
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="specificatName != null and specificatName != ''">
+                #{specificatName,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null and code != ''">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据name检查规格类型是否存在-->
+    <select id="existsSpecificTypeByName" parameterType="java.lang.String" resultType="java.lang.String">
+        select specificat_name from ope_specificat_type
+	    where dr = 0 and specificat_name = #{name}
+    </select>
+
+    <!--根据id查询规格类型信息-->
+    <select id="getSpecificTypeById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_specificat_type
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改规格类型信息-->
+    <update id="updateSpecificatType" parameterType="com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO">
+        update ope_specificat_type
+        <set>
+            <if test="specificatName != null and specificatName != ''">
+                specificat_name = #{specificatName},
+            </if>
+            <if test="code != null and code != ''">
+                specificat_code = #{code},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询规格类型详情信息-->
+    <select id="getSpecificTypeDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO">
+        select st.id, st.specificat_name specificatName,st.specificat_code specificatCode,
+        st.group_id groupId, st.remark, sg.group_name groupName, css.full_name createdName,
+        uss.full_name updatedName,st.created_time createdTime, st.updated_time updatedTime
+        from ope_specificat_type st
+        inner join ope_specificat_group sg
+        on st.group_id = sg.id and sg.dr = 0
+        left join ope_sys_staff css
+        on st.created_by = css.id and css.dr = 0
+        left join ope_sys_staff uss
+        on st.updated_by = uss.id and uss.dr = 0
+        where st.dr = 0 and st.id = #{id}
     </select>
 
 </mapper>

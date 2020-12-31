@@ -1,11 +1,11 @@
 package com.redescooter.ses.service.scooter.service.base.impl;
 
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
-import java.util.List;
+
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterStatusMapper;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 @Service

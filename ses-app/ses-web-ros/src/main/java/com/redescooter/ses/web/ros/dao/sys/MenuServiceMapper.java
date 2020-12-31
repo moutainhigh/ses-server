@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.sys;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.vo.sys.menu.ModuleAuthResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
@@ -40,4 +41,12 @@ public interface MenuServiceMapper {
 
     List<Long> getRoleIds(Long userId);
 
+    /**
+     * @Author Aleks
+     * @Description  查询当前登陆用户的菜单按钮权限
+     * @Date  2020/11/27 19:29
+     * @Param
+     * @return
+     **/
+    List<OpeSysMenu> menusByUserId(@Param("userId") Long userId);
 }

@@ -468,9 +468,35 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
 
+    QTY_IS_ILLEGAL(10226,"数量不合法"),
 
+    DEPT_NAME_EXIST(10227,"当前父级部门下面部门名称重复"),
 
+    ROLE_NAME_EXIST(10228,"角色名称已存在"),
 
+    PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
+
+    PARENT_DEPT_NOT_EXIST(10230,"父级部门不存在！"),
+
+    PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
+
+    TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
+
+    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+
+    DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空"),
+
+    UPDATE_FAIL(10235, "修改失败"),
+
+    ENABLE_STORE_NOT_DELETE(10236, "启用中的店铺，不可删除。"),
+
+    STORE_EMAIL_MUST_CHAR(10237, "邮件地址必须带有@字符"),
+
+    INSERT_FAIL(10238, "新增失败"),
+
+    DEF_GROUP_NAME_NOT_NULL(10239, "自定义分组名称不能为空"),
+
+    DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法")
     ;
 
 

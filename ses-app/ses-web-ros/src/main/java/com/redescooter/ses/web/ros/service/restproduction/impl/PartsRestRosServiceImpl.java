@@ -4,11 +4,16 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
+import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
+import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -29,6 +34,7 @@ import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -98,6 +104,12 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
+    @Autowired
+    private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private OpeProductionCombinBomService opeProductionCombinBomService;
+
 
     @Override
     @Transactional
@@ -160,6 +172,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     parts.setCreatedTime(new Date());
                     parts.setUpdatedTime(new Date());
                     parts.setDwg(rosPartsSaveOrUpdateEnter.getDwg());
+                    parts.setQcFlag(Boolean.FALSE);
                     parts.setAnnounUserId(enter.getUserId());
                     parts.setOpAnnounUserId(enter.getUserId());
                     parts.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PARTS));
@@ -593,6 +606,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
      * @Date 2020/9/24 17:09
      * @Param [enter]
      **/
+    @Transactional
     @Override
     public GeneralResult partsDisable(RosPartsBatchOpEnter enter) {
         String[] ids = enter.getId().split(",");
@@ -600,6 +614,42 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         qw.in(OpeProductionParts.COL_ID, ids);
         List<OpeProductionParts> list = opeProductionPartsService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
+            //添加整车、组合的判断
+            /*List<OpeProductionPartsRelation> productionPartsRelationList =
+                    opeProductionPartsRelationService.list(new LambdaQueryWrapper<OpeProductionPartsRelation>().in(OpeProductionPartsRelation::getPartsId, ids));
+            if (CollectionUtils.isNotEmpty(productionPartsRelationList)){
+
+                Map<Integer,List<Long>> productMap = new HashMap<>();
+                productionPartsRelationList.forEach(item->{
+                    if (productMap.containsKey(item.getProductionType())){
+                        List<Long> productIds = productMap.get(item.getProductionType());
+                        productMap.put(item.getProductionType(),productIds);
+                    }else {
+                        List<Long> productIds = new ArrayList<>();
+                        productIds.add(item.getProductionId());
+                        productMap.put(item.getProductionType(),productIds);
+                    }
+                });
+
+                if (CollectionUtil.isNotEmpty(productMap)) {
+                    if (productMap.containsKey(ProductTypeEnums.COMBINATION.getValue())) {
+                        List<OpeProductionCombinBom> productionCombinBomList = opeProductionCombinBomService.list(new LambdaQueryWrapper<OpeProductionCombinBom>()
+                                .in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())
+                                .in(OpeProductionCombinBom::getId, productMap.get(ProductTypeEnums.COMBINATION.getValue())));
+                        if (CollectionUtils.isEmpty(productionCombinBomList)) {
+                            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_BIND_PRODUCT.getCode(), ExceptionCodeEnums.PART_IS_BIND_PRODUCT.getMessage());
+                        }
+                    }
+                    if (productMap.containsKey(ProductTypeEnums.COMBINATION.getValue())) {
+                        List<OpeProductionScooterBom> scooterList = opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
+                                .in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())
+                                .in(OpeProductionScooterBom::getId, productMap.get(ProductTypeEnums.SCOOTER.getValue())));
+                        if (CollectionUtils.isEmpty(scooterList)) {
+                            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_BIND_PRODUCT.getCode(), ExceptionCodeEnums.PART_IS_BIND_PRODUCT.getMessage());
+                        }
+                    }
+                }
+            }*/
             for (OpeProductionParts parts : list) {
                 if(parts.getDisable().equals(1)){
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
@@ -676,7 +726,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 }
             }
             exportEnter.setType(type);
-            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==1?"SC":"SSC"));
+            exportEnter.setSnClass(list.getSnClass()==null?"SC":(list.getSnClass()==0?"SC":"SSC"));
             exportEnter.setCnName(list.getCnName());
             exportEnter.setEnName(list.getEnName());
 //            exportEnter.setFrName(list.getFrName());
@@ -710,7 +760,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 //        }
         for (RosPartsSaveOrUpdateEnter saveOrUpdateEnter : enters) {
             if(Strings.isNullOrEmpty(saveOrUpdateEnter.getPartsNo()) || saveOrUpdateEnter.getPartsSec() == null || saveOrUpdateEnter.getPartsType() == null || saveOrUpdateEnter.getSnClass() == null ||
-                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
+                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || saveOrUpdateEnter.getProcurementCycle() == 0 || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
                     Strings.isNullOrEmpty(saveOrUpdateEnter.getEnName())){
                 // 上面这些都不为空的时候  信息才是完善的
                 throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());

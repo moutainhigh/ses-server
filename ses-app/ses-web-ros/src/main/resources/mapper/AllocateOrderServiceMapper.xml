@@ -16,8 +16,9 @@
             and allocate.allocate_status = #{enter.allocateStatus}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and allocate.allocate_no like concat('%', #{enter.keyword}, '%') or
+            and ( allocate.allocate_no like concat('%', #{enter.keyword}, '%') or
             staff.full_name like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 
@@ -169,7 +170,7 @@
           staff.full_name as createdByName
         from ope_op_trace trace
         left join ope_sys_staff staff on trace.created_by = staff.id
-        where trace.dr = 0 and trace.relation_id = #{id}
+        where trace.dr = 0 and trace.relation_id = #{id} and order_type = #{orderTypeEnum}
         order by trace.created_time desc
     </select>
 
@@ -178,7 +179,7 @@
         SELECT
           count(*)
         FROM ope_out_whouse_order wh
-        LEFT JOIN ope_invoice_order invoice on invoice.id = wh.invoice_id
+        LEFT JOIN ope_invoice_order invoice on invoice.id = wh.relation_id
         LEFT JOIN ope_purchase_order purchase on purchase.id = invoice.purchase_id
         LEFT JOIN ope_allocate_order allocate on  allocate.id = purchase.allocate_id
         where wh.dr = 0 and allocate.id = #{id}  and wh.out_wh_status in (10,20)

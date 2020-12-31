@@ -102,7 +102,10 @@ public class SysLogServiceImpl implements SysLogService {
         Integer num1 = 0;
         Integer num2 = 0;
         Integer num3 = 0;
-        List<OpeSysLog> logs = opeSysLogService.list();
+        QueryWrapper<OpeSysLog> qw = new QueryWrapper<>();
+        qw.select(OpeSysLog.COL_ID,OpeSysLog.COL_LOG_TYPE,OpeSysLog.COL_IF_SUCCESS);
+        List<OpeSysLog> logs = opeSysLogService.list(qw);
+//        List<OpeSysLog> logs = opeSysLogService.list();
         num1 = logs.stream().filter(o->o.getLogType() == 1).collect(Collectors.toList()).size();
         num2 = logs.stream().filter(o->o.getLogType() == 2).collect(Collectors.toList()).size();
         num3 = logs.stream().filter(o->o.getIfSuccess() == 0).collect(Collectors.toList()).size();

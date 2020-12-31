@@ -23,6 +23,8 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailTask;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -359,7 +361,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 支付
      *
@@ -384,14 +386,14 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         mailTask.setSubject(mailtemplate.getSubject());
         mailTask.setParameter(JSON.toJSONString(map));
         mailTask.setContent(mailtemplate.getContent());
-        
+
         mailTask = saveTask(mailTask, enter);
         //触发该邮件的发送
         runTaskById(mailTask.getId());
-        
+
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 定金支付成功发送邮件
      *
@@ -534,7 +536,9 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
   public GeneralResult contactUsReplyMessageEmail(MailContactUsMessageEnter enter) {
     PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
     Map<String, String> map = getReplyMessageMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail(),enter.getMessage());
-
+    if(CollectionUtils.isNotEmpty(enter.getImgList())){
+        map.put("imgList", StringUtils.join(enter.getImgList(),","));
+    }
     PlaMailTask mailTask = new PlaMailTask();
     mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
     mailTask.setSubject(mailtemplate.getSubject());
@@ -601,9 +605,9 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         map.put("appId", appId);
         return map;
     }
-    
+
     private Map<String, String> getReplyMessageMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email, String message) {
-        
+
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
         if (configList != null && configList.size() > 0) {
@@ -619,10 +623,10 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         map.put("message",message);
         return map;
     }
-    
-    
+
+
     private Map<String, String> getEmployeeParameterMap(int mailTemplateNo, String systemId, String appId, String requestId, String name, Long userId, String email, String password) {
-        
+
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
         if (configList != null && configList.size() > 0) {
@@ -639,7 +643,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         return map;
     }
 
-    
+
     private PlaMailTemplate getTemplateByEvent(String event) {
         QueryWrapper<PlaMailTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailTemplate.COL_EVENT, event);
@@ -659,13 +663,13 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         wrapper.eq(PlaMailConfig.COL_APP_ID, appId);
         return mailConfigMapper.selectList(wrapper);
     }
-    
+
     private List<PlaMailConfig> getPayTemplateById(Integer mailTemplateNo) {
         QueryWrapper<PlaMailConfig> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, mailTemplateNo);
         return mailConfigMapper.selectList(wrapper);
     }
-    
+
     private String getContent(Map map, PlaMailTemplate mailTemplate) {
         if (map == null) {
             map = new HashMap();

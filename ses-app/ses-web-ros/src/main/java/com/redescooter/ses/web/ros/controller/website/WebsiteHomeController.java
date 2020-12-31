@@ -45,7 +45,7 @@ public class WebsiteHomeController {
     @IgnoreLoginCheck
     @PostMapping(value = "/email")
     @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
-    public Response<GeneralResult> email(@ModelAttribute @ApiParam("Parameter") StorageEamilEnter enter) {
+    public Response<GeneralResult> email(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
         return new Response<>(websiteOrderFormService.email(enter));
     }
 

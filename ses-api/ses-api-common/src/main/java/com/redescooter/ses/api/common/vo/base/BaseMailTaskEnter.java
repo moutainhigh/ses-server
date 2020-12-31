@@ -42,4 +42,6 @@ public class BaseMailTaskEnter extends GeneralEnter {
     @ApiModelProperty(value = "剩余支付金额")
     private String price;
 
+    @ApiModelProperty("委托单号")
+    private String entrustNo;
 }

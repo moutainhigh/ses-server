@@ -7,13 +7,11 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.QcTempleteEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.SaveQcResultEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.ProductOutWhDetailEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +29,7 @@ import java.util.Map;
 @RequestMapping(value = "/outWh")
 public class OutboundController {
 
-    @Autowired
+    @Resource
     private OutBoundOrderService outboundOrderService;
 
     @PostMapping(value = "/countByProductType")
@@ -42,8 +40,8 @@ public class OutboundController {
 
     @PostMapping(value = "/countByOrderType")
     @ApiOperation(value = "单据类型统计", response = Map.class)
-    public Response<Map<Integer,Integer>> countByOrderType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(outboundOrderService.countByOrderType(enter));
+    public Response<Map<Integer,Integer>> countByOrderType(@ModelAttribute @ApiParam("请求参数") CountByOrderTypeParamDTO paramDTO) {
+        return new Response<>(outboundOrderService.countByOrderType(paramDTO));
     }
 
 

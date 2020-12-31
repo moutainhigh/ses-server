@@ -160,7 +160,7 @@ public interface RosProductionProductServiceMapper {
      * @Param []
      * @return
      **/
-    List<CombinNameData> combinNameData();
+    List<CombinNameData> combinNameData(@Param("enter")CombinNameEnter enter);
 
     /**
      * @Author Aleks
@@ -180,4 +180,24 @@ public interface RosProductionProductServiceMapper {
      * @return
      **/
     List<OpeProductionScooterBom> getByGroupAndColorIds(List<Map<String,Object>> listMap);
+
+
+    /**
+     * @Author Aleks
+     * @Description  查找所Combination的中文名称
+     * @Date  2020/10/20 13:35
+     * @Param []
+     * @return
+     **/
+    List<CombinNameData> combinCnNameData(@Param("enter")CombinNameEnter enter);
+
+
+    /**
+     * @Author Aleks
+     * @Description 根据中文名称查bom数据
+     * @Date  2020/10/20 13:41
+     * @Param [enter]
+     * @return
+     **/
+    List<BomNameData> cnBomNoData(@Param("enter")BomNoEnter enter);
 }

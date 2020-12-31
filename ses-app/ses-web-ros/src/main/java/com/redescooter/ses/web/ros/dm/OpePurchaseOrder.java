@@ -91,6 +91,13 @@ public class OpePurchaseOrder {
     private Integer purchaseType;
 
     /**
+     * 采购单来源类型，1：调拨采购，2：其他
+     */
+    @TableField(value = "purchase_origin_type")
+    @ApiModelProperty(value = "采购单来源类型，1：调拨采购，2：其他")
+    private Integer purchaseOriginType;
+
+    /**
      * 运输方式，1：海运，2：陆运，3：空运
      */
     @TableField(value = "trans_type")
@@ -389,6 +396,8 @@ public class OpePurchaseOrder {
     public static final String COL_PURCHASE_QTY = "purchase_qty";
 
     public static final String COL_PURCHASE_TYPE = "purchase_type";
+
+    public static final String COL_PURCHASE_ORIGIN_TYPE = "purchase_origin_type";
 
     public static final String COL_TRANS_TYPE = "trans_type";
 

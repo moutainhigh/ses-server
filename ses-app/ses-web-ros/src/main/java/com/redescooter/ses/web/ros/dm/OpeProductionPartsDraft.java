@@ -35,6 +35,7 @@ public class OpeProductionPartsDraft implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**

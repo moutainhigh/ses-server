@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.factory.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -14,16 +15,20 @@ import com.redescooter.ses.web.ros.dao.base.OpeFactoryMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeFactoryTrace;
+import com.redescooter.ses.web.ros.dm.OpeSysRpsUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRpsUserService;
 import com.redescooter.ses.web.ros.service.factory.FactoryRosService;
 import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.functors.FalsePredicate;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -48,6 +53,9 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Autowired
     private OpeFactoryTraceService factoryTraceService;
+
+    @Autowired
+    private OpeSysRpsUserService opeSysRpsUserService;
 
     @Reference
     private IdAppService idAppService;
@@ -118,8 +126,30 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         if (save) {
             saveFactoryTrace(FactoryEventEnum.CREATE.getValue(), factorySave);
         }
+        // 生成工厂的账号信息
+        try {
+            createFactoryUser(factorySave);
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 通过邮箱创建工厂的RPS登陆账号
+    public void createFactoryUser(OpeFactory factory){
+        OpeSysRpsUser user = new OpeSysRpsUser();
+        int salt = RandomUtils.nextInt(10000, 99999);
+        String decryptPassword = "RedEScooter2019";
+        user.setPassword(DigestUtils.md5Hex(decryptPassword + salt));
+        user.setSalt(String.valueOf(salt));
+        user.setLoginName(factory.getContactEmail());
+        user.setStatus(SysUserStatusEnum.NORMAL.getCode());
+        user.setCreatedBy(factory.getCreatedBy());
+        user.setCreatedTime(new Date());
+        user.setUpdatedBy(factory.getUpdatedBy());
+        user.setUpdatedTime(new Date());
+        opeSysRpsUserService.saveOrUpdate(user);
+    }
+
 
     public Boolean checkMail(String mail,String idStr) {
 

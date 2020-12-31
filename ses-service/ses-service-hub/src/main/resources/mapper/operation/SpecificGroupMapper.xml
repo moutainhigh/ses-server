@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.SpecificGroupMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="production_type" jdbcType="INTEGER" property="productionType" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--查询车辆型号分组列表(下拉列表使用)-->
+    <select id="getSpecificGroupList" resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+        select id, group_name `name`
+        from ope_specificat_group
+	    where dr = 0 and production_type = 1
+    </select>
+
+    <!--根据id查询规格分组信息-->
+    <select id="getSpecificGroupById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_specificat_group
+        where dr = 0 and id = #{id}
+    </select>
+
+</mapper>

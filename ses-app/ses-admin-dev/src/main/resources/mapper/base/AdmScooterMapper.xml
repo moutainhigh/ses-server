@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.admin.dev.dao.base.AdmScooterMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    <!--@Table adm_scooter-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="color_id" jdbcType="BIGINT" property="colorId" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+    <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+    <result column="mac_name" jdbcType="VARCHAR" property="macName" />
+    <result column="scooter_controller" jdbcType="INTEGER" property="scooterController" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, sn, group_id, group_name, color_id, color_name, color_value, mac_address, 
+    mac_name, scooter_controller, remark, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def4, def5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from adm_scooter
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from adm_scooter
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    insert into adm_scooter (id, dr, sn, group_id, 
+      group_name, color_id, color_name, 
+      color_value, mac_address, mac_name, 
+      scooter_controller, remark, created_by, 
+      created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, 
+      def5)
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{sn,jdbcType=VARCHAR}, #{groupId,jdbcType=BIGINT}, 
+      #{groupName,jdbcType=VARCHAR}, #{colorId,jdbcType=BIGINT}, #{colorName,jdbcType=VARCHAR}, 
+      #{colorValue,jdbcType=VARCHAR}, #{macAddress,jdbcType=VARCHAR}, #{macName,jdbcType=VARCHAR}, 
+      #{scooterController,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+      #{def5,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    insert into adm_scooter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="sn != null">
+        sn,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="groupName != null">
+        group_name,
+      </if>
+      <if test="colorId != null">
+        color_id,
+      </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="colorValue != null">
+        color_value,
+      </if>
+      <if test="macAddress != null">
+        mac_address,
+      </if>
+      <if test="macName != null">
+        mac_name,
+      </if>
+      <if test="scooterController != null">
+        scooter_controller,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="sn != null">
+        #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorId != null">
+        #{colorId,jdbcType=BIGINT},
+      </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorValue != null">
+        #{colorValue,jdbcType=VARCHAR},
+      </if>
+      <if test="macAddress != null">
+        #{macAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="macName != null">
+        #{macName,jdbcType=VARCHAR},
+      </if>
+      <if test="scooterController != null">
+        #{scooterController,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    update adm_scooter
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="sn != null">
+        sn = #{sn,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=BIGINT},
+      </if>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorId != null">
+        color_id = #{colorId,jdbcType=BIGINT},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorValue != null">
+        color_value = #{colorValue,jdbcType=VARCHAR},
+      </if>
+      <if test="macAddress != null">
+        mac_address = #{macAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="macName != null">
+        mac_name = #{macName,jdbcType=VARCHAR},
+      </if>
+      <if test="scooterController != null">
+        scooter_controller = #{scooterController,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+    <!--@mbg.generated-->
+    update adm_scooter
+    set dr = #{dr,jdbcType=INTEGER},
+      sn = #{sn,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=BIGINT},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      color_id = #{colorId,jdbcType=BIGINT},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      color_value = #{colorValue,jdbcType=VARCHAR},
+      mac_address = #{macAddress,jdbcType=VARCHAR},
+      mac_name = #{macName,jdbcType=VARCHAR},
+      scooter_controller = #{scooterController,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=INTEGER},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def4 = #{def4,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

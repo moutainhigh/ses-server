@@ -5,8 +5,8 @@ import org.junit.Test;
 
 class SesStaterSentinelApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }

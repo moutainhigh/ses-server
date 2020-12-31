@@ -1,10 +1,8 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
-import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.service.common.service.CityAppService;
@@ -121,5 +119,31 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         return null;
+    }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/26 10:51 上午
+     * @Param: enter
+     * @Return: GeneralResult
+     * @desc: 更新客户个人信息
+     * @param enter
+     */
+    @Override
+    public GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter) {
+        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));
+        if (opeCustomer==null){
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.isAllBlank(enter.getCustomerFirstName(),enter.getCustomerLastName())){
+            opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
+            opeCustomer.setCustomerLastName(enter.getCustomerLastName());
+        }
+        if (StringUtils.isNotEmpty(enter.getTelephone())){
+            opeCustomer.setTelephone(enter.getTelephone());
+        }
+        opeCustomerService.updateById(opeCustomer);
+        return new GeneralResult(enter.getRequestId());
     }
 }

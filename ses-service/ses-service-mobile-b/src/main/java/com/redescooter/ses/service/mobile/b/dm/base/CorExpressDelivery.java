@@ -38,7 +38,7 @@ public class CorExpressDelivery implements Serializable {
      */
     @TableField(value = "tenant_id")
     @ApiModelProperty(value = "租户表")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 车辆Id

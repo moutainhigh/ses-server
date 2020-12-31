@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatDef;
 
 import java.util.List;
+
 public interface OpeSpecificatDefService extends IService<OpeSpecificatDef> {
 
 
@@ -16,3 +17,4 @@ public interface OpeSpecificatDefService extends IService<OpeSpecificatDef> {
     int insertOrUpdateSelective(OpeSpecificatDef record);
 
 }
+

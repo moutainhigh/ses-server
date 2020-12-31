@@ -35,7 +35,7 @@ public class MessageResult extends GeneralResult {
     private String appId;
 
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     @ApiModelProperty(value = "用户ID")
     private Long userId;

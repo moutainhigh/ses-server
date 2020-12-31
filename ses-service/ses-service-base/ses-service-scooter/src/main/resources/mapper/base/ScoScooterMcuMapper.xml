@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterMcuMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_mcu-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
+    <result column="batch_no" jdbcType="BIGINT" property="batchNo" />
+    <result column="date" jdbcType="TIMESTAMP" property="date" />
+    <result column="factory_no" jdbcType="BIGINT" property="factoryNo" />
+    <result column="control_power" jdbcType="INTEGER" property="controlPower" />
+    <result column="motor_power" jdbcType="INTEGER" property="motorPower" />
+    <result column="voltage" jdbcType="FLOAT" property="voltage" />
+    <result column="motor_speed" jdbcType="INTEGER" property="motorSpeed" />
+    <result column="mother_i" jdbcType="FLOAT" property="motherI" />
+    <result column="phase_i" jdbcType="FLOAT" property="phaseI" />
+    <result column="motor_low_t" jdbcType="FLOAT" property="motorLowT" />
+    <result column="motor_high_t" jdbcType="FLOAT" property="motorHighT" />
+    <result column="control_low_t" jdbcType="FLOAT" property="controlLowT" />
+    <result column="control_high_t" jdbcType="FLOAT" property="controlHighT" />
+    <result column="inclination_left_angle" jdbcType="FLOAT" property="inclinationLeftAngle" />
+    <result column="inclination_right_angle" jdbcType="FLOAT" property="inclinationRightAngle" />
+    <result column="climbing_up_angle" jdbcType="FLOAT" property="climbingUpAngle" />
+    <result column="climbing_down_angle" jdbcType="FLOAT" property="climbingDownAngle" />
+    <result column="over_voltage" jdbcType="FLOAT" property="overVoltage" />
+    <result column="lack_voltage" jdbcType="FLOAT" property="lackVoltage" />
+    <result column="limit_i" jdbcType="FLOAT" property="limitI" />
+    <result column="control_work" jdbcType="BOOLEAN" property="controlWork" />
+    <result column="shifter_breakdown" jdbcType="BOOLEAN" property="shifterBreakdown" />
+    <result column="motor_hall_breakdown" jdbcType="BOOLEAN" property="motorHallBreakdown" />
+    <result column="control_breakdown" jdbcType="BOOLEAN" property="controlBreakdown" />
+    <result column="brake_breakdown" jdbcType="BOOLEAN" property="brakeBreakdown" />
+    <result column="motor_loss_phase_breakdown" jdbcType="BOOLEAN" property="motorLossPhaseBreakdown" />
+    <result column="gyroscope_breakdown" jdbcType="BOOLEAN" property="gyroscopeBreakdown" />
+    <result column="lack_v_protect" jdbcType="BOOLEAN" property="lackVProtect" />
+    <result column="over_v_protect" jdbcType="BOOLEAN" property="overVProtect" />
+    <result column="balance" jdbcType="BOOLEAN" property="balance" />
+    <result column="control_speed_limit" jdbcType="BOOLEAN" property="controlSpeedLimit" />
+    <result column="charge" jdbcType="BOOLEAN" property="charge" />
+    <result column="energy" jdbcType="INTEGER" property="energy" />
+    <result column="energy_percent" jdbcType="INTEGER" property="energyPercent" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, scooter_no, batch_no, `date`, factory_no, control_power, motor_power, voltage, 
+    motor_speed, mother_i, phase_i, motor_low_t, motor_high_t, control_low_t, control_high_t, 
+    inclination_left_angle, inclination_right_angle, climbing_up_angle, climbing_down_angle, 
+    over_voltage, lack_voltage, limit_i, control_work, shifter_breakdown, motor_hall_breakdown, 
+    control_breakdown, brake_breakdown, motor_loss_phase_breakdown, gyroscope_breakdown, 
+    lack_v_protect, over_v_protect, balance, control_speed_limit, charge, energy, energy_percent, 
+    created_by, created_time, updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sco_scooter_mcu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sco_scooter_mcu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu">
+    <!--@mbg.generated-->
+    insert into sco_scooter_mcu (id, dr, scooter_no, 
+      batch_no, `date`, factory_no, 
+      control_power, motor_power, voltage, 
+      motor_speed, mother_i, phase_i, 
+      motor_low_t, motor_high_t, control_low_t, 
+      control_high_t, inclination_left_angle, inclination_right_angle, 
+      climbing_up_angle, climbing_down_angle, over_voltage, 
+      lack_voltage, limit_i, control_work, 
+      shifter_breakdown, motor_hall_breakdown, control_breakdown, 
+      brake_breakdown, motor_loss_phase_breakdown, 
+      gyroscope_breakdown, lack_v_protect, over_v_protect, 
+      balance, control_speed_limit, charge, 
+      energy, energy_percent, created_by, 
+      created_time, updated_by, updated_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, 
+      #{batchNo,jdbcType=BIGINT}, #{date,jdbcType=TIMESTAMP}, #{factoryNo,jdbcType=BIGINT}, 
+      #{controlPower,jdbcType=INTEGER}, #{motorPower,jdbcType=INTEGER}, #{voltage,jdbcType=FLOAT}, 
+      #{motorSpeed,jdbcType=INTEGER}, #{motherI,jdbcType=FLOAT}, #{phaseI,jdbcType=FLOAT}, 
+      #{motorLowT,jdbcType=FLOAT}, #{motorHighT,jdbcType=FLOAT}, #{controlLowT,jdbcType=FLOAT}, 
+      #{controlHighT,jdbcType=FLOAT}, #{inclinationLeftAngle,jdbcType=FLOAT}, #{inclinationRightAngle,jdbcType=FLOAT}, 
+      #{climbingUpAngle,jdbcType=FLOAT}, #{climbingDownAngle,jdbcType=FLOAT}, #{overVoltage,jdbcType=FLOAT}, 
+      #{lackVoltage,jdbcType=FLOAT}, #{limitI,jdbcType=FLOAT}, #{controlWork,jdbcType=BOOLEAN}, 
+      #{shifterBreakdown,jdbcType=BOOLEAN}, #{motorHallBreakdown,jdbcType=BOOLEAN}, #{controlBreakdown,jdbcType=BOOLEAN}, 
+      #{brakeBreakdown,jdbcType=BOOLEAN}, #{motorLossPhaseBreakdown,jdbcType=BOOLEAN}, 
+      #{gyroscopeBreakdown,jdbcType=BOOLEAN}, #{lackVProtect,jdbcType=BOOLEAN}, #{overVProtect,jdbcType=BOOLEAN}, 
+      #{balance,jdbcType=BOOLEAN}, #{controlSpeedLimit,jdbcType=BOOLEAN}, #{charge,jdbcType=BOOLEAN}, 
+      #{energy,jdbcType=INTEGER}, #{energyPercent,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu">
+    <!--@mbg.generated-->
+    insert into sco_scooter_mcu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="scooterNo != null">
+        scooter_no,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+      <if test="factoryNo != null">
+        factory_no,
+      </if>
+      <if test="controlPower != null">
+        control_power,
+      </if>
+      <if test="motorPower != null">
+        motor_power,
+      </if>
+      <if test="voltage != null">
+        voltage,
+      </if>
+      <if test="motorSpeed != null">
+        motor_speed,
+      </if>
+      <if test="motherI != null">
+        mother_i,
+      </if>
+      <if test="phaseI != null">
+        phase_i,
+      </if>
+      <if test="motorLowT != null">
+        motor_low_t,
+      </if>
+      <if test="motorHighT != null">
+        motor_high_t,
+      </if>
+      <if test="controlLowT != null">
+        control_low_t,
+      </if>
+      <if test="controlHighT != null">
+        control_high_t,
+      </if>
+      <if test="inclinationLeftAngle != null">
+        inclination_left_angle,
+      </if>
+      <if test="inclinationRightAngle != null">
+        inclination_right_angle,
+      </if>
+      <if test="climbingUpAngle != null">
+        climbing_up_angle,
+      </if>
+      <if test="climbingDownAngle != null">
+        climbing_down_angle,
+      </if>
+      <if test="overVoltage != null">
+        over_voltage,
+      </if>
+      <if test="lackVoltage != null">
+        lack_voltage,
+      </if>
+      <if test="limitI != null">
+        limit_i,
+      </if>
+      <if test="controlWork != null">
+        control_work,
+      </if>
+      <if test="shifterBreakdown != null">
+        shifter_breakdown,
+      </if>
+      <if test="motorHallBreakdown != null">
+        motor_hall_breakdown,
+      </if>
+      <if test="controlBreakdown != null">
+        control_breakdown,
+      </if>
+      <if test="brakeBreakdown != null">
+        brake_breakdown,
+      </if>
+      <if test="motorLossPhaseBreakdown != null">
+        motor_loss_phase_breakdown,
+      </if>
+      <if test="gyroscopeBreakdown != null">
+        gyroscope_breakdown,
+      </if>
+      <if test="lackVProtect != null">
+        lack_v_protect,
+      </if>
+      <if test="overVProtect != null">
+        over_v_protect,
+      </if>
+      <if test="balance != null">
+        balance,
+      </if>
+      <if test="controlSpeedLimit != null">
+        control_speed_limit,
+      </if>
+      <if test="charge != null">
+        charge,
+      </if>
+      <if test="energy != null">
+        energy,
+      </if>
+      <if test="energyPercent != null">
+        energy_percent,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryNo != null">
+        #{factoryNo,jdbcType=BIGINT},
+      </if>
+      <if test="controlPower != null">
+        #{controlPower,jdbcType=INTEGER},
+      </if>
+      <if test="motorPower != null">
+        #{motorPower,jdbcType=INTEGER},
+      </if>
+      <if test="voltage != null">
+        #{voltage,jdbcType=FLOAT},
+      </if>
+      <if test="motorSpeed != null">
+        #{motorSpeed,jdbcType=INTEGER},
+      </if>
+      <if test="motherI != null">
+        #{motherI,jdbcType=FLOAT},
+      </if>
+      <if test="phaseI != null">
+        #{phaseI,jdbcType=FLOAT},
+      </if>
+      <if test="motorLowT != null">
+        #{motorLowT,jdbcType=FLOAT},
+      </if>
+      <if test="motorHighT != null">
+        #{motorHighT,jdbcType=FLOAT},
+      </if>
+      <if test="controlLowT != null">
+        #{controlLowT,jdbcType=FLOAT},
+      </if>
+      <if test="controlHighT != null">
+        #{controlHighT,jdbcType=FLOAT},
+      </if>
+      <if test="inclinationLeftAngle != null">
+        #{inclinationLeftAngle,jdbcType=FLOAT},
+      </if>
+      <if test="inclinationRightAngle != null">
+        #{inclinationRightAngle,jdbcType=FLOAT},
+      </if>
+      <if test="climbingUpAngle != null">
+        #{climbingUpAngle,jdbcType=FLOAT},
+      </if>
+      <if test="climbingDownAngle != null">
+        #{climbingDownAngle,jdbcType=FLOAT},
+      </if>
+      <if test="overVoltage != null">
+        #{overVoltage,jdbcType=FLOAT},
+      </if>
+      <if test="lackVoltage != null">
+        #{lackVoltage,jdbcType=FLOAT},
+      </if>
+      <if test="limitI != null">
+        #{limitI,jdbcType=FLOAT},
+      </if>
+      <if test="controlWork != null">
+        #{controlWork,jdbcType=BOOLEAN},
+      </if>
+      <if test="shifterBreakdown != null">
+        #{shifterBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorHallBreakdown != null">
+        #{motorHallBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlBreakdown != null">
+        #{controlBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="brakeBreakdown != null">
+        #{brakeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorLossPhaseBreakdown != null">
+        #{motorLossPhaseBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="gyroscopeBreakdown != null">
+        #{gyroscopeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="lackVProtect != null">
+        #{lackVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="overVProtect != null">
+        #{overVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlSpeedLimit != null">
+        #{controlSpeedLimit,jdbcType=BOOLEAN},
+      </if>
+      <if test="charge != null">
+        #{charge,jdbcType=BOOLEAN},
+      </if>
+      <if test="energy != null">
+        #{energy,jdbcType=INTEGER},
+      </if>
+      <if test="energyPercent != null">
+        #{energyPercent,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu">
+    <!--@mbg.generated-->
+    update sco_scooter_mcu
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=BIGINT},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="factoryNo != null">
+        factory_no = #{factoryNo,jdbcType=BIGINT},
+      </if>
+      <if test="controlPower != null">
+        control_power = #{controlPower,jdbcType=INTEGER},
+      </if>
+      <if test="motorPower != null">
+        motor_power = #{motorPower,jdbcType=INTEGER},
+      </if>
+      <if test="voltage != null">
+        voltage = #{voltage,jdbcType=FLOAT},
+      </if>
+      <if test="motorSpeed != null">
+        motor_speed = #{motorSpeed,jdbcType=INTEGER},
+      </if>
+      <if test="motherI != null">
+        mother_i = #{motherI,jdbcType=FLOAT},
+      </if>
+      <if test="phaseI != null">
+        phase_i = #{phaseI,jdbcType=FLOAT},
+      </if>
+      <if test="motorLowT != null">
+        motor_low_t = #{motorLowT,jdbcType=FLOAT},
+      </if>
+      <if test="motorHighT != null">
+        motor_high_t = #{motorHighT,jdbcType=FLOAT},
+      </if>
+      <if test="controlLowT != null">
+        control_low_t = #{controlLowT,jdbcType=FLOAT},
+      </if>
+      <if test="controlHighT != null">
+        control_high_t = #{controlHighT,jdbcType=FLOAT},
+      </if>
+      <if test="inclinationLeftAngle != null">
+        inclination_left_angle = #{inclinationLeftAngle,jdbcType=FLOAT},
+      </if>
+      <if test="inclinationRightAngle != null">
+        inclination_right_angle = #{inclinationRightAngle,jdbcType=FLOAT},
+      </if>
+      <if test="climbingUpAngle != null">
+        climbing_up_angle = #{climbingUpAngle,jdbcType=FLOAT},
+      </if>
+      <if test="climbingDownAngle != null">
+        climbing_down_angle = #{climbingDownAngle,jdbcType=FLOAT},
+      </if>
+      <if test="overVoltage != null">
+        over_voltage = #{overVoltage,jdbcType=FLOAT},
+      </if>
+      <if test="lackVoltage != null">
+        lack_voltage = #{lackVoltage,jdbcType=FLOAT},
+      </if>
+      <if test="limitI != null">
+        limit_i = #{limitI,jdbcType=FLOAT},
+      </if>
+      <if test="controlWork != null">
+        control_work = #{controlWork,jdbcType=BOOLEAN},
+      </if>
+      <if test="shifterBreakdown != null">
+        shifter_breakdown = #{shifterBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorHallBreakdown != null">
+        motor_hall_breakdown = #{motorHallBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlBreakdown != null">
+        control_breakdown = #{controlBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="brakeBreakdown != null">
+        brake_breakdown = #{brakeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="motorLossPhaseBreakdown != null">
+        motor_loss_phase_breakdown = #{motorLossPhaseBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="gyroscopeBreakdown != null">
+        gyroscope_breakdown = #{gyroscopeBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="lackVProtect != null">
+        lack_v_protect = #{lackVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="overVProtect != null">
+        over_v_protect = #{overVProtect,jdbcType=BOOLEAN},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=BOOLEAN},
+      </if>
+      <if test="controlSpeedLimit != null">
+        control_speed_limit = #{controlSpeedLimit,jdbcType=BOOLEAN},
+      </if>
+      <if test="charge != null">
+        charge = #{charge,jdbcType=BOOLEAN},
+      </if>
+      <if test="energy != null">
+        energy = #{energy,jdbcType=INTEGER},
+      </if>
+      <if test="energyPercent != null">
+        energy_percent = #{energyPercent,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu">
+    <!--@mbg.generated-->
+    update sco_scooter_mcu
+    set dr = #{dr,jdbcType=INTEGER},
+      scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=BIGINT},
+      `date` = #{date,jdbcType=TIMESTAMP},
+      factory_no = #{factoryNo,jdbcType=BIGINT},
+      control_power = #{controlPower,jdbcType=INTEGER},
+      motor_power = #{motorPower,jdbcType=INTEGER},
+      voltage = #{voltage,jdbcType=FLOAT},
+      motor_speed = #{motorSpeed,jdbcType=INTEGER},
+      mother_i = #{motherI,jdbcType=FLOAT},
+      phase_i = #{phaseI,jdbcType=FLOAT},
+      motor_low_t = #{motorLowT,jdbcType=FLOAT},
+      motor_high_t = #{motorHighT,jdbcType=FLOAT},
+      control_low_t = #{controlLowT,jdbcType=FLOAT},
+      control_high_t = #{controlHighT,jdbcType=FLOAT},
+      inclination_left_angle = #{inclinationLeftAngle,jdbcType=FLOAT},
+      inclination_right_angle = #{inclinationRightAngle,jdbcType=FLOAT},
+      climbing_up_angle = #{climbingUpAngle,jdbcType=FLOAT},
+      climbing_down_angle = #{climbingDownAngle,jdbcType=FLOAT},
+      over_voltage = #{overVoltage,jdbcType=FLOAT},
+      lack_voltage = #{lackVoltage,jdbcType=FLOAT},
+      limit_i = #{limitI,jdbcType=FLOAT},
+      control_work = #{controlWork,jdbcType=BOOLEAN},
+      shifter_breakdown = #{shifterBreakdown,jdbcType=BOOLEAN},
+      motor_hall_breakdown = #{motorHallBreakdown,jdbcType=BOOLEAN},
+      control_breakdown = #{controlBreakdown,jdbcType=BOOLEAN},
+      brake_breakdown = #{brakeBreakdown,jdbcType=BOOLEAN},
+      motor_loss_phase_breakdown = #{motorLossPhaseBreakdown,jdbcType=BOOLEAN},
+      gyroscope_breakdown = #{gyroscopeBreakdown,jdbcType=BOOLEAN},
+      lack_v_protect = #{lackVProtect,jdbcType=BOOLEAN},
+      over_v_protect = #{overVProtect,jdbcType=BOOLEAN},
+      balance = #{balance,jdbcType=BOOLEAN},
+      control_speed_limit = #{controlSpeedLimit,jdbcType=BOOLEAN},
+      charge = #{charge,jdbcType=BOOLEAN},
+      energy = #{energy,jdbcType=INTEGER},
+      energy_percent = #{energyPercent,jdbcType=INTEGER},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=INTEGER},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

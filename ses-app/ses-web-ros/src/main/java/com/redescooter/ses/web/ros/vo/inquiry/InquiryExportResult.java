@@ -18,7 +18,6 @@ public class InquiryExportResult {
     @ApiModelProperty("名称")
     private String customerFullName;
 
-
     @ApiModelProperty("邮箱")
     private String email;
 
@@ -43,8 +42,11 @@ public class InquiryExportResult {
     @ApiModelProperty("尾款")
     private Double balance;
 
+    @ApiModelProperty("已付金额")
+    private Double amountPaid;
+
     @ApiModelProperty("总金额")
-    private Double amount;
+    private Double totalPrice;
 
     @ApiModelProperty("创建时间")
     private Date createdTime;

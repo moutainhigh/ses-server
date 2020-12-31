@@ -7,23 +7,28 @@ import com.redescooter.ses.web.ros.service.base.OpeSpecificatDefService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
-public class OpeSpecificatDefServiceImpl extends ServiceImpl<OpeSpecificatDefMapper, OpeSpecificatDef> implements OpeSpecificatDefService{
+public class OpeSpecificatDefServiceImpl extends ServiceImpl<OpeSpecificatDefMapper, OpeSpecificatDef> implements OpeSpecificatDefService {
 
     @Override
     public int updateBatch(List<OpeSpecificatDef> list) {
         return baseMapper.updateBatch(list);
     }
+
     @Override
     public int batchInsert(List<OpeSpecificatDef> list) {
         return baseMapper.batchInsert(list);
     }
+
     @Override
     public int insertOrUpdate(OpeSpecificatDef record) {
         return baseMapper.insertOrUpdate(record);
     }
+
     @Override
     public int insertOrUpdateSelective(OpeSpecificatDef record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
 }
+

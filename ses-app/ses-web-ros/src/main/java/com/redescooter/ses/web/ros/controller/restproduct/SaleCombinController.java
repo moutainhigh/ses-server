@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.restproduct;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.SaleCombinService;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
@@ -31,6 +32,7 @@ public class SaleCombinController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增销售组装件", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaleCombinSaveOrUpdateEnter enter) {
         return new Response<>(saleCombinService.saveSaleCombin(enter));
     }
@@ -66,7 +68,7 @@ public class SaleCombinController {
 
     @PostMapping(value = "/combinNameData")
     @ApiOperation(value = "销售组装件名称下拉接口", response = CombinNameData.class)
-    public Response<List<CombinNameData>> combinNameData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<CombinNameData>> combinNameData(@ModelAttribute @ApiParam("请求参数") CombinNameEnter enter) {
         return new Response<>(saleCombinService.combinNameData(enter));
     }
 

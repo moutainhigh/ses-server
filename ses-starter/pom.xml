@@ -25,6 +25,7 @@
         <module>ses-starter-rabbitmq</module>
         <module>ses-stater-sentinel</module>
         <module>ses-starter-seata</module>
+        <module>ses-starter-emqx</module>
     </modules>
 
     <build>

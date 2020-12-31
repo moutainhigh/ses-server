@@ -75,6 +75,10 @@ public enum ExceptionCodeEnums {
     EVENT_IS_EMPTY(10033,"事件为空"),
 
     POSITIONING_DATA_IS_EMPTY(10034,"定位数据为空，指经纬度"),
+
+    MILEAGE_IS_EMPTY(10035,"骑行距离为空"),
+
+    DURATION_IS_EMPTY(10036,"耗时为空")
     ;
 
 

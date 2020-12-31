@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.SpecificTypeMapper">
+
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="specificat_name" jdbcType="VARCHAR" property="specificatName" />
+        <result column="specificat_code" jdbcType="VARCHAR" property="specificatCode" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--查询车辆型号分组列表(下拉列表使用)-->
+    <select id="getScooterModelList" parameterType="java.lang.Long" resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+        select id, specificat_name `name`
+	    from ope_specificat_type
+	    where dr = 0 and group_id = #{groupId}
+    </select>
+
+    <!--根据id查询规格类型信息-->
+    <select id="getSpecificTypeById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select st.*, sg.group_name
+        from ope_specificat_type st
+        inner join ope_specificat_group sg
+        on st.group_id = sg.id and sg.dr = 0
+        where st.dr = 0 and st.id = #{id}
+    </select>
+
+    <!--根据name查询规格类型信息-->
+    <select id="getSpecificTypeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select st.*, sg.group_name
+        from ope_specificat_type st
+        inner join ope_specificat_group sg
+        on st.group_id = sg.id and sg.dr = 0
+        where st.dr = 0 and st.specificat_name = #{name}
+    </select>
+
+</mapper>

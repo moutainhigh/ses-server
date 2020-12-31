@@ -25,10 +25,17 @@ public class SaveOutboundOrderEnter extends GeneralEnter {
     private Long id;
 
     @ApiModelProperty(value = "关联的发货单id")
-    private Long invoiceId;
+    //private Long invoiceId; relationId
+    private Long relationId;
 
     @ApiModelProperty(value = "发货单号")
-    private String invoiceNo;
+    private String relationNo;
+
+    @ApiModelProperty(value = "发货单类型")
+    private Integer relationType;
+
+//    @ApiModelProperty(value = "发货单号")
+//    private String invoiceNo;
 
     @ApiModelProperty(value = "出库单号")
     private String outWhNo;
@@ -36,7 +43,7 @@ public class SaveOutboundOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "出库单类型，1：整车，2：组装件，3：部件")
     private Integer outWhType;
 
-    @ApiModelProperty(value = "出库类型，1：销售调拨")
+    @ApiModelProperty(value = "出库类型，1：销售调拨,2：生产组装")
     private Integer outType;
 
     @ApiModelProperty(value = "出库数量")

@@ -236,15 +236,15 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public PageResult<OrderResult> orderList(OrderListEnter enter) {
 
-        if (StringUtils.isNotBlank(enter.getRecipientCity())) {
-            CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
-            enter.setRecipientCity(recipientCity != null ? recipientCity.getName().trim() : null);
-
-        }
-        if (StringUtils.isNotBlank(enter.getRecipientPostcode())) {
-            CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientPostcode())));
-            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName().trim() : null);
-        }
+//        if (StringUtils.isNotBlank(enter.getRecipientCity())) {
+//            CityResult recipientCity = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientCity())));
+//            enter.setRecipientCity(recipientCity != null ? recipientCity.getName().trim() : null);
+//
+//        }
+//        if (StringUtils.isNotBlank(enter.getRecipientPostcode())) {
+//            CityResult recipientPostcode = cityBaseService.queryCityDeatliById(new IdEnter(Long.parseLong(enter.getRecipientPostcode())));
+//            enter.setRecipientPostcode(recipientPostcode != null ? recipientPostcode.getName().trim() : null);
+//        }
 
         int count = taskServiceMapper.orderListCount(enter);
         if (count == 0) {

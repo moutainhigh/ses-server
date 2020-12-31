@@ -47,17 +47,17 @@ public class PlaAppVersion implements Serializable {
     private String appId;
 
     /**
-     * IOS or ANDROID
+     * IOS or ANDROID or SCS
      */
     @TableField(value = "system_type")
-    @ApiModelProperty(value = "IOS or ANDROID")
+    @ApiModelProperty(value = "IOS or ANDROID or SCS")
     private Integer systemType;
 
     /**
-     * 版本类型：1.IOS 2. ANDROID
+     * 版本类型：1.IOS 2. ANDROID 3.SCS(车载平板)
      */
     @TableField(value = "type")
-    @ApiModelProperty(value = "版本类型：1.IOS 2. ANDROID")
+    @ApiModelProperty(value = "版本类型：1.IOS 2. ANDROID 3.SCS")
     private Integer type;
 
     /**
@@ -127,8 +127,29 @@ public class PlaAppVersion implements Serializable {
      * 状态 NEW:新版本；Closed：已关闭
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态 NEW:新版本；Closed：已关闭")
-    private String status;
+    @ApiModelProperty(value = "版本状态 0未发布 1已发布 2生效中")
+    private Integer status;
+
+    /**
+     * 更新内容标题
+     */
+    @TableField(value = "title")
+    @ApiModelProperty(value = "更新内容标题")
+    private String title;
+
+    /**
+     * 发布环境 1-dev环境 2-test环境 3-pre环境 4-pro环境
+     */
+    @TableField(value = "release_environment")
+    @ApiModelProperty(value = "发布环境 1-dev环境 2-test环境 3-pre环境 4-pro环境")
+    private Integer releaseEnvironment;
+
+    /**
+     * 标签
+     */
+    @TableField(value = "label")
+    @ApiModelProperty(value = "标签")
+    private String label;
 
     /**
      * 创建人
@@ -226,6 +247,12 @@ public class PlaAppVersion implements Serializable {
     public static final String COL_NIN_VERSION_NAME = "nin_version_name";
 
     public static final String COL_STATUS = "status";
+
+    public static final String COL_TITLE = "title";
+
+    public static final String COL_RELEASE_ENVIRONMENT = "release_environment";
+
+    public static final String COL_LABEL = "label";
 
     public static final String COL_CREATED_BY = "created_by";
 

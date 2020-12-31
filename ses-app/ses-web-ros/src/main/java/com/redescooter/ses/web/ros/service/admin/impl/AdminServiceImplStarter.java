@@ -163,23 +163,23 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         List<OpeSysMenu> sysMenus = opeSysMenuService.list();
 
         //查询销售区域
-        List<CityResult> cityList = cityBaseService.list(new GeneralEnter());
+//        List<CityResult> cityList = cityBaseService.list(new GeneralEnter());
 
         //保存角色权限
-        rolePermissionService.insertRoleMenuPermissions(sysRole.getId(), sysMenus.stream().map(OpeSysMenu::getId).collect(Collectors.toSet()));
-        //保存部门角色
-        rolePermissionService.insertRoleDeptPermissions(sysRole.getId(), dept.getId());
-        //绑定员工销售区域
-        rolePermissionService.insertRoleSalesPermissions(sysRole.getId(), cityList.stream().map(CityResult::getId).collect(Collectors.toSet()));
-        //员工角色绑定关系
-        opeSysUserRoleService.save(OpeSysUserRole.builder().userId(opeSysUser.getId()).roleId(sysRole.getId()).build());
+//        rolePermissionService.insertRoleMenuPermissions(sysRole.getId(), sysMenus.stream().map(OpeSysMenu::getId).collect(Collectors.toSet()));
+//        //保存部门角色
+//        rolePermissionService.insertRoleDeptPermissions(sysRole.getId(), dept.getId());
+//        //绑定员工销售区域
+//        rolePermissionService.insertRoleSalesPermissions(sysRole.getId(), cityList.stream().map(CityResult::getId).collect(Collectors.toSet()));
+//        //员工角色绑定关系
+//        opeSysUserRoleService.save(OpeSysUserRole.builder().userId(opeSysUser.getId()).roleId(sysRole.getId()).build());
         return new GeneralResult();
     }
 
     private OpeSysPosition createOpeSysPosition(OpeSysDept dept, OpeSysUser opeSysUser) {
         // 新建岗位
         OpeSysPosition position = new OpeSysPosition();
-        position.setId(idAppService.getId(SequenceName.OPE_SYS_POSITION));
+        position.setId(1000000L);
         position.setPositionName("rede");
         position.setDeptId(dept.getId());
         position.setPositionStatus(DeptStatusEnums.COMPANY.getValue());
@@ -190,6 +190,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         position.setPositionCode("P000001");
         position.setSort(1);
         position.setTenantId(0L);
+        position.setSystemRoot(Constant.SYSTEM_ROOT);
         opeSysPositionService.save(position);
         return position;
     }
@@ -273,7 +274,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysRole saveRole(Long positionId) {
         OpeSysRole sysRole = OpeSysRole.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_ROLE))
+                .id(1000000L)
                 .dr(0)
                 .tenantId(0L)
                 .roleName(Constant.ADMIN_USER_NAME)
@@ -285,6 +286,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .updateTime(new Date())
                 .roleCode("R000001")
                 .positionId(positionId)
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
         opeSysRoleService.save(sysRole);
         return sysRole;
@@ -292,7 +294,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
     private OpeSysUserProfile buildSysUserProfile(OpeSysUser opeSysUser) {
         OpeSysUserProfile opeSysUserProfile = OpeSysUserProfile.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_USER_PROFILE))
+                .id(1000000L)
                 .dr(0)
                 .repairShopId(0L)
                 .sysUserId(opeSysUser.getId())
@@ -334,12 +336,13 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .countryCode("33")
                 .code("S000001")
                 .openAccount("1")
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
     }
 
     private OpeSysUser buildOpeSysUser(Long deptId, int salt) {
         return OpeSysUser.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_USER))
+                .id(1000000L)
                 .dr(0)
                 .deptId(deptId)
                 .orgStaffId(0L)
@@ -364,7 +367,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     private OpeSysDept buildOpeSysDept() {
         OpeSysDept dept;
         dept = OpeSysDept.builder()
-                .id(idAppService.getId(SequenceName.OPE_SYS_DEPT))
+                .id(1000000L)
                 .dr(0)
                 .code("D000001")
                 .pId(Constant.DEPT_TREE_ROOT_ID)
@@ -378,6 +381,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
                 .createdTime(new Date())
                 .updatedBy(0L)
                 .updatedTime(new Date())
+                .systemRoot(Constant.SYSTEM_ROOT)
                 .build();
         opeSysDeptService.save(dept);
         return dept;

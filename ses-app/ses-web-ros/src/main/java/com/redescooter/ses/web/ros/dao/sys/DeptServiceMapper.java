@@ -47,7 +47,7 @@ public interface DeptServiceMapper {
      *
      * @return
      */
-    List<DeptTypeResult> deptType(@Param("tenantId") long tenantId);
+    List<DeptTypeResult> deptType(@Param("enter") TypeListEnter enter);
 
     /**
      * 获取部门信息

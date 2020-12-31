@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysDept">
     <!--@mbg.generated-->
-    <!--@Table ope_sys_dept-->
+    <!--@Table operation.ope_sys_dept-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="p_id" jdbcType="BIGINT" property="pId" />
@@ -15,19 +15,26 @@
     <result column="dept_status" jdbcType="INTEGER" property="deptStatus" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="system_root" jdbcType="VARCHAR" property="systemRoot" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="DECIMAL" property="def4" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, p_id, tenant_id, principal, `level`, `name`, code, dept_status, description, 
-    sort, created_by, created_time, updated_by, updated_time
+    sort, system_root, created_by, created_time, updated_by, updated_time, def1, def2, 
+    def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_sys_dept
+    update operation.ope_sys_dept
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -79,6 +86,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.sort,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="system_root = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.systemRoot,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
@@ -99,112 +111,29 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
-    </trim>
-    where id in
-    <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
-    </foreach>
-  </update>
-  <update id="updateBatchSelective" parameterType="java.util.List">
-    <!--@mbg.generated-->
-    update ope_sys_dept
-    <trim prefix="set" suffixOverrides=",">
-      <trim prefix="dr = case" suffix="end,">
+      <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.dr != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
-          </if>
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="p_id = case" suffix="end,">
+      <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.pId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.pId,jdbcType=BIGINT}
-          </if>
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="tenant_id = case" suffix="end,">
+      <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.tenantId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
-          </if>
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="principal = case" suffix="end,">
+      <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.principal != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.principal,jdbcType=BIGINT}
-          </if>
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=DECIMAL}
         </foreach>
       </trim>
-      <trim prefix="`level` = case" suffix="end,">
+      <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.level != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.level,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="`name` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.name != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="code = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.code != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="dept_status = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.deptStatus != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.deptStatus,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="description = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.description != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.description,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="sort = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.sort != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.sort,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="created_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.createdTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_by = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedBy != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="updated_time = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.updatedTime != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
-          </if>
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
         </foreach>
       </trim>
     </trim>
@@ -215,21 +144,24 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into ope_sys_dept
+    insert into operation.ope_sys_dept
     (dr, p_id, tenant_id, principal, `level`, `name`, code, dept_status, description, 
-      sort, created_by, created_time, updated_by, updated_time)
+      sort, system_root, created_by, created_time, updated_by, updated_time, def1, def2, 
+      def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.dr,jdbcType=INTEGER}, #{item.pId,jdbcType=BIGINT}, #{item.tenantId,jdbcType=BIGINT}, 
         #{item.principal,jdbcType=BIGINT}, #{item.level,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, 
         #{item.code,jdbcType=VARCHAR}, #{item.deptStatus,jdbcType=INTEGER}, #{item.description,jdbcType=VARCHAR}, 
-        #{item.sort,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP})
+        #{item.sort,jdbcType=INTEGER}, #{item.systemRoot,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=DECIMAL}, #{item.def5,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into ope_sys_dept
+    insert into operation.ope_sys_dept
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -244,10 +176,16 @@
       dept_status,
       description,
       sort,
+      system_root,
       created_by,
       created_time,
       updated_by,
       updated_time,
+      def1,
+      def2,
+      def3,
+      def4,
+      def5,
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -264,10 +202,16 @@
       #{deptStatus,jdbcType=INTEGER},
       #{description,jdbcType=VARCHAR},
       #{sort,jdbcType=INTEGER},
+      #{systemRoot,jdbcType=VARCHAR},
       #{createdBy,jdbcType=BIGINT},
       #{createdTime,jdbcType=TIMESTAMP},
       #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR},
+      #{def2,jdbcType=VARCHAR},
+      #{def3,jdbcType=VARCHAR},
+      #{def4,jdbcType=DECIMAL},
+      #{def5,jdbcType=VARCHAR},
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -284,15 +228,21 @@
       dept_status = #{deptStatus,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       sort = #{sort,jdbcType=INTEGER},
+      system_root = #{systemRoot,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_time = #{createdTime,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def4 = #{def4,jdbcType=DECIMAL},
+      def5 = #{def5,jdbcType=VARCHAR},
     </trim>
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into ope_sys_dept
+    insert into operation.ope_sys_dept
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -327,6 +277,9 @@
       <if test="sort != null">
         sort,
       </if>
+      <if test="systemRoot != null">
+        system_root,
+      </if>
       <if test="createdBy != null">
         created_by,
       </if>
@@ -338,6 +291,21 @@
       </if>
       <if test="updatedTime != null">
         updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
       </if>
     </trim>
     values
@@ -375,6 +343,9 @@
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
+      <if test="systemRoot != null">
+        #{systemRoot,jdbcType=VARCHAR},
+      </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
       </if>
@@ -386,6 +357,21 @@
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=DECIMAL},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
       </if>
     </trim>
     on duplicate key update 
@@ -423,6 +409,9 @@
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
+      <if test="systemRoot != null">
+        system_root = #{systemRoot,jdbcType=VARCHAR},
+      </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
       </if>
@@ -434,6 +423,21 @@
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=DECIMAL},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

@@ -1,6 +1,7 @@
 #Springboot 基础配置
 server:
-  port: ${random.int[10000,19999]}
+  ##port: ${random.int[10000,19999]}
+  port: 38090
   servlet:
     encoding:
       force: true
@@ -130,4 +131,11 @@ mybatis-plus:
     local-cache-scope: session
     call-setters-on-nulls: false
 
-
+# MQTT配置信息(本地启动使用本地证书)
+mqtt:
+  ca: /root/certs/my_root_ca.pem
+  clientCrt: /root/certs/client.pem
+  clientKey: /root/certs/client.key
+  timeout: 60
+  keepalive: 60
+  url: ssl://client.redemotors.com

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.admin.dev.dao.scooter.AdminScooterMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="sn" jdbcType="VARCHAR" property="sn" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="color_id" jdbcType="INTEGER" property="colorId" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+        <result column="mac_name" jdbcType="VARCHAR" property="macName" />
+        <result column="scooter_controller" jdbcType="INTEGER" property="scooterController" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--scooterDetailResultMap(查询详情时使用)-->
+    <resultMap id="ScooterDetailResultMap" type="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="sn" jdbcType="VARCHAR" property="sn" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="color_id" jdbcType="INTEGER" property="colorId" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="mac_address" jdbcType="VARCHAR" property="macAddress" />
+        <result column="mac_name" jdbcType="VARCHAR" property="macName" />
+        <result column="scooter_controller" jdbcType="INTEGER" property="scooterController" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <!--一对多映射-->
+        <collection property="adminScooterPartsList" ofType="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO">
+            <result column="sp_id" jdbcType="BIGINT" property="id" />
+            <result column="scooter_id" jdbcType="BIGINT" property="scooterId" />
+            <result column="sp_name" jdbcType="VARCHAR" property="name" />
+            <result column="sp_sn" jdbcType="VARCHAR" property="sn" />
+            <result column="sp_qty" jdbcType="INTEGER" property="qty" />
+        </collection>
+    </resultMap>
+
+    <!--根据平板序列号查询车辆信息-->
+    <select id="getAdminScooterBySn" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from adm_scooter
+	    where sn = #{sn} and dr = 0
+    </select>
+
+    <!--新增车辆信息-->
+    <insert id="insertAdminScooter" parameterType="com.redescooter.ses.admin.dev.dm.AdmScooter">
+        insert into adm_scooter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="sn != null">
+                sn,
+            </if>
+            <if test="groupId != null">
+                group_id,
+            </if>
+            <if test="groupName != null">
+                group_name,
+            </if>
+            <if test="colorId != null">
+                color_id,
+            </if>
+            <if test="colorName != null">
+                color_name,
+            </if>
+            <if test="colorValue != null">
+                color_value,
+            </if>
+            <if test="macAddress != null">
+                mac_address,
+            </if>
+            <if test="macName != null">
+                mac_name,
+            </if>
+            <if test="scooterController != null">
+                scooter_controller,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="sn != null">
+                #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="groupName != null">
+                #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorId != null">
+                #{colorId,jdbcType=INTEGER},
+            </if>
+            <if test="colorName != null">
+                #{colorName,jdbcType=VARCHAR},
+            </if>
+            <if test="colorValue != null">
+                #{colorValue,jdbcType=VARCHAR},
+            </if>
+            <if test="macAddress != null">
+                #{macAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="macName != null">
+                #{macName,jdbcType=VARCHAR},
+            </if>
+            <if test="scooterController != null">
+                #{scooterController,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--获取车辆数量-->
+    <select id="countByAdminScooter" resultType="java.lang.Integer"
+            parameterType="com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO">
+        select count(*) from adm_scooter
+	    where dr = 0
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test="colorId != null">
+            and color_id = #{colorId}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and `sn` like concat('%',#{keyWord},'%')
+            or mac_address like concat('%',#{keyWord},'%')
+            or mac_name like concat('%',#{keyWord},'%')
+        </if>
+    </select>
+
+    <!--查询车辆列表-->
+    <select id="queryAdminScooter" parameterType="com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO"
+            resultMap="BaseResultMap">
+        select * from adm_scooter
+        where dr = 0
+        <if test="groupId != null">
+            and group_id = #{groupId}
+        </if>
+        <if test="colorId != null">
+            and color_id = #{colorId}
+        </if>
+        <if test="keyWord != null and keyWord != ''">
+            and `sn` like concat('%',#{keyWord},'%')
+            or mac_address like concat('%',#{keyWord},'%')
+            or mac_name like concat('%',#{keyWord},'%')
+        </if>
+        order by created_time desc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--根据id查询车辆详情-->
+    <select id="getAdminScooterDetailById" parameterType="java.lang.Long" resultMap="ScooterDetailResultMap">
+        select s.*,sp.id sp_id, sp.scooter_id,sp.`name` sp_name,sp.`sn` sp_sn, sp.qty sp_qty
+	    from adm_scooter s
+	    left join adm_scooter_parts sp
+	    on s.id = sp.scooter_id and sp.dr = 0
+	    where s.dr = 0 and s.id = #{id}
+    </select>
+
+    <!--根据id查询车辆信息-->
+    <select id="getAdminScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from adm_scooter
+        where id = #{id} and dr = 0
+    </select>
+
+    <!--修改车辆信息-->
+    <update id="updateAdminScooter" parameterType="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO">
+        update adm_scooter
+	    <set>
+            <if test="sn != null and sn != ''">
+                sn = #{sn},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId},
+            </if>
+            <if test="groupName != null and groupName != ''">
+                group_name = #{groupName},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId},
+            </if>
+            <if test="colorName != null and colorName != ''">
+                color_name = #{colorName},
+            </if>
+            <if test="colorValue != null and colorValue != ''">
+                color_value = #{colorValue},
+            </if>
+            <if test="macAddress != null and macAddress != ''">
+                mac_address = #{macAddress},
+            </if>
+            <if test="macName != null and macName != ''">
+                mac_name = #{macName},
+            </if>
+            <if test="scooterController != null">
+                scooter_controller = #{scooterController},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+	    where id = #{id}
+    </update>
+
+</mapper>

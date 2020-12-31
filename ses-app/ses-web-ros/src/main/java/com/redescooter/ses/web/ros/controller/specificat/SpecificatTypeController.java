@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.controller.specificat;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.specification.QuerySpecificTypeDetailResultDTO;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDetailResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListEnter;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListResult;
-import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeSaveOrEditEnter;
+import com.redescooter.ses.web.ros.vo.specificat.*;
+import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,10 +30,50 @@ public class SpecificatTypeController {
 
     @PostMapping(value = "/specificatTypeSave")
     @ApiOperation(value = "规格类型新增", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> specificatTypeSave(@ModelAttribute @ApiParam("请求参数") SpecificatTypeSaveOrEditEnter enter) {
         return new Response(specificatTypeService.specificatTypeSave(enter));
     }
 
+    /**
+     * 新增规格类型,新接口(new)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/7
+    */
+    @ApiOperation(value = "新增规格类型", notes = "新增规格类型,新接口(new)")
+    @PostMapping(value = "/insert")
+    @AvoidDuplicateSubmit
+    public Response<GeneralResult> insertSpecificType(@ModelAttribute InsertSpecificTypeParamDTO paramDTO) {
+        return new Response<>(specificatTypeService.insertSpecificType(paramDTO));
+    }
+
+    /**
+     * 修改规格类型,新接口(new)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/17
+    */
+    @ApiOperation(value = "修改规格类型", notes = "修改规格类型,新接口(new)")
+    @PostMapping(value = "/update")
+    public Response<GeneralResult> updateSpecificType(@ModelAttribute InsertSpecificTypeParamDTO paramDTO) {
+        return new Response<>(specificatTypeService.updateSpecificType(paramDTO));
+    }
+
+    /**
+     * 根据id查询规格类型详情
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<QuerySpecificTypeDetailResultDTO>
+     * @author assert
+     * @date 2020/12/8
+    */
+    @ApiOperation(value = "查询规格类型详情", notes = "根据id查询规格类型详情,新接口(new)")
+    @PostMapping(value = "/detail")
+    public Response<QuerySpecificTypeDetailResultDTO> getSpecificTypeDetailById(@ModelAttribute IdEnter enter) {
+        return new Response<>(specificatTypeService.getSpecificTypeDetailById(enter));
+    }
 
     @PostMapping(value = "/specificatTypeDelete")
     @ApiOperation(value = "规格类型删除", response = GeneralResult.class)

@@ -179,10 +179,14 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             opeProductPrice.setId(idAppService.getId(SequenceName.OPE_PRODUCT_PRICE));
             opeProductPrice.setCreatedBy(enter.getUserId());
             opeProductPrice.setCreatedTime(new Date());
+            opeProductPrice.setUpdatedBy(enter.getUserId());
+            opeProductPrice.setUpdatedTime(new Date());
         } else {
             opeProductPrice.setId(queryOpePriceSheet.getId());
-            opeProductPrice.setCreatedBy(queryOpePriceSheet.getCreatedBy());
-            opeProductPrice.setCreatedTime(queryOpePriceSheet.getCreatedTime());
+//            opeProductPrice.setCreatedBy(queryOpePriceSheet.getCreatedBy());
+//            opeProductPrice.setCreatedTime(queryOpePriceSheet.getCreatedTime());
+            opeProductPrice.setUpdatedBy(enter.getUserId());
+            opeProductPrice.setUpdatedTime(new Date());
         }
         if (queryOpePriceSheet != null) {
             if (queryOpePriceSheet.getPrice().equals(new BigDecimal(enter.getProductFrPrice()))) {

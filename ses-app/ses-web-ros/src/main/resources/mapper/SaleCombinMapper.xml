@@ -15,9 +15,10 @@
             and combin.sale_stutas = #{enter.saleStutas}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and combin.product_name like concat('%', #{enter.keyword}, '%') or
+            and (combin.product_name like concat('%', #{enter.keyword}, '%') or
             combin.combin_name like concat('%', #{enter.keyword}, '%') or
             bom.bom_no like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

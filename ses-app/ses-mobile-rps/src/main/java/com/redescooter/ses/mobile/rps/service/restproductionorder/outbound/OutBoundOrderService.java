@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.restproductionorder.outbound;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.ProductOutWhDetailEnter;
@@ -30,11 +29,11 @@ public interface OutBoundOrderService {
     * @Description
     * @Author: enter
     * @Date:   2020/11/3 2:28 下午
-    * @Param:  enter
+    * @Param:  paramDTO
     * @Return: Map
     * @des： 单据类型统计
     */
-    Map<Integer,Integer> countByOrderType(GeneralEnter enter);
+    Map<Integer,Integer> countByOrderType(CountByOrderTypeParamDTO paramDTO);
     /**
     * @Description
     * @Author: alex

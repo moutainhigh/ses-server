@@ -73,9 +73,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     private OpePurchaseOrderService opePurchaseOrderService;
 
     @Autowired
-    private OpeAllocateOrderService opeAllocateOrderService;
-
-    @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
     @Autowired
@@ -116,6 +113,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private RosProductionProductServiceMapper rosProductionProductServiceMapper;
+
+    @Autowired
+    private OpeEntrustOrderService opeEntrustOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -211,7 +211,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @Date: 2020/10/27 18:14
      * @Param: enter
      * @Return: AssociatedOrderResult
-     * @desc: 关联订单列表
+     * @desc: 关联订单列表 关联采购单和委托单
      * @param enter
      */
     @Override
@@ -222,15 +222,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
-        if (opePurchaseOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (opePurchaseOrder != null) {
+            resultList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getPurchaseNo(), OrderTypeEnums.SHIPPING.getValue(), opePurchaseOrder.getCreatedTime(),""));
         }
-        OpeAllocateOrder opeAllocateOrder = opeAllocateOrderService.getById(opePurchaseOrder.getAllocateId());
-        if (opeAllocateOrder == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().eq(OpeEntrustOrder::getInvoiceId,opeInvoiceOrder.getId()));
+        if (opeEntrustOrder != null) {
+            resultList.add(new AssociatedOrderResult(opeEntrustOrder.getId(), opeEntrustOrder.getEntrustNo(), OrderTypeEnums.ORDER.getValue(), opeEntrustOrder.getCreatedTime(),""));
         }
-        resultList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getAllocateNo(), OrderTypeEnums.SHIPPING.getValue(), opeAllocateOrder.getCreatedTime()));
-        resultList.add(new AssociatedOrderResult(opeAllocateOrder.getId(), opeAllocateOrder.getAllocateNo(), OrderTypeEnums.ALLOCATE.getValue(), opeAllocateOrder.getCreatedTime()));
         return resultList;
     }
 
@@ -271,28 +269,31 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         }
 
         if (CollectionUtils.isNotEmpty(snList)) {
-            Map<Long, String> snMap = new HashMap<>();
+            List<String> snMap =new ArrayList<>();
             Long qty = 0L;
             for (OrderProductDetailResult product : productList) {
                 //序列号集合
-                if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
+                /*if (opeInvoiceOrder.getInvoiceType().equals(ProductTypeEnums.SCOOTER.getValue())) {
 
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
                 } else {
                     snMap =
-                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).collect(Collectors.toMap(InvoiceSnResult::getId, InvoiceSnResult::getSn));
+                            snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getSn).collect(Collectors.toList());
                     //已发货数量
                     qty =
                             snList.stream().filter(item -> (item.getColorId().equals(product.getColorId()) && item.getGroupId().equals(product.getCategoryId()))).map(InvoiceSnResult::getQty).count();
-                }
+                }*/
                 product.setQty(qty.intValue());
                 product.setSnMap(snMap);
             }
+        }else {
+            productList.stream().forEach(item->{item.setQty(0);item.setSnMap(new ArrayList<>());});
         }
+
         return productList;
 
     }
@@ -362,13 +363,34 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
             }
             // 找到符合条件的整车产品
             List<OpeProductionScooterBom>  scooterBomList = rosProductionProductServiceMapper.getByGroupAndColorIds(listMap);
-            // 对查询出来的结果 根据分组和颜色进行分组
-            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
-            if (CollectionUtil.isEmpty(map)) {
+            if (CollectionUtils.isEmpty(scooterBomList)){
+                // 说明存在没有这种产品的整车
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
+            }
+            // 对查询出来的结果 根据分组和颜色进行分组 (嵌套分组)
+//            Map<Long, Map<Long, List<OpeProductionScooterBom>>> map = scooterBomList.stream().collect(Collectors.groupingBy(OpeProductionScooterBom::getGroupId, Collectors.groupingBy(OpeProductionScooterBom::getColorId)));
+            Map<String, List<OpeProductionScooterBom>> map = scooterBomList.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
+            // 因为下单的时候 可能会出现 同分组颜色的情况，所以scooterBS需要先根据分组颜色来先进行分组 （多字段自定义分组）  再比较
+            Map<String, List<OpeInvoiceScooterB>> map1 = scooterBS.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+            if (map1.size() > map.size()) {
                 // 说明存在没有这种产品的整车
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_NOT_EXIST.getMessage());
             }
         }
+    }
+
+
+
+    // 多字段自定义分组
+    private static String fetchGroupKey(OpeInvoiceScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+    // 多字段自定义分组
+    private static String fetchGroupKey1(OpeProductionScooterBom scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
     }
 
 
@@ -585,8 +607,9 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter();
         BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
         saveOutboundOrderEnter.setId(null);
-        saveOutboundOrderEnter.setInvoiceId(enter.getId());
-        saveOutboundOrderEnter.setInvoiceNo(opeInvoiceOrder.getInvoiceNo());
+        saveOutboundOrderEnter.setRelationId(enter.getId());
+        saveOutboundOrderEnter.setRelationType(OrderTypeEnums.INVOICE.getValue());
+        saveOutboundOrderEnter.setRelationNo(opeInvoiceOrder.getInvoiceNo());
         saveOutboundOrderEnter.setOutWhType(opeInvoiceOrder.getInvoiceType());
         saveOutboundOrderEnter.setOutType(OutBoundOrderTypeEnums.SALES.getValue());
         saveOutboundOrderEnter.setOutWhQty(opeInvoiceOrder.getInvoiceQty());
@@ -716,13 +739,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     }
 
 
-     /**
-      * @Author Aleks
-      * @Description  采购单取消的时候  下面的发货单也要取消
-      * @Date  2020/10/30 16:11
-      * @Param [purchaseId, userId, remark]
-      * @return
-      **/
+    /**
+     * @Author Aleks
+     * @Description  采购单取消的时候  下面的发货单也要取消
+     * @Date  2020/10/30 16:11
+     * @Param [purchaseId, userId, remark]
+     * @return
+     **/
     @Override
     public void cancelInvoice(Long purchaseId,Long userId,String remark) {
         QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();

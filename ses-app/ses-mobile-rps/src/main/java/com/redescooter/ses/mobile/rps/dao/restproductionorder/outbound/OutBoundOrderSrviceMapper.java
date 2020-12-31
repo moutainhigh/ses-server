@@ -164,9 +164,9 @@ public interface OutBoundOrderSrviceMapper {
      * @Description
      * @Author: alex
      * @Date: 2020/11/3 2:29 下午
-     * @Param: enter
+     * @Param: type
      * @Return: CountByStatusResult
      * @desc: 订单类型统计
      */
-    List<CountByStatusResult> countByOrderType(GeneralEnter enter);
+    List<CountByStatusResult> countByOrderType(CountByOrderTypeParamDTO paramDTO);
 }

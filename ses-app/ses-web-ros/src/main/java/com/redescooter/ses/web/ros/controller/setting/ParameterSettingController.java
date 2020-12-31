@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.setting;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
@@ -65,6 +66,7 @@ public class ParameterSettingController {
 
     @ApiOperation(value = "保存", response = GeneralResult.class)
     @PostMapping(value = "/save")
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosSaveParamentEnter enter) {
         return new Response<>(rosParameterService.save(enter));
     }

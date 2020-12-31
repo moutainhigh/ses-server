@@ -58,10 +58,10 @@
         <!--json 转义-->
         <org.apache.commons.version>1.8</org.apache.commons.version>
         <hsr-geohash.version>1.0.10</hsr-geohash.version>
-        <druid-spring-boot-starter.version>1.1.23</druid-spring-boot-starter.version>
+        <druid-spring-boot-starter.version>1.2.3</druid-spring-boot-starter.version>
         <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
-        <dynamic-datasource.version>2.5.7</dynamic-datasource.version>
-        <mybatis-plus-boot-starter.version>3.4.0</mybatis-plus-boot-starter.version>
+        <dynamic-datasource.version>3.2.0</dynamic-datasource.version>
+        <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
         <jedis.version>3.2.0</jedis.version>
         <httpclient.version>4.5.10</httpclient.version>
         <jasypt.version>2.1.1</jasypt.version>
@@ -74,6 +74,8 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <!--领域模型-->
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
     </properties>
 
     <modules>
@@ -131,6 +133,11 @@
             <dependency>
                 <groupId>com.redescooter.ses</groupId>
                 <artifactId>ses-starter-poi</artifactId>
+                <version>${ses.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.redescooter.ses</groupId>
+                <artifactId>ses-starter-emqx</artifactId>
                 <version>${ses.version}</version>
             </dependency>
             <!--ses-api start引入-->
@@ -226,6 +233,17 @@
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt-spring-boot-starter.version}</version>
+            </dependency>
+            <!--mapstruct-->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.2.0.Final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -307,7 +307,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (delivery == null) {
             throw new MobileBException(ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DELIVERY_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
+//        if (!StringUtils.equals(DeliveryStatusEnums.PENDING.getValue(), delivery.getStatus())) {
+        if (!DeliveryStatusEnums.PENDING.getValue().equals(delivery.getStatus())) {
             throw new MobileBException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
         // 修改订单状态
@@ -326,22 +327,36 @@ public class DeliveryServiceImpl implements DeliveryService {
         if (corUserProfile == null) {
             throw new MobileBException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        String[] args = new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()};
-        // 消息推送
-        PushMsgBo pushMsg = PushMsgBo.builder()
+        // PC消息推送
+        PushMsgBo pushPc = PushMsgBo.builder()
                 .enter(enter)
                 .pushType(PlatformTypeEnums.PC.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())
-                .args(args)
+                .args( new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()})
                 .belongId(delivery.getCreatedBy())
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
+                .mesageType(MesageTypeEnum.NONE.getValue())
+                .build();
+        pushMsg(pushPc);
+        //APP推送
+        PushMsgBo pushApp = PushMsgBo.builder()
+                .enter(enter)
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
+                .bizId(delivery.getId())
+                .bizType(BizType.DELIVERY.getValue())
+                .status(DeliveryStatusEnums.REJECTED.getValue())
+                .args(new String[]{delivery.getOrderNo(),enter.getReason()})
+                .belongId(delivery.getDelivererId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
                 .messagePriority(MessagePriorityEnums.FORCED_REMIND.getValue())
                 .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();
-        pushMsg(pushMsg);
+        pushMsg(pushApp);
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -397,14 +412,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         // 消息推送
         PushMsgBo pushMsg = PushMsgBo.builder()
                 .enter(enter)
-                .pushType(PlatformTypeEnums.PC.getValue())
+                .pushType(PlatformTypeEnums.ANDROID.getValue())
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(delivery.getStatus())
                 .args(args)
-                .belongId(delivery.getCreatedBy())
-                .systemId(AppIDEnums.SAAS_WEB.getSystemId())
-                .appId(AppIDEnums.SAAS_WEB.getAppId())
+                .belongId(delivery.getDelivererId())
+                .systemId(AppIDEnums.SAAS_APP.getSystemId())
+                .appId(AppIDEnums.SAAS_APP.getAppId())
                 .messagePriority(MessagePriorityEnums.COMMON_REMIND.getValue())
                 .mesageType(MesageTypeEnum.NONE.getValue())
                 .build();

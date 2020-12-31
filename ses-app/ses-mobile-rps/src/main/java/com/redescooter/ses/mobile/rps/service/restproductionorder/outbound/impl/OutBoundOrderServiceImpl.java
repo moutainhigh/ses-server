@@ -1,11 +1,9 @@
 package com.redescooter.ses.mobile.rps.service.restproductionorder.outbound.impl;
 
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
@@ -38,14 +36,10 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.ServletException;
-import javax.websocket.SessionException;
-import java.rmi.server.ServerCloneException;
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,59 +53,43 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OutBoundOrderServiceImpl implements OutBoundOrderService {
 
-    @Autowired
+    @Resource
     private OutBoundOrderSrviceMapper outBoundOrderSrviceMapper;
-
-    @Autowired
+    @Resource
     private ProductionOrderTraceService productionOrderTraceService;
-
-    @Autowired
+    @Resource
     private OpeOutWhouseOrderService opeOutWhouseOrderService;
-
-    @Autowired
+    @Resource
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
-
-    @Autowired
+    @Resource
     private OpeProductionQualityTempateBService opeProductionQualityTempateBService;
-
-    @Autowired
+    @Resource
     private OpeOrderQcItemService opeOrderQcItemService;
-
-    @Autowired
+    @Resource
     private OpeProductionScooterBomService opeProductionScooterBomService;
-
-    @Autowired
+    @Resource
     private OpeOutWhScooterBService opeOutWhScooterBService;
-
-    @Autowired
+    @Resource
     private OpeOutWhCombinBService opeOutWhCombinBService;
-
-    @Autowired
+    @Resource
     private OpeOutWhPartsBService opeOutWhPartsBService;
-
-    @Autowired
+    @Resource
     private ProductQcTraceService productQcTraceService;
-
-    @Autowired
+    @Resource
     private OrderStatusFlowService orderStatusFlowService;
-
-    @Autowired
+    @Resource
     private OpeProductionPartsService opeProductionPartsService;
-
-    @Autowired
+    @Resource
     private OpeEntrustProductSerialNumService opeEntrustProductSerialNumService;
-
-    @Autowired
+    @Resource
     private OpeInvoiceProductSerialNumService opeInvoiceProductSerialNumService;
-
-    @Autowired
+    @Resource
     private OpeEntrustOrderService opeEntrustOrderService;
-
-    @Autowired
+    @Resource
     private InvoiceOrderService invoiceOrderService;
-
     @Reference
     private IdAppService idAppService;
+
 
     /**
      * @Description
@@ -124,15 +102,21 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      */
     @Override
     public Map<Integer, Integer> countByProductType(GeneralEnter enter) {
-        Map<Integer, Integer> map = new HashMap<>();
         List<CountByStatusResult> countByStatusResultList= outBoundOrderSrviceMapper.countByProductType(enter);
-        map=countByStatusResultList.stream().collect(Collectors.toMap(item->{return Integer.valueOf(item.getStatus());},CountByStatusResult::getTotalCount));
+
+        /**
+         * {outWhType, totalCount}
+         */
+        Map<Integer, Integer> map = countByStatusResultList.stream().collect(
+                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
+        );
 
         for (ProductTypeEnums item : ProductTypeEnums.values()) {
-            if (!map.containsKey(item.getValue())){
-                map.put(item.getValue(),0);
+            if (null == map.get(item.getValue())) {
+                map.put(item.getValue(), 0);
             }
         }
+
         return map;
     }
 
@@ -143,19 +127,25 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      * @Param: enter
      * @Return: Map
      * @des： 单据类型统计
-     * @param enter
+     * @param paramDTO
      */
     @Override
-    public Map<Integer, Integer> countByOrderType(GeneralEnter enter) {
-        Map<Integer, Integer> map = new HashMap<>();
-        List<CountByStatusResult> countByStatusResultList= outBoundOrderSrviceMapper.countByOrderType(enter);
-        map=countByStatusResultList.stream().collect(Collectors.toMap(item->{return Integer.valueOf(item.getStatus());},CountByStatusResult::getTotalCount));
+    public Map<Integer, Integer> countByOrderType(CountByOrderTypeParamDTO paramDTO) {
+        List<CountByStatusResult> countByStatusResultList= outBoundOrderSrviceMapper.countByOrderType(paramDTO);
+
+        /**
+         * {outType, totalCount}
+         */
+        Map<Integer, Integer> map = countByStatusResultList.stream().collect(
+                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult:: getTotalCount)
+        );
 
         for (OutBoundOrderTypeEnums item : OutBoundOrderTypeEnums.values()) {
-            if (!map.containsKey(item.getValue())){
-                map.put(item.getValue(),0);
+            if (null == map.get(item.getValue())) {
+                map.put(item.getValue(), 0);
             }
         }
+
         return map;
     }
 
@@ -427,22 +417,54 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
 
         //质检信息
         List<SaveProductQcInfoEnter> saveProductQcInfoEnters = new ArrayList<>();
-        //质检结果判断
-        Boolean qcResult=Boolean.TRUE;
+
+        /**
+         * 质检结果判断
+         */
+        boolean qcResult = true;
         for (SaveQcTempleteResultEnter item : templeteEnterList) {
-            if (!qcPassMap.containsKey(item.getItemId())) {
+            if (null == qcPassMap.get(item.getItemId())) {
                 throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
             }
+
             if (!qcPassMap.get(item.getItemId()).equals(item.getQcResultId())) {
-                qcResult = Boolean.FALSE;
+                qcResult = false;
                 break;
             }
-            ProductQcTempleteItemResult productQcTempleteItemResult = productQcTempleteItemResultList.stream().filter(qcitem -> qcitem.getId().equals(item.getItemId())).findFirst().orElse(null);
 
-            SaveProductQcInfoEnter saveProductQcInfoEnter = new SaveProductQcInfoEnter(item.getItemId(),productQcTempleteItemResult.getItemName(),item.getQcResultId(),qcPassMap.get(item.getItemId()).getQcResult(),item.getImageUrls(),item.getRemark());
-            saveProductQcInfoEnter.setUserId(enter.getUserId());
-            saveProductQcInfoEnters.add(saveProductQcInfoEnter);
+            /**
+             * 筛选出符合条件的第一个对象,如果没有符合条件的对象返回Null -> findFirst-orElse
+             */
+            ProductQcTempleteItemResult itemResult = productQcTempleteItemResultList.stream().filter(
+                    itemR -> itemR.getId().equals(item.getItemId())
+            ).findFirst().orElse(null);
+
+            SaveProductQcInfoEnter productQcInfoEnter = new SaveProductQcInfoEnter();
+
+//            item.getItemId(), itemResult.getItemName(), item.getQcResultId(), qcPassMap.get(item.getItemId()).getQcResult(), item.getImageUrls(), item.getRemark()
+
+            productQcInfoEnter.setUserId(enter.getUserId());
+
+            saveProductQcInfoEnters.add(productQcInfoEnter);
+
         }
+
+        //质检结果判断
+//        Boolean qcResult=Boolean.TRUE;
+//        for (SaveQcTempleteResultEnter item : templeteEnterList) {
+//            if (!qcPassMap.containsKey(item.getItemId())) {
+//                throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+//            }
+//            if (!qcPassMap.get(item.getItemId()).equals(item.getQcResultId())) {
+//                qcResult = Boolean.FALSE;
+//                break;
+//            }
+//            ProductQcTempleteItemResult productQcTempleteItemResult = productQcTempleteItemResultList.stream().filter(qcitem -> qcitem.getId().equals(item.getItemId())).findFirst().orElse(null);
+//
+//            SaveProductQcInfoEnter saveProductQcInfoEnter = new SaveProductQcInfoEnter(item.getItemId(),productQcTempleteItemResult.getItemName(),item.getQcResultId(),qcPassMap.get(item.getItemId()).getQcResult(),item.getImageUrls(),item.getRemark());
+//            saveProductQcInfoEnter.setUserId(enter.getUserId());
+//            saveProductQcInfoEnters.add(saveProductQcInfoEnter);
+//        }
 
         //todo booleanSerial 判断有序列号需要验证库存
 

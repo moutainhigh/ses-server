@@ -29,4 +29,7 @@ public class AllocateEntrustResult {
     @ApiModelProperty("创建时间")
     private Date createdTime;
 
+    @ApiModelProperty("单据类型")
+    private Integer orderType;
+
 }

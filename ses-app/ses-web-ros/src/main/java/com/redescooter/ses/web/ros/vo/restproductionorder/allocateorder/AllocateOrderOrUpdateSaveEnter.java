@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -59,6 +61,7 @@ public class AllocateOrderOrUpdateSaveEnter extends GeneralEnter {
     private String  notifyUserMail;
 
     @ApiModelProperty("备注")
+    @MaximumLength(value = "200",code = ValidationExceptionCode.REMARK_ILLEGAL,message = "原因字符过长")
     private String remark;
 
     @ApiModelProperty("调拨产品")

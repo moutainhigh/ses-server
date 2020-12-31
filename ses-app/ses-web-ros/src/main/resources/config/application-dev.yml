@@ -377,6 +377,22 @@ spring:                                                                         
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 
+      InWhouse-order-API:
+        group-name: InWhouse-order-API
+        title: 入库单
+        description: 入库单
+        base-package: com.redescooter.ses
+        path-regex: /sys/inWhouse/order/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://pre.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+
       Allocate-order-API:
         group-name: Allocate-order-API
         title: 调拨单
@@ -471,6 +487,7 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
 
 
 ## stripe pay

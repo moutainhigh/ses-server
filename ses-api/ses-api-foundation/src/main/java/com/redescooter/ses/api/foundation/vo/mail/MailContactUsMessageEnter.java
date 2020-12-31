@@ -4,6 +4,8 @@ import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * @ClassNameMailContactUsReplyMessageEnter
  * @Description
@@ -17,8 +19,14 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class MailContactUsMessageEnter extends BaseMailTaskEnter {
+
   @ApiModelProperty("消息")
   private String message;
+
+  @ApiModelProperty("")
+  private List<String> imgList;
+
+
 }
 
 

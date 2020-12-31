@@ -125,6 +125,9 @@ public class PurchaseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "付款周期")
     private Integer paymentDay;
 
+    @ApiModelProperty(value = "付款时间")
+    private Date paymentTime;
+
     @ApiModelProperty(value = "采购合同")
     private String purchaseContract;
 
@@ -145,4 +148,7 @@ public class PurchaseDetailResult extends GeneralResult {
 
     @ApiModelProperty("关联的单据")
     private List<PurchaseRelationOrderResult> relationOrders;
+
+    @ApiModelProperty("采购来源类型，1：调拨采购，2：其他")
+    private Integer purchaseOriginType;
 }

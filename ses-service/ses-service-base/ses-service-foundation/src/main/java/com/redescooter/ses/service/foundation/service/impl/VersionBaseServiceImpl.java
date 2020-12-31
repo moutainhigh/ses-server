@@ -2,25 +2,22 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.base.AppSysTypeEnum;
-import com.redescooter.ses.api.foundation.exception.FoundationException;
+import com.redescooter.ses.api.common.enums.base.AppVersionStatusEnum;
+import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
 import com.redescooter.ses.api.foundation.service.VersionBaseService;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeEnter;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
-import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaAppVersionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -70,7 +67,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
       appVersion.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
       appVersion.setSystemId("");
       appVersion.setAppId("");
-      appVersion.setSystemType(AppSysTypeEnum.APP_ANDROID.getValue());
+      appVersion.setSystemType(AppVersionTypeEnum.ANDROID.getType());
       appVersion.setType(0); // todo 这个需要参数传进来
       appVersion.setCode(""); // todo 这个需要参数传进来
       appVersion.setIsForce(1);
@@ -79,7 +76,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
       appVersion.setNewVersionNum(""); // todo 这个需要参数传进来
       appVersion.setPackageSize(String.valueOf(size));
       appVersion.setNewVersionName(""); // todo 这个需要参数传进来
-      appVersion.setStatus("new");
+      appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
       appVersion.setCreatedBy(0L);
       plaAppVersionService.insertOrUpdate(appVersion);
     }

@@ -31,6 +31,9 @@ public class BaseScooterResult extends GeneralResult {
     @ApiModelProperty(value = "车辆编号")
     private String scooterNo;
 
+    @ApiModelProperty(value = "车辆平板序列号")
+    private String tabletSn;
+
     @ApiModelProperty(value = "状态: 1 LOCKED; 2 UNLOCKED")
     private String status;
 
@@ -84,4 +87,11 @@ public class BaseScooterResult extends GeneralResult {
 
     @ApiModelProperty(value = "据下次保养的公里数")
     private BigDecimal nextMaintenanceKm = BigDecimal.ZERO;
+
+    @ApiModelProperty(value = "蓝牙mac地址")
+    private String bluetoothMacAddress;
+
+    @ApiModelProperty(value = "蓝牙名称")
+    private String bluetoothName;
+
 }

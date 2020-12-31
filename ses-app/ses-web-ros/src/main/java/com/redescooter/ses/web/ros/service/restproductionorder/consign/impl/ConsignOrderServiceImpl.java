@@ -1,15 +1,16 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.consign.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.consign.ConsignOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
@@ -40,6 +41,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,6 +106,14 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Autowired
     private OpeEntrustPartsBService opeEntrustPartsBService;
 
+    @Autowired
+    private OpeLogisticsOrderService opeLogisticsOrderService;
+
+    @Autowired
+    private OpeSysStaffService opeSysStaffService;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
     @Reference
     private IdAppService idAppService;
@@ -209,10 +219,16 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
-        if (opeInvoiceOrder==null){
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (opeInvoiceOrder != null){
+            result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(),opeInvoiceOrder.getInvoiceNo(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getCreatedTime(),""));
         }
-        result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(),opeInvoiceOrder.getInvoiceNo(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getCreatedTime()));
+        QueryWrapper<OpeLogisticsOrder>  qw = new QueryWrapper<>();
+        qw.eq(OpeLogisticsOrder.COL_ENTRUST_ID,opeEntrustOrder.getId());
+        qw.last("limit 1");
+        OpeLogisticsOrder opeLogisticsOrder = opeLogisticsOrderService.getOne(qw);
+        if (opeLogisticsOrder != null){
+            result.add(new AssociatedOrderResult(opeLogisticsOrder.getId(),opeLogisticsOrder.getLogisticsNo(),OrderTypeEnums.LOGISTICS.getValue(),opeLogisticsOrder.getCreatedTime(),opeLogisticsOrder.getLogisticsCompany()));
+        }
         return result;
     }
 
@@ -249,7 +265,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         opeEntrustOrderService.updateById(opeEntrustOrder);
 
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeEntrustOrder.getId(), OrderTypeEnums.ORDER.getValue(), OrderOperationTypeEnums.CREATE.getValue(),
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeEntrustOrder.getId(), OrderTypeEnums.ORDER.getValue(), OrderOperationTypeEnums.SIGN_FOR.getValue(),
                 opeEntrustOrder.getRemark());
         saveOpTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(saveOpTraceEnter);
@@ -264,7 +280,49 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         IdEnter idEnter = new IdEnter(opeEntrustOrder.getInvoiceId());
         idEnter.setUserId(enter.getUserId());
         invoiceOrderService.signFor(idEnter);
+        // 委托单签收的时候  给收货人、发货人发邮件
+        try {
+            // 发邮件不能影响主流程，且发邮件的方法必须是异步的
+            entrustSignToEmail(opeEntrustOrder,enter.getRequestId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 委托单签收的时候  给收货人、发货人各发一封邮件
+    @Async
+    public void entrustSignToEmail(OpeEntrustOrder entrustOrder,String requestId){
+        // 给发货人发
+        // 找到发货人
+        OpeSysStaff consignorUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
+        if (consignorUser != null){
+            BaseMailTaskEnter consignorEnter = new BaseMailTaskEnter();
+            consignorEnter.setName(consignorUser.getFullName());
+            consignorEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNOR.getEvent());
+            consignorEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+            consignorEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+            consignorEnter.setEmail(entrustOrder.getConsignorMail());
+            consignorEnter.setRequestId(requestId);
+            consignorEnter.setUserId(consignorUser.getId());
+            consignorEnter.setEntrustNo(entrustOrder.getEntrustNo());
+            mailMultiTaskService.addCreateEmployeeMailTask(consignorEnter);
+        }
+
+        // 再给收货人发
+        // 找到收货人
+        OpeSysStaff consigneeUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
+        if (consigneeUser != null){
+            BaseMailTaskEnter consigneeEnter = new BaseMailTaskEnter();
+            consigneeEnter.setName(consigneeUser.getFullName());
+            consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNEE.getEvent());
+            consigneeEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+            consigneeEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+            consigneeEnter.setEmail(entrustOrder.getConsigneeUserMail());
+            consigneeEnter.setRequestId(requestId);
+            consigneeEnter.setUserId(consigneeUser.getId());
+            consigneeEnter.setEntrustNo(entrustOrder.getEntrustNo());
+            mailMultiTaskService.addCreateEmployeeMailTask(consigneeEnter);
+        }
     }
 
     /**
@@ -417,6 +475,31 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 委托单对应的发货单状态变为待签收
         invoiceOrderService.invoiceWaitSign(opeEntrustOrder.getInvoiceId(),enter.getUserId());
+        // 委托单点击发货的时候 给收货人发邮件
+        try {
+            // 发邮件不能影响主流程，且发邮件的方法必须是异步的
+            entrustDeliveryToEmail(opeEntrustOrder,enter.getRequestId());
+        }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 委托单发货的时候 给收货人发邮件
+    @Async
+    public void entrustDeliveryToEmail(OpeEntrustOrder entrustOrder,String requestId){
+        // 找到收货人
+        OpeSysStaff consigneeUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
+        if (consigneeUser != null){
+            BaseMailTaskEnter consigneeEnter = new BaseMailTaskEnter();
+            consigneeEnter.setName(consigneeUser.getFullName());
+            consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNEE.getEvent());
+            consigneeEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+            consigneeEnter.setAppId(AppIDEnums.SES_ROS.getValue());
+            consigneeEnter.setEmail(entrustOrder.getConsigneeUserMail());
+            consigneeEnter.setRequestId(requestId);
+            consigneeEnter.setUserId(consigneeUser.getId());
+            consigneeEnter.setEntrustNo(entrustOrder.getEntrustNo());
+            mailMultiTaskService.addCreateEmployeeMailTask(consigneeEnter);
+        }
     }
 }

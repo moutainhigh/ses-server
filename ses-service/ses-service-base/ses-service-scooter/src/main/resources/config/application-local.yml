@@ -6,13 +6,13 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://192.168.2.200:52181
   metadata-report:
-    address: zookeeper://192.168.2.200:2181
+    address: zookeeper://192.168.2.200:52181
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.200:52181:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:

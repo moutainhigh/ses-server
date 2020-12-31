@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * @ClassName:ScooterService
- * @description: ScooterService
+ * @description: ScooterMobileCService
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/01 19:17

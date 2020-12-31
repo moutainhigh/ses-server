@@ -4,12 +4,13 @@
 
     <sql id="WHERE_LIST">
         where whorder.dr = 0
-        and whorder.out_wh_status in (0, 10, 15)
+        <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and whorder.out_wh_status in (15, 20)</if>
         <if test="productType != null">
-            and whorder.out_wh_type=#{outboundOrderType}
+            and whorder.out_wh_type = #{productType}
         </if>
         <if test="outboundOrderType != null">
-            and whorder.out_type = #{productType}
+            and whorder.out_type = #{outboundOrderType}
         </if>
     </sql>
     <select id="countByProductType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
@@ -20,11 +21,13 @@
         group by status
     </select>
 
-    <select id="countByOrderType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+    <select id="countByOrderType" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select out_type as status, count(out_type) as totalCount
         from ope_out_whouse_order whorder
-        where whorder.dr = 0
-          and whorder.out_wh_status in (0, 10, 15)
+        where whorder.dr = 0 and out_wh_type = #{type}
+        <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and whorder.out_wh_status in (15, 20)</if>
         group by status
     </select>
 

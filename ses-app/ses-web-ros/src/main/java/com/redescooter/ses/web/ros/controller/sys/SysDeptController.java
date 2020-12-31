@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.vo.base.*;
@@ -40,6 +41,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "部门创建", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveDeptEnter enter) {
         return new Response<>(deptService.save(enter));
     }
@@ -53,6 +55,7 @@ public class SysDeptController {
     @PostMapping(value = "/saveDept")
     @ApiOperation(value = "新建部门--reseat", response = GeneralResult.class)
     @LogAnnotation
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
@@ -86,7 +89,7 @@ public class SysDeptController {
 
     @PostMapping(value = "/selectDeptType")
     @ApiOperation(value = "查询部门类型--reseat", response = DeptTypeResult.class)
-    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<List<DeptTypeResult>> selectDept(@ModelAttribute @ApiParam("请求参数") TypeListEnter enter) {
         return new Response<>(deptService.selectDeptType(enter));
     }
 

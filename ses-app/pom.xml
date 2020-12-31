@@ -21,6 +21,7 @@
         <module>ses-web-repair</module>
         <module>ses-web-ros</module>
         <module>ses-mobile-rps</module>
+        <module>ses-admin-dev</module>
     </modules>
 
     <build>

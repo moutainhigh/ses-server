@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -52,6 +53,7 @@ public class SysEmployeeController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存员工", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> employeeList(@ModelAttribute @ApiParam("请求参数") SaveEmployeeEnter enter) {
         return new Response<>(employeeService.saveEmployee(enter));
     }

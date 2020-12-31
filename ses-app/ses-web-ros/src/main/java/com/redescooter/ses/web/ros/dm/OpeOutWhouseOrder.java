@@ -49,18 +49,25 @@ public class OpeOutWhouseOrder {
     private Long deptId;
 
     /**
-     * 关联的发货单id
+     * 关联的单据id
      */
-    @TableField(value = "invoice_id")
-    @ApiModelProperty(value = "关联的发货单id")
-    private Long invoiceId;
+    @TableField(value = "relation_id")
+    @ApiModelProperty(value = "关联的单据id")
+    private Long relationId;
 
     /**
-     * 发货单号
+     * 关联的单据号
      */
-    @TableField(value = "invoice_no")
-    @ApiModelProperty(value = "发货单号")
-    private String invoiceNo;
+    @TableField(value = "relation_no")
+    @ApiModelProperty(value = "关联的单据号")
+    private String relationNo;
+
+    /**
+     * 关联的单据类型，3：发货单，9：组装单
+     */
+    @TableField(value = "relation_type")
+    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单")
+    private Integer relationType;
 
     /**
      * 出库单号
@@ -84,10 +91,10 @@ public class OpeOutWhouseOrder {
     private Integer outWhType;
 
     /**
-     * 出库类型，1：销售调拨
+     * 出库类型，1：销售调拨,2：生产组装
      */
     @TableField(value = "out_type")
-    @ApiModelProperty(value = "出库类型，1：销售调拨")
+    @ApiModelProperty(value = "出库类型，1：销售调拨,2：生产组装")
     private Integer outType;
 
     /**
@@ -203,9 +210,11 @@ public class OpeOutWhouseOrder {
 
     public static final String COL_DEPT_ID = "dept_id";
 
-    public static final String COL_INVOICE_ID = "invoice_id";
+    public static final String COL_RELATION_ID = "relation_id";
 
-    public static final String COL_INVOICE_NO = "invoice_no";
+    public static final String COL_RELATION_NO = "relation_no";
+
+    public static final String COL_RELATION_TYPE = "relation_type";
 
     public static final String COL_OUT_WH_NO = "out_wh_no";
 

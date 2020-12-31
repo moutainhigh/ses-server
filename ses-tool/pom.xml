@@ -38,5 +38,11 @@
             <artifactId>spring-test</artifactId>
             <scope>compile</scope>
         </dependency>
+        <!--ssl-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.47</version>
+        </dependency>
     </dependencies>
 </project>

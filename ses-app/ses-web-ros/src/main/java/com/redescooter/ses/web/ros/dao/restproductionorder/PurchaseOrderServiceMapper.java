@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.dao.restproductionorder;
 
+import com.redescooter.ses.web.ros.dm.OpePurchaseCombinB;
+import com.redescooter.ses.web.ros.dm.OpePurchasePartsB;
+import com.redescooter.ses.web.ros.dm.OpePurchaseScooterB;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
@@ -42,4 +45,33 @@ public interface PurchaseOrderServiceMapper {
      * @return
      **/
      int whNum(@Param("purchaseId") Long purchaseId);
+
+     /**
+      * @Author Aleks
+      * @Description  查询调拨单下面所有的已签收或完成的采购单的组装件明细
+      * @Date  2020/11/11 19:51
+      * @Param
+      * @return
+      **/
+    List<OpePurchaseCombinB> purchaseCombinB(@Param("allocateId") Long allocateId,@Param("purchaseId") Long purchaseId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  查询调拨单下面所有的已签收或完成的采购单的部件明细
+     * @Date  2020/11/12 19:12
+     * @Param [allocateId, purchaseId]
+     * @return
+     **/
+    List<OpePurchasePartsB> purchasePartsBS(@Param("allocateId") Long allocateId, @Param("purchaseId") Long purchaseId);
+
+
+    /**
+     * @Author Aleks
+     * @Description  查询调拨单下面所有的已签收或完成的采购单的整车明细
+     * @Date  2020/11/12 19:44
+     * @Param [allocateId, purchaseId]
+     * @return
+     **/
+    List<OpePurchaseScooterB> purchaseScooterBS(@Param("allocateId") Long allocateId, @Param("purchaseId") Long purchaseId);
 }

@@ -17,6 +17,6 @@ public class SpecificatDefResult {
     private String defName;
 
     @ApiModelProperty(value="自定义的值")
-    private double defValue;
+    private String defValue;
 
 }

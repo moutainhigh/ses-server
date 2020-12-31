@@ -4,14 +4,17 @@ import	java.util.ArrayList;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 import com.redescooter.ses.service.scooter.constant.ScooterDefaultData;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
@@ -27,6 +30,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +74,8 @@ public class ScooterServiceImpl implements ScooterService {
         });
         return scooterResultList;
     }
+
+
 
     @Transactional
     @Override
@@ -180,4 +186,88 @@ public class ScooterServiceImpl implements ScooterService {
         });
         return scooterResultList;
     }
+
+    /**
+     * @Description
+     * @Author: alex
+     * @Date: 2020/11/16 6:01 下午
+     * @Param: id, scooterNo
+     * @Return: BaseScooterResult
+     * @desc: 车辆基本信息
+     * @param id
+     * @param scooterNo
+     */
+    @Override
+    public BaseScooterResult scooterInfoByScooterNo(Long id, String scooterNo) {
+        return scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int updateScooterStatusByJson(ScooterLockReportedDTO scooterLock) {
+        String lockStatus = scooterServiceMapper.getScooterStatusByTabletSn(scooterLock.getTabletSn());
+        if (StringUtils.isBlank(lockStatus)) {
+            // 这里别抛出异常,这里抛出异常可能会导致emq x连接中断
+            log.error("【车辆开关状态上报失败】----车辆不存在");
+            return 0;
+        }
+
+        if (!scooterLock.getStatus().equals(lockStatus)) {
+//            scooterServiceMapper.updateScooterStatusByTabletSn(scooterLock.getTabletSn(),
+//                    scooterLock.getStatus().toString(), new Date());
+        }
+
+        return 1;
+    }
+
+    @Override
+    public BaseScooterResult getScooterInfoById(Long scooterId) {
+        return scooterServiceMapper.getScooterInfoById(scooterId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int syncScooterData(SyncScooterDataDTO syncScooterData) {
+        ScoScooter scooter = new ScoScooter();
+        BeanUtils.copyProperties(syncScooterData, scooter);
+
+        scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
+        scooter.setTotalMileage(0L);
+        scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
+        scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+        scooter.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
+        scooter.setCreatedBy(syncScooterData.getUserId());
+        scooter.setCreatedTime(new Date());
+        scooter.setUpdatedBy(syncScooterData.getUserId());
+        scooter.setUpdatedTime(new Date());
+
+        return scooterServiceMapper.insertScooter(scooter);
+    }
+
+    @Override
+    public int countByScooter() {
+        return scooterServiceMapper.countByScooter();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int syncScooterModel(Long id, Integer scooterModel) {
+        return scooterServiceMapper.updateScooterModelById(id, scooterModel, new Date());
+    }
+
+    @Override
+    public BaseScooterResult getScooterByTabletSn(String tabletSn) {
+        return scooterServiceMapper.getScooterByTabletSn(tabletSn);
+    }
+
+    @Override
+    public Long getScooterIdByTabletSn(String tabletSn) {
+        return scooterServiceMapper.getScooterIdByTabletSn(tabletSn);
+    }
+
+    @Override
+    public String getScooterStatusByTabletSn(String tabletSn) {
+        return scooterServiceMapper.getScooterStatusByTabletSn(tabletSn);
+    }
+
 }
