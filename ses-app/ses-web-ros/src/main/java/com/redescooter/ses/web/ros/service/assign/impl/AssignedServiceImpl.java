@@ -71,6 +71,7 @@ public class AssignedServiceImpl implements AssignedService {
      */
     @Override
     public AssignedDetailResult getAssignedDetail(CustomerIdEnter enter) {
+        logger.info("已分配列表查看详情的入参是:[{}]", enter);
         AssignedDetailResult result = new AssignedDetailResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
