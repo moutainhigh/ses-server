@@ -5,8 +5,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * @description:原料库服务层

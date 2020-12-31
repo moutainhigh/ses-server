@@ -4,12 +4,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @description:
  * @author: Aleks
  * @create: 2020/12/29 11:54
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel("仓库库存的情况统计出参")
 public class WmsStockCountResult extends GeneralResult {

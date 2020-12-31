@@ -11,6 +11,7 @@
     <result column="in_wh_type" jdbcType="INTEGER" property="inWhType" />
     <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
     <result column="record_type" jdbcType="INTEGER" property="recordType" />
+    <result column="stock_type" jdbcType="INTEGER" property="stockType" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -24,7 +25,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, relation_id, relation_type, in_wh_type, in_wh_qty, record_type, remark, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, relation_id, relation_type, in_wh_type, in_wh_qty, record_type, stock_type, 
+    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    def5
   </sql>
 </mapper>

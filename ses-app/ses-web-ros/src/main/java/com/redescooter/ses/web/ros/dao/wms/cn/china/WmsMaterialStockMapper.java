@@ -45,4 +45,13 @@ public interface WmsMaterialStockMapper {
      */
     Integer materialTodayStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
 
+
+    /**
+     * 法国部件今日的入库/出库数量
+     * @param date
+     * @param recordType
+     * @return
+     */
+    Integer frTodayPartsInOrOutStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
+
 }

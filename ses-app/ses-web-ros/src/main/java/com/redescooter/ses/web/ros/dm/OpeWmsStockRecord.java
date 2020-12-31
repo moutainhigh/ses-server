@@ -3,8 +3,10 @@ package com.redescooter.ses.web.ros.dm;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 入库记录表
@@ -12,7 +14,7 @@ import lombok.Data;
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeWmsStockRecord")
 @Data
 @TableName(value = "ope_wms_stock_record")
-public class OpeWmsStockRecord {
+public class OpeWmsStockRecord implements Serializable {
     /**
      * 主键
      */
@@ -62,6 +64,13 @@ public class OpeWmsStockRecord {
     @TableField(value = "record_type")
     @ApiModelProperty(value = "记录类型，1:入库，2:出库")
     private Integer recordType;
+
+    /**
+     * 仓库类型，1:中国仓库，2:法国仓库
+     */
+    @TableField(value = "stock_type")
+    @ApiModelProperty(value = "仓库类型，1:中国仓库，2:法国仓库")
+    private Integer stockType;
 
     /**
      * 备注
@@ -146,6 +155,8 @@ public class OpeWmsStockRecord {
     public static final String COL_IN_WH_QTY = "in_wh_qty";
 
     public static final String COL_RECORD_TYPE = "record_type";
+
+    public static final String COL_STOCK_TYPE = "stock_type";
 
     public static final String COL_REMARK = "remark";
 

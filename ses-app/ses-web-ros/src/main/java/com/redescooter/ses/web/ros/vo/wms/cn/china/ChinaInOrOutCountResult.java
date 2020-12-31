@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @ClassName:ChinaInOrOutCountResult
@@ -12,6 +13,7 @@ import lombok.Data;
  * @Version：1.3
  * @create: 2020/12/27 15:15
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "中国仓库出入库的数据统计出参对象")
 public class ChinaInOrOutCountResult extends GeneralResult {

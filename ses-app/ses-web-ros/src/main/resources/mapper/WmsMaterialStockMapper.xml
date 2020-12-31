@@ -55,6 +55,12 @@
     <select id="materialTodayStockCount" resultType="java.lang.Integer">
         select sum(in_wh_qty) from ope_wms_stock_record
         where dr = 0 and record_type = #{recordType} and relation_type in (3)
-            and created_time like concat('%',#{date},'%')
+            and created_time like concat('%',#{date},'%') and stock_type = 1
+    </select>
+
+    <select id="frTodayPartsInOrOutStockCount" resultType="java.lang.Integer">
+        select sum(in_wh_qty) from ope_wms_stock_record
+        where dr = 0 and record_type = #{recordType} and relation_type in (3)
+        and created_time like concat('%',#{date},'%') and stock_type = 2
     </select>
 </mapper>

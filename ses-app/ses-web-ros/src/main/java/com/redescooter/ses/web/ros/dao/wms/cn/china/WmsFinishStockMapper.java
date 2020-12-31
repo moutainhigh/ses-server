@@ -99,4 +99,24 @@ public interface WmsFinishStockMapper {
      */
     Integer finishTodayStackCount(@Param("date")String date,@Param("recordType") Integer recordType);
 
+
+    /**
+     * 法国车辆今日入库/处理数量
+     * @param date
+     * @param recordType
+     * @return
+     */
+    Integer frTodayScooterInOrOutStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
+
+
+    /**
+     * 法国组装件今日入库/处理数量
+     * @param date
+     * @param recordType
+     * @return
+     */
+    Integer frTodayCombinInOrOutStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
+
+
+
 }
