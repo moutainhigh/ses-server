@@ -117,7 +117,7 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public WmsfinishScooterDetailResult frScooterDetail(IdEnter enter) {
         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getById(enter.getId());
-        if (scooterStock != null) {
+        if (scooterStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         return new WmsfinishScooterDetailResult();
