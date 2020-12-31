@@ -5,7 +5,7 @@
     <select id="totalRows" resultType="int">
         select count(*) from ope_wms_qualified_scooter_stock stock
         where stock.dr = 0
-        <include refid="scooterListCondition"></include>
+        <include refid="scooterListCondition"/>
     </select>
 
     <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedScooterListResult">
@@ -19,7 +19,7 @@
         left join ope_specificat_group group1 on group1.id = stock.group_id
         left join ope_color color on color.id = stock.color_id
         where stock.dr = 0
-        <include refid="scooterListCondition"></include>
+        <include refid="scooterListCondition"/>
         order by stock.qty desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
@@ -48,7 +48,7 @@
     <select id="combinCotalRows" resultType="int">
         select count(*) from ope_wms_qualified_combin_stock
         where dr = 0
-        <include refid="combinListCondition"></include>
+        <include refid="combinListCondition"/>
     </select>
 
 
@@ -62,7 +62,7 @@
           qty
         from ope_wms_qualified_combin_stock
         where dr = 0
-        <include refid="combinListCondition"></include>
+        <include refid="combinListCondition"/>
         order by qty
         limit #{enter.startRow},#{enter.pageSize}
     </select>
@@ -91,7 +91,7 @@
         select count(*)
         from ope_wms_qualified_parts_stock
         where dr = 0
-        <include refid="partsListCondition"></include>
+        <include refid="partsListCondition"/>
     </select>
 
     <select id="partsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult">
@@ -104,7 +104,7 @@
           qty
         from ope_wms_qualified_parts_stock
         where dr = 0
-        <include refid="partsListCondition"></include>
+        <include refid="partsListCondition"/>
         order by qty desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
