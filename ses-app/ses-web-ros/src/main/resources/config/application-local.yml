@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://192.168.1.100:2181
   metadata-report:
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://192.168.1.100:2181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -17,7 +17,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.100:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -34,12 +34,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 192.168.1.100:7000
+        - 192.168.1.100:7001
+        - 192.168.1.100:7002
+        - 192.168.1.100:7003
+        - 192.168.1.100:7004
+        - 192.168.1.100:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1

@@ -34,10 +34,6 @@
             <artifactId>ses-starter-dubbo</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>guava</artifactId>
                     <groupId>com.google.guava</groupId>
                 </exclusion>
