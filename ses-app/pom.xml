@@ -22,6 +22,7 @@
         <module>ses-web-ros</module>
         <module>ses-mobile-rps</module>
         <module>ses-admin-dev</module>
+        <module>ses-web-website</module>
     </modules>
 
     <build>
