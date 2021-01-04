@@ -230,7 +230,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Integer seatNumber = detailEnter.getSeatNumber();
 
         // 生成VIN Code,只需车型名称和座位数量这两个变量
-        String vinCode = generateVINCode(specificatName, seatNumber);
+        String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
         logger.info("生成的VIN Code是:[{}]", vinCode);
 
         // 新增主表
@@ -582,7 +582,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     /**
      * 生成VIN Code
      */
-    public String generateVINCode(String specificatName, Integer seatNumber) {
+    public String generateVINCode(Long specificatId, String specificatName, Integer seatNumber) {
         String msg = "VXS";
         StringBuffer result = new StringBuffer();
 
@@ -609,6 +609,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 6位数递增序列号
         List<Integer> codeList = Lists.newArrayList();
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从倒数第6位开始截取
@@ -627,6 +628,40 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             result.append(code);
         } else {
             result.append("000001");
+        }
+        return result.toString();
+    }
+
+    public String testGenerateVINCode(String specificatName, Integer seatNumber, int i) {
+        String msg = "VXS";
+        StringBuffer result = new StringBuffer();
+
+        // 世界工厂代码和车辆类型
+        result.append(msg);
+        result.append(ScooterTypeEnum.R2A.getCode());
+
+        // 车型编号和座位数量
+        String productType = ProductTypeEnum.showCode(specificatName);
+        result.append(productType);
+        result.append(seatNumber);
+
+        // 指定随机数
+        String random = generateRangeRandom();
+        result.append(random);
+
+        // 年份字母和工厂编号
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        String value = YearEnum.showValue(year);
+        result.append(value);
+        result.append(FactoryEnum.AOGE.getCode());
+
+        if (i < 10) {
+            result.append("00000" + i);
+        } else if (i < 100) {
+            result.append("0000" + i);
+        } else if (i < 1000) {
+            result.append("000" + i);
         }
         return result.toString();
     }
