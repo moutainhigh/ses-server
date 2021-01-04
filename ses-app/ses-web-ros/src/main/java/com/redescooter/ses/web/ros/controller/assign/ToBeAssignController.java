@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.controller.assign;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @Description 车辆待分配控制器
@@ -98,6 +102,24 @@ public class ToBeAssignController {
     @PostMapping("/node")
     public Response<ToBeAssignNodeResult> getNode(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(toBeAssignService.getNode(enter));
+    }
+
+    /**
+     * 待分配列表和已分配列表的tab数量统计
+     */
+    @ApiOperation(value = "待分配列表和已分配列表的tab数量统计", notes = "待分配列表和已分配列表的tab数量统计")
+    @PostMapping("/count")
+    public Response<Map<String, Object>> getTabCount(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(toBeAssignService.getTabCount(enter));
+    }
+
+    /**
+     * 点击分配按钮校验车辆库存数量
+     */
+    @ApiOperation(value = "点击分配按钮校验车辆库存数量", notes = "点击分配按钮校验车辆库存数量")
+    @PostMapping("/check")
+    public Response<BooleanResult> checkScooterStock(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(toBeAssignService.checkScooterStock(enter));
     }
 
 }
