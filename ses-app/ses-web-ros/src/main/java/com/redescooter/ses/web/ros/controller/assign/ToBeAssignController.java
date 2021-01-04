@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.assign;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -110,6 +111,15 @@ public class ToBeAssignController {
     @PostMapping("/count")
     public Response<Map<String, Object>> getTabCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(toBeAssignService.getTabCount(enter));
+    }
+
+    /**
+     * 点击分配按钮校验车辆库存数量
+     */
+    @ApiOperation(value = "点击分配按钮校验车辆库存数量", notes = "点击分配按钮校验车辆库存数量")
+    @PostMapping("/check")
+    public Response<BooleanResult> checkScooterStock(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(toBeAssignService.checkScooterStock(enter));
     }
 
 }

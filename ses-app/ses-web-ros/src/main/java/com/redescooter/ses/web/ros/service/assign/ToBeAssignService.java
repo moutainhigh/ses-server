@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.assign;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -62,5 +63,10 @@ public interface ToBeAssignService {
      * 待分配列表和已分配列表的tab数量统计
      */
     Map<String, Object> getTabCount(GeneralEnter enter);
+
+    /**
+     * 点击分配按钮校验车辆库存数量
+     */
+    BooleanResult checkScooterStock(CustomerIdEnter enter);
 
 }

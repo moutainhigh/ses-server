@@ -508,11 +508,14 @@ public enum ExceptionCodeEnums {
 
     COLOR_ID_NOT_EMPTY(10245, "颜色id不能为空"),
 
-    ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息")
+    ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息"),
+
+    SCOOTER_STOCK_IS_EMPTY(10247, "车辆库存为空")
+
+
 
 
     ;
-
 
     private int code;
 

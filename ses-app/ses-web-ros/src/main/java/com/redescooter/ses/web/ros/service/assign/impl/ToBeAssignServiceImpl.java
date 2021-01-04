@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -16,12 +17,14 @@ import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.enums.assign.CustomerTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
 import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
@@ -97,6 +100,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeSpecificatTypeMapper opeSpecificatTypeMapper;
+
+    @Autowired
+    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -441,6 +447,86 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
         result.put("toBeAssignCount", toBeAssignCount);
         result.put("assignedCount", assignedCount);
+        return result;
+    }
+
+    /**
+     * 点击分配按钮校验车辆库存数量
+     */
+    @Override
+    public BooleanResult checkScooterStock(CustomerIdEnter enter) {
+        BooleanResult result = new BooleanResult();
+
+        // 获得询价单客户需求车辆数
+        Integer scooterQuantity = 0;
+        LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
+        inquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
+        inquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+        List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryMapper.selectList(inquiryWrapper);
+        if (CollectionUtils.isNotEmpty(inquiryList)) {
+            OpeCustomerInquiry customerInquiry = inquiryList.get(0);
+            scooterQuantity = customerInquiry.getScooterQuantity();
+        }
+
+        // 获得询价单型号id和颜色id
+        Map<String, Long> map = getSpecificatIdAndColorId(enter);
+        Long specificatId = map.get("specificatId");
+        Long colorId = map.get("colorId");
+
+        // 获得指定车型和颜色的可用库存数量
+        LambdaQueryWrapper<OpeWmsScooterStock> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsScooterStock::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeWmsScooterStock::getGroupId, specificatId);
+        wrapper.eq(OpeWmsScooterStock::getColorId, colorId);
+        wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
+        List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+        }
+        OpeWmsScooterStock scooterStock = list.get(0);
+        Integer ableStockQty = scooterStock.getAbleStockQty();
+        ableStockQty = null == ableStockQty ? 0 : ableStockQty;
+
+        // 询价单客户需求车辆数和可用库存数量作对比
+        if (scooterQuantity > ableStockQty) {
+            result.setSuccess(Boolean.FALSE);
+        } else if (scooterQuantity <= ableStockQty) {
+            result.setSuccess(Boolean.TRUE);
+        }
+        result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
+    /**
+     * 根据客户id获得询价单型号id和颜色id
+     */
+    public Map<String, Long> getSpecificatIdAndColorId(CustomerIdEnter enter) {
+        Map<String, Long> result = Maps.newHashMapWithExpectedSize(2);
+        // 得到询价单的产品id
+        LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+        opeCustomerInquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
+        List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        OpeCustomerInquiry customerInquiry = list.get(0);
+        Long productId = customerInquiry.getProductId();
+        if (null == productId) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+
+        // 拿着产品id去ope_sale_scooter查询
+        OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
+        if (null == opeSaleScooter) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        // 得到型号id和颜色id
+        Long specificatId = opeSaleScooter.getSpecificatId();
+        Long colorId = opeSaleScooter.getColorId();
+        result.put("specificatId", specificatId);
+        result.put("colorId", colorId);
         return result;
     }
 
