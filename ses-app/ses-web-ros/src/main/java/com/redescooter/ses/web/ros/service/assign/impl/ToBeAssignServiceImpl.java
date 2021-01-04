@@ -230,7 +230,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Integer seatNumber = detailEnter.getSeatNumber();
 
         // 生成VIN Code,只需车型名称和座位数量这两个变量
-        String vinCode = generateVINCode(specificatName, seatNumber);
+        String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
         logger.info("生成的VIN Code是:[{}]", vinCode);
 
         // 新增主表
@@ -582,7 +582,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     /**
      * 生成VIN Code
      */
-    public String generateVINCode(String specificatName, Integer seatNumber) {
+    public String generateVINCode(Long specificatId, String specificatName, Integer seatNumber) {
         String msg = "VXS";
         StringBuffer result = new StringBuffer();
 
@@ -609,6 +609,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 6位数递增序列号
         List<Integer> codeList = Lists.newArrayList();
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从倒数第6位开始截取
