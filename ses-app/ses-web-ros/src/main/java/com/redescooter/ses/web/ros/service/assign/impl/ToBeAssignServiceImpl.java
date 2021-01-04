@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -33,6 +34,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
@@ -426,6 +428,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         result.setNode(node);
         result.setList(scooterList);
         result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
+    /**
+     * 待分配列表和已分配列表的tab数量统计
+     */
+    @Override
+    public Map<String, Object> getTabCount(GeneralEnter enter) {
+        Map<String, Object> result = Maps.newHashMapWithExpectedSize(2);
+        int toBeAssignCount = opeCarDistributeExMapper.getToBeAssignListCount(new ToBeAssignListEnter());
+        int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
+        result.put("toBeAssignCount", toBeAssignCount);
+        result.put("assignedCount", assignedCount);
         return result;
     }
 

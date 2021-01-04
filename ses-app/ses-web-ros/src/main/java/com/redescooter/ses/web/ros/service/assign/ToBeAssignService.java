@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.assign;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
@@ -12,6 +13,8 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
+
+import java.util.Map;
 
 /**
  * @Description
@@ -54,5 +57,10 @@ public interface ToBeAssignService {
      * 查询客户走到哪个节点并带出数据
      */
     ToBeAssignNodeResult getNode(CustomerIdEnter enter);
+
+    /**
+     * 待分配列表和已分配列表的tab数量统计
+     */
+    Map<String, Object> getTabCount(GeneralEnter enter);
 
 }
