@@ -1,15 +1,11 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 出库单
@@ -70,6 +66,13 @@ public class OpeOutWhouseOrder {
     private Integer relationType;
 
     /**
+     * 入库仓库。1:成品库，2:原料库，3:不合格品库
+     */
+    @TableField(value = "wh_type")
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
+
+    /**
      * 出库单号
      */
     @TableField(value = "out_wh_no")
@@ -91,10 +94,10 @@ public class OpeOutWhouseOrder {
     private Integer outWhType;
 
     /**
-     * 出库类型，1：销售调拨,2：生产组装
+     * 出库类型，1：销售调拨，2：补料出库，3：生产组装，4：其它
      */
     @TableField(value = "out_type")
-    @ApiModelProperty(value = "出库类型，1：销售调拨,2：生产组装")
+    @ApiModelProperty(value = "出库类型，1：销售调拨，2：补料出库，3：生产组装，4：其它")
     private Integer outType;
 
     /**
@@ -215,6 +218,8 @@ public class OpeOutWhouseOrder {
     public static final String COL_RELATION_NO = "relation_no";
 
     public static final String COL_RELATION_TYPE = "relation_type";
+
+    public static final String COL_WH_TYPE = "wh_type";
 
     public static final String COL_OUT_WH_NO = "out_wh_no";
 

@@ -4,9 +4,10 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -80,4 +81,36 @@ public interface OutboundOrderServiceMapper {
      * @desc: 部件列表
      */
     List<OrderProductDetailResult> productionPartByBussId(Long id);
+
+
+    /**
+     * 关联的发货单号下拉接口
+     * @param enter
+     * @return
+     */
+    List<InWhRelationOrderResult> invoiceData(@Param("enter") KeywordEnter enter);
+
+
+    /**
+     * @Param: invoiceId
+     * @Return: SaveOrUpdateOutScooterBEnter
+     * @desc: 整车产品列表
+     */
+    List<SaveOrUpdateOutScooterBEnter> relationInvoiceScooterData(@Param("invoiceId") Long id);
+
+
+    /**
+     * 组装件产品列表
+     * @param id
+     * @return
+     */
+    List<SaveOrUpdateOutCombinBEnter> relationInvoiceCombinData(@Param("invoiceId") Long id);
+
+
+    /**
+     * 部件产品列表
+     * @param id
+     * @return
+     */
+    List<SaveOrUpdateOutPartsBEnter> relationInvoicePartsData(@Param("invoiceId") Long id);
 }

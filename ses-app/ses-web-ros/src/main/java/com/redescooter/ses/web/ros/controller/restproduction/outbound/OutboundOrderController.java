@@ -2,16 +2,16 @@ package com.redescooter.ses.web.ros.controller.restproduction.outbound;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = {"出库单"})
@@ -49,10 +49,53 @@ public class OutboundOrderController {
         return new Response<>(outboundOrderService.detail(enter));
     }
 
+//    @PostMapping(value = "/save")
+//    @ApiOperation(value = "保存", response = GeneralResult.class)
+//    public Response<GeneralResult> detail(@ModelAttribute @ApiParam("请求参数") SaveOutboundOrderEnter enter) {
+//        return new Response<>(outboundOrderService.save(enter));
+//    }
+
+
+    @PostMapping(value = "/invoiceData")
+    @ApiOperation(value = "关联的发货单号下拉接口", response = GeneralResult.class)
+    public Response<List<InWhRelationOrderResult>> invoiceData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
+        return new Response<>(outboundOrderService.invoiceData(enter));
+    }
+
+
+    @PostMapping(value = "/relationInvoiceScooterData")
+    @ApiOperation(value = "关联的整车产品信息", response = SaveOrUpdateOutScooterBEnter.class)
+    public Response<List<SaveOrUpdateOutScooterBEnter>> relationInvoiceScooterData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.relationInvoiceScooterData(enter));
+    }
+
+
+    @PostMapping(value = "/relationInvoiceCombinData")
+    @ApiOperation(value = "关联的组装单的组装件产品信息", response = SaveOrUpdateOutCombinBEnter.class)
+    public Response<List<SaveOrUpdateOutCombinBEnter>> relationInvoiceCombinData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.relationInvoiceCombinData(enter));
+    }
+
+
+    @PostMapping(value = "/relationInvoicePartsData")
+    @ApiOperation(value = "关联的生产采购单部件信息", response = SaveOrUpdateOutPartsBEnter.class)
+    public Response<List<SaveOrUpdateOutPartsBEnter>> relationInvoicePartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.relationInvoicePartsData(enter));
+    }
+
+
+
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存", response = GeneralResult.class)
-    public Response<GeneralResult> detail(@ModelAttribute @ApiParam("请求参数") SaveOutboundOrderEnter enter) {
-        return new Response<>(outboundOrderService.save(enter));
+    public Response<GeneralResult> outOrderSave(@ModelAttribute @ApiParam("请求参数") SaveOrUpdateOutOrderEnter enter) {
+        return new Response<>(outboundOrderService.outOrderSave(enter));
+    }
+
+
+    @PostMapping(value = "/edit")
+    @ApiOperation(value = "编辑", response = GeneralResult.class)
+    public Response<GeneralResult> outOrderEdit(@ModelAttribute @ApiParam("请求参数") SaveOrUpdateOutOrderEnter enter) {
+        return new Response<>(outboundOrderService.outOrderEdit(enter));
     }
 
 

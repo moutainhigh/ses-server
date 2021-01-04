@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
  * @Date2020/11/11 11:42
  * @Version V1.0
  **/
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +36,9 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
 
     @ApiModelProperty("入库单据类型,1:车辆，2:组装件，3:部件")
     private Integer orderType;
+
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     @ApiModelProperty("入库明细")
     private String st;

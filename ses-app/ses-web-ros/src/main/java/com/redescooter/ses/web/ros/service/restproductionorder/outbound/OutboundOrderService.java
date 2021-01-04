@@ -7,10 +7,11 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,55 @@ public interface OutboundOrderService {
      * @desc: 保存
      */
     GeneralResult save(SaveOutboundOrderEnter enter);
+
+
+    /**
+     * 关联的发货单号下拉接口
+     * @param enter
+     * @return
+     */
+    List<InWhRelationOrderResult> invoiceData(KeywordEnter enter);
+
+
+    /**
+     * 关联的整车产品信息
+     * @param enter
+     * @return
+     */
+    List<SaveOrUpdateOutScooterBEnter> relationInvoiceScooterData(IdEnter enter);
+
+
+    /**
+     * 关联的组装单的组装件产品信息
+     * @param enter
+     * @return
+     */
+    List<SaveOrUpdateOutCombinBEnter> relationInvoiceCombinData(IdEnter enter);
+
+
+    /**
+     * 关联的部件的组装件产品信息
+     * @param enter
+     * @return
+     */
+    List<SaveOrUpdateOutPartsBEnter> relationInvoicePartsData(IdEnter enter);
+
+
+    /**
+     * 出库单新增
+     * @param enter
+     * @return
+     */
+    GeneralResult outOrderSave(SaveOrUpdateOutOrderEnter enter);
+
+
+    /**
+     * 出库单编辑
+     * @param enter
+     * @return
+     */
+    GeneralResult outOrderEdit(SaveOrUpdateOutOrderEnter enter);
+
 
 
     /**

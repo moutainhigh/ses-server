@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.outbound.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
@@ -12,6 +13,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
@@ -27,15 +29,14 @@ import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionO
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -140,10 +141,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @param enter
      */
     @Override
-    public  Map<Integer, String> statusList(GeneralEnter enter) {
+    public Map<Integer, String> statusList(GeneralEnter enter) {
         Map<Integer, String> result = new HashMap<>();
         for (OutBoundOrderStatusEnums item : OutBoundOrderStatusEnums.values()) {
-            result.put(item.getValue(),item.getMessage());
+            result.put(item.getValue(), item.getMessage());
         }
         return result;
     }
@@ -182,7 +183,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OutboundOrderDetailResult detail = outboundOrderServiceMapper.detail(enter);
-        if (detail == null){
+        if (detail == null) {
             return new OutboundOrderDetailResult();
         }
         //关联单据
@@ -240,17 +241,17 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     public List<AssociatedOrderResult> associatedOrderList(OpeOutWhouseOrder opeOutWhouseOrder) {
         List<AssociatedOrderResult> associatedOrderList = new ArrayList<>();
         // 先判断关联的是哪个单据
-        if(null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
+        if (null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
             //发货单
             OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeOutWhouseOrder.getRelationId());
             if (opeInvoiceOrder != null) {
-                associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(),""));
+                associatedOrderList.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(), ""));
             }
-        }else if (null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+        } else if (null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 2020 11 18 追加  出库单还可能会关联组装单
             OpeCombinOrder combinOrder = opecombinOrderService.getById(opeOutWhouseOrder.getRelationId());
-            if (combinOrder != null){
-                associatedOrderList.add(new AssociatedOrderResult(combinOrder.getId(), combinOrder.getCombinNo(), OrderTypeEnums.COMBIN_ORDER.getValue(), combinOrder.getCreatedTime(),""));
+            if (combinOrder != null) {
+                associatedOrderList.add(new AssociatedOrderResult(combinOrder.getId(), combinOrder.getCombinNo(), OrderTypeEnums.COMBIN_ORDER.getValue(), combinOrder.getCreatedTime(), ""));
             }
         }
         return associatedOrderList;
@@ -273,12 +274,12 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
 //        if (OutBoundOrderTypeEnums.SALES.getValue().equals(enter.getRelationType())){
-        if (OrderTypeEnums.INVOICE.getValue().equals(enter.getRelationType())){
+        if (OrderTypeEnums.INVOICE.getValue().equals(enter.getRelationType())) {
             OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getRelationId());
             if (opeInvoiceOrder == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
-        }else {
+        } else {
             OpeCombinOrder opeCombinOrder = opecombinOrderService.getById(enter.getRelationId());
             if (opeCombinOrder == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
@@ -327,6 +328,258 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         saveOutWhB(enter, opeOutWhouseOrder.getId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    /**
+     * 关联的发货单号下拉接口
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<InWhRelationOrderResult> invoiceData(KeywordEnter enter) {
+        List<InWhRelationOrderResult> list = outboundOrderServiceMapper.invoiceData(enter);
+        return list;
+    }
+
+
+    /**
+     * 关联的整车产品信息
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SaveOrUpdateOutScooterBEnter> relationInvoiceScooterData(IdEnter enter) {
+        // 这里是整车
+        OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getById(enter.getId());
+        if (invoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<SaveOrUpdateOutScooterBEnter> resultList = outboundOrderServiceMapper.relationInvoiceScooterData(enter.getId());
+        return resultList;
+    }
+
+
+    /**
+     * 关联的组装件产品信息
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SaveOrUpdateOutCombinBEnter> relationInvoiceCombinData(IdEnter enter) {
+        // 这里是组装件
+        OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getById(enter.getId());
+        if (invoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<SaveOrUpdateOutCombinBEnter> resultList = outboundOrderServiceMapper.relationInvoiceCombinData(enter.getId());
+        return resultList;
+    }
+
+    @Override
+    public List<SaveOrUpdateOutPartsBEnter> relationInvoicePartsData(IdEnter enter) {
+        // 这里是部件
+        OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getById(enter.getId());
+        if (invoiceOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<SaveOrUpdateOutPartsBEnter> resultList = outboundOrderServiceMapper.relationInvoicePartsData(enter.getId());
+        return resultList;
+    }
+
+
+    /**
+     * 出库单新增
+     * @param enter
+     * @return
+     */
+    @Override
+    @Transactional
+    public GeneralResult outOrderSave(SaveOrUpdateOutOrderEnter enter) {
+        // 去空格
+        SesStringUtils.objStringTrim(enter);
+        OpeOutWhouseOrder orderOrder = new OpeOutWhouseOrder();
+        BeanUtils.copyProperties(enter, orderOrder);
+        orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
+        orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
+        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
+        orderOrder.setCreatedBy(enter.getUserId());
+        orderOrder.setCreatedTime(new Date());
+        orderOrder.setUpdatedBy(enter.getUserId());
+        orderOrder.setUpdatedTime(new Date());
+        // 拿国家编码  电话  邮箱
+        OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getUserId());
+        if (opeSysStaff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        orderOrder.setCountryCode(opeSysStaff.getCountryCode());
+        orderOrder.setTelephone(opeSysStaff.getTelephone());
+        orderOrder.setMail(opeSysStaff.getEmail());
+        // 处理字表 并统计出库数量
+        createOutOrderB(orderOrder, enter.getSt(), enter.getUserId());
+        // 操作状态
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, orderOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CREATE.getValue(),
+                orderOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, orderOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), orderOrder.getId(),
+                orderOrder.getRemark());
+        orderStatusFlowEnter.setUserId(enter.getUserId());
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * 出库单编辑
+     * @param enter
+     * @return
+     */
+    @Override
+    @Transactional
+    public GeneralResult outOrderEdit(SaveOrUpdateOutOrderEnter enter) {
+        OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+        if (outWhouseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 只有新建状态才能编辑
+        if (!outWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.DRAFT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        BeanUtils.copyProperties(enter, outWhouseOrder);
+        outWhouseOrder.setUpdatedTime(new Date());
+        outWhouseOrder.setUpdatedBy(enter.getUserId());
+        // 编辑的时候  删除原来的产品明细
+        deleteOutOrderB(outWhouseOrder);
+        // 重新生成字表数据
+        createOutOrderB(outWhouseOrder, enter.getSt(), enter.getUserId());
+        opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.EDIT.getValue(),
+                outWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    public void deleteOutOrderB(OpeOutWhouseOrder outWhouseOrder) {
+        switch (outWhouseOrder.getOutWhType()) {
+            case 1:
+                // scooter
+                // 找到原来的明细  全部删除
+                QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
+                scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooter);
+                if (CollectionUtils.isNotEmpty(scooterBS)) {
+                    opeOutWhScooterBService.removeByIds(scooterBS.stream().map(OpeOutWhScooterB::getId).collect(Collectors.toList()));
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                // 找到原来的明细  全部删除
+                QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
+                combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhCombinB> combinBS = opeOutWhCombinBService.list(combin);
+                if (CollectionUtils.isNotEmpty(combinBS)) {
+                    opeOutWhCombinBService.removeByIds(combinBS.stream().map(OpeOutWhCombinB::getId).collect(Collectors.toList()));
+                }
+                break;
+            case 3:
+                // parts
+                // 找到原来的明细  全部删除
+                QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
+                parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhPartsB> partsBS = opeOutWhPartsBService.list(parts);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    opeOutWhPartsBService.removeByIds(partsBS.stream().map(OpeOutWhPartsB::getId).collect(Collectors.toList()));
+                }
+                break;
+        }
+    }
+
+
+    public void createOutOrderB(OpeOutWhouseOrder orderOrder, String st, Long userId) {
+        switch (orderOrder.getOutWhType()) {
+            case 1:
+                // scooter
+                List<SaveOrUpdateOutScooterBEnter> scooterEnters = new ArrayList<>();
+                try {
+                    scooterEnters = JSONArray.parseArray(st, SaveOrUpdateOutScooterBEnter.class);
+                } catch (Exception e) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                if (CollectionUtils.isNotEmpty(scooterEnters)) {
+                    List<OpeOutWhScooterB> scooterBList = new ArrayList<>();
+                    orderOrder.setOutWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateOutScooterBEnter::getQty).sum());
+                    for (SaveOrUpdateOutScooterBEnter scooterEnter : scooterEnters) {
+                        OpeOutWhScooterB scooterB = new OpeOutWhScooterB();
+                        BeanUtils.copyProperties(scooterEnter, scooterB);
+                        scooterB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_SCOOTER_B));
+                        scooterB.setOutWhId(orderOrder.getId());
+                        scooterB.setCreatedBy(userId);
+                        scooterB.setCreatedTime(new Date());
+                        scooterB.setUpdatedBy(userId);
+                        scooterB.setUpdatedTime(new Date());
+                        scooterBList.add(scooterB);
+                    }
+                    opeOutWhScooterBService.saveOrUpdateBatch(scooterBList);
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                List<SaveOrUpdateOutCombinBEnter> combinBEnters = new ArrayList<>();
+                try {
+                    combinBEnters = JSONArray.parseArray(st, SaveOrUpdateOutCombinBEnter.class);
+                } catch (Exception e) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                if (CollectionUtils.isNotEmpty(combinBEnters)) {
+                    List<OpeOutWhCombinB> combinBList = new ArrayList<>();
+                    orderOrder.setOutWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateOutCombinBEnter::getQty).sum());
+                    for (SaveOrUpdateOutCombinBEnter combinBEnter : combinBEnters) {
+                        OpeOutWhCombinB combinB = new OpeOutWhCombinB();
+                        BeanUtils.copyProperties(combinBEnter, combinB);
+                        combinB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_COMBIN_B));
+                        combinB.setCreatedBy(userId);
+                        combinB.setCreatedTime(new Date());
+                        combinB.setUpdatedBy(userId);
+                        combinB.setUpdatedTime(new Date());
+                        combinBList.add(combinB);
+                    }
+                    opeOutWhCombinBService.saveOrUpdateBatch(combinBList);
+                }
+                break;
+            case 3:
+                // parts
+                List<SaveOrUpdateOutPartsBEnter> partsBEnters = new ArrayList<>();
+                try {
+                    partsBEnters = JSONArray.parseArray(st, SaveOrUpdateOutPartsBEnter.class);
+                } catch (Exception e) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                if (CollectionUtils.isNotEmpty(partsBEnters)) {
+                    List<OpeOutWhPartsB> partsBList = new ArrayList<>();
+                    orderOrder.setOutWhQty(partsBEnters.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
+                    for (SaveOrUpdateOutPartsBEnter partsBEnter : partsBEnters) {
+                        OpeOutWhPartsB partsB = new OpeOutWhPartsB();
+                        BeanUtils.copyProperties(partsBEnter, partsB);
+                        partsB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_PARTS_B));
+                        partsB.setOutWhId(orderOrder.getId());
+                        partsB.setCreatedBy(userId);
+                        partsB.setCreatedTime(new Date());
+                        partsB.setUpdatedBy(userId);
+                        partsB.setUpdatedTime(new Date());
+                        partsBList.add(partsB);
+                    }
+                    opeOutWhPartsBService.saveOrUpdateBatch(partsBList);
+                }
+                break;
+        }
+    }
+
 
     /**
      * @Description
@@ -423,23 +676,23 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     /**
      * @Author Aleks
-     * @Description  取消发货单下面的出库单
-     * @Date  2020/10/30 16:20
+     * @Description 取消发货单下面的出库单
+     * @Date 2020/10/30 16:20
      * @Param [invoiceId, userId, remark]
      * @return
      **/
     @Override
     public void cancelOutWh(Long invoiceId, Long userId, String remark) {
         QueryWrapper<OpeOutWhouseOrder> qw = new QueryWrapper<>();
-        qw.eq(OpeOutWhouseOrder.COL_RELATION_ID,invoiceId);
+        qw.eq(OpeOutWhouseOrder.COL_RELATION_ID, invoiceId);
         OpeOutWhouseOrder whouseOrder = opeOutWhouseOrderService.getOne(qw);
-        if(whouseOrder != null){
+        if (whouseOrder != null) {
             whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
             opeOutWhouseOrderService.saveOrUpdate(whouseOrder);
             // 操作记录
             SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, whouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
             productionOrderTraceService.save(opTraceEnter);
-            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,whouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),whouseOrder.getId(),remark);
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, whouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), whouseOrder.getId(), remark);
             orderStatusFlowService.save(orderStatusFlowEnter);
         }
     }
@@ -452,13 +705,13 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeOutWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())){
+        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
         // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeOutWhouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),opeOutWhouseOrder.getId(),"");
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -471,21 +724,21 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeOutWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())){
+        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
         // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeOutWhouseOrder.getOutWhStatus(),OrderTypeEnums.OUTBOUND.getValue(),opeOutWhouseOrder.getId(),"");
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 2020 11 17 追加  判断关联的是哪种单据类型  可能是发货单 可能是组装单
-        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
+        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
             // 更改发货单的状态为待装车
             invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
-        }else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+        } else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果关联的是组装单  把组装单的状态变为备料完成
-            productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(),enter.getUserId());
+            productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
         }
         return new GeneralResult(enter.getRequestId());
     }

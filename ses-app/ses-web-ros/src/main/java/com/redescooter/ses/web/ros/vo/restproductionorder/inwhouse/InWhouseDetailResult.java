@@ -6,6 +6,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.Purchase
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @Date2020/11/11 14:20
  * @Version V1.0
  **/
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "入库单详情接口出参",description = "入库单详情接口出参")
 public class InWhouseDetailResult extends GeneralResult {
@@ -43,6 +45,9 @@ public class InWhouseDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单``")
     private Integer relationOrderType;
+
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     @ApiModelProperty("部件明细")
     private List<InWhouseDetailPartsResult>  parts;

@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -389,6 +388,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         result.setRelationOrderId(inWhouseOrder.getRelationOrderId());
         result.setRelationOrderNo(inWhouseOrder.getRelationOrderNo());
         result.setRelationOrderType(inWhouseOrder.getRelationOrderType());
+        result.setWhType(inWhouseOrder.getWhType());
         // 入库单下面的产品明细
         switch (inWhouseOrder.getOrderType()){
             case 1:

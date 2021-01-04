@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.fr.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -215,6 +216,28 @@ public class FrWhServiceImpl implements FrWhService {
         return result;
     }
 
+
+    /**
+     * 新建出库单时，计算同车型/颜色的车辆可用库存时多少（出库数量要小于库存数）
+     * @param enter
+     * @param whtype 1:中国仓库，2：法国仓库
+     * @return
+     */
+    @Override
+    public IntResult scooterNum(WmsFinishScooterListEnter enter, Integer whtype) {
+        int num = 0;
+        if(enter.getGroupId() != null && enter.getColorId() != null){
+            QueryWrapper<OpeWmsScooterStock> qw = new QueryWrapper<>();
+            qw.eq(OpeWmsScooterStock.COL_GROUP_ID,enter.getGroupId());
+            qw.eq(OpeWmsScooterStock.COL_COLOR_ID,enter.getColorId());
+            qw.eq(OpeWmsScooterStock.COL_STOCK_TYPE,whtype);
+            List<OpeWmsScooterStock> list = opeWmsScooterStockService.list(qw);
+            if (CollectionUtils.isNotEmpty(list)){
+                num = list.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum();
+            }
+        }
+        return new IntResult(num);
+    }
 
 
 }

@@ -1,11 +1,9 @@
 package com.redescooter.ses.web.ros.controller.wms.china;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
+import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import io.swagger.annotations.Api;
@@ -33,6 +31,9 @@ public class WmsFinishStockController {
 
     @Autowired
     private WmsMaterialStockService wmsMaterialStockService;
+
+    @Autowired
+    private FrWhService frWhService;
 
 
     @PostMapping(value = "/finishScooterList")
@@ -97,4 +98,10 @@ public class WmsFinishStockController {
         return new Response<>(wmsMaterialStockService.materialStockPartsDetail(enter));
     }
 
+
+    @PostMapping(value = "/scooterNum")
+    @ApiOperation(value = "新建出库单时，计算同车型/颜色的车辆可用库存时多少（出库数量要小于库存数）", response = IntResult.class)
+    public Response<IntResult> scooterNum(@ModelAttribute @ApiParam("请求参数") WmsFinishScooterListEnter enter) {
+        return new Response<>(frWhService.scooterNum(enter, 1));
+    }
 }

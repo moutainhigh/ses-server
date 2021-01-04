@@ -102,7 +102,7 @@ public class InWhouseOrderController {
 
 
     @PostMapping(value = "/relationPurchaseOrderPartsData")
-    @ApiOperation(value = "关联的生产采购单部件信息", response = InWhRelationOrderResult.class)
+    @ApiOperation(value = "关联的生产采购单部件信息", response = SaveOrUpdatePartsBEnter.class)
     public Response<List<SaveOrUpdatePartsBEnter>> relationPurchaseOrderPartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.relationPurchaseOrderPartsData(enter));
     }
@@ -116,14 +116,14 @@ public class InWhouseOrderController {
 
 
     @PostMapping(value = "/relationCombinOrderCombinData")
-    @ApiOperation(value = "关联的组装单的组装件产品信息", response = InWhRelationOrderResult.class)
+    @ApiOperation(value = "关联的组装单的组装件产品信息", response = SaveOrUpdateCombinBEnter.class)
     public Response<List<SaveOrUpdateCombinBEnter>> relationCombinOrderCombinData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.relationCombinOrderCombinData(enter));
     }
 
 
     @PostMapping(value = "/relationCombinOrderScooterData")
-    @ApiOperation(value = "关联的组装单的整车产品信息", response = InWhRelationOrderResult.class)
+    @ApiOperation(value = "关联的组装单的整车产品信息", response = SaveOrUpdateScooterBEnter.class)
     public Response<List<SaveOrUpdateScooterBEnter>> relationCombinOrderScooterData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.relationCombinOrderScooterData(enter));
     }

@@ -55,11 +55,18 @@ public class OpeInWhouseOrder {
     private String inWhNo;
 
     /**
-     * 入库单状态， 1： 草稿，:10：待质检，20：质检中，30：已入库
+     * 入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库
      */
     @TableField(value = "in_wh_status")
     @ApiModelProperty(value = "入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库")
     private Integer inWhStatus;
+
+    /**
+     * 入库仓库。1:成品库，2:原料库，3:不合格品库
+     */
+    @TableField(value = "wh_type")
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     /**
      * 入库单据类型,1:车辆，2:组装件，3:部件
@@ -83,17 +90,17 @@ public class OpeInWhouseOrder {
     private String relationOrderNo;
 
     /**
-     * 关联的单据类型，1：生产采购单，2：组装单
+     * 关联的单据类型，7：生产采购单，9：组装单
      */
     @TableField(value = "relation_order_type")
-    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单``")
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单")
     private Integer relationOrderType;
 
     /**
      * 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @TableField(value = "in_wh_type")
-    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
+    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他")
     private Integer inWhType;
 
     /**
@@ -184,6 +191,8 @@ public class OpeInWhouseOrder {
     public static final String COL_IN_WH_NO = "in_wh_no";
 
     public static final String COL_IN_WH_STATUS = "in_wh_status";
+
+    public static final String COL_WH_TYPE = "wh_type";
 
     public static final String COL_ORDER_TYPE = "order_type";
 
