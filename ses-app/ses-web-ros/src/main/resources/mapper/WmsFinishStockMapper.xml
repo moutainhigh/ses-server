@@ -154,4 +154,78 @@
         where dr = 0 and record_type = #{recordType} and relation_type in (2)
         and created_time like concat('%',#{date},'%') and stock_type = 2
     </select>
+
+
+
+
+    <select id="frScooterTotalRows" resultType="int">
+        select count(*) from ope_wms_scooter_stock stock
+        where stock.dr = 0
+        <include refid="frScooterListCondition"/>
+    </select>
+
+    <select id="frScooterList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult">
+        select
+        stock.id,
+        stock.able_stock_qty,
+        stock.used_stock_qty,
+        stock.wait_in_stock_qty,
+        stock.wait_out_stock_qty,
+        group1.group_name,
+        color.color_name,
+        color.color_value
+        from ope_wms_scooter_stock stock
+        left join ope_specificat_group group1 on group1.id = stock.group_id
+        left join ope_color color on color.id = stock.color_id
+        where stock.dr = 0
+        <include refid="frScooterListCondition"/>
+        order by stock.able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="frScooterListCondition">
+        and stock_type = 2
+        <if test="enter.groupId != null">
+            and stock.group_id = #{enter.groupId}
+        </if>
+        <if test="enter.colorId != null">
+            and stock.color_id = #{enter.colorId}
+        </if>
+    </sql>
+
+
+    <select id="frCombinCotalRows" resultType="int">
+        select count(*) from ope_wms_combin_stock
+        where dr = 0
+        <include refid="frCombinListCondition"/>
+    </select>
+
+    <select id="frCombinList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult">
+        select
+        id,
+        combin_no,
+        cn_name,
+        en_name,
+        fr_name,
+        able_stock_qty,
+        used_stock_qty,
+        wait_in_stock_qty,
+        wait_out_stock_qty
+        from ope_wms_combin_stock
+        where dr = 0
+        <include refid="frCombinListCondition"/>
+        order by able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="frCombinListCondition">
+        and stock_type = 2
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            combin_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
 </mapper>

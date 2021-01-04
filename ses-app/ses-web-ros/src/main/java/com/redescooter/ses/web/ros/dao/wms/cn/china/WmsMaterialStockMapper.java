@@ -54,4 +54,22 @@ public interface WmsMaterialStockMapper {
      */
     Integer frTodayPartsInOrOutStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
 
+
+    //    ************ 一下是法国仓库的  **********
+
+
+    /**
+     * 原料库部件列表的统计
+     * @param enter
+     * @return
+     */
+    int frPartsCotalRows(@Param("enter") MaterialStockPartsListEnter enter);
+
+
+    /**
+     * 原料库部件库存列表
+     * @param enter
+     * @return
+     */
+    List<MaterialStockPartsListResult> frPartsList(@Param("enter") MaterialStockPartsListEnter enter);
 }

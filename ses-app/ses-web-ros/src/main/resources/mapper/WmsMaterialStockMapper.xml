@@ -63,4 +63,44 @@
         where dr = 0 and record_type = #{recordType} and relation_type in (3)
         and created_time like concat('%',#{date},'%') and stock_type = 2
     </select>
+
+
+    <select id="frPartsCotalRows" resultType="int">
+        select count(*)
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="frListCondition"/>
+    </select>
+
+    <select id="frPartsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult">
+        select
+        id,
+        parts_no,
+        cn_name,
+        en_name,
+        fr_name,
+        able_stock_qty,
+        used_stock_qty,
+        wait_in_stock_qty,
+        wait_out_stock_qty
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="frListCondition"/>
+        order by able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="frListCondition">
+        and stock_type = 2
+        <if test="enter.partsType != null">
+            and parts_type = #{enter.partsType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
 </mapper>

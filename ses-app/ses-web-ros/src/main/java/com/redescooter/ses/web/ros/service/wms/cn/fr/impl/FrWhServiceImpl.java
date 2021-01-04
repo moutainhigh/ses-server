@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
 import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
@@ -47,7 +48,7 @@ public class FrWhServiceImpl implements FrWhService {
     private OpeWmsScooterStockService opeWmsScooterStockService;
 
     @Autowired
-    private OpeWmsCombinStockService opewmsCombinStockService;
+    private OpeWmsCombinStockService opeWmsCombinStockService;
 
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
@@ -97,7 +98,7 @@ public class FrWhServiceImpl implements FrWhService {
         // 组装件
         QueryWrapper<OpeWmsCombinStock> comb = new QueryWrapper<>();
         comb.eq(OpeWmsCombinStock.COL_STOCK_TYPE,2);
-        List<OpeWmsCombinStock> combStockList = opewmsCombinStockService.list(comb);
+        List<OpeWmsCombinStock> combStockList = opeWmsCombinStockService.list(comb);
         result.setCombinNum(CollectionUtils.isEmpty(combStockList)?0:combStockList.stream().mapToInt(OpeWmsCombinStock::getAbleStockQty).sum());
         // 部件
         QueryWrapper<OpeWmsPartsStock> parts = new QueryWrapper<>();
@@ -108,51 +109,110 @@ public class FrWhServiceImpl implements FrWhService {
     }
 
 
+    /**
+     * 法国仓库车辆库存列表
+     * @param enter
+     * @return
+     */
     @Override
     public PageResult<WmsFinishScooterListResult> frScooterList(WmsFinishScooterListEnter enter) {
-        return null;
+        SesStringUtils.objStringTrim(enter);
+        int totalRows = wmsFinishStockMapper.frScooterTotalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsFinishScooterListResult> list = wmsFinishStockMapper.frScooterList(enter);
+        return PageResult.create(enter, totalRows, list);
     }
 
 
+    /**
+     * 法国仓库车辆库存详情
+     * @param enter
+     * @return
+     */
     @Override
     public WmsfinishScooterDetailResult frScooterDetail(IdEnter enter) {
         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getById(enter.getId());
         if (scooterStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
-        return new WmsfinishScooterDetailResult();
+        WmsfinishScooterDetailResult result = wmsFinishStockMapper.finishScooterDetail(enter.getId());
+        List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+        result.setRecordList(record);
+        return result;
     }
 
 
+    /**
+     * 法国组装件库存列表
+     * @param enter
+     * @return
+     */
     @Override
     public PageResult<WmsFinishCombinListResult> frCombinList(CombinationListEnter enter) {
-        return null;
+        SesStringUtils.objStringTrim(enter);
+        int totalRows = wmsFinishStockMapper.combinCotalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsFinishCombinListResult> list = wmsFinishStockMapper.finishCombinList(enter);
+        return PageResult.create(enter, totalRows, list);
     }
 
 
+    /**
+     * 法国组装件库存详情
+     * @param enter
+     * @return
+     */
     @Override
     public WmsfinishCombinDetailResult frCombinDetail(IdEnter enter) {
-        OpeWmsCombinStock combinStock = opewmsCombinStockService.getById(enter.getId());
-        if (combinStock == null) {
+        OpeWmsCombinStock combinStock = opeWmsCombinStockService.getById(enter.getId());
+        if (combinStock == null){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
-        return new WmsfinishCombinDetailResult();
+        WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
+        // 入库记录
+        List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+        result.setRecordList(record);
+        return result;
     }
 
 
+    /**
+     * 法国部件的库存列表
+     * @param enter
+     * @return
+     */
     @Override
     public PageResult<MaterialStockPartsListResult> frPartsList(MaterialStockPartsListEnter enter) {
-        return null;
+        SesStringUtils.objStringTrim(enter);
+        int totalRows = wmsMaterialStockMapper.frPartsCotalRows(enter);
+        if (totalRows == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<MaterialStockPartsListResult> list = wmsMaterialStockMapper.frPartsList(enter);
+        return PageResult.create(enter, totalRows, list);
     }
 
 
+    /**
+     * 法国部件的库存详情
+     * @param enter
+     * @return
+     */
     @Override
     public MaterialpartsStockDetailResult frPartsDetail(IdEnter enter) {
         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getById(enter.getId());
-        if (partsStock == null) {
+        if (partsStock == null){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
-        return new MaterialpartsStockDetailResult();
+        MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
+        // 入库记录
+        List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+        result.setRecordList(record);
+        return result;
     }
 
 

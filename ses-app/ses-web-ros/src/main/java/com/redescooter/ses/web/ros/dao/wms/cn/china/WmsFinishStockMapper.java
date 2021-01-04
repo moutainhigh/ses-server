@@ -118,5 +118,38 @@ public interface WmsFinishStockMapper {
     Integer frTodayCombinInOrOutStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
 
 
+    //     *******************   下面是法国的仓库    ****************
+
+
+    /**
+     * 成品库车辆list统计
+     * @param enter
+     * @return
+     */
+    int frScooterTotalRows(@Param("enter") WmsFinishScooterListEnter enter);
+
+    /**
+     * 成品库车辆list
+     * @param enter
+     * @return
+     */
+    List<WmsFinishScooterListResult> frScooterList(@Param("enter") WmsFinishScooterListEnter enter);
+
+
+    /**
+     * 成品库组装件list统计
+     * @param enter
+     * @return
+     */
+    int frCombinCotalRows(@Param("enter") CombinationListEnter enter);
+
+
+    /**
+     * 成品库组装件list
+     * @param enter
+     * @return
+     */
+    List<WmsFinishCombinListResult> frCombinList(@Param("enter") CombinationListEnter enter);
+
 
 }
