@@ -21,7 +21,7 @@ public class SiteOrder implements Serializable {
     /**
      * 主建
      */
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="主建")
     private Long id;
 

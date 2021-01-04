@@ -20,7 +20,7 @@ public class SiteProductParts implements Serializable {
     /**
      * 主键 主键
      */
-    @TableId(value = "id", type = IdType.ASSIGN_UUID)
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value="主键 主键")
     private Long id;
 
