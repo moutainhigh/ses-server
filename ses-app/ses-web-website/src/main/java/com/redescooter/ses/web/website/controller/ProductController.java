@@ -18,17 +18,12 @@ import java.util.List;
  * @ClassName: ProductModelController
  * @Function: 产品型号服务
  */
-@Api(tags = {"Product Model Management"})
+@Api(tags = {"product Management"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/model")
-public class ProductModelController {
+public class ProductController {
 
-    /**
-     * 
-     * @param enter
-     * @return
-     */
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表展示", response = GeneralResult.class)
