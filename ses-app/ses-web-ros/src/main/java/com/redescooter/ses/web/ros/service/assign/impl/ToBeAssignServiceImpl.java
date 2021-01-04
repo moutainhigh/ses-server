@@ -194,7 +194,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         scooter.setTotalCount(customerInquiry.getScooterQuantity());
         scooter.setToBeAssignCount(customerInquiry.getScooterQuantity());
-        scooter.setRequestId(enter.getRequestId());
         scooterList.add(scooter);
 
         result.setCustomerInfo(customerInfo);
