@@ -492,7 +492,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         if (consigneeUser != null){
             BaseMailTaskEnter consigneeEnter = new BaseMailTaskEnter();
             consigneeEnter.setName(consigneeUser.getFullName());
-            consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNEE.getEvent());
+            consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_DELIVERY_TO_CONSIGNEE.getEvent());
             consigneeEnter.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
             consigneeEnter.setAppId(AppIDEnums.SES_ROS.getValue());
             consigneeEnter.setEmail(entrustOrder.getConsigneeUserMail());
