@@ -12,6 +12,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.*;
 import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -21,6 +22,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
@@ -103,6 +105,9 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
+
+    @Autowired
+    private WmsMaterialStockService wmsMaterialStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -585,6 +590,12 @@ public class InWhouseServiceImpl implements InWhouseService {
                 partsB.setActInWhQty(partsB.getInWhQty());
             }
             opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
+        }
+        // 入库单变为待入库的时候，需要在原料库中插入数据，待入库数量
+        try {
+            wmsMaterialStockService.waitInStock(ProductTypeEnums.PARTS.getValue(),inWhouseOrder.getId(),1,inWhouseOrder.getUpdatedBy());
+        }catch (Exception e) {
+
         }
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, inWhouseOrder.getInWhStatus(), OrderTypeEnums.FACTORY_INBOUND.getValue(), inWhouseOrder.getId(),

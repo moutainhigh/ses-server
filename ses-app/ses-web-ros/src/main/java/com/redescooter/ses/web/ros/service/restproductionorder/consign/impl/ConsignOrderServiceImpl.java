@@ -25,6 +25,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
@@ -114,6 +115,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Reference
     private MailMultiTaskService mailMultiTaskService;
+
+    @Autowired
+    private WmsMaterialStockService wmsMaterialStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -284,6 +288,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         try {
             // 发邮件不能影响主流程，且发邮件的方法必须是异步的
             entrustSignToEmail(opeEntrustOrder,enter.getRequestId());
+            // 委托单签收时 对于法国仓库时入库操作
+            wmsMaterialStockService.inStock(opeEntrustOrder.getEntrustType(),opeEntrustOrder.getId(),2,enter.getUserId(),1);
         }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }
@@ -479,6 +485,14 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         try {
             // 发邮件不能影响主流程，且发邮件的方法必须是异步的
             entrustDeliveryToEmail(opeEntrustOrder,enter.getRequestId());
+            // 委托单发货时  对于中国仓库来说时出库  对于法国仓库来说是入库
+            // todo 中国仓库执行出库操作
+            //法国仓库 执行待入库操作
+            try {
+                wmsMaterialStockService.waitInStock(opeEntrustOrder.getEntrustType(),opeEntrustOrder.getId(),2,enter.getUserId());
+            }catch (Exception e) {
+
+            }
         }catch (Exception e){}
         return new GeneralResult(enter.getRequestId());
     }

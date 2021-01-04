@@ -28,4 +28,24 @@ public interface WmsMaterialStockService {
      */
     MaterialpartsStockDetailResult materialStockPartsDetail(IdEnter enter);
 
+
+    /**
+     * 生成库存的待入库数量
+     * @param productionType 1:scooter 2:combin 3:parts
+     * @param id
+     * @param stockType 1:中国仓库 2：法国仓库
+     * @param userId 操作人ID
+     */
+    void waitInStock(Integer productionType,Long id,Integer stockType,Long userId);
+
+
+    /**
+     * 生成库存的已入库数量
+     * @param productionType 1:scooter 2:combin 3:parts
+     * @param id
+     * @param stockType 1:中国仓库 2：法国仓库
+     * @param userId 操作人ID
+     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     */
+    void inStock(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
 }
