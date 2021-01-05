@@ -510,7 +510,9 @@ public enum ExceptionCodeEnums {
 
     ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息"),
 
-    SCOOTER_STOCK_IS_EMPTY(10247, "车辆库存为空")
+    SCOOTER_STOCK_IS_EMPTY(10247, "车辆库存为空"),
+
+    SCOOTER_STOCK_IS_NOT_ENOUGH(10248, "车辆库存不足")
 
 
 

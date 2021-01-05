@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.enums.assign;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @AllArgsConstructor
@@ -23,9 +24,11 @@ public enum ProductTypeEnum {
     private String msg;
 
     public static String showCode(String msg) {
-        for (ProductTypeEnum o : ProductTypeEnum.values()) {
-            if (o.getMsg().equals(msg)) {
-                return o.getCode();
+        if (StringUtils.isNotBlank(msg)) {
+            for (ProductTypeEnum o : ProductTypeEnum.values()) {
+                if (msg.contains(o.getMsg())) {
+                    return o.getCode();
+                }
             }
         }
         return null;

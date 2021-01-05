@@ -32,7 +32,10 @@ public class ToBeAssignSeatNextDetailEnter extends GeneralEnter implements Seria
     @ApiModelProperty(value = "型号名称", required = true)
     private String specificatName;
 
-    @ApiModelProperty(value = "座位数", required = true)
+    @ApiModelProperty(value = "座位数 1座传1,2座传2", required = true)
     private Integer seatNumber;
+
+    @ApiModelProperty(value = "待分配车辆数量", required = true)
+    private Integer qty;
 
 }

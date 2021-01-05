@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description 待分配列表点击分配带出数据车辆信息出参
@@ -32,16 +33,10 @@ public class ToBeAssignDetailScooterInfoResult extends GeneralResult implements 
     @ApiModelProperty(value = "型号名称")
     private String specificatName;
 
-    @ApiModelProperty(value = "颜色名称")
-    private String colorName;
-
-    @ApiModelProperty(value = "颜色色值")
-    private String colorValue;
-
     @ApiModelProperty(value = "总数")
     private Integer totalCount;
 
-    @ApiModelProperty(value = "待完成分配数")
-    private Integer toBeAssignCount;
+    @ApiModelProperty(value = "车辆列表")
+    private List<ToBeAssignDetailScooterInfoSubResult> scooterList;
 
 }
