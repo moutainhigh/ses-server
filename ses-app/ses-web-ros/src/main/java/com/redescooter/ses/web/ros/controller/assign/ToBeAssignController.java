@@ -120,7 +120,7 @@ public class ToBeAssignController {
     @ApiOperation(value = "点击分配按钮校验车辆库存数量", notes = "点击分配按钮校验车辆库存数量")
     @PostMapping("/check")
     public Response<BooleanResult> checkScooterStock(@ModelAttribute CustomerIdEnter enter) {
-        return toBeAssignService.checkScooterStock(enter);
+        return new Response<>(toBeAssignService.checkScooterStock(enter));
     }
 
     /**

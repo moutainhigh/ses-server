@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -476,9 +475,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 点击分配按钮校验车辆库存数量
      */
     @Override
-    public Response<BooleanResult> checkScooterStock(CustomerIdEnter enter) {
+    public BooleanResult checkScooterStock(CustomerIdEnter enter) {
         logger.info("点击分配按钮校验车辆库存数量的入参是:[{}]", enter);
-        Response<BooleanResult> response = new Response<>();
         BooleanResult result = new BooleanResult();
 
         // 获得询价单客户需求车辆数
@@ -502,13 +500,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.eq(OpeWmsScooterStock::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeWmsScooterStock::getGroupId, specificatId);
         wrapper.eq(OpeWmsScooterStock::getColorId, colorId);
+        wrapper.eq(OpeWmsScooterStock::getStockType, 2);
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            result.setSuccess(Boolean.TRUE);
-            response.setErrorMsg(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
-            response.setResult(result);
-            return response;
+            // result.setSuccess(Boolean.FALSE);  // 这是正确的
+            result.setSuccess(Boolean.TRUE);  // 这是为了走流程暂时的,后期删掉
+            return result;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
         Integer ableStockQty = scooterStock.getAbleStockQty();
@@ -517,13 +515,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 询价单客户需求车辆数和可用库存数量作对比
         if (scooterQuantity > ableStockQty) {
             result.setSuccess(Boolean.FALSE);
-            response.setErrorMsg(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         } else if (scooterQuantity <= ableStockQty) {
             result.setSuccess(Boolean.TRUE);
         }
-        response.setResult(result);
         result.setRequestId(enter.getRequestId());
-        return response;
+        return result;
     }
 
     /**
