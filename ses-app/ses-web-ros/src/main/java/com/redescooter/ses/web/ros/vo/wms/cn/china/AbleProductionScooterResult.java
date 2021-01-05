@@ -21,6 +21,6 @@ public class AbleProductionScooterResult extends GeneralResult {
     private String colorName;
 
     @ApiModelProperty("数量")
-    private Integer num;
+    private Integer num = 0;
 
 }

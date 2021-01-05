@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.wms.china;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -11,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @description: 库存的控制器
@@ -72,8 +75,14 @@ public class WmsQualifiedController {
 
 
     @PostMapping(value = "/quailifiedQtyCount")
-    @ApiOperation(value = "不合格品库库存统计", response = MaterialpartsStockDetailResult.class)
+    @ApiOperation(value = "不合格品库库存统计", response = WmsQualifiedQtyCountResult.class)
     public Response<WmsQualifiedQtyCountResult> quailifiedQtyCount(@ModelAttribute @ApiParam("请求参数") WmsQualifiedQtyCountEnter enter) {
         return new Response<>(wmsQualifiedService.quailifiedQtyCount(enter));
+    }
+
+    @PostMapping(value = "/unailifiedStockTabCount")
+    @ApiOperation(value = "不合格品库tab的数量统计（车辆/组装件/部件）", response = Map.class)
+    public Response<Map<String, Integer>> unailifiedStockTabCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(wmsQualifiedService.unailifiedStockTabCount(enter));
     }
 }

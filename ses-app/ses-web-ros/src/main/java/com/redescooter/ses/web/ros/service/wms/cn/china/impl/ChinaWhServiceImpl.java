@@ -65,7 +65,8 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         inWh.setFinishWhNum(wmsFinishStockMapper.finishTodayStackCount(DateUtil.getDate(),1));
         inWh.setMaterialWhNum(wmsMaterialStockMapper.materialTodayStockCount(DateUtil.getDate(),1));
         inWh.setUnqualifiedWhNum(wmsQualifiedMapper.qualifiedTodayStockCount(DateUtil.getDate(),1));
-        inWh.setCountNum(inWh.getFinishWhNum() + inWh.getMaterialWhNum() + inWh.getUnqualifiedWhNum());
+        inWh.setCountNum((inWh.getFinishWhNum()==null?0:inWh.getFinishWhNum()) + (inWh.getMaterialWhNum()==null?0:inWh.getMaterialWhNum()) + (inWh.getUnqualifiedWhNum()==null?0:
+                inWh.getUnqualifiedWhNum()));
         list.add(inWh);
 
         // 今日出库
@@ -74,7 +75,7 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         outWh.setFinishWhNum(wmsFinishStockMapper.finishTodayStackCount(DateUtil.getDate(),2));
         outWh.setMaterialWhNum(wmsMaterialStockMapper.materialTodayStockCount(DateUtil.getDate(),2));
         outWh.setUnqualifiedWhNum(wmsQualifiedMapper.qualifiedTodayStockCount(DateUtil.getDate(),2));
-        outWh.setCountNum(outWh.getFinishWhNum() + outWh.getMaterialWhNum() + outWh.getUnqualifiedWhNum());
+        outWh.setCountNum((outWh.getFinishWhNum()==null?0:outWh.getFinishWhNum()) + (outWh.getMaterialWhNum()==null?0:outWh.getMaterialWhNum()) + (outWh.getUnqualifiedWhNum()==null?0:outWh.getUnqualifiedWhNum()));
         list.add(outWh);
         return list;
     }
@@ -92,6 +93,8 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         List<OpeWmsScooterStock> scooterStockList = opeWmsScooterStockService.list(scooter);
         if (CollectionUtils.isNotEmpty(scooterStockList)){
             finishWh.setScooterNum(scooterStockList.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum());
+        }else {
+            finishWh.setScooterNum(0);
         }
         // 组装件库存
         QueryWrapper<OpeWmsCombinStock> combin = new QueryWrapper<>();
@@ -99,8 +102,10 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         List<OpeWmsCombinStock> combinStockList = opeWmsCombinStockService.list(combin);
         if (CollectionUtils.isNotEmpty(scooterStockList)){
             finishWh.setCombinNum(combinStockList.stream().mapToInt(OpeWmsCombinStock::getAbleStockQty).sum());
+        }else {
+            finishWh.setCombinNum(0);
         }
-        finishWh.setCountNum(finishWh.getScooterNum() + finishWh.getCombinNum());
+        finishWh.setCountNum((finishWh.getScooterNum()==null?0:finishWh.getScooterNum()) + (finishWh.getCombinNum()==null?0:finishWh.getCombinNum()));
         list.add(finishWh);
 
         // 原料库(只有部件)
@@ -111,6 +116,8 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockService.list(parts);
         if (CollectionUtils.isNotEmpty(partsStockList)){
             materialWh.setPartsNum(partsStockList.stream().mapToInt(OpeWmsPartsStock::getAbleStockQty).sum());
+        }else {
+            materialWh.setPartsNum(0);
         }
         materialWh.setCountNum(materialWh.getPartsNum());
         list.add(materialWh);
@@ -122,18 +129,24 @@ public class ChinaWhServiceImpl implements ChinaWhService {
         List<OpeWmsQualifiedScooterStock> scooterStocks = opeWmsQualifiedScooterStockService.list();
         if (CollectionUtils.isNotEmpty(scooterStocks)){
             unqualifiedWh.setScooterNum(scooterStocks.stream().mapToInt(OpeWmsQualifiedScooterStock::getQty).sum());
+        }else {
+            unqualifiedWh.setScooterNum(0);
         }
         // 组装件
         List<OpeWmsQualifiedCombinStock> combinStocks = opeWmsQualifiedCombinStockService.list();
         if (CollectionUtils.isNotEmpty(combinStocks)){
             unqualifiedWh.setCombinNum(combinStocks.stream().mapToInt(OpeWmsQualifiedCombinStock::getQty).sum());
+        }else {
+            unqualifiedWh.setCombinNum(0);
         }
         // 部件
         List<OpeWmsQualifiedPartsStock> partsStocks = opeWmsQualifiedPartsStockService.list();
         if (CollectionUtils.isNotEmpty(partsStocks)){
             unqualifiedWh.setPartsNum(partsStocks.stream().mapToInt(OpeWmsQualifiedPartsStock::getQty).sum());
+        }else {
+            unqualifiedWh.setPartsNum(0);
         }
-        unqualifiedWh.setCountNum(unqualifiedWh.getScooterNum() + unqualifiedWh.getCombinNum() + unqualifiedWh.getPartsNum());
+        unqualifiedWh.setCountNum((unqualifiedWh.getScooterNum()==null?0:unqualifiedWh.getScooterNum()) + (unqualifiedWh.getCombinNum()==null?0:unqualifiedWh.getCombinNum()) + (unqualifiedWh.getPartsNum()==null?0:unqualifiedWh.getPartsNum()));
         list.add(unqualifiedWh);
         return list;
     }

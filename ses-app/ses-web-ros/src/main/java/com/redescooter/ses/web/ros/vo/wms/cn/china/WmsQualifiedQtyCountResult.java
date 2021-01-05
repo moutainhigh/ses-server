@@ -11,7 +11,7 @@ import lombok.Data;
  * @create: 2020/12/30 14:29
  */
 @Data
-@ApiModel("不合格品库库存统计出参")
+@ApiModel(value = "不合格品库库存统计出参")
 public class WmsQualifiedQtyCountResult extends GeneralResult {
 
     @ApiModelProperty("不合格库存")

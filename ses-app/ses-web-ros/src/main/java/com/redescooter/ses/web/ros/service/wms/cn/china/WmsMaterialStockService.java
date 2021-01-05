@@ -30,7 +30,7 @@ public interface WmsMaterialStockService {
 
 
     /**
-     * 生成库存的待入库数量
+     * 生成库存的待入库数量增加
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
      * @param stockType 1:中国仓库 2：法国仓库
@@ -40,7 +40,7 @@ public interface WmsMaterialStockService {
 
 
     /**
-     * 生成库存的已入库数量
+     * 生成库存的已入库数量增加 待入库数量减少
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
      * @param stockType 1:中国仓库 2：法国仓库
@@ -48,4 +48,36 @@ public interface WmsMaterialStockService {
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     void inStock(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
+
+
+    /**
+     * 可用库存减少  待出库库存增加
+     * @param productionType
+     * @param id
+     * @param stockType
+     * @param userId
+     * @param inWhType
+     */
+    void ableLowWaitOutUp(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
+
+    /**
+     * 可用库存增加  待出库库存减少
+     * @param productionType
+     * @param id
+     * @param stockType
+     * @param userId
+     * @param inWhType
+     */
+    void ableUpWaitOutLow(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
+
+
+    /**
+     * 已用库存增加  待出库库存减少
+     * @param productionType
+     * @param id
+     * @param stockType
+     * @param userId
+     * @param inWhType
+     */
+    void usedlUpWaitOutLow(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
 }

@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.outbound;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
@@ -141,6 +138,14 @@ public interface OutboundOrderService {
      * @return
      */
     GeneralResult outOrderEdit(SaveOrUpdateOutOrderEnter enter);
+
+
+    /**
+     * 出库单提交
+     * @param enter
+     * @return
+     */
+    GeneralResult outOrderSubmit(IdEnter enter);
 
 
 

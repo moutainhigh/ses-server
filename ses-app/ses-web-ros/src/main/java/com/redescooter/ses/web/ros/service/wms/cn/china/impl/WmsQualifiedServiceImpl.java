@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -20,7 +21,9 @@ import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -153,5 +156,18 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
         result.setQty(qty);
         return result;
+    }
+
+    @Override
+    public Map<String, Integer> unailifiedStockTabCount(GeneralEnter enter) {
+        Map<String, Integer> map = new HashMap<>();
+        Integer scooterNum = opeWmsQualifiedScooterStockService.count();
+        Integer combinNum = opeWmsQualifiedCombinStockService.count();
+        Integer partsNum = opeWmsQualifiedPartsStockService.count();
+
+        map.put("1",scooterNum);
+        map.put("2",combinNum);
+        map.put("3",partsNum);
+        return map;
     }
 }

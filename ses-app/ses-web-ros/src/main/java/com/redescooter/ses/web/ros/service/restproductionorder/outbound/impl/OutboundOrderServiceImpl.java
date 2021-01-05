@@ -8,10 +8,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -26,6 +23,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
@@ -102,6 +100,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
+
+    @Autowired
+    private WmsMaterialStockService wmsMaterialStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -462,6 +463,29 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Override
+    public GeneralResult outOrderSubmit(IdEnter enter) {
+        OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+        if (outWhouseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        // 只有新建状态才能点击提交按钮
+        if (!outWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.DRAFT.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
+        }
+        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+        outWhouseOrder.setUpdatedBy(enter.getUserId());
+        outWhouseOrder.setUpdatedTime(new Date());
+        opeOutWhouseOrderService.updateById(outWhouseOrder);
+        // 出库单提交 可用库存减少，待出库的库存增加
+        try {
+            wmsMaterialStockService.ableLowWaitOutUp(outWhouseOrder.getOutWhType(),outWhouseOrder.getId(),1, enter.getUserId(), outWhouseOrder.getWhType());
+        }catch (Exception e) {
+
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     public void deleteOutOrderB(OpeOutWhouseOrder outWhouseOrder) {
         switch (outWhouseOrder.getOutWhType()) {
@@ -694,6 +718,12 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             productionOrderTraceService.save(opTraceEnter);
             OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, whouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), whouseOrder.getId(), remark);
             orderStatusFlowService.save(orderStatusFlowEnter);
+            // 出库单取消 可用库存增加，待出库的库存减少
+            try {
+                wmsMaterialStockService.ableUpWaitOutLow(whouseOrder.getOutWhType(),whouseOrder.getId(),1, userId, whouseOrder.getWhType());
+            }catch (Exception e) {
+
+            }
         }
     }
 
@@ -739,6 +769,12 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         } else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果关联的是组装单  把组装单的状态变为备料完成
             productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
+        }
+        // 出库单变为已出库 可已用库存增加，待出库的库存减少
+        try {
+            wmsMaterialStockService.usedlUpWaitOutLow(opeOutWhouseOrder.getOutWhType(),opeOutWhouseOrder.getId(),1, enter.getUserId(), opeOutWhouseOrder.getWhType());
+        }catch (Exception e) {
+
         }
         return new GeneralResult(enter.getRequestId());
     }

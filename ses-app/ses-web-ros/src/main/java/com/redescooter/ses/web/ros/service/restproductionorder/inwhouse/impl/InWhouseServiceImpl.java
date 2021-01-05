@@ -479,6 +479,12 @@ public class InWhouseServiceImpl implements InWhouseService {
             // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
             productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
         }
+        // 入库单确认入库的是时候  库存待入库数量减少  可用数量增加
+        try {
+            wmsMaterialStockService.inStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),1,enter.getUserId(),inWhouseOrder.getInWhType());
+        }catch (Exception e) {
+
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -591,9 +597,9 @@ public class InWhouseServiceImpl implements InWhouseService {
             }
             opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
         }
-        // 入库单变为待入库的时候，需要在原料库中插入数据，待入库数量
+        // 入库单变为待入库的时候，需要在库存中插入数据，待入库数量
         try {
-            wmsMaterialStockService.waitInStock(ProductTypeEnums.PARTS.getValue(),inWhouseOrder.getId(),1,inWhouseOrder.getUpdatedBy());
+            wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),1,enter.getUserId());
         }catch (Exception e) {
 
         }
