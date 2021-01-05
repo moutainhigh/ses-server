@@ -633,7 +633,23 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         return result.toString();
     }
 
-    public String testGenerateVINCode(String specificatName, Integer seatNumber, int i) {
+    /**
+     * 生成105条SSN
+     */
+    @Override
+    public List<String> testGenerateVINCode(GeneralEnter enter) {
+        Integer[] array = {1, 2};
+        List<String> list = Lists.newArrayList();
+        for (int i = 0; i < 105; i++) {
+            int index = (int) (Math.random() * array.length);
+            Integer seat = array[index];
+            String s = show(Long.valueOf("102104071540736"), "E100", seat, i + 1);
+            list.add(s);
+        }
+        return list;
+    }
+
+    public String show(Long specificatId, String specificatName, Integer seatNumber, int i) {
         String msg = "VXS";
         StringBuffer result = new StringBuffer();
 
@@ -657,13 +673,50 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         result.append(value);
         result.append(FactoryEnum.AOGE.getCode());
 
-        if (i < 10) {
+        /*if (i < 10) {
             result.append("00000" + i);
         } else if (i < 100) {
             result.append("0000" + i);
         } else if (i < 1000) {
             result.append("000" + i);
+        }*/
+
+        List<Integer> codeList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
+        wrapper.eq(OpeCarDistribute::getSeatNumber, seatNumber);
+        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            // 得到自增编号,从倒数第6位开始截取
+            for (OpeCarDistribute o : list) {
+                String vinCode = o.getVinCode();
+                String sub = vinCode.substring(vinCode.length() - 6);
+                codeList.add(Integer.valueOf(sub));
+            }
+            // 倒序排列
+            codeList.sort(Comparator.reverseOrder());
+            NumberFormat nf = NumberFormat.getInstance();
+            nf.setGroupingUsed(false);
+            nf.setMaximumIntegerDigits(6);
+            nf.setMinimumIntegerDigits(6);
+            String code = nf.format(new Double(codeList.get(0) + 1));
+            result.append(code);
+        } else {
+            result.append("000001");
         }
+
+        // 新增到主表
+        OpeCarDistribute model = new OpeCarDistribute();
+        model.setId(Long.valueOf(i));
+        model.setTenantId(1L);
+        model.setUserId(1L);
+        model.setCustomerId(1L);
+        model.setSpecificatTypeId(specificatId);
+        model.setSeatNumber(seatNumber);
+        model.setCreatedBy(1L);
+        model.setVinCode(result.toString());
+        opeCarDistributeMapper.insert(model);
+
         return result.toString();
     }
 

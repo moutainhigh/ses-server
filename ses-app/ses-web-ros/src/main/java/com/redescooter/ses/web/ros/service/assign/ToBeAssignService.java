@@ -15,6 +15,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,5 +69,10 @@ public interface ToBeAssignService {
      * 点击分配按钮校验车辆库存数量
      */
     BooleanResult checkScooterStock(CustomerIdEnter enter);
+
+    /**
+     * 生成105条SSN
+     */
+    List<String> testGenerateVINCode(GeneralEnter enter);
 
 }

@@ -1,13 +1,11 @@
 package com.redescooter.ses.web.ros.controller.assign;
 
-import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
-import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -125,18 +123,12 @@ public class ToBeAssignController {
         return new Response<>(toBeAssignService.checkScooterStock(enter));
     }
 
+    /**
+     * 生成105条SSN
+     */
     @PostMapping("/test")
     public Response<List<String>> test(@ModelAttribute GeneralEnter enter) {
-        ToBeAssignServiceImpl impl = new ToBeAssignServiceImpl();
-        Integer[] array = {1, 2};
-        List<String> list = Lists.newArrayList();
-        for (int i = 0; i < 105; i++) {
-            int index = (int) (Math.random() * array.length);
-            Integer seat = array[index];
-            String s = impl.testGenerateVINCode("E50", seat, i + 1);
-            list.add(s);
-        }
-        return new Response<>(list);
+        return new Response<>(toBeAssignService.testGenerateVINCode(enter));
     }
 
 }
