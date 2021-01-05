@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -332,6 +333,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     public ToBeAssignColorResult getColorByRSN(StringEnter enter) {
         // 暂时模拟
+        logger.info("根据R.SN获得颜色的入参是:[{}]", enter);
         ToBeAssignColorResult result = new ToBeAssignColorResult();
         String colorName = "Noir";
         LambdaQueryWrapper<OpeColor> wrapper = new LambdaQueryWrapper<>();
@@ -474,7 +476,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 点击分配按钮校验车辆库存数量
      */
     @Override
-    public BooleanResult checkScooterStock(CustomerIdEnter enter) {
+    public Response<BooleanResult> checkScooterStock(CustomerIdEnter enter) {
+        logger.info("点击分配按钮校验车辆库存数量的入参是:[{}]", enter);
+        Response<BooleanResult> response = new Response<>();
         BooleanResult result = new BooleanResult();
 
         // 获得询价单客户需求车辆数
@@ -501,7 +505,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+            result.setSuccess(Boolean.TRUE);
+            response.setErrorMsg(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+            response.setResult(result);
+            return response;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
         Integer ableStockQty = scooterStock.getAbleStockQty();
@@ -510,11 +517,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 询价单客户需求车辆数和可用库存数量作对比
         if (scooterQuantity > ableStockQty) {
             result.setSuccess(Boolean.FALSE);
+            response.setErrorMsg(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         } else if (scooterQuantity <= ableStockQty) {
             result.setSuccess(Boolean.TRUE);
         }
+        response.setResult(result);
         result.setRequestId(enter.getRequestId());
-        return result;
+        return response;
     }
 
     /**

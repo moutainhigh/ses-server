@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.assign;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
@@ -68,7 +69,7 @@ public interface ToBeAssignService {
     /**
      * 点击分配按钮校验车辆库存数量
      */
-    BooleanResult checkScooterStock(CustomerIdEnter enter);
+    Response<BooleanResult> checkScooterStock(CustomerIdEnter enter);
 
     /**
      * 生成105条SSN
