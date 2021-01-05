@@ -26,7 +26,6 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
 
         addProductClassEnter highEnter = new addProductClassEnter();
         highEnter.setProductClassName("HIGH_SPEED");
-        highEnter.setProductClassCode(new StringBuffer().append("CA_").append(MainCode.generateByShuffle()).toString());
         highEnter.setCnName("高速");
         highEnter.setFrName("HAUTE VITESSE");
         highEnter.setEnName("HIGH SPEED");
@@ -37,7 +36,6 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
 
         addProductClassEnter lowEnter = new addProductClassEnter();
         lowEnter.setProductClassName("HIGH_SPEED");
-        lowEnter.setProductClassCode(new StringBuffer().append("CA_").append(MainCode.generateByShuffle()).toString());
         lowEnter.setCnName("低速");
         lowEnter.setFrName("FAIBLE VITESSE");
         lowEnter.setEnName("LOW SPEED");
@@ -53,7 +51,6 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
         modityProductClassEnter modityEnter = new modityProductClassEnter();
         modityEnter.setId(187723711287296L);
         modityEnter.setProductClassName("HIGH_SPEED");
-        modityEnter.setProductClassCode(new StringBuffer().append("CA_").append(MainCode.generateByShuffle()).toString());
         modityEnter.setCnName("高速");
         modityEnter.setFrName("HAUTE VITESSE");
         modityEnter.setEnName("HIGH SPEED");

@@ -8,4 +8,6 @@ package com.redescooter.ses.web.website.constant;
 public interface SequenceName {
 
     String SITE_PRODUCT_CLASS = "SITE_PRODUCT_CLASS";
+
+    String SITE_PRODUCT_MODEL = "SITE_PRODUCT_MODEL";
 }

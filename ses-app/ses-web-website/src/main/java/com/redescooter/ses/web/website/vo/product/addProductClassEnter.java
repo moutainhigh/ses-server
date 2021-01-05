@@ -24,12 +24,6 @@ public class addProductClassEnter extends GeneralEnter {
     private String productClassName;
 
     /**
-     * 产品种类编码
-     */
-    @ApiModelProperty(value = "产品种类编码")
-    private String productClassCode;
-
-    /**
      * 中文名称
      */
     @ApiModelProperty(value = "中文名称")

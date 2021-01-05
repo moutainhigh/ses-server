@@ -7,7 +7,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="product_class_id" jdbcType="VARCHAR" property="productClassId" />
+    <result column="product_class_id" jdbcType="BIGINT" property="productClassId" />
     <result column="product_model_code" jdbcType="VARCHAR" property="productModelCode" />
     <result column="product_model_name" jdbcType="VARCHAR" property="productModelName" />
     <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
@@ -48,7 +48,7 @@
       </trim>
       <trim prefix="product_class_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productClassId,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productClassId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="product_model_code = case" suffix="end,">
@@ -163,7 +163,7 @@
       <trim prefix="product_class_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.productClassId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productClassId,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productClassId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -301,7 +301,7 @@
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.productClassId,jdbcType=VARCHAR}, #{item.productModelCode,jdbcType=VARCHAR}, 
+        #{item.productClassId,jdbcType=BIGINT}, #{item.productModelCode,jdbcType=VARCHAR}, 
         #{item.productModelName,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, 
         #{item.enName,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.synchronizeFlag,jdbcType=BOOLEAN}, 
         #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
@@ -317,7 +317,7 @@
       fr_name, en_name, remark, synchronize_flag, revision, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productClassId,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productClassId,jdbcType=BIGINT}, 
       #{productModelCode,jdbcType=VARCHAR}, #{productModelName,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, 
       #{frName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
@@ -328,7 +328,7 @@
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     `status` = #{status,jdbcType=VARCHAR}, 
-    product_class_id = #{productClassId,jdbcType=VARCHAR}, 
+    product_class_id = #{productClassId,jdbcType=BIGINT}, 
     product_model_code = #{productModelCode,jdbcType=VARCHAR}, 
     product_model_name = #{productModelName,jdbcType=VARCHAR}, 
     cn_name = #{cnName,jdbcType=VARCHAR}, 
@@ -427,7 +427,7 @@
         #{status,jdbcType=VARCHAR},
       </if>
       <if test="productClassId != null">
-        #{productClassId,jdbcType=VARCHAR},
+        #{productClassId,jdbcType=BIGINT},
       </if>
       <if test="productModelCode != null">
         #{productModelCode,jdbcType=VARCHAR},
@@ -493,7 +493,7 @@
         `status` = #{status,jdbcType=VARCHAR},
       </if>
       <if test="productClassId != null">
-        product_class_id = #{productClassId,jdbcType=VARCHAR},
+        product_class_id = #{productClassId,jdbcType=BIGINT},
       </if>
       <if test="productModelCode != null">
         product_model_code = #{productModelCode,jdbcType=VARCHAR},

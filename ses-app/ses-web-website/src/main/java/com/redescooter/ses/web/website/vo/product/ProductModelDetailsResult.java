@@ -13,26 +13,19 @@ import java.util.Date;
 
 /**
  * @Author jerry
- * @Date 2021/1/5 4:27 下午
- * @Description 产品种类详情
+ * @Date 2021/1/5 6:00 下午
+ * @Description 产品型号结果出参
  **/
-
-@ApiModel(value = "产品种类新增入参", description = "产品种类新增入参")
+@ApiModel(value = "产品型号结果出参", description = "产品型号结果出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductClassDetailsResult extends GeneralResult {
+public class ProductModelDetailsResult extends GeneralResult {
 
     /**
      * 主键 主键
      */
-    @ApiModelProperty(value = "主键 主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
-
-    /**
-     * 逻辑删除
-     */
-    @ApiModelProperty(value = "逻辑删除")
-    private Integer dr;
 
     /**
      * 状态,1正常，-1失效
@@ -41,16 +34,22 @@ public class ProductClassDetailsResult extends GeneralResult {
     private String status;
 
     /**
-     * 产品种类名称
+     * 产品种类主建
      */
-    @ApiModelProperty(value = "产品种类名称")
-    private String productClassName;
+    @ApiModelProperty(value = "产品种类主建")
+    private Long productClassId;
 
     /**
-     * 产品种类编码
+     * 产品类型单项编码
      */
-    @ApiModelProperty(value = "产品种类编码")
-    private String productClassCode;
+    @ApiModelProperty(value = "产品类型单项编码")
+    private String productModelCode;
+
+    /**
+     * 产品类型单项名称
+     */
+    @ApiModelProperty(value = "产品类型单项名称")
+    private String productModelName;
 
     /**
      * 中文名称
@@ -75,12 +74,6 @@ public class ProductClassDetailsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "备注")
     private String remark;
-
-    /**
-     * 创建人
-     */
-    @ApiModelProperty(value = "创建人")
-    private Long createdBy;
 
     /**
      * 创建时间

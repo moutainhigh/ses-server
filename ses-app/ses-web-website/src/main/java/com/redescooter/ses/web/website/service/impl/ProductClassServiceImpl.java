@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteProductClass;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
@@ -20,6 +21,7 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +49,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public Boolean addProductClass(addProductClassEnter enter) {
 
@@ -55,7 +58,7 @@ public class ProductClassServiceImpl implements ProductClassService {
         addProductClassVO.setDr(Constant.DR_FALSE);
         addProductClassVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
         addProductClassVO.setProductClassName(enter.getProductClassName());
-        addProductClassVO.setProductClassCode(enter.getProductClassCode());
+        addProductClassVO.setProductClassCode(new StringBuffer().append("CA_").append(MainCode.generateByShuffle()).toString());
         addProductClassVO.setCnName(enter.getCnName());
         addProductClassVO.setFrName(enter.getFrName());
         addProductClassVO.setEnName(enter.getEnName());
@@ -78,6 +81,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public Boolean modityProductClass(modityProductClassEnter enter) {
 
@@ -94,6 +98,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public Boolean removeProductClass(IdEnter enter) {
         return siteProductClassService.removeById(enter.getId());
