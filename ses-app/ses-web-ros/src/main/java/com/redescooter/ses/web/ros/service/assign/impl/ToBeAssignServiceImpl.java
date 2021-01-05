@@ -50,6 +50,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailScooterInfoResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailScooterInfoSubResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
@@ -132,6 +133,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
         List<ToBeAssignDetailScooterInfoResult> scooterList = Lists.newArrayList();
         ToBeAssignDetailScooterInfoResult scooter = new ToBeAssignDetailScooterInfoResult();
+        List<ToBeAssignDetailScooterInfoSubResult> subList = Lists.newArrayList();
+        ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
         // 查询该客户在node表是否存在,如果不存在,添加一条数据
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
@@ -197,11 +200,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 拿着颜色id去ope_color查询
         Map<String, String> map = getColorNameAndValueById(colorId);
-        scooter.setColorName(map.get("colorName"));
-        scooter.setColorValue(map.get("colorValue"));
-
+        sub.setColorName(map.get("colorName"));
+        sub.setColorValue(map.get("colorValue"));
+        sub.setToBeAssignCount(customerInquiry.getScooterQuantity());
         scooter.setTotalCount(customerInquiry.getScooterQuantity());
-        scooter.setToBeAssignCount(customerInquiry.getScooterQuantity());
+
+        subList.add(sub);
+        scooter.setScooterList(subList);
         scooterList.add(scooter);
 
         result.setCustomerInfo(customerInfo);
@@ -326,7 +331,22 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public ToBeAssignColorResult getColorByRSN(StringEnter enter) {
-        return null;
+        // 暂时模拟
+        ToBeAssignColorResult result = new ToBeAssignColorResult();
+        String colorName = "Noir";
+        LambdaQueryWrapper<OpeColor> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeColor::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeColor::getColorName, colorName);
+        List<OpeColor> list = opeColorMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+        OpeColor color = list.get(0);
+        result.setColorId(color.getId());
+        result.setColorName(color.getColorName());
+        result.setColorValue(color.getColorValue());
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
