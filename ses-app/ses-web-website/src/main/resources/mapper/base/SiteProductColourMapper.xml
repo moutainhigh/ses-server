@@ -6,13 +6,13 @@
     <!--@Table site_product_colour-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
-    <result column="product_colour_id" jdbcType="BIGINT" property="productColourId" />
+    <result column="colour_id" jdbcType="BIGINT" property="colourId" />
     <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, product_id, product_colour_id, synchronize_flag, revision
+    id, product_id, colour_id, synchronize_flag, revision
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -23,9 +23,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="product_colour_id = case" suffix="end,">
+      <trim prefix="colour_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productColourId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.colourId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="synchronize_flag = case" suffix="end,">
@@ -55,10 +55,10 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="product_colour_id = case" suffix="end,">
+      <trim prefix="colour_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.productColourId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productColourId,jdbcType=BIGINT}
+          <if test="item.colourId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.colourId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -85,24 +85,24 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into site_product_colour
-    (id, product_id, product_colour_id, synchronize_flag, revision)
+    (id, product_id, colour_id, synchronize_flag, revision)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.productColourId,jdbcType=BIGINT}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.colourId,jdbcType=BIGINT}, 
         #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.website.dm.SiteProductColour">
     <!--@mbg.generated-->
     insert into site_product_colour
-    (id, product_id, product_colour_id, synchronize_flag, revision)
+    (id, product_id, colour_id, synchronize_flag, revision)
     values
-    (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{productColourId,jdbcType=BIGINT}, 
+    (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{colourId,jdbcType=BIGINT}, 
       #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     product_id = #{productId,jdbcType=BIGINT}, 
-    product_colour_id = #{productColourId,jdbcType=BIGINT}, 
+    colour_id = #{colourId,jdbcType=BIGINT}, 
     synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN}, 
     revision = #{revision,jdbcType=INTEGER}
   </insert>
@@ -116,8 +116,8 @@
       <if test="productId != null">
         product_id,
       </if>
-      <if test="productColourId != null">
-        product_colour_id,
+      <if test="colourId != null">
+        colour_id,
       </if>
       <if test="synchronizeFlag != null">
         synchronize_flag,
@@ -134,8 +134,8 @@
       <if test="productId != null">
         #{productId,jdbcType=BIGINT},
       </if>
-      <if test="productColourId != null">
-        #{productColourId,jdbcType=BIGINT},
+      <if test="colourId != null">
+        #{colourId,jdbcType=BIGINT},
       </if>
       <if test="synchronizeFlag != null">
         #{synchronizeFlag,jdbcType=BOOLEAN},
@@ -152,8 +152,8 @@
       <if test="productId != null">
         product_id = #{productId,jdbcType=BIGINT},
       </if>
-      <if test="productColourId != null">
-        product_colour_id = #{productColourId,jdbcType=BIGINT},
+      <if test="colourId != null">
+        colour_id = #{colourId,jdbcType=BIGINT},
       </if>
       <if test="synchronizeFlag != null">
         synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN},

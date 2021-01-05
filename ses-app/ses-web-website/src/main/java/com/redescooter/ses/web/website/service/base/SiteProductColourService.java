@@ -3,7 +3,8 @@ package com.redescooter.ses.web.website.service.base;
 import java.util.List;
 import com.redescooter.ses.web.website.dm.SiteProductColour;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface SiteProductColourService extends IService<SiteProductColour>{
+
+public interface SiteProductColourService extends IService<SiteProductColour> {
 
     int updateBatch(List<SiteProductColour> list);
 
@@ -16,3 +17,4 @@ public interface SiteProductColourService extends IService<SiteProductColour>{
     int insertOrUpdateSelective(SiteProductColour record);
 
 }
+
