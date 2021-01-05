@@ -331,7 +331,7 @@ public class InquiryServiceImpl implements InquiryService {
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
         baseMailTaskEnter.setRequestId(enter.getRequestId());
         //暂时为个人端预定
-        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_LAST_PARAGRAPH.getEvent());
         baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
         baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         mailMultiTaskService.addCustomerInquiryPayLastParagraphTask(baseMailTaskEnter);
