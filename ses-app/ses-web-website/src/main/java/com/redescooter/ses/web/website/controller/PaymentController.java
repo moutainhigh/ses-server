@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Payment Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/payment")
 public class PaymentController {
 
     @IgnoreLoginCheck

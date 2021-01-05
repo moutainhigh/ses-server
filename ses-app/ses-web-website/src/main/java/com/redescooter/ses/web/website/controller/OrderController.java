@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Order Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/order")
 public class OrderController {
 
     @IgnoreLoginCheck

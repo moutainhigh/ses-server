@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"product Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/product")
 public class ProductController {
 
     @IgnoreLoginCheck

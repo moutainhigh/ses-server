@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Contact us for service"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/contactus")
 public class ContactUsController {
 
     @IgnoreLoginCheck

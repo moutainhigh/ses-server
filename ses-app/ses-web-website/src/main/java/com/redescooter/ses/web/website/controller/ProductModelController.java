@@ -24,14 +24,16 @@ import java.util.List;
 @RequestMapping(value = "/model")
 public class ProductModelController {
 
+
     /**
-     * 
+     * 车辆列表
+     *
      * @param enter
      * @return
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "列表展示", response = GeneralResult.class)
+    @ApiOperation(value = "model list", response = GeneralResult.class)
     public Response<List<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>();
     }

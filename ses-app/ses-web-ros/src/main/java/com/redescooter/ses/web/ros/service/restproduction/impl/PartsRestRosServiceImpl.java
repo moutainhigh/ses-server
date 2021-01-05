@@ -34,7 +34,6 @@ import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -67,9 +66,6 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
     @Reference
     private IdAppService idAppService;
-
-    @Autowired
-    private ExcelService excelService;
 
     @Autowired
     private StaffServiceMapper staffServiceMapper;

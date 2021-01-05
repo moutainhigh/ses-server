@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.website.service.impl.base;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.website.dao.base.SiteContactUsTraceMapper;
-import java.util.List;
 import com.redescooter.ses.web.website.dm.SiteContactUsTrace;
 import com.redescooter.ses.web.website.service.base.SiteContactUsTraceService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 @Service
 public class SiteContactUsTraceServiceImpl extends ServiceImpl<SiteContactUsTraceMapper, SiteContactUsTrace> implements SiteContactUsTraceService{
 

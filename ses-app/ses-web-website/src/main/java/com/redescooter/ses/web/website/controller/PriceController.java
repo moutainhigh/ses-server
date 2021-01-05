@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Price Service"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/price")
 public class PriceController {
 
     @IgnoreLoginCheck

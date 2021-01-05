@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Color Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/colour")
 public class ColourController {
 
     @IgnoreLoginCheck

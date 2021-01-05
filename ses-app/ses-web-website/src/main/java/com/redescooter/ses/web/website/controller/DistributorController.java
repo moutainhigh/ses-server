@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"Distributor Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/distributor")
 public class DistributorController {
 
     @IgnoreLoginCheck

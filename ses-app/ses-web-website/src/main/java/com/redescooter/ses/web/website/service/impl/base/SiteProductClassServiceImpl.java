@@ -1,13 +1,12 @@
 package com.redescooter.ses.web.website.service.impl.base;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.List;
 import com.redescooter.ses.web.website.dao.base.SiteProductClassMapper;
 import com.redescooter.ses.web.website.dm.SiteProductClass;
 import com.redescooter.ses.web.website.service.base.SiteProductClassService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 @Service
 public class SiteProductClassServiceImpl extends ServiceImpl<SiteProductClassMapper, SiteProductClass> implements SiteProductClassService{
 
