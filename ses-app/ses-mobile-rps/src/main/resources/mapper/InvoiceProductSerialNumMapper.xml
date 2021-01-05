@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper">
+
+    <!--根据productId查询车辆出库单序列号绑定信息-->
+    <select id="getOutWhOrderScooterByProductId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+        select id, relation_id orderBId, product_id productId, serial_num serialNum, lot batchNo, qty, arrival_time arrivalTime
+        from ope_invoice_product_serial_num
+        where dr = 0 and product_id = #{productId}
+    </select>
+
+    <!--根据productId查询部件出库单序列号绑定信息-->
+    <select id="getOutWhOrderPartsByProductId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+        select ipsn.id, ipsn.relation_id orderBId, ipsn.product_id productId, ipsn.serial_num serialNum, ipsn.lot batchNo, ipsn.qty, ipsn.arrival_time arrivalTime, s.id supplierId, s.supplier_name supplierName, oqi.annex
+        from ope_invoice_product_serial_num ipsn
+        left join ope_out_wh_parts_b owp
+        on ipsn.product_id = owp.id and owp.dr = 0
+        left join ope_production_parts pp
+        on owp.parts_id = pp.id and pp.dr = 0
+        left join ope_supplier s
+        on pp.supplier_id = s.id and s.dr = 0
+        left join ope_order_qc_item oqi
+        on ipsn.id = oqi.order_serial_id and oqi.dr = 0 and oqi.qc_result = 1
+        where ipsn.dr = 0 and ipsn.product_id = #{productId}
+    </select>
+
+</mapper>

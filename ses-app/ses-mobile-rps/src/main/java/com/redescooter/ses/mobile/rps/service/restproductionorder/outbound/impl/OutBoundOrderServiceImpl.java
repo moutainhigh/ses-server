@@ -300,14 +300,12 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     }
 
     /**
-     * @Description
-     * @Author: alex -- [由于切分支没有提交修改的文件导致最后合并这些文件的作者都变成了我(assert)]
-     * @Date: 2020/11/2 2:51 下午
-     * @Param: enter
-     * @Return: ProductQcTempleteResult
-     * @desc: 质检模版
+     * 质检模板 -- [由于切分支没有提交修改的文件导致最后合并这些文件的作者都变成了我(assert)]
      * @param enter
-     */
+     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult>
+     * @author assert
+     * @date 2021/1/4
+    */
     @Override
     public List<ProductQcTempleteItemResult> qcTemplete(QcTempleteEnter enter) {
         Integer productionType;
@@ -465,10 +463,10 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
         OpeInvoiceProductSerialNum opeInvoiceProductSerialNum = opeInvoiceProductSerialNumService.getOne(opeInvoiceProductSerialNumQueryWrapper);
 
         if (opeInvoiceProductSerialNum!=null){
-            opeInvoiceProductSerialNumId=opeInvoiceProductSerialNum.getId();
+            opeInvoiceProductSerialNumId = opeInvoiceProductSerialNum.getId();
         }
         if (!qcResult){
-            opeInvoiceProductSerialNumId= idAppService.getId(SequenceName.OPE_ORDER_SERIAL_BIND);
+            opeInvoiceProductSerialNumId = idAppService.getId(SequenceName.OPE_INVOICE_PRODUCT_SERIAL_NUM);
             opeInvoiceProductSerialNum = new OpeInvoiceProductSerialNum();
             opeInvoiceProductSerialNum.setId(opeInvoiceProductSerialNumId);
             opeInvoiceProductSerialNum.setDr(0);

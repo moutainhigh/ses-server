@@ -8,6 +8,8 @@ package com.redescooter.ses.mobile.rps.exception;
 public interface ValidationExceptionCode {
 
     // ###############################10001~10030公共入参异常#######################################
+    // id 为空
+    int ID_IS_EMPTY = 10008;
     //长度过长，长度为2-20字符
     int CHARACTER_IS_TOO_LONG = 10010;
     //长度过短，长度为2-20字符
@@ -37,4 +39,7 @@ public interface ValidationExceptionCode {
     int STATUS_IS_EMPTY = 10038;
     //类型为空
     int TYPE_IS_EMPTY = 10039;
+    // 出库单类型为空
+    int OUT_WH_ORDER_TYPE_IS_EMPTY = 10040;
+
 }

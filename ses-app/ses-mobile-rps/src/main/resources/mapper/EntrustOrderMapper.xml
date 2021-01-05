@@ -2,12 +2,82 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper">
 
+    <!--委托单列表查询条件sql-->
+    <sql id="queryEntrustOrderListWhere">
+        <if test="type != null">and entrust_type = #{type}</if>
+        <if test="status == 0">and entrust_status = 0</if>
+        <if test="status == 1">and entrust_status in(10, 20)</if>
+    </sql>
+
     <!--委托单类型数量统计-->
     <select id="getEntrustOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select entrust_type `status`, count(id) totalCount
 	    from ope_entrust_order
-	    where dr = 0 and entrust_status in (0, 10, 15)
+	    where dr = 0 and entrust_status = 0
 	    group by entrust_type
+    </select>
+
+    <!--委托单列表查询-->
+    <select id="getEntrustOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO">
+        select id, entrust_no entrustNo, consignor_qty qty, entrust_status `status`,entrust_type `type`
+        from ope_entrust_order
+        where dr = 0
+        <include refid="queryEntrustOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--查询委托单数量-->
+    <select id="countByEntrustOrder" parameterType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*)
+        from ope_entrust_order
+        where dr = 0
+        <include refid="queryEntrustOrderListWhere" />
+    </select>
+
+    <!--根据id查询委托单详情-->
+    <select id="getEntrustOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO">
+        select id, entrust_no entrustNo, entrust_status entrustStatus, entrust_type entrustType,
+        delivery_date deliveryDate, trans_type transType, consignor_qty qty, already_consignor_qty confirmQty
+        from ope_entrust_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据entrustId查询委托单车辆信息-->
+    <select id="getEntrustOrderScooterByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+        select es.id, st.specificat_name groupName, c.color_name colorName, 1 qty, epsn.serial_num serialNum, 1 idClass
+        from ope_entrust_scooter_b es
+        left join ope_entrust_product_serial_num epsn
+        on es.id = epsn.relation_id and epsn.dr = 0
+        left join ope_color c
+        on es.color_id = c.id and c.dr = 0
+        left join ope_specificat_type st
+        on es.group_id = st.id and st.dr = 0
+        where es.dr = 0 and es.entrust_id = #{entrustId}
+    </select>
+
+    <!--根据entrustId查询委托单组装件信息-->
+    <select id="getEntrustOrderCombinByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+        select ec.id, ec.combin_name `name`, bom.bom_no `number`, 1 qty, epsn.serial_num serialNum, 1 idClass
+        from ope_entrust_combin_b ec
+        left join ope_production_combin_bom bom
+        on ec.production_combin_bom_id = bom.id and bom.dr = 0
+        left join ope_entrust_product_serial_num epsn
+        on ec.id = epsn.relation_id and epsn.dr = 0
+        where ec.dr = 0 and ec.entrust_id = #{entrustId}
+    </select>
+
+    <!--根据entrustId查询委托单部件信息-->
+    <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+        select ep.id,  ep.parts_name `name`, ep.parts_no `number`,pp.parts_qty qty, epsn.serial_num serialNum,pp.id_calss idClass
+        from ope_entrust_parts_b ep
+        left join ope_entrust_product_serial_num epsn
+        on ep.id = epsn.relation_id and epsn.dr = 0
+        left join ope_production_parts pp
+        on ep.parts_id = pp.id and pp.dr = 0
+        where ep.dr = 0 and ep.entrust_id = #{entrustId}
     </select>
 
 </mapper>

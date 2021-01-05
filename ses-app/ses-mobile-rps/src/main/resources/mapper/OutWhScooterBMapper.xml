@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper">
+
+    <!--根据outWhId查询出库单车辆信息-->
+    <select id="getOutWhOrderScooterByOutWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
+        select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName,ows.qty,
+        ifnull(ows.already_out_wh_qty, 0) qcQty, true idClass
+        from ope_out_wh_scooter_b ows
+        left join ope_specificat_group sg
+        on ows.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on ows.color_id = c.id and c.dr = 0
+        where ows.dr = 0 and ows.out_wh_id = #{outWhId}
+    </select>
+
+    <!--根据productId查询车辆产品详情-->
+    <select id="getScooterProductDetailByProductId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
+        select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName,ows.qty,
+        ifnull(ows.already_out_wh_qty, 0) qcQty, true idClass
+        from ope_out_wh_scooter_b ows
+        left join ope_specificat_group sg
+        on ows.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on ows.color_id = c.id and c.dr = 0
+        where ows.dr = 0 and ows.id = #{productId}
+    </select>
+
+</mapper>
