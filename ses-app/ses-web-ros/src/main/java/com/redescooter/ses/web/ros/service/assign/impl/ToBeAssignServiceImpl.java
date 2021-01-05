@@ -610,6 +610,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         List<Integer> codeList = Lists.newArrayList();
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
+        wrapper.eq(OpeCarDistribute::getSeatNumber, seatNumber);
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从倒数第6位开始截取
