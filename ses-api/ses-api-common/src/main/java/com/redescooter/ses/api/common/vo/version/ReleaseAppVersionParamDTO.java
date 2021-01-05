@@ -2,11 +2,11 @@ package com.redescooter.ses.api.common.vo.version;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 
 /**
  * 发布版本入参DTO
@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel(value = "发布版本入参")
-public class ReleaseAppVersionParamDTO implements Serializable {
+public class ReleaseAppVersionParamDTO extends GeneralEnter {
 
     @ApiModelProperty(value = "主键id", dataType = "Long")
     @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "id不能为空")

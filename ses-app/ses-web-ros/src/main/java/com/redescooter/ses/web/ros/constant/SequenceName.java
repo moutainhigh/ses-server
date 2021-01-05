@@ -239,6 +239,6 @@ public interface SequenceName {
 
     String OPE_DISTRIBUTOR = "OPE_DISTRIBUTOR";
 
-
+    String OPE_SYS_RPS_USER = "OPE_SYS_RPS_USER";
 
 }

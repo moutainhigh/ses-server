@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.AppVersionUpdateLogMapper">
+
+    <!--批量新增应用版本升级日志记录-->
+    <insert id="batchInsertAppVersionUpdateLog" parameterType="com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDTO">
+        insert into pla_app_version_update_log (id, tablet_sn, app_version_id, app_version_type, is_update_success, created_by, created_time,updated_by, updated_time)
+        <foreach collection="appVersionUpdateLogList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.tabletSn},#{item.appVersionId}, #{item.appVersionType},#{item.isUpdateSuccess},
+            #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--批量修改车载平板升级状态为 “已成功”-->
+    <update id="batchUpdateAppVersionUpdateLogStatus">
+        update pla_app_version_update_log
+	    set is_update_success = true, updated_time = #{currentTime}
+	    <foreach collection="tabletSnList" item="tabletSn" open="where tablet_sn in (" separator="," close=")">
+            #{tabletSn}
+        </foreach>
+    </update>
+
+    <!--查询车载平板更新失败记录-->
+    <select id="getAppVersionUpdateFailLog" resultType="com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDetailDTO">
+        select avul.id, avul.tablet_sn, avul.app_version_id, avul.app_version_type, avul.is_update_success, avul.created_by,
+        avul.created_time, avul.updated_by, avul.updated_time, av.update_link updateLink, av.`code` versionCode
+	    from pla_app_version_update_log avul
+	    inner join pla_app_version av
+	    on av.id = avul.app_version_id and av.dr = 0
+	    where avul.dr = 0 and avul.is_update_success = false
+    </select>
+
+</mapper>

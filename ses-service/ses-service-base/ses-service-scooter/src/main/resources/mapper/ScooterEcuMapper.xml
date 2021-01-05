@@ -222,4 +222,13 @@
         </foreach>
     </select>
 
+    <!--根据tabletSnList查询车辆仪表ECU数据-->
+    <select id="getScooterEcuByTabletSnList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from sco_scooter_ecu
+	    where dr = 0
+	    <foreach collection="tabletSnList" item="tabletSn" open="and sn in(" separator="," close=")">
+            #{tabletSn}
+        </foreach>
+    </select>
+
 </mapper>
