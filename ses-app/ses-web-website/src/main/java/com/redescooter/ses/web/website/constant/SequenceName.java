@@ -16,4 +16,6 @@ public interface SequenceName {
     String SITE_PRODUCT_MODEL = "SITE_PRODUCT_MODEL";
 
     String SITE_PRODUCT_COLOUR = "SITE_PRODUCT_COLOUR";
+
+    String SITE_PRODUCT_PRICE = "SITE_PRODUCT_PRICE";
 }

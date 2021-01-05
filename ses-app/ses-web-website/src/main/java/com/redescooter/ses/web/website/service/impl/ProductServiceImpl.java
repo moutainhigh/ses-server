@@ -61,6 +61,7 @@ public class ProductServiceImpl implements ProductService {
         addProductVO.setCnName(enter.getCnName());
         addProductVO.setFrName(enter.getFrName());
         addProductVO.setEnName(enter.getEnName());
+        addProductVO.setPicture(enter.getPicture());
         addProductVO.setProductModelId(enter.getProductModelId());
         addProductVO.setMinBatteryNum(enter.getMinBatteryNum());
         addProductVO.setAfterSalesFlag(false);

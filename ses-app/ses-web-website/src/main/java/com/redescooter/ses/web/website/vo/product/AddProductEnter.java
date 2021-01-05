@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.website.vo.product;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +33,12 @@ public class AddProductEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "英文名称")
     private String enName;
+
+    /**
+     * 图片
+     */
+    @ApiModelProperty(value = "图片")
+    private String picture;
 
     /**
      * 产品型号ID

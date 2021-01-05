@@ -82,6 +82,13 @@ public class SiteProduct implements Serializable {
     private Long productModelId;
 
     /**
+     * 图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
      * 最少电池数
      */
     @TableField(value = "min_battery_num")
@@ -247,6 +254,8 @@ public class SiteProduct implements Serializable {
     public static final String COL_EN_NAME = "en_name";
 
     public static final String COL_PRODUCT_MODEL_ID = "product_model_id";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_MIN_BATTERY_NUM = "min_battery_num";
 
