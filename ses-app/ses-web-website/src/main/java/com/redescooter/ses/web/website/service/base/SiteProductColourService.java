@@ -5,7 +5,6 @@ import com.redescooter.ses.web.website.dm.SiteProductColour;
 import com.baomidou.mybatisplus.extension.service.IService;
 public interface SiteProductColourService extends IService<SiteProductColour>{
 
-
     int updateBatch(List<SiteProductColour> list);
 
     int updateBatchSelective(List<SiteProductColour> list);

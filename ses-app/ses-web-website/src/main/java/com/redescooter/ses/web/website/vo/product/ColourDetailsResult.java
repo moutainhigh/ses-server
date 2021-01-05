@@ -13,43 +13,43 @@ import java.util.Date;
 
 /**
  * @Author jerry
- * @Date 2021/1/5 6:00 下午
- * @Description 产品型号结果出参
+ * @Date 2021/1/5 10:16 下午
+ * @Description 产品颜色结果集出参
  **/
-@ApiModel(value = "产品型号结果出参", description = "产品型号结果出参")
+@ApiModel(value = "产品颜色结果集出参", description = "产品颜色结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductModelDetailsResult extends GeneralResult {
+public class ColourDetailsResult extends GeneralResult {
 
     /**
-     * 主键 主键
+     * 颜色使用范围,1整车，-1配件
      */
-    @ApiModelProperty(value = "主键")
-    private Long id;
+    @ApiModelProperty(value = "颜色使用范围,1整车，-1配件")
+    private String colourRange;
 
     /**
-     * 状态,1正常，-1失效
+     * 颜色名称
      */
-    @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
+    @ApiModelProperty(value = "颜色名称")
+    private String colourName;
 
     /**
-     * 产品种类主建
+     * 颜色编码
      */
-    @ApiModelProperty(value = "产品种类主建")
-    private Long productClassId;
+    @ApiModelProperty(value = "颜色编码")
+    private String colourCode;
 
     /**
-     * 产品类型单项编码
+     * 颜色RGB值
      */
-    @ApiModelProperty(value = "产品类型单项编码")
-    private String productModelCode;
+    @ApiModelProperty(value = "颜色RGB值")
+    private String colourRgb;
 
     /**
-     * 产品类型单项名称
+     * 颜色16进制颜色编码
      */
-    @ApiModelProperty(value = "产品类型单项名称")
-    private String productModelName;
+    @ApiModelProperty(value = "颜色16进制颜色编码")
+    private String colour16;
 
     /**
      * 备注
@@ -72,5 +72,4 @@ public class ProductModelDetailsResult extends GeneralResult {
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
-
 }

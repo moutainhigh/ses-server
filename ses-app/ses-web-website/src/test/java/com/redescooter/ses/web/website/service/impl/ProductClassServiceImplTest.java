@@ -2,12 +2,11 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.SesWebsiteApplicationTests;
 import com.redescooter.ses.web.website.service.ProductClassService;
 import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
-import com.redescooter.ses.web.website.vo.product.addProductClassEnter;
-import com.redescooter.ses.web.website.vo.product.modityProductClassEnter;
+import com.redescooter.ses.web.website.vo.product.AddProductClassEnter;
+import com.redescooter.ses.web.website.vo.product.ModityProductClassEnter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,7 +23,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
     @Test
     void addProductClass() {
 
-        addProductClassEnter highEnter = new addProductClassEnter();
+        AddProductClassEnter highEnter = new AddProductClassEnter();
         highEnter.setProductClassName("HIGH_SPEED");
         highEnter.setCnName("高速");
         highEnter.setFrName("HAUTE VITESSE");
@@ -34,7 +33,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
 
         assertTrue(productClassService.addProductClass(highEnter));
 
-        addProductClassEnter lowEnter = new addProductClassEnter();
+        AddProductClassEnter lowEnter = new AddProductClassEnter();
         lowEnter.setProductClassName("HIGH_SPEED");
         lowEnter.setCnName("低速");
         lowEnter.setFrName("FAIBLE VITESSE");
@@ -48,7 +47,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
     @Test
     void modityProductClass() {
 
-        modityProductClassEnter modityEnter = new modityProductClassEnter();
+        ModityProductClassEnter modityEnter = new ModityProductClassEnter();
         modityEnter.setId(187723711287296L);
         modityEnter.setProductClassName("HIGH_SPEED");
         modityEnter.setCnName("高速");
@@ -63,6 +62,9 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void removeProductClass() {
+        IdEnter enter = new IdEnter();
+        enter.setId(187723711287296L);
+        productClassService.removeProductClass(enter);
     }
 
     @Test

@@ -6,17 +6,17 @@ import lombok.NoArgsConstructor;
 
 /**
  * @Author jerry
- * @Date  2021/1/4 1:02 下午
- * @Description  通用状态
+ * @Date 2021/1/6 12:07 上午
+ * @Description 颜色使用范围枚举
  **/
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum CommonStatusEnums {
+public enum ColourRangeEnums {
 
-    NORMAL("正常","NORMAL",1),
-    INVALID("失效","INVALID",-1),;
+    VEHICLE("整车", "VEHICLE", 1),
+    PARTS("配件", "PARTS", -1);
 
     private String remark;
 
@@ -25,7 +25,7 @@ public enum CommonStatusEnums {
     private int value;
 
     public static String getEnumsCodeByValue(int value) {
-        for (CommonStatusEnums item : CommonStatusEnums.values()) {
+        for (ColourRangeEnums item : ColourRangeEnums.values()) {
             if (value == item.value) {
                 return item.getCode();
             }

@@ -1,22 +1,19 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.SiteProductClass;
 import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.ProductModelService;
 import com.redescooter.ses.web.website.service.base.SiteProductModelService;
-import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductModelDetailsResult;
-import com.redescooter.ses.web.website.vo.product.addProductModelEnter;
-import com.redescooter.ses.web.website.vo.product.modityProductModelEnter;
+import com.redescooter.ses.web.website.vo.product.AddProductModelEnter;
+import com.redescooter.ses.web.website.vo.product.ModityProductModelEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -52,7 +49,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      */
     @Transactional
     @Override
-    public Boolean addProductModel(addProductModelEnter enter) {
+    public Boolean addProductModel(AddProductModelEnter enter) {
 
         SiteProductModel addProductModelVO = new SiteProductModel();
 
@@ -62,9 +59,6 @@ public class ProductModelServiceImpl implements ProductModelService {
         addProductModelVO.setProductClassId(enter.getProductClassId());
         addProductModelVO.setProductModelName(enter.getProductModelName());
         addProductModelVO.setProductModelCode(new StringBuffer().append("ML_").append(MainCode.generateByShuffle()).toString());
-        addProductModelVO.setCnName(enter.getCnName());
-        addProductModelVO.setFrName(enter.getFrName());
-        addProductModelVO.setEnName(enter.getEnName());
 
         if (StringUtils.isNotBlank(enter.getRemark())) {
             addProductModelVO.setRemark(enter.getRemark());
@@ -86,7 +80,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      */
     @Transactional
     @Override
-    public Boolean modityProductModel(modityProductModelEnter enter) {
+    public Boolean modityProductModel(ModityProductModelEnter enter) {
 
         SiteProductModel modityProductModelVO = new SiteProductModel();
         BeanUtils.copyProperties(enter, modityProductModelVO);

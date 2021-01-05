@@ -9,20 +9,18 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @Author jerry
- * @Date 2021/1/5 3:53 下午
- * @Description 产品种类新增入参
+ * @Date 2021/1/5 6:00 下午
+ * @Description 产品类型修改入参
  **/
 
-@ApiModel(value = "产品种类新增入参", description = "产品种类新增入参")
+@ApiModel(value = "产品型号编辑入参", description = "产品型号编辑入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class modityProductClassEnter extends addProductClassEnter {
+public class ModityProductModelEnter extends AddProductModelEnter {
 
-    /**
-     * 主键
-     */
-    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "产品种类主建ID不能为空")
+
     @ApiModelProperty(value = "主键")
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主建ID不能为空")
     private Long id;
 
 }

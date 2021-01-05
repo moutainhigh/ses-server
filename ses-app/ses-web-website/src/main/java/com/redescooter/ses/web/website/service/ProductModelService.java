@@ -3,8 +3,8 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.ProductModelDetailsResult;
-import com.redescooter.ses.web.website.vo.product.addProductModelEnter;
-import com.redescooter.ses.web.website.vo.product.modityProductModelEnter;
+import com.redescooter.ses.web.website.vo.product.AddProductModelEnter;
+import com.redescooter.ses.web.website.vo.product.ModityProductModelEnter;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface ProductModelService {
      * @param enter
      * @return
      */
-    Boolean addProductModel(addProductModelEnter enter);
+    Boolean addProductModel(AddProductModelEnter enter);
 
     /**
      * 编辑产品车型
@@ -29,7 +29,7 @@ public interface ProductModelService {
      * @param enter
      * @return
      */
-    Boolean modityProductModel(modityProductModelEnter enter);
+    Boolean modityProductModel(ModityProductModelEnter enter);
 
     /**
      * 移除产品车型

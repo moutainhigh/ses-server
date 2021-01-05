@@ -13,8 +13,8 @@ import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.ProductClassService;
 import com.redescooter.ses.web.website.service.base.SiteProductClassService;
 import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
-import com.redescooter.ses.web.website.vo.product.addProductClassEnter;
-import com.redescooter.ses.web.website.vo.product.modityProductClassEnter;
+import com.redescooter.ses.web.website.vo.product.AddProductClassEnter;
+import com.redescooter.ses.web.website.vo.product.ModityProductClassEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -51,7 +51,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      */
     @Transactional
     @Override
-    public Boolean addProductClass(addProductClassEnter enter) {
+    public Boolean addProductClass(AddProductClassEnter enter) {
 
         SiteProductClass addProductClassVO = new SiteProductClass();
         addProductClassVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_CLASS));
@@ -83,10 +83,9 @@ public class ProductClassServiceImpl implements ProductClassService {
      */
     @Transactional
     @Override
-    public Boolean modityProductClass(modityProductClassEnter enter) {
+    public Boolean modityProductClass(ModityProductClassEnter enter) {
 
         SiteProductClass modityProductClassVO = new SiteProductClass();
-
         BeanUtils.copyProperties(enter, modityProductClassVO);
 
         return siteProductClassService.update(modityProductClassVO, new UpdateWrapper<SiteProductClass>().eq(SiteProductClass.COL_ID, enter.getId()));
@@ -115,8 +114,10 @@ public class ProductClassServiceImpl implements ProductClassService {
         SiteProductClass productClass = siteProductClassService.getById(enter.getId());
         ProductClassDetailsResult result = new ProductClassDetailsResult();
 
-        BeanUtils.copyProperties(productClass, result);
-        result.setRequestId(enter.getRequestId());
+        if(productClass!=null){
+            BeanUtils.copyProperties(productClass, result);
+            result.setRequestId(enter.getRequestId());
+        }
 
         return result;
     }

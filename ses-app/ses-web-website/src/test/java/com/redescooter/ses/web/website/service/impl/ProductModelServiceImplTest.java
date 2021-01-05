@@ -20,33 +20,24 @@ public class ProductModelServiceImplTest extends SesWebsiteApplicationTests {
     @Test
     void addProductModel() {
 
-        addProductModelEnter E50Enter = new addProductModelEnter();
+        AddProductModelEnter E50Enter = new AddProductModelEnter();
         E50Enter.setProductClassId(187725594529792L);
         E50Enter.setProductModelName("Model E50");
-        E50Enter.setCnName("Model E50");
-        E50Enter.setFrName("Model E50");
-        E50Enter.setEnName("Model E50");
         E50Enter.setRemark("");
         E50Enter.setUserId(0L);
 
         assertTrue(productModelService.addProductModel(E50Enter));
 
-        addProductModelEnter E100Enter = new addProductModelEnter();
+        AddProductModelEnter E100Enter = new AddProductModelEnter();
         E100Enter.setProductClassId(187725594529792L);
         E100Enter.setProductModelName("Model E100");
-        E100Enter.setCnName("Model E100");
-        E100Enter.setFrName("Model E100");
-        E100Enter.setEnName("Model E100");
         E100Enter.setRemark("");
         E100Enter.setUserId(0L);
         assertTrue(productModelService.addProductModel(E100Enter));
 
-        addProductModelEnter E125Enter = new addProductModelEnter();
+        AddProductModelEnter E125Enter = new AddProductModelEnter();
         E125Enter.setProductClassId(187723711287296L);
         E125Enter.setProductModelName("Model E100");
-        E125Enter.setCnName("Model E100");
-        E125Enter.setFrName("Model E100");
-        E125Enter.setEnName("Model E100");
         E125Enter.setRemark("");
         E125Enter.setUserId(0L);
         assertTrue(productModelService.addProductModel(E125Enter));
@@ -56,28 +47,19 @@ public class ProductModelServiceImplTest extends SesWebsiteApplicationTests {
     @Test
     void modityProductModel() {
 
-        modityProductModelEnter E50Enter = new modityProductModelEnter();
+        ModityProductModelEnter E50Enter = new ModityProductModelEnter();
         E50Enter.setId(145743367524352L);
         E50Enter.setProductModelName("MODEL E50");
-        E50Enter.setCnName("MODEL E50");
-        E50Enter.setFrName("MODEL E50");
-        E50Enter.setEnName("MODEL E50");
         assertTrue(productModelService.modityProductModel(E50Enter));
 
-        modityProductModelEnter E100Enter = new modityProductModelEnter();
+        ModityProductModelEnter E100Enter = new ModityProductModelEnter();
         E100Enter.setId(145745401761792L);
         E100Enter.setProductModelName("MODEL E100");
-        E100Enter.setCnName("MODEL E100");
-        E100Enter.setFrName("MODEL E100");
-        E100Enter.setEnName("MODEL E100");
         assertTrue(productModelService.modityProductModel(E100Enter));
 
-        modityProductModelEnter E125Enter = new modityProductModelEnter();
+        ModityProductModelEnter E125Enter = new ModityProductModelEnter();
         E125Enter.setId(145745431121920L);
         E125Enter.setProductModelName("MODEL E125");
-        E125Enter.setCnName("MODEL E125");
-        E125Enter.setFrName("MODEL E125");
-        E125Enter.setEnName("MODEL E125");
         assertTrue(productModelService.modityProductModel(E125Enter));
 
     }

@@ -2,9 +2,9 @@ package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.website.vo.product.ProductColourDetailsResult;
-import com.redescooter.ses.web.website.vo.product.addProductColourEnter;
-import com.redescooter.ses.web.website.vo.product.modityProductColourEnter;
+import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
+import com.redescooter.ses.web.website.vo.product.AddColourEnter;
+import com.redescooter.ses.web.website.vo.product.ModityColourEnter;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ import java.util.List;
  * @Date 2021/1/5 10:12 下午
  * @Description 产品颜色服务
  **/
-public interface ProductColourService {
+public interface ColourService {
     /**
      * 创建产品颜色
      *
      * @param enter
      * @return
      */
-    Boolean addProductColour(addProductColourEnter enter);
+    Boolean addColour(AddColourEnter enter);
 
     /**
      * 编辑产品颜色
@@ -28,7 +28,7 @@ public interface ProductColourService {
      * @param enter
      * @return
      */
-    Boolean modityProductColour(modityProductColourEnter enter);
+    Boolean modityColour(ModityColourEnter enter);
 
     /**
      * 移除产品颜色
@@ -36,7 +36,7 @@ public interface ProductColourService {
      * @param enter
      * @return
      */
-    Boolean removeProductColour(IdEnter enter);
+    Boolean removeColour(IdEnter enter);
 
 
     /**
@@ -44,7 +44,7 @@ public interface ProductColourService {
      *
      * @param enter
      */
-    ProductColourDetailsResult getProductColourDetails(IdEnter enter);
+    ColourDetailsResult getColourDetails(IdEnter enter);
 
 
     /**
@@ -52,5 +52,5 @@ public interface ProductColourService {
      *
      * @param enter
      */
-    List<ProductColourDetailsResult> getProductColourList(GeneralEnter enter);
+    List<ColourDetailsResult> getColourList(GeneralEnter enter);
 }

@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "产品型号新增入参", description = "产品型号新增入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class addProductModelEnter extends GeneralEnter {
+public class AddProductModelEnter extends GeneralEnter {
 
     /**
      * 产品种类主建
@@ -36,24 +36,6 @@ public class addProductModelEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "产品类型单项名称")
     private String productModelName;
-
-    /**
-     * 中文名称
-     */
-    @ApiModelProperty(value = "中文名称")
-    private String cnName;
-
-    /**
-     * 法文名称
-     */
-    @ApiModelProperty(value = "法文名称")
-    private String frName;
-
-    /**
-     * 英文名称
-     */
-    @ApiModelProperty(value = "英文名称")
-    private String enName;
 
     /**
      * 备注
