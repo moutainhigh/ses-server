@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Log4j
-class SesWebsiteApplicationTests {
+public class SesWebsiteApplicationTests {
 
     private LocalDateTime beginTime = LocalDateTime.now();
 
