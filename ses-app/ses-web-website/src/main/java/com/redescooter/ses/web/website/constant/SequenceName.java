@@ -7,6 +7,8 @@ package com.redescooter.ses.web.website.constant;
  */
 public interface SequenceName {
 
+    String SITE_PRODUCT = "SITE_PRODUCT";
+
     String SITE_COLOUR = "SITE_COLOUR";
 
     String SITE_PRODUCT_CLASS = "SITE_PRODUCT_CLASS";

@@ -109,8 +109,10 @@ public class ProductModelServiceImpl implements ProductModelService {
         SiteProductModel productModel = siteProductModelService.getById(enter.getId());
         ProductModelDetailsResult result = new ProductModelDetailsResult();
 
-        BeanUtils.copyProperties(productModel, result);
-        result.setRequestId(enter.getRequestId());
+        if(productModel!=null){
+            BeanUtils.copyProperties(productModel, result);
+            result.setRequestId(enter.getRequestId());
+        }
 
         return result;
     }

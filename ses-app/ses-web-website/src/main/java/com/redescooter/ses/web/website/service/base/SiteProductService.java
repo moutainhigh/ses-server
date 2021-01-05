@@ -3,7 +3,8 @@ package com.redescooter.ses.web.website.service.base;
 import java.util.List;
 import com.redescooter.ses.web.website.dm.SiteProduct;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface SiteProductService extends IService<SiteProduct>{
+
+public interface SiteProductService extends IService<SiteProduct> {
 
 
     int updateBatch(List<SiteProduct> list);
@@ -17,3 +18,5 @@ public interface SiteProductService extends IService<SiteProduct>{
     int insertOrUpdateSelective(SiteProduct record);
 
 }
+
+

@@ -18,7 +18,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ModityProductModelEnter extends AddProductModelEnter {
 
-
     @ApiModelProperty(value = "主键")
     @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "主建ID不能为空")
     private Long id;

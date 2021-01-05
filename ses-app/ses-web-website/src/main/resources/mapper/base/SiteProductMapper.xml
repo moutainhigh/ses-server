@@ -13,7 +13,6 @@
     <result column="fr_name" jdbcType="VARCHAR" property="frName" />
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="product_model_id" jdbcType="BIGINT" property="productModelId" />
-    <result column="product_colour_id" jdbcType="BIGINT" property="productColourId" />
     <result column="min_battery_num" jdbcType="INTEGER" property="minBatteryNum" />
     <result column="after_sales_flag" jdbcType="BOOLEAN" property="afterSalesFlag" />
     <result column="added_services_flag" jdbcType="BOOLEAN" property="addedServicesFlag" />
@@ -21,6 +20,7 @@
     <result column="other_parameter" jdbcType="VARCHAR" property="otherParameter" />
     <result column="speed" jdbcType="VARCHAR" property="speed" />
     <result column="power" jdbcType="VARCHAR" property="power" />
+    <result column="mileage" jdbcType="VARCHAR" property="mileage" />
     <result column="charge_cycle" jdbcType="VARCHAR" property="chargeCycle" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
@@ -38,9 +38,9 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, `status`, product_type, product_code, cn_name, fr_name, en_name, product_model_id, 
-    product_colour_id, min_battery_num, after_sales_flag, added_services_flag, mater_parameter, 
-    other_parameter, speed, `power`, charge_cycle, remark, synchronize_flag, revision, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    min_battery_num, after_sales_flag, added_services_flag, mater_parameter, other_parameter, 
+    speed, `power`, mileage, charge_cycle, remark, synchronize_flag, revision, created_by, 
+    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -86,11 +86,6 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.productModelId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="product_colour_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productColourId,jdbcType=BIGINT}
-        </foreach>
-      </trim>
       <trim prefix="min_battery_num = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.minBatteryNum,jdbcType=INTEGER}
@@ -124,6 +119,11 @@
       <trim prefix="`power` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.power,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="mileage = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.mileage,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="charge_cycle = case" suffix="end,">
@@ -257,13 +257,6 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="product_colour_id = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.productColourId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productColourId,jdbcType=BIGINT}
-          </if>
-        </foreach>
-      </trim>
       <trim prefix="min_battery_num = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.minBatteryNum != null">
@@ -310,6 +303,13 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.power != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.power,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="mileage = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.mileage != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.mileage,jdbcType=VARCHAR}
           </if>
         </foreach>
       </trim>
@@ -414,41 +414,38 @@
     <!--@mbg.generated-->
     insert into site_product
     (id, dr, `status`, product_type, product_code, cn_name, fr_name, en_name, product_model_id, 
-      product_colour_id, min_battery_num, after_sales_flag, added_services_flag, mater_parameter, 
-      other_parameter, speed, `power`, charge_cycle, remark, synchronize_flag, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      min_battery_num, after_sales_flag, added_services_flag, mater_parameter, other_parameter, 
+      speed, `power`, mileage, charge_cycle, remark, synchronize_flag, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
         #{item.productType,jdbcType=INTEGER}, #{item.productCode,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR}, 
         #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, #{item.productModelId,jdbcType=BIGINT}, 
-        #{item.productColourId,jdbcType=BIGINT}, #{item.minBatteryNum,jdbcType=INTEGER}, 
-        #{item.afterSalesFlag,jdbcType=BOOLEAN}, #{item.addedServicesFlag,jdbcType=BOOLEAN}, 
-        #{item.materParameter,jdbcType=VARCHAR}, #{item.otherParameter,jdbcType=VARCHAR}, 
-        #{item.speed,jdbcType=VARCHAR}, #{item.power,jdbcType=VARCHAR}, #{item.chargeCycle,jdbcType=VARCHAR}, 
-        #{item.remark,jdbcType=VARCHAR}, #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
-        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL}
-        )
+        #{item.minBatteryNum,jdbcType=INTEGER}, #{item.afterSalesFlag,jdbcType=BOOLEAN}, 
+        #{item.addedServicesFlag,jdbcType=BOOLEAN}, #{item.materParameter,jdbcType=VARCHAR}, 
+        #{item.otherParameter,jdbcType=VARCHAR}, #{item.speed,jdbcType=VARCHAR}, #{item.power,jdbcType=VARCHAR}, 
+        #{item.mileage,jdbcType=VARCHAR}, #{item.chargeCycle,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.website.dm.SiteProduct">
     <!--@mbg.generated-->
     insert into site_product
     (id, dr, `status`, product_type, product_code, cn_name, fr_name, en_name, product_model_id, 
-      product_colour_id, min_battery_num, after_sales_flag, added_services_flag, mater_parameter, 
-      other_parameter, speed, `power`, charge_cycle, remark, synchronize_flag, revision, 
-      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
-      )
+      min_battery_num, after_sales_flag, added_services_flag, mater_parameter, other_parameter, 
+      speed, `power`, mileage, charge_cycle, remark, synchronize_flag, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, 
       #{productCode,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{frName,jdbcType=VARCHAR}, 
-      #{enName,jdbcType=VARCHAR}, #{productModelId,jdbcType=BIGINT}, #{productColourId,jdbcType=BIGINT}, 
-      #{minBatteryNum,jdbcType=INTEGER}, #{afterSalesFlag,jdbcType=BOOLEAN}, #{addedServicesFlag,jdbcType=BOOLEAN}, 
-      #{materParameter,jdbcType=VARCHAR}, #{otherParameter,jdbcType=VARCHAR}, #{speed,jdbcType=VARCHAR}, 
-      #{power,jdbcType=VARCHAR}, #{chargeCycle,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{enName,jdbcType=VARCHAR}, #{productModelId,jdbcType=BIGINT}, #{minBatteryNum,jdbcType=INTEGER}, 
+      #{afterSalesFlag,jdbcType=BOOLEAN}, #{addedServicesFlag,jdbcType=BOOLEAN}, #{materParameter,jdbcType=VARCHAR}, 
+      #{otherParameter,jdbcType=VARCHAR}, #{speed,jdbcType=VARCHAR}, #{power,jdbcType=VARCHAR}, 
+      #{mileage,jdbcType=VARCHAR}, #{chargeCycle,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
@@ -463,7 +460,6 @@
     fr_name = #{frName,jdbcType=VARCHAR}, 
     en_name = #{enName,jdbcType=VARCHAR}, 
     product_model_id = #{productModelId,jdbcType=BIGINT}, 
-    product_colour_id = #{productColourId,jdbcType=BIGINT}, 
     min_battery_num = #{minBatteryNum,jdbcType=INTEGER}, 
     after_sales_flag = #{afterSalesFlag,jdbcType=BOOLEAN}, 
     added_services_flag = #{addedServicesFlag,jdbcType=BOOLEAN}, 
@@ -471,6 +467,7 @@
     other_parameter = #{otherParameter,jdbcType=VARCHAR}, 
     speed = #{speed,jdbcType=VARCHAR}, 
     `power` = #{power,jdbcType=VARCHAR}, 
+    mileage = #{mileage,jdbcType=VARCHAR}, 
     charge_cycle = #{chargeCycle,jdbcType=VARCHAR}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN}, 
@@ -516,9 +513,6 @@
       <if test="productModelId != null">
         product_model_id,
       </if>
-      <if test="productColourId != null">
-        product_colour_id,
-      </if>
       <if test="minBatteryNum != null">
         min_battery_num,
       </if>
@@ -539,6 +533,9 @@
       </if>
       <if test="power != null">
         `power`,
+      </if>
+      <if test="mileage != null">
+        mileage,
       </if>
       <if test="chargeCycle != null">
         charge_cycle,
@@ -609,9 +606,6 @@
       <if test="productModelId != null">
         #{productModelId,jdbcType=BIGINT},
       </if>
-      <if test="productColourId != null">
-        #{productColourId,jdbcType=BIGINT},
-      </if>
       <if test="minBatteryNum != null">
         #{minBatteryNum,jdbcType=INTEGER},
       </if>
@@ -632,6 +626,9 @@
       </if>
       <if test="power != null">
         #{power,jdbcType=VARCHAR},
+      </if>
+      <if test="mileage != null">
+        #{mileage,jdbcType=VARCHAR},
       </if>
       <if test="chargeCycle != null">
         #{chargeCycle,jdbcType=VARCHAR},
@@ -702,9 +699,6 @@
       <if test="productModelId != null">
         product_model_id = #{productModelId,jdbcType=BIGINT},
       </if>
-      <if test="productColourId != null">
-        product_colour_id = #{productColourId,jdbcType=BIGINT},
-      </if>
       <if test="minBatteryNum != null">
         min_battery_num = #{minBatteryNum,jdbcType=INTEGER},
       </if>
@@ -725,6 +719,9 @@
       </if>
       <if test="power != null">
         `power` = #{power,jdbcType=VARCHAR},
+      </if>
+      <if test="mileage != null">
+        mileage = #{mileage,jdbcType=VARCHAR},
       </if>
       <if test="chargeCycle != null">
         charge_cycle = #{chargeCycle,jdbcType=VARCHAR},
