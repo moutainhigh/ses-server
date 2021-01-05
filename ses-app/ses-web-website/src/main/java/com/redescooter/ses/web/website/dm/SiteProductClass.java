@@ -18,6 +18,7 @@ import lombok.Data;
 @Data
 @TableName(value = "site_product_class")
 public class SiteProductClass implements Serializable {
+
     /**
      * 主键 主键
      */
