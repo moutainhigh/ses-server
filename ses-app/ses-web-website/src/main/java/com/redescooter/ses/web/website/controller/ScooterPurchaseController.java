@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.PartsResult;
+import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -64,8 +64,8 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getPartsList")
-    @ApiOperation(value = "get Product Details", response = PartsResult.class)
-    public Response<List<PartsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    @ApiOperation(value = "get Product Details", response = PartsDetailsResult.class)
+    public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(scooterPurchaseService.getPartsList(enter));
     }
 

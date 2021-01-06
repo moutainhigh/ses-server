@@ -118,4 +118,25 @@
                      left join site_product_colour spc on spc.colour_id = sc.id
         where spc.product_id = #{id}
     </select>
+
+    <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.product.PartsDetailsResult">
+        select id,
+        parts_type,
+        parts_number,
+        cn_name,
+        fr_name,
+        en_name,
+        picture,
+        price,
+        sources,
+        currency_unit,
+        amount_discount,
+        remark
+        from site_parts
+        where dr = 0
+        <if test="st != null and st != ''">
+            and parts_type = #{st}
+        </if>
+    </select>
+
 </mapper>

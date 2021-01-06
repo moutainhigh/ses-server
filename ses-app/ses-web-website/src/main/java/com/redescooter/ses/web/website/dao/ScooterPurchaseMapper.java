@@ -2,7 +2,9 @@ package com.redescooter.ses.web.website.dao;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
+import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -32,4 +34,12 @@ public interface ScooterPurchaseMapper {
      * @return
      */
     List<ProductsResult> getProductDetails(IdEnter enter);
+
+    /**
+     * 配件列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PartsDetailsResult> getPartsList(StringEnter enter);
 }

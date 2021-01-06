@@ -89,6 +89,13 @@ public class SiteParts implements Serializable {
     private BigDecimal price;
 
     /**
+     * 图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
      * 采购来源
      */
     @TableField(value = "sources")
@@ -263,6 +270,8 @@ public class SiteParts implements Serializable {
     public static final String COL_PARTS_QTY = "parts_qty";
 
     public static final String COL_PRICE = "price";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_SOURCES = "sources";
 
