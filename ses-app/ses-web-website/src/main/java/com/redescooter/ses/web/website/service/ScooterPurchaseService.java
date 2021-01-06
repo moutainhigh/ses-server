@@ -2,7 +2,9 @@ package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
+import com.redescooter.ses.web.website.vo.product.PartsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 
 import java.util.List;
@@ -29,4 +31,12 @@ public interface ScooterPurchaseService {
      * @return
      */
     List<ProductsResult> getProductDetails(IdEnter enter);
+
+    /**
+     * 配件列表
+     *
+     * @param enter
+     * @return
+     */
+    List<PartsResult> getPartsList(StringEnter enter);
 }

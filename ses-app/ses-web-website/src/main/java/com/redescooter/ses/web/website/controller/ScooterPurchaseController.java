@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.website.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
+import com.redescooter.ses.web.website.vo.product.PartsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,18 +42,31 @@ public class ScooterPurchaseController {
     public Response<List<ModelPriceResult>> modelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.modelPriceList(enter));
     }
+
     /**
      * 获取产品详情
-     *
      *
      * @param enter
      * @return
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getProductDetails")
-    @ApiOperation(value = "getProductDetails", response = ProductsResult.class)
+    @ApiOperation(value = "get Product Details", response = ProductsResult.class)
     public Response<List<ProductsResult>> getProductDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getProductDetails(enter));
+    }
+
+    /**
+     * 获取配件列表
+     *
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @PostMapping(value = "/getPartsList")
+    @ApiOperation(value = "get Product Details", response = PartsResult.class)
+    public Response<List<PartsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+        return new Response<>(scooterPurchaseService.getPartsList(enter));
     }
 
 }
