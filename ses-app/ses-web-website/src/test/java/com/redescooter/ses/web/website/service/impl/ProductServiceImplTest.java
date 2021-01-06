@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.SesWebsiteApplicationTests;
@@ -64,7 +65,7 @@ public class ProductServiceImplTest extends SesWebsiteApplicationTests {
         enter.setId(121442149339136l);
         ProductDetailsResult details = productService.getProductDetails(enter);
 
-        System.out.println(details.toString());
+        System.out.println(JSON.toJSONString(details));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class ProductServiceImplTest extends SesWebsiteApplicationTests {
         List<ProductDetailsResult> list = productService.getProductList(new GeneralEnter());
 
         list.forEach(p -> {
-            System.out.println(p.toString());
+            System.out.println(JSON.toJSONString(p));
         });
         assertNotNull(list);
     }

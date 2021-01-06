@@ -22,10 +22,10 @@ import java.util.List;
  * @ClassName: ProductModelController
  * @Function: 车辆选购服务
  */
-@Api(tags = {"Product Model Management"})
+@Api(tags = {"ScooterPurchase"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/model")
+@RequestMapping(value = "/purchase")
 public class ScooterPurchaseController {
 
     @Autowired
