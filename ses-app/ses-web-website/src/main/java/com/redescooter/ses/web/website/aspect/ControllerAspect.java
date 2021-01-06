@@ -129,9 +129,6 @@ public class ControllerAspect {
         if (StringUtils.isBlank(enter.getCountry())) {
             throw new SesWebsiteException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
-//        if (SesStringUtils.isBlank(enter.getLanguage())) {
-//            throw new RepairShopException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
-//        }
         if (StringUtils.isBlank(enter.getClientType())) {
             throw new SesWebsiteException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }

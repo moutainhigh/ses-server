@@ -17,7 +17,7 @@ public enum SystemIDEnums {
     REDE_SAAS("REDE_SAAS", "1", "SaaS配送系统"),
     REDE_SES("REDE_SES", "2", "RedE办公系统"),
     REDE_DEV("REDE_DEV", "3", "RedE开发系统"),
-
+    REDE_SITE("REDE_SITE", "4", "RedE网站"),
     ;
 
     //系统编码

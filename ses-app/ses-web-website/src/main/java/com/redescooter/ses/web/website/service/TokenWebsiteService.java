@@ -17,6 +17,14 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
  */
 public interface TokenWebsiteService {
     /**
+     * 用户创建
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult signUp(LoginEnter enter);
+
+    /**
      * 用户登录
      *
      * @param enter
@@ -25,7 +33,7 @@ public interface TokenWebsiteService {
     TokenResult login(LoginEnter enter);
 
     /**
-     * 用户注销
+     * 用户登出
      *
      * @param enter
      * @return

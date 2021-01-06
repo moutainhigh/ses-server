@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
@@ -9,7 +10,7 @@ import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
  * @Date 2021/1/6 3:29 上午
  * @Description 客户服务
  **/
-public interface CustomerService {
+public interface WebSiteCustomerService {
     
     /**
      * 创建客户
@@ -17,7 +18,7 @@ public interface CustomerService {
      * @param enter
      * @return
      */
-    Boolean addCustomer(AddCustomerEnter enter);
+    GeneralResult addCustomer(AddCustomerEnter enter);
 
     /**
      * 获取客户详情

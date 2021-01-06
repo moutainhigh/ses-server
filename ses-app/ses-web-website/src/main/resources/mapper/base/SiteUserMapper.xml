@@ -12,7 +12,7 @@
     <result column="salt" jdbcType="VARCHAR" property="salt" />
     <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
-    <result column="customer_id" jdbcType="VARCHAR" property="customerId" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
     <result column="last_login_token" jdbcType="VARCHAR" property="lastLoginToken" />
     <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
@@ -78,7 +78,7 @@
       </trim>
       <trim prefix="customer_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.customerId,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="last_login_time = case" suffix="end,">
@@ -223,7 +223,7 @@
       <trim prefix="customer_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.customerId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.customerId,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -356,7 +356,7 @@
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.appId,jdbcType=VARCHAR}, 
         #{item.systemId,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR}, #{item.salt,jdbcType=VARCHAR}, 
-        #{item.status,jdbcType=VARCHAR}, #{item.loginName,jdbcType=VARCHAR}, #{item.customerId,jdbcType=VARCHAR}, 
+        #{item.status,jdbcType=VARCHAR}, #{item.loginName,jdbcType=VARCHAR}, #{item.customerId,jdbcType=BIGINT}, 
         #{item.lastLoginTime,jdbcType=TIMESTAMP}, #{item.lastLoginToken,jdbcType=VARCHAR}, 
         #{item.lastLoginIp,jdbcType=VARCHAR}, #{item.activationTime,jdbcType=DATE}, #{item.expireDate,jdbcType=DATE}, 
         #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -375,7 +375,7 @@
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{appId,jdbcType=VARCHAR}, #{systemId,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
-      #{loginName,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
+      #{loginName,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
       #{lastLoginToken,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR}, #{activationTime,jdbcType=DATE}, 
       #{expireDate,jdbcType=DATE}, #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
@@ -390,7 +390,7 @@
     salt = #{salt,jdbcType=VARCHAR}, 
     `status` = #{status,jdbcType=VARCHAR}, 
     login_name = #{loginName,jdbcType=VARCHAR}, 
-    customer_id = #{customerId,jdbcType=VARCHAR}, 
+    customer_id = #{customerId,jdbcType=BIGINT}, 
     last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}, 
     last_login_token = #{lastLoginToken,jdbcType=VARCHAR}, 
     last_login_ip = #{lastLoginIp,jdbcType=VARCHAR}, 
@@ -515,7 +515,7 @@
         #{loginName,jdbcType=VARCHAR},
       </if>
       <if test="customerId != null">
-        #{customerId,jdbcType=VARCHAR},
+        #{customerId,jdbcType=BIGINT},
       </if>
       <if test="lastLoginTime != null">
         #{lastLoginTime,jdbcType=TIMESTAMP},
@@ -593,7 +593,7 @@
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
       <if test="customerId != null">
-        customer_id = #{customerId,jdbcType=VARCHAR},
+        customer_id = #{customerId,jdbcType=BIGINT},
       </if>
       <if test="lastLoginTime != null">
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},

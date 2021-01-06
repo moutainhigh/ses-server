@@ -24,4 +24,8 @@ public interface SequenceName {
     String SITE_PRODUCT_PARTS = "SITE_PRODUCT_PARTS";
 
     String SITE_PAYMENT_TYPE = "SITE_PAYMENT_TYPE";
+
+    String SITE_CUSTOMER = "SITE_CUSTOMER";
+
+    String SITE_USER = "SITE_USER";
 }

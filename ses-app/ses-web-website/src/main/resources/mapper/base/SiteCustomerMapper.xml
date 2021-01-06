@@ -6,12 +6,12 @@
     <!--@Table site_customer-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
-    <result column="customer_source" jdbcType="VARCHAR" property="customerSource" />
+    <result column="customer_source" jdbcType="INTEGER" property="customerSource" />
     <result column="sales_id" jdbcType="BIGINT" property="salesId" />
-    <result column="industry_type" jdbcType="VARCHAR" property="industryType" />
-    <result column="customer_type" jdbcType="VARCHAR" property="customerType" />
+    <result column="industry_type" jdbcType="INTEGER" property="industryType" />
+    <result column="customer_type" jdbcType="INTEGER" property="customerType" />
     <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="customer_head_picture" jdbcType="VARCHAR" property="customerHeadPicture" />
     <result column="customer_first_name" jdbcType="VARCHAR" property="customerFirstName" />
@@ -21,7 +21,7 @@
     <result column="company_logo" jdbcType="VARCHAR" property="companyLogo" />
     <result column="country_name" jdbcType="VARCHAR" property="countryName" />
     <result column="city_name" jdbcType="VARCHAR" property="cityName" />
-    <result column="area_name" jdbcType="BIGINT" property="areaName" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="postcode" jdbcType="VARCHAR" property="postcode" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="place_id" jdbcType="VARCHAR" property="placeId" />
@@ -35,7 +35,7 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="purchased_scooter_qty" jdbcType="INTEGER" property="purchasedScooterQty" />
     <result column="assignation_scooter_qty" jdbcType="INTEGER" property="assignationScooterQty" />
-    <result column="certificate_type" jdbcType="VARCHAR" property="certificateType" />
+    <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
     <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
     <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
     <result column="business_license_num" jdbcType="VARCHAR" property="businessLicenseNum" />
@@ -43,7 +43,7 @@
     <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum" />
     <result column="invoice_annex" jdbcType="VARCHAR" property="invoiceAnnex" />
     <result column="contract_annex" jdbcType="VARCHAR" property="contractAnnex" />
-    <result column="account_flag" jdbcType="VARCHAR" property="accountFlag" />
+    <result column="account_flag" jdbcType="INTEGER" property="accountFlag" />
     <result column="cardholder" jdbcType="VARCHAR" property="cardholder" />
     <result column="cvv" jdbcType="VARCHAR" property="cvv" />
     <result column="card_num" jdbcType="VARCHAR" property="cardNum" />
@@ -82,7 +82,7 @@
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="country_code = case" suffix="end,">
@@ -92,7 +92,7 @@
       </trim>
       <trim prefix="customer_source = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="sales_id = case" suffix="end,">
@@ -102,12 +102,12 @@
       </trim>
       <trim prefix="industry_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="customer_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="customer_code = case" suffix="end,">
@@ -157,7 +157,7 @@
       </trim>
       <trim prefix="area_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="postcode = case" suffix="end,">
@@ -227,7 +227,7 @@
       </trim>
       <trim prefix="certificate_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="certificate_positive_annex = case" suffix="end,">
@@ -267,7 +267,7 @@
       </trim>
       <trim prefix="account_flag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="cardholder = case" suffix="end,">
@@ -360,7 +360,7 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -374,7 +374,7 @@
       <trim prefix="customer_source = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.customerSource != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -388,14 +388,14 @@
       <trim prefix="industry_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.industryType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
       <trim prefix="customer_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.customerType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -465,7 +465,7 @@
       <trim prefix="area_name = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.areaName != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=BIGINT}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=VARCHAR}
           </if>
         </foreach>
       </trim>
@@ -563,7 +563,7 @@
       <trim prefix="certificate_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.certificateType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -619,7 +619,7 @@
       <trim prefix="account_flag = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.accountFlag != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -741,23 +741,23 @@
       updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.countryCode,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=VARCHAR}, 
-        #{item.salesId,jdbcType=BIGINT}, #{item.industryType,jdbcType=VARCHAR}, #{item.customerType,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=INTEGER}, 
+        #{item.salesId,jdbcType=BIGINT}, #{item.industryType,jdbcType=INTEGER}, #{item.customerType,jdbcType=INTEGER}, 
         #{item.customerCode,jdbcType=VARCHAR}, #{item.customerHeadPicture,jdbcType=VARCHAR}, 
         #{item.customerFirstName,jdbcType=VARCHAR}, #{item.customerLastName,jdbcType=VARCHAR}, 
         #{item.customerFullName,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, 
         #{item.companyLogo,jdbcType=VARCHAR}, #{item.countryName,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, 
-        #{item.areaName,jdbcType=BIGINT}, #{item.postcode,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.areaName,jdbcType=VARCHAR}, #{item.postcode,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
         #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
         #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR}, 
         #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
         #{item.remark,jdbcType=VARCHAR}, #{item.purchasedScooterQty,jdbcType=INTEGER}, 
-        #{item.assignationScooterQty,jdbcType=INTEGER}, #{item.certificateType,jdbcType=VARCHAR}, 
+        #{item.assignationScooterQty,jdbcType=INTEGER}, #{item.certificateType,jdbcType=INTEGER}, 
         #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, 
         #{item.businessLicenseNum,jdbcType=VARCHAR}, #{item.businessLicenseAnnex,jdbcType=VARCHAR}, 
         #{item.invoiceNum,jdbcType=VARCHAR}, #{item.invoiceAnnex,jdbcType=VARCHAR}, #{item.contractAnnex,jdbcType=VARCHAR}, 
-        #{item.accountFlag,jdbcType=VARCHAR}, #{item.cardholder,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, 
+        #{item.accountFlag,jdbcType=INTEGER}, #{item.cardholder,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, 
         #{item.cardNum,jdbcType=VARCHAR}, #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
         #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
@@ -778,20 +778,20 @@
       cardholder, cvv, card_num, synchronize_flag, revision, created_by, created_time, 
       updated_by, updated_time, def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{countryCode,jdbcType=VARCHAR}, 
-      #{customerSource,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, #{industryType,jdbcType=VARCHAR}, 
-      #{customerType,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR}, #{customerHeadPicture,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{countryCode,jdbcType=VARCHAR}, 
+      #{customerSource,jdbcType=INTEGER}, #{salesId,jdbcType=BIGINT}, #{industryType,jdbcType=INTEGER}, 
+      #{customerType,jdbcType=INTEGER}, #{customerCode,jdbcType=VARCHAR}, #{customerHeadPicture,jdbcType=VARCHAR}, 
       #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR}, #{customerFullName,jdbcType=VARCHAR}, 
       #{companyName,jdbcType=VARCHAR}, #{companyLogo,jdbcType=VARCHAR}, #{countryName,jdbcType=VARCHAR}, 
-      #{cityName,jdbcType=VARCHAR}, #{areaName,jdbcType=BIGINT}, #{postcode,jdbcType=VARCHAR}, 
+      #{cityName,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
       #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
       #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
       #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{purchasedScooterQty,jdbcType=INTEGER}, #{assignationScooterQty,jdbcType=INTEGER}, 
-      #{certificateType,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+      #{certificateType,jdbcType=INTEGER}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
       #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{businessLicenseNum,jdbcType=VARCHAR}, 
       #{businessLicenseAnnex,jdbcType=VARCHAR}, #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, 
-      #{contractAnnex,jdbcType=VARCHAR}, #{accountFlag,jdbcType=VARCHAR}, #{cardholder,jdbcType=VARCHAR}, 
+      #{contractAnnex,jdbcType=VARCHAR}, #{accountFlag,jdbcType=INTEGER}, #{cardholder,jdbcType=VARCHAR}, 
       #{cvv,jdbcType=VARCHAR}, #{cardNum,jdbcType=VARCHAR}, #{synchronizeFlag,jdbcType=BOOLEAN}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
@@ -800,12 +800,12 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=INTEGER}, 
     country_code = #{countryCode,jdbcType=VARCHAR}, 
-    customer_source = #{customerSource,jdbcType=VARCHAR}, 
+    customer_source = #{customerSource,jdbcType=INTEGER}, 
     sales_id = #{salesId,jdbcType=BIGINT}, 
-    industry_type = #{industryType,jdbcType=VARCHAR}, 
-    customer_type = #{customerType,jdbcType=VARCHAR}, 
+    industry_type = #{industryType,jdbcType=INTEGER}, 
+    customer_type = #{customerType,jdbcType=INTEGER}, 
     customer_code = #{customerCode,jdbcType=VARCHAR}, 
     customer_head_picture = #{customerHeadPicture,jdbcType=VARCHAR}, 
     customer_first_name = #{customerFirstName,jdbcType=VARCHAR}, 
@@ -815,7 +815,7 @@
     company_logo = #{companyLogo,jdbcType=VARCHAR}, 
     country_name = #{countryName,jdbcType=VARCHAR}, 
     city_name = #{cityName,jdbcType=VARCHAR}, 
-    area_name = #{areaName,jdbcType=BIGINT}, 
+    area_name = #{areaName,jdbcType=VARCHAR}, 
     postcode = #{postcode,jdbcType=VARCHAR}, 
     address = #{address,jdbcType=VARCHAR}, 
     place_id = #{placeId,jdbcType=VARCHAR}, 
@@ -829,7 +829,7 @@
     remark = #{remark,jdbcType=VARCHAR}, 
     purchased_scooter_qty = #{purchasedScooterQty,jdbcType=INTEGER}, 
     assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER}, 
-    certificate_type = #{certificateType,jdbcType=VARCHAR}, 
+    certificate_type = #{certificateType,jdbcType=INTEGER}, 
     certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
     certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
     business_license_num = #{businessLicenseNum,jdbcType=VARCHAR}, 
@@ -837,7 +837,7 @@
     invoice_num = #{invoiceNum,jdbcType=VARCHAR}, 
     invoice_annex = #{invoiceAnnex,jdbcType=VARCHAR}, 
     contract_annex = #{contractAnnex,jdbcType=VARCHAR}, 
-    account_flag = #{accountFlag,jdbcType=VARCHAR}, 
+    account_flag = #{accountFlag,jdbcType=INTEGER}, 
     cardholder = #{cardholder,jdbcType=VARCHAR}, 
     cvv = #{cvv,jdbcType=VARCHAR}, 
     card_num = #{cardNum,jdbcType=VARCHAR}, 
@@ -1029,22 +1029,22 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="countryCode != null">
         #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="customerSource != null">
-        #{customerSource,jdbcType=VARCHAR},
+        #{customerSource,jdbcType=INTEGER},
       </if>
       <if test="salesId != null">
         #{salesId,jdbcType=BIGINT},
       </if>
       <if test="industryType != null">
-        #{industryType,jdbcType=VARCHAR},
+        #{industryType,jdbcType=INTEGER},
       </if>
       <if test="customerType != null">
-        #{customerType,jdbcType=VARCHAR},
+        #{customerType,jdbcType=INTEGER},
       </if>
       <if test="customerCode != null">
         #{customerCode,jdbcType=VARCHAR},
@@ -1074,7 +1074,7 @@
         #{cityName,jdbcType=VARCHAR},
       </if>
       <if test="areaName != null">
-        #{areaName,jdbcType=BIGINT},
+        #{areaName,jdbcType=VARCHAR},
       </if>
       <if test="postcode != null">
         #{postcode,jdbcType=VARCHAR},
@@ -1116,7 +1116,7 @@
         #{assignationScooterQty,jdbcType=INTEGER},
       </if>
       <if test="certificateType != null">
-        #{certificateType,jdbcType=VARCHAR},
+        #{certificateType,jdbcType=INTEGER},
       </if>
       <if test="certificatePositiveAnnex != null">
         #{certificatePositiveAnnex,jdbcType=VARCHAR},
@@ -1140,7 +1140,7 @@
         #{contractAnnex,jdbcType=VARCHAR},
       </if>
       <if test="accountFlag != null">
-        #{accountFlag,jdbcType=VARCHAR},
+        #{accountFlag,jdbcType=INTEGER},
       </if>
       <if test="cardholder != null">
         #{cardholder,jdbcType=VARCHAR},
@@ -1194,22 +1194,22 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="countryCode != null">
         country_code = #{countryCode,jdbcType=VARCHAR},
       </if>
       <if test="customerSource != null">
-        customer_source = #{customerSource,jdbcType=VARCHAR},
+        customer_source = #{customerSource,jdbcType=INTEGER},
       </if>
       <if test="salesId != null">
         sales_id = #{salesId,jdbcType=BIGINT},
       </if>
       <if test="industryType != null">
-        industry_type = #{industryType,jdbcType=VARCHAR},
+        industry_type = #{industryType,jdbcType=INTEGER},
       </if>
       <if test="customerType != null">
-        customer_type = #{customerType,jdbcType=VARCHAR},
+        customer_type = #{customerType,jdbcType=INTEGER},
       </if>
       <if test="customerCode != null">
         customer_code = #{customerCode,jdbcType=VARCHAR},
@@ -1239,7 +1239,7 @@
         city_name = #{cityName,jdbcType=VARCHAR},
       </if>
       <if test="areaName != null">
-        area_name = #{areaName,jdbcType=BIGINT},
+        area_name = #{areaName,jdbcType=VARCHAR},
       </if>
       <if test="postcode != null">
         postcode = #{postcode,jdbcType=VARCHAR},
@@ -1281,7 +1281,7 @@
         assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER},
       </if>
       <if test="certificateType != null">
-        certificate_type = #{certificateType,jdbcType=VARCHAR},
+        certificate_type = #{certificateType,jdbcType=INTEGER},
       </if>
       <if test="certificatePositiveAnnex != null">
         certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
@@ -1305,7 +1305,7 @@
         contract_annex = #{contractAnnex,jdbcType=VARCHAR},
       </if>
       <if test="accountFlag != null">
-        account_flag = #{accountFlag,jdbcType=VARCHAR},
+        account_flag = #{accountFlag,jdbcType=INTEGER},
       </if>
       <if test="cardholder != null">
         cardholder = #{cardholder,jdbcType=VARCHAR},
