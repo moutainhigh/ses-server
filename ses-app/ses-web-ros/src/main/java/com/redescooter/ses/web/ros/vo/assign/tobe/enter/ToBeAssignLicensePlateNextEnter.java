@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @Description 填写完车牌点击下一步入参
@@ -27,8 +26,8 @@ public class ToBeAssignLicensePlateNextEnter extends GeneralEnter implements Ser
 
     private static final long serialVersionUID = -114831388249018355L;
 
-    @ApiModelProperty(value = "车辆信息", required = true)
-    private List<ToBeAssignLicensePlateNextDetailEnter> list;
+    @ApiModelProperty(value = "车辆信息 给json字符串 格式:id:主键,licensePlate:车牌", required = true)
+    private String list;
 
     @ApiModelProperty(value = "客户id", required = true)
     private Long customerId;

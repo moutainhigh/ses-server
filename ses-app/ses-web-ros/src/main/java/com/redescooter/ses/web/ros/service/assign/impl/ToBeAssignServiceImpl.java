@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.assign.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -222,14 +223,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getSeatNext(ToBeAssignSeatNextEnter enter) {
         logger.info("填写完座位数点击下一步的入参是:[{}]", enter);
-        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.SEAT_NOT_EMPTY.getCode(), ExceptionCodeEnums.SEAT_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
-        ToBeAssignSeatNextDetailEnter detailEnter = enter.getList().get(0);
+        // 解析
+        List<ToBeAssignSeatNextDetailEnter> list;
+        try {
+            list = JSONArray.parseArray(enter.getList(), ToBeAssignSeatNextDetailEnter.class);
+        } catch (Exception ex) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        ToBeAssignSeatNextDetailEnter detailEnter = list.get(0);
         Long specificatId = detailEnter.getSpecificatId();
         String specificatName = detailEnter.getSpecificatName();
         Integer seatNumber = detailEnter.getSeatNumber();
@@ -283,14 +295,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
         logger.info("填写完车牌点击下一步的入参是:[{}]", enter);
-        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getCode(), ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
-        ToBeAssignLicensePlateNextDetailEnter detailEnter = enter.getList().get(0);
+        // 解析
+        List<ToBeAssignLicensePlateNextDetailEnter> list;
+        try {
+            list = JSONArray.parseArray(enter.getList(), ToBeAssignLicensePlateNextDetailEnter.class);
+        } catch (Exception ex) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        ToBeAssignLicensePlateNextDetailEnter detailEnter = list.get(0);
         Long id = detailEnter.getId();
         String licensePlate = detailEnter.getLicensePlate();
 
@@ -357,14 +380,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Transactional(rollbackFor = Exception.class)
     public ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter) {
         logger.info("填写完R.SN并点击提交的入参是:[{}]", enter);
-        if (null == enter || CollectionUtils.isEmpty(enter.getList())) {
+        if (null == enter || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
         }
         ToBeAssignNextStopResult result = new ToBeAssignNextStopResult();
         List<ToBeAssignNextStopDetailResult> scooterList = Lists.newArrayList();
         ToBeAssignNextStopDetailResult scooter = new ToBeAssignNextStopDetailResult();
 
-        ToBeAssignSubmitDetailEnter detailEnter = enter.getList().get(0);
+        // 解析
+        List<ToBeAssignSubmitDetailEnter> list;
+        try {
+            list = JSONArray.parseArray(enter.getList(), ToBeAssignSubmitDetailEnter.class);
+        } catch (Exception ex) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        ToBeAssignSubmitDetailEnter detailEnter = list.get(0);
         Long id = detailEnter.getId();
         String rsn = detailEnter.getRsn();
         Long colorId = detailEnter.getColorId();
