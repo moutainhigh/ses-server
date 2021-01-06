@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @Description 填写完R.SN并点击提交入参
@@ -27,8 +26,8 @@ public class ToBeAssignSubmitEnter extends GeneralEnter implements Serializable 
 
     private static final long serialVersionUID = -9200614796762459345L;
 
-    @ApiModelProperty(value = "车辆信息", required = true)
-    private List<ToBeAssignSubmitDetailEnter> list;
+    @ApiModelProperty(value = "车辆信息 给json字符串 格式:id:主键,rsn:R.SN,colorId:颜色id", required = true)
+    private String list;
 
     @ApiModelProperty(value = "客户id", required = true)
     private Long customerId;

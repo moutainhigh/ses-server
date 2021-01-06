@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @Description 待分配列表点击分配带出数据车辆信息子出参
+ * @Description 查询客户走到哪个节点并带出车辆信息数据子出参
  * @Author Chris
- * @Date 2021/1/5 13:42
+ * @Date 2021/1/6 13:31
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "待分配列表点击分配带出数据车辆信息子出参", description = "待分配列表点击分配带出数据车辆信息子出参")
-public class ToBeAssignDetailScooterInfoSubResult extends GeneralResult implements Serializable {
+@ApiModel(value = "查询客户走到哪个节点并带出车辆信息数据子出参", description = "查询客户走到哪个节点并带出车辆信息数据子出参")
+public class ToBeAssignNodeScooterInfoSubResult extends GeneralResult implements Serializable {
 
-    private static final long serialVersionUID = 1863840952402694539L;
+    private static final long serialVersionUID = 7720484683210251733L;
 
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
@@ -37,5 +37,20 @@ public class ToBeAssignDetailScooterInfoSubResult extends GeneralResult implemen
 
     @ApiModelProperty(value = "待完成分配数")
     private Integer toBeAssignCount;
+
+    @ApiModelProperty(value = "主键")
+    private Long id;
+
+    @ApiModelProperty(value = "座位数")
+    private Integer seatNumber;
+
+    @ApiModelProperty(value = "Vin Code")
+    private String vinCode;
+
+    @ApiModelProperty(value = "车牌")
+    private String licensePlate;
+
+    @ApiModelProperty(value = "R.SN")
+    private String rsn;
 
 }

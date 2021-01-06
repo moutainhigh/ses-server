@@ -30,7 +30,10 @@ public class ToBeAssignNodeResult extends GeneralResult implements Serializable 
     @ApiModelProperty(value = "节点 1VIN Code 2Bind License Plate 3Bind R.SN")
     private Integer node;
 
+    @ApiModelProperty(value = "客户信息")
+    private ToBeAssignDetailCustomerInfoResult customerInfo;
+
     @ApiModelProperty(value = "车辆信息")
-    private List<ToBeAssignNextStopDetailResult> list;
+    private List<ToBeAssignNodeScooterInfoResult> scooterInfo;
 
 }

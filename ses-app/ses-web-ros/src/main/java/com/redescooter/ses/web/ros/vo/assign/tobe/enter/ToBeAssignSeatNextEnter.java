@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @Description 填写完座位数点击下一步入参
@@ -27,8 +26,8 @@ public class ToBeAssignSeatNextEnter extends GeneralEnter implements Serializabl
 
     private static final long serialVersionUID = 6858844507056189548L;
 
-    @ApiModelProperty(value = "车辆信息", required = true)
-    private List<ToBeAssignSeatNextDetailEnter> list;
+    @ApiModelProperty(value = "车辆信息 给json字符串 格式:specificatId:型号id,specificatName:型号名称,seatNumber:座位数,qty:待分配车辆数量", required = true)
+    private String list;
 
     @ApiModelProperty(value = "客户id", required = true)
     private Long customerId;

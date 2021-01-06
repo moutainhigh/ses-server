@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.assign;
 
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
@@ -12,7 +13,6 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
-import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 
 import java.util.List;
@@ -38,12 +38,12 @@ public interface ToBeAssignService {
     /**
      * 填写完座位数点击下一步
      */
-    ToBeAssignNextStopResult getSeatNext(ToBeAssignSeatNextEnter enter);
+    GeneralResult getSeatNext(ToBeAssignSeatNextEnter enter);
 
     /**
      * 填写完车牌点击下一步
      */
-    ToBeAssignNextStopResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter);
+    GeneralResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter);
 
     /**
      * 根据R.SN获得颜色
@@ -53,7 +53,7 @@ public interface ToBeAssignService {
     /**
      * 填写完R.SN并点击提交
      */
-    ToBeAssignNextStopResult submit(ToBeAssignSubmitEnter enter);
+    GeneralResult submit(ToBeAssignSubmitEnter enter);
 
     /**
      * 查询客户走到哪个节点并带出数据
