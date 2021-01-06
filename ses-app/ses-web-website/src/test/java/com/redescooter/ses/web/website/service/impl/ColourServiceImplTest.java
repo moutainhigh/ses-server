@@ -4,6 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.SesWebsiteApplicationTests;
 import com.redescooter.ses.web.website.service.ColourService;
+import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
+import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 import com.redescooter.ses.web.website.vo.product.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

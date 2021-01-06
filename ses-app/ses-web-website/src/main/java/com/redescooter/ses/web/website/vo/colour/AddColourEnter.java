@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.vo.product;
+package com.redescooter.ses.web.website.vo.colour;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;

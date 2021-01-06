@@ -1,9 +1,7 @@
-package com.redescooter.ses.web.website.vo.product;
+package com.redescooter.ses.web.website.vo.parts;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,25 +12,17 @@ import java.math.BigDecimal;
 /**
  * @Author jerry
  * @Date 2021/1/6 3:37 上午
- * @Description 新增配件入参
+ * @Description 配件详情结果集出参
  **/
-
-@ApiModel(value = "新增配件入参", description = "新增配件入参")
+@ApiModel(value = "配件详情结果集出参", description = "配件详情结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AddPartsEnter extends GeneralEnter {
-
+public class PartsDetailsResult extends GeneralResult {
     /**
-     * 逻辑删除
+     * 主键
      */
-    @ApiModelProperty(value = "逻辑删除")
-    private Integer dr;
-
-    /**
-     * 状态
-     */
-    @ApiModelProperty(value = "状态")
-    private String status;
+    @ApiModelProperty(value = "主键")
+    private Long id;
 
     /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
@@ -65,21 +55,40 @@ public class AddPartsEnter extends GeneralEnter {
     private String enName;
 
     /**
+     * 图片
+     */
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
+     * 销售价格 浮点型价格
+     */
+    @TableField(value = "price")
+    @ApiModelProperty(value = "销售价格 浮点型价格")
+    private BigDecimal price;
+
+    /**
      * 采购来源
      */
     @ApiModelProperty(value = "采购来源")
     private String sources;
 
-
-    @ApiModelProperty(value="销售价格 浮点型价格")
-    private BigDecimal price;
-
+    /**
+     * 货币单位 如¥，$，€，￡
+     */
     @ApiModelProperty(value = "货币单位 如¥，$，€，￡")
     private String currencyUnit;
 
     /**
+     * 优惠抵扣金额
+     */
+    @ApiModelProperty(value = "优惠抵扣金额")
+    private BigDecimal amountDiscount;
+
+    /**
      * 备注
      */
+    @TableField(value = "remark")
     @ApiModelProperty(value = "备注")
     private String remark;
 

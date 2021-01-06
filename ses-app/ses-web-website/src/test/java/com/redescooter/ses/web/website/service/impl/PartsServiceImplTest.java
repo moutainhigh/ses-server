@@ -5,13 +5,11 @@ import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PartsProcurementSourceEnums;
 import com.redescooter.ses.web.website.enums.PartsTypeEnums;
 import com.redescooter.ses.web.website.service.PartsService;
-import com.redescooter.ses.web.website.vo.product.AddPartsEnter;
+import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PartsServiceImplTest extends SesWebsiteApplicationTests {
 
@@ -29,6 +27,7 @@ public class PartsServiceImplTest extends SesWebsiteApplicationTests {
         enter.setCnName("电池");
         enter.setFrName("Batt Model E H Capa");
         enter.setEnName("Batt Model E H Capa");
+        enter.setSpecs("");
         enter.setSources(String.valueOf(PartsProcurementSourceEnums.CN.getValue()));
         enter.setPrice(new BigDecimal("1290"));
         enter.setCurrencyUnit("€");

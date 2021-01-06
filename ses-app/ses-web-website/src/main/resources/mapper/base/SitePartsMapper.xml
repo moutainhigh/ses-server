@@ -15,6 +15,7 @@
     <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="specs" jdbcType="VARCHAR" property="specs" />
     <result column="sources" jdbcType="VARCHAR" property="sources" />
     <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
     <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
@@ -41,7 +42,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, `status`, parts_type, parts_number, cn_name, fr_name, en_name, parts_qty, 
-    price, picture, sources, effective_time, currency_type, currency_unit, standard_currency, 
+    price, picture, specs, sources, effective_time, currency_type, currency_unit, standard_currency, 
     amount_discount, country_code, country_city, country_language, remark, id_class, 
     synchronize_flag, revision, created_by, created_time, updated_by, updated_time, def1, 
     def2, def3, def5, def6
@@ -98,6 +99,11 @@
       <trim prefix="picture = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.picture,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="specs = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.specs,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="sources = case" suffix="end,">
@@ -290,6 +296,13 @@
           </if>
         </foreach>
       </trim>
+      <trim prefix="specs = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.specs != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.specs,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
       <trim prefix="sources = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.sources != null">
@@ -454,7 +467,7 @@
     <!--@mbg.generated-->
     insert into site_parts
     (id, dr, `status`, parts_type, parts_number, cn_name, fr_name, en_name, parts_qty, 
-      price, picture, sources, effective_time, currency_type, currency_unit, standard_currency, 
+      price, picture, specs, sources, effective_time, currency_type, currency_unit, standard_currency, 
       amount_discount, country_code, country_city, country_language, remark, id_class, 
       synchronize_flag, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
@@ -463,8 +476,8 @@
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
         #{item.partsType,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR}, 
         #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, #{item.partsQty,jdbcType=INTEGER}, 
-        #{item.price,jdbcType=DECIMAL}, #{item.picture,jdbcType=VARCHAR}, #{item.sources,jdbcType=VARCHAR}, 
-        #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.currencyType,jdbcType=VARCHAR}, 
+        #{item.price,jdbcType=DECIMAL}, #{item.picture,jdbcType=VARCHAR}, #{item.specs,jdbcType=VARCHAR}, 
+        #{item.sources,jdbcType=VARCHAR}, #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.currencyType,jdbcType=VARCHAR}, 
         #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
         #{item.amountDiscount,jdbcType=DECIMAL}, #{item.countryCode,jdbcType=VARCHAR}, 
         #{item.countryCity,jdbcType=VARCHAR}, #{item.countryLanguage,jdbcType=VARCHAR}, 
@@ -479,7 +492,7 @@
     <!--@mbg.generated-->
     insert into site_parts
     (id, dr, `status`, parts_type, parts_number, cn_name, fr_name, en_name, parts_qty, 
-      price, picture, sources, effective_time, currency_type, currency_unit, standard_currency, 
+      price, picture, specs, sources, effective_time, currency_type, currency_unit, standard_currency, 
       amount_discount, country_code, country_city, country_language, remark, id_class, 
       synchronize_flag, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
@@ -487,14 +500,14 @@
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{partsType,jdbcType=VARCHAR}, 
       #{partsNumber,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{frName,jdbcType=VARCHAR}, 
       #{enName,jdbcType=VARCHAR}, #{partsQty,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
-      #{picture,jdbcType=VARCHAR}, #{sources,jdbcType=VARCHAR}, #{effectiveTime,jdbcType=TIMESTAMP}, 
-      #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, #{standardCurrency,jdbcType=VARCHAR}, 
-      #{amountDiscount,jdbcType=DECIMAL}, #{countryCode,jdbcType=VARCHAR}, #{countryCity,jdbcType=VARCHAR}, 
-      #{countryLanguage,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{idClass,jdbcType=BOOLEAN}, 
-      #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DECIMAL})
+      #{picture,jdbcType=VARCHAR}, #{specs,jdbcType=VARCHAR}, #{sources,jdbcType=VARCHAR}, 
+      #{effectiveTime,jdbcType=TIMESTAMP}, #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, 
+      #{standardCurrency,jdbcType=VARCHAR}, #{amountDiscount,jdbcType=DECIMAL}, #{countryCode,jdbcType=VARCHAR}, 
+      #{countryCity,jdbcType=VARCHAR}, #{countryLanguage,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{idClass,jdbcType=BOOLEAN}, #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -507,6 +520,7 @@
     parts_qty = #{partsQty,jdbcType=INTEGER}, 
     price = #{price,jdbcType=DECIMAL}, 
     picture = #{picture,jdbcType=VARCHAR}, 
+    specs = #{specs,jdbcType=VARCHAR}, 
     sources = #{sources,jdbcType=VARCHAR}, 
     effective_time = #{effectiveTime,jdbcType=TIMESTAMP}, 
     currency_type = #{currencyType,jdbcType=VARCHAR}, 
@@ -566,6 +580,9 @@
       </if>
       <if test="picture != null">
         picture,
+      </if>
+      <if test="specs != null">
+        specs,
       </if>
       <if test="sources != null">
         sources,
@@ -669,6 +686,9 @@
       <if test="picture != null">
         #{picture,jdbcType=VARCHAR},
       </if>
+      <if test="specs != null">
+        #{specs,jdbcType=VARCHAR},
+      </if>
       <if test="sources != null">
         #{sources,jdbcType=VARCHAR},
       </if>
@@ -770,6 +790,9 @@
       </if>
       <if test="picture != null">
         picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="specs != null">
+        specs = #{specs,jdbcType=VARCHAR},
       </if>
       <if test="sources != null">
         sources = #{sources,jdbcType=VARCHAR},

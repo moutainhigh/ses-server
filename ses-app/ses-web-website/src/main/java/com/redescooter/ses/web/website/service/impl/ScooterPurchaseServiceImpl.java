@@ -6,7 +6,8 @@ import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,17 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
     @Override
     public List<PartsDetailsResult> getPartsList(StringEnter enter) {
         return scooterPurchaseMapper.getPartsList(enter);
+    }
+
+    /**
+     * 车辆参数配置
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter) {
+        return scooterPurchaseMapper.getScooterConfigList(enter);
     }
 
 

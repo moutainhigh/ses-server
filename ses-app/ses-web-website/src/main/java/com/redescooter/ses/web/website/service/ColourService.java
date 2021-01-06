@@ -3,8 +3,8 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
-import com.redescooter.ses.web.website.vo.product.AddColourEnter;
-import com.redescooter.ses.web.website.vo.product.ModityColourEnter;
+import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
+import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 
 import java.util.List;
 

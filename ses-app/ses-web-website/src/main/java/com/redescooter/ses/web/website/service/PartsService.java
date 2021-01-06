@@ -1,12 +1,8 @@
 package com.redescooter.ses.web.website.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.web.website.vo.product.AddPartsEnter;
-import com.redescooter.ses.web.website.vo.product.ModityPartsEnter;
-import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
-
-import java.util.List;
+import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
+import com.redescooter.ses.web.website.vo.parts.ModityPartsEnter;
 
 /**
  * @Author jerry
@@ -38,21 +34,4 @@ public interface PartsService {
      * @return
      */
     Boolean removeParts(IdEnter enter);
-
-
-    /**
-     * 获取配件详情
-     *
-     * @param enter
-     */
-    PartsDetailsResult getPartsDetails(IdEnter enter);
-
-
-    /**
-     * 获取配件列表
-     *
-     * @param enter
-     */
-    List<PartsDetailsResult> getPartsList(GeneralEnter enter);
-
 }

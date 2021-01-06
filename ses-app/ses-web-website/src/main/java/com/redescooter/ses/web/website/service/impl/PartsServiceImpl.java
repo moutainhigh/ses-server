@@ -1,18 +1,15 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteParts;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.PartsService;
 import com.redescooter.ses.web.website.service.base.SitePartsService;
-import com.redescooter.ses.web.website.vo.product.AddPartsEnter;
-import com.redescooter.ses.web.website.vo.product.ModityPartsEnter;
-import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
+import com.redescooter.ses.web.website.vo.parts.ModityPartsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Author jerry
@@ -92,26 +88,7 @@ public class PartsServiceImpl implements PartsService {
      */
     @Override
     public Boolean removeParts(IdEnter enter) {
-        return null;
+        return sitePartsService.removeById(enter.getId());
     }
 
-    /**
-     * 获取配件详情
-     *
-     * @param enter
-     */
-    @Override
-    public PartsDetailsResult getPartsDetails(IdEnter enter) {
-        return null;
-    }
-
-    /**
-     * 获取配件列表
-     *
-     * @param enter
-     */
-    @Override
-    public List<PartsDetailsResult> getPartsList(GeneralEnter enter) {
-        return null;
-    }
 }

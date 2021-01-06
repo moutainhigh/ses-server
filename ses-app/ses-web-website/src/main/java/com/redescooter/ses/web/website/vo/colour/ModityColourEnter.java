@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.vo.product;
+package com.redescooter.ses.web.website.vo.colour;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;

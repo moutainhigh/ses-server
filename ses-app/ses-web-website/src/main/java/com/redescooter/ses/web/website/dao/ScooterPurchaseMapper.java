@@ -4,7 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -42,4 +43,12 @@ public interface ScooterPurchaseMapper {
      * @return
      */
     List<PartsDetailsResult> getPartsList(StringEnter enter);
+
+    /**
+     * 获取车辆配置列表
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter);
 }

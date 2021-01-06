@@ -4,7 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 
 import java.util.List;
@@ -39,4 +40,12 @@ public interface ScooterPurchaseService {
      * @return
      */
     List<PartsDetailsResult> getPartsList(StringEnter enter);
+
+    /**
+     * 车辆参数配置
+     *
+     * @param enter
+     * @return
+     */
+    List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter);
 }

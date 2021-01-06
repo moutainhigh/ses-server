@@ -1,15 +1,20 @@
 package com.redescooter.ses.web.website.service.impl;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.website.constant.SequenceName;
+import com.redescooter.ses.web.website.dm.SiteProductParts;
+import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.ProductPartsService;
+import com.redescooter.ses.web.website.service.base.SiteProductPartsService;
 import com.redescooter.ses.web.website.vo.product.AddProductPartsEnter;
-import com.redescooter.ses.web.website.vo.product.ModityProductPartsEnter;
-import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * @Author jerry
@@ -20,7 +25,11 @@ import java.util.List;
 @Service
 public class ProductPartsServiceImpl implements ProductPartsService {
 
+    @Autowired
+    private SiteProductPartsService siteProductPartsService;
 
+    @Reference
+    private IdAppService idAppService;
 
     /**
      * 创建产品配件
@@ -31,54 +40,32 @@ public class ProductPartsServiceImpl implements ProductPartsService {
     @Override
     public Boolean addProductParts(AddProductPartsEnter enter) {
 
+        SiteProductParts addProductPartsVO = new SiteProductParts();
+        addProductPartsVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PARTS));
+        addProductPartsVO.setDr(Constant.DR_FALSE);
+        addProductPartsVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addProductPartsVO.setPartsId(enter.getPartsId());
+        addProductPartsVO.setProductId(enter.getProductId());
+        addProductPartsVO.setQty(enter.getQty());
+        addProductPartsVO.setParameter(enter.getParameter());
 
+        if (StringUtils.isNotBlank(enter.getRemark())) {
+            addProductPartsVO.setRemark(enter.getRemark());
+        }
 
+        addProductPartsVO.setSynchronizeFlag(false);
+        addProductPartsVO.setRevision(0);
+        addProductPartsVO.setCreatedBy(0L);
+        addProductPartsVO.setCreatedTime(new Date());
+        addProductPartsVO.setUpdatedBy(0L);
+        addProductPartsVO.setUpdatedTime(new Date());
+        addProductPartsVO.setDef1("");
+        addProductPartsVO.setDef2("");
+        addProductPartsVO.setDef3("");
+        addProductPartsVO.setDef5("");
+        addProductPartsVO.setDef6(0.0D);
 
-
-
-
-        return null;
+        return siteProductPartsService.save(addProductPartsVO);
     }
 
-    /**
-     * 编辑产品配件
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Boolean modityProductParts(ModityProductPartsEnter enter) {
-        return null;
-    }
-
-    /**
-     * 移除产品配件
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Boolean removeProductParts(IdEnter enter) {
-        return null;
-    }
-
-    /**
-     * 获取产品配件详情
-     *
-     * @param enter
-     */
-    @Override
-    public ProductPartsDetailsResult getProductPartsDetails(IdEnter enter) {
-        return null;
-    }
-
-    /**
-     * 获取产品配件列表
-     *
-     * @param enter
-     */
-    @Override
-    public List<ProductPartsDetailsResult> getProductPartsList(GeneralEnter enter) {
-        return null;
-    }
 }

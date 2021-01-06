@@ -77,28 +77,6 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     }
 
     /**
-     * 编辑产品价格
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Boolean modityProductPrice(ModityProductPriceEnter enter) {
-        return null;
-    }
-
-    /**
-     * 移除产品价格
-     *
-     * @param enter
-     * @return
-     */
-    @Override
-    public Boolean removeProductPrice(IdEnter enter) {
-        return null;
-    }
-
-    /**
      * 获取产品价格详情
      *
      * @param enter

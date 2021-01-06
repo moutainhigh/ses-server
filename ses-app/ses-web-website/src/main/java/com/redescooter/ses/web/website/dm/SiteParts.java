@@ -96,6 +96,13 @@ public class SiteParts implements Serializable {
     private String picture;
 
     /**
+     * 规格
+     */
+    @TableField(value = "specs")
+    @ApiModelProperty(value = "规格")
+    private String specs;
+
+    /**
      * 采购来源
      */
     @TableField(value = "sources")
@@ -272,6 +279,8 @@ public class SiteParts implements Serializable {
     public static final String COL_PRICE = "price";
 
     public static final String COL_PICTURE = "picture";
+
+    public static final String COL_SPECS = "specs";
 
     public static final String COL_SOURCES = "sources";
 

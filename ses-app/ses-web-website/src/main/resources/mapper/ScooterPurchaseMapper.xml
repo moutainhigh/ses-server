@@ -119,24 +119,34 @@
         where spc.product_id = #{id}
     </select>
 
-    <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.product.PartsDetailsResult">
+    <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.parts.PartsDetailsResult">
         select id,
-        parts_type,
-        parts_number,
-        cn_name,
-        fr_name,
-        en_name,
-        picture,
-        price,
-        sources,
-        currency_unit,
-        amount_discount,
-        remark
+               parts_type,
+               parts_number,
+               cn_name,
+               fr_name,
+               en_name,
+               picture,
+               price,
+               sources,
+               currency_unit,
+               amount_discount,
+               remark
         from site_parts
-        where dr = 0
+                where dr = 0
         <if test="st != null and st != ''">
             and parts_type = #{st}
         </if>
     </select>
 
+    <select id="getScooterConfigList" resultType="com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult">
+        select id,
+               parts_id,
+               product_id,
+               parameter,
+               qty,
+               remark
+        from site_product_parts
+        where dr = 0
+    </select>
 </mapper>

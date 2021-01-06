@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.vo.product;
+package com.redescooter.ses.web.website.vo.payment;
 
 /**
  * @Author jerry

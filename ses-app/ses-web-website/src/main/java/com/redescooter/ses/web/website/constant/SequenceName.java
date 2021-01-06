@@ -20,4 +20,6 @@ public interface SequenceName {
     String SITE_PRODUCT_PRICE = "SITE_PRODUCT_PRICE";
 
     String SITE_PARTS = "SITE_PARTS";
+
+    String SITE_PRODUCT_PARTS = "SITE_PRODUCT_PARTS";
 }
