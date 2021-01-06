@@ -22,6 +22,12 @@ import java.util.Date;
 public class ColourDetailsResult extends GeneralResult {
 
     /**
+     * 主建
+     */
+    @ApiModelProperty(value = "主键")
+    private Long id;
+
+    /**
      * 颜色使用范围,1整车，-1配件
      */
     @ApiModelProperty(value = "颜色使用范围,1整车，-1配件")

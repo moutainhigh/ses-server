@@ -28,12 +28,6 @@ public class ProductModelDetailsResult extends GeneralResult {
     private Long id;
 
     /**
-     * 状态,1正常，-1失效
-     */
-    @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
-
-    /**
      * 产品种类主建
      */
     @ApiModelProperty(value = "产品种类主建")
@@ -50,12 +44,6 @@ public class ProductModelDetailsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "产品类型单项名称")
     private String productModelName;
-
-    /**
-     * 备注
-     */
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
     /**
      * 创建时间

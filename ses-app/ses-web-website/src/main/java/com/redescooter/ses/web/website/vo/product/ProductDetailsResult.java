@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.website.vo.product;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,8 +15,17 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ProductDetailsResult extends AddProductEnter {
 
+    /**
+     * 主建
+     */
     @ApiModelProperty(value = "主键")
     private Long id;
+
+    /**
+     * 图片
+     */
+    @ApiModelProperty(value = "图片")
+    private String picture;
 
     /**
      * 中文名称
