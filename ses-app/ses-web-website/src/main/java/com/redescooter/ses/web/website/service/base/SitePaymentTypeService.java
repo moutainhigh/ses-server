@@ -3,7 +3,8 @@ package com.redescooter.ses.web.website.service.base;
 import java.util.List;
 import com.redescooter.ses.web.website.dm.SitePaymentType;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface SitePaymentTypeService extends IService<SitePaymentType>{
+
+public interface SitePaymentTypeService extends IService<SitePaymentType> {
 
 
     int updateBatch(List<SitePaymentType> list);
@@ -17,3 +18,5 @@ public interface SitePaymentTypeService extends IService<SitePaymentType>{
     int insertOrUpdateSelective(SitePaymentType record);
 
 }
+
+

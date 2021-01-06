@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
+import com.redescooter.ses.web.website.dm.SiteProduct;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentTypeEnums;
@@ -13,6 +14,7 @@ import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.vo.product.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +56,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         addProductPriceVO.setPriceType(enter.getPriceType());
         if (enter.getPriceType().endsWith(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()))) {
             addProductPriceVO.setInstallmentTime(enter.getInstallmentTime());
-        }else{
+        } else {
             addProductPriceVO.setInstallmentTime("0");
         }
         addProductPriceVO.setPrice(enter.getPrice());
@@ -83,7 +85,13 @@ public class ProductPriceServiceImpl implements ProductPriceService {
      */
     @Override
     public ProductPriceDetailsResult getProductPriceDetails(IdEnter enter) {
-        return null;
+        SiteProductPrice byId = siteProductPriceService.getById(enter.getId());
+        ProductPriceDetailsResult result = new ProductPriceDetailsResult();
+        if (byId != null) {
+            BeanUtils.copyProperties(byId, result);
+            result.setRequestId(enter.getRequestId());
+        }
+        return result;
     }
 
     /**

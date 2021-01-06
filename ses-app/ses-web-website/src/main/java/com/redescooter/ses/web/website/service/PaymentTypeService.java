@@ -14,7 +14,7 @@ import java.util.List;
  **/
 public interface PaymentTypeService {
     /**
-     * 创建产品配件
+     * 创建支付方式
      *
      * @param enter
      * @return
@@ -22,7 +22,7 @@ public interface PaymentTypeService {
     Boolean addPaymentType(AddPaymentTypeEnter enter);
 
     /**
-     * 获取产品配件详情
+     * 获取支付方式详情
      *
      * @param enter
      */
@@ -30,7 +30,7 @@ public interface PaymentTypeService {
 
 
     /**
-     * 获取产品配件列表
+     * 获取支付方式列表
      *
      * @param enter
      */
