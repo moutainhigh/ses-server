@@ -32,6 +32,9 @@ public class ToBeAssignNodeScooterInfoSubResult extends GeneralResult implements
     @ApiModelProperty(value = "颜色色值")
     private String colorValue;
 
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
+
     @ApiModelProperty(value = "待完成分配数")
     private Integer toBeAssignCount;
 

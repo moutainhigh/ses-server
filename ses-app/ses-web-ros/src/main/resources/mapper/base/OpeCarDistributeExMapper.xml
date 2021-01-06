@@ -18,7 +18,8 @@
             a.full_name,
             a.email,
             a.scooter_quantity,
-            a.updated_time as generateDate
+            a.updated_time as generateDate,
+            b.node
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         where a.dr = 0 and (b.flag = 1 or b.flag is null)

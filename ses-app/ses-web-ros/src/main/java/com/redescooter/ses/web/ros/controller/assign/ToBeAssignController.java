@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.assign;
 
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -14,7 +15,6 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
-import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNextStopResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,7 +65,7 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "填写完座位数点击下一步", notes = "填写完座位数点击下一步")
     @PostMapping("/seat/next")
-    public Response<ToBeAssignNextStopResult> getSeatNext(@ModelAttribute ToBeAssignSeatNextEnter enter) {
+    public Response<GeneralResult> getSeatNext(@ModelAttribute ToBeAssignSeatNextEnter enter) {
         return new Response<>(toBeAssignService.getSeatNext(enter));
     }
 
@@ -74,7 +74,7 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "填写完车牌点击下一步", notes = "填写完车牌点击下一步")
     @PostMapping("/license/next")
-    public Response<ToBeAssignNextStopResult> getLicensePlateNext(@ModelAttribute ToBeAssignLicensePlateNextEnter enter) {
+    public Response<GeneralResult> getLicensePlateNext(@ModelAttribute ToBeAssignLicensePlateNextEnter enter) {
         return new Response<>(toBeAssignService.getLicensePlateNext(enter));
     }
 
@@ -92,7 +92,7 @@ public class ToBeAssignController {
      */
     @ApiOperation(value = "填写完R.SN并点击提交", notes = "填写完R.SN并点击提交")
     @PostMapping("/submit")
-    public Response<ToBeAssignNextStopResult> submit(@ModelAttribute ToBeAssignSubmitEnter enter) {
+    public Response<GeneralResult> submit(@ModelAttribute ToBeAssignSubmitEnter enter) {
         return new Response<>(toBeAssignService.submit(enter));
     }
 

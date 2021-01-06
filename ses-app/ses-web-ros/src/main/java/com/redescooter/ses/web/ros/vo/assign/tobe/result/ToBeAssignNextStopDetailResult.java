@@ -50,4 +50,7 @@ public class ToBeAssignNextStopDetailResult extends GeneralResult implements Ser
     @ApiModelProperty(value = "颜色色值")
     private String colorValue;
 
+    @ApiModelProperty(value = "Qty")
+    private Integer qty;
+
 }

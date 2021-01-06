@@ -62,6 +62,9 @@ public class OpeCarDistribute implements Serializable {
     @ApiModelProperty(value = "车牌")
     private String licensePlate;
 
+    @ApiModelProperty(value = "待分配车辆数量")
+    private Integer qty;
+
     @ApiModelProperty(value = "R.SN")
     private String rsn;
 
