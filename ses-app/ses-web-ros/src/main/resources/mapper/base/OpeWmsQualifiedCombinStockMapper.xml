@@ -6,6 +6,7 @@
     <!--@Table ope_wms_qualified_combin_stock-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
     <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
     <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
@@ -24,7 +25,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, combin_no, cn_name, en_name, fr_name, qty, remark, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, production_combin_bom_id, combin_no, cn_name, en_name, fr_name, qty, remark, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
 </mapper>

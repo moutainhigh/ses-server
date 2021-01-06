@@ -597,7 +597,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             }
             opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
         }
-        // 入库单变为待入库的时候，需要在库存中插入数据，待入库数量
+        // 入库单变为待入库的时候，需要在库存中插入数据，待入库数量（这里应该是库存的第一步）
         try {
             wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),1,enter.getUserId());
         }catch (Exception e) {

@@ -1,10 +1,14 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * 成品库组装件库存表
@@ -33,6 +37,13 @@ public class OpeWmsCombinStock {
     @TableField(value = "stock_type")
     @ApiModelProperty(value = "仓库类型，1:中国仓库，2:法国仓库")
     private Integer stockType;
+
+    /**
+     * 组装件id
+     */
+    @TableField(value = "production_combin_bom_id")
+    @ApiModelProperty(value = "组装件id")
+    private Long productionCombinBomId;
 
     /**
      * 组装件编号
@@ -165,6 +176,8 @@ public class OpeWmsCombinStock {
     public static final String COL_DR = "dr";
 
     public static final String COL_STOCK_TYPE = "stock_type";
+
+    public static final String COL_PRODUCTION_COMBIN_BOM_ID = "production_combin_bom_id";
 
     public static final String COL_COMBIN_NO = "combin_no";
 

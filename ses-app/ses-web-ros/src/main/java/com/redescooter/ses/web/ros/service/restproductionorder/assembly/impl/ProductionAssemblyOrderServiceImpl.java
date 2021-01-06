@@ -425,12 +425,14 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             }).collect(Collectors.toList()));
         }
 
-        //组装单 备料生成 出库单
-        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter(null,opeCombinOrder.getId(),opeCombinOrder.getCombinNo(),OrderTypeEnums.COMBIN_ORDER.getValue(),
-                orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())),
-                opeCombinOrder.getCombinType(),OutBoundOrderTypeEnums.PRODUCT.getValue(), opeCombinOrder.getCombinQty(),opeCombinOrder.getRemark(),productEnterList);
-        saveOutboundOrderEnter.setUserId(enter.getUserId());
-        outboundOrderService.save(saveOutboundOrderEnter);
+//        //组装单 备料生成 出库单
+//        SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter(null,opeCombinOrder.getId(),opeCombinOrder.getCombinNo(),OrderTypeEnums.COMBIN_ORDER.getValue(),
+//                orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())),
+//                opeCombinOrder.getCombinType(),OutBoundOrderTypeEnums.PRODUCT.getValue(), opeCombinOrder.getCombinQty(),opeCombinOrder.getRemark(),productEnterList);
+//        saveOutboundOrderEnter.setUserId(enter.getUserId());
+//        outboundOrderService.save(saveOutboundOrderEnter);
+        // 追加  组装单备料生成部件的出库单
+        outboundOrderService.createOutWhByCombin(opeCombinOrder.getId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 

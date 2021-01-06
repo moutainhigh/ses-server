@@ -61,6 +61,9 @@ public interface OutboundOrderService {
     OutboundOrderDetailResult detail(IdEnter enter);
 
 
+    GeneralResult delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter);
+
+
     /**
      * @Description
      * @Author: alex
@@ -177,5 +180,12 @@ public interface OutboundOrderService {
      * @return
      **/
     GeneralResult endQc(IdEnter enter);
+
+
+    /**
+     * 组装件点击备料  产生出库单（不管是哪种组装单都是生成部件出库单）
+     * @param combinId
+     */
+    void createOutWhByCombin(Long combinId,Long userId);
 
 }

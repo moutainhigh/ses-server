@@ -11,9 +11,9 @@ import lombok.Data;
 import java.util.Date;
 
 /**
-    * 不合格品库组装件库存表
-    */
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeWmsQualifiedCombinStock")
+ * 不合格品库组装件库存表
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeWmsQualifiedCombinStock")
 @Data
 @TableName(value = "ope_wms_qualified_combin_stock")
 public class OpeWmsQualifiedCombinStock {
@@ -33,113 +33,122 @@ public class OpeWmsQualifiedCombinStock {
     private Integer dr;
 
     /**
+     * 组装件id
+     */
+    @TableField(value = "production_combin_bom_id")
+    @ApiModelProperty(value = "组装件id")
+    private Long productionCombinBomId;
+
+    /**
      * 组装件编号
      */
     @TableField(value = "combin_no")
-    @ApiModelProperty(value="组装件编号")
+    @ApiModelProperty(value = "组装件编号")
     private String combinNo;
 
     /**
      * 中文名称
      */
     @TableField(value = "cn_name")
-    @ApiModelProperty(value="中文名称")
+    @ApiModelProperty(value = "中文名称")
     private String cnName;
 
     /**
      * 英文名称
      */
     @TableField(value = "en_name")
-    @ApiModelProperty(value="英文名称")
+    @ApiModelProperty(value = "英文名称")
     private String enName;
 
     /**
      * 法文名称
      */
     @TableField(value = "fr_name")
-    @ApiModelProperty(value="法文名称")
+    @ApiModelProperty(value = "法文名称")
     private String frName;
 
     /**
      * 库存数量
      */
     @TableField(value = "qty")
-    @ApiModelProperty(value="库存数量")
+    @ApiModelProperty(value = "库存数量")
     private Integer qty;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def4")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def4;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def5;
 
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
+
+    public static final String COL_PRODUCTION_COMBIN_BOM_ID = "production_combin_bom_id";
 
     public static final String COL_COMBIN_NO = "combin_no";
 

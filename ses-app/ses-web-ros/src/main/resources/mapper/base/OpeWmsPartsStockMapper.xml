@@ -7,6 +7,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="stock_type" jdbcType="INTEGER" property="stockType" />
+    <result column="parts_id" jdbcType="BIGINT" property="partsId" />
     <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
     <result column="parts_type" jdbcType="INTEGER" property="partsType" />
     <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
@@ -29,7 +30,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, stock_type, parts_no, parts_type, cn_name, en_name, fr_name, able_stock_qty, 
+    id, dr, stock_type, parts_id, parts_no, parts_type, cn_name, en_name, fr_name, able_stock_qty, 
     used_stock_qty, wait_in_stock_qty, wait_out_stock_qty, remark, created_by, created_time, 
     updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>

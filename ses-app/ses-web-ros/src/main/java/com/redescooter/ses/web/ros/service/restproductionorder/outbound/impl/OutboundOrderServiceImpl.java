@@ -96,13 +96,24 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     private InvoiceOrderService invoiceOrderService;
 
     @Autowired
-    private OpeCombinOrderService opecombinOrderService;
+    private OpeCombinOrderService opeCombinOrderService;
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
 
     @Autowired
     private WmsMaterialStockService wmsMaterialStockService;
+
+    @Autowired
+    private OpeCombinOrderScooterBService opeCombinOrderScooterBomService;
+
+    @Autowired
+    private OpeCombinOrderCombinBService opeCombinOrderCombinBomService;
+
+    @Autowired
+    private OpeProductionPartsRelationService opeProductionPartsRelationService;
+
+
 
     @Reference
     private IdAppService idAppService;
@@ -199,6 +210,12 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         return detail;
     }
 
+    @Override
+    public GeneralResult delete(IdEnter enter) {
+        opeOutWhouseOrderService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
     /**
      * @Description
      * @Author: alex
@@ -250,7 +267,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             }
         } else if (null != opeOutWhouseOrder.getRelationType() && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 2020 11 18 追加  出库单还可能会关联组装单
-            OpeCombinOrder combinOrder = opecombinOrderService.getById(opeOutWhouseOrder.getRelationId());
+            OpeCombinOrder combinOrder = opeCombinOrderService.getById(opeOutWhouseOrder.getRelationId());
             if (combinOrder != null) {
                 associatedOrderList.add(new AssociatedOrderResult(combinOrder.getId(), combinOrder.getCombinNo(), OrderTypeEnums.COMBIN_ORDER.getValue(), combinOrder.getCreatedTime(), ""));
             }
@@ -281,7 +298,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
         } else {
-            OpeCombinOrder opeCombinOrder = opecombinOrderService.getById(enter.getRelationId());
+            OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getRelationId());
             if (opeCombinOrder == null) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
@@ -327,6 +344,13 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         //保存子单据
         saveOutWhB(enter, opeOutWhouseOrder.getId());
+        // 发货单生成出库单的时候 待出库的库存增加
+        try {
+            wmsMaterialStockService.waitOutUp(opeOutWhouseOrder.getOutWhType(),opeOutWhouseOrder.getId(),1, enter.getUserId(), opeOutWhouseOrder.getWhType());
+        }catch (Exception e) {
+
+        }
+
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -417,6 +441,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         orderOrder.setMail(opeSysStaff.getEmail());
         // 处理字表 并统计出库数量
         createOutOrderB(orderOrder, enter.getSt(), enter.getUserId());
+        opeOutWhouseOrderService.saveOrUpdate(orderOrder);
         // 操作状态
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, orderOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CREATE.getValue(),
                 orderOrder.getRemark());
@@ -479,7 +504,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         opeOutWhouseOrderService.updateById(outWhouseOrder);
         // 出库单提交 可用库存减少，待出库的库存增加
         try {
-            wmsMaterialStockService.ableLowWaitOutUp(outWhouseOrder.getOutWhType(),outWhouseOrder.getId(),1, enter.getUserId(), outWhouseOrder.getWhType());
+            wmsMaterialStockService.waitOutUp(outWhouseOrder.getOutWhType(),outWhouseOrder.getId(),1, enter.getUserId(), outWhouseOrder.getWhType());
         }catch (Exception e) {
 
         }
@@ -718,9 +743,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             productionOrderTraceService.save(opTraceEnter);
             OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, whouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), whouseOrder.getId(), remark);
             orderStatusFlowService.save(orderStatusFlowEnter);
-            // 出库单取消 可用库存增加，待出库的库存减少
+            // 出库单取消 待出库的库存减少
             try {
-                wmsMaterialStockService.ableUpWaitOutLow(whouseOrder.getOutWhType(),whouseOrder.getId(),1, userId, whouseOrder.getWhType());
+                wmsMaterialStockService.waitOutLow(whouseOrder.getOutWhType(),whouseOrder.getId(),1, userId, whouseOrder.getWhType());
             }catch (Exception e) {
 
             }
@@ -770,12 +795,152 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             // 如果关联的是组装单  把组装单的状态变为备料完成
             productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
         }
-        // 出库单变为已出库 可已用库存增加，待出库的库存减少
+        // 出库单变为已出库 可已用库存增加，可用库存减少，待出库的库存减少
         try {
-            wmsMaterialStockService.usedlUpWaitOutLow(opeOutWhouseOrder.getOutWhType(),opeOutWhouseOrder.getId(),1, enter.getUserId(), opeOutWhouseOrder.getWhType());
+            wmsMaterialStockService.waitOutLowAbleLowUsedUp(opeOutWhouseOrder.getOutWhType(),opeOutWhouseOrder.getId(),1, enter.getUserId(), opeOutWhouseOrder.getWhType());
         }catch (Exception e) {
 
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * 组装件点击备料  产生出库单（不管是哪种组装单都是生成部件出库单）
+     * @param combinId
+     */
+    @Override
+    @Transactional
+    public void createOutWhByCombin(Long combinId,Long userId) {
+        OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinId);
+        if (opeCombinOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        List<SaveOrUpdateOutPartsBEnter> partsBEnterList = new ArrayList<>();
+        SaveOrUpdateOutOrderEnter outOrderEnter = new SaveOrUpdateOutOrderEnter();
+        outOrderEnter.setRelationId(combinId);
+        outOrderEnter.setRelationNo(opeCombinOrder.getCombinNo());
+        outOrderEnter.setRelationType(9);
+        outOrderEnter.setOutWhType(3);
+        outOrderEnter.setOutType(2);
+        // 组装单分为车辆和组装件两种  不管是哪种  都要生成部件的出库单
+        switch (opeCombinOrder.getCombinType()){
+            case 1:
+                // 车辆，先找到该组装单需要的车辆类型（车型和颜色），再找到这些车需要哪些部件组成
+                QueryWrapper<OpeCombinOrderScooterB> scooterBs = new QueryWrapper<>();
+                scooterBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,combinId);
+                List<OpeCombinOrderScooterB> combinOrderScooterBS = opeCombinOrderScooterBomService.list(scooterBs);
+                if (CollectionUtils.isNotEmpty(combinOrderScooterBS)){
+                    // 到这里已经找到了需要哪些车，再找到对应的部件
+                    QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
+                    partsRelation.in(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinOrderScooterBS.stream().map(OpeCombinOrderScooterB::getScooterBomId).collect(Collectors.toList()));
+                    partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,2);
+                    List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation);
+                    if (CollectionUtils.isNotEmpty(partsRelations)){
+                        QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getId).collect(Collectors.toList()));
+                        List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
+                        if (CollectionUtils.isNotEmpty(partsList)) {
+                            // 到这里已经找到所有的部件信息了  下面就开始拼数据了
+                            for (OpeProductionPartsRelation relation : partsRelations) {
+                                for (OpeProductionParts productionParts : partsList) {
+                                    if (relation.getPartsId().equals(productionParts.getId())){
+                                        SaveOrUpdateOutPartsBEnter partsBEnter = new SaveOrUpdateOutPartsBEnter();
+                                        partsBEnter.setPartsName(productionParts.getEnName());
+                                        partsBEnter.setPartsNo(productionParts.getPartsNo());
+                                        partsBEnter.setPartsType(productionParts.getPartsType());
+                                        partsBEnter.setQty(relation.getPartsQty());
+                                        partsBEnterList.add(partsBEnter);
+                                    }
+                                }
+                            }
+                            // 调方法  生成出库单
+                            createOutWh(outOrderEnter,partsBEnterList,userId);
+                        }
+                    }
+                }
+            default:
+                break;
+            case 2:
+                // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
+                QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
+                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,combinId);
+                List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
+                if (CollectionUtils.isNotEmpty(combinOrderCombinBS)){
+                    // 找到该组装单需要的组装件
+                    QueryWrapper<OpeProductionPartsRelation>  partsRelation1 = new QueryWrapper<>();
+                    partsRelation1.in(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinOrderCombinBS.stream().map(OpeCombinOrderCombinB::getProductionCombinBomId).collect(Collectors.toList()));
+                    partsRelation1.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,4);
+                    List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation1);
+                    if (CollectionUtils.isNotEmpty(partsRelations)){
+                        QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getId).collect(Collectors.toList()));
+                        List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
+                        if (CollectionUtils.isNotEmpty(partsList)) {
+                            // 到这里已经找到所有的部件信息了  下面就开始拼数据了
+                            for (OpeProductionPartsRelation relation : partsRelations) {
+                                for (OpeProductionParts productionParts : partsList) {
+                                    if (relation.getPartsId().equals(productionParts.getId())){
+                                        SaveOrUpdateOutPartsBEnter partsBEnter = new SaveOrUpdateOutPartsBEnter();
+                                        partsBEnter.setPartsName(productionParts.getEnName());
+                                        partsBEnter.setPartsNo(productionParts.getPartsNo());
+                                        partsBEnter.setPartsType(productionParts.getPartsType());
+                                        partsBEnter.setQty(relation.getPartsQty());
+                                        partsBEnterList.add(partsBEnter);
+                                    }
+                                }
+                            }
+
+                            // 调方法  生成出库单
+                            createOutWh(outOrderEnter,partsBEnterList,userId);
+                        }
+                    }
+                }
+
+                break;
+        }
+    }
+
+
+    public void createOutWh(SaveOrUpdateOutOrderEnter outOrderEnter,List<SaveOrUpdateOutPartsBEnter> partsBEnterList,Long userId){
+        OpeOutWhouseOrder orderOrder = new OpeOutWhouseOrder();
+        BeanUtils.copyProperties(outOrderEnter,orderOrder);
+        orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
+        orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
+        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
+        orderOrder.setCreatedBy(userId);
+        orderOrder.setCreatedTime(new Date());
+        orderOrder.setUpdatedBy(userId);
+        orderOrder.setUpdatedTime(new Date());
+        // 拿国家编码  电话  邮箱
+        OpeSysStaff opeSysStaff = opeSysStaffService.getById(userId);
+        if (opeSysStaff == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
+        }
+        orderOrder.setCountryCode(opeSysStaff.getCountryCode());
+        orderOrder.setTelephone(opeSysStaff.getTelephone());
+        orderOrder.setMail(opeSysStaff.getEmail());
+
+        List<OpeOutWhPartsB> partsBList = new ArrayList<>();
+        orderOrder.setOutWhQty(partsBEnterList.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
+        for (SaveOrUpdateOutPartsBEnter partsBEnter : partsBEnterList) {
+            OpeOutWhPartsB partsB = new OpeOutWhPartsB();
+            BeanUtils.copyProperties(partsBEnter, partsB);
+            partsB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_PARTS_B));
+            partsB.setOutWhId(orderOrder.getId());
+            partsB.setCreatedBy(userId);
+            partsB.setCreatedTime(new Date());
+            partsB.setUpdatedBy(userId);
+            partsB.setUpdatedTime(new Date());
+            partsBList.add(partsB);
+        }
+        opeOutWhouseOrderService.saveOrUpdate(orderOrder);
+        opeOutWhPartsBService.saveOrUpdateBatch(partsBList);
+        // 创建完出库单(部件出库单)之后  需要把中国仓库的原料库的待出库数量更改
+        try {
+            wmsMaterialStockService.waitOutUp(orderOrder.getOutWhType(),orderOrder.getId(),1,userId,orderOrder.getOutType());
+        }catch (Exception e) {
+
+        }
     }
 }
