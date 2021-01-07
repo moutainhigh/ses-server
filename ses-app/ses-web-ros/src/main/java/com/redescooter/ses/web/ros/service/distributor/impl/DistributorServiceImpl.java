@@ -157,8 +157,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
                 }
             }
         }
-        if(!flag){
+        if(!flag && CollectionUtils.isNotEmpty(deptIds)){
             wrapper.in(OpeDistributor::getDeptId,deptIds);
+        }else if (!flag && CollectionUtils.isEmpty(deptIds)){
+            wrapper.eq(OpeDistributor::getCreatedBy,enter.getUserId());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         List<String> collect = Lists.newArrayList();

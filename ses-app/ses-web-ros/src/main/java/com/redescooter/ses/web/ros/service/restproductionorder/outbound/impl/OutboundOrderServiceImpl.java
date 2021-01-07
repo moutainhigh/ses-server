@@ -13,6 +13,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -24,6 +25,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
@@ -112,6 +114,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
+
+
+    @Autowired
+    private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
 
 
 
@@ -515,6 +521,121 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
 
+    /**
+     * 关联的组装单单据号下拉数据源,由组装单创建的出库单，只可能是部件出库单
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<InWhRelationOrderResult> relationCombinOrderData(CombinationListEnter enter) {
+        List<InWhRelationOrderResult> list = productionAssemblyOrderServiceMapper.relationCombineOrderData(enter);
+        return list;
+    }
+
+
+    /**
+     * 关联的组装单的产品信息，转为部件数据,由组装单创建的出库单，只可能是部件出库单
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<SaveOrUpdateOutPartsBEnter> relationCombinOrderDataPartsData(IdEnter enter) {
+        List<SaveOrUpdateOutPartsBEnter> resultList = new ArrayList<>();
+        OpeCombinOrder combinOrder = opeCombinOrderService.getById(enter.getId());
+        if (combinOrder == null) {
+            return resultList;
+        }
+        switch (combinOrder.getCombinType()){
+            case 1:
+                // scooter
+                // 车辆，先找到该组装单需要的车辆类型（车型和颜色），再找到这些车需要哪些部件组成
+                QueryWrapper<OpeCombinOrderScooterB> scooterBs = new QueryWrapper<>();
+                scooterBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,combinOrder.getId());
+                List<OpeCombinOrderScooterB> combinOrderScooterBS = opeCombinOrderScooterBomService.list(scooterBs);
+                if (CollectionUtils.isNotEmpty(combinOrderScooterBS)){
+                    // 到这里已经找到了需要哪些车，再找到对应的部件
+                    QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
+                    partsRelation.in(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinOrderScooterBS.stream().map(OpeCombinOrderScooterB::getScooterBomId).collect(Collectors.toList()));
+                    partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,2);
+                    List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation);
+                    if (CollectionUtils.isNotEmpty(partsRelations)){
+                        QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toList()));
+                        List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
+                        if (CollectionUtils.isNotEmpty(partsList)) {
+                            // 到这里已经找到所有的部件信息了  下面就开始拼数据了
+                            for (OpeProductionPartsRelation relation : partsRelations) {
+                                for (OpeProductionParts productionParts : partsList) {
+                                    if (relation.getPartsId().equals(productionParts.getId())){
+                                        SaveOrUpdateOutPartsBEnter partsBEnter = new SaveOrUpdateOutPartsBEnter();
+                                        partsBEnter.setPartsName(productionParts.getEnName());
+                                        partsBEnter.setPartsNo(productionParts.getPartsNo());
+                                        partsBEnter.setPartsType(productionParts.getPartsType());
+                                        Integer multipleNumber = 1;
+                                        for (OpeCombinOrderScooterB combinOrderScooterB : combinOrderScooterBS) {
+                                            if (combinOrderScooterB.getScooterBomId().equals(relation.getProductionId())){
+                                                multipleNumber = combinOrderScooterB.getQty();
+                                            }
+                                        }
+                                        partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
+                                        partsBEnter.setPartsId(productionParts.getId());
+                                        resultList.add(partsBEnter);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
+                QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
+                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,enter.getId());
+                List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
+                if (CollectionUtils.isNotEmpty(combinOrderCombinBS)){
+                    // 找到该组装单需要的组装件
+                    QueryWrapper<OpeProductionPartsRelation>  partsRelation1 = new QueryWrapper<>();
+                    partsRelation1.in(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinOrderCombinBS.stream().map(OpeCombinOrderCombinB::getProductionCombinBomId).collect(Collectors.toList()));
+                    partsRelation1.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,4);
+                    List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation1);
+                    if (CollectionUtils.isNotEmpty(partsRelations)){
+                        QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toList()));
+                        List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
+                        if (CollectionUtils.isNotEmpty(partsList)) {
+                            // 到这里已经找到所有的部件信息了  下面就开始拼数据了
+                            for (OpeProductionPartsRelation relation : partsRelations) {
+                                for (OpeProductionParts productionParts : partsList) {
+                                    if (relation.getPartsId().equals(productionParts.getId())){
+                                        SaveOrUpdateOutPartsBEnter partsBEnter = new SaveOrUpdateOutPartsBEnter();
+                                        partsBEnter.setPartsName(productionParts.getEnName());
+                                        partsBEnter.setPartsNo(productionParts.getPartsNo());
+                                        partsBEnter.setPartsType(productionParts.getPartsType());
+                                        Integer multipleNumber = 1;
+                                        for (OpeCombinOrderCombinB combinOrderScooterB : combinOrderCombinBS) {
+                                            if (combinOrderScooterB.getProductionCombinBomId().equals(relation.getProductionId())){
+                                                multipleNumber = combinOrderScooterB.getQty();
+                                            }
+                                        }
+                                        partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
+                                        partsBEnter.setQty(relation.getPartsQty());
+                                        partsBEnter.setPartsId(productionParts.getId());
+                                        resultList.add(partsBEnter);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                break;
+        }
+        return resultList;
+    }
+
+
     public void deleteOutOrderB(OpeOutWhouseOrder outWhouseOrder) {
         switch (outWhouseOrder.getOutWhType()) {
             case 1:
@@ -915,7 +1036,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         }
                     }
                 }
-
                 break;
         }
     }

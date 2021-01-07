@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.restproduction.outbound;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
@@ -71,14 +72,14 @@ public class OutboundOrderController {
 
 
     @PostMapping(value = "/relationInvoiceScooterData")
-    @ApiOperation(value = "关联的整车产品信息", response = SaveOrUpdateOutScooterBEnter.class)
+    @ApiOperation(value = "关联的整车发货单产品信息", response = SaveOrUpdateOutScooterBEnter.class)
     public Response<List<SaveOrUpdateOutScooterBEnter>> relationInvoiceScooterData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(outboundOrderService.relationInvoiceScooterData(enter));
     }
 
 
     @PostMapping(value = "/relationInvoiceCombinData")
-    @ApiOperation(value = "关联的组装单的组装件产品信息", response = SaveOrUpdateOutCombinBEnter.class)
+    @ApiOperation(value = "关联的组装件发货单产品信息", response = SaveOrUpdateOutCombinBEnter.class)
     public Response<List<SaveOrUpdateOutCombinBEnter>> relationInvoiceCombinData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(outboundOrderService.relationInvoiceCombinData(enter));
     }
@@ -111,6 +112,20 @@ public class OutboundOrderController {
     public Response<GeneralResult> outOrderSubmit(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(outboundOrderService.outOrderSubmit(enter));
     }
+
+    @PostMapping(value = "/relationCombinOrderData")
+    @ApiOperation(value = "关联的组装单单据号下拉数据源,由组装单创建的出库单，只可能是部件出库单", response = InWhRelationOrderResult.class)
+    public Response<List<InWhRelationOrderResult>> relationCombinOrderData(@ModelAttribute @ApiParam("请求参数") CombinationListEnter enter) {
+        return new Response<>(outboundOrderService.relationCombinOrderData(enter));
+    }
+
+
+    @PostMapping(value = "/relationCombinOrderDataPartsData")
+    @ApiOperation(value = "关联的组装单的产品信息，转为部件数据,由组装单创建的出库单，只可能是部件出库单", response = SaveOrUpdateOutPartsBEnter.class)
+    public Response<List<SaveOrUpdateOutPartsBEnter>> relationCombinOrderDataPartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.relationCombinOrderDataPartsData(enter));
+    }
+
 
 
     @PostMapping(value = "/startQc")

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.restproductionorder.outbound;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
@@ -150,6 +151,21 @@ public interface OutboundOrderService {
      */
     GeneralResult outOrderSubmit(IdEnter enter);
 
+
+    /**
+     * 关联的组装单单据号下拉数据源,由组装单创建的出库单，只可能是部件出库单
+     * @param enter
+     * @return
+     */
+    List<InWhRelationOrderResult> relationCombinOrderData(@ModelAttribute @ApiParam("请求参数") CombinationListEnter enter);
+
+
+    /**
+     * 关联的组装单的产品信息，转为部件数据,由组装单创建的出库单，只可能是部件出库单
+     * @param enter
+     * @return
+     */
+    List<SaveOrUpdateOutPartsBEnter> relationCombinOrderDataPartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter);
 
 
     /**
