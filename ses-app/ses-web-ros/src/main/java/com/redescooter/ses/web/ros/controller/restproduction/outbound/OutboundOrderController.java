@@ -85,7 +85,7 @@ public class OutboundOrderController {
 
 
     @PostMapping(value = "/relationInvoicePartsData")
-    @ApiOperation(value = "关联的生产采购单部件信息", response = SaveOrUpdateOutPartsBEnter.class)
+    @ApiOperation(value = "关联的发货单部件信息", response = SaveOrUpdateOutPartsBEnter.class)
     public Response<List<SaveOrUpdateOutPartsBEnter>> relationInvoicePartsData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(outboundOrderService.relationInvoicePartsData(enter));
     }
