@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.website.vo.customer;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,12 +43,6 @@ public class AddCustomerEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "客户姓氏")
     private String customerLastName;
-
-    /**
-     * 客户全名
-     */
-    @ApiModelProperty(value = "客户全名")
-    private String customerFullName;
 
     /**
      * 国家名称
@@ -130,8 +126,10 @@ public class AddCustomerEnter extends GeneralEnter {
     /******************/
 
     @ApiModelProperty(value = "密码")
+    @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY, message = "密码为空")
     private String password;
 
+    @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY, message = "密码为空")
     @ApiModelProperty(value = "确认密码")
     private String ConfirmPassword;
 

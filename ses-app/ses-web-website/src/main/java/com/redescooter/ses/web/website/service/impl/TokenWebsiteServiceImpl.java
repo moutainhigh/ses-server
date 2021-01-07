@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -15,6 +16,7 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.IpUtils;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteUser;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
@@ -29,11 +31,15 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import redis.clients.jedis.JedisCluster;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -75,6 +81,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public TokenResult login(LoginEnter enter) {
 
@@ -103,16 +110,15 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             user.setActivationTime(new Date());
         }
         updateUser.setActivationTime(new Date());
-        updateUser.setLastLoginIp(enter.getClientIp());
-        updateUser.setLastLoginTime(new Date(enter.getTimestamp()));
+        updateUser.setLastLoginIp(token.getClientIp());
+        updateUser.setLastLoginTime(new Date(token.getTimestamp()));
         updateUser.setLastLoginToken(token.getToken());
         siteUserService.updateById(updateUser);
 
-        TokenResult tokenResult = new TokenResult();
-        tokenResult.setToken(token.getToken());
-        tokenResult.setRequestId(enter.getRequestId());
-
-        return new TokenResult();
+        TokenResult tokens = new TokenResult();
+        tokens.setToken(token.getToken());
+        tokens.setRequestId(enter.getRequestId() == null ? UUID.randomUUID().toString().replaceAll("-", "") : enter.getRequestId());
+        return tokens;
     }
 
     /**
@@ -173,6 +179,9 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         user.setStatus(SysUserStatusEnum.NORMAL.getValue());
         user.setLoginName(enter.getLoginName());
         user.setCustomerId(enter.getCustomerId());
+        user.setSystemId(SystemIDEnums.REDE_SITE.getSystemId());
+        user.setAppId(AppIDEnums.SES_WEBSITE.getAppId());
+
         user.setSynchronizeFlag(false);
         user.setRevision(0);
         user.setCreatedBy(enter.getUserId());
@@ -243,19 +252,28 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         userToken.setToken(token);
         userToken.setUserId(user.getId());
         userToken.setTenantId(new Long("0"));
-        userToken.setSystemId(enter.getSystemId());
-        userToken.setAppId(enter.getAppId());
-        userToken.setClientIp(enter.getClientIp());
-        userToken.setClientType(enter.getClientType());
-        userToken.setCountry(enter.getCountry());
-        userToken.setLanguage(enter.getLanguage());
-        userToken.setTimestamp(enter.getTimestamp());
-        userToken.setTimeZone(enter.getTimeZone());
-        userToken.setVersion(enter.getVersion());
+        userToken.setSystemId(user.getSystemId());
+        userToken.setAppId(user.getAppId());
+        if (enter.getClientIp() == null) {
+            // 获取request对象
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            String ip = IpUtils.getIpAddr(request);
+            userToken.setClientIp(ip);
+        } else {
+            userToken.setClientIp(enter.getClientIp());
+        }
+        userToken.setClientType(enter.getClientType() == null ? ClientTypeEnums.PC.getValue() : enter.getClientType());
+        userToken.setCountry(enter.getCountry() == null ? "fr" : enter.getCountry());
+        userToken.setLanguage(enter.getLanguage() == null ? "fr" : enter.getLanguage());
+        userToken.setTimestamp(System.currentTimeMillis());
+        userToken.setTimeZone(String.valueOf(TimeZone.getDefault()));
+        userToken.setVersion(Constant.DEFAULT_VERSION);
         userToken.setRequestId(enter.getRequestId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
+            map.remove("deptId");
+
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_30.getSeconds()).intValue());
         } catch (IllegalAccessException e) {

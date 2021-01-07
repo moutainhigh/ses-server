@@ -34,11 +34,10 @@ public class CustomerController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "create Customer", response = ModelPriceResult.class)
+    @ApiOperation(value = "Create Customer", response = ModelPriceResult.class)
     public Response<GeneralResult> addCustomer(@ModelAttribute @ApiParam("请求参数") AddCustomerEnter enter) {
         return new Response<>(webSiteCustomerService.addCustomer(enter));
     }
-
 
 
 }
