@@ -19,14 +19,14 @@ public class SaveOrUpdateOutOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "主键id")
     private Long id;
 
-    @ApiModelProperty(value = "关联的单据id")
-    private Long relationId;
+    @ApiModelProperty("关联的单据号id")
+    private Long relationOrderId;
 
-    @ApiModelProperty(value = "关联的单据号")
-    private String relationNo;
+    @ApiModelProperty("关联的单据号")
+    private String relationOrderNo;
 
-    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单")
-    private Integer relationType;
+    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单，10:退换单")
+    private Integer relationOrderType;
 
     @ApiModelProperty(value = "出库单类型，1：整车，2：组装件，3：部件")
     private Integer outWhType;

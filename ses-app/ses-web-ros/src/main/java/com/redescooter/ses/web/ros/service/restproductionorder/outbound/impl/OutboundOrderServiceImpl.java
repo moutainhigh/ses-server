@@ -424,6 +424,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         SesStringUtils.objStringTrim(enter);
         OpeOutWhouseOrder orderOrder = new OpeOutWhouseOrder();
         BeanUtils.copyProperties(enter, orderOrder);
+        orderOrder.setRelationId(enter.getRelationOrderId());
+        orderOrder.setRelationNo(enter.getRelationOrderNo());
+        orderOrder.setRelationType(enter.getRelationOrderType());
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
         orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
         orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
@@ -818,9 +821,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
         List<SaveOrUpdateOutPartsBEnter> partsBEnterList = new ArrayList<>();
         SaveOrUpdateOutOrderEnter outOrderEnter = new SaveOrUpdateOutOrderEnter();
-        outOrderEnter.setRelationId(combinId);
-        outOrderEnter.setRelationNo(opeCombinOrder.getCombinNo());
-        outOrderEnter.setRelationType(9);
+        outOrderEnter.setRelationOrderId(combinId);
+        outOrderEnter.setRelationOrderNo(opeCombinOrder.getCombinNo());
+        outOrderEnter.setRelationOrderType(9);
         outOrderEnter.setOutWhType(3);
         outOrderEnter.setOutType(3);
         outOrderEnter.setWhType(2);

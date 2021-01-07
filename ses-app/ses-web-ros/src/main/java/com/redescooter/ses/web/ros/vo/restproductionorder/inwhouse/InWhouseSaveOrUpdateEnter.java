@@ -34,6 +34,9 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty("关联的单据号")
     private String relationOrderNo;
 
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单")
+    private Integer relationOrderType;
+
     @ApiModelProperty("入库单据类型,1:车辆，2:组装件，3:部件")
     private Integer orderType;
 
