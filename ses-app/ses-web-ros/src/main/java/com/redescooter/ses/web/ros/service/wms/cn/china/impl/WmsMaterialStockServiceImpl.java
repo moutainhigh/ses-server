@@ -899,7 +899,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
-                            dbCombine.setWaitOutStockQty(dbCombine.getWaitOutStockQty() - combinB.getQty());
+                            Integer ableNum = dbCombine.getAbleStockQty() - combinB.getQty();
+                            if (ableNum < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
+                            dbCombine.setWaitOutStockQty(ableNum);
                             dbCombine.setAbleStockQty(dbCombine.getAbleStockQty() - combinB.getQty());
                             dbCombine.setUsedStockQty(dbCombine.getUsedStockQty() + combinB.getQty());
                             combinStockList.add(dbCombine);
@@ -925,7 +929,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         if (wmsPartsStock != null) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitOutStockQty(wmsPartsStock.getWaitOutStockQty() - partsB.getQty());
-                            wmsPartsStock.setAbleStockQty(wmsPartsStock.getAbleStockQty() - partsB.getQty());
+                            Integer ableNum = wmsPartsStock.getAbleStockQty() - partsB.getQty();
+                            if (ableNum < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
+                            wmsPartsStock.setAbleStockQty(ableNum);
                             wmsPartsStock.setUsedStockQty(wmsPartsStock.getUsedStockQty() + partsB.getQty());
                             wmsPartsStock.setUpdatedBy(userId);
                             wmsPartsStock.setUpdatedTime(new Date());
