@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -51,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public Boolean addProduct(AddProductEnter enter) {
+    public GeneralResult addProduct(AddProductEnter enter) {
         SiteProduct addProductVO = new SiteProduct();
         addProductVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
         addProductVO.setDr(Constant.DR_FALSE);
@@ -82,7 +83,8 @@ public class ProductServiceImpl implements ProductService {
         addProductVO.setCreatedBy(enter.getUserId());
         addProductVO.setUpdatedBy(enter.getUserId());
 
-        return siteProductService.save(addProductVO);
+        siteProductService.save(addProductVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -93,10 +95,11 @@ public class ProductServiceImpl implements ProductService {
      */
     @Transactional
     @Override
-    public Boolean modityProduct(ModityProductEnter enter) {
+    public GeneralResult modityProduct(ModityProductEnter enter) {
         SiteProduct moditySiteProductVO = new SiteProduct();
         BeanUtils.copyProperties(enter, moditySiteProductVO);
-        return siteProductService.update(moditySiteProductVO, new UpdateWrapper<SiteProduct>().eq(SiteProduct.COL_ID, enter.getId()));
+        siteProductService.update(moditySiteProductVO, new UpdateWrapper<SiteProduct>().eq(SiteProduct.COL_ID, enter.getId()));
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -106,8 +109,9 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public Boolean removeProduct(IdEnter enter) {
-        return siteProductService.removeById(enter.getId());
+    public GeneralResult removeProduct(IdEnter enter) {
+        siteProductService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -124,7 +128,6 @@ public class ProductServiceImpl implements ProductService {
             BeanUtils.copyProperties(product, result);
             result.setRequestId(enter.getRequestId());
         }
-
         return result;
     }
 

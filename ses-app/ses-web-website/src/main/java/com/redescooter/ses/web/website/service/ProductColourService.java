@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.AddProductColourEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductColourEnter;
@@ -17,7 +18,7 @@ public interface ProductColourService {
      * @param enter
      * @return
      */
-    Boolean addProductColour(AddProductColourEnter enter);
+    GeneralResult addProductColour(AddProductColourEnter enter);
 
     /**
      * 编辑产品颜色关系
@@ -25,7 +26,7 @@ public interface ProductColourService {
      * @param enter
      * @return
      */
-    Boolean modityProductColour(ModityProductColourEnter enter);
+    GeneralResult modityProductColour(ModityProductColourEnter enter);
 
     /**
      * 移除产品颜色关系
@@ -33,6 +34,6 @@ public interface ProductColourService {
      * @param enter
      * @return
      */
-    Boolean removeProductColour(IdEnter enter);
+    GeneralResult removeProductColour(IdEnter enter);
 
 }

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
 import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
@@ -20,7 +21,7 @@ public interface ColourService {
      * @param enter
      * @return
      */
-    Boolean addColour(AddColourEnter enter);
+    GeneralResult addColour(AddColourEnter enter);
 
     /**
      * 编辑产品颜色
@@ -36,7 +37,7 @@ public interface ColourService {
      * @param enter
      * @return
      */
-    Boolean removeColour(IdEnter enter);
+    GeneralResult removeColour(IdEnter enter);
 
 
     /**

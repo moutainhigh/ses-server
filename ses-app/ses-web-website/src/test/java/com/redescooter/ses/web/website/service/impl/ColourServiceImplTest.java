@@ -27,19 +27,19 @@ public class ColourServiceImplTest extends SesWebsiteApplicationTests {
         colour1.setColourName("BLACK C-S");
         colour1.setColour16("#2D2926");
         colour1.setUserId(0L);
-        assertTrue(colourService.addColour(colour1));
+        colourService.addColour(colour1);
 
         AddColourEnter colour2 = new AddColourEnter();
         colour2.setColourName("YB-404C-M");
         colour2.setColour16("#776E64");
         colour2.setUserId(0L);
-        assertTrue(colourService.addColour(colour2));
+        colourService.addColour(colour2);
 
         AddColourEnter colour3 = new AddColourEnter();
         colour3.setColourName("NH-432C-M");
         colour3.setColour16("#333F48");
         colour3.setUserId(0L);
-        assertTrue(colourService.addColour(colour3));
+        colourService.addColour(colour3);
     }
 
     @Test
@@ -50,8 +50,7 @@ public class ColourServiceImplTest extends SesWebsiteApplicationTests {
         colourEnter.setColour16("#2D2926");
         colourEnter.setRemark("update");
         colourEnter.setUserId(0L);
-
-        assertTrue(colourService.modityColour(colourEnter));
+        colourService.modityColour(colourEnter);
     }
 
     @Test

@@ -26,21 +26,21 @@ public class ProductModelServiceImplTest extends SesWebsiteApplicationTests {
         E50Enter.setRemark("");
         E50Enter.setUserId(0L);
 
-        assertTrue(productModelService.addProductModel(E50Enter));
+        productModelService.addProductModel(E50Enter);
 
         AddProductModelEnter E100Enter = new AddProductModelEnter();
         E100Enter.setProductClassId(187725594529792L);
         E100Enter.setProductModelName("Model E100");
         E100Enter.setRemark("");
         E100Enter.setUserId(0L);
-        assertTrue(productModelService.addProductModel(E100Enter));
+        productModelService.addProductModel(E100Enter);
 
         AddProductModelEnter E125Enter = new AddProductModelEnter();
         E125Enter.setProductClassId(187723711287296L);
         E125Enter.setProductModelName("Model E100");
         E125Enter.setRemark("");
         E125Enter.setUserId(0L);
-        assertTrue(productModelService.addProductModel(E125Enter));
+        productModelService.addProductModel(E125Enter);
 
     }
 
@@ -50,18 +50,17 @@ public class ProductModelServiceImplTest extends SesWebsiteApplicationTests {
         ModityProductModelEnter E50Enter = new ModityProductModelEnter();
         E50Enter.setId(145743367524352L);
         E50Enter.setProductModelName("MODEL E50");
-        assertTrue(productModelService.modityProductModel(E50Enter));
+        productModelService.modityProductModel(E50Enter);
 
         ModityProductModelEnter E100Enter = new ModityProductModelEnter();
         E100Enter.setId(145745401761792L);
         E100Enter.setProductModelName("MODEL E100");
-        assertTrue(productModelService.modityProductModel(E100Enter));
+        productModelService.modityProductModel(E100Enter);
 
         ModityProductModelEnter E125Enter = new ModityProductModelEnter();
         E125Enter.setId(145745431121920L);
         E125Enter.setProductModelName("MODEL E125");
-        assertTrue(productModelService.modityProductModel(E125Enter));
-
+        productModelService.modityProductModel(E125Enter);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class ProductModelServiceImplTest extends SesWebsiteApplicationTests {
 
         IdEnter enter = new IdEnter();
         enter.setId(156883715772416L);
-        assertTrue(productModelService.removeProductModel(enter));
+        productModelService.removeProductModel(enter);
     }
 
     @Test

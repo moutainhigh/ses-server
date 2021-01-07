@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
@@ -39,7 +40,8 @@ public class ProductColourServiceImpl implements ProductColourService {
      */
     @Transactional
     @Override
-    public Boolean addProductColour(AddProductColourEnter enter) {
+    public GeneralResult addProductColour(AddProductColourEnter enter) {
+
         SiteProductColour addProductColourVO = new SiteProductColour();
         addProductColourVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_COLOUR));
         addProductColourVO.setColourId(enter.getColourId());
@@ -48,7 +50,8 @@ public class ProductColourServiceImpl implements ProductColourService {
         addProductColourVO.setRevision(0);
         addProductColourVO.setSynchronizeFlag(false);
 
-        return siteProductColourService.save(addProductColourVO);
+        siteProductColourService.save(addProductColourVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -59,12 +62,13 @@ public class ProductColourServiceImpl implements ProductColourService {
      */
     @Transactional
     @Override
-    public Boolean modityProductColour(ModityProductColourEnter enter) {
+    public GeneralResult modityProductColour(ModityProductColourEnter enter) {
 
         SiteProductColour modityProductColourVO = new SiteProductColour();
         BeanUtils.copyProperties(enter, modityProductColourVO);
+        siteProductColourService.update(modityProductColourVO, new UpdateWrapper<SiteProductColour>().eq(SiteProductColour.COL_ID, enter.getId()));
 
-        return siteProductColourService.update(modityProductColourVO, new UpdateWrapper<SiteProductColour>().eq(SiteProductColour.COL_ID, enter.getId()));
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -75,8 +79,10 @@ public class ProductColourServiceImpl implements ProductColourService {
      */
     @Transactional
     @Override
-    public Boolean removeProductColour(IdEnter enter) {
-        return siteProductColourService.removeById(enter.getId());
+    public GeneralResult removeProductColour(IdEnter enter) {
+
+        siteProductColourService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

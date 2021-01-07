@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
@@ -19,7 +20,7 @@ public interface PaymentTypeService {
      * @param enter
      * @return
      */
-    Boolean addPaymentType(AddPaymentTypeEnter enter);
+    GeneralResult addPaymentType(AddPaymentTypeEnter enter);
 
     /**
      * 获取支付方式详情

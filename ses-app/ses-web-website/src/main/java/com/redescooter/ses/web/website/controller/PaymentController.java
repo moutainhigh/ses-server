@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
+import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,5 +36,12 @@ public class PaymentController {
     @ApiOperation(value = "配送方式列表展示", response = GeneralResult.class)
     public Response<List<PaymentTypeDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(paymentTypeService.getPaymentTypeList(enter));
+    }
+    
+    @IgnoreLoginCheck
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "配送方式列表展示", response = GeneralResult.class)
+    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddPaymentTypeEnter enter) {
+        return new Response<>(paymentTypeService.addPaymentType(enter));
     }
 }

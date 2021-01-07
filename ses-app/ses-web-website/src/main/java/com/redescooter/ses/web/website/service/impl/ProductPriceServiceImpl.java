@@ -1,16 +1,20 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
+import com.redescooter.ses.web.website.dm.SiteParts;
 import com.redescooter.ses.web.website.dm.SiteProduct;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentTypeEnums;
 import com.redescooter.ses.web.website.service.ProductPriceService;
 import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
+import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +52,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
      */
     @Transactional
     @Override
-    public Boolean addProductPrice(AddProductPriceEnter enter) {
+    public GeneralResult addProductPrice(AddProductPriceEnter enter) {
         SiteProductPrice addProductPriceVO = new SiteProductPrice();
         addProductPriceVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PRICE));
         addProductPriceVO.setDr(Constant.DR_FALSE);
@@ -75,7 +80,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         addProductPriceVO.setCreatedTime(new Date());
         addProductPriceVO.setUpdatedBy(0L);
         addProductPriceVO.setUpdatedTime(new Date());
-        return siteProductPriceService.save(addProductPriceVO);
+        siteProductPriceService.save(addProductPriceVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -95,12 +101,34 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     }
 
     /**
+     * 移除产品价格详情
+     *
+     * @param enter
+     */
+    @Override
+    public GeneralResult removeProductPrice(IdEnter enter) {
+        siteProductPriceService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
      * 获取产品价格列表
      *
      * @param enter
      */
     @Override
     public List<ProductPriceDetailsResult> getProductPriceList(GeneralEnter enter) {
-        return null;
+
+        List<ProductPriceDetailsResult> resultList = new ArrayList<>();
+        List<SiteProductPrice> list = siteProductPriceService.list(new QueryWrapper<SiteProductPrice>().eq(SiteProductPrice.COL_DR, 0));
+
+        if (list.size() > 0) {
+            list.forEach(pc -> {
+                ProductPriceDetailsResult result = new ProductPriceDetailsResult();
+                BeanUtils.copyProperties(pc, result);
+                resultList.add(result);
+            });
+        }
+        return resultList;
     }
 }

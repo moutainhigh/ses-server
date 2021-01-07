@@ -35,7 +35,7 @@ public class CustomerController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/add")
     @ApiOperation(value = "Create Customer", response = ModelPriceResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddCustomerEnter enter) {
         return new Response<>(webSiteCustomerService.addCustomer(enter));
@@ -47,7 +47,7 @@ public class CustomerController {
      * @param enter
      * @return
      */
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/Details")
     @ApiOperation(value = "Customer Details", response = ModelPriceResult.class)
     public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(webSiteCustomerService.getCustomerDetails(enter));

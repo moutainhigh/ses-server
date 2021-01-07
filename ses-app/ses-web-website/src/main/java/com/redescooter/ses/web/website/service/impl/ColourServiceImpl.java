@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -52,7 +53,7 @@ public class ColourServiceImpl implements ColourService {
      */
     @Transactional
     @Override
-    public Boolean addColour(AddColourEnter enter) {
+    public GeneralResult addColour(AddColourEnter enter) {
         SiteColour addSiteColourVO = new SiteColour();
         addSiteColourVO.setId(idAppService.getId(SequenceName.SITE_COLOUR));
         addSiteColourVO.setDr(Constant.DR_FALSE);
@@ -71,7 +72,8 @@ public class ColourServiceImpl implements ColourService {
         addSiteColourVO.setCreatedBy(enter.getUserId());
         addSiteColourVO.setCreatedTime(new Date());
         addSiteColourVO.setUpdatedBy(enter.getUserId());
-        return siteColourService.save(addSiteColourVO);
+        siteColourService.save(addSiteColourVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -98,8 +100,9 @@ public class ColourServiceImpl implements ColourService {
      */
     @Transactional
     @Override
-    public Boolean removeColour(IdEnter enter) {
-        return siteColourService.removeById(enter.getId());
+    public GeneralResult removeColour(IdEnter enter) {
+        siteColourService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

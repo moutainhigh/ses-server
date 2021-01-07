@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.website.vo.product.AddProductPartsEnter;
 
 /**
@@ -15,5 +16,5 @@ public interface ProductPartsService {
      * @param enter
      * @return
      */
-    Boolean addProductParts(AddProductPartsEnter enter);
+    GeneralResult addProductParts(AddProductPartsEnter enter);
 }

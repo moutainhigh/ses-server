@@ -30,4 +30,11 @@ public class OrderController {
     public Response<List<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>();
     }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/details")
+    @ApiOperation(value = "列表展示", response = GeneralResult.class)
+    public Response<GeneralResult> details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>();
+    }
 }

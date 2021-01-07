@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.AddProductEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductEnter;
@@ -21,7 +22,7 @@ public interface ProductService {
      * @param enter
      * @return
      */
-    Boolean addProduct(AddProductEnter enter);
+    GeneralResult addProduct(AddProductEnter enter);
 
     /**
      * 编辑产品
@@ -29,7 +30,7 @@ public interface ProductService {
      * @param enter
      * @return
      */
-    Boolean modityProduct(ModityProductEnter enter);
+    GeneralResult modityProduct(ModityProductEnter enter);
 
     /**
      * 移除产品
@@ -37,7 +38,7 @@ public interface ProductService {
      * @param enter
      * @return
      */
-    Boolean removeProduct(IdEnter enter);
+    GeneralResult removeProduct(IdEnter enter);
 
 
     /**

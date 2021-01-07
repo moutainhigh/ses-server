@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteProductParts;
@@ -38,7 +39,7 @@ public class ProductPartsServiceImpl implements ProductPartsService {
      * @return
      */
     @Override
-    public Boolean addProductParts(AddProductPartsEnter enter) {
+    public GeneralResult addProductParts(AddProductPartsEnter enter) {
 
         SiteProductParts addProductPartsVO = new SiteProductParts();
         addProductPartsVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PARTS));
@@ -65,7 +66,8 @@ public class ProductPartsServiceImpl implements ProductPartsService {
         addProductPartsVO.setDef5("");
         addProductPartsVO.setDef6(0.0D);
 
-        return siteProductPartsService.save(addProductPartsVO);
+        siteProductPartsService.save(addProductPartsVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

@@ -3,6 +3,7 @@ package com.redescooter.ses.web.website.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -49,7 +50,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      */
     @Transactional
     @Override
-    public Boolean addProductModel(AddProductModelEnter enter) {
+    public GeneralResult addProductModel(AddProductModelEnter enter) {
 
         SiteProductModel addProductModelVO = new SiteProductModel();
 
@@ -69,7 +70,8 @@ public class ProductModelServiceImpl implements ProductModelService {
         addProductModelVO.setCreatedTime(new Date());
         addProductModelVO.setUpdatedBy(enter.getUserId());
 
-        return siteProductModelService.save(addProductModelVO);
+        siteProductModelService.save(addProductModelVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -80,12 +82,13 @@ public class ProductModelServiceImpl implements ProductModelService {
      */
     @Transactional
     @Override
-    public Boolean modityProductModel(ModityProductModelEnter enter) {
+    public GeneralResult modityProductModel(ModityProductModelEnter enter) {
 
         SiteProductModel modityProductModelVO = new SiteProductModel();
         BeanUtils.copyProperties(enter, modityProductModelVO);
 
-        return siteProductModelService.updateById(modityProductModelVO);
+        siteProductModelService.updateById(modityProductModelVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -95,8 +98,9 @@ public class ProductModelServiceImpl implements ProductModelService {
      * @return
      */
     @Override
-    public Boolean removeProductModel(IdEnter enter) {
-        return siteProductModelService.removeById(enter.getId());
+    public GeneralResult removeProductModel(IdEnter enter) {
+        siteProductModelService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -109,7 +113,7 @@ public class ProductModelServiceImpl implements ProductModelService {
         SiteProductModel productModel = siteProductModelService.getById(enter.getId());
         ProductModelDetailsResult result = new ProductModelDetailsResult();
 
-        if(productModel!=null){
+        if (productModel != null) {
             BeanUtils.copyProperties(productModel, result);
             result.setRequestId(enter.getRequestId());
         }

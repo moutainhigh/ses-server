@@ -3,6 +3,7 @@ package com.redescooter.ses.web.website.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -48,7 +49,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
      */
     @Transactional
     @Override
-    public Boolean addPaymentType(AddPaymentTypeEnter enter) {
+    public GeneralResult addPaymentType(AddPaymentTypeEnter enter) {
         SitePaymentType addPaymentType = new SitePaymentType();
         addPaymentType.setId(idAppService.getId(SequenceName.SITE_PAYMENT_TYPE));
         addPaymentType.setDr(Constant.DR_FALSE);
@@ -67,7 +68,8 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         addPaymentType.setCreatedTime(new Date());
         addPaymentType.setUpdatedBy(enter.getUserId());
 
-        return sitePaymentTypeService.save(addPaymentType);
+        sitePaymentTypeService.save(addPaymentType);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

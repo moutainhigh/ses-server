@@ -19,7 +19,7 @@ import java.util.List;
  * @version V1.0
  * @Date: 13/1/2020 4:43 下午
  * @ClassName: ProductModelController
- * @Function: 产品型号服务
+ * @Function: 经销商管理
  */
 @Api(tags = {"Distributor Management"})
 @CrossOrigin
@@ -39,7 +39,7 @@ public class DistributorController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/details")
-    @ApiOperation(value = "详情", response = DistributorDetailsResult.class)
+    @ApiOperation(value = "经销商详情", response = DistributorDetailsResult.class)
     public Response<DistributorDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(distributorService.getDistributorDetails(enter));
     }
