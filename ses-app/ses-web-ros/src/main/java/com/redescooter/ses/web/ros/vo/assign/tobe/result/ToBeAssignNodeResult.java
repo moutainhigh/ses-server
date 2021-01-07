@@ -33,7 +33,10 @@ public class ToBeAssignNodeResult extends GeneralResult implements Serializable 
     @ApiModelProperty(value = "客户信息")
     private ToBeAssignDetailCustomerInfoResult customerInfo;
 
-    @ApiModelProperty(value = "车辆信息")
+    @ApiModelProperty(value = "车辆信息 已分配的数据")
     private List<ToBeAssignNodeScooterInfoResult> scooterInfo;
+
+    @ApiModelProperty(value = "任务清单信息")
+    private List<ToBeAssignDetailScooterInfoResult> taskInfo;
 
 }

@@ -31,6 +31,6 @@ public class ToBeAssignDetailResult extends GeneralResult implements Serializabl
     private ToBeAssignDetailCustomerInfoResult customerInfo;
 
     @ApiModelProperty(value = "车辆信息")
-    private List<ToBeAssignDetailScooterInfoResult> scooterInfo;
+    private List<ToBeAssignDetailScooterInfoResult> taskInfo;
 
 }

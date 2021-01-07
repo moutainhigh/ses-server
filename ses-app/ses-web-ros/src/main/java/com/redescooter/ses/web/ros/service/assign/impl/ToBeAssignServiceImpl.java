@@ -133,10 +133,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     public ToBeAssignDetailResult getToBeAssignDetail(CustomerIdEnter enter) {
         logger.info("待分配列表点击分配带出数据的入参是:[{}]", enter);
         ToBeAssignDetailResult result = new ToBeAssignDetailResult();
-        List<ToBeAssignDetailScooterInfoResult> scooterList = Lists.newArrayList();
-        ToBeAssignDetailScooterInfoResult scooter = new ToBeAssignDetailScooterInfoResult();
-        List<ToBeAssignDetailScooterInfoSubResult> subList = Lists.newArrayList();
-        ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
         // 查询该客户在node表是否存在,如果不存在,添加一条数据
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
@@ -175,49 +171,55 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
-        opeCustomerInquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
-        OpeCustomerInquiry customerInquiry = list.get(0);
-        Long productId = customerInquiry.getProductId();
-        if (null == productId) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
-        }
 
-        // 拿着产品id去ope_sale_scooter查询
-        OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
-        if (null == opeSaleScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
-        }
-        // 得到型号id和颜色id
-        Long specificatId = opeSaleScooter.getSpecificatId();
-        Long colorId = opeSaleScooter.getColorId();
+        List<ToBeAssignDetailScooterInfoResult> scooterList = Lists.newArrayList();
+        List<ToBeAssignDetailScooterInfoSubResult> subList = Lists.newArrayList();
 
-        // 拿着型号id去ope_specificat_type查询
-        if (null != specificatId) {
-            String specificatName = getSpecificatNameById(specificatId);
-            scooter.setSpecificatId(specificatId);
-            scooter.setSpecificatName(specificatName);
-        }
+        for (OpeCustomerInquiry o : list) {
+            ToBeAssignDetailScooterInfoResult scooter = new ToBeAssignDetailScooterInfoResult();
+            ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
-        // 拿着颜色id去ope_color查询
-        if (null != colorId) {
-            Map<String, String> map = getColorNameAndValueById(colorId);
-            sub.setColorName(map.get("colorName"));
-            sub.setColorValue(map.get("colorValue"));
-            sub.setColorId(colorId);
-        }
-        sub.setToBeAssignCount(customerInquiry.getScooterQuantity());
-        scooter.setTotalCount(customerInquiry.getScooterQuantity());
+            Long productId = o.getProductId();
+            if (null == productId) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
+            // 拿着产品id去ope_sale_scooter查询
+            OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
+            if (null == opeSaleScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
+            // 得到型号id和颜色id
+            Long specificatId = opeSaleScooter.getSpecificatId();
+            Long colorId = opeSaleScooter.getColorId();
 
-        subList.add(sub);
-        scooter.setScooterList(subList);
-        scooterList.add(scooter);
+            // 拿着型号id去ope_specificat_type查询
+            if (null != specificatId) {
+                String specificatName = getSpecificatNameById(specificatId);
+                scooter.setSpecificatId(specificatId);
+                scooter.setSpecificatName(specificatName);
+            }
+
+            // 拿着颜色id去ope_color查询
+            if (null != colorId) {
+                Map<String, String> map = getColorNameAndValueById(colorId);
+                sub.setColorName(map.get("colorName"));
+                sub.setColorValue(map.get("colorValue"));
+                sub.setColorId(colorId);
+            }
+            sub.setToBeAssignCount(o.getScooterQuantity());
+            scooter.setTotalCount(o.getScooterQuantity());
+
+            subList.add(sub);
+            scooter.setScooterList(subList);
+            scooterList.add(scooter);
+        }
 
         result.setCustomerInfo(customerInfo);
-        result.setScooterInfo(scooterList);
+        result.setTaskInfo(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
     }
@@ -465,7 +467,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         List<ToBeAssignNodeScooterInfoSubResult> subList = Lists.newArrayList();
 
         Integer totalCount = 0;
-        ToBeAssignNodeScooterInfoResult scooter = null;
         for (OpeCarDistribute model : list) {
             ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
             sub.setId(model.getId());
@@ -484,20 +485,72 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
             subList.add(sub);
 
-            scooter = new ToBeAssignNodeScooterInfoResult();
+            ToBeAssignNodeScooterInfoResult scooter = new ToBeAssignNodeScooterInfoResult();
             if (null != model.getSpecificatTypeId()) {
                 String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
                 scooter.setSpecificatId(model.getSpecificatTypeId());
                 scooter.setSpecificatName(specificatName);
             }
             scooterList.add(scooter);
+            scooter.setScooterList(subList);
+            scooter.setTotalCount(totalCount);
         }
-        scooter.setScooterList(subList);
-        scooter.setTotalCount(totalCount);
+
+        // 任务清单
+        LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+        List<OpeCustomerInquiry> tempList = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
+        if (CollectionUtils.isEmpty(tempList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+
+        List<ToBeAssignDetailScooterInfoResult> taskList = Lists.newArrayList();
+        List<ToBeAssignDetailScooterInfoSubResult> taskSubList = Lists.newArrayList();
+
+        for (OpeCustomerInquiry o : tempList) {
+            ToBeAssignDetailScooterInfoResult task = new ToBeAssignDetailScooterInfoResult();
+            ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
+
+            Long productId = o.getProductId();
+            if (null == productId) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
+            // 拿着产品id去ope_sale_scooter查询
+            OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
+            if (null == opeSaleScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
+            // 得到型号id和颜色id
+            Long specificatId = opeSaleScooter.getSpecificatId();
+            Long colorId = opeSaleScooter.getColorId();
+
+            // 拿着型号id去ope_specificat_type查询
+            if (null != specificatId) {
+                String specificatName = getSpecificatNameById(specificatId);
+                task.setSpecificatId(specificatId);
+                task.setSpecificatName(specificatName);
+            }
+
+            // 拿着颜色id去ope_color查询
+            if (null != colorId) {
+                Map<String, String> map = getColorNameAndValueById(colorId);
+                sub.setColorName(map.get("colorName"));
+                sub.setColorValue(map.get("colorValue"));
+                sub.setColorId(colorId);
+            }
+            sub.setToBeAssignCount(o.getScooterQuantity());
+            task.setTotalCount(o.getScooterQuantity());
+
+            taskSubList.add(sub);
+            task.setScooterList(taskSubList);
+            taskList.add(task);
+        }
 
         result.setNode(node);
         result.setCustomerInfo(customerInfo);
         result.setScooterInfo(scooterList);
+        result.setTaskInfo(taskList);
         result.setRequestId(enter.getRequestId());
         return result;
     }
