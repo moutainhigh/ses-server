@@ -27,6 +27,9 @@
         <if test="enter.inWhStatus != null">
             and inwh.in_wh_status = #{enter.inWhStatus}
         </if>
+        <if test="enter.countryType != null">
+            and inwh.country_type = #{enter.countryType}
+        </if>
         <if test="enter.inWhType != null">
             and inwh.in_wh_type = #{enter.inWhType}
         </if>

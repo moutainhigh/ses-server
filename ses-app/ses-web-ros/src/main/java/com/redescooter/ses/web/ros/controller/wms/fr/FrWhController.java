@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:FrWhController
@@ -94,5 +95,11 @@ public class FrWhController {
         return new Response<>(frWhService.scooterNum(enter, 2));
     }
 
+
+    @PostMapping(value = "/stockTabCount")
+    @ApiOperation(value = "法国仓库tab的数量统计（车辆/组装件/部件）", response = Map.class)
+    public Response<Map<String, Integer>> stockTabCount(@ModelAttribute @ApiParam("请求参数") WmsStockCountEnter enter) {
+        return new Response<>(frWhService.stockTabCount(enter));
+    }
 
 }

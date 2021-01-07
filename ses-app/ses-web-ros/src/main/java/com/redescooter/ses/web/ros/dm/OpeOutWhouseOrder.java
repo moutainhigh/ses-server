@@ -1,11 +1,15 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 出库单
@@ -45,6 +49,13 @@ public class OpeOutWhouseOrder {
     private Long deptId;
 
     /**
+     * 国家类型，1:中国，2:法国
+     */
+    @TableField(value = "country_type")
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
+
+    /**
      * 关联的单据id
      */
     @TableField(value = "relation_id")
@@ -59,17 +70,17 @@ public class OpeOutWhouseOrder {
     private String relationNo;
 
     /**
-     * 关联的单据类型，3：发货单，9：组装单
+     * 关联的单据类型，3：发货单，9：组装单，10:退换单
      */
     @TableField(value = "relation_type")
-    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单")
+    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单，10:退换单")
     private Integer relationType;
 
     /**
-     * 入库仓库。1:成品库，2:原料库，3:不合格品库
+     * 出库仓库。1:成品库，2:原料库，3:不合格品库
      */
     @TableField(value = "wh_type")
-    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    @ApiModelProperty(value = "出库仓库。1:成品库，2:原料库，3:不合格品库")
     private Integer whType;
 
     /**
@@ -80,10 +91,10 @@ public class OpeOutWhouseOrder {
     private String outWhNo;
 
     /**
-     * 出库单状态，0：待出库，10：质检中，20：已出库，30：已取消
+     * 出库单状态，-1:新建，0：待出库，10：质检中，20：已出库，30：已取消
      */
     @TableField(value = "out_wh_status")
-    @ApiModelProperty(value = "出库单状态，0：待出库，10：质检中，20：已出库，30：已取消")
+    @ApiModelProperty(value = "出库单状态，-1:新建，0：待出库，10：质检中，20：已出库，30：已取消")
     private Integer outWhStatus;
 
     /**
@@ -212,6 +223,8 @@ public class OpeOutWhouseOrder {
     public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_DEPT_ID = "dept_id";
+
+    public static final String COL_COUNTRY_TYPE = "country_type";
 
     public static final String COL_RELATION_ID = "relation_id";
 

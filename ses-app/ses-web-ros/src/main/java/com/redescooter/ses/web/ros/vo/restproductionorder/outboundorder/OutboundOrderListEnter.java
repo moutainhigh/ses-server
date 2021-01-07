@@ -20,11 +20,17 @@ import lombok.*;
 public class OutboundOrderListEnter extends PageEnter {
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer outWhStatus;
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
 
+    @ApiModelProperty("类型")
+    private Integer outType;
+
     @ApiModelProperty(value = "单据类型 参考 ProductTypeEnums")
     private Integer classType;
+
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
 }

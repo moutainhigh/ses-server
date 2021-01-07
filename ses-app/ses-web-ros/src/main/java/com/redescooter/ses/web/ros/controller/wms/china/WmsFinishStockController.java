@@ -59,7 +59,7 @@ public class WmsFinishStockController {
 
     @PostMapping(value = "/finishStockTabCount")
     @ApiOperation(value = "成品库tab的数量统计（只有车辆和组装件）", response = Map.class)
-    public Response<Map<String, Integer>> finishStockTabCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String, Integer>> finishStockTabCount(@ModelAttribute @ApiParam("请求参数") WmsStockCountEnter enter) {
         return new Response<>(wmsFinishStockService.finishStockTabCount(enter));
     }
 

@@ -28,7 +28,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -237,6 +239,26 @@ public class FrWhServiceImpl implements FrWhService {
             }
         }
         return new IntResult(num);
+    }
+
+    @Override
+    public Map<String, Integer> stockTabCount(WmsStockCountEnter enter) {
+        Map<String, Integer> map = new HashMap<>();
+        // 车辆
+        QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
+        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
+        map.put("1",opeWmsScooterStockService.count(scooter));
+
+        // 组装件
+        QueryWrapper<OpeWmsCombinStock> combin = new QueryWrapper<>();
+        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
+        map.put("2",opeWmsCombinStockService.count(combin));
+
+        // 部件
+        QueryWrapper<OpeWmsPartsStock> parts = new QueryWrapper<>();
+        parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
+        map.put("2",opeWmsPartsStockService.count(parts));
+        return map;
     }
 
 

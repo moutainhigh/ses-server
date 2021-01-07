@@ -4,8 +4,14 @@
 
     <sql id="WHERE_ORDERLIST">
         where whorder.dr = 0
-        <if test="status != null">
-            and  whorder.out_wh_status =#{status}
+        <if test="outWhStatus != null">
+            and  whorder.out_wh_status =#{outWhStatus}
+        </if>
+        <if test="outType != null">
+            and  whorder.out_type =#{outType}
+        </if>
+        <if test="countryType != null">
+            and  whorder.country_type =#{countryType}
         </if>
         <if test="classType != null">
            and  whorder.out_wh_type=#{classType}

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -109,12 +110,17 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
      * @return
      */
     @Override
-    public Map<String, Integer> finishStockTabCount(GeneralEnter enter) {
+    public Map<String, Integer> finishStockTabCount(WmsStockCountEnter enter) {
         Map<String, Integer> map = new HashMap<>();
         // 车辆
-        map.put("1",opeWmsScooterStockService.count());
+        QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
+        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
+        map.put("1",opeWmsScooterStockService.count(scooter));
+
         // 组装件
-        map.put("2",opeWmsCombinStockService.count());
+        QueryWrapper<OpeWmsCombinStock> combin = new QueryWrapper<>();
+        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
+        map.put("2",opeWmsCombinStockService.count(combin));
         return map;
     }
 

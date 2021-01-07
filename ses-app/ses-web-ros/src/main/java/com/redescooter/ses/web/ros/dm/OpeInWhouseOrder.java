@@ -48,6 +48,13 @@ public class OpeInWhouseOrder {
     private Long deptId;
 
     /**
+     * 国家类型，1:中国，2:法国
+     */
+    @TableField(value = "country_type")
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
+
+    /**
      * 入库单号
      */
     @TableField(value = "in_wh_no")
@@ -187,6 +194,8 @@ public class OpeInWhouseOrder {
     public static final String COL_TENANT_ID = "tenant_id";
 
     public static final String COL_DEPT_ID = "dept_id";
+
+    public static final String COL_COUNTRY_TYPE = "country_type";
 
     public static final String COL_IN_WH_NO = "in_wh_no";
 

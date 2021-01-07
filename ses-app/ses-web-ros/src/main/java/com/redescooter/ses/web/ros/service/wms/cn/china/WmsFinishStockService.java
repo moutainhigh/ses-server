@@ -46,7 +46,7 @@ public interface WmsFinishStockService {
      * @param enter
      * @return
      */
-    Map<String, Integer> finishStockTabCount(GeneralEnter enter);
+    Map<String, Integer> finishStockTabCount(WmsStockCountEnter enter);
 
 
     /**

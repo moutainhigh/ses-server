@@ -40,6 +40,12 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
     private Integer whType;
 
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
     @ApiModelProperty("入库明细")
     private String st;
 

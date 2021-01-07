@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -89,4 +90,12 @@ public interface FrWhService {
      * @return
      */
     IntResult scooterNum(WmsFinishScooterListEnter enter,Integer whtype);
+
+
+    /**
+     * 成品库tab的数量统计（车辆/组装件/部件）
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> stockTabCount(@ModelAttribute @ApiParam("请求参数") WmsStockCountEnter enter);
 }
