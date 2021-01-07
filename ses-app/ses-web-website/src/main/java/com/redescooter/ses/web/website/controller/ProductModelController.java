@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = {"ProductColour"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/productcolour")
+@RequestMapping(value = "/productmodel")
 public class ProductModelController {
 
     @Autowired
