@@ -48,7 +48,7 @@ public class CustomerController {
      * @return
      */
     @PostMapping(value = "/Details")
-    @ApiOperation(value = "Customer Details", response = ModelPriceResult.class)
+    @ApiOperation(value = "Customer Details", response = CustomerDetailsResult.class)
     public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
     }

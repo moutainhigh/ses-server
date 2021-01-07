@@ -54,7 +54,7 @@ public class ProductModelController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品颜色关系列表", response = GeneralResult.class)
+    @ApiOperation(value = "获取产品颜色关系列表", response = ProductModelDetailsResult.class)
     public Response<List<ProductModelDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(productModelService.getProductModelList(enter));
     }

@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.DeliveryService;
 import com.redescooter.ses.web.website.vo.delivery.DeliveryModeResult;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,7 +35,7 @@ public class DeliveryController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/typelist")
-    @ApiOperation(value = "Delivery Method list", response = ModelPriceResult.class)
+    @ApiOperation(value = "Delivery Method list", response = DeliveryModeResult.class)
     public Response<List<DeliveryModeResult>> typelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(deliveryService.deliveryTypelist(enter));
     }

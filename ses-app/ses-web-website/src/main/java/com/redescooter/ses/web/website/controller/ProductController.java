@@ -39,14 +39,14 @@ public class ProductController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/details")
-    @ApiOperation(value = "产品详情", response = GeneralResult.class)
+    @ApiOperation(value = "产品详情", response = ProductDetailsResult.class)
     public Response<ProductDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productService.getProductDetails(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品列表", response = GeneralResult.class)
+    @ApiOperation(value = "获取产品列表", response = ProductDetailsResult.class)
     public Response<List<ProductDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(productService.getProductList(enter));
     }

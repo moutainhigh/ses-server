@@ -1,10 +1,13 @@
 package com.redescooter.ses.web.website.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import io.swagger.annotations.Api;
@@ -78,7 +81,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getScooterConfigList")
-    @ApiOperation(value = "Vehicle battery configuration", response = PartsDetailsResult.class)
+    @ApiOperation(value = "Vehicle battery configuration", response = ProductPartsDetailsResult.class)
     public Response<List<ProductPartsDetailsResult>> getScooterConfigList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterBatteryConfigList(enter));
     }

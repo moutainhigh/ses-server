@@ -7,7 +7,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.ColourService;
 import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
-import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,7 +46,7 @@ public class ColourController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品颜色列表", response = GeneralResult.class)
+    @ApiOperation(value = "获取产品颜色列表", response = ColourDetailsResult.class)
     public Response<List<ColourDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(colourService.getColourList(enter));
     }

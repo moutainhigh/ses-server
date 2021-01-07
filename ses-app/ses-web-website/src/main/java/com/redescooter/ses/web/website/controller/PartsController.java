@@ -47,7 +47,7 @@ public class PartsController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取部件管理列表", response = GeneralResult.class)
+    @ApiOperation(value = "获取部件管理列表", response = PartsDetailsResult.class)
     public Response<List<PartsDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(partsService.getPartsList(enter));
     }
