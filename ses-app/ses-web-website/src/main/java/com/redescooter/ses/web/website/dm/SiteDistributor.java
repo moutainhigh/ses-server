@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -92,14 +93,14 @@ public class SiteDistributor implements Serializable {
      */
     @TableField(value = "longitude")
     @ApiModelProperty(value="经度")
-    private String longitude;
+    private BigDecimal longitude;
 
     /**
      * 纬度
      */
     @TableField(value = "latitude")
     @ApiModelProperty(value="纬度")
-    private String latitude;
+    private BigDecimal latitude;
 
     /**
      * 邮编

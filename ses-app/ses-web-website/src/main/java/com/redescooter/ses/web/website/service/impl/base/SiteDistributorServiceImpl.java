@@ -16,10 +16,6 @@ public class SiteDistributorServiceImpl extends ServiceImpl<SiteDistributorMappe
         return baseMapper.updateBatch(list);
     }
     @Override
-    public int updateBatchSelective(List<SiteDistributor> list) {
-        return baseMapper.updateBatchSelective(list);
-    }
-    @Override
     public int batchInsert(List<SiteDistributor> list) {
         return baseMapper.batchInsert(list);
     }

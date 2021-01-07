@@ -3,6 +3,9 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.distributor.AddDistributorEnter;
 import com.redescooter.ses.web.website.vo.distributor.DistributorDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.QueryDistributorEnter;
+
+import java.util.List;
 
 /**
  * @Author jerry
@@ -24,4 +27,12 @@ public interface DistributorService {
      * @param enter
      */
     DistributorDetailsResult getDistributorDetails(IdEnter enter);
+
+    /**
+     * 经销商列表
+     *
+     * @param enter
+     * @return getDistributorList
+     */
+    List<DistributorDetailsResult> getDistributorList(QueryDistributorEnter enter);
 }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"Login"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/Login")
+@RequestMapping(value = "/auth")
 public class LoginController {
 
     @Autowired

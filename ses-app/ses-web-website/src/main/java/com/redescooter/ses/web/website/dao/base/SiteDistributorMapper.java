@@ -10,8 +10,6 @@ import org.apache.ibatis.annotations.Param;
 public interface SiteDistributorMapper extends BaseMapper<SiteDistributor> {
     int updateBatch(List<SiteDistributor> list);
 
-    int updateBatchSelective(List<SiteDistributor> list);
-
     int batchInsert(@Param("list") List<SiteDistributor> list);
 
     int insertOrUpdate(SiteDistributor record);

@@ -109,7 +109,7 @@ public class ControllerAspect {
             method = point.getTarget().getClass()
                     .getMethod(point.getSignature().getName(), argTypes);
         } catch (NoSuchMethodException e) {
-            log.error("get method failure:", e);
+            log.error("get met hod failure:", e);
         }
         if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
             UserToken userToken = tokenWebsiteService.checkToken(enter);

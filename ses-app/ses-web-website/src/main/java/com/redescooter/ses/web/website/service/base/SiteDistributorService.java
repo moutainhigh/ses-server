@@ -8,8 +8,6 @@ public interface SiteDistributorService extends IService<SiteDistributor>{
 
     int updateBatch(List<SiteDistributor> list);
 
-    int updateBatchSelective(List<SiteDistributor> list);
-
     int batchInsert(List<SiteDistributor> list);
 
     int insertOrUpdate(SiteDistributor record);
