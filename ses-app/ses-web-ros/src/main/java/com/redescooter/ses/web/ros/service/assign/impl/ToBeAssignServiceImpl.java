@@ -454,48 +454,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));
         }
 
-        // 车辆信息,查询已分配的数据
-        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
-        if (CollectionUtils.isEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_INFO_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSIGN_INFO_NOT_EXIST.getMessage());
-        }
-
-        List<ToBeAssignNodeScooterInfoResult> scooterList = Lists.newArrayList();
-        List<ToBeAssignNodeScooterInfoSubResult> subList = Lists.newArrayList();
-
-        Integer totalCount = 0;
-        for (OpeCarDistribute model : list) {
-            ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
-            sub.setId(model.getId());
-            sub.setToBeAssignCount(model.getQty());
-            totalCount += model.getQty();
-
-            sub.setSeatNumber(model.getSeatNumber());
-            sub.setVinCode(model.getVinCode());
-            sub.setLicensePlate(model.getLicensePlate());
-            sub.setRsn(model.getRsn());
-            if (null != model.getColorId()) {
-                Map<String, String> map = getColorNameAndValueById(model.getColorId());
-                sub.setColorId(model.getColorId());
-                sub.setColorName(map.get("colorName"));
-                sub.setColorValue(map.get("colorValue"));
-            }
-            subList.add(sub);
-
-            ToBeAssignNodeScooterInfoResult scooter = new ToBeAssignNodeScooterInfoResult();
-            if (null != model.getSpecificatTypeId()) {
-                String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
-                scooter.setSpecificatId(model.getSpecificatTypeId());
-                scooter.setSpecificatName(specificatName);
-            }
-            scooterList.add(scooter);
-            scooter.setScooterList(subList);
-            scooter.setTotalCount(totalCount);
-        }
-
         // 任务清单
         LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
         opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
@@ -545,6 +503,51 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             taskSubList.add(sub);
             task.setScooterList(taskSubList);
             taskList.add(task);
+        }
+
+        // 车辆信息,查询已分配的数据
+        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            result.setNode(node);
+            result.setCustomerInfo(customerInfo);
+            result.setTaskInfo(taskList);
+            return result;
+        }
+
+        List<ToBeAssignNodeScooterInfoResult> scooterList = Lists.newArrayList();
+        List<ToBeAssignNodeScooterInfoSubResult> subList = Lists.newArrayList();
+
+        Integer totalCount = 0;
+        for (OpeCarDistribute model : list) {
+            ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
+            sub.setId(model.getId());
+            sub.setToBeAssignCount(model.getQty());
+            totalCount += model.getQty();
+
+            sub.setSeatNumber(model.getSeatNumber());
+            sub.setVinCode(model.getVinCode());
+            sub.setLicensePlate(model.getLicensePlate());
+            sub.setRsn(model.getRsn());
+            if (null != model.getColorId()) {
+                Map<String, String> map = getColorNameAndValueById(model.getColorId());
+                sub.setColorId(model.getColorId());
+                sub.setColorName(map.get("colorName"));
+                sub.setColorValue(map.get("colorValue"));
+            }
+            subList.add(sub);
+
+            ToBeAssignNodeScooterInfoResult scooter = new ToBeAssignNodeScooterInfoResult();
+            if (null != model.getSpecificatTypeId()) {
+                String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
+                scooter.setSpecificatId(model.getSpecificatTypeId());
+                scooter.setSpecificatName(specificatName);
+            }
+            scooterList.add(scooter);
+            scooter.setScooterList(subList);
+            scooter.setTotalCount(totalCount);
         }
 
         result.setNode(node);

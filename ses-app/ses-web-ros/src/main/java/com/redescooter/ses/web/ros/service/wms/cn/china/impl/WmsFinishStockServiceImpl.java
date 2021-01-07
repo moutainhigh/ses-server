@@ -1,25 +1,48 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionPartsRelationMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSpecificatGroupMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +64,21 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     @Autowired
     private OpeWmsCombinStockService opeWmsCombinStockService;
+
+    @Autowired
+    private OpeProductionScooterBomMapper opeProductionScooterBomMapper;
+
+    @Autowired
+    private OpeProductionPartsRelationMapper opeProductionPartsRelationMapper;
+
+    @Autowired
+    private OpeWmsPartsStockMapper opeWmsPartsStockMapper;
+
+    @Autowired
+    private OpeColorMapper opeColorMapper;
+
+    @Autowired
+    private OpeSpecificatGroupMapper opeSpecificatGroupMapper;
 
     /**
      * 成品库车辆库存列表
@@ -132,10 +170,62 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
      */
     @Override
     public List<AbleProductionScooterResult> ableProductionScooter(GeneralEnter enter) {
-        List<AbleProductionScooterResult> list = new ArrayList<>();
-        list.add(new AbleProductionScooterResult());
-        // todo 最后写
-        return list;
+        List<AbleProductionScooterResult> result = new ArrayList<>();
+
+        // 查询整车bom表
+        LambdaQueryWrapper<OpeProductionScooterBom> bomWrapper = new LambdaQueryWrapper<>();
+        bomWrapper.eq(OpeProductionScooterBom::getDr, DelStatusEnum.VALID.getCode());
+        bomWrapper.eq(OpeProductionScooterBom::getBomStatus, 1);
+        List<OpeProductionScooterBom> bomList = opeProductionScooterBomMapper.selectList(bomWrapper);
+        if (CollectionUtils.isEmpty(bomList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+        }
+
+        for (OpeProductionScooterBom bom : bomList) {
+            AbleProductionScooterResult model = new AbleProductionScooterResult();
+            Long productionId = bom.getId();
+            Long groupId = bom.getGroupId();
+            Long colorId = bom.getColorId();
+
+            // 查询部件表
+            LambdaQueryWrapper<OpeProductionPartsRelation> relationWrapper = new LambdaQueryWrapper<>();
+            relationWrapper.eq(OpeProductionPartsRelation::getDr, DelStatusEnum.VALID.getCode());
+            relationWrapper.eq(OpeProductionPartsRelation::getProductionId, productionId);
+            List<OpeProductionPartsRelation> relationList = opeProductionPartsRelationMapper.selectList(relationWrapper);
+            if (CollectionUtils.isEmpty(relationList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getMessage());
+            }
+
+            Integer[] numArray = new Integer[relationList.size()];
+            for (int i = 0; i < relationList.size(); i++) {
+                OpeProductionPartsRelation relation = relationList.get(i);
+                Long partsId = relation.getPartsId();
+                Integer partsQty = relation.getPartsQty();
+
+                // 查询库存表中国仓库此部件的可用库存数量
+                LambdaQueryWrapper<OpeWmsPartsStock> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeWmsPartsStock::getDr, DelStatusEnum.VALID.getCode());
+                wrapper.eq(OpeWmsPartsStock::getStockType, 1);
+                wrapper.eq(OpeWmsPartsStock::getPartsId, partsId);
+                wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
+                List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
+                if (CollectionUtils.isEmpty(list)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.PART_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_STOCK_IS_EMPTY.getMessage());
+                }
+
+                OpeWmsPartsStock stock = list.get(0);
+                Integer ableStockQty = stock.getAbleStockQty();
+                int count = ableStockQty / partsQty;
+                numArray[i] = count;
+            }
+            int num = Collections.min(Arrays.asList(numArray));
+
+            model.setNum(num);
+            model.setColorName(getColorNameById(colorId));
+            model.setGroupName(getGroupNameById(groupId));
+            result.add(model);
+        }
+        return result;
     }
 
 
@@ -173,4 +263,33 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         result.setRecordList(record);
         return result;
     }
+
+    /**
+     * 根据colorId获取colorName
+     */
+    public String getColorNameById(Long colorId) {
+        if (null == colorId) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
+        }
+        OpeColor color = opeColorMapper.selectById(colorId);
+        if (null != color) {
+            return color.getColorName();
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+    }
+
+    /**
+     * 根据groupId获取groupName
+     */
+    public String getGroupNameById(Long groupId) {
+        if (null == groupId) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+        OpeSpecificatGroup group = opeSpecificatGroupMapper.selectById(groupId);
+        if (null != group) {
+            return group.getGroupName();
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+    }
+
 }
