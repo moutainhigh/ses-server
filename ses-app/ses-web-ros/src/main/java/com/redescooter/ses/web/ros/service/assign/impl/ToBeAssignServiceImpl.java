@@ -219,7 +219,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
 
         result.setCustomerInfo(customerInfo);
-        result.setScooterInfo(scooterList);
+        result.setTaskInfo(scooterList);
         result.setRequestId(enter.getRequestId());
         return result;
     }
