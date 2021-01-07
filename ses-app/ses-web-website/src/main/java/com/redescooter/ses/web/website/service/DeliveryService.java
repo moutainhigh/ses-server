@@ -18,6 +18,6 @@ public interface DeliveryService {
      * @param enter
      * @return
      */
-    List<DeliveryModeResult> deliverylist(GeneralEnter enter);
+    List<DeliveryModeResult> deliveryTypelist(GeneralEnter enter);
 
 }

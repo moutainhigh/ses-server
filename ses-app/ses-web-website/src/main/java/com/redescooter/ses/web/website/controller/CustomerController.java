@@ -2,9 +2,11 @@ package com.redescooter.ses.web.website.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.WebSiteCustomerService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
+import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,7 +29,7 @@ public class CustomerController {
     private WebSiteCustomerService webSiteCustomerService;
 
     /**
-     * 车型列表
+     * 创建客户
      *
      * @param enter
      * @return
@@ -35,9 +37,19 @@ public class CustomerController {
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "Create Customer", response = ModelPriceResult.class)
-    public Response<GeneralResult> addCustomer(@ModelAttribute @ApiParam("请求参数") AddCustomerEnter enter) {
+    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddCustomerEnter enter) {
         return new Response<>(webSiteCustomerService.addCustomer(enter));
     }
 
-
+    /**
+     * 客户详情
+     *
+     * @param enter
+     * @return
+     */
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "Customer Details", response = ModelPriceResult.class)
+    public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
+    }
 }

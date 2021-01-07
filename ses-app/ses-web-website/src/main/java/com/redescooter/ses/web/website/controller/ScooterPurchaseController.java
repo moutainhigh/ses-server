@@ -38,7 +38,7 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/modelList")
     @ApiOperation(value = "Scooter model list", response = ModelPriceResult.class)
     public Response<List<ModelPriceResult>> modelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.modelPriceList(enter));
@@ -51,9 +51,9 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/getProductDetails")
+    @PostMapping(value = "/details")
     @ApiOperation(value = "get Product Details", response = ProductsResult.class)
-    public Response<List<ProductsResult>> getProductDetails(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<List<ProductsResult>> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getProductDetails(enter));
     }
 
@@ -71,7 +71,7 @@ public class ScooterPurchaseController {
     }
 
     /**
-     * 获取配件列表
+     * 获取车辆电池配置列表
      *
      * @param enter
      * @return
@@ -80,7 +80,7 @@ public class ScooterPurchaseController {
     @PostMapping(value = "/getScooterConfigList")
     @ApiOperation(value = "Vehicle battery configuration", response = PartsDetailsResult.class)
     public Response<List<ProductPartsDetailsResult>> getScooterConfigList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(scooterPurchaseService.getScooterConfigList(enter));
+        return new Response<>(scooterPurchaseService.getScooterBatteryConfigList(enter));
     }
 
 }

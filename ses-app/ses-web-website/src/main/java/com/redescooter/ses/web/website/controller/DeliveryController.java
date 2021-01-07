@@ -29,16 +29,16 @@ public class DeliveryController {
     private DeliveryService deliveryService;
 
     /**
-     * 车型列表
+     * 配送类型模板
      *
      * @param enter
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/typelist")
     @ApiOperation(value = "Delivery Method list", response = ModelPriceResult.class)
-    public Response<List<DeliveryModeResult>> deliverylist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(deliveryService.deliverylist(enter));
+    public Response<List<DeliveryModeResult>> typelist(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(deliveryService.deliveryTypelist(enter));
     }
 
 }

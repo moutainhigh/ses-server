@@ -47,5 +47,5 @@ public interface ScooterPurchaseService {
      * @param enter
      * @return
      */
-    List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter);
+    List<ProductPartsDetailsResult> getScooterBatteryConfigList(GeneralEnter enter);
 }

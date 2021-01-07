@@ -17,7 +17,7 @@ class DeliveryServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void deliverylist() {
-        List<DeliveryModeResult> deliverylist = deliveryService.deliverylist(new GeneralEnter());
+        List<DeliveryModeResult> deliverylist = deliveryService.deliveryTypelist(new GeneralEnter());
 
         System.out.println(JSON.toJSONString(deliverylist));
 

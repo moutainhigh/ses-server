@@ -46,7 +46,7 @@ public class ScooterPurchaseServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void getScooterConfigList() {
-        List<ProductPartsDetailsResult> scooterConfigList = scooterPurchaseService.getScooterConfigList(new GeneralEnter());
+        List<ProductPartsDetailsResult> scooterConfigList = scooterPurchaseService.getScooterBatteryConfigList(new GeneralEnter());
         System.out.println(JSON.toJSONString(scooterConfigList));
     }
 }

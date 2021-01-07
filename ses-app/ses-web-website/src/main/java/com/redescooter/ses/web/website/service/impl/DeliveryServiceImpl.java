@@ -25,7 +25,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @return
      */
     @Override
-    public List<DeliveryModeResult> deliverylist(GeneralEnter enter) {
+    public List<DeliveryModeResult> deliveryTypelist(GeneralEnter enter) {
 
         List<DeliveryModeResult> list = new ArrayList<>();
         DeliveryModeResult mode = null;

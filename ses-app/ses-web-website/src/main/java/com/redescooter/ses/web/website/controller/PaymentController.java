@@ -32,7 +32,7 @@ public class PaymentController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "列表展示", response = GeneralResult.class)
+    @ApiOperation(value = "配送方式列表展示", response = GeneralResult.class)
     public Response<List<PaymentTypeDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(paymentTypeService.getPaymentTypeList(enter));
     }

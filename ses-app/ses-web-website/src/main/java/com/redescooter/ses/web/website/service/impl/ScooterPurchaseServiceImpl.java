@@ -67,7 +67,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @return
      */
     @Override
-    public List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter) {
+    public List<ProductPartsDetailsResult> getScooterBatteryConfigList(GeneralEnter enter) {
         return scooterPurchaseMapper.getScooterConfigList(enter);
     }
 
