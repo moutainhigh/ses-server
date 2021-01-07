@@ -692,6 +692,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Async
     @Override
     public void waitOutUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
+        log.info("准备开始建出库单");
         switch (productionType) {
             case 1:
                 // scooter

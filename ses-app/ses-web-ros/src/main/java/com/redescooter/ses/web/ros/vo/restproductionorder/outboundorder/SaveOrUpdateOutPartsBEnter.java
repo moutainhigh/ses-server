@@ -25,4 +25,7 @@ public class SaveOrUpdateOutPartsBEnter {
     @ApiModelProperty(value="采购数量")
     private Integer qty;
 
+    @ApiModelProperty("部件ID")
+    private Long partsId;
+
 }

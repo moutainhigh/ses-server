@@ -822,7 +822,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         outOrderEnter.setRelationNo(opeCombinOrder.getCombinNo());
         outOrderEnter.setRelationType(9);
         outOrderEnter.setOutWhType(3);
-        outOrderEnter.setOutType(2);
+        outOrderEnter.setOutType(3);
+        outOrderEnter.setWhType(2);
         // 组装单分为车辆和组装件两种  不管是哪种  都要生成部件的出库单
         switch (opeCombinOrder.getCombinType()){
             case 1:
@@ -838,7 +839,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                     List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation);
                     if (CollectionUtils.isNotEmpty(partsRelations)){
                         QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
-                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getId).collect(Collectors.toList()));
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toList()));
                         List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
                         if (CollectionUtils.isNotEmpty(partsList)) {
                             // 到这里已经找到所有的部件信息了  下面就开始拼数据了
@@ -849,7 +850,14 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                                         partsBEnter.setPartsName(productionParts.getEnName());
                                         partsBEnter.setPartsNo(productionParts.getPartsNo());
                                         partsBEnter.setPartsType(productionParts.getPartsType());
-                                        partsBEnter.setQty(relation.getPartsQty());
+                                        Integer multipleNumber = 1;
+                                        for (OpeCombinOrderScooterB combinOrderScooterB : combinOrderScooterBS) {
+                                            if (combinOrderScooterB.getScooterBomId().equals(relation.getProductionId())){
+                                                multipleNumber = combinOrderScooterB.getQty();
+                                            }
+                                        }
+                                        partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
+                                        partsBEnter.setPartsId(productionParts.getId());
                                         partsBEnterList.add(partsBEnter);
                                     }
                                 }
@@ -874,7 +882,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                     List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation1);
                     if (CollectionUtils.isNotEmpty(partsRelations)){
                         QueryWrapper<OpeProductionParts> parts = new QueryWrapper<>();
-                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getId).collect(Collectors.toList()));
+                        parts.in(OpeProductionParts.COL_ID,partsRelations.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toList()));
                         List<OpeProductionParts> partsList = opeProductionPartsService.list(parts);
                         if (CollectionUtils.isNotEmpty(partsList)) {
                             // 到这里已经找到所有的部件信息了  下面就开始拼数据了
@@ -885,7 +893,15 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                                         partsBEnter.setPartsName(productionParts.getEnName());
                                         partsBEnter.setPartsNo(productionParts.getPartsNo());
                                         partsBEnter.setPartsType(productionParts.getPartsType());
+                                        Integer multipleNumber = 1;
+                                        for (OpeCombinOrderCombinB combinOrderScooterB : combinOrderCombinBS) {
+                                            if (combinOrderScooterB.getProductionCombinBomId().equals(relation.getProductionId())){
+                                                multipleNumber = combinOrderScooterB.getQty();
+                                            }
+                                        }
+                                        partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
                                         partsBEnter.setQty(relation.getPartsQty());
+                                        partsBEnter.setPartsId(productionParts.getId());
                                         partsBEnterList.add(partsBEnter);
                                     }
                                 }
@@ -907,7 +923,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         BeanUtils.copyProperties(outOrderEnter,orderOrder);
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
         orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
-        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
+        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
         orderOrder.setCreatedBy(userId);
         orderOrder.setCreatedTime(new Date());
         orderOrder.setUpdatedBy(userId);

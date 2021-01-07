@@ -42,6 +42,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnte
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutPartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
@@ -111,6 +112,17 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     @Autowired
     private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
+
+    @Autowired
+    private OpeCombinOrderScooterBService opeCombinOrderScooterBomService;
+
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+
 
     @Autowired
     private IdAppService idAppService;
@@ -387,6 +399,8 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.DRAF.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
+        // 组装单备料时 生成部件的出库单 这个时候需要校验部件库存是否足够
+        checkPartsStock(opeCombinOrder);
         opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.PREPARED.getValue());
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
@@ -435,6 +449,86 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         outboundOrderService.createOutWhByCombin(opeCombinOrder.getId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 校验库存是否足够(中国仓库原料库存)
+    public void checkPartsStock(OpeCombinOrder opeCombinOrder){
+        switch (opeCombinOrder.getCombinType()){
+            case 1:
+                // scooter
+                // 找到车辆组装单车型
+                QueryWrapper<OpeCombinOrderScooterB> scooterBs = new QueryWrapper<>();
+                scooterBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,opeCombinOrder.getId());
+                List<OpeCombinOrderScooterB> combinOrderScooterBS = opeCombinOrderScooterBomService.list(scooterBs);
+                if (CollectionUtils.isNotEmpty(combinOrderScooterBS)){
+                    // 到这里已经找到了需要哪些车，再找到对应的部件
+                    for (OpeCombinOrderScooterB scooterB : combinOrderScooterBS) {
+                        // 遍历 这些车型/颜色的车 找到没种需要多少种 多少个部件
+                        QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID,scooterB.getScooterBomId());
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,2);
+                        List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation);
+                        if (CollectionUtils.isNotEmpty(partsRelations)){
+                            // 到这里已经找到当前这个车型/颜色所需要的所有部件信息了  再计算需要多少个这样的部件
+                            Map<Long,Integer> scootermap = new HashMap<>();
+                            for (OpeProductionPartsRelation relation : partsRelations) {
+                                scootermap.put(relation.getPartsId(),relation.getPartsQty() * scooterB.getQty());
+                            }
+                            // 到这里已经知道所需要的部件的数量  下面就开始校验了
+                            for (Long partsId : scootermap.keySet()) {
+                                // 拿到ID 去中国仓库原料库区去看看库存够不够
+                                QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
+                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,partsId);
+                                partStockQw.last("limit 1");
+                                OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
+                                if (partStock == null || (partStock.getAbleStockQty() < scootermap.get(partsId))){
+                                    // 中国仓库原料库的库存不足
+                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID,opeCombinOrder.getId());
+                List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBService.list(combinBs);
+                if (CollectionUtils.isNotEmpty(combinOrderCombinBS)){
+                    for (OpeCombinOrderCombinB combinB : combinOrderCombinBS) {
+                        // 找到每个组装件所需要的部件
+                        QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinB.getProductionCombinBomId());
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,4);
+                        List<OpeProductionPartsRelation> partsComRelations = opeProductionPartsRelationService.list(partsRelation);
+                        if (CollectionUtils.isNotEmpty(partsComRelations)){
+                            Map<Long,Integer> scootercombinMap = new HashMap<>();
+                            for (OpeProductionPartsRelation combinRelation : partsComRelations) {
+                                scootercombinMap.put(combinRelation.getPartsId(),combinRelation.getPartsQty() * combinB.getQty());
+                            }
+                            // 到这里已经知道所需要的部件的数量  下面就开始校验了
+                            for (Long combinPartsId : scootercombinMap.keySet()) {
+                                // 拿到ID 去中国仓库原料库区去看看库存够不够
+                                QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
+                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,combinPartsId);
+                                partStockQw.last("limit 1");
+                                OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
+                                if (partStock == null || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))){
+                                    // 中国仓库原料库的库存不足
+                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+
 
     /**
      * @Description
