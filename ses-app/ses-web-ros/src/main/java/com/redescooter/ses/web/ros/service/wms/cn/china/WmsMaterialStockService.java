@@ -79,7 +79,7 @@ public interface WmsMaterialStockService {
      * @param userId
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
-    void usedlUpWaitOutLow(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
+//    void usedlUpWaitOutLow(Integer productionType,Long id,Integer stockType,Long userId,Integer inWhType);
 
 
     /**

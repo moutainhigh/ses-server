@@ -595,89 +595,89 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     }
 
 
-    @Transactional
-    @Async
-    @Override
-    public void usedlUpWaitOutLow(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
-        switch (productionType) {
-            case 1:
-                // scooter
-                QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
-                scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, id);
-                List<OpeOutWhScooterB> outScooterBs = opeOutWhScooterBService.list(scooter);
-                if (CollectionUtils.isNotEmpty(outScooterBs)) {
-                    List<OpeWmsScooterStock> scooterStockList = new ArrayList<>();
-                    for (OpeOutWhScooterB outScooterB : outScooterBs) {
-                        QueryWrapper<OpeWmsScooterStock> dbScooterStock = new QueryWrapper<>();
-                        dbScooterStock.eq(OpeWmsScooterStock.COL_GROUP_ID, outScooterB.getGroupId());
-                        dbScooterStock.eq(OpeWmsScooterStock.COL_COLOR_ID, outScooterB.getColorId());
-                        dbScooterStock.last("limit 1");
-                        OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
-                            // 讲道理  这里不可能为空  如果为空 就说明之前的地方有误
-                            dbScooter.setUsedStockQty(dbScooter.getUsedStockQty() + outScooterB.getQty());
-                            dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - outScooterB.getQty());
-                            dbScooter.setUpdatedBy(userId);
-                            dbScooter.setUpdatedTime(new Date());
-                            scooterStockList.add(dbScooter);
-                        }
-                    }
-                    opeWmsScooterStockService.saveOrUpdateBatch(scooterStockList);
-                }
-            default:
-                break;
-            case 2:
-                // combin
-                QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
-                combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, id);
-                List<OpeOutWhCombinB> outWhCombinBS = opeOutWhCombinBService.list(combin);
-                if (CollectionUtils.isNotEmpty(outWhCombinBS)) {
-                    List<OpeWmsCombinStock> combinStockList = new ArrayList<>();
-                    for (OpeOutWhCombinB outWhCombinB : outWhCombinBS) {
-                        OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(outWhCombinB.getProductionCombinBomId());
-                        if (combinBom != null) {
-                            QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
-                            dbCombinStock.eq(OpeWmsCombinStock.COL_COMBIN_NO, combinBom.getBomNo());
-                            dbCombinStock.last("limit 1");
-                            OpeWmsCombinStock dbCombin = opeWmsCombinStockService.getOne(dbCombinStock);
-                            if (dbCombin != null) {
-                                dbCombin.setUsedStockQty(dbCombin.getUsedStockQty() + outWhCombinB.getQty());
-                                dbCombin.setWaitOutStockQty(dbCombin.getWaitOutStockQty() - outWhCombinB.getQty());
-                                dbCombin.setUpdatedBy(userId);
-                                dbCombin.setUpdatedTime(new Date());
-                                combinStockList.add(dbCombin);
-                            }
-                        }
-                    }
-                    opeWmsCombinStockService.saveOrUpdateBatch(combinStockList);
-                }
-                break;
-            case 3:
-                // parts
-                QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
-                parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, id);
-                List<OpeOutWhPartsB> outWhPartsList = opeOutWhPartsBService.list(parts);
-                if (CollectionUtils.isNotEmpty(outWhPartsList)) {
-                    List<OpeWmsPartsStock> partsList = new ArrayList<>();
-                    for (OpeOutWhPartsB outWhPartsB : outWhPartsList) {
-                        QueryWrapper<OpeWmsPartsStock> dbPartsStock = new QueryWrapper<>();
-                        dbPartsStock.eq(OpeWmsPartsStock.COL_PARTS_NO, outWhPartsB.getPartsNo());
-                        dbPartsStock.eq(OpeWmsPartsStock.COL_PARTS_TYPE, outWhPartsB.getPartsType());
-                        dbPartsStock.last("limit 1");
-                        OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (partsStock != null) {
-                            partsStock.setUsedStockQty(partsStock.getUsedStockQty() + outWhPartsB.getQty());
-                            partsStock.setWaitOutStockQty(partsStock.getWaitOutStockQty() - outWhPartsB.getQty());
-                            partsStock.setUpdatedBy(userId);
-                            partsStock.setUpdatedTime(new Date());
-                            partsList.add(partsStock);
-                        }
-                    }
-                    opeWmsPartsStockService.saveOrUpdateBatch(partsList);
-                }
-                break;
-        }
-    }
+//    @Transactional
+//    @Async
+//    @Override
+//    public void usedlUpWaitOutLow(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
+//        switch (productionType) {
+//            case 1:
+//                // scooter
+//                QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
+//                scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, id);
+//                List<OpeOutWhScooterB> outScooterBs = opeOutWhScooterBService.list(scooter);
+//                if (CollectionUtils.isNotEmpty(outScooterBs)) {
+//                    List<OpeWmsScooterStock> scooterStockList = new ArrayList<>();
+//                    for (OpeOutWhScooterB outScooterB : outScooterBs) {
+//                        QueryWrapper<OpeWmsScooterStock> dbScooterStock = new QueryWrapper<>();
+//                        dbScooterStock.eq(OpeWmsScooterStock.COL_GROUP_ID, outScooterB.getGroupId());
+//                        dbScooterStock.eq(OpeWmsScooterStock.COL_COLOR_ID, outScooterB.getColorId());
+//                        dbScooterStock.last("limit 1");
+//                        OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
+//                        if (dbScooter != null) {
+//                            // 讲道理  这里不可能为空  如果为空 就说明之前的地方有误
+//                            dbScooter.setUsedStockQty(dbScooter.getUsedStockQty() + outScooterB.getQty());
+//                            dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - outScooterB.getQty());
+//                            dbScooter.setUpdatedBy(userId);
+//                            dbScooter.setUpdatedTime(new Date());
+//                            scooterStockList.add(dbScooter);
+//                        }
+//                    }
+//                    opeWmsScooterStockService.saveOrUpdateBatch(scooterStockList);
+//                }
+//            default:
+//                break;
+//            case 2:
+//                // combin
+//                QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
+//                combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, id);
+//                List<OpeOutWhCombinB> outWhCombinBS = opeOutWhCombinBService.list(combin);
+//                if (CollectionUtils.isNotEmpty(outWhCombinBS)) {
+//                    List<OpeWmsCombinStock> combinStockList = new ArrayList<>();
+//                    for (OpeOutWhCombinB outWhCombinB : outWhCombinBS) {
+//                        OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(outWhCombinB.getProductionCombinBomId());
+//                        if (combinBom != null) {
+//                            QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
+//                            dbCombinStock.eq(OpeWmsCombinStock.COL_COMBIN_NO, combinBom.getBomNo());
+//                            dbCombinStock.last("limit 1");
+//                            OpeWmsCombinStock dbCombin = opeWmsCombinStockService.getOne(dbCombinStock);
+//                            if (dbCombin != null) {
+//                                dbCombin.setUsedStockQty(dbCombin.getUsedStockQty() + outWhCombinB.getQty());
+//                                dbCombin.setWaitOutStockQty(dbCombin.getWaitOutStockQty() - outWhCombinB.getQty());
+//                                dbCombin.setUpdatedBy(userId);
+//                                dbCombin.setUpdatedTime(new Date());
+//                                combinStockList.add(dbCombin);
+//                            }
+//                        }
+//                    }
+//                    opeWmsCombinStockService.saveOrUpdateBatch(combinStockList);
+//                }
+//                break;
+//            case 3:
+//                // parts
+//                QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
+//                parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, id);
+//                List<OpeOutWhPartsB> outWhPartsList = opeOutWhPartsBService.list(parts);
+//                if (CollectionUtils.isNotEmpty(outWhPartsList)) {
+//                    List<OpeWmsPartsStock> partsList = new ArrayList<>();
+//                    for (OpeOutWhPartsB outWhPartsB : outWhPartsList) {
+//                        QueryWrapper<OpeWmsPartsStock> dbPartsStock = new QueryWrapper<>();
+//                        dbPartsStock.eq(OpeWmsPartsStock.COL_PARTS_NO, outWhPartsB.getPartsNo());
+//                        dbPartsStock.eq(OpeWmsPartsStock.COL_PARTS_TYPE, outWhPartsB.getPartsType());
+//                        dbPartsStock.last("limit 1");
+//                        OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(dbPartsStock);
+//                        if (partsStock != null) {
+//                            partsStock.setUsedStockQty(partsStock.getUsedStockQty() + outWhPartsB.getQty());
+//                            partsStock.setWaitOutStockQty(partsStock.getWaitOutStockQty() - outWhPartsB.getQty());
+//                            partsStock.setUpdatedBy(userId);
+//                            partsStock.setUpdatedTime(new Date());
+//                            partsList.add(partsStock);
+//                        }
+//                    }
+//                    opeWmsPartsStockService.saveOrUpdateBatch(partsList);
+//                }
+//                break;
+//        }
+//    }
 
 
     /**
@@ -866,7 +866,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         if (dbScooter != null) {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - scooterB.getQty());
-                            dbScooter.setAbleStockQty(dbScooter.getAbleStockQty() - scooterB.getQty());
+                            Integer ableNum = dbScooter.getAbleStockQty() - scooterB.getQty();
+                            if (ableNum < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
+                            dbScooter.setAbleStockQty(ableNum);
                             dbScooter.setUsedStockQty(dbScooter.getUsedStockQty() + scooterB.getQty());
                             dbScooter.setUpdatedBy(userId);
                             dbScooter.setUpdatedTime(new Date());
