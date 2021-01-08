@@ -257,7 +257,7 @@ public class FrWhServiceImpl implements FrWhService {
         // 部件
         QueryWrapper<OpeWmsPartsStock> parts = new QueryWrapper<>();
         parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("2",opeWmsPartsStockService.count(parts));
+        map.put("3",opeWmsPartsStockService.count(parts));
         return map;
     }
 
