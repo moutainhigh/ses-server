@@ -717,6 +717,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         BeanUtils.copyProperties(combinBEnter, combinB);
                         combinB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_COMBIN_B));
                         combinB.setCreatedBy(userId);
+                        combinB.setOutWhId(orderOrder.getId());
                         combinB.setCreatedTime(new Date());
                         combinB.setUpdatedBy(userId);
                         combinB.setUpdatedTime(new Date());
