@@ -63,30 +63,30 @@
 
     <select id="wmsScooterStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
         SELECT
-           COUNT(able_stock_qty) as ableStockQty,
-           COUNT(used_stock_qty) as usedStockQty,
-           COUNT(wait_in_stock_qty) as waitInStockQty,
-           COUNT(wait_out_stock_qty) as waitOutStockQty
+           sum(able_stock_qty) as ableStockQty,
+           sum(used_stock_qty) as usedStockQty,
+           sum(wait_in_stock_qty) as waitInStockQty,
+           sum(wait_out_stock_qty) as waitOutStockQty
         from ope_wms_scooter_stock
         where dr = 0 and stock_type = #{stockType}
     </select>
 
     <select id="wmsCombinStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
         SELECT
-          COUNT(able_stock_qty) as ableStockQty,
-          COUNT(used_stock_qty) as usedStockQty,
-          COUNT(wait_in_stock_qty) as waitInStockQty,
-          COUNT(wait_out_stock_qty) as waitOutStockQty
+            sum(able_stock_qty) as ableStockQty,
+            sum(used_stock_qty) as usedStockQty,
+            sum(wait_in_stock_qty) as waitInStockQty,
+            sum(wait_out_stock_qty) as waitOutStockQty
         from ope_wms_combin_stock
         where dr = 0 and stock_type = #{stockType}
     </select>
 
     <select id="wmsPartsStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
         SELECT
-          COUNT(able_stock_qty) as ableStockQty,
-          COUNT(used_stock_qty) as usedStockQty,
-          COUNT(wait_in_stock_qty) as waitInStockQty,
-          COUNT(wait_out_stock_qty) as waitOutStockQty
+            sum(able_stock_qty) as ableStockQty,
+            sum(used_stock_qty) as usedStockQty,
+            sum(wait_in_stock_qty) as waitInStockQty,
+            sum(wait_out_stock_qty) as waitOutStockQty
         from ope_wms_parts_stock
         where dr = 0 and stock_type = #{stockType}
     </select>

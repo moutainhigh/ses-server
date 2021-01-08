@@ -148,12 +148,13 @@
 
     <select id="relationInvoiceCombinData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutCombinBEnter">
         select
-          combin_name,
-          combin_no,
-          production_combin_bom_id,
-          qty
-        from ope_invoice_combin_b
-        where dr = 0 and invoice_id = #{invoiceId}
+        invoicecombin.combin_name,
+        bom.bom_no as combin_no,
+        invoicecombin.production_combin_bom_id,
+        invoicecombin.qty
+        from ope_invoice_combin_b invoicecombin
+        left join ope_production_combin_bom bom on bom.id = invoicecombin.production_combin_bom_id
+        where invoicecombin.dr = 0 and invoice_id = #{invoiceId}
     </select>
 
     <select id="relationInvoicePartsData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutPartsBEnter">
