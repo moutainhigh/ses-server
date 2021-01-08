@@ -775,14 +775,13 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opeInvoiceOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.STOCKING.getValue())) {
-            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        if (opeInvoiceOrder.getInvoiceStatus() < InvoiceOrderStatusEnums.STOCKING.getValue()) {
+            opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
+            opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
+            // 状态流转
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
+            orderStatusFlowService.save(orderStatusFlowEnter);
         }
-        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
-        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
-        // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
-        orderStatusFlowService.save(orderStatusFlowEnter);
     }
 
 
