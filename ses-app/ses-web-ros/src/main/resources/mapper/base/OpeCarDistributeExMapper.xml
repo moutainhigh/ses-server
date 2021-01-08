@@ -7,7 +7,7 @@
         select count(*)
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
-        where a.dr = 0 and (b.flag = 1 or b.flag is null)
+        where a.dr = 0 and a.pay_status = 3 and (b.flag = 1 or b.flag is null)
         <include refid="toBeAssignList"/>
     </select>
 
@@ -22,7 +22,7 @@
             b.node
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
-        where a.dr = 0 and (b.flag = 1 or b.flag is null)
+        where a.dr = 0 and a.pay_status = 3 and (b.flag = 1 or b.flag is null)
         <include refid="toBeAssignList"/>
         order by a.updated_time desc
         limit #{param.startRow}, #{param.pageSize}
@@ -33,7 +33,7 @@
         select count(*)
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
-        where a.dr = 0 and b.flag = 2
+        where a.dr = 0 and a.pay_status = 3 and b.flag = 2
         <include refid="assignedList"/>
     </select>
 
@@ -47,7 +47,7 @@
             a.updated_time as finishDate
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
-        where a.dr = 0 and b.flag = 2
+        where a.dr = 0 and a.pay_status = 3 and b.flag = 2
         <include refid="assignedList"/>
         order by a.updated_time desc
         limit #{param.startRow}, #{param.pageSize}
