@@ -5,8 +5,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,7 +65,7 @@ public interface OutWarehouseOrderService {
     OutWarehouseOrderDetailDTO getOutWarehouseOrderDetailById(IdEnter enter);
 
     /**
-     * 保存质检结果(订单出库)
+     * 保存质检结果
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
@@ -78,5 +81,14 @@ public interface OutWarehouseOrderService {
      * @date 2021/1/5
     */
     OutWhOrderProductDetailDTO getOutWhOrderProductDetailByProductId(QueryProductDetailParamDTO paramDTO);
+
+    /**
+     * 根据产品id查询产品质检模板信息
+     * @param paramDTO
+     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO>
+     * @author assert
+     * @date 2021/1/6
+    */
+    List<ProductQcTemplateDTO> getQcTemplateByIdAndType(QueryQcTemplateParamDTO paramDTO);
 
 }

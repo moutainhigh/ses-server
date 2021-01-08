@@ -5,7 +5,7 @@
     <!--出库单列表查询条件sql-->
     <sql id="getOutWarehouseOrderListWhere">
         <if test="status == 0">and out_wh_status in (0, 10, 15)</if>
-        <if test="status == 1">and out_wh_status in (15, 20)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
         <if test="orderType != null">and out_wh_type = #{orderType}</if>
         <if test="type != null">and out_type = #{type}</if>
     </sql>
@@ -25,7 +25,7 @@
         from ope_out_whouse_order whorder
         where whorder.dr = 0 and out_wh_type = #{type}
         <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
-        <if test="status == 1">and whorder.out_wh_status in (15, 20)</if>
+        <if test="status == 1">and whorder.out_wh_status = 20</if>
         group by `status`
     </select>
 

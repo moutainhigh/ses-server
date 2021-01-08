@@ -64,6 +64,13 @@ public class OpeEntrustScooterB {
     private Integer qty;
 
     /**
+     * 实际发货数量
+     */
+    @TableField(value = "consignor_qty")
+    @ApiModelProperty(value="实际发货数量")
+    private Integer consignorQty;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
@@ -144,6 +151,8 @@ public class OpeEntrustScooterB {
     public static final String COL_COLOR_ID = "color_id";
 
     public static final String COL_QTY = "qty";
+
+    public static final String COL_CONSIGNOR_QTY = "consignor_qty";
 
     public static final String COL_REMARK = "remark";
 

@@ -3,6 +3,8 @@ package com.redescooter.ses.mobile.rps.controller.outwhorder;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -106,13 +109,26 @@ public class OutWarehouseOrderController {
     }
 
     /**
-     * 保存质检结果(订单出库)
+     * 根据产品id查询产品质检模板信息
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO>>
+     * @author assert
+     * @date 2021/1/6
+    */
+    @ApiOperation(value = "出库单质检模板", notes = "根据产品id查询产品质检模板信息")
+    @PostMapping(value = "/qcTemplate")
+    public Response<List<ProductQcTemplateDTO>> getQcTemplateByIdAndType(@ModelAttribute QueryQcTemplateParamDTO paramDTO) {
+        return new Response<>(outWarehouseOrderService.getQcTemplateByIdAndType(paramDTO));
+    }
+
+    /**
+     * 保存质检结果
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/4
     */
-    @ApiOperation(value = "保存质检结果", notes = "保存质检结果(订单出库)")
+    @ApiOperation(value = "保存质检结果")
     @PostMapping(value = "/saveQcResult")
     public Response<GeneralResult> saveQcResult(@ModelAttribute SaveQcResultParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.saveQcResult(paramDTO));

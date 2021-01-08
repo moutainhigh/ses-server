@@ -44,12 +44,12 @@ public interface EntrustOrderService {
 
     /**
      * 委托单发货
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.IdEnter
      * @author assert
      * @date 2021/1/4
     */
-    GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO);
+    GeneralResult entrustOrderDeliver(IdEnter enter);
 
     /**
      * 修改部件实际发货数量
@@ -59,5 +59,14 @@ public interface EntrustOrderService {
      * @date 2021/1/4
     */
     GeneralResult updatePartActualDeliveryQty(UpdatePartActualDeliveryQtyParamDTO paramDTO);
+
+    /**
+     * 保存委托单产品发货数量信息
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2021/1/7
+    */
+    GeneralResult saveDeliverInfo(SaveProductDeliverInfoParamDTO paramDTO);
 
 }

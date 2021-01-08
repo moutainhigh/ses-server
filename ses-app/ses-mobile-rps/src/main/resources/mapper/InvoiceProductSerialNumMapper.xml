@@ -13,7 +13,8 @@
     <!--根据productId查询部件出库单序列号绑定信息-->
     <select id="getOutWhOrderPartsByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
-        select ipsn.id, ipsn.relation_id orderBId, ipsn.product_id productId, ipsn.serial_num serialNum, ipsn.lot batchNo, ipsn.qty, ipsn.arrival_time arrivalTime, s.id supplierId, s.supplier_name supplierName, oqi.annex
+        select ipsn.id, ipsn.relation_id orderBId, ipsn.product_id productId, ipsn.serial_num serialNum, ipsn.lot batchNo, ipsn.qty,
+        ipsn.arrival_time arrivalTime, s.id supplierId, s.supplier_name supplierName, oqi.annex
         from ope_invoice_product_serial_num ipsn
         left join ope_out_wh_parts_b owp
         on ipsn.product_id = owp.id and owp.dr = 0

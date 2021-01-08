@@ -14,7 +14,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoun
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.product.ProductionQualityTemplateBMapper;
+import com.redescooter.ses.mobile.rps.dao.qc.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.restproductionorder.outbound.OutBoundOrderSrviceMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -81,7 +81,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     @Resource
     private InvoiceOrderService invoiceOrderService;
     @Resource
-    private ProductionQualityTemplateBMapper productionQualityTemplateBMapper;
+    private ProductionQualityTemplateMapper templateMapper;
     @Reference
     private IdAppService idAppService;
 
@@ -301,6 +301,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
 
     /**
      * 质检模板 -- [由于切分支没有提交修改的文件导致最后合并这些文件的作者都变成了我(assert)]
+     * 出库单接口已经重写,新出库单接口位置：{@link com.redescooter.ses.mobile.rps.controller.outwhorder.OutWarehouseOrderController}
      * @param enter
      * @return java.util.List<com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult>
      * @author assert
@@ -335,7 +336,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
          */
         List<Long> productionTemplateIdList = qcTemplateList.stream().map(ProductQcTempleteItemResult::getId).collect(Collectors.toList());
 
-        List<ProductQcTempleteResultResult> productionQualityTemplateBList = productionQualityTemplateBMapper.getProductionQualityTemplateBByTemplateId(productionTemplateIdList);
+        List<ProductQcTempleteResultResult> productionQualityTemplateBList = null;
         if (CollectionUtils.isEmpty(productionQualityTemplateBList)){
             throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
         }
@@ -348,7 +349,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
         );
 
         qcTemplateList.forEach(template ->
-            template.setQcTempleteList(templateBMap.get(template.getId()))
+            template.setQcTemplateList(templateBMap.get(template.getId()))
         );
 
         return qcTemplateList;
@@ -409,7 +410,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
         //质检模版通过的集合
         Map<Long, ProductQcTempleteResultResult> qcPassMap = new HashMap<>();
         productQcTempleteItemResultList.forEach(item->{
-            ProductQcTempleteResultResult productQcTempleteResultResult = item.getQcTempleteList().stream().filter(result -> result.getPassFlag()).findFirst().orElse(null);
+            ProductQcTempleteResultResult productQcTempleteResultResult = item.getQcTemplateList().stream().filter(result -> result.getPassFlag()).findFirst().orElse(null);
             if (productQcTempleteResultResult==null){
                 throw new SesMobileRpsException(ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
             }
@@ -418,6 +419,21 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
 
         //质检信息
         List<SaveProductQcInfoEnter> saveProductQcInfoEnters = new ArrayList<>();
+
+//        for (SaveQcTempleteResultEnter item : templeteEnterList) {
+//            if (!qcPassMap.containsKey(item.getItemId())) {
+//                throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+//            }
+//            if (!qcPassMap.get(item.getItemId()).equals(item.getQcResultId())) {
+//                qcResult = Boolean.FALSE;
+//                break;
+//            }
+//            ProductQcTempleteItemResult productQcTempleteItemResult = productQcTempleteItemResultList.stream().filter(qcitem -> qcitem.getId().equals(item.getItemId())).findFirst().orElse(null);
+//
+//            SaveProductQcInfoEnter saveProductQcInfoEnter = new SaveProductQcInfoEnter(item.getItemId(),productQcTempleteItemResult.getItemName(),item.getQcResultId(),qcPassMap.get(item.getItemId()).getQcResult(),item.getImageUrls(),item.getRemark());
+//            saveProductQcInfoEnter.setUserId(enter.getUserId());
+//            saveProductQcInfoEnters.add(saveProductQcInfoEnter);
+//        }
 
         /**
          * 质检结果判断 -- T_T

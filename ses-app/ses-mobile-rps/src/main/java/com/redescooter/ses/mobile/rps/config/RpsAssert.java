@@ -25,6 +25,18 @@ public class RpsAssert {
     }
 
     /**
+     * obj != null throw new SesMobileRpsException(code, msg);
+     * @param obj
+     * @param code
+     * @param msg
+     */
+    public static void isNotNull(Object obj, Integer code, String msg) {
+        if (obj != null) {
+            throw new SesMobileRpsException(code, msg);
+        }
+    }
+
+    /**
      * obj is blank throw SesMobileRpsException
      * @param obj
      * @param code

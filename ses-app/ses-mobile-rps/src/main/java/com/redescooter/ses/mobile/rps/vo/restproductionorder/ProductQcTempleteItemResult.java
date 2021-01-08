@@ -25,12 +25,12 @@ public class ProductQcTempleteItemResult extends GeneralResult {
     @ApiModelProperty(value = "模版Id")
     private Long id;
 
-    @ApiModelProperty(value = "质检项条目Id")
+    @ApiModelProperty(value = "质检项条目名称")
     private String itemName;
 
     @ApiModelProperty(value = "子单据Id")
     private Long orderBId;
 
     @ApiModelProperty(value = "质检项结果集")
-    private List<ProductQcTempleteResultResult> qcTempleteList;
+    private List<ProductQcTempleteResultResult> qcTemplateList;
 }

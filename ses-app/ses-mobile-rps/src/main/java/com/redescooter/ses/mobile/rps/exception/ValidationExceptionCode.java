@@ -41,5 +41,11 @@ public interface ValidationExceptionCode {
     int TYPE_IS_EMPTY = 10039;
     // 出库单类型为空
     int OUT_WH_ORDER_TYPE_IS_EMPTY = 10040;
+    // 产品id为空
+    int PRODUCT_ID_IS_EMPTY = 10041;
+    // 产品类型为空
+    int PRODUCT_TYPE_IS_EMPTY = 10042;
+    // 出库单id为空
+    int OUT_WH_ORDER_ID_IS_EMPTY = 10043;
 
 }

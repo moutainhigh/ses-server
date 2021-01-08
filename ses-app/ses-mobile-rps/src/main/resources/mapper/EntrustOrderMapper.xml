@@ -40,44 +40,16 @@
     <!--根据id查询委托单详情-->
     <select id="getEntrustOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO">
         select id, entrust_no entrustNo, entrust_status entrustStatus, entrust_type entrustType,
-        delivery_date deliveryDate, trans_type transType, consignor_qty qty, already_consignor_qty confirmQty
+        delivery_date deliveryDate, trans_type transType, consignor_qty qty, already_consignor_qty alreadyConsignorQty
         from ope_entrust_order
         where dr = 0 and id = #{id}
     </select>
 
-    <!--根据entrustId查询委托单车辆信息-->
-    <select id="getEntrustOrderScooterByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
-        select es.id, st.specificat_name groupName, c.color_name colorName, 1 qty, epsn.serial_num serialNum, 1 idClass
-        from ope_entrust_scooter_b es
-        left join ope_entrust_product_serial_num epsn
-        on es.id = epsn.relation_id and epsn.dr = 0
-        left join ope_color c
-        on es.color_id = c.id and c.dr = 0
-        left join ope_specificat_type st
-        on es.group_id = st.id and st.dr = 0
-        where es.dr = 0 and es.entrust_id = #{entrustId}
-    </select>
-
-    <!--根据entrustId查询委托单组装件信息-->
-    <select id="getEntrustOrderCombinByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
-        select ec.id, ec.combin_name `name`, bom.bom_no `number`, 1 qty, epsn.serial_num serialNum, 1 idClass
-        from ope_entrust_combin_b ec
-        left join ope_production_combin_bom bom
-        on ec.production_combin_bom_id = bom.id and bom.dr = 0
-        left join ope_entrust_product_serial_num epsn
-        on ec.id = epsn.relation_id and epsn.dr = 0
-        where ec.dr = 0 and ec.entrust_id = #{entrustId}
-    </select>
-
-    <!--根据entrustId查询委托单部件信息-->
-    <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
-        select ep.id,  ep.parts_name `name`, ep.parts_no `number`,pp.parts_qty qty, epsn.serial_num serialNum,pp.id_calss idClass
-        from ope_entrust_parts_b ep
-        left join ope_entrust_product_serial_num epsn
-        on ep.id = epsn.relation_id and epsn.dr = 0
-        left join ope_production_parts pp
-        on ep.parts_id = pp.id and pp.dr = 0
-        where ep.dr = 0 and ep.entrust_id = #{entrustId}
-    </select>
+    <!--修改委托单已发货数量-->
+    <update id="updateEntrustOrderAlreadyConsignorQty" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+        update ope_entrust_order
+	    set already_consignor_qty = already_consignor_qty + 1, updated_time = #{updatedTime}
+	    where id = #{id}
+    </update>
 
 </mapper>

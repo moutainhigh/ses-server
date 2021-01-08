@@ -67,15 +67,15 @@ public class EntrustOrderController {
 
     /**
      * 委托单发货
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.IdEnter>
      * @author assert
      * @date 2021/1/4
     */
     @ApiOperation(value = "委托单发货")
     @PostMapping(value = "/deliver")
-    public Response<GeneralResult> entrustOrderDeliver(@ModelAttribute EntrustOrderDeliverParamDTO paramDTO) {
-        return new Response<>(entrustOrderService.entrustOrderDeliver(paramDTO));
+    public Response<GeneralResult> entrustOrderDeliver(@ModelAttribute IdEnter enter) {
+        return new Response<>(entrustOrderService.entrustOrderDeliver(enter));
     }
 
     /**
@@ -89,6 +89,19 @@ public class EntrustOrderController {
     @PostMapping(value = "/updatePartActualDeliveryQty")
     public Response<GeneralResult> updatePartActualDeliveryQty(@ModelAttribute UpdatePartActualDeliveryQtyParamDTO paramDTO) {
         return new Response<>(entrustOrderService.updatePartActualDeliveryQty(paramDTO));
+    }
+
+    /**
+     * 保存委托单产品发货数量信息
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2021/1/7
+    */
+    @ApiOperation(value = "保存委托单产品发货数量信息")
+    @PostMapping(value = "/saveDeliverInfo")
+    public Response<GeneralResult> saveDeliverInfo(@ModelAttribute SaveProductDeliverInfoParamDTO paramDTO) {
+        return new Response<>(entrustOrderService.saveDeliverInfo(paramDTO));
     }
 
 }

@@ -161,9 +161,22 @@ public enum ExceptionCodeEnums {
 
     ORDER_IS_NOT_EXIST(10077,"单据不存在"),
 
-    TRACE_IS_NOT_EXIST(10078,"单据记录不存在")
-    ;
+    TRACE_IS_NOT_EXIST(10078,"单据记录不存在"),
 
+    OUT_WH_ORDER_START_QC_ERROR(10079, "出库单开始质检失败"),
+
+    OUT_WH_ORDER_IS_NOT_EXISTS(10080, "出库单不存在"),
+
+    PRODUCT_IS_EMPTY(10081, "产品为空"),
+
+    QC_QTY_GREATER_THAN_QTY(10082, "质检数量大于应出库数量"),
+
+    ENTRUST_ORDER_IS_NOT_EXISTS(10083, "委托单不存在"),
+
+    DELIVERY_QTY_ERROR(10084, "发货数量有误"),
+
+    NO_NEED_TO_SCAN_CODE(10085, "无需再扫码")
+    ;
 
     private int code;
 

@@ -1,8 +1,8 @@
 package com.redescooter.ses.mobile.rps.dao.entrustorder;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO;
-import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO;
 
@@ -52,30 +52,12 @@ public interface EntrustOrderMapper {
     EntrustOrderDetailDTO getEntrustOrderDetailById(Long id);
 
     /**
-     * 根据entrustId查询委托单车辆信息
-     * @param entrustId
-     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO>
+     * 修改委托单已发货数量
+     * @param opeEntrustOrder
+     * @return int
      * @author assert
-     * @date 2021/1/4
+     * @date 2021/1/8
     */
-    List<EntrustOrderProductDTO> getEntrustOrderScooterByEntrustId(Long entrustId);
-
-    /**
-     * 根据entrustId查询委托单组装件信息
-     * @param entrustId
-     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO>
-     * @author assert
-     * @date 2021/1/4
-    */
-    List<EntrustOrderProductDTO> getEntrustOrderCombinByEntrustId(Long entrustId);
-
-    /**
-     * 根据entrustId查询委托单部件信息
-     * @param entrustId
-     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO>
-     * @author assert
-     * @date 2021/1/4
-    */
-    List<EntrustOrderProductDTO> getEntrustOrderPartsByEntrustId(Long entrustId);
+    int updateEntrustOrderAlreadyConsignorQty(OpeEntrustOrder opeEntrustOrder);
 
 }
