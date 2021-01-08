@@ -635,6 +635,34 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         return resultList;
     }
 
+    @Override
+    public GeneralResult outWhConfirm(IdEnter enter) {
+        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+        if (opeOutWhouseOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        // 2020 11 17 追加  判断关联的是哪种单据类型  可能是发货单 可能是组装单
+        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
+            // 更改发货单的状态为待装车
+            invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
+        } else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+            // 如果关联的是组装单  把组装单的状态变为备料完成
+            productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
+        }
+        // 出库单变为已出库 可已用库存增加，可用库存减少，待出库的库存减少
+        try {
+            wmsMaterialStockService.waitOutLowAbleLowUsedUp(opeOutWhouseOrder.getOutWhType(),opeOutWhouseOrder.getId(),1, enter.getUserId(), opeOutWhouseOrder.getWhType());
+        }catch (Exception e) {
+
+        }
+        return new GeneralResult();
+    }
+
 
     public void deleteOutOrderB(OpeOutWhouseOrder outWhouseOrder) {
         switch (outWhouseOrder.getOutWhType()) {

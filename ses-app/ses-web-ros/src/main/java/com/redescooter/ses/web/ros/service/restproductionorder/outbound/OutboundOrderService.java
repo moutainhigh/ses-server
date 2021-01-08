@@ -169,6 +169,15 @@ public interface OutboundOrderService {
 
 
     /**
+     * 出库单确认出库
+     * @param enter
+     * @return
+     */
+    GeneralResult outWhConfirm(IdEnter enter);
+
+
+
+    /**
      * @Author Aleks
      * @Description  发货单取消 下面的出库单也要取消
      * @Date  2020/10/30 16:19

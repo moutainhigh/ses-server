@@ -18,8 +18,8 @@ import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockServi
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;

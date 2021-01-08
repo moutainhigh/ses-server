@@ -127,6 +127,13 @@ public class OutboundOrderController {
     }
 
 
+    @PostMapping(value = "/outWhConfirm")
+    @ApiOperation(value = "出库单确认出库", response = GeneralResult.class)
+    public Response<GeneralResult> outWhConfirm(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(outboundOrderService.outWhConfirm(enter));
+    }
+
+
 
     @PostMapping(value = "/startQc")
     @ApiOperation(value = "模拟RPS开始质检", response = GeneralResult.class)

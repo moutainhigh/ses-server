@@ -22,8 +22,8 @@ import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,6 +130,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 // 部件
                 result = wmsFinishStockMapper.wmsPartsStockCount(enter.getStockType());
                 break;
+        }
+        if (result == null){
+            result = new WmsStockCountResult();
         }
         return result;
     }

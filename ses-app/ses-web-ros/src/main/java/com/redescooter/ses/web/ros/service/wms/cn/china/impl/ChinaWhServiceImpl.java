@@ -12,8 +12,8 @@ import com.redescooter.ses.web.ros.service.wms.cn.china.ChinaWhService;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.ChinaInOrOutCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.StockCountResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
