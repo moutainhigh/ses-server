@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum NodeEnum {
 
+    NONE(0),
+
     VIN_CODE(1),
 
     BIND_LICENSE_PLATE(2),

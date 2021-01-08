@@ -146,7 +146,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setTenantId(enter.getTenantId());
             node.setUserId(enter.getUserId());
             node.setCustomerId(enter.getCustomerId());
-            node.setNode(NodeEnum.VIN_CODE.getCode());
+            node.setNode(NodeEnum.NONE.getCode());
             node.setFlag(FlagEnum.NOT.getCode());
             node.setCreatedBy(enter.getUserId());
             node.setCreatedTime(new Date());
