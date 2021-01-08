@@ -56,8 +56,11 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "创建人邮箱")
     private String mail;
 
-    @ApiModelProperty("发货单id")
-    private Long invoiceId;
+    @ApiModelProperty("关联的单据id")
+    private Long relationOrderId;
+
+    @ApiModelProperty("关联的单据号")
+    private String relationOrderNo;
 
     /**
      * 入库仓库。1:成品库，2:原料库，3:不合格品库

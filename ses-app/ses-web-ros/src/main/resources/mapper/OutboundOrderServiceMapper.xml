@@ -64,8 +64,8 @@
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult">
         select whorder.id            as id,
-                whorder.relation_id    as invoiceId,
-                whorder.relation_no    as invoiceNo,
+                whorder.relation_id    as relationOrderId,
+                whorder.relation_no    as relationOrderNo,
                whorder.out_wh_no     as outWhNo,
                whorder.out_wh_status as outWhStatus,
                whorder.out_wh_type   as outWhType,
@@ -96,7 +96,7 @@
         from ope_out_wh_scooter_b scooterB
                      left join ope_specificat_group spgroup on scooterb.group_id = spgroup.id and spgroup.dr = 0
                      left join ope_color color on color.id = scooterB.color_id and color.dr = 0
-        where scooterB.out_wh_id=#{id}
+        where scooterB.out_wh_id=#{id} and scooterB.dr = 0
     </select>
 
     <select id="productionCombinByBussId" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
@@ -106,7 +106,7 @@
                combinB.qty    as totalQty
         from ope_out_wh_combin_b combinB
                      left join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
-        where combinB.out_wh_id=#{id}
+        where combinB.out_wh_id=#{id} and combinB.dr = 0
     </select>
 
     <select
@@ -118,7 +118,7 @@
                partB.qty        as totalQty
         from ope_out_wh_parts_b partB
                      left join ope_production_parts parts on parts.id = partB.parts_id and parts.dr = 0
-        where partB.out_wh_id=#{id}
+        where partB.out_wh_id=#{id} and partB.dr = 0
     </select>
 
     <select id="invoiceData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
