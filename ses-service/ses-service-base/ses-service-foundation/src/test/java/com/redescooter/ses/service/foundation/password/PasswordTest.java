@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.password;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Mr.lijiating

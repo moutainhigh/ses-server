@@ -12,11 +12,10 @@ import com.redescooter.ses.web.ros.service.admin.DeleteRosLoginDateService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
-import com.redescooter.ses.web.ros.service.sys.SysUserProfileService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.beans.Transient;
@@ -26,9 +25,6 @@ import java.util.stream.Collectors;
 @Log4j
 @Service
 public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
-
-    @Autowired
-    private SysUserProfileService sysUserProfileService;
 
     @Autowired
     private OpeSysUserService opeSysUserService;

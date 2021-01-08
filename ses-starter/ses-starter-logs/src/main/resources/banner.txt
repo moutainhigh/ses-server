@@ -1,7 +1,6 @@
-
- :: Spring Boot ${spring-boot.formatted-version} : https://docs.spring.io/spring-boot/docs/2.3.4.RELEASE/reference/html
-
  ____  ____  ____  ____     __     ____     __
 (  _ \(  __)(    \(  __)   /  \   (___ \   /  \
  )   / ) _)  ) D ( ) _)   (_/ / _  / __/ _(_/ /
 (__\_)(____)(____/(____)   (__)(_)(____)(_)(__)
+
+ ::: Spring Boot ${spring-boot.formatted-version} ::: https://docs.spring.io/spring-boot/docs/${spring-boot.version}/reference/html

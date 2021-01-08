@@ -36,12 +36,8 @@ public abstract class AbstractRequestFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-//        log.info("--------------------------------------------"+        request.getRequestURI()
-//        );
-
         HashMap parameterMap = new HashMap(request.getParameterMap());
         parameterMap.put("requestId", request.getAttribute("requestId"));
-        //String clientIp = getClientIp(request, true, "x-forwarded-for");
         parameterMap.put("clientIp", IpUtils.getIpAddr(request));
         parameterMap.put("timestamp", request.getAttribute("timestamp"));
         parameterMap.put("appId", getAppId().getValue());
@@ -72,17 +68,6 @@ public abstract class AbstractRequestFilter implements Filter {
                         parameterMap.put("lat", reqHeader.getLat());
                         parameterMap.put("lng", reqHeader.getLng());
                     }
-
-
-                    /*if ((!parameterMap.containsKey("lat")) ||
-                            (parameterMap.get("lat") == null) ||
-                            (StringUtils.isNotEmpty(parameterMap.get("lat").toString())) ||
-                            ((!parameterMap.containsKey("lng"))) ||
-                            ((parameterMap.get("lng") == null)) ||
-                            (StringUtils.isNotEmpty(parameterMap.get("lng").toString()))) {
-                        parameterMap.put("lat", reqHeader.getLat());
-                        parameterMap.put("lng", reqHeader.getLng());
-                    }*/
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

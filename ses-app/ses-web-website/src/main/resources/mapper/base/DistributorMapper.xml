@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.website.dao.DistributorMapper">
+    <select id="getlistOrderByDistance"
+            resultType="com.redescooter.ses.web.website.vo.distributor.DistributorDetailsResult">
+        SELECT sd.id,
+               sd.code,
+               sd.name,
+               sd.logo_url,
+               sd.country_code,
+               sd.tel,
+               sd.email,
+               sd.address,
+               sd.longitude,
+               sd.latitude,
+               sd.cp,
+               sd.city,
+               sd.area,
+               sd.contract_url,
+               sd.remark,
+               sd.type,
+               (
+                       6371 * acos(
+                               cos(
+                                       radians(sd.Latitude)
+                                       ) * cos(radians(#{longitude})) * cos(
+                                       radians(#{longitude}) - radians(sd.Longitude)
+                                       ) + sin(
+                                                   radians(sd.Latitude)
+                                                   ) * sin(radians(#{latitude}))
+                               )
+                       ) as distance
+        FROM site_distributor sd
+        HAVING distance <![CDATA[ < ]]> #{distanceRange}
+        and sd.name like concat('%', #{keyword}, '%')
+        and sd.address like concat('%', #{keyword}, '%')
+        ORDER BY distance
+    </select>
+</mapper>

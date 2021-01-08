@@ -1,8 +1,8 @@
 package com.redescooter.ses.tool.utils;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;

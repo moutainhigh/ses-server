@@ -4,6 +4,7 @@ import	java.util.ArrayList;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -234,6 +235,7 @@ public class ScooterServiceImpl implements ScooterService {
         scooter.setTotalMileage(0L);
         scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
         scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+        scooter.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
         scooter.setCreatedBy(syncScooterData.getUserId());
         scooter.setCreatedTime(new Date());
         scooter.setUpdatedBy(syncScooterData.getUserId());

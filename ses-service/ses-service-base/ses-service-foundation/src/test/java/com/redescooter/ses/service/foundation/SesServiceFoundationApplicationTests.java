@@ -1,26 +1,36 @@
 package com.redescooter.ses.service.foundation;
 
-import com.redescooter.ses.api.foundation.service.PushService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import lombok.extern.log4j.Log4j;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.text.DateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
+@Log4j
 public class SesServiceFoundationApplicationTests {
 
-    @Test
-    public void contextLoads() {
+    private LocalDateTime beginTime = LocalDateTime.now();
+
+    @Before("setUp")
+    public void setUp() throws Exception {
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        String now = dateFormat.toString();
+
+        log.info("单元测试开始-------<<<<>>>" + now);
     }
 
-    @Reference
-    private PushService pushService;
+    @After("getDown")
+    public void getDown() throws Exception {
+        Long opetime = Duration.between(beginTime, LocalDateTime.now()).toMillis();
+        log.info("单元测试结束-------<<<<>>>耗时：" + opetime);
 
-    @Test
-    public void test(){
-        System.out.println(Integer.valueOf("01"));
     }
 }

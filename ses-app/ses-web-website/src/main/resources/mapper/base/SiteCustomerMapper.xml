@@ -1,0 +1,1354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.website.dao.base.SiteCustomerMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.website.dm.SiteCustomer">
+    <!--@mbg.generated-->
+    <!--@Table site_customer-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="customer_source" jdbcType="INTEGER" property="customerSource" />
+    <result column="sales_id" jdbcType="BIGINT" property="salesId" />
+    <result column="industry_type" jdbcType="INTEGER" property="industryType" />
+    <result column="customer_type" jdbcType="INTEGER" property="customerType" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_head_picture" jdbcType="VARCHAR" property="customerHeadPicture" />
+    <result column="customer_first_name" jdbcType="VARCHAR" property="customerFirstName" />
+    <result column="customer_last_name" jdbcType="VARCHAR" property="customerLastName" />
+    <result column="customer_full_name" jdbcType="VARCHAR" property="customerFullName" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_logo" jdbcType="VARCHAR" property="companyLogo" />
+    <result column="country_name" jdbcType="VARCHAR" property="countryName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="postcode" jdbcType="VARCHAR" property="postcode" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="place_id" jdbcType="VARCHAR" property="placeId" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName" />
+    <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName" />
+    <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="purchased_scooter_qty" jdbcType="INTEGER" property="purchasedScooterQty" />
+    <result column="assignation_scooter_qty" jdbcType="INTEGER" property="assignationScooterQty" />
+    <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+    <result column="certificate_positive_annex" jdbcType="VARCHAR" property="certificatePositiveAnnex" />
+    <result column="certificate_negative_annex" jdbcType="VARCHAR" property="certificateNegativeAnnex" />
+    <result column="business_license_num" jdbcType="VARCHAR" property="businessLicenseNum" />
+    <result column="business_license_annex" jdbcType="VARCHAR" property="businessLicenseAnnex" />
+    <result column="invoice_num" jdbcType="VARCHAR" property="invoiceNum" />
+    <result column="invoice_annex" jdbcType="VARCHAR" property="invoiceAnnex" />
+    <result column="contract_annex" jdbcType="VARCHAR" property="contractAnnex" />
+    <result column="account_flag" jdbcType="INTEGER" property="accountFlag" />
+    <result column="cardholder" jdbcType="VARCHAR" property="cardholder" />
+    <result column="cvv" jdbcType="VARCHAR" property="cvv" />
+    <result column="card_num" jdbcType="VARCHAR" property="cardNum" />
+    <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DOUBLE" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, `status`, country_code, customer_source, sales_id, industry_type, customer_type, 
+    customer_code, customer_head_picture, customer_first_name, customer_last_name, customer_full_name, 
+    company_name, company_logo, country_name, city_name, area_name, postcode, address, 
+    place_id, longitude, latitude, contact_first_name, contact_last_name, contact_full_name, 
+    telephone, email, remark, purchased_scooter_qty, assignation_scooter_qty, certificate_type, 
+    certificate_positive_annex, certificate_negative_annex, business_license_num, business_license_annex, 
+    invoice_num, invoice_annex, contract_annex, account_flag, cardholder, cvv, card_num, 
+    synchronize_flag, revision, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def5, def6
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update site_customer
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="customer_source = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="sales_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.salesId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="industry_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="customer_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="customer_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="customer_head_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerHeadPicture,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="customer_first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerFirstName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="customer_last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerLastName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="customer_full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.customerFullName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="company_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.companyName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="company_logo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.companyLogo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="country_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="city_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cityName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="area_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.postcode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="place_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.placeId,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.longitude,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.latitude,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="contact_first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.contactFirstName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="contact_last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.contactLastName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="contact_full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.contactFullName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.telephone,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="purchased_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.purchasedScooterQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="assignation_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.assignationScooterQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_positive_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificatePositiveAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="certificate_negative_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.certificateNegativeAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="business_license_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.businessLicenseNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="business_license_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.businessLicenseAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="contract_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.contractAnnex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="account_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="cardholder = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cardholder,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="cvv = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cvv,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="card_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.cardNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="synchronize_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.synchronizeFlag,jdbcType=BOOLEAN}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update site_customer
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_source = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerSource != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerSource,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="sales_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.salesId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.salesId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="industry_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.industryType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.industryType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_head_picture = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerHeadPicture != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerHeadPicture,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerFirstName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerFirstName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerLastName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerLastName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="customer_full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.customerFullName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.customerFullName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="company_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.companyName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.companyName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="company_logo = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.companyLogo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.companyLogo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="city_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cityName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cityName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="area_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.areaName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.areaName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="postcode = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.postcode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.postcode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.address != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="place_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.placeId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.placeId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.longitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.longitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.latitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.latitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contact_first_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contactFirstName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contactFirstName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contact_last_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contactLastName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contactLastName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contact_full_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contactFullName != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contactFullName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.telephone != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.telephone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="purchased_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.purchasedScooterQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.purchasedScooterQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="assignation_scooter_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.assignationScooterQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.assignationScooterQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="certificate_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.certificateType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.certificateType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="certificate_positive_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.certificatePositiveAnnex != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.certificatePositiveAnnex,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="certificate_negative_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.certificateNegativeAnnex != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.certificateNegativeAnnex,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="business_license_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.businessLicenseNum != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.businessLicenseNum,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="business_license_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.businessLicenseAnnex != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.businessLicenseAnnex,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="invoice_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.invoiceNum != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceNum,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="invoice_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.invoiceAnnex != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.invoiceAnnex,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contract_annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contractAnnex != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contractAnnex,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="account_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.accountFlag != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.accountFlag,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="cardholder = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cardholder != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cardholder,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="cvv = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cvv != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cvv,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="card_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cardNum != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cardNum,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="synchronize_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.synchronizeFlag != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.synchronizeFlag,jdbcType=BOOLEAN}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def6 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def6 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into site_customer
+    (id, dr, `status`, country_code, customer_source, sales_id, industry_type, customer_type, 
+      customer_code, customer_head_picture, customer_first_name, customer_last_name, 
+      customer_full_name, company_name, company_logo, country_name, city_name, area_name, 
+      postcode, address, place_id, longitude, latitude, contact_first_name, contact_last_name, 
+      contact_full_name, telephone, email, remark, purchased_scooter_qty, assignation_scooter_qty, 
+      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
+      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
+      cardholder, cvv, card_num, synchronize_flag, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.customerSource,jdbcType=INTEGER}, 
+        #{item.salesId,jdbcType=BIGINT}, #{item.industryType,jdbcType=INTEGER}, #{item.customerType,jdbcType=INTEGER}, 
+        #{item.customerCode,jdbcType=VARCHAR}, #{item.customerHeadPicture,jdbcType=VARCHAR}, 
+        #{item.customerFirstName,jdbcType=VARCHAR}, #{item.customerLastName,jdbcType=VARCHAR}, 
+        #{item.customerFullName,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, 
+        #{item.companyLogo,jdbcType=VARCHAR}, #{item.countryName,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, 
+        #{item.areaName,jdbcType=VARCHAR}, #{item.postcode,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
+        #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR}, 
+        #{item.contactFullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.purchasedScooterQty,jdbcType=INTEGER}, 
+        #{item.assignationScooterQty,jdbcType=INTEGER}, #{item.certificateType,jdbcType=INTEGER}, 
+        #{item.certificatePositiveAnnex,jdbcType=VARCHAR}, #{item.certificateNegativeAnnex,jdbcType=VARCHAR}, 
+        #{item.businessLicenseNum,jdbcType=VARCHAR}, #{item.businessLicenseAnnex,jdbcType=VARCHAR}, 
+        #{item.invoiceNum,jdbcType=VARCHAR}, #{item.invoiceAnnex,jdbcType=VARCHAR}, #{item.contractAnnex,jdbcType=VARCHAR}, 
+        #{item.accountFlag,jdbcType=INTEGER}, #{item.cardholder,jdbcType=VARCHAR}, #{item.cvv,jdbcType=VARCHAR}, 
+        #{item.cardNum,jdbcType=VARCHAR}, #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.website.dm.SiteCustomer">
+    <!--@mbg.generated-->
+    insert into site_customer
+    (id, dr, `status`, country_code, customer_source, sales_id, industry_type, customer_type, 
+      customer_code, customer_head_picture, customer_first_name, customer_last_name, 
+      customer_full_name, company_name, company_logo, country_name, city_name, area_name, 
+      postcode, address, place_id, longitude, latitude, contact_first_name, contact_last_name, 
+      contact_full_name, telephone, email, remark, purchased_scooter_qty, assignation_scooter_qty, 
+      certificate_type, certificate_positive_annex, certificate_negative_annex, business_license_num, 
+      business_license_annex, invoice_num, invoice_annex, contract_annex, account_flag, 
+      cardholder, cvv, card_num, synchronize_flag, revision, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def5, def6)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{countryCode,jdbcType=VARCHAR}, 
+      #{customerSource,jdbcType=INTEGER}, #{salesId,jdbcType=BIGINT}, #{industryType,jdbcType=INTEGER}, 
+      #{customerType,jdbcType=INTEGER}, #{customerCode,jdbcType=VARCHAR}, #{customerHeadPicture,jdbcType=VARCHAR}, 
+      #{customerFirstName,jdbcType=VARCHAR}, #{customerLastName,jdbcType=VARCHAR}, #{customerFullName,jdbcType=VARCHAR}, 
+      #{companyName,jdbcType=VARCHAR}, #{companyLogo,jdbcType=VARCHAR}, #{countryName,jdbcType=VARCHAR}, 
+      #{cityName,jdbcType=VARCHAR}, #{areaName,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
+      #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR}, 
+      #{contactFullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{purchasedScooterQty,jdbcType=INTEGER}, #{assignationScooterQty,jdbcType=INTEGER}, 
+      #{certificateType,jdbcType=INTEGER}, #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+      #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{businessLicenseNum,jdbcType=VARCHAR}, 
+      #{businessLicenseAnnex,jdbcType=VARCHAR}, #{invoiceNum,jdbcType=VARCHAR}, #{invoiceAnnex,jdbcType=VARCHAR}, 
+      #{contractAnnex,jdbcType=VARCHAR}, #{accountFlag,jdbcType=INTEGER}, #{cardholder,jdbcType=VARCHAR}, 
+      #{cvv,jdbcType=VARCHAR}, #{cardNum,jdbcType=VARCHAR}, #{synchronizeFlag,jdbcType=BOOLEAN}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    `status` = #{status,jdbcType=INTEGER}, 
+    country_code = #{countryCode,jdbcType=VARCHAR}, 
+    customer_source = #{customerSource,jdbcType=INTEGER}, 
+    sales_id = #{salesId,jdbcType=BIGINT}, 
+    industry_type = #{industryType,jdbcType=INTEGER}, 
+    customer_type = #{customerType,jdbcType=INTEGER}, 
+    customer_code = #{customerCode,jdbcType=VARCHAR}, 
+    customer_head_picture = #{customerHeadPicture,jdbcType=VARCHAR}, 
+    customer_first_name = #{customerFirstName,jdbcType=VARCHAR}, 
+    customer_last_name = #{customerLastName,jdbcType=VARCHAR}, 
+    customer_full_name = #{customerFullName,jdbcType=VARCHAR}, 
+    company_name = #{companyName,jdbcType=VARCHAR}, 
+    company_logo = #{companyLogo,jdbcType=VARCHAR}, 
+    country_name = #{countryName,jdbcType=VARCHAR}, 
+    city_name = #{cityName,jdbcType=VARCHAR}, 
+    area_name = #{areaName,jdbcType=VARCHAR}, 
+    postcode = #{postcode,jdbcType=VARCHAR}, 
+    address = #{address,jdbcType=VARCHAR}, 
+    place_id = #{placeId,jdbcType=VARCHAR}, 
+    longitude = #{longitude,jdbcType=DECIMAL}, 
+    latitude = #{latitude,jdbcType=DECIMAL}, 
+    contact_first_name = #{contactFirstName,jdbcType=VARCHAR}, 
+    contact_last_name = #{contactLastName,jdbcType=VARCHAR}, 
+    contact_full_name = #{contactFullName,jdbcType=VARCHAR}, 
+    telephone = #{telephone,jdbcType=VARCHAR}, 
+    email = #{email,jdbcType=VARCHAR}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    purchased_scooter_qty = #{purchasedScooterQty,jdbcType=INTEGER}, 
+    assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER}, 
+    certificate_type = #{certificateType,jdbcType=INTEGER}, 
+    certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR}, 
+    certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR}, 
+    business_license_num = #{businessLicenseNum,jdbcType=VARCHAR}, 
+    business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR}, 
+    invoice_num = #{invoiceNum,jdbcType=VARCHAR}, 
+    invoice_annex = #{invoiceAnnex,jdbcType=VARCHAR}, 
+    contract_annex = #{contractAnnex,jdbcType=VARCHAR}, 
+    account_flag = #{accountFlag,jdbcType=INTEGER}, 
+    cardholder = #{cardholder,jdbcType=VARCHAR}, 
+    cvv = #{cvv,jdbcType=VARCHAR}, 
+    card_num = #{cardNum,jdbcType=VARCHAR}, 
+    synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=VARCHAR}, 
+    def6 = #{def6,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.website.dm.SiteCustomer">
+    <!--@mbg.generated-->
+    insert into site_customer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="customerSource != null">
+        customer_source,
+      </if>
+      <if test="salesId != null">
+        sales_id,
+      </if>
+      <if test="industryType != null">
+        industry_type,
+      </if>
+      <if test="customerType != null">
+        customer_type,
+      </if>
+      <if test="customerCode != null">
+        customer_code,
+      </if>
+      <if test="customerHeadPicture != null">
+        customer_head_picture,
+      </if>
+      <if test="customerFirstName != null">
+        customer_first_name,
+      </if>
+      <if test="customerLastName != null">
+        customer_last_name,
+      </if>
+      <if test="customerFullName != null">
+        customer_full_name,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyLogo != null">
+        company_logo,
+      </if>
+      <if test="countryName != null">
+        country_name,
+      </if>
+      <if test="cityName != null">
+        city_name,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="postcode != null">
+        postcode,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="placeId != null">
+        place_id,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="contactFirstName != null">
+        contact_first_name,
+      </if>
+      <if test="contactLastName != null">
+        contact_last_name,
+      </if>
+      <if test="contactFullName != null">
+        contact_full_name,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="purchasedScooterQty != null">
+        purchased_scooter_qty,
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty,
+      </if>
+      <if test="certificateType != null">
+        certificate_type,
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex,
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex,
+      </if>
+      <if test="businessLicenseNum != null">
+        business_license_num,
+      </if>
+      <if test="businessLicenseAnnex != null">
+        business_license_annex,
+      </if>
+      <if test="invoiceNum != null">
+        invoice_num,
+      </if>
+      <if test="invoiceAnnex != null">
+        invoice_annex,
+      </if>
+      <if test="contractAnnex != null">
+        contract_annex,
+      </if>
+      <if test="accountFlag != null">
+        account_flag,
+      </if>
+      <if test="cardholder != null">
+        cardholder,
+      </if>
+      <if test="cvv != null">
+        cvv,
+      </if>
+      <if test="cardNum != null">
+        card_num,
+      </if>
+      <if test="synchronizeFlag != null">
+        synchronize_flag,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+      <if test="def6 != null">
+        def6,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerSource != null">
+        #{customerSource,jdbcType=INTEGER},
+      </if>
+      <if test="salesId != null">
+        #{salesId,jdbcType=BIGINT},
+      </if>
+      <if test="industryType != null">
+        #{industryType,jdbcType=INTEGER},
+      </if>
+      <if test="customerType != null">
+        #{customerType,jdbcType=INTEGER},
+      </if>
+      <if test="customerCode != null">
+        #{customerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerHeadPicture != null">
+        #{customerHeadPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFirstName != null">
+        #{customerFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLastName != null">
+        #{customerLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFullName != null">
+        #{customerFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyLogo != null">
+        #{companyLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="countryName != null">
+        #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null">
+        #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="placeId != null">
+        #{placeId,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="contactFirstName != null">
+        #{contactFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactLastName != null">
+        #{contactLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactFullName != null">
+        #{contactFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasedScooterQty != null">
+        #{purchasedScooterQty,jdbcType=INTEGER},
+      </if>
+      <if test="assignationScooterQty != null">
+        #{assignationScooterQty,jdbcType=INTEGER},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        #{certificatePositiveAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        #{certificateNegativeAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseNum != null">
+        #{businessLicenseNum,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseAnnex != null">
+        #{businessLicenseAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNum != null">
+        #{invoiceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceAnnex != null">
+        #{invoiceAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAnnex != null">
+        #{contractAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="accountFlag != null">
+        #{accountFlag,jdbcType=INTEGER},
+      </if>
+      <if test="cardholder != null">
+        #{cardholder,jdbcType=VARCHAR},
+      </if>
+      <if test="cvv != null">
+        #{cvv,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNum != null">
+        #{cardNum,jdbcType=VARCHAR},
+      </if>
+      <if test="synchronizeFlag != null">
+        #{synchronizeFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerSource != null">
+        customer_source = #{customerSource,jdbcType=INTEGER},
+      </if>
+      <if test="salesId != null">
+        sales_id = #{salesId,jdbcType=BIGINT},
+      </if>
+      <if test="industryType != null">
+        industry_type = #{industryType,jdbcType=INTEGER},
+      </if>
+      <if test="customerType != null">
+        customer_type = #{customerType,jdbcType=INTEGER},
+      </if>
+      <if test="customerCode != null">
+        customer_code = #{customerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="customerHeadPicture != null">
+        customer_head_picture = #{customerHeadPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFirstName != null">
+        customer_first_name = #{customerFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerLastName != null">
+        customer_last_name = #{customerLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerFullName != null">
+        customer_full_name = #{customerFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyLogo != null">
+        company_logo = #{companyLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="countryName != null">
+        country_name = #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null">
+        postcode = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="placeId != null">
+        place_id = #{placeId,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="contactFirstName != null">
+        contact_first_name = #{contactFirstName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactLastName != null">
+        contact_last_name = #{contactLastName,jdbcType=VARCHAR},
+      </if>
+      <if test="contactFullName != null">
+        contact_full_name = #{contactFullName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasedScooterQty != null">
+        purchased_scooter_qty = #{purchasedScooterQty,jdbcType=INTEGER},
+      </if>
+      <if test="assignationScooterQty != null">
+        assignation_scooter_qty = #{assignationScooterQty,jdbcType=INTEGER},
+      </if>
+      <if test="certificateType != null">
+        certificate_type = #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificatePositiveAnnex != null">
+        certificate_positive_annex = #{certificatePositiveAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateNegativeAnnex != null">
+        certificate_negative_annex = #{certificateNegativeAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseNum != null">
+        business_license_num = #{businessLicenseNum,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseAnnex != null">
+        business_license_annex = #{businessLicenseAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNum != null">
+        invoice_num = #{invoiceNum,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceAnnex != null">
+        invoice_annex = #{invoiceAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAnnex != null">
+        contract_annex = #{contractAnnex,jdbcType=VARCHAR},
+      </if>
+      <if test="accountFlag != null">
+        account_flag = #{accountFlag,jdbcType=INTEGER},
+      </if>
+      <if test="cardholder != null">
+        cardholder = #{cardholder,jdbcType=VARCHAR},
+      </if>
+      <if test="cvv != null">
+        cvv = #{cvv,jdbcType=VARCHAR},
+      </if>
+      <if test="cardNum != null">
+        card_num = #{cardNum,jdbcType=VARCHAR},
+      </if>
+      <if test="synchronizeFlag != null">
+        synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN},
+      </if>
+      <if test="revision != null">
+        revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=VARCHAR},
+      </if>
+      <if test="def6 != null">
+        def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>
