@@ -474,10 +474,10 @@ public class UserTokenServiceImpl implements UserTokenService {
                         ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
 
-            if (StringUtils.equals(ClientTypeEnums.PC.getValue(),enter.getClientType())){
+            if (StringUtils.equals(ClientTypeEnums.PC.getValue(), enter.getClientType())) {
                 //密码极验
                 extremeExperience(enter, accountsDto, userPassword);
-            }else{
+            } else {
                 String password = DigestUtils.md5Hex(enter.getPassword() + userPassword.getSalt());
                 if (!userPassword.getPassword().equals(password)) {
                     throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
@@ -694,6 +694,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
         userToken.setRequestId(enter.getRequestId());
+        userToken.setDeptId(enter.getOpeDeptId() == null ? new Long("0") : enter.getOpeDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
@@ -1042,26 +1043,26 @@ public class UserTokenServiceImpl implements UserTokenService {
         return userToken;
     }
 
-    public Integer passWordMistaken(String key){
+    public Integer passWordMistaken(String key) {
         Integer num = 1;
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         // 先判断该用户有没有输错过密码
-        if(jedisCluster.exists(key)){
+        if (jedisCluster.exists(key)) {
             //缓存中能找到，说明已经输错过密码了
             Map<String, String> data = jedisCluster.hgetAll(key);
             String oldNum = data.get("num");
-            if(Integer.parseInt(oldNum) >= 5){
+            if (Integer.parseInt(oldNum) >= 5) {
                 return Integer.parseInt(oldNum);
             }
             num = Integer.parseInt(oldNum) + 1;
-            if(num == 5){
-                map.put("num",num.toString());
+            if (num == 5) {
+                map.put("num", num.toString());
                 jedisCluster.hmset(key, map);
                 jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
                 return num;
             }
         }
-        map.put("num",num.toString());
+        map.put("num", num.toString());
         jedisCluster.hmset(key, map);
         return num;
     }
@@ -1070,7 +1071,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public Integer totalUserCount(List<Integer> list) {
         QueryWrapper<PlaUser> qw = new QueryWrapper<>();
-        qw.in(PlaUser.COL_USER_TYPE,list);
+        qw.in(PlaUser.COL_USER_TYPE, list);
         int count = plaUserService.count(qw);
         return count;
     }
@@ -1079,8 +1080,8 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public Integer registerCount(List<Integer> list, String dateStr) {
         QueryWrapper<PlaUser> qw = new QueryWrapper<>();
-        qw.in(PlaUser.COL_USER_TYPE,list);
-        qw.like(PlaUser.COL_CREATED_TIME,dateStr);
+        qw.in(PlaUser.COL_USER_TYPE, list);
+        qw.like(PlaUser.COL_CREATED_TIME, dateStr);
         int count = plaUserService.count(qw);
         return count;
     }
@@ -1089,8 +1090,8 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public Integer activeCount(List<Integer> list, String dateStr) {
         QueryWrapper<PlaUser> qw = new QueryWrapper<>();
-        qw.in(PlaUser.COL_USER_TYPE,list);
-        qw.like(PlaUser.COL_LAST_LOGIN_TIME,dateStr);
+        qw.in(PlaUser.COL_USER_TYPE, list);
+        qw.like(PlaUser.COL_LAST_LOGIN_TIME, dateStr);
         int count = plaUserService.count(qw);
         return count;
     }
