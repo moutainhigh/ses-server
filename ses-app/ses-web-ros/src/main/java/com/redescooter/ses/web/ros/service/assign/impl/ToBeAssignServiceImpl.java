@@ -522,7 +522,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
             sub.setId(model.getId());
             sub.setToBeAssignCount(model.getQty());
-            totalCount += model.getQty();
+            if (null != model.getQty()) {
+                totalCount += model.getQty();
+            }
 
             sub.setSeatNumber(model.getSeatNumber());
             sub.setVinCode(model.getVinCode());
