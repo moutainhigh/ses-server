@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.config;
+package com.redescooter.ses.admin.dev.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
