@@ -12,29 +12,14 @@ import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatGroupMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
-import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -79,6 +64,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     @Autowired
     private OpeSpecificatGroupMapper opeSpecificatGroupMapper;
+
+    @Autowired
+    private OpeInWhouseOrderService opeInWhouseOrderService;
+
+    @Autowired
+    private OpeOutWhouseOrderService opeOutWhouseOrderService;
+
+
 
     /**
      * 成品库车辆库存列表
@@ -292,4 +285,25 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
     }
 
+
+    /**
+     * 出库单和入库单的数量统计，按国家区分（从库存点击出入库管理进入的）
+     * @param enter
+     * @return
+     */
+    @Override
+    public Map<String, Integer> outOrInOrderConunt(WmsStockTypeEnter enter) {
+        Map<String, Integer> map = new HashMap<>();
+
+        // 入库单
+        QueryWrapper<OpeInWhouseOrder> in = new QueryWrapper<>();
+        in.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
+        map.put("1",opeInWhouseOrderService.count(in));
+
+        // 出库单
+        QueryWrapper<OpeOutWhouseOrder> out = new QueryWrapper<>();
+        out.eq(OpeOutWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
+        map.put("2", opeOutWhouseOrderService.count(out));
+        return map;
+    }
 }

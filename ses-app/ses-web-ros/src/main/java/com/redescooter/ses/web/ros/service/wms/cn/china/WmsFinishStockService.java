@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 import java.util.Map;
@@ -71,5 +73,13 @@ public interface WmsFinishStockService {
      * @return
      */
     WmsfinishCombinDetailResult finishCombinDetail(IdEnter enter);
+
+
+    /**
+     * 出库单和入库单的数量统计，按国家区分（从库存点击出入库管理进入的）
+     * @param enter
+     * @return
+     */
+    Map<String, Integer> outOrInOrderConunt(WmsStockTypeEnter enter);
 
 }

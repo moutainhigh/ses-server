@@ -104,4 +104,11 @@ public class WmsFinishStockController {
     public Response<IntResult> scooterNum(@ModelAttribute @ApiParam("请求参数") WmsFinishScooterListEnter enter) {
         return new Response<>(frWhService.scooterNum(enter, 1));
     }
+
+
+    @PostMapping(value = "/outOrInOrderConunt")
+    @ApiOperation(value = "出库单和入库单的数量统计，按国家区分（从库存点击出入库管理进入的）", response = Map.class)
+    public Response<Map<String, Integer>> outOrInOrderConunt(@ModelAttribute @ApiParam("请求参数") WmsStockTypeEnter enter) {
+        return new Response<>(wmsFinishStockService.outOrInOrderConunt(enter));
+    }
 }
