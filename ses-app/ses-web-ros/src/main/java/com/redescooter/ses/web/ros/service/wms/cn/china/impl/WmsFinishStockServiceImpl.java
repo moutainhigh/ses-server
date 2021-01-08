@@ -171,7 +171,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         bomWrapper.eq(OpeProductionScooterBom::getBomStatus, 1);
         List<OpeProductionScooterBom> bomList = opeProductionScooterBomMapper.selectList(bomWrapper);
         if (CollectionUtils.isEmpty(bomList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+            return result;
         }
 
         for (OpeProductionScooterBom bom : bomList) {
@@ -186,7 +186,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             relationWrapper.eq(OpeProductionPartsRelation::getProductionId, productionId);
             List<OpeProductionPartsRelation> relationList = opeProductionPartsRelationMapper.selectList(relationWrapper);
             if (CollectionUtils.isEmpty(relationList)) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCTION_PART_IS_NOT_EXIST.getMessage());
+                return result;
             }
 
             Integer[] numArray = new Integer[relationList.size()];
@@ -203,7 +203,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
                 List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
                 if (CollectionUtils.isEmpty(list)) {
-                    throw new SesWebRosException(ExceptionCodeEnums.PART_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.PART_STOCK_IS_EMPTY.getMessage());
+                    return result;
                 }
 
                 OpeWmsPartsStock stock = list.get(0);
