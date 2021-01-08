@@ -147,7 +147,8 @@ public class AdminScooterServiceImpl implements AdminScooterService {
          * -这里的事务操作分成：1.自身(adm_scooter表新增数据) 2.scooter-service-scooter服务(sco_scooter、sco_scooter_ecu表新增数据)
          * -目前还没有集成分布式事务解决方案,所以这里可能会导致事务不一致的情况出现
          */
-        transactionTemplate.execute(adminScooterStatus -> {
+        boolean result = transactionTemplate.execute(adminScooterStatus -> {
+            boolean flag = true;
             try {
                 adminScooterMapper.insertAdminScooter(admScooter);
                 adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
@@ -159,11 +160,20 @@ public class AdminScooterServiceImpl implements AdminScooterService {
                 scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(),
                         userId, scooterNo));
             } catch (Exception e) {
+                flag = false;
                 log.error("【创建车辆信息失败】----{}", ExceptionUtils.getStackTrace(e));
                 adminScooterStatus.setRollbackOnly();
             }
-            return 1;
+            return flag;
         });
+
+        /**
+         * 手动抛出异常
+         */
+        if (!result) {
+            throw new SesAdminDevException(ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getCode(),
+                    ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getMessage());
+        }
 
         return 0;
     }
