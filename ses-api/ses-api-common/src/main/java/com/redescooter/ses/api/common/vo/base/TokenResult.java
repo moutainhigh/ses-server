@@ -23,8 +23,4 @@ public class TokenResult extends GeneralResult {
 
     @ApiModelProperty(value = "token")
     private String token;
-
-//    @ApiModelProperty("Do you need to reset your password")
-//    private boolean resetPsd;
-
 }

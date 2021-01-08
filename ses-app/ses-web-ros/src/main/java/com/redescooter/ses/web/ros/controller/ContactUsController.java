@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping(value = "/contactUs")
 public class ContactUsController {
 
-  @Autowired
+  @Autowired()
   private ContactUsService contactUsService;
 
   @PostMapping(value = "/list")

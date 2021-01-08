@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum CustomerTypeEnum {
 
-    BUSINESS("1", "企业"),
+    BUSINESS("1", "Company"),
 
-    PERSONAL("2", "个人");
+    PERSONAL("2", "Personal");
 
     private String key;
 

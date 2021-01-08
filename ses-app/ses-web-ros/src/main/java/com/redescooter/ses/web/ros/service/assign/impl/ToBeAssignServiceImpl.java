@@ -146,11 +146,22 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setTenantId(enter.getTenantId());
             node.setUserId(enter.getUserId());
             node.setCustomerId(enter.getCustomerId());
-            node.setNode(NodeEnum.VIN_CODE.getCode());
+            node.setNode(NodeEnum.NONE.getCode());
             node.setFlag(FlagEnum.NOT.getCode());
             node.setCreatedBy(enter.getUserId());
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
+
+            // 主表新增一条数据
+            OpeCarDistribute model = new OpeCarDistribute();
+            model.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
+            model.setDr(DelStatusEnum.VALID.getCode());
+            model.setTenantId(enter.getTenantId());
+            model.setUserId(enter.getUserId());
+            model.setCustomerId(enter.getCustomerId());
+            model.setCreatedBy(enter.getUserId());
+            model.setCreatedTime(new Date());
+            opeCarDistributeMapper.insert(model);
         }
 
         // 客户信息
@@ -252,35 +263,21 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             Integer seatNumber = o.getSeatNumber();
             Integer qty = o.getQty();
 
-            // 查询主表是否存在,不存在就新增
+            // 生成VIN Code,只需车型名称和座位数量这两个变量
+            String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
+            logger.info("生成的VIN Code是:[{}]", vinCode);
+
+            // 修改主表
+            OpeCarDistribute model = new OpeCarDistribute();
+            model.setSpecificatTypeId(specificatId);
+            model.setSeatNumber(seatNumber);
+            model.setVinCode(vinCode);
+            model.setQty(qty);
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
             LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(OpeCarDistribute::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-            wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
-            wrapper.eq(OpeCarDistribute::getSeatNumber, seatNumber);
-            List<OpeCarDistribute> existList = opeCarDistributeMapper.selectList(wrapper);
-            if (CollectionUtils.isEmpty(existList)) {
-
-                // 生成VIN Code,只需车型名称和座位数量这两个变量
-                String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
-                logger.info("生成的VIN Code是:[{}]", vinCode);
-
-                // 新增主表
-                long id = idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE);
-                OpeCarDistribute model = new OpeCarDistribute();
-                model.setId(id);
-                model.setDr(DelStatusEnum.VALID.getCode());
-                model.setTenantId(enter.getTenantId());
-                model.setUserId(enter.getUserId());
-                model.setCustomerId(enter.getCustomerId());
-                model.setSpecificatTypeId(specificatId);
-                model.setSeatNumber(seatNumber);
-                model.setVinCode(vinCode);
-                model.setQty(qty);
-                model.setCreatedBy(enter.getUserId());
-                model.setCreatedTime(new Date());
-                opeCarDistributeMapper.insert(model);
-            }
+            opeCarDistributeMapper.update(model, wrapper);
         }
 
         // node表node字段+1
@@ -525,7 +522,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
             sub.setId(model.getId());
             sub.setToBeAssignCount(model.getQty());
-            totalCount += model.getQty();
+            if (null != model.getQty()) {
+                totalCount += model.getQty();
+            }
 
             sub.setSeatNumber(model.getSeatNumber());
             sub.setVinCode(model.getVinCode());

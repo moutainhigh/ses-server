@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.scooter.*;
 import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
@@ -11,10 +12,10 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.common.vo.version.ReleaseAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
-import com.redescooter.ses.api.foundation.vo.app.AppVersionDTO;
+import com.redescooter.ses.api.foundation.service.AppVersionUpdateLogService;
+import com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import com.redescooter.ses.api.mobile.b.service.RideStatBService;
-import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.RideStatCService;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
@@ -31,10 +32,8 @@ import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.MapUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
@@ -43,6 +42,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +55,14 @@ import java.util.List;
 @Service
 public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
+    @Reference
+    private RideStatBService rideStatBService;
+    @Reference
+    private RideStatCService rideStatCService;
+    @Reference
+    private AppVersionService appVersionService;
+    @Reference
+    private AppVersionUpdateLogService appVersionUpdateLogService;
     @Resource
     private ScooterServiceMapper scooterMapper;
     @Resource
@@ -69,12 +77,6 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     private IdAppService idAppService;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Reference
-    private RideStatBService rideStatBService;
-    @Reference
-    private RideStatCService rideStatCService;
-    @Reference
-    private AppVersionService appVersionService;
 
 
     @Override
@@ -256,6 +258,28 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         if (4 == paramDTO.getReleaseType()) {
             tabletSnList = scooterMapper.getAllScooterTabletSn();
         }
+
+        /**
+         * 记录本次车载平板升级日志,主要用于升级失败重试时使用
+         */
+        List<AppVersionUpdateLogDTO> appVersionUpdateLogList = new ArrayList<>();
+
+        tabletSnList.forEach(tabletSn -> {
+            AppVersionUpdateLogDTO appVersionUpdateLog = new AppVersionUpdateLogDTO();
+            appVersionUpdateLog.setTabletSn(tabletSn);
+            appVersionUpdateLog.setAppVersionId(appVersion.getId());
+            appVersionUpdateLog.setAppVersionType(AppVersionTypeEnum.SCS.getType());
+            appVersionUpdateLog.setIsUpdateSuccess(false);
+            appVersionUpdateLog.setCreatedBy(paramDTO.getUserId());
+            appVersionUpdateLog.setUpdatedBy(paramDTO.getUserId());
+
+            appVersionUpdateLogList.add(appVersionUpdateLog);
+        });
+
+        // 先将本次升级车辆存在于升级日志表的状态改为 “已成功”,然后再往升级日志表中添加升级日志,为了避免升级失败重试时同一辆车出现多个重试版本的情况
+        appVersionUpdateLogService.batchUpdateAppVersionUpdateLogStatus(tabletSnList);
+
+        appVersionUpdateLogService.batchInsertAppVersionUpdateLog(appVersionUpdateLogList);
 
         /**
          * 消息通知下发,通知平板端进行升级操作

@@ -340,6 +340,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
         userToken.setDeptId(opeSysUser.getDeptId());
+
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");

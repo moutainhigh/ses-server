@@ -17,6 +17,7 @@ import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionMapper;
+import com.redescooter.ses.service.foundation.dao.AppVersionUpdateLogMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -44,16 +45,18 @@ import java.util.stream.Collectors;
 @Service
 public class AppVersionServiceImpl implements AppVersionService {
 
-    @Resource
-    private AppVersionMapper appVersionMapper;
     @Reference
     private ScooterEmqXService scooterEmqXService;
     @Reference
     private SysUserService sysUserService;
-    @Resource
-    private TransactionTemplate transactionTemplate;
     @Reference
     private IdAppService idAppService;
+    @Resource
+    private AppVersionUpdateLogMapper appVersionUpdateLogMapper;
+    @Resource
+    private AppVersionMapper appVersionMapper;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
 
     @Override

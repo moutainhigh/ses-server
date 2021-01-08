@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum IndustryTypeEnum {
 
-    RESTAURANT("1", "餐厅"),
+    RESTAURANT("1", "Restaurant"),
 
-    EXPRESS("2", "快递");
+    EXPRESS("2", "Express");
 
     private String key;
 
