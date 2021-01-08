@@ -63,7 +63,7 @@
             a.customer_id,
             a.full_name,
             a.email,
-            a.telephone,
+            b.telephone,
             a.post_code,
             a.address,
             b.customer_type,
