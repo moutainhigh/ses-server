@@ -126,7 +126,7 @@
         id as relationOrderId,
         invoice_no as relationOrderNo
         from ope_invoice_order
-        where dr = 0
+        where dr = 0 and invoice_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and invoice_no like concat('%', #{enter.keyword}, '%')
         </if>
