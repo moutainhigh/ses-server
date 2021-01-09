@@ -13,24 +13,24 @@ import java.math.BigDecimal;
  * @Date 2021/1/6 3:35 上午
  * @Description 产品价格结果集出参
  **/
-@ApiModel(value = "产品型号结果出参", description = "产品型号结果出参")
+@ApiModel(value = "Product price result set output parameters", description = "产品价格结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProductPriceDetailsResult extends GeneralResult {
 
-    @ApiModelProperty(value = "主键")
+    @ApiModelProperty(value = "ID")
     private Long id;
 
-    @ApiModelProperty(value = "产品Id")
+    @ApiModelProperty(value = "Product Id")
     private Long productId;
 
-    @ApiModelProperty(value = "状态,0全额付款，1分期付款")
+    @ApiModelProperty(value = "Status, 0 full payment, 1 installment")
     private String priceType;
 
-    @ApiModelProperty(value = "分期付款时间数，单位month")
+    @ApiModelProperty(value = "Installment payment time, in month. If it is full payment, the default value is 0")
     private String installmentTime;
 
-    @ApiModelProperty(value = "销售价格 浮点型价格")
+    @ApiModelProperty(value = "Sales Price")
     private BigDecimal price;
 
 }

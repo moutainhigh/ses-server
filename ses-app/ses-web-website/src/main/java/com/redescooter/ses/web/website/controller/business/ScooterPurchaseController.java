@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -25,10 +25,10 @@ import java.util.List;
  * @ClassName: ProductModelController
  * @Function: 车辆选购服务
  */
-@Api(tags = {"ScooterPurchase"})
+@Api(tags = {"Scooter Purchase"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/purchase")
+@RequestMapping(value = "/scooter/purchase")
 public class ScooterPurchaseController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/modelList")
-    @ApiOperation(value = "Scooter model list", response = ModelPriceResult.class)
+    @ApiOperation(value = "Get a list of models and prices", response = ModelPriceResult.class)
     public Response<List<ModelPriceResult>> modelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.modelPriceList(enter));
     }
@@ -55,7 +55,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/details")
-    @ApiOperation(value = "get Product Details", response = ProductsResult.class)
+    @ApiOperation(value = "Get the product details according to the main building of the model", response = ProductsResult.class)
     public Response<List<ProductsResult>> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getProductDetails(enter));
     }
@@ -68,7 +68,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getPartsList")
-    @ApiOperation(value = "get Product Details", response = PartsDetailsResult.class)
+    @ApiOperation(value = "Get the list of accessories, support fuzzy search by name", response = PartsDetailsResult.class)
     public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(scooterPurchaseService.getPartsList(enter));
     }
@@ -80,10 +80,11 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/getScooterConfigList")
-    @ApiOperation(value = "Vehicle battery configuration", response = ProductPartsDetailsResult.class)
-    public Response<List<ProductPartsDetailsResult>> getScooterConfigList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    @PostMapping(value = "/getScooterBatterys")
+    @ApiOperation(value = "Get vehicle battery configuration information list", response = ProductPartsDetailsResult.class)
+    public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterBatteryConfigList(enter));
     }
+
 
 }

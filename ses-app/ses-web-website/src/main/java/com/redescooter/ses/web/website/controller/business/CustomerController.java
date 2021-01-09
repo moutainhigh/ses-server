@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date 2021/1/6 9:27 下午
  * @Description 客户服务
  **/
-@Api(tags = {"Customer Service"})
+@Api(tags = {"Customer"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/customer")

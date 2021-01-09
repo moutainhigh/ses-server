@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @ApiModel(value = "新增经销商入参", description = "新增经销商入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DistributorDetailsResult extends GeneralResult {
+public class DealerDetailsResult extends GeneralResult {
 
     /**
      * 主键

@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.config;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @Author jerry
  * @Date 2021/1/8 12:03 上午
- * @Description 产品配置服务
+ * @Description 产品配件关系服务
  **/
-@Api(tags = {"ProductColour"})
+@Api(tags = {"ProductParts"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/productparts")
+@RequestMapping(value = "/product/parts")
 public class ProductPartsController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class ProductPartsController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "创建产品配件", response = GeneralResult.class)
+    @ApiOperation(value = "给产品添加配件", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddProductPartsEnter enter) {
         return new Response<>(productPartsService.addProductParts(enter));
     }

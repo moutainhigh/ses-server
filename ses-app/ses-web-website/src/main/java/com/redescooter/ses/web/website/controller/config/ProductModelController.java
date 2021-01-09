@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.config;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -20,12 +20,12 @@ import java.util.List;
 /**
  * @Author jerry
  * @Date 2021/1/7 11:08 下午
- * @Description 产品颜色关系关系管理
+ * @Description 产品车型服务管理
  **/
-@Api(tags = {"ProductColour"})
+@Api(tags = {"ProductModel"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/productmodel")
+@RequestMapping(value = "/product/model")
 public class ProductModelController {
 
     @Autowired

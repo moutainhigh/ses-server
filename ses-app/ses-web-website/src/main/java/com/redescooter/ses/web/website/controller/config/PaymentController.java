@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.config;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = {"Payment Management"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/payment")
+@RequestMapping(value = "/payment/method")
 public class PaymentController {
 
     @Autowired
@@ -33,14 +33,14 @@ public class PaymentController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "配送方式列表展示", response = PaymentTypeDetailsResult.class)
+    @ApiOperation(value = "Payment method list", response = PaymentTypeDetailsResult.class)
     public Response<List<PaymentTypeDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(paymentTypeService.getPaymentTypeList(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "新增配送方式列表", response = GeneralResult.class)
+    @ApiOperation(value = "New payment method", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddPaymentTypeEnter enter) {
         return new Response<>(paymentTypeService.addPaymentType(enter));
     }

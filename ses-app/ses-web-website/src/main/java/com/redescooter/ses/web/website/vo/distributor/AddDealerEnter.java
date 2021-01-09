@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @ApiModel(value = "新增经销商入参", description = "新增经销商入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AddDistributorEnter extends GeneralEnter {
+public class AddDealerEnter extends GeneralEnter {
 
     /**
      * 门店名称

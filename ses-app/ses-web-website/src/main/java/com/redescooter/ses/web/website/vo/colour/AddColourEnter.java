@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  * @Date 2021/1/5 10:13 下午
  * @Description 产品颜色新增入参
  **/
-@ApiModel(value = "产品颜色新增入参", description = "产品颜色新增入参")
+@ApiModel(value = "Product color added", description = "产品颜色新增入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AddColourEnter extends GeneralEnter {
@@ -19,31 +19,31 @@ public class AddColourEnter extends GeneralEnter {
     /**
      * 颜色名称
      */
-    @ApiModelProperty(value="颜色名称")
+    @ApiModelProperty(value="Color name")
     private String colourName;
 
     /**
      * 颜色编码
      */
-    @ApiModelProperty(value="颜色编码")
+    @ApiModelProperty(value="Color coding")
     private String colourCode;
 
     /**
      * 颜色RGB值
      */
-    @ApiModelProperty(value="颜色RGB值")
+    @ApiModelProperty(value="Color RGB value")
     private String colourRgb;
 
     /**
      * 颜色16进制颜色编码
      */
-    @ApiModelProperty(value="颜色16进制颜色编码")
+    @ApiModelProperty(value="Color hexadecimal color coding")
     private String colour16;
 
     /**
      * 备注
      */
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value="remark")
     private String remark;
 
 }

@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "编辑经销商入参", description = "编辑经销商入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModityDistributorEnter extends AddDistributorEnter {
+public class ModityDealerEnter extends AddDealerEnter {
 
     /**
      * 主键

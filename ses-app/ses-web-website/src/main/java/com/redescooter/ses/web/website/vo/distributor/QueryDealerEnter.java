@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "新增经销商入参", description = "新增经销商入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QueryDistributorEnter extends GeneralEnter {
+public class QueryDealerEnter extends GeneralEnter {
 
     /**
      * 关键字查询

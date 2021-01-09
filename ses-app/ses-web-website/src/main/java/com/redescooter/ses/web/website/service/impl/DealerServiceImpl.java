@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -8,11 +9,11 @@ import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dao.DistributorMapper;
 import com.redescooter.ses.web.website.dm.SiteDistributor;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
-import com.redescooter.ses.web.website.service.DistributorService;
+import com.redescooter.ses.web.website.service.DealerService;
 import com.redescooter.ses.web.website.service.base.SiteDistributorService;
-import com.redescooter.ses.web.website.vo.distributor.AddDistributorEnter;
-import com.redescooter.ses.web.website.vo.distributor.DistributorDetailsResult;
-import com.redescooter.ses.web.website.vo.distributor.QueryDistributorEnter;
+import com.redescooter.ses.web.website.vo.distributor.AddDealerEnter;
+import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -31,7 +32,7 @@ import java.util.List;
  **/
 @Slf4j
 @Service
-public class DistributorServiceImpl implements DistributorService {
+public class DealerServiceImpl implements DealerService {
 
     @Reference
     private IdAppService idAppService;
@@ -50,7 +51,7 @@ public class DistributorServiceImpl implements DistributorService {
      */
     @Transactional
     @Override
-    public Boolean addDistributor(AddDistributorEnter enter) {
+    public GeneralResult addDistributor(AddDealerEnter enter) {
         SiteDistributor addDistributorVO = new SiteDistributor();
         addDistributorVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addDistributorVO.setDr(Constant.DR_FALSE);
@@ -83,8 +84,9 @@ public class DistributorServiceImpl implements DistributorService {
         addDistributorVO.setCreatedBy(enter.getUserId());
         addDistributorVO.setCreatedTime(new Date());
         addDistributorVO.setUpdatedBy(enter.getUserId());
+        siteDistributorService.save(addDistributorVO);
 
-        return siteDistributorService.save(addDistributorVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -93,9 +95,9 @@ public class DistributorServiceImpl implements DistributorService {
      * @param enter
      */
     @Override
-    public DistributorDetailsResult getDistributorDetails(IdEnter enter) {
+    public DealerDetailsResult getDistributorDetails(IdEnter enter) {
         SiteDistributor distributor = siteDistributorService.getById(enter.getId());
-        DistributorDetailsResult result = new DistributorDetailsResult();
+        DealerDetailsResult result = new DealerDetailsResult();
 
         if (distributor != null) {
             BeanUtils.copyProperties(distributor, result);
@@ -111,7 +113,7 @@ public class DistributorServiceImpl implements DistributorService {
      * @return
      */
     @Override
-    public List<DistributorDetailsResult> getDistributorList(QueryDistributorEnter enter) {
+    public List<DealerDetailsResult> getDistributorList(QueryDealerEnter enter) {
         return distributorMapper.getlistOrderByDistance(enter);
     }
 }
