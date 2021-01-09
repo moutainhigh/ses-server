@@ -107,7 +107,7 @@ public class OpeInWhouseOrder {
      * 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @TableField(value = "in_wh_type")
-    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他")
+    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库'")
     private Integer inWhType;
 
     /**

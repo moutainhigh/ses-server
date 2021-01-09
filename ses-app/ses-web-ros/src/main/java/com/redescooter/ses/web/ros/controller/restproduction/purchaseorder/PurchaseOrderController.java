@@ -87,7 +87,7 @@ public class PurchaseOrderController {
 
 
     @PostMapping(value = "/allocateNoData")
-    @ApiOperation(value = "关联调拨单号下拉数据源接口", response = GeneralResult.class)
+    @ApiOperation(value = "关联调拨单号下拉数据源接口", response = AllocateNoDataResult.class)
     public Response<List<AllocateNoDataResult>> allocateNoData(@ModelAttribute @ApiParam("请求参数") KeywordEnter enter) {
         return new Response<>(purchaseOrderService.allocateNoData(enter));
     }

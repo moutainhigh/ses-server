@@ -78,7 +78,8 @@
                whorder.mail          as mail,
                staff.first_name      as createByFirstName,
                staff.last_name       as createByLastName,
-               whorder.wh_type
+               whorder.wh_type,
+               whorder.remark,
         from ope_out_whouse_order whorder
                      inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         where whorder.dr=0
@@ -126,7 +127,7 @@
         id as relationOrderId,
         invoice_no as relationOrderNo
         from ope_invoice_order
-        where dr = 0 and invoice_type = #{enter.classType}
+        where dr = 0 and invoice_type = #{enter.classType} and invoice_status in (10,20,30)
         <if test="enter.keyword != null and enter.keyword != ''">
             and invoice_no like concat('%', #{enter.keyword}, '%')
         </if>

@@ -62,6 +62,9 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty("关联的单据号")
     private String relationOrderNo;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     /**
      * 入库仓库。1:成品库，2:原料库，3:不合格品库
      */

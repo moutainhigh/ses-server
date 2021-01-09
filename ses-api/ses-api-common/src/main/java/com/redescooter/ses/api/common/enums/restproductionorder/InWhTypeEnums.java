@@ -20,6 +20,8 @@ public enum InWhTypeEnums {
     PURCHASE_IN_WHOUSE("PURCHASE_IN_WHOUSE", "采购入库", 3),
     RETURN_MATERIAL_IN_WHOUSE("RETURN_MATERIAL_IN_WHOUSE", "退料入库", 4),
     OTHER("OTHER", "其他", 5),
+    SCRAPPED_IN_WHOUSE("OTHER", "报废入库", 6),
+    ALLOCATION_IN_WHOUSE("OTHER", "调拨入库", 7),
 
     ;
 

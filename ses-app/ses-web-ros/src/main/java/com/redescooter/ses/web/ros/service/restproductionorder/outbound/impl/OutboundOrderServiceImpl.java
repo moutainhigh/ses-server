@@ -636,6 +636,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
     @Override
+    @Transactional
     public GeneralResult outWhConfirm(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -647,10 +648,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 2020 11 17 追加  判断关联的是哪种单据类型  可能是发货单 可能是组装单
-        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
+        if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
             // 更改发货单的状态为待装车
             invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
-        } else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+        } else if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果关联的是组装单  把组装单的状态变为备料完成
             productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
         }

@@ -818,19 +818,41 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         allocateProductListResult.setAllocateId(allocateOrder.getId());
         allocateProductListResult.setAllocateType(allocateOrder.getAllocateType());
+        // 调拨的上限数量  先暂时写成和调拨数量一样的
         switch (allocateOrder.getAllocateType()) {
             case 1:
                 List<AllocateOrderScooterDetailResult> scooters = allocateOrderServiceMapper.allocateScooter(enter.getId());
-                allocateProductListResult.setScooters(CollectionUtils.isEmpty(scooters) ? new ArrayList<>() : scooters);
+                if (CollectionUtils.isNotEmpty(scooters)){
+                    for (AllocateOrderScooterDetailResult scooter : scooters) {
+                        scooter.setAbleQty(scooter.getQty());
+                    }
+                    allocateProductListResult.setScooters(scooters);
+                }else {
+                    allocateProductListResult.setScooters(new ArrayList<>());
+                }
             default:
                 break;
             case 2:
                 List<AllocateOrderCombinDetailResult> combins = allocateOrderServiceMapper.allocateCombin(enter.getId());
-                allocateProductListResult.setCombins(CollectionUtils.isEmpty(combins)?new ArrayList<>():combins);
+                if (CollectionUtils.isNotEmpty(combins)){
+                    for (AllocateOrderCombinDetailResult combin : combins) {
+                        combin.setAbleQty(combin.getQty());
+                    }
+                    allocateProductListResult.setCombins(combins);
+                }else {
+                    allocateProductListResult.setCombins(new ArrayList<>());
+                }
                 break;
             case 3:
                 List<AllocateOrderPartsDetailResult> parts = allocateOrderServiceMapper.allocateParts(enter.getId());
-                allocateProductListResult.setParts(CollectionUtils.isEmpty(parts)?new ArrayList<>():parts);
+                if (CollectionUtils.isNotEmpty(parts)){
+                    for (AllocateOrderPartsDetailResult part : parts) {
+                        part.setAbleQty(part.getQty());
+                    }
+                    allocateProductListResult.setParts(parts);
+                }else {
+                    allocateProductListResult.setParts(new ArrayList<>());
+                }
                 break;
         }
         return allocateProductListResult;
