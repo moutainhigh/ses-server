@@ -48,7 +48,7 @@
     <!--修改委托单已发货数量-->
     <update id="updateEntrustOrderAlreadyConsignorQty" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
         update ope_entrust_order
-	    set already_consignor_qty = already_consignor_qty + 1, updated_time = #{updatedTime}
+	    set already_consignor_qty = already_consignor_qty + #{alreadyConsignorQty}, updated_time = #{updatedTime}
 	    where id = #{id}
     </update>
 

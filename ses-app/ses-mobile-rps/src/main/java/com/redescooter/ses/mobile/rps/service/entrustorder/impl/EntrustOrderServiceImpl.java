@@ -1,7 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.entrustorder.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.entrustorder.EntrustOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.service.RosEntrustOrderService;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -13,6 +13,7 @@ import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeEntrustProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeInvoiceProductSerialNumMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeLogisticsOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustPartsBMapper;
@@ -56,6 +57,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private OpeInvoiceProductSerialNumMapper opeInvoiceProductSerialNumMapper;
     @Resource
     private OpeEntrustProductSerialNumMapper entrustProductSerialNumMapper;
+    @Resource
+    private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
     @Resource
     private IdAppService idAppService;
 
@@ -119,14 +122,46 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return entrustOrderDetail;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult entrustOrderDeliver(IdEnter enter) {
+    public GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO) {
+        /**
+         * 数据完整性校验：1.非空校验 2.委托单状态校验 3.发货数量校验
+         */
+        EntrustOrderDetailDTO entrustOrderDetail = entrustOrderMapper.getEntrustOrderDetailById(paramDTO.getId());
+        RpsAssert.isNull(entrustOrderDetail, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getMessage());
+
+        RpsAssert.isTrue(!EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(entrustOrderDetail.getStatus()),
+                ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getMessage());
+
+        RpsAssert.isTrue(!entrustOrderDetail.getQty().equals(entrustOrderDetail.getAlreadyConsignorQty()),
+                ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
+
+        /**
+         * 保存物流信息
+         */
+        OpeLogisticsOrder opeLogisticsOrder = OpeLogisticsOrder.builder()
+                .id(idAppService.getId(SequenceName.OPE_LOGISTICS_ORDER))
+                .dr(0)
+                .entrustId(paramDTO.getId())
+                .logisticsCompany(paramDTO.getLogisticsCompany())
+                .logisticsNo(paramDTO.getLogisticsNo())
+                .remark(paramDTO.getRemark())
+                .createdBy(paramDTO.getUserId())
+                .createdTime(new Date())
+                .updatedBy(paramDTO.getUserId())
+                .updatedTime(new Date())
+                .build();
+        opeLogisticsOrderMapper.insertOrUpdate(opeLogisticsOrder);
+
         /**
          * 调用Aleks委托单发货后状态流转的逻辑
          */
+        IdEnter enter = new IdEnter(paramDTO.getId());
         rosEntrustOrderService.entrustOrderDeliver(enter);
 
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(paramDTO.getRequestId());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -149,6 +184,15 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         opeEntrustPartsB.setUpdatedBy(paramDTO.getUserId());
         opeEntrustPartsB.setUpdatedTime(new Date());
         entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
+
+        /**
+         * 同时需要将委委托单的已发货数量进行修改
+         */
+        OpeEntrustOrder opeEntrustOrder = new OpeEntrustOrder();
+        opeEntrustOrder.setId(entrustPartsB.getEntrustId());
+        opeEntrustOrder.setAlreadyConsignorQty(paramDTO.getConsignorQty());
+        opeEntrustOrder.setUpdatedTime(new Date());
+        entrustOrderMapper.updateEntrustOrderAlreadyConsignorQty(opeEntrustOrder);
 
         return new GeneralResult(paramDTO.getRequestId());
     }
@@ -213,7 +257,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 break;
             default:
                 OpeEntrustPartsB opeEntrustPartsB = entrustPartsBMapper.getEntrustPartsById(entrustProductSerialNum.getRelationId());
-                opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty());
+                opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty() + 1);
                 opeEntrustPartsB.setUpdatedBy(entrustProductSerialNum.getUpdatedBy());
                 opeEntrustPartsB.setUpdatedTime(new Date());
 
@@ -225,6 +269,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         // 更新委托单的已发货数量
         OpeEntrustOrder opeEntrustOrder = new OpeEntrustOrder();
         opeEntrustOrder.setId(entrustOrderId);
+        opeEntrustOrder.setAlreadyConsignorQty(1);
         opeEntrustOrder.setUpdatedTime(new Date());
         entrustOrderMapper.updateEntrustOrderAlreadyConsignorQty(opeEntrustOrder);
 

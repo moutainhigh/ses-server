@@ -94,6 +94,13 @@ public class OpeEntrustOrder implements Serializable {
     private Integer consignorQty;
 
     /**
+     * 已发货数量
+     */
+    @TableField(value = "already_consignor_qty")
+    @ApiModelProperty(value = "已发货数量")
+    private Integer alreadyConsignorQty;
+
+    /**
      * 交货日期
      */
     @TableField(value = "delivery_date")
@@ -303,6 +310,8 @@ public class OpeEntrustOrder implements Serializable {
     public static final String COL_ENTRUST_TYPE = "entrust_type";
 
     public static final String COL_CONSIGNOR_QTY = "consignor_qty";
+
+    public static final String COL_ALREADY_CONSIGNOR_QTY = "already_consignor_qty";
 
     public static final String COL_DELIVERY_DATE = "delivery_date";
 

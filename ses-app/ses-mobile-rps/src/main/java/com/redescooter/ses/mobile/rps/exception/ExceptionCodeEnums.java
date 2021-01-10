@@ -175,7 +175,9 @@ public enum ExceptionCodeEnums {
 
     DELIVERY_QTY_ERROR(10084, "发货数量有误"),
 
-    NO_NEED_TO_SCAN_CODE(10085, "无需再扫码")
+    NO_NEED_TO_SCAN_CODE(10085, "无需再扫码"),
+
+    ENTRUST_ORDER_STATUS_ERROR(10086, "委托单状态有误")
     ;
 
     private int code;

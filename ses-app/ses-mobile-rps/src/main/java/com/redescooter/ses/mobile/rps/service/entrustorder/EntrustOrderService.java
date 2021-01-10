@@ -44,12 +44,12 @@ public interface EntrustOrderService {
 
     /**
      * 委托单发货
-     * @param enter
+     * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.IdEnter
      * @author assert
      * @date 2021/1/4
     */
-    GeneralResult entrustOrderDeliver(IdEnter enter);
+    GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO);
 
     /**
      * 修改部件实际发货数量

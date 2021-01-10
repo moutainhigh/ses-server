@@ -67,15 +67,15 @@ public class EntrustOrderController {
 
     /**
      * 委托单发货
-     * @param enter
+     * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.IdEnter>
      * @author assert
      * @date 2021/1/4
     */
     @ApiOperation(value = "委托单发货")
     @PostMapping(value = "/deliver")
-    public Response<GeneralResult> entrustOrderDeliver(@ModelAttribute IdEnter enter) {
-        return new Response<>(entrustOrderService.entrustOrderDeliver(enter));
+    public Response<GeneralResult> entrustOrderDeliver(@ModelAttribute EntrustOrderDeliverParamDTO paramDTO) {
+        return new Response<>(entrustOrderService.entrustOrderDeliver(paramDTO));
     }
 
     /**
