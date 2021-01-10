@@ -88,7 +88,7 @@ spring:                                                                         
           name: Jerry
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
-      Config-API:
+      DataManagement-API:
         group-name: Config API
         title: Config
         description: Config Service
