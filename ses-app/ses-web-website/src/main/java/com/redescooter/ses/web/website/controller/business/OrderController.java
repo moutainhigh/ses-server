@@ -37,9 +37,9 @@ public class OrderController {
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/modify")
-    @ApiOperation(value = "modify Order", response = GeneralResult.class)
-    public Response<GeneralResult> modify(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
+    @PostMapping(value = "/saveOrderParts")
+    @ApiOperation(value = "Save vehicle order parts information", response = GeneralResult.class)
+    public Response<GeneralResult> saveOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
         return new Response<>(orderService.modifyOrder(enter));
     }
 

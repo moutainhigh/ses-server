@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller.config;
+package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;

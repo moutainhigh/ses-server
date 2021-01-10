@@ -170,10 +170,12 @@ public class SnowflakeIdWorker {
     /** 测试 */
     @SneakyThrows
     public static void main(String[] args) {
-        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
-            long id = idWorker.nextId();
-            System.out.println(Long.toBinaryString(id));
-            System.out.println(id);
+//        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+//            long id = idWorker.nextId();
+//            System.out.println(Long.toBinaryString(id));
+//            System.out.println(id);
+
+
     }
 
 

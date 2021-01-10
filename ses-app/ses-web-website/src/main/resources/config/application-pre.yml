@@ -57,72 +57,12 @@ spring: #spring config
           name: Jerry
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
-      Customer-API:
-        group-name: Customer API
-        title: Customer
-        description: Customer Service
-        base-package: com.redescooter.ses.web.website.controller.business.CustomerController
-        path-regex: /customer/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      Distributor-API:
-        group-name: Distributor API
-        title: Distributor
-        description: Distributor Service
-        base-package: com.redescooter.ses.web.website.controller.business.DealerController
-        path-regex: /dealer/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      ScooterPurchase-API:
-        group-name: ScooterPurchase API
-        title: ScooterPurchase
-        description: ScooterPurchase Service
-        base-package: com.redescooter.ses.web.website.controller.business.ScooterPurchaseController
-        path-regex: /scooter/purchase/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      DeliveryType-API:
-        group-name: Delivery Type API
-        title: Delivery Type
-        description: Delivery Type Service
-        base-package: com.redescooter.ses.web.website.controller.business.DeliveryTypeController
-        path-regex: /order/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      Order-API:
-        group-name: Order API
-        title: Order
-        description: Order Service
-        base-package: com.redescooter.ses.web.website.controller.business.OrderController
-        path-regex: /order/.*
+      Website-API:
+        group-name: Website API
+        title: Website
+        description: Website Service
+        base-package: com.redescooter.ses.web.website.controller.business
+        path-regex: /.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company

@@ -12,9 +12,9 @@ import java.util.Date;
 import lombok.Data;
 
 /**
-    * 销售订单
-    */
-@ApiModel(value="com-redescooter-ses-web-website-dm-SiteOrder")
+ * 销售订单
+ */
+@ApiModel(value = "com-redescooter-ses-web-website-dm-SiteOrder")
 @Data
 @TableName(value = "site_order")
 public class SiteOrder implements Serializable {
@@ -22,273 +22,280 @@ public class SiteOrder implements Serializable {
      * 主建
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主建")
+    @ApiModelProperty(value = "主建")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 订单号
      */
     @TableField(value = "order_no")
-    @ApiModelProperty(value="订单号")
+    @ApiModelProperty(value = "订单号")
     private String orderNo;
 
     /**
      * 客户id
      */
     @TableField(value = "customer_id")
-    @ApiModelProperty(value="客户id")
+    @ApiModelProperty(value = "客户id")
     private Long customerId;
 
     /**
      * 客户来源渠道 官网/email/电话
      */
     @TableField(value = "customer_source")
-    @ApiModelProperty(value="客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
     private String customerSource;
 
     /**
      * 销售员id
      */
     @TableField(value = "sales_id")
-    @ApiModelProperty(value="销售员id")
+    @ApiModelProperty(value = "销售员id")
     private Long salesId;
 
     /**
-     * 状态,1进行中，2支付中，3取消退款，4已完成，5关闭
+     * 状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value="状态,1进行中，2支付中，3取消退款，4已完成，5关闭")
+    @ApiModelProperty(value = "状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭")
     private String status;
 
     /**
      * 订单类型，1销售，2租赁
      */
     @TableField(value = "order_type")
-    @ApiModelProperty(value="订单类型，1销售，2租赁")
+    @ApiModelProperty(value = "订单类型，1销售，2租赁")
     private String orderType;
 
     /**
-     * 产品Id 
+     * 产品Id
      */
     @TableField(value = "product_id")
-    @ApiModelProperty(value="产品Id ")
+    @ApiModelProperty(value = "产品Id ")
     private Long productId;
 
     /**
-     * 产品颜色 
+     * 颜色主建
+     */
+    @TableField(value = "colour_id")
+    @ApiModelProperty(value = "颜色主建")
+    private Long colourId;
+
+    /**
+     * 产品颜色
      */
     @TableField(value = "product_colour")
-    @ApiModelProperty(value="产品颜色 ")
+    @ApiModelProperty(value = "产品颜色 ")
     private String productColour;
 
     /**
      * 客户名字
      */
     @TableField(value = "full_name")
-    @ApiModelProperty(value="客户名字")
+    @ApiModelProperty(value = "客户名字")
     private String fullName;
 
     /**
      * 公司名称
      */
     @TableField(value = "company_name")
-    @ApiModelProperty(value="公司名称")
+    @ApiModelProperty(value = "公司名称")
     private String companyName;
 
     /**
      * 国家名称
      */
     @TableField(value = "country_name")
-    @ApiModelProperty(value="国家名称")
+    @ApiModelProperty(value = "国家名称")
     private String countryName;
 
     /**
      * 城市名称
      */
     @TableField(value = "city_name")
-    @ApiModelProperty(value="城市名称")
+    @ApiModelProperty(value = "城市名称")
     private String cityName;
 
     /**
      * 区域邮编
      */
     @TableField(value = "postcode")
-    @ApiModelProperty(value="区域邮编")
+    @ApiModelProperty(value = "区域邮编")
     private String postcode;
 
     /**
      * 客户地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="客户地址")
+    @ApiModelProperty(value = "客户地址")
     private String address;
 
     /**
      * 提货方式
      */
     @TableField(value = "delivery_type")
-    @ApiModelProperty(value="提货方式")
+    @ApiModelProperty(value = "提货方式")
     private String deliveryType;
 
     /**
      * 运费
      */
     @TableField(value = "freight")
-    @ApiModelProperty(value="运费")
+    @ApiModelProperty(value = "运费")
     private BigDecimal freight;
 
     /**
      * 产品单价
      */
     @TableField(value = "product_price")
-    @ApiModelProperty(value="产品单价")
+    @ApiModelProperty(value = "产品单价")
     private BigDecimal productPrice;
 
     /**
      * 单据总价
      */
     @TableField(value = "total_price")
-    @ApiModelProperty(value="单据总价")
+    @ApiModelProperty(value = "单据总价")
     private BigDecimal totalPrice;
 
     /**
      * 已付金额
      */
     @TableField(value = "amount_paid")
-    @ApiModelProperty(value="已付金额")
+    @ApiModelProperty(value = "已付金额")
     private BigDecimal amountPaid;
 
     /**
      * 待付款金额
      */
     @TableField(value = "amount_obligation")
-    @ApiModelProperty(value="待付款金额")
+    @ApiModelProperty(value = "待付款金额")
     private BigDecimal amountObligation;
 
     /**
      * 预付定金
      */
     @TableField(value = "prepaid_deposit")
-    @ApiModelProperty(value="预付定金")
+    @ApiModelProperty(value = "预付定金")
     private BigDecimal prepaidDeposit;
 
     /**
      * 优惠抵扣金额
      */
     @TableField(value = "amount_discount")
-    @ApiModelProperty(value="优惠抵扣金额")
+    @ApiModelProperty(value = "优惠抵扣金额")
     private BigDecimal amountDiscount;
 
     /**
      * 支付方式
      */
     @TableField(value = "payment_type_id")
-    @ApiModelProperty(value="支付方式")
+    @ApiModelProperty(value = "支付方式")
     private Long paymentTypeId;
 
     /**
      * 支付状态
      */
     @TableField(value = "pay_status")
-    @ApiModelProperty(value="支付状态")
+    @ApiModelProperty(value = "支付状态")
     private String payStatus;
 
     /**
      * 需求车辆数
      */
     @TableField(value = "scooter_quantity")
-    @ApiModelProperty(value="需求车辆数")
+    @ApiModelProperty(value = "需求车辆数")
     private Integer scooterQuantity;
 
     /**
      * 预计交货时间
      */
     @TableField(value = "etd_delivery_time")
-    @ApiModelProperty(value="预计交货时间")
+    @ApiModelProperty(value = "预计交货时间")
     private Date etdDeliveryTime;
 
     /**
      * 备注
      */
     @TableField(value = "remarks")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remarks;
 
     /**
      * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁")
+    @ApiModelProperty(value = "乐观锁")
     private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -310,6 +317,8 @@ public class SiteOrder implements Serializable {
     public static final String COL_ORDER_TYPE = "order_type";
 
     public static final String COL_PRODUCT_ID = "product_id";
+
+    public static final String COL_COLOUR_ID = "colour_id";
 
     public static final String COL_PRODUCT_COLOUR = "product_colour";
 
