@@ -5,7 +5,7 @@ package com.redescooter.ses.api.common.enums.entrustorder;
  * @author assert
  * @date 2020/12/31 10:22
  */
-public enum EntrustOrderEnum {
+public enum EntrustOrderStatusEnum {
 
     /**
      * 委托单状态
@@ -17,7 +17,7 @@ public enum EntrustOrderEnum {
     private Integer status;
     private String desc;
 
-    EntrustOrderEnum(Integer status, String desc) {
+    EntrustOrderStatusEnum(Integer status, String desc) {
         this.status = status;
         this.desc = desc;
     }
