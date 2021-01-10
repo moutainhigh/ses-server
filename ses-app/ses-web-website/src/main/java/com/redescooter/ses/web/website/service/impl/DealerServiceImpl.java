@@ -16,7 +16,7 @@ import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
 import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import java.util.List;
 @Service
 public class DealerServiceImpl implements DealerService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

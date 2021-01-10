@@ -9,17 +9,16 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteParts;
-import com.redescooter.ses.web.website.dm.SiteProductClass;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
+import com.redescooter.ses.web.website.enums.PartsProcurementSourceEnums;
+import com.redescooter.ses.web.website.enums.PartsTypeEnums;
 import com.redescooter.ses.web.website.service.PartsService;
 import com.redescooter.ses.web.website.service.base.SitePartsService;
 import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
 import com.redescooter.ses.web.website.vo.parts.ModityPartsEnter;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class PartsServiceImpl implements PartsService {
     @Autowired(required = true)
     private SitePartsService sitePartsService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -58,18 +57,18 @@ public class PartsServiceImpl implements PartsService {
         addSitePartsVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addSitePartsVO.setDr(Constant.DR_FALSE);
         addSitePartsVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
-        addSitePartsVO.setPartsType(enter.getPartsType());
+        if (enter.getPartsType().equals(String.valueOf(PartsTypeEnums.BATTERY.getValue()))) {
+            addSitePartsVO.setPartsType(String.valueOf(PartsTypeEnums.BATTERY.getValue()));
+        } else {
+            addSitePartsVO.setPartsType(String.valueOf(PartsTypeEnums.ACCESSORY.getValue()));
+        }
         addSitePartsVO.setPartsNumber(enter.getPartsNumber());
         addSitePartsVO.setCnName(enter.getCnName());
         addSitePartsVO.setFrName(enter.getFrName());
         addSitePartsVO.setEnName(enter.getEnName());
         addSitePartsVO.setPrice(enter.getPrice());
-        addSitePartsVO.setCurrencyUnit(enter.getCurrencyUnit());
-        addSitePartsVO.setSources(enter.getSources());
-
-        if (StringUtils.isNotBlank(enter.getRemark())) {
-            addSitePartsVO.setRemark(enter.getRemark());
-        }
+        addSitePartsVO.setCurrencyUnit("€");
+        addSitePartsVO.setSources(String.valueOf(PartsProcurementSourceEnums.CN.getValue()));
         addSitePartsVO.setRevision(0);
         addSitePartsVO.setSynchronizeFlag(false);
         addSitePartsVO.setCreatedBy(enter.getUserId());

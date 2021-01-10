@@ -12,12 +12,12 @@ import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.ProductModelService;
 import com.redescooter.ses.web.website.service.base.SiteProductModelService;
-import com.redescooter.ses.web.website.vo.product.ProductModelDetailsResult;
 import com.redescooter.ses.web.website.vo.product.AddProductModelEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductModelEnter;
+import com.redescooter.ses.web.website.vo.product.ProductModelDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ import java.util.List;
 @Service
 public class ProductModelServiceImpl implements ProductModelService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired(required = true)

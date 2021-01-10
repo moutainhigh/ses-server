@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.vo.product;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "Product details result set for reference", description = "产品详情结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductDetailsResult extends AddProductEnter {
+public class ProductDetailsResult extends GeneralResult {
 
     /**
      * 主建
@@ -88,9 +89,9 @@ public class ProductDetailsResult extends AddProductEnter {
     private String chargeCycle;
 
     /**
-     * 备注
+     * 续航里程
      */
-    @ApiModelProperty(value = "remark")
-    private String remark;
+    @ApiModelProperty(value = "mileage")
+    private String mileage;
 
 }

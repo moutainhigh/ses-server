@@ -46,7 +46,7 @@ public class ProductController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品列表", response = ProductDetailsResult.class)
+    @ApiOperation(value = "产品列表", response = ProductDetailsResult.class)
     public Response<List<ProductDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(productService.getProductList(enter));
     }

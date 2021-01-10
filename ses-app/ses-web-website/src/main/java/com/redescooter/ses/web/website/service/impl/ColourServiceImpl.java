@@ -12,6 +12,8 @@ import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteColour;
 import com.redescooter.ses.web.website.enums.ColourRangeEnums;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
+import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.ColourService;
 import com.redescooter.ses.web.website.service.base.SiteColourService;
 import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
@@ -19,7 +21,7 @@ import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ import java.util.List;
 @Service
 public class ColourServiceImpl implements ColourService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired(required = true)
@@ -54,6 +56,12 @@ public class ColourServiceImpl implements ColourService {
     @Transactional
     @Override
     public GeneralResult addColour(AddColourEnter enter) {
+
+        if (StringUtils.isAnyBlank(enter.getColourName(), enter.getColour16())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
+
         SiteColour addSiteColourVO = new SiteColour();
         addSiteColourVO.setId(idAppService.getId(SequenceName.SITE_COLOUR));
         addSiteColourVO.setDr(Constant.DR_FALSE);

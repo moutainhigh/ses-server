@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -12,12 +13,12 @@ import com.redescooter.ses.web.website.dm.SiteProductClass;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.ProductClassService;
 import com.redescooter.ses.web.website.service.base.SiteProductClassService;
-import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
 import com.redescooter.ses.web.website.vo.product.AddProductClassEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductClassEnter;
+import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class ProductClassServiceImpl implements ProductClassService {
     @Autowired(required = true)
     private SiteProductClassService siteProductClassService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -51,7 +52,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      */
     @Transactional
     @Override
-    public Boolean addProductClass(AddProductClassEnter enter) {
+    public GeneralResult addProductClass(AddProductClassEnter enter) {
 
         SiteProductClass addProductClassVO = new SiteProductClass();
         addProductClassVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_CLASS));
@@ -72,7 +73,8 @@ public class ProductClassServiceImpl implements ProductClassService {
         addProductClassVO.setCreatedTime(new Date());
         addProductClassVO.setUpdatedBy(enter.getUserId());
 
-        return siteProductClassService.save(addProductClassVO);
+        siteProductClassService.save(addProductClassVO);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -83,12 +85,14 @@ public class ProductClassServiceImpl implements ProductClassService {
      */
     @Transactional
     @Override
-    public Boolean modityProductClass(ModityProductClassEnter enter) {
+    public GeneralResult modityProductClass(ModityProductClassEnter enter) {
 
         SiteProductClass modityProductClassVO = new SiteProductClass();
         BeanUtils.copyProperties(enter, modityProductClassVO);
 
-        return siteProductClassService.update(modityProductClassVO, new UpdateWrapper<SiteProductClass>().eq(SiteProductClass.COL_ID, enter.getId()));
+        siteProductClassService.update(modityProductClassVO, new UpdateWrapper<SiteProductClass>().eq(SiteProductClass.COL_ID, enter.getId()));
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -99,8 +103,9 @@ public class ProductClassServiceImpl implements ProductClassService {
      */
     @Transactional
     @Override
-    public Boolean removeProductClass(IdEnter enter) {
-        return siteProductClassService.removeById(enter.getId());
+    public GeneralResult removeProductClass(IdEnter enter) {
+        siteProductClassService.removeById(enter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -114,7 +119,7 @@ public class ProductClassServiceImpl implements ProductClassService {
         SiteProductClass productClass = siteProductClassService.getById(enter.getId());
         ProductClassDetailsResult result = new ProductClassDetailsResult();
 
-        if(productClass!=null){
+        if (productClass != null) {
             BeanUtils.copyProperties(productClass, result);
             result.setRequestId(enter.getRequestId());
         }

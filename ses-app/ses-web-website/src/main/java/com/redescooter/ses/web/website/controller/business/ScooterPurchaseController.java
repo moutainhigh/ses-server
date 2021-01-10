@@ -41,10 +41,10 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/modelList")
+    @PostMapping(value = "/modelist")
     @ApiOperation(value = "Get a list of models and prices", response = ModelPriceResult.class)
     public Response<List<ModelPriceResult>> modelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(scooterPurchaseService.modelPriceList(enter));
+        return new Response<>(scooterPurchaseService.modelAndPriceList(enter));
     }
 
     /**
@@ -54,10 +54,10 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/details")
+    @PostMapping(value = "/detailsByModel")
     @ApiOperation(value = "Get the product details according to the main building of the model", response = ProductsResult.class)
-    public Response<List<ProductsResult>> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(scooterPurchaseService.getProductDetails(enter));
+    public Response<List<ProductsResult>> detailsByModel(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(scooterPurchaseService.getProductDetailByModel(enter));
     }
 
     /**
@@ -67,7 +67,7 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/getPartsList")
+    @PostMapping(value = "/getpartslist")
     @ApiOperation(value = "Get the list of accessories, support fuzzy search by name", response = PartsDetailsResult.class)
     public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(scooterPurchaseService.getPartsList(enter));
@@ -80,10 +80,10 @@ public class ScooterPurchaseController {
      * @return
      */
     @IgnoreLoginCheck
-    @PostMapping(value = "/getScooterBatterys")
+    @PostMapping(value = "/getscooterbatterys")
     @ApiOperation(value = "Get vehicle battery configuration information list", response = ProductPartsDetailsResult.class)
-    public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(scooterPurchaseService.getScooterBatteryConfigList(enter));
+    public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(scooterPurchaseService.getScooterBatterysByProductId(enter));
     }
 
 

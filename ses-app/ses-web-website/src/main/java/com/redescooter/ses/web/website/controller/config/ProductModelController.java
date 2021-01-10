@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * @Author jerry
  * @Date 2021/1/7 11:08 下午
- * @Description 产品车型服务管理
+ * @Description 产品车型服务
  **/
 @Api(tags = {"ProductModel"})
 @CrossOrigin
@@ -33,28 +33,28 @@ public class ProductModelController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "创建产品颜色关系", response = GeneralResult.class)
+    @ApiOperation(value = "新增产品车型关系", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddProductModelEnter enter) {
         return new Response<>(productModelService.addProductModel(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/remove")
-    @ApiOperation(value = "移除产品颜色关系", response = GeneralResult.class)
+    @ApiOperation(value = "移除产品车型关系", response = GeneralResult.class)
     public Response<GeneralResult> remove(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productModelService.removeProductModel(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/modity")
-    @ApiOperation(value = "编辑产品颜色关系", response = GeneralResult.class)
+    @ApiOperation(value = "编辑产品车型关系", response = GeneralResult.class)
     public Response<GeneralResult> modity(@ModelAttribute @ApiParam("请求参数") ModityProductModelEnter enter) {
         return new Response<>(productModelService.modityProductModel(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品颜色关系列表", response = ProductModelDetailsResult.class)
+    @ApiOperation(value = "产品车型关系列表", response = ProductModelDetailsResult.class)
     public Response<List<ProductModelDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(productModelService.getProductModelList(enter));
     }

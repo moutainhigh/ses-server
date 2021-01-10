@@ -15,9 +15,10 @@ import java.util.List;
 @ApiModel(value = "Product details result set", description = "产品详情结果集")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductsResult extends GeneralResult {
+public class ProductsResult extends ProductDetailsResult {
 
-    private ProductDetailsResult productDetail;
-
+    /**
+     * 颜色集合
+     */
     private List<ColourDetailsResult> colourDetailslist;
 }

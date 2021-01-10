@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
 import com.redescooter.ses.web.website.vo.product.AddProductClassEnter;
@@ -21,7 +22,7 @@ public interface ProductClassService {
      * @param enter
      * @return
      */
-    Boolean addProductClass(AddProductClassEnter enter);
+    GeneralResult addProductClass(AddProductClassEnter enter);
 
     /**
      * 编辑产品种类
@@ -29,7 +30,7 @@ public interface ProductClassService {
      * @param enter
      * @return
      */
-    Boolean modityProductClass(ModityProductClassEnter enter);
+    GeneralResult modityProductClass(ModityProductClassEnter enter);
 
     /**
      * 移除产品种类
@@ -37,7 +38,7 @@ public interface ProductClassService {
      * @param enter
      * @return
      */
-    Boolean removeProductClass(IdEnter enter);
+    GeneralResult removeProductClass(IdEnter enter);
 
 
     /**

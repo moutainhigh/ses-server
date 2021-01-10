@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
 /**
  * @Author jerry
  * @Date 2021/1/5 6:00 下午
@@ -17,20 +19,16 @@ import lombok.EqualsAndHashCode;
 public class ProductModelDetailsResult extends GeneralResult {
 
     /**
-     * 主键 主键
+     * 主键
      */
     @ApiModelProperty(value = "ID")
     private Long id;
 
     /**
-     * 产品种类主建
-     */
-    @ApiModelProperty(value = "Main products")
-    private Long productClassId;
-
-    /**
      * 产品类型单项名称
      */
-    @ApiModelProperty(value = "Product type name")
+    @ApiModelProperty(value = "Model Name")
     private String productModelName;
+
+
 }

@@ -20,7 +20,6 @@ public class ProductPartsServiceImplTest extends SesWebsiteApplicationTests {
         enter.setProductId(121442149339136l);
         enter.setQty(2);
         enter.setParameter("{\"Maximum mileage\":\"140\",\"Minimum payment\":\"12.50\",\"full payment\":\"890\"}");
-        enter.setRemark("");
         enter.setUserId(0L);
         productPartsService.addProductParts(enter);
     }

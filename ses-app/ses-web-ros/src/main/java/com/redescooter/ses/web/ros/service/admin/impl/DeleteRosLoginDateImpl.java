@@ -53,14 +53,14 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         // 不可删除超管数据
-        if (StringUtils.equals(opeSysUser.getLoginName(), enter.getSt())) {
+        if (StringUtils.equals(opeSysUser.getLoginName(), enter.getKeyword())) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
         // 账户删除
         QueryWrapper<OpeSysUser> opeSysUserQueryWrapper = new QueryWrapper<>();
-        opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getSt());
+        opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getKeyword());
         List<OpeSysUser> opeSysUserList = opeSysUserService.list(opeSysUserQueryWrapper);
         if (!CollectionUtils.isEmpty(opeSysUserList)) {
             opeSysUserService.removeByIds(opeSysUserList.stream().map(OpeSysUser::getId).collect(Collectors.toList()));
@@ -68,7 +68,7 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
 
         // 查询客户
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
+        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getKeyword());
         List<OpeCustomer> opeCustomerList = opeCustomerService.list(opeCustomerQueryWrapper);
         if (!CollectionUtils.isEmpty(opeCustomerList)) {
             opeCustomerService
@@ -77,7 +77,7 @@ public class DeleteRosLoginDateImpl implements DeleteRosLoginDateService {
 
         // 询价单删除
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
-        opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_EMAIL, enter.getSt());
+        opeCustomerInquiryQueryWrapper.eq(OpeCustomerInquiry.COL_EMAIL, enter.getKeyword());
         List<OpeCustomerInquiry> opeCustomerInquiryList =
                 opeCustomerInquiryService.list(opeCustomerInquiryQueryWrapper);
         if (!CollectionUtils.isEmpty(opeCustomerInquiryList)) {

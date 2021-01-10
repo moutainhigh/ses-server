@@ -23,12 +23,6 @@ public class AddColourEnter extends GeneralEnter {
     private String colourName;
 
     /**
-     * 颜色编码
-     */
-    @ApiModelProperty(value="Color coding")
-    private String colourCode;
-
-    /**
      * 颜色RGB值
      */
     @ApiModelProperty(value="Color RGB value")

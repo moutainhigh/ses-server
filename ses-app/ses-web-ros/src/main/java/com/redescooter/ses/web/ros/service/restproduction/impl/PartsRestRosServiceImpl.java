@@ -4,16 +4,11 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
-import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -28,7 +23,6 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
@@ -112,7 +106,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     public GeneralResult partsSave(StringEnter enter) {
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), RosPartsSaveOrUpdateEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -217,7 +211,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
         try {
             // 先解析出来
-            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), RosPartsSaveOrUpdateEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -746,7 +740,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         List<RosRepeatResult> list = new ArrayList<>();
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), RosPartsSaveOrUpdateEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -789,7 +783,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         List<RosRepeatResult> list = new ArrayList<>();
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), RosPartsSaveOrUpdateEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), RosPartsSaveOrUpdateEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }

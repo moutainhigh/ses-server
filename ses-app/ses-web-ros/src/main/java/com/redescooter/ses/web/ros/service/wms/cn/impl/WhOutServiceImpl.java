@@ -538,7 +538,7 @@ public class WhOutServiceImpl implements WhOutService {
      */
     @Override
     public Map<String, String> consignMethod(StringEnter enter) {
-        if (!StringUtils.equals(ConsignTypeEnums.getEnumsByCode(enter.getSt()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
+        if (!StringUtils.equals(ConsignTypeEnums.getEnumsByCode(enter.getKeyword()).getValue(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.NO_LOAN.getCode(), ExceptionCodeEnums.NO_LOAN.getMessage());
         }
         Map<String, String> resultMap = new HashMap<>();

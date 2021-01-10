@@ -21,11 +21,14 @@ public class ProductPriceDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "ID")
     private Long id;
 
-    @ApiModelProperty(value = "Product Id")
-    private Long productId;
+    @ApiModelProperty(value = "Product Model Id")
+    private Long productModelId;
 
     @ApiModelProperty(value = "Status, 0 full payment, 1 installment")
     private String priceType;
+
+    @ApiModelProperty(value = "Start Price")
+    private BigDecimal startPrice;
 
     @ApiModelProperty(value = "Installment payment time, in month. If it is full payment, the default value is 0")
     private String installmentTime;

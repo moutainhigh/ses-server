@@ -20,11 +20,10 @@ import java.math.BigDecimal;
 public class AddProductPriceEnter extends GeneralEnter {
 
     /**
-     * 产品Id
+     * 产品型号Id
      */
-    @ApiModelProperty(value = "产品Id")
-    private Long productId;
-
+    @ApiModelProperty(value = "Product Model Id")
+    private Long productModelId;
     /**
      * 状态,0全额付款，1分期付款
      */
@@ -42,6 +41,13 @@ public class AddProductPriceEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "销售价格 浮点型价格")
     private BigDecimal price;
+
+    /**
+     * 起步价
+     */
+    @TableField(value = "start_price")
+    @ApiModelProperty(value = "起步价")
+    private BigDecimal startPrice;
 
     /**
      * 预付定金

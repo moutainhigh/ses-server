@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.vo.distributor;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,6 +24,12 @@ public class DealerDetailsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "主键")
     private Long id;
+
+    /**
+     * 门店编码
+     */
+    @ApiModelProperty(value="Store code")
+    private String code;
 
     /**
      * 门店名称

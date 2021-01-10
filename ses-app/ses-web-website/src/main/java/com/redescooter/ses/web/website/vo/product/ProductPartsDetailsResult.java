@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+
 /**
  * @Author jerry
  * @Date 2021/1/6 3:32 上午
@@ -40,8 +42,14 @@ public class ProductPartsDetailsResult extends GeneralResult {
     private Integer qty;
 
     /**
-     * 相关参数
+     * 部件名称
      */
-    @ApiModelProperty(value = "Related parameters")
-    private String parameter;
+    @ApiModelProperty(value = "partsName")
+    private String partsName;
+
+    /**
+     * 销售价格
+     */
+    @ApiModelProperty(value = "selling price")
+    private BigDecimal price;
 }

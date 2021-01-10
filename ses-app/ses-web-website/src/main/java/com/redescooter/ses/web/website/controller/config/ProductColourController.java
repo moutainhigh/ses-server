@@ -43,7 +43,7 @@ public class ProductColourController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/modity")
-    @ApiOperation(value = "获取产品颜色关系列表", response = GeneralResult.class)
+    @ApiOperation(value = "产品颜色关系列表", response = GeneralResult.class)
     public Response<GeneralResult> modity(@ModelAttribute @ApiParam("请求参数") ModityProductColourEnter enter) {
         return new Response<>(productColourService.modityProductColour(enter));
     }
