@@ -327,14 +327,15 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         wrapper.orderByDesc(OpeWmsCombinStock::getCreatedTime);
         List<OpeWmsCombinStock> list = opeWmsCombinStockService.list(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
+            result.setValue(0);
+        } else {
+            OpeWmsCombinStock stock = list.get(0);
+            if (null != stock) {
+                Integer ableStockQty = stock.getAbleStockQty();
+                result.setValue(ableStockQty);
+            }
         }
-        OpeWmsCombinStock stock = list.get(0);
-        if (null != stock) {
-            Integer ableStockQty = stock.getAbleStockQty();
-            result.setValue(ableStockQty);
-            result.setRequestId(enter.getRequestId());
-        }
+        result.setRequestId(enter.getRequestId());
         return result;
     }
 
