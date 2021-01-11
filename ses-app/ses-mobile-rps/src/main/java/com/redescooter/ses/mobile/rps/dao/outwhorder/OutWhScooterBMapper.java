@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dao.outwhorder;
 
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO;
 
@@ -38,5 +39,23 @@ public interface OutWhScooterBMapper {
      * @date 2021-01-10
      */
     String getScooterModelById(Long id);
+
+    /**
+     * 修改出库单车辆信息
+     * @param opeOutWhScooterB
+     * @return int
+     * @author assert
+     * @date 2021/1/11
+    */
+    int updateOutWhScooterB(OpeOutWhScooterB opeOutWhScooterB);
+
+    /**
+     * 根据outWhId统计出库单车辆质检数量
+     * @param outWhId
+     * @return int
+     * @author assert
+     * @date 2021/1/11
+    */
+    int countOutWhScooterQcQtyByOutWhId(Long outWhId);
 
 }

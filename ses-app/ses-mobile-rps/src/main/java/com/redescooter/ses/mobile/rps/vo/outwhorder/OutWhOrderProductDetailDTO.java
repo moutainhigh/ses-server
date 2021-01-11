@@ -20,6 +20,9 @@ public class OutWhOrderProductDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "产品主键id", dataType = "Long")
     private Long id;
 
+    @ApiModelProperty(value = "出库单id", dataType = "Long")
+    private Long outWhId;
+
     @ApiModelProperty(value = "产品名称", dataType = "String")
     private String name;
 

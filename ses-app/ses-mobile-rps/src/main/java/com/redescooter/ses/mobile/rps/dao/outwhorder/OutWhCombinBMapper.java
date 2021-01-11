@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dao.outwhorder;
 
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO;
 
@@ -38,5 +39,23 @@ public interface OutWhCombinBMapper {
      * @date 2021-01-10
      */
     String getCombinNameById(Long id);
+
+    /**
+     * 修改出库单组装件产品信息
+     * @param opeOutWhCombinB
+     * @return int
+     * @author assert
+     * @date 2021/1/11
+    */
+    int updateOutWhCombinB(OpeOutWhCombinB opeOutWhCombinB);
+
+    /**
+     * 根据outWhId统计出库单组装件质检数量
+     * @param outWhId
+     * @return int
+     * @author assert
+     * @date 2021/1/11
+    */
+    int countOutWhCombinQcQtyByOutWhId(Long outWhId);
 
 }

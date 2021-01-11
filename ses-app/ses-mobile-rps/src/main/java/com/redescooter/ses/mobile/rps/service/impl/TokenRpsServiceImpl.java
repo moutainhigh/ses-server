@@ -173,10 +173,10 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     @Override
     public UserToken checkToken(GeneralEnter enter) {
         UserToken userToken = getUserToken(enter.getToken());
-        if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
-                enter.getAppId())) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+//        if (!StringUtils.equals(userToken.getClientType(), enter.getClientType()) || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId()) || !StringUtils.equals(userToken.getAppId(),
+//                enter.getAppId())) {
+//            throw new SesMobileRpsException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+//        }
         return userToken;
     }
 
@@ -226,7 +226,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
         userToken.setTimestamp(enter.getTimestamp());
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
-
+        userToken.setDeptId(user.getDeptId()==null?0L:user.getDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");

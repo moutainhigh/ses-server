@@ -20,8 +20,8 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "产品序列号", dataType = "String")
     private String serialNum;
 
-    @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"111\",\"templateResultId\":\"111\"," +
-            "\"imageUrls\":\"http://www.baidu.com,http://www.baidu.com\",\"remark\":\"备注说明\"}]")
+    @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"质检模板id\",\"templateResultId\":\"质检结果id\"," +
+            "\"qcItemName\":\"质检项名称\",\"imageUrls\":\"质检图片,多个使用逗号隔开\",\"remark\":\"备注说明\"}]")
     private String st;
 
 }

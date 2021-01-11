@@ -181,7 +181,9 @@ public enum ExceptionCodeEnums {
 
     QC_QTY_ERROR(10087, "质检数量有误"),
 
-    QC_ERROR(10088, "质检失败")
+    QC_ERROR(10088, "质检失败"),
+
+    OUT_WAREHOUSE_ORDER_STATUS_ERROR(10089, "出库单状态有误"),
     ;
 
     private int code;

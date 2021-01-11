@@ -21,6 +21,11 @@ public class QcProductResultDTO {
     private Long templateResultId;
 
     /**
+     * 质检项名称
+     */
+    private String qcItemName;
+
+    /**
      * 图片url,多个用“,”号隔开
      */
     private String imageUrls;

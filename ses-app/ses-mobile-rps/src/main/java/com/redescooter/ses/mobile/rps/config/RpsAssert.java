@@ -78,7 +78,7 @@ public class RpsAssert {
      * @param code
      * @param msg
      */
-    public static void isFlase(Boolean flag, Integer code, String msg) {
+    public static void isFalse(Boolean flag, Integer code, String msg) {
         if (!flag) {
             throw new SesMobileRpsException(code, msg);
         }

@@ -37,10 +37,10 @@
             <if test="partsId != null">
                 parts_id = #{partsId},
             </if>
-            <if test="partsName != null">
+            <if test="partsName != null and partsName != ''">
                 parts_name = #{partsName},
             </if>
-            <if test="partsNo != null">
+            <if test="partsNo != null and partsNo != ''">
                 parts_no = #{partsNo},
             </if>
             <if test="partsType != null">
@@ -52,8 +52,11 @@
             <if test="alreadyOutWhQty != null">
                 already_out_wh_qty = #{alreadyOutWhQty},
             </if>
-            <if test="remark != null">
+            <if test="remark != null and remark != ''">
                 remark = #{remark},
+            </if>
+            <if test="picture != null and picture != ''">
+                picture = #{picture},
             </if>
             <if test="createdBy != null">
                 created_by = #{createdBy},
@@ -75,6 +78,13 @@
     <select id="getPartsNameById" parameterType="java.lang.Long" resultType="java.lang.String">
         select parts_name from ope_out_wh_parts_b
 	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据outWhId统计出库单部件质检数量-->
+    <select id="countOutWhPartsQcQtyByOutWhId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select ifnull(sum(already_out_wh_qty), 0)
+        from ope_out_wh_parts_b
+	    where dr = 0 and out_wh_id = #{outWhId}
     </select>
 
 </mapper>

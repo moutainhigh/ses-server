@@ -25,6 +25,7 @@ import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +44,12 @@ import java.util.stream.Collectors;
 @Service
 public class EntrustOrderServiceImpl implements EntrustOrderService {
 
+    @Reference
+    private IdAppService idAppService;
+    @Reference
+    private RosEntrustOrderService rosEntrustOrderService;
     @Resource
     private EntrustOrderMapper entrustOrderMapper;
-    @Resource
-    private RosEntrustOrderService rosEntrustOrderService;
     @Resource
     private EntrustScooterBMapper entrustScooterBMapper;
     @Resource
@@ -59,8 +62,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
     @Resource
     private OrderSerialBindMapper orderSerialBindMapper;
-    @Resource
-    private IdAppService idAppService;
 
 
     @Override
@@ -132,7 +133,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         RpsAssert.isNull(entrustOrderDetail, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(entrustOrderDetail.getStatus()),
+        RpsAssert.isFalse(EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(entrustOrderDetail.getStatus()),
                 ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getMessage());
 
         // 统计委托单已发货数量
@@ -149,7 +150,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 break;
         }
 
-        RpsAssert.isTrue(!deliveryQty.equals(entrustOrderDetail.getAlreadyConsignorQty()),
+        RpsAssert.isFalse(deliveryQty.equals(entrustOrderDetail.getAlreadyConsignorQty()),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
         /**
@@ -178,7 +179,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 .updatedBy(paramDTO.getUserId())
                 .updatedTime(new Date())
                 .build();
-        opeLogisticsOrderMapper.insertOrUpdate(opeLogisticsOrder);
+        opeLogisticsOrderMapper.insert(opeLogisticsOrder);
 
         /**
          * 调用Aleks委托单发货后状态流转的逻辑
@@ -197,7 +198,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         RpsAssert.isNull(entrustPartsB, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!paramDTO.getConsignorQty().equals(entrustPartsB.getQty()), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
+        RpsAssert.isFalse(paramDTO.getConsignorQty().equals(entrustPartsB.getQty()), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
         /**

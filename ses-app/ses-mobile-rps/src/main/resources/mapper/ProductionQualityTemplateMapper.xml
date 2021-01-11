@@ -23,16 +23,4 @@
         where dr = 0
     </select>
 
-    <!--根据id集合查询质检通过结果信息-->
-    <select id="getPassProductQcTemplateResultByIds" parameterType="java.lang.Long"
-            resultType="com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateResultDTO">
-        select id, product_quality_tempate_id templateId, qc_result qcResult,pass_flag passFlag,
-        upload_flag uploadFlag, results_sequence resultsSequence
-        from ope_production_quality_tempate_b
-        where dr = 0 and pass_flag = true
-        <foreach collection="ids" item="id" open="and id in (" separator="," close=")">
-            #{id}
-        </foreach>
-    </select>
-
 </mapper>

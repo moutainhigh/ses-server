@@ -49,4 +49,13 @@ public interface OutWhPartsBMapper {
      */
     String getPartsNameById(Long id);
 
+    /**
+     * 根据outWhId统计出库单部件质检数量
+     * @param outWhId
+     * @return int
+     * @author assert
+     * @date 2021/1/11
+    */
+    int countOutWhPartsQcQtyByOutWhId(Long outWhId);
+
 }

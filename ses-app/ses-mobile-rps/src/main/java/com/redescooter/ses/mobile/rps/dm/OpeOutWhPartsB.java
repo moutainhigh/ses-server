@@ -93,6 +93,13 @@ public class OpeOutWhPartsB {
     private String remark;
 
     /**
+     * 质检图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "质检图片")
+    private String picture;
+
+    /**
      * 创建人
      */
     @TableField(value = "created_by")
@@ -174,6 +181,8 @@ public class OpeOutWhPartsB {
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
     public static final String COL_REMARK = "remark";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_CREATED_BY = "created_by";
 

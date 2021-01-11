@@ -16,7 +16,7 @@ import lombok.Data;
 @ApiModel(value = "保存质检结果", description = "保存质检结果")
 public class SaveQcResultEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "子单据Id(可以理解成出库单的id)", dataType = "Long")
+    @ApiModelProperty(value = "子单据Id", dataType = "Long")
     private Long id;
 
     @ApiModelProperty(value = "产品Id(不同产品类型的出库单id,比如部件产品id)", dataType = "Long")

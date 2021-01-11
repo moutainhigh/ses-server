@@ -15,18 +15,18 @@
         select out_wh_type `status`, count(id) totalCount
         from ope_out_whouse_order whorder
         where whorder.dr = 0
-        group by `status`
+        group by out_wh_type
     </select>
 
     <!--查询所有出库类型数量-->
     <select id="getOutWarehouseTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select out_type `status`, count(id) totalCount
-        from ope_out_whouse_order whorder
-        where whorder.dr = 0 and out_wh_type = #{type}
-        <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
-        <if test="status == 1">and whorder.out_wh_status = 20</if>
-        group by `status`
+        from ope_out_whouse_order
+        where dr = 0 and out_wh_type = #{type}
+        <if test="status == 0">and out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
+        group by out_type
     </select>
 
     <!--查询出库单数量-->
