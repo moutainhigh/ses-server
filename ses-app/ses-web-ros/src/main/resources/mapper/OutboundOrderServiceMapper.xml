@@ -79,9 +79,9 @@
                staff.first_name      as createByFirstName,
                staff.last_name       as createByLastName,
                whorder.wh_type,
-               whorder.remark,
+               whorder.remark
         from ope_out_whouse_order whorder
-                     inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         where whorder.dr=0
         and whorder.id=#{id}
     </select>
