@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.controller.wms.china;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
@@ -84,5 +81,19 @@ public class WmsQualifiedController {
     @ApiOperation(value = "不合格品库tab的数量统计（车辆/组装件/部件）", response = Map.class)
     public Response<Map<String, Integer>> unailifiedStockTabCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(wmsQualifiedService.unailifiedStockTabCount(enter));
+    }
+
+
+    @PostMapping(value = "/inWhConfirm")
+    @ApiOperation(value = "入库确认(不合格品库)", response = GeneralResult.class)
+    public Response<GeneralResult> inWhConfirm(@ModelAttribute @ApiParam("请求参数") OutOrInWhConfirmEnter enter) {
+        return new Response<>(wmsQualifiedService.inWhConfirm(enter));
+    }
+
+
+    @PostMapping(value = "/outWhConfirm")
+    @ApiOperation(value = "出库确认(不合格品库)", response = GeneralResult.class)
+    public Response<GeneralResult> outWhConfirm(@ModelAttribute @ApiParam("请求参数") OutOrInWhConfirmEnter enter) {
+        return new Response<>(wmsQualifiedService.outWhConfirm(enter));
     }
 }

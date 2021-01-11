@@ -118,4 +118,18 @@ public class WmsFinishStockController {
         return new Response<>(wmsFinishStockService.getAbleStockQtyByProductionCombinBomId(enter));
     }
 
+
+    @PostMapping(value = "/inWhConfirm")
+    @ApiOperation(value = "入库确认（中国仓库和法国仓库是共用的）", response = GeneralResult.class)
+    public Response<GeneralResult> inWhConfirm(@ModelAttribute @ApiParam("请求参数") OutOrInWhConfirmEnter enter) {
+        return new Response<>(wmsFinishStockService.inWhConfirm(enter));
+    }
+
+
+    @PostMapping(value = "/outWhConfirm")
+    @ApiOperation(value = "出库确认（中国仓库和法国仓库是共用的）", response = GeneralResult.class)
+    public Response<GeneralResult> outWhConfirm(@ModelAttribute @ApiParam("请求参数") OutOrInWhConfirmEnter enter) {
+        return new Response<>(wmsFinishStockService.outWhConfirm(enter));
+    }
+
 }

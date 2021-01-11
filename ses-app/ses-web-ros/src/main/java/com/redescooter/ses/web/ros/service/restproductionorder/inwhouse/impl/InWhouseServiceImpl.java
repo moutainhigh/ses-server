@@ -108,6 +108,9 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private WmsMaterialStockService wmsMaterialStockService;
 
+    @Autowired
+    private OpeAllocateOrderService opeAllocateOrderService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -253,9 +256,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateScooterBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderId()){
-                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
-                }
+//                if (null != inWhouseOrder.getRelationOrderId()){
+//                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+//                }
             default:
                 break;
             case 2:
@@ -267,9 +270,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateCombinBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderId()){
-                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
-                }
+//                if (null != inWhouseOrder.getRelationOrderId()){
+//                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+//                }
                 break;
             case 3:
                 // parts
@@ -280,9 +283,9 @@ public class InWhouseServiceImpl implements InWhouseService {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
                 inWhouseOrder.setInWhQty(partsBEnters.stream().mapToInt(SaveOrUpdatePartsBEnter::getInWhQty).sum());
-                if (null != inWhouseOrder.getRelationOrderId()){
-                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
-                }
+//                if (null != inWhouseOrder.getRelationOrderId()){
+//                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+//                }
                 break;
         }
     }
@@ -468,6 +471,20 @@ public class InWhouseServiceImpl implements InWhouseService {
                 relationOrderResult.setOrderNo(combinOrder.getCombinNo());
                 relationOrderResult.setOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
                 relationOrderResult.setCreatedTime(combinOrder.getCreatedTime());
+                relationOrderResults.add(relationOrderResult);
+            }
+        }else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())){
+            // 调拨单
+            QueryWrapper<OpeAllocateOrder> allocateQueryWrapper = new QueryWrapper<>();
+            allocateQueryWrapper.eq(OpeAllocateOrder.COL_ID,inWhouseOrder.getRelationOrderId());
+            allocateQueryWrapper.last("limit 1");
+            OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(allocateQueryWrapper);
+            if (allocateOrder != null){
+                PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
+                relationOrderResult.setId(allocateOrder.getId());
+                relationOrderResult.setOrderNo(allocateOrder.getAllocateNo());
+                relationOrderResult.setOrderType(OrderTypeEnums.ALLOCATE.getValue());
+                relationOrderResult.setCreatedTime(allocateOrder.getCreatedTime());
                 relationOrderResults.add(relationOrderResult);
             }
         }

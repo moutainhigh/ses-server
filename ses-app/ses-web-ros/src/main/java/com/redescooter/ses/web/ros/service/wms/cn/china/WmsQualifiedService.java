@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -79,4 +80,12 @@ public interface WmsQualifiedService {
      * @return
      */
     Map<String, Integer> unailifiedStockTabCount(GeneralEnter enter);
+
+
+
+    GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter);
+
+
+
+    GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter);
 }
