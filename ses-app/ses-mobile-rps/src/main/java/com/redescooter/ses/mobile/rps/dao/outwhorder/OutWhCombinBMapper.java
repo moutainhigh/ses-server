@@ -30,4 +30,13 @@ public interface OutWhCombinBMapper {
      */
     OutWhOrderProductDetailDTO getCombinProductDetailByProductId(Long productId);
 
+    /**
+     * 根据id查询组装件名称
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021-01-10
+     */
+    String getCombinNameById(Long id);
+
 }

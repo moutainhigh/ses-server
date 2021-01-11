@@ -40,4 +40,13 @@ public interface EntrustPartsBMapper {
     */
     int updateEntrustPartsB(OpeEntrustPartsB entrustPartsB);
 
+    /**
+     * 根据entrustId统计委托单部件实际发货数量
+     * @param entrustId
+     * @return int
+     * @author assert
+     * @date 2021-01-10
+     */
+    int countEntrustPartsConsignorQtyByEntrustId(Long entrustId);
+
 }

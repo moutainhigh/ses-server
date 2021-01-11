@@ -177,7 +177,11 @@ public enum ExceptionCodeEnums {
 
     NO_NEED_TO_SCAN_CODE(10085, "无需再扫码"),
 
-    ENTRUST_ORDER_STATUS_ERROR(10086, "委托单状态有误")
+    ENTRUST_ORDER_STATUS_ERROR(10086, "委托单状态有误"),
+
+    QC_QTY_ERROR(10087, "质检数量有误"),
+
+    QC_ERROR(10088, "质检失败")
     ;
 
     private int code;

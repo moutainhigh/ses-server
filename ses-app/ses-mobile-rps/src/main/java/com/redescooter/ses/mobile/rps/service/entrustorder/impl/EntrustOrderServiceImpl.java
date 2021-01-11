@@ -12,12 +12,12 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeEntrustProductSerialNumMapper;
-import com.redescooter.ses.mobile.rps.dao.base.OpeInvoiceProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeLogisticsOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustPartsBMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.order.OrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -54,11 +54,11 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     @Resource
     private EntrustPartsBMapper entrustPartsBMapper;
     @Resource
-    private OpeInvoiceProductSerialNumMapper opeInvoiceProductSerialNumMapper;
-    @Resource
     private OpeEntrustProductSerialNumMapper entrustProductSerialNumMapper;
     @Resource
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
+    @Resource
+    private OrderSerialBindMapper orderSerialBindMapper;
     @Resource
     private IdAppService idAppService;
 
@@ -126,7 +126,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     @Override
     public GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO) {
         /**
-         * 数据完整性校验：1.非空校验 2.委托单状态校验 3.发货数量校验
+         * 数据完整性校验
          */
         EntrustOrderDetailDTO entrustOrderDetail = entrustOrderMapper.getEntrustOrderDetailById(paramDTO.getId());
         RpsAssert.isNull(entrustOrderDetail, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
@@ -135,8 +135,33 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         RpsAssert.isTrue(!EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(entrustOrderDetail.getStatus()),
                 ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getMessage());
 
-        RpsAssert.isTrue(!entrustOrderDetail.getQty().equals(entrustOrderDetail.getAlreadyConsignorQty()),
+        // 统计委托单已发货数量
+        Integer deliveryQty;
+        switch (entrustOrderDetail.getType()) {
+            case 1:
+                deliveryQty = entrustScooterBMapper.countEntrustScooterConsignorQtyByEntrustId(paramDTO.getId());
+                break;
+            case 2:
+                deliveryQty = entrustCombinBMapper.countEntrustCombinConsignorQtyByEntrustId(paramDTO.getId());
+                break;
+            default:
+                deliveryQty = entrustPartsBMapper.countEntrustPartsConsignorQtyByEntrustId(paramDTO.getId());
+                break;
+        }
+
+        RpsAssert.isTrue(!deliveryQty.equals(entrustOrderDetail.getAlreadyConsignorQty()),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
+
+        /**
+         * 更新委托单已发货数量
+         */
+        OpeEntrustOrder opeEntrustOrder = OpeEntrustOrder.builder()
+                .id(paramDTO.getId())
+                .alreadyConsignorQty(deliveryQty)
+                .updatedBy(paramDTO.getUserId())
+                .updatedTime(new Date())
+                .build();
+        entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
 
         /**
          * 保存物流信息
@@ -185,28 +210,19 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         opeEntrustPartsB.setUpdatedTime(new Date());
         entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
 
-        /**
-         * 同时需要将委委托单的已发货数量进行修改
-         */
-        OpeEntrustOrder opeEntrustOrder = new OpeEntrustOrder();
-        opeEntrustOrder.setId(entrustPartsB.getEntrustId());
-        opeEntrustOrder.setAlreadyConsignorQty(paramDTO.getConsignorQty());
-        opeEntrustOrder.setUpdatedTime(new Date());
-        entrustOrderMapper.updateEntrustOrderAlreadyConsignorQty(opeEntrustOrder);
-
         return new GeneralResult(paramDTO.getRequestId());
     }
 
     @Override
     public GeneralResult saveDeliverInfo(SaveProductDeliverInfoParamDTO paramDTO) {
         /**
-         * 委托单产品序列号信息来源于发货单产品序列号表 ---- 发货单产品序列号表数据来源于出库单逻辑那边
+         * 委托单发货的扫码流程主要涉及到了两张表：[ope_order_serial_bind]和[ope_invoice_product_serial_num]
+         * [ope_order_serial_bind]：我扫码之后会通过二维码上面的序列号去这张表里面查找数据
+         * [ope_invoice_product_serial_num]：扫码后会往这张表里面添加数据,这里业主要用于页面上的展示,比如每扫码一个产品
+         * 页面上对应产品就会展示扫码过的序列号信息
+         * ----出库单那边质检扫码逻辑跟委托单这边差不多----
          */
-        QueryWrapper<OpeInvoiceProductSerialNum> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(OpeInvoiceProductSerialNum.COL_SERIAL_NUM, paramDTO.getSerialNum())
-                    .eq(OpeInvoiceProductSerialNum.COL_DR, 0);
-
-        OpeInvoiceProductSerialNum invoiceProductSerialNum = opeInvoiceProductSerialNumMapper.selectOne(queryWrapper);
+        OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(paramDTO.getSerialNum());
 
         /**
          * 已扫码无需再次扫码
@@ -223,9 +239,11 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
          * 保存委托单产品序列号信息 -- 每扫码一次保存一次
          */
         OpeEntrustProductSerialNum entrustProductSerialNum = new OpeEntrustProductSerialNum();
-        BeanUtils.copyProperties(invoiceProductSerialNum, entrustProductSerialNum);
+        BeanUtils.copyProperties(opeOrderSerialBind, entrustProductSerialNum);
 
         entrustProductSerialNum.setId(idAppService.getId(SequenceName.OPE_ENTRUST_PRODUCT_SERIAL_NUM));
+        entrustProductSerialNum.setRelationId(opeOrderSerialBind.getOrderBId());
+        entrustProductSerialNum.setRelationType(opeOrderSerialBind.getProductType());
         entrustProductSerialNum.setQty(1);
         entrustProductSerialNum.setCreatedTime(new Date());
         entrustProductSerialNum.setUpdatedTime(new Date());
@@ -233,17 +251,14 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
 
         /**
          * 更新委托单产品实际发货数量
-         * 这里可以不再去做 [实际发货数量 > 应发货数量] 的判断,上面已经对已扫码再次扫码的产品做限制了
          */
-        Long entrustOrderId = null;
-        switch (invoiceProductSerialNum.getProductType()) {
+        switch (opeOrderSerialBind.getProductType()) {
             case 1:
                 OpeEntrustScooterB opeEntrustScooterB = entrustScooterBMapper.getEntrustScooterById(entrustProductSerialNum.getRelationId());
                 opeEntrustScooterB.setConsignorQty(opeEntrustScooterB.getConsignorQty() + 1); // 扫一下数量+1
                 opeEntrustScooterB.setUpdatedBy(entrustProductSerialNum.getUpdatedBy());
                 opeEntrustScooterB.setUpdatedTime(new Date());
 
-                entrustOrderId = opeEntrustScooterB.getEntrustId();
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
                 break;
             case 2:
@@ -252,7 +267,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustCombinB.setUpdatedBy(entrustProductSerialNum.getUpdatedBy());
                 opeEntrustCombinB.setUpdatedTime(new Date());
 
-                entrustOrderId = opeEntrustCombinB.getEntrustId();
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
                 break;
             default:
@@ -261,17 +275,9 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustPartsB.setUpdatedBy(entrustProductSerialNum.getUpdatedBy());
                 opeEntrustPartsB.setUpdatedTime(new Date());
 
-                entrustOrderId = opeEntrustPartsB.getEntrustId();
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
                 break;
         }
-
-        // 更新委托单的已发货数量
-        OpeEntrustOrder opeEntrustOrder = new OpeEntrustOrder();
-        opeEntrustOrder.setId(entrustOrderId);
-        opeEntrustOrder.setAlreadyConsignorQty(1);
-        opeEntrustOrder.setUpdatedTime(new Date());
-        entrustOrderMapper.updateEntrustOrderAlreadyConsignorQty(opeEntrustOrder);
 
         return new GeneralResult(paramDTO.getRequestId());
     }

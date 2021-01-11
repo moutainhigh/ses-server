@@ -61,12 +61,24 @@ public class RpsAssert {
     }
 
     /**
-     * flag is false throw SesMobileRpsException
+     * flag is true throw SesMobileRpsException
      * @param flag
      * @param code
      * @param msg
      */
     public static void isTrue(Boolean flag, Integer code, String msg) {
+        if (flag) {
+            throw new SesMobileRpsException(code, msg);
+        }
+    }
+
+    /**
+     * flag is false throw SesMobileRpsException
+     * @param flag
+     * @param code
+     * @param msg
+     */
+    public static void isFlase(Boolean flag, Integer code, String msg) {
         if (!flag) {
             throw new SesMobileRpsException(code, msg);
         }

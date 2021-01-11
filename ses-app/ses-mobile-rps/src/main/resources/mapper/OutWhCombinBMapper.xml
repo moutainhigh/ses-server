@@ -24,4 +24,10 @@
         where owc.dr = 0 and owc.id = #{productId}
     </select>
 
+    <!--根据id查询组装件名称-->
+    <select id="getCombinNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select combin_name from ope_out_wh_combin_b
+	    where dr = 0 and id = #{id}
+    </select>
+
 </mapper>

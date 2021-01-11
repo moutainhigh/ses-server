@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel(value = "出库单产品信息")
 public class OutWarehouseOrderProductDTO extends GeneralResult {
 
-    @ApiModelProperty(value = "产品id", dataType = "")
+    @ApiModelProperty(value = "主键id(产品id)", dataType = "Long")
     private Long id;
 
     @ApiModelProperty(value = "出库单id", dataType = "Long")

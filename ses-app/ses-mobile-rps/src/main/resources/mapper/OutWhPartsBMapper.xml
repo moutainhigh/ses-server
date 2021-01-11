@@ -24,4 +24,57 @@
         where owp.dr = 0 and owp.id = #{productId}
     </select>
 
+    <!--修改出库单部件信息-->
+    <update id="updateOutWhPartsB" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
+        update ope_out_wh_parts_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="outWhId != null">
+                out_wh_id = #{outWhId},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId},
+            </if>
+            <if test="partsName != null">
+                parts_name = #{partsName},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType},
+            </if>
+            <if test="qty != null">
+                qty = #{qty},
+            </if>
+            <if test="alreadyOutWhQty != null">
+                already_out_wh_qty = #{alreadyOutWhQty},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询部件名称-->
+    <select id="getPartsNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select parts_name from ope_out_wh_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
 </mapper>

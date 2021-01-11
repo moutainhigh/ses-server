@@ -30,4 +30,13 @@ public interface OutWhScooterBMapper {
      */
     OutWhOrderProductDetailDTO getScooterProductDetailByProductId(Long productId);
 
+    /**
+     * 根据id查询车辆型号
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021-01-10
+     */
+    String getScooterModelById(Long id);
+
 }

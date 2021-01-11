@@ -40,4 +40,13 @@ public interface EntrustCombinBMapper {
     */
     OpeEntrustCombinB getEntrustCombinById(Long id);
 
+    /**
+     * 根据entrustId统计委托单组装件实际发货数量
+     * @param entrustId
+     * @return int
+     * @author assert
+     * @date 2021-01-10
+     */
+    int countEntrustCombinConsignorQtyByEntrustId(Long entrustId);
+
 }

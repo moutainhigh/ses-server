@@ -19,11 +19,11 @@ public class ProductQcTemplateDTO extends GeneralResult {
     @ApiModelProperty(value = "主键id", dataType = "Long")
     private Long id;
 
-    @ApiModelProperty(value = "产品id", dataType = "Long")
-    private Long productId;
+    @ApiModelProperty(value = "bomId", dataType = "Long")
+    private Long bomId;
 
-    @ApiModelProperty(value = "产品类型 0：部件草稿，1：部件，2：整车草稿，3：整车，4：组装草稿，5：组装件", dataType = "")
-    private Integer productType;
+    @ApiModelProperty(value = "bom类型 0：部件草稿，1：部件，2：整车草稿，3：整车，4：组装草稿，5：组装件", dataType = "Integer")
+    private Integer bomType;
 
     @ApiModelProperty(value = "导入批次号", dataType = "String")
     private String importExcelBatchNo;

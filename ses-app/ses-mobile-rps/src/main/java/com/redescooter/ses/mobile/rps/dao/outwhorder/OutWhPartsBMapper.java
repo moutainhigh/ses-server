@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dao.outwhorder;
 
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO;
 
@@ -29,5 +30,23 @@ public interface OutWhPartsBMapper {
      * @date 2021/1/5
      */
     OutWhOrderProductDetailDTO getPartsProductDetailByProductId(Long productId);
+    
+    /**
+     * 修改出库单部件信息
+     * @param opeOutWhPartsB
+     * @return int
+     * @author assert
+     * @date 2021-01-10
+     */
+    int updateOutWhPartsB(OpeOutWhPartsB opeOutWhPartsB);
+
+    /**
+     * 根据id查询部件名称
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021-01-10
+     */
+    String getPartsNameById(Long id);
 
 }

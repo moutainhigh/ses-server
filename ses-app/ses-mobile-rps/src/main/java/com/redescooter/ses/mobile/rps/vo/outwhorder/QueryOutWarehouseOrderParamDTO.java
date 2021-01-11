@@ -21,7 +21,7 @@ public class QueryOutWarehouseOrderParamDTO extends PageEnter {
     private Integer orderType;
 
     @NotNull(code = ValidationExceptionCode.TYPE_IS_EMPTY, message = "出库类型不能为空")
-    @ApiModelProperty(value = "出库类型 1销售调拨 2补料出库 3生产组装 4其它", dataType = "Integer", required = true)
+    @ApiModelProperty(value = "出库类型 1销售调拨(也可以理解成发货) 2补料出库 3生产组装 4其它", dataType = "Integer", required = true)
     private Integer type;
 
     @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "出库单状态不能为空")

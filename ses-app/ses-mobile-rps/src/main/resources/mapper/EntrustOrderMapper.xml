@@ -45,11 +45,105 @@
         where dr = 0 and id = #{id}
     </select>
 
-    <!--修改委托单已发货数量-->
-    <update id="updateEntrustOrderAlreadyConsignorQty" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+    <!--修改委托单信息-->
+    <update id="updateEntrustOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
         update ope_entrust_order
-	    set already_consignor_qty = already_consignor_qty + #{alreadyConsignorQty}, updated_time = #{updatedTime}
-	    where id = #{id}
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="invoiceId != null">
+                invoice_id = #{invoiceId},
+            </if>
+            <if test="invoiceNo != null">
+                invoice_no = #{invoiceNo},
+            </if>
+            <if test="entrustNo != null">
+                entrust_no = #{entrustNo},
+            </if>
+            <if test="entrustStatus != null">
+                entrust_status = #{entrustStatus},
+            </if>
+            <if test="entrustType != null">
+                entrust_type = #{entrustType},
+            </if>
+            <if test="consignorQty != null">
+                consignor_qty = #{consignorQty},
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date = #{deliveryDate},
+            </if>
+            <if test="transType != null">
+                trans_type = #{transType},
+            </if>
+            <if test="consigneeUser != null">
+                consignee_user = #{consigneeUser},
+            </if>
+            <if test="consigneeCountryCode != null">
+                consignee_country_code = #{consigneeCountryCode},
+            </if>
+            <if test="consigneeUserTelephone != null">
+                consignee_user_telephone = #{consigneeUserTelephone},
+            </if>
+            <if test="consigneeUserMail != null">
+                consignee_user_mail = #{consigneeUserMail},
+            </if>
+            <if test="consigneeAddress != null">
+                consignee_address = #{consigneeAddress},
+            </if>
+            <if test="consigneePostCode != null">
+                consignee_post_code = #{consigneePostCode},
+            </if>
+            <if test="consignorUser != null">
+                consignor_user = #{consignorUser},
+            </if>
+            <if test="consignorCountryCode != null">
+                consignor_country_code = #{consignorCountryCode},
+            </if>
+            <if test="consignorTelephone != null">
+                consignor_telephone = #{consignorTelephone},
+            </if>
+            <if test="consignorMail != null">
+                consignor_mail = #{consignorMail},
+            </if>
+            <if test="notifyUser != null">
+                notify_user = #{notifyUser},
+            </if>
+            <if test="notifyUserName != null">
+                notify_user_name = #{notifyUserName},
+            </if>
+            <if test="notifyCountryCode != null">
+                notify_country_code = #{notifyCountryCode},
+            </if>
+            <if test="notifyUserTelephone != null">
+                notify_user_telephone = #{notifyUserTelephone},
+            </if>
+            <if test="notifyUserMail != null">
+                notify_user_mail = #{notifyUserMail},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
     </update>
 
 </mapper>

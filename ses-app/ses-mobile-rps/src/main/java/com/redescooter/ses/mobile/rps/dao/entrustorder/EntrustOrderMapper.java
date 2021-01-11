@@ -50,14 +50,14 @@ public interface EntrustOrderMapper {
      * @date 2021/1/4
     */
     EntrustOrderDetailDTO getEntrustOrderDetailById(Long id);
-
+    
     /**
-     * 修改委托单已发货数量
+     * 修改委托单信息
      * @param opeEntrustOrder
      * @return int
      * @author assert
-     * @date 2021/1/8
-    */
-    int updateEntrustOrderAlreadyConsignorQty(OpeEntrustOrder opeEntrustOrder);
+     * @date 2021-01-10
+     */
+    int updateEntrustOrder(OpeEntrustOrder opeEntrustOrder);
 
 }

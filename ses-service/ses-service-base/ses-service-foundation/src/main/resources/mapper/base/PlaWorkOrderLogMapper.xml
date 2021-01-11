@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeOrderSerialBindMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaWorkOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
     <!--@mbg.generated-->
-    <!--@Table ope_order_serial_bind-->
+    <!--@Table pla_work_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="order_type" jdbcType="INTEGER" property="orderType" />
-    <result column="order_b_id" jdbcType="BIGINT" property="orderBId" />
-    <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
-    <result column="lot" jdbcType="VARCHAR" property="lot" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
-    <result column="product_type" jdbcType="INTEGER" property="productType" />
-    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="source" jdbcType="INTEGER" property="source" />
+    <result column="work_order_status" jdbcType="INTEGER" property="workOrderStatus" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="contact_email" jdbcType="VARCHAR" property="contactEmail" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="annex_picture_1" jdbcType="VARCHAR" property="annexPicture1" />
+    <result column="annex_picture_2" jdbcType="VARCHAR" property="annexPicture2" />
+    <result column="annex_picture_3" jdbcType="VARCHAR" property="annexPicture3" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -26,41 +27,315 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, order_type, order_b_id, serial_num, lot, product_id, product_type, qty, remark, 
-    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
+    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
+    def1, def2, def3, def4, def5
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    select
-    <include refid="Base_Column_List" />
-    from ope_order_serial_bind
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    update pla_work_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`source` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="work_order_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="title = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="contact_email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.contactEmail,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    delete from ope_order_serial_bind
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
+    update pla_work_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`source` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.source != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="work_order_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.workOrderStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="title = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.title != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contact_email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contactEmail != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contactEmail,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.annexPicture1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.annexPicture2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="annex_picture_3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.annexPicture3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def4 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_order_serial_bind (id, dr, order_type,
-      order_b_id, serial_num, lot,
-      product_id, product_type, qty,
-      remark, created_by, created_time,
-      updated_by, updated_time, def1,
-      def2, def3, def4, def5
+    insert into pla_work_order
+    (id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
+    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
+    def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR},
+      #{item.source,jdbcType=INTEGER}, #{item.workOrderStatus,jdbcType=INTEGER}, #{item.title,jdbcType=VARCHAR},
+      #{item.contactEmail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.annexPicture1,jdbcType=VARCHAR},
+      #{item.annexPicture2,jdbcType=VARCHAR}, #{item.annexPicture3,jdbcType=VARCHAR},
+      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+      #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
+      #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
       )
-    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderType,jdbcType=INTEGER},
-      #{orderBId,jdbcType=BIGINT}, #{serialNum,jdbcType=VARCHAR}, #{lot,jdbcType=VARCHAR},
-      #{productId,jdbcType=BIGINT}, #{productType,jdbcType=INTEGER}, #{qty,jdbcType=INTEGER},
-      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
-      )
+    </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
     <!--@mbg.generated-->
-    insert into ope_order_serial_bind
+    insert into pla_work_order
+    (id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
+    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
+    def1, def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{source,jdbcType=INTEGER},
+    #{workOrderStatus,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR},
+    #{remark,jdbcType=VARCHAR}, #{annexPicture1,jdbcType=VARCHAR}, #{annexPicture2,jdbcType=VARCHAR},
+    #{annexPicture3,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+    #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+    #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+    )
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    order_no = #{orderNo,jdbcType=VARCHAR},
+    `source` = #{source,jdbcType=INTEGER},
+    work_order_status = #{workOrderStatus,jdbcType=INTEGER},
+    title = #{title,jdbcType=VARCHAR},
+    contact_email = #{contactEmail,jdbcType=VARCHAR},
+    remark = #{remark,jdbcType=VARCHAR},
+    annex_picture_1 = #{annexPicture1,jdbcType=VARCHAR},
+    annex_picture_2 = #{annexPicture2,jdbcType=VARCHAR},
+    annex_picture_3 = #{annexPicture3,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
+    def5 = #{def5,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
+    <!--@mbg.generated-->
+    insert into pla_work_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -68,29 +343,32 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="orderType != null">
-        order_type,
+      <if test="orderNo != null">
+        order_no,
       </if>
-      <if test="orderBId != null">
-        order_b_id,
+      <if test="source != null">
+        `source`,
       </if>
-      <if test="serialNum != null">
-        serial_num,
+      <if test="workOrderStatus != null">
+        work_order_status,
       </if>
-      <if test="lot != null">
-        lot,
+      <if test="title != null">
+        title,
       </if>
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="productType != null">
-        product_type,
-      </if>
-      <if test="qty != null">
-        qty,
+      <if test="contactEmail != null">
+        contact_email,
       </if>
       <if test="remark != null">
         remark,
+      </if>
+      <if test="annexPicture1 != null">
+        annex_picture_1,
+      </if>
+      <if test="annexPicture2 != null">
+        annex_picture_2,
+      </if>
+      <if test="annexPicture3 != null">
+        annex_picture_3,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -120,36 +398,40 @@
         def5,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="orderType != null">
-        #{orderType,jdbcType=INTEGER},
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
       </if>
-      <if test="orderBId != null">
-        #{orderBId,jdbcType=BIGINT},
+      <if test="source != null">
+        #{source,jdbcType=INTEGER},
       </if>
-      <if test="serialNum != null">
-        #{serialNum,jdbcType=VARCHAR},
+      <if test="workOrderStatus != null">
+        #{workOrderStatus,jdbcType=INTEGER},
       </if>
-      <if test="lot != null">
-        #{lot,jdbcType=VARCHAR},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="productType != null">
-        #{productType,jdbcType=INTEGER},
-      </if>
-      <if test="qty != null">
-        #{qty,jdbcType=INTEGER},
+      <if test="contactEmail != null">
+        #{contactEmail,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture1 != null">
+        #{annexPicture1,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture2 != null">
+        #{annexPicture2,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture3 != null">
+        #{annexPicture3,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -179,37 +461,40 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
-    <!--@mbg.generated-->
-    update ope_order_serial_bind
-    <set>
+    on duplicate key update
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="orderType != null">
-        order_type = #{orderType,jdbcType=INTEGER},
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
       </if>
-      <if test="orderBId != null">
-        order_b_id = #{orderBId,jdbcType=BIGINT},
+      <if test="source != null">
+        `source` = #{source,jdbcType=INTEGER},
       </if>
-      <if test="serialNum != null">
-        serial_num = #{serialNum,jdbcType=VARCHAR},
+      <if test="workOrderStatus != null">
+        work_order_status = #{workOrderStatus,jdbcType=INTEGER},
       </if>
-      <if test="lot != null">
-        lot = #{lot,jdbcType=VARCHAR},
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
-      </if>
-      <if test="qty != null">
-        qty = #{qty,jdbcType=INTEGER},
+      <if test="contactEmail != null">
+        contact_email = #{contactEmail,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture1 != null">
+        annex_picture_1 = #{annexPicture1,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture2 != null">
+        annex_picture_2 = #{annexPicture2,jdbcType=VARCHAR},
+      </if>
+      <if test="annexPicture3 != null">
+        annex_picture_3 = #{annexPicture3,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
@@ -238,30 +523,6 @@
       <if test="def5 != null">
         def5 = #{def5,jdbcType=DECIMAL},
       </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
-    <!--@mbg.generated-->
-    update ope_order_serial_bind
-    set dr = #{dr,jdbcType=INTEGER},
-      order_type = #{orderType,jdbcType=INTEGER},
-      order_b_id = #{orderBId,jdbcType=BIGINT},
-      serial_num = #{serialNum,jdbcType=VARCHAR},
-      lot = #{lot,jdbcType=VARCHAR},
-      product_id = #{productId,jdbcType=BIGINT},
-      product_type = #{productType,jdbcType=INTEGER},
-      qty = #{qty,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR},
-      created_by = #{createdBy,jdbcType=BIGINT},
-      created_time = #{createdTime,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=BIGINT},
-      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      def1 = #{def1,jdbcType=VARCHAR},
-      def2 = #{def2,jdbcType=VARCHAR},
-      def3 = #{def3,jdbcType=VARCHAR},
-      def4 = #{def4,jdbcType=VARCHAR},
-      def5 = #{def5,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    </trim>
+  </insert>
 </mapper>

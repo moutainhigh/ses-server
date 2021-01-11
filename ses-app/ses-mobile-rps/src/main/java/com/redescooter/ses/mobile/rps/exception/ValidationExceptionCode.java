@@ -53,5 +53,7 @@ public interface ValidationExceptionCode {
     int LOGISTICS_COMPANY_IS_EMPTY = 10045;
     // 物流单号为空
     int LOGISTICS_NO_IS_EMPTY = 10046;
+    // 序列号为空
+    int SERIAL_NUMBER_IS_EMPTY = 10047;
 
 }

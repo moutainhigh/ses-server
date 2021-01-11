@@ -3,9 +3,9 @@ package com.redescooter.ses.mobile.rps.dao.base;
 import com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind;
 
 /**
-*@author assert
-*@date 2020/12/30 15:26
-*/
+ *@author assert
+ *@date 2020/12/30 15:26
+ */
 public interface OpeOrderSerialBindMapper {
     int deleteByPrimaryKey(Long id);
 

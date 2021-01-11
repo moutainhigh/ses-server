@@ -5,6 +5,7 @@ import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderServic
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -111,13 +112,13 @@ public class OutWarehouseOrderController {
     /**
      * 根据产品id查询产品质检模板信息
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO>
      * @author assert
      * @date 2021/1/6
     */
     @ApiOperation(value = "出库单质检模板", notes = "根据产品id查询产品质检模板信息")
     @PostMapping(value = "/qcTemplate")
-    public Response<List<ProductQcTemplateDTO>> getQcTemplateByIdAndType(@ModelAttribute QueryQcTemplateParamDTO paramDTO) {
+    public Response<QueryQcTemplateResultDTO> getQcTemplateByIdAndType(@ModelAttribute QueryQcTemplateParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.getQcTemplateByIdAndType(paramDTO));
     }
 
@@ -132,6 +133,32 @@ public class OutWarehouseOrderController {
     @PostMapping(value = "/saveQcResult")
     public Response<GeneralResult> saveQcResult(@ModelAttribute SaveQcResultParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.saveQcResult(paramDTO));
+    }
+    
+    /**
+     * 修改部件质检数量
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2021-01-10
+     */
+    @ApiOperation(value = "修改部件质检数量")
+    @PostMapping(value = "/updatePartsQcQty")
+    public Response<GeneralResult> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
+        return new Response<>(outWarehouseOrderService.updatePartsQcQty(paramDTO));
+    }
+
+    /**
+     * 提交出库
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2021-01-10
+     */
+    @ApiOperation(value = "提交出库")
+    @PostMapping(value = "/outWarehouse")
+    public Response<GeneralResult> outWarehouse(@ModelAttribute IdEnter enter) {
+        return new Response<>(outWarehouseOrderService.outWarehouse(enter));
     }
 
 }

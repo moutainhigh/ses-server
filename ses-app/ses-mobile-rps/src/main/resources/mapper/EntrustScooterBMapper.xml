@@ -28,6 +28,7 @@
         <!--一对多映射(车辆序列号信息)-->
         <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
             <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
             <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
         </collection>
     </resultMap>
@@ -35,7 +36,7 @@
     <!--根据entrustId查询委托单车辆信息-->
     <select id="getEntrustOrderScooterByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderScooterResultMap">
         select es.id, sg.group_name, c.color_name, ifnull(es.consignor_qty, 0) consignor_qty,
-        ifnull(es.qty, 0) qty, true id_calss,epsn.id sn_id,epsn.serial_num serialNum
+        ifnull(es.qty, 0) qty, true id_calss,epsn.id sn_id,epsn.serial_num serialNum, epsn.lot
         from ope_entrust_scooter_b es
         left join ope_entrust_product_serial_num epsn
         on es.id = epsn.relation_id and epsn.dr = 0
@@ -91,6 +92,12 @@
     <select id="getEntrustScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from ope_entrust_scooter_b
         where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据entrustId统计委托单车辆实际发货数量-->
+    <select id="countEntrustScooterConsignorQtyByEntrustId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select ifnull(sum(consignor_qty), 0) from ope_entrust_scooter_b
+	    where dr = 0 and entrust_id = #{entrustId}
     </select>
 
 </mapper>

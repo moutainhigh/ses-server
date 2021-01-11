@@ -40,4 +40,13 @@ public interface EntrustScooterBMapper {
     */
     OpeEntrustScooterB getEntrustScooterById(Long id);
 
+    /**
+     * 根据entrustId统计委托单车辆实际发货数量
+     * @param entrustId
+     * @return int
+     * @author assert
+     * @date 2021-01-10
+     */
+    int countEntrustScooterConsignorQtyByEntrustId(Long entrustId);
+
 }

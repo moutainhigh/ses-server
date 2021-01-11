@@ -21,9 +21,6 @@ public class ProductSerialNumberDTO extends GeneralResult {
     @ApiModelProperty(value = "主键id", dataType = "Long")
     private Long id;
 
-    @ApiModelProperty(value = "子单据id(出库单id)", dataType = "Long")
-    private Long orderBId;
-
     @ApiModelProperty(value = "产品id", dataType = "Long")
     private Long productId;
 
@@ -31,7 +28,7 @@ public class ProductSerialNumberDTO extends GeneralResult {
     private String serialNum;
 
     @ApiModelProperty(value = "批次号", dataType = "String")
-    private String batchNo;
+    private String lot;
 
     @ApiModelProperty(value = "供应商Id", dataType = "Long")
     private Long supplierId;

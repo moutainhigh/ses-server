@@ -28,6 +28,7 @@
         <!--一对多映射(车辆序列号信息)-->
         <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
             <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
             <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
         </collection>
     </resultMap>
@@ -35,7 +36,7 @@
     <!--根据entrustId查询委托单组装件信息-->
     <select id="getEntrustOrderCombinByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderCombinResultMap">
         select ec.id, ec.combin_name, bom.bom_no, ifnull(ec.consignor_qty, 0) consignor_qty,
-        ifnull(ec.qty, 0) qty, true idClass,epsn.id sn_id,epsn.serial_num
+        ifnull(ec.qty, 0) qty, true idClass,epsn.id sn_id,epsn.serial_num, epsn.lot
         from ope_entrust_combin_b ec
         left join ope_production_combin_bom bom
         on ec.production_combin_bom_id = bom.id and bom.dr = 0
@@ -89,6 +90,12 @@
     <select id="getEntrustCombinById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from ope_entrust_combin_b
         where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据entrustId统计委托单组装件实际发货数量-->
+    <select id="countEntrustCombinConsignorQtyByEntrustId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select ifnull(sum(consignor_qty), 0) from ope_entrust_combin_b
+	    where dr = 0 and entrust_id = #{entrustId}
     </select>
 
 </mapper>

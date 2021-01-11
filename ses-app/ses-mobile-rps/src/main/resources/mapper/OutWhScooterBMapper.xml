@@ -28,4 +28,13 @@
         where ows.dr = 0 and ows.id = #{productId}
     </select>
 
+    <!--根据id查询车辆型号-->
+    <select id="getScooterModelById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select sp.group_name
+        from ope_out_wh_scooter_b s
+        inner join ope_specificat_group sp
+        on s.group_id = sp.id and sp.dr = 0
+        where s.dr = 0 and s.id = #{id}
+    </select>
+
 </mapper>

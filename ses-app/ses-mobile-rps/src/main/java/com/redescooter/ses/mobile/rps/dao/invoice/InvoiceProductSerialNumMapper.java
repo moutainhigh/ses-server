@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dao.invoice;
 
+import com.redescooter.ses.mobile.rps.dm.OpeInvoiceProductSerialNum;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface InvoiceProductSerialNumMapper {
 
     /**
-     * 根据productId查询车辆出库单序列号绑定信息
+     * 根据productId查询车辆出库单序列号信息
      * @param productId
      * @return java.util.List<com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO>
      * @author assert
@@ -21,12 +22,30 @@ public interface InvoiceProductSerialNumMapper {
     List<ProductSerialNumberDTO> getOutWhOrderScooterByProductId(Long productId);
 
     /**
-     * 根据productId查询部件出库单序列号绑定信息
+     * 根据productId查询部件出库单序列号信息
      * @param productId
      * @return java.util.List<com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO>
      * @author assert
      * @date 2021/1/5
      */
     List<ProductSerialNumberDTO> getOutWhOrderPartsByProductId(Long productId);
+
+    /**
+     * 根据serialNum查询出库单序列号信息
+     * @param serialNum
+     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO
+     * @author assert
+     * @date 2021-01-10
+     */
+    ProductSerialNumberDTO getInvoiceProductSerialNumBySerialNum(String serialNum);
+
+    /**
+     * 添加出库单产品序列号信息
+     * @param opeInvoiceProductSerialNum
+     * @return int
+     * @author assert
+     * @date 2021-01-10
+     */
+    int insertInvoiceProductSerialNum(OpeInvoiceProductSerialNum opeInvoiceProductSerialNum);
 
 }
