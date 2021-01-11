@@ -775,7 +775,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opeInvoiceOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeInvoiceOrder.getInvoiceStatus() < InvoiceOrderStatusEnums.STOCKING.getValue()) {
+        if (opeInvoiceOrder.getInvoiceStatus() < InvoiceOrderStatusEnums.BE_LOADED.getValue()) {
             opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
             opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
             // 状态流转

@@ -49,6 +49,9 @@ public class InWhouseDetailResult extends GeneralResult {
     @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
     private Integer whType;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     @ApiModelProperty("部件明细")
     private List<InWhouseDetailPartsResult>  parts;
 

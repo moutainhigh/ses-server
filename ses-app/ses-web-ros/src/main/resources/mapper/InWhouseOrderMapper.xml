@@ -34,7 +34,9 @@
             and inwh.in_wh_type = #{enter.inWhType}
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
-            and inwh.in_wh_no like concat('%', #{enter.keyword}, '%')
+            and (inwh.in_wh_no like concat('%', #{enter.keyword}, '%') or
+                 staff.full_name like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 

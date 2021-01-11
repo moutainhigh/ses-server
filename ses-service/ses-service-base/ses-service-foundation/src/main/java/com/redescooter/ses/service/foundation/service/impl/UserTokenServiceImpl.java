@@ -697,6 +697,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         userToken.setDeptId(enter.getOpeDeptId() == null ? new Long("0") : enter.getOpeDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
+            log.info("这个map里面的东西是： "+JSON.toJSONString(map));
             map.remove("requestId");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());

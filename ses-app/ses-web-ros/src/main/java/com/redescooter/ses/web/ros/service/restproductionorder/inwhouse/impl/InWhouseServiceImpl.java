@@ -401,20 +401,39 @@ public class InWhouseServiceImpl implements InWhouseService {
         result.setRelationOrderNo(inWhouseOrder.getRelationOrderNo());
         result.setRelationOrderType(inWhouseOrder.getRelationOrderType());
         result.setWhType(inWhouseOrder.getWhType());
+        result.setRemark(inWhouseOrder.getRemark());
         // 入库单下面的产品明细
         switch (inWhouseOrder.getOrderType()){
             case 1:
                 // scooter
-                result.setScooters(inWhouseOrderScooterBServiceMapper.scooterBs(inWhouseOrder.getId()));
+                List<InWhouseDetailScooterResult> scooterResults = inWhouseOrderScooterBServiceMapper.scooterBs(inWhouseOrder.getId());
+                if(CollectionUtils.isNotEmpty(scooterResults)){
+                    for (InWhouseDetailScooterResult scooterResult : scooterResults) {
+                        scooterResult.setAbleInWhQty(scooterResult.getCombinQty());
+                    }
+                }
+                result.setScooters(scooterResults);
                 default:
                     break;
             case 2:
                 // combin
-                result.setCombins(inWhouseOrderCombinBServiceMapper.combinBs(inWhouseOrder.getId()));
+                List<InWhouseDetailCombinResult> combinResults = inWhouseOrderCombinBServiceMapper.combinBs(inWhouseOrder.getId());
+                if (CollectionUtils.isNotEmpty(combinResults)){
+                    for (InWhouseDetailCombinResult combinResult : combinResults) {
+                        combinResult.setAbleInWhQty(combinResult.getCombinQty());
+                    }
+                }
+                result.setCombins(combinResults);
                 break;
             case 3:
                 // parts
-                result.setParts(inWhouseOrderPartsBServiceMapper.partsBs(inWhouseOrder.getId()));
+                List<InWhouseDetailPartsResult> partsResults = inWhouseOrderPartsBServiceMapper.partsBs(inWhouseOrder.getId());
+                if (CollectionUtils.isNotEmpty(partsResults)){
+                    for (InWhouseDetailPartsResult partsResult : partsResults) {
+                        partsResult.setAbleInWhQty(partsResult.getPurchaseQty());
+                    }
+                }
+                result.setParts(partsResults);
                 break;
         }
         // 操作动态

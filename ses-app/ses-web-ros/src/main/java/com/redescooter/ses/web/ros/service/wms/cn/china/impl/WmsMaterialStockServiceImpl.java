@@ -126,7 +126,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param stockType 1:中国仓库 2：法国仓库
      * @param userId 操作人ID
      */
-    @Transactional
     @Override
     @Async
     public void waitInStock(Integer productionType, Long id, Integer stockType, Long userId) {
@@ -281,7 +280,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
-    @Transactional
     @Async
     public void inStock(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
         // 入库记录
@@ -513,7 +511,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 //    }
 
 
-    @Transactional
     @Override
     @Async
     public void waitOutLow(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
@@ -688,7 +685,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param userId
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
-    @Transactional
     @Async
     @Override
     public void waitOutUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
@@ -844,7 +840,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
-//    @Transactional
     @Async
     public void waitOutLowAbleLowUsedUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
         switch (productionType) {
@@ -955,7 +950,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param userId 操作人ID
      */
     @Override
-    @Transactional
     @Async
     public void FrWaitInStock(Integer productionType, Long entrustId, Integer stockType, Long userId) {
         switch (productionType) {
@@ -1109,6 +1103,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
+    @Async
     public void frInStock(Integer productionType, Long entrustId, Integer stockType, Long userId, Integer inWhType) {
         // 入库记录
         List<WmsInStockRecordEnter> scooterRecordList = new ArrayList<>();
