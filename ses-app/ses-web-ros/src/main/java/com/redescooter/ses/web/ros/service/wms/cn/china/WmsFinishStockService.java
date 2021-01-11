@@ -2,11 +2,18 @@ package com.redescooter.ses.web.ros.service.wms.cn.china;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 
 import java.util.List;
 import java.util.Map;
@@ -82,4 +89,11 @@ public interface WmsFinishStockService {
      */
     Map<String, Integer> outOrInOrderConunt(WmsStockTypeEnter enter);
 
+
+    /**
+     * 根据组装件id获得成品库组装件库存可用库存数量
+     * @param enter
+     * @return
+     */
+    IntResult getAbleStockQtyByProductionCombinBomId(IdEnter enter);
 }
