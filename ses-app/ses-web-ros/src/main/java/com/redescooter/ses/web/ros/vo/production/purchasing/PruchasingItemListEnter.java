@@ -32,4 +32,7 @@ public class PruchasingItemListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
+
+    @ApiModelProperty("仓库类型,1:中国仓库，2：法国仓库")
+    private Integer stockType;
 }
