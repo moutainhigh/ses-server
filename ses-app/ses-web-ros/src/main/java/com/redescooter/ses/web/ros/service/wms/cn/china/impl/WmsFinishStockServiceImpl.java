@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
@@ -310,4 +311,32 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         map.put("2", opeOutWhouseOrderService.count(out));
         return map;
     }
+
+    /**
+     * 根据组装件id获得成品库组装件库存可用库存数量
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public IntResult getAbleStockQtyByProductionCombinBomId(IdEnter enter) {
+        IntResult result = new IntResult();
+        LambdaQueryWrapper<OpeWmsCombinStock> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsCombinStock::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeWmsCombinStock::getProductionCombinBomId, enter.getId());
+        wrapper.orderByDesc(OpeWmsCombinStock::getCreatedTime);
+        List<OpeWmsCombinStock> list = opeWmsCombinStockService.list(wrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            result.setValue(0);
+        } else {
+            OpeWmsCombinStock stock = list.get(0);
+            if (null != stock) {
+                Integer ableStockQty = stock.getAbleStockQty();
+                result.setValue(ableStockQty);
+            }
+        }
+        result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
 }
