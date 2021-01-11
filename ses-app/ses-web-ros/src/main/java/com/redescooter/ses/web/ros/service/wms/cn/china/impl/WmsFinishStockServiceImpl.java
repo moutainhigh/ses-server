@@ -203,6 +203,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 wrapper.eq(OpeWmsPartsStock::getDr, DelStatusEnum.VALID.getCode());
                 wrapper.eq(OpeWmsPartsStock::getStockType, 1);
                 wrapper.eq(OpeWmsPartsStock::getPartsId, partsId);
+                wrapper.gt(OpeWmsPartsStock::getAbleStockQty, 0);
                 wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
                 List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
                 if (CollectionUtils.isEmpty(list)) {
