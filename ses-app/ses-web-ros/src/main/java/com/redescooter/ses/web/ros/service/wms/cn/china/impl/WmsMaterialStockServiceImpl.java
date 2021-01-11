@@ -844,7 +844,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
      * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
-    @Transactional
+//    @Transactional
     @Async
     public void waitOutLowAbleLowUsedUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
         switch (productionType) {

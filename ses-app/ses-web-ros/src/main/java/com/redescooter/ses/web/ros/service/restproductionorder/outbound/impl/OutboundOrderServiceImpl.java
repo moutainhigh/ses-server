@@ -1084,6 +1084,9 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
         orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
         orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+        orderOrder.setRelationId(outOrderEnter.getRelationOrderId());
+        orderOrder.setRelationNo(outOrderEnter.getRelationOrderNo());
+        orderOrder.setRelationType(outOrderEnter.getRelationOrderType());
         orderOrder.setCreatedBy(userId);
         orderOrder.setCreatedTime(new Date());
         orderOrder.setUpdatedBy(userId);
