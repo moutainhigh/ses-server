@@ -346,6 +346,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
         opeOutWhouseOrder.setUpdatedTime(new Date());
+        // 由发货单备货产生的出库单  是为中国仓库的书库单
+        opeOutWhouseOrder.setCountryType(2);
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
 
         //保存子单据
@@ -942,10 +944,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 2020 11 17 追加  判断关联的是哪种单据类型  可能是发货单 可能是组装单
-        if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
+        if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())) {
             // 更改发货单的状态为待装车
             invoiceOrderService.invoiceWaitLoading(opeOutWhouseOrder.getRelationId());
-        } else if (opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+        } else if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果关联的是组装单  把组装单的状态变为备料完成
             productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
         }
@@ -974,10 +976,15 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         SaveOrUpdateOutOrderEnter outOrderEnter = new SaveOrUpdateOutOrderEnter();
         outOrderEnter.setRelationOrderId(combinId);
         outOrderEnter.setRelationOrderNo(opeCombinOrder.getCombinNo());
-        outOrderEnter.setRelationOrderType(9);
+        outOrderEnter.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+        // 由组装单生成的出库单 是部件出库单
         outOrderEnter.setOutWhType(3);
-        outOrderEnter.setOutType(3);
+        // 由组装单生成的出库单 是组装备料出库
+        outOrderEnter.setOutType(2);
+        // 由组装单生成的出库单 是原料出库单
         outOrderEnter.setWhType(2);
+        // 由于组装单生成的出库单  是为中国仓库的出库单
+        outOrderEnter.setCountryType(2);
         // 组装单分为车辆和组装件两种  不管是哪种  都要生成部件的出库单
         switch (opeCombinOrder.getCombinType()){
             case 1:

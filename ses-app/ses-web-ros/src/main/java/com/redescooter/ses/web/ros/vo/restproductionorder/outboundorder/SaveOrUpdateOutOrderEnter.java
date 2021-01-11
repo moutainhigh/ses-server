@@ -31,7 +31,7 @@ public class SaveOrUpdateOutOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "出库单类型，1：整车，2：组装件，3：部件")
     private Integer outWhType;
 
-    @ApiModelProperty(value = "出库类型，1：销售调拨,2：生产组装")
+    @ApiModelProperty(value = "出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库")
     private Integer outType;
 
     @ApiModelProperty(value = "出库仓库。1:成品库，2:原料库，3:不合格品库")
