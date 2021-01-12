@@ -40,7 +40,7 @@ public class EntrustOrderDetailDTO extends GeneralResult {
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "实际发货时间", dataType = "Date")
-    private Date actualDeliveryDate;
+    private Date actualDeliveryTime;
 
     @ApiModelProperty(value = "运输方式 1：海运，2：陆运，3：空运", dataType = "Integer")
     private Integer transType;

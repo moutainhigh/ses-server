@@ -39,8 +39,8 @@
 
     <!--根据id查询委托单详情-->
     <select id="getEntrustOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO">
-        select id, entrust_no entrustNo, entrust_status entrustStatus, entrust_type entrustType,
-        delivery_date deliveryDate, trans_type transType, consignor_qty qty, already_consignor_qty alreadyConsignorQty
+        select id, entrust_no entrustNo, entrust_status entrustStatus, entrust_type entrustType,delivery_date deliveryDate,
+        actual_delivery_time actualDeliveryTime, trans_type transType, consignor_qty qty, already_consignor_qty alreadyConsignorQty
         from ope_entrust_order
         where dr = 0 and id = #{id}
     </select>
@@ -78,6 +78,9 @@
             </if>
             <if test="deliveryDate != null">
                 delivery_date = #{deliveryDate},
+            </if>
+            <if test="actualDeliveryTime != null">
+                actual_delivery_time = #{actualDeliveryTime},
             </if>
             <if test="transType != null">
                 trans_type = #{transType},

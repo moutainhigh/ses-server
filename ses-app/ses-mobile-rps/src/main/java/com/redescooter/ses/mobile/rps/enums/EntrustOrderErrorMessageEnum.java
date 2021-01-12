@@ -10,18 +10,19 @@ public enum EntrustOrderErrorMessageEnum {
     /**
      * 委托单异常消息
      */
+    PRODUCT_IS_NOT_EXISTS("ENTRUST_001", "该产品不在出库列表中,请核对!")
     ;
 
-    private Integer errorType;
+    private String errorCode;
     private String errorMsg;
 
-    EntrustOrderErrorMessageEnum(Integer errorType, String errorMsg) {
-        this.errorType = errorType;
+    EntrustOrderErrorMessageEnum(String errorCode, String errorMsg) {
+        this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
 
-    public Integer getErrorType() {
-        return errorType;
+    public String getErrorCode() {
+        return errorCode;
     }
 
     public String getErrorMsg() {

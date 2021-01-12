@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.controller.outwhorder;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
-import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -138,26 +136,26 @@ public class OutWarehouseOrderController {
     /**
      * 修改部件质检数量
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse>
      * @author assert
      * @date 2021-01-10
      */
     @ApiOperation(value = "修改部件质检数量")
     @PostMapping(value = "/updatePartsQcQty")
-    public Response<GeneralResult> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
+    public Response<OutWhOrderErrorMessageResponse> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.updatePartsQcQty(paramDTO));
     }
 
     /**
      * 提交出库
      * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse>
      * @author assert
      * @date 2021-01-10
      */
     @ApiOperation(value = "提交出库")
     @PostMapping(value = "/outWarehouse")
-    public Response<GeneralResult> outWarehouse(@ModelAttribute IdEnter enter) {
+    public Response<OutWhOrderErrorMessageResponse> outWarehouse(@ModelAttribute IdEnter enter) {
         return new Response<>(outWarehouseOrderService.outWarehouse(enter));
     }
 

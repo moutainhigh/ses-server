@@ -52,7 +52,7 @@
     <select id="getOutWarehouseOrderDetailById" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderDetailDTO">
         select id,out_wh_no outWarehouseNo,out_wh_status `status`, out_wh_type orderType,out_wh_qty qty,
-        ifnull(already_out_wh_qty, 0) qcQty, remark
+        ifnull(qc_qty, 0) qcQty,ifnull(already_out_wh_qty, 0) alreadyOutWhQty, out_stock_time outStockTime,remark
         from ope_out_whouse_order
         where dr = 0 and id = #{id}
     </select>
@@ -88,8 +88,14 @@
             <if test="outWhQty != null">
                 out_wh_qty = #{outWhQty},
             </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty},
+            </if>
             <if test="alreadyOutWhQty != null">
                 already_out_wh_qty = #{alreadyOutWhQty},
+            </if>
+            <if test="outStockTime != null">
+                out_stock_time = #{outStockTime},
             </if>
             <if test="countryCode != null">
                 country_code = #{countryCode},
@@ -118,5 +124,11 @@
         </set>
         where id = #{id}
     </update>
+
+    <!--根据id查询出库单质检数量-->
+    <select id="getOutWhOrderQcQtyById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select qc_qty from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
 
 </mapper>

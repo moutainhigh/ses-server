@@ -25,10 +25,12 @@ import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -62,6 +64,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
     @Resource
     private OrderSerialBindMapper orderSerialBindMapper;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -150,42 +154,59 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 break;
         }
 
-        RpsAssert.isFalse(deliveryQty.equals(entrustOrderDetail.getAlreadyConsignorQty()),
+        RpsAssert.isFalse(deliveryQty > entrustOrderDetail.getAlreadyConsignorQty(),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
         /**
-         * 更新委托单已发货数量
+         * 使用编程式事务保证事务的一致性, 这里涉及到服务之间事务操作,现在没有分布式事务暂时只能保证自身服务事务一致
          */
-        OpeEntrustOrder opeEntrustOrder = OpeEntrustOrder.builder()
-                .id(paramDTO.getId())
-                .alreadyConsignorQty(deliveryQty)
-                .updatedBy(paramDTO.getUserId())
-                .updatedTime(new Date())
-                .build();
-        entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
+        boolean result = transactionTemplate.execute(entrustOrderDeliverStatus -> {
+            boolean flag = true;
+            try {
+                /**
+                 * 更新委托单已发货数量
+                 */
+                OpeEntrustOrder opeEntrustOrder = OpeEntrustOrder.builder()
+                        .id(paramDTO.getId())
+                        .actualDeliveryTime(new Date())
+                        .alreadyConsignorQty(deliveryQty)
+                        .updatedBy(paramDTO.getUserId())
+                        .updatedTime(new Date())
+                        .build();
+                entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
 
-        /**
-         * 保存物流信息
-         */
-        OpeLogisticsOrder opeLogisticsOrder = OpeLogisticsOrder.builder()
-                .id(idAppService.getId(SequenceName.OPE_LOGISTICS_ORDER))
-                .dr(0)
-                .entrustId(paramDTO.getId())
-                .logisticsCompany(paramDTO.getLogisticsCompany())
-                .logisticsNo(paramDTO.getLogisticsNo())
-                .remark(paramDTO.getRemark())
-                .createdBy(paramDTO.getUserId())
-                .createdTime(new Date())
-                .updatedBy(paramDTO.getUserId())
-                .updatedTime(new Date())
-                .build();
-        opeLogisticsOrderMapper.insert(opeLogisticsOrder);
+                /**
+                 * 保存物流信息
+                 */
+                OpeLogisticsOrder opeLogisticsOrder = OpeLogisticsOrder.builder()
+                        .id(idAppService.getId(SequenceName.OPE_LOGISTICS_ORDER))
+                        .dr(0)
+                        .entrustId(paramDTO.getId())
+                        .logisticsCompany(paramDTO.getLogisticsCompany())
+                        .logisticsNo(paramDTO.getLogisticsNo())
+                        .remark(paramDTO.getRemark())
+                        .createdBy(paramDTO.getUserId())
+                        .createdTime(new Date())
+                        .updatedBy(paramDTO.getUserId())
+                        .updatedTime(new Date())
+                        .build();
+                opeLogisticsOrderMapper.insert(opeLogisticsOrder);
 
-        /**
-         * 调用Aleks委托单发货后状态流转的逻辑
-         */
-        IdEnter enter = new IdEnter(paramDTO.getId());
-        rosEntrustOrderService.entrustOrderDeliver(enter);
+                /**
+                 * 调用Aleks委托单发货后状态流转的逻辑
+                 */
+                IdEnter enter = new IdEnter(paramDTO.getId());
+                rosEntrustOrderService.entrustOrderDeliver(enter);
+            } catch (Exception e) {
+                flag = false;
+                log.error("【委托单发货失败】----{}", ExceptionUtils.getStackTrace(e));
+                entrustOrderDeliverStatus.setRollbackOnly();
+            }
+            return flag;
+        });
+
+        RpsAssert.isFalse(result, ExceptionCodeEnums.ENTRUST_ORDER_DELIVER_FAILED.getCode(),
+                ExceptionCodeEnums.ENTRUST_ORDER_DELIVER_FAILED.getMessage());
 
         return new GeneralResult(paramDTO.getRequestId());
     }
@@ -198,7 +219,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         RpsAssert.isNull(entrustPartsB, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isFalse(paramDTO.getConsignorQty().equals(entrustPartsB.getQty()), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
+        RpsAssert.isTrue(paramDTO.getConsignorQty() > entrustPartsB.getQty(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
         /**
@@ -224,6 +245,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
          * ----出库单那边质检扫码逻辑跟委托单这边差不多----
          */
         OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+        RpsAssert.isNull(opeOrderSerialBind, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
         /**
          * 已扫码无需再次扫码

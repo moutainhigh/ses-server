@@ -100,11 +100,25 @@ public class OpeOutWhouseOrder {
     private Integer outWhQty;
 
     /**
+     * 已质检数量
+     */
+    @TableField(value = "qc_qty")
+    @ApiModelProperty(value = "已质检数量")
+    private Integer qcQty;
+
+    /**
      * 已出库数量
      */
     @TableField(value = "already_out_wh_qty")
     @ApiModelProperty(value = "已出库数量")
     private Integer alreadyOutWhQty;
+
+    /**
+     * 出库时间
+     */
+    @TableField(value = "out_stock_time")
+    @ApiModelProperty(value = "出库时间")
+    private Date outStockTime;
 
     /**
      * 国家编码如+86
@@ -219,7 +233,11 @@ public class OpeOutWhouseOrder {
 
     public static final String COL_OUT_WH_QTY = "out_wh_qty";
 
+    public static final String COL_QC_QTY = "qc_qty";
+
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
+
+    public static final String COL_OUT_STOCK_TIME = "out_stock_time";
 
     public static final String COL_COUNTRY_CODE = "country_code";
 

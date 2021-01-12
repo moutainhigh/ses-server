@@ -93,19 +93,19 @@ public interface OutWarehouseOrderService {
     /**
      * 提交出库
      * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse
      * @author assert
      * @date 2021-01-10
      */
-    GeneralResult outWarehouse(IdEnter enter);
+    OutWhOrderErrorMessageResponse outWarehouse(IdEnter enter);
     
     /**
      * 修改部件质检数量
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse
      * @author assert
      * @date 2021-01-10
      */
-    GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
+    OutWhOrderErrorMessageResponse updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
 
 }

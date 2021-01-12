@@ -14,9 +14,15 @@ import lombok.Data;
 @ApiModel(value = "委托单异常消息响应对象")
 public class EntrustOrderErrorMessageResponse extends GeneralResult {
 
-    @ApiModelProperty(value = "异常消息类型", dataType = "Integer")
-    private Integer errorType;
+    /**
+     * 异常码,参考枚举：{@link com.redescooter.ses.mobile.rps.enums.EntrustOrderErrorMessageEnum}
+     */
+    @ApiModelProperty(value = "异常码", dataType = "String")
+    private String errorCode;
 
+    /**
+     * 异常消息说明
+     */
     @ApiModelProperty(value = "异常消息说明", dataType = "String")
     private String errorDesc;
 

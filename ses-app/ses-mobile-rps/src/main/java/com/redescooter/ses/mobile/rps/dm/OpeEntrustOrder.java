@@ -108,6 +108,13 @@ public class OpeEntrustOrder implements Serializable {
     private Date deliveryDate;
 
     /**
+     * 实际发货时间
+     */
+    @TableField(value = "actual_delivery_time")
+    @ApiModelProperty(value = "实际发货时间")
+    private Date actualDeliveryTime;
+
+    /**
      * 运输方式，1：海运，2：陆运，3：空运
      */
     @TableField(value = "trans_type")
@@ -314,6 +321,8 @@ public class OpeEntrustOrder implements Serializable {
     public static final String COL_ALREADY_CONSIGNOR_QTY = "already_consignor_qty";
 
     public static final String COL_DELIVERY_DATE = "delivery_date";
+
+    public static final String COL_ACTUAL_DELIVERY_TIME = "actual_delivery_time";
 
     public static final String COL_TRANS_TYPE = "trans_type";
 

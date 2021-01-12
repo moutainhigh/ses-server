@@ -184,6 +184,8 @@ public enum ExceptionCodeEnums {
     QC_ERROR(10088, "质检失败"),
 
     OUT_WAREHOUSE_ORDER_STATUS_ERROR(10089, "出库单状态有误"),
+
+    ENTRUST_ORDER_DELIVER_FAILED(10090, "委托单发货失败")
     ;
 
     private int code;
