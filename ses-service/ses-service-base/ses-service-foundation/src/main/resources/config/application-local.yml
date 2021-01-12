@@ -8,8 +8,8 @@ log:
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
     address: zookeeper://192.168.2.200:52181
-#  metadata-report:
-#    address: zookeeper://192.168.2.200:52181
+  metadata-report:
+    address: zookeeper://192.168.2.200:52181
 spring:
   #数据库连接
   datasource:

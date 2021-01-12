@@ -57,6 +57,9 @@ public enum ExceptionCodeEnums {
     TIMEZONE_CANNOT_EMPTY(10019, "时区为空"),
 
     VERSION_CANNOT_EMPTY(10020, "版本号为空"),
+
+    PARAM_ERROR(10021, "参数错误"),
+
     ;
 
 

@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.website.dao;
 
-import com.redescooter.ses.web.website.vo.distributor.DistributorDetailsResult;
-import com.redescooter.ses.web.website.vo.distributor.QueryDistributorEnter;
+import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 
 import java.util.List;
 
@@ -18,5 +18,5 @@ public interface DistributorMapper {
      * @param enter
      * @return
      */
-    List<DistributorDetailsResult> getlistOrderByDistance(QueryDistributorEnter enter);
+    List<DealerDetailsResult> getlistOrderByDistance(QueryDealerEnter enter);
 }

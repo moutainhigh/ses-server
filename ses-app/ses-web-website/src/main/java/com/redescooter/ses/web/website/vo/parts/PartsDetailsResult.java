@@ -27,41 +27,41 @@ public class PartsDetailsResult extends GeneralResult {
     /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
      */
-    @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
+    @ApiModelProperty(value = "Type, alltype, parts, accessory, battery")
     private String partsType;
 
     /**
-     * 部品号
+     * 部品遍号
      */
-    @ApiModelProperty(value = "部品号")
+    @ApiModelProperty(value = "Part number")
     private String partsNumber;
 
     /**
      * 中文名称
      */
-    @ApiModelProperty(value = "中文名称")
+    @ApiModelProperty(value = "Chinese name")
     private String cnName;
 
     /**
      * 法文名称
      */
-    @ApiModelProperty(value = "法文名称")
+    @ApiModelProperty(value = "French name")
     private String frName;
 
     /**
      * 英文名称
      */
-    @ApiModelProperty(value = "英文名称")
+    @ApiModelProperty(value = "English name")
     private String enName;
 
     /**
      * 图片
      */
-    @ApiModelProperty(value = "图片")
+    @ApiModelProperty(value = "picture")
     private String picture;
 
     /**
-     * 销售价格 浮点型价格
+     * 销售价格
      */
     @TableField(value = "price")
     @ApiModelProperty(value = "销售价格 浮点型价格")
@@ -70,26 +70,25 @@ public class PartsDetailsResult extends GeneralResult {
     /**
      * 采购来源
      */
-    @ApiModelProperty(value = "采购来源")
+    @ApiModelProperty(value = "Source of procurement")
     private String sources;
 
     /**
      * 货币单位 如¥，$，€，￡
      */
-    @ApiModelProperty(value = "货币单位 如¥，$，€，￡")
+    @ApiModelProperty(value = "Monetary units such as ￥, $, $, ￡")
     private String currencyUnit;
 
     /**
      * 优惠抵扣金额
      */
-    @ApiModelProperty(value = "优惠抵扣金额")
+    @ApiModelProperty(value = "The discount deduction amount is 0 by default")
     private BigDecimal amountDiscount;
 
     /**
      * 备注
      */
-    @TableField(value = "remark")
-    @ApiModelProperty(value = "备注")
+    @ApiModelProperty(value = "remark")
     private String remark;
 
 

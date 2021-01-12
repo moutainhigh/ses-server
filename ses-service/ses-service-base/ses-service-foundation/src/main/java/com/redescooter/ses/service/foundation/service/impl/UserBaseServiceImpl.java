@@ -72,12 +72,12 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         List<BaseUserResult> resultList = new ArrayList<>();
 
-        if (StringUtils.isBlank(enter.getSt())) {
+        if (StringUtils.isBlank(enter.getKeyword())) {
             return resultList;
         }
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getSt());
+        queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getKeyword());
         queryWrapper.eq(PlaUser.COL_DR, 0);
         List<PlaUser> plaUserList = userMapper.selectList(queryWrapper);
 

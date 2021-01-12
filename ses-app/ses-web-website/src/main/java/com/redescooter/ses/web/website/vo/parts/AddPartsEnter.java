@@ -22,71 +22,25 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class AddPartsEnter extends GeneralEnter {
 
-    /**
-     * 逻辑删除
-     */
-    @ApiModelProperty(value = "逻辑删除")
-    private Integer dr;
-
-    /**
-     * 状态
-     */
-    @ApiModelProperty(value = "状态")
-    private String status;
-
-    /**
-     * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
-     */
-    @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
+    @ApiModelProperty(value = "类型,全部类型AllType，1电池Battery，2配件Accessory")
     private String partsType;
 
-    /**
-     * 部品号
-     */
     @ApiModelProperty(value = "部品号")
     private String partsNumber;
 
-    /**
-     * 中文名称
-     */
     @ApiModelProperty(value = "中文名称")
     private String cnName;
 
-    /**
-     * 法文名称
-     */
     @ApiModelProperty(value = "法文名称")
     private String frName;
 
-    /**
-     * 英文名称
-     */
     @ApiModelProperty(value = "英文名称")
     private String enName;
 
-    /**
-     * 采购来源
-     */
-    @ApiModelProperty(value = "采购来源")
-    private String sources;
-
-    /**
-     * 规格
-     */
     @ApiModelProperty(value = "规格")
     private String specs;
 
     @ApiModelProperty(value = "销售价格 浮点型价格")
     private BigDecimal price;
-
-    @ApiModelProperty(value = "货币单位 如¥，$，€，￡")
-    private String currencyUnit;
-
-    /**
-     * 备注
-     */
-    @ApiModelProperty(value = "备注")
-    private String remark;
-
 
 }

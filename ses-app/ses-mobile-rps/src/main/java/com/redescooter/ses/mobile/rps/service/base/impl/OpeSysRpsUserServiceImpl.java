@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.service.base.impl;
+package com.redescooter.ses.mobile.rps.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeSysRpsUserMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeSysRpsUser;
-import com.redescooter.ses.web.ros.service.base.OpeSysRpsUserService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSysRpsUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

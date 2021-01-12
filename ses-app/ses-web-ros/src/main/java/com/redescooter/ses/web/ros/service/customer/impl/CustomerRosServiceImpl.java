@@ -120,10 +120,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public IntResult checkMailCount(StringEnter enter) {
         //邮箱去空格
-        enter.setSt(SesStringUtils.stringTrim(enter.getSt()));
+        enter.setKeyword(SesStringUtils.stringTrim(enter.getKeyword()));
 
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
+        wrapper.eq(OpeCustomer.COL_EMAIL, enter.getKeyword());
         wrapper.eq(OpeCustomer.COL_DR, 0);
         wrapper.ne(OpeCustomer.COL_STATUS, CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         Integer count = opeCustomerMapper.selectCount(wrapper);

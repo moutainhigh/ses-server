@@ -34,8 +34,8 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @return
      */
     @Override
-    public List<ModelPriceResult> modelPriceList(GeneralEnter enter) {
-        return scooterPurchaseMapper.modelPriceList(enter);
+    public List<ModelPriceResult> modelAndPriceList(GeneralEnter enter) {
+        return scooterPurchaseMapper.modelAndPriceList(enter);
     }
 
     /**
@@ -45,8 +45,8 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @return
      */
     @Override
-    public List<ProductsResult> getProductDetails(IdEnter enter) {
-        return scooterPurchaseMapper.getProductDetails(enter);
+    public List<ProductsResult> getProductDetailByModel(IdEnter enter) {
+        return scooterPurchaseMapper.getProductDetailByModel(enter);
     }
 
     /**
@@ -67,7 +67,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @return
      */
     @Override
-    public List<ProductPartsDetailsResult> getScooterBatteryConfigList(GeneralEnter enter) {
+    public List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter) {
         return scooterPurchaseMapper.getScooterConfigList(enter);
     }
 

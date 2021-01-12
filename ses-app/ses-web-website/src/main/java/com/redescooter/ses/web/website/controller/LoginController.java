@@ -22,21 +22,21 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"Login"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "/token/auth")
 public class LoginController {
 
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
     @IgnoreLoginCheck
-    @ApiOperation(value = "登录", response = TokenResult.class)
+    @ApiOperation(value = "login", response = TokenResult.class)
     @PostMapping(value = "/login")
     @LogAnnotation
     public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
         return new Response<>(tokenWebsiteService.login(enter));
     }
 
-    @ApiOperation(value = "登出", response = GeneralResult.class)
+    @ApiOperation(value = "logout", response = GeneralResult.class)
     @PostMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenWebsiteService.logout(enter));

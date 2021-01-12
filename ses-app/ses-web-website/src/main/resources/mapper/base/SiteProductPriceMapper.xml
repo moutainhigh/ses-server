@@ -7,10 +7,11 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_model_id" jdbcType="BIGINT" property="productModelId" />
     <result column="price_type" jdbcType="VARCHAR" property="priceType" />
     <result column="installment_time" jdbcType="VARCHAR" property="installmentTime" />
     <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="start_price" jdbcType="DECIMAL" property="startPrice" />
     <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
     <result column="currency_type" jdbcType="VARCHAR" property="currencyType" />
     <result column="currency_unit" jdbcType="VARCHAR" property="currencyUnit" />
@@ -34,10 +35,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, `status`, product_id, price_type, installment_time, price, effective_time, 
-    currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, 
-    country_code, country_city, country_language, synchronize_flag, revision, created_by, 
-    created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    id, dr, `status`, product_model_id, price_type, installment_time, price, start_price, 
+    effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, 
+    amount_discount, country_code, country_city, country_language, synchronize_flag, 
+    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
+    def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -53,9 +55,9 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
         </foreach>
       </trim>
-      <trim prefix="product_id = case" suffix="end,">
+      <trim prefix="product_model_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productModelId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="price_type = case" suffix="end,">
@@ -71,6 +73,11 @@
       <trim prefix="price = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.price,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+      <trim prefix="start_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.startPrice,jdbcType=DECIMAL}
         </foreach>
       </trim>
       <trim prefix="effective_time = case" suffix="end,">
@@ -197,10 +204,10 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="product_id = case" suffix="end,">
+      <trim prefix="product_model_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.productId != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+          <if test="item.productModelId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.productModelId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
@@ -222,6 +229,13 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.price != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.price,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="start_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.startPrice != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.startPrice,jdbcType=DECIMAL}
           </if>
         </foreach>
       </trim>
@@ -374,16 +388,17 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into site_product_price
-    (id, dr, `status`, product_id, price_type, installment_time, price, effective_time, 
-      currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, 
-      country_code, country_city, country_language, synchronize_flag, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, `status`, product_model_id, price_type, installment_time, price, start_price, 
+      effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, 
+      amount_discount, country_code, country_city, country_language, synchronize_flag, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.productId,jdbcType=BIGINT}, #{item.priceType,jdbcType=VARCHAR}, #{item.installmentTime,jdbcType=VARCHAR}, 
-        #{item.price,jdbcType=DECIMAL}, #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.currencyType,jdbcType=VARCHAR}, 
-        #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
+        #{item.productModelId,jdbcType=BIGINT}, #{item.priceType,jdbcType=VARCHAR}, #{item.installmentTime,jdbcType=VARCHAR}, 
+        #{item.price,jdbcType=DECIMAL}, #{item.startPrice,jdbcType=DECIMAL}, #{item.effectiveTime,jdbcType=TIMESTAMP}, 
+        #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
         #{item.prepaidDeposit,jdbcType=DECIMAL}, #{item.amountDiscount,jdbcType=DECIMAL}, 
         #{item.countryCode,jdbcType=VARCHAR}, #{item.countryCity,jdbcType=VARCHAR}, #{item.countryLanguage,jdbcType=VARCHAR}, 
         #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -395,28 +410,30 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.website.dm.SiteProductPrice">
     <!--@mbg.generated-->
     insert into site_product_price
-    (id, dr, `status`, product_id, price_type, installment_time, price, effective_time, 
-      currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, 
-      country_code, country_city, country_language, synchronize_flag, revision, created_by, 
-      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
+    (id, dr, `status`, product_model_id, price_type, installment_time, price, start_price, 
+      effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, 
+      amount_discount, country_code, country_city, country_language, synchronize_flag, 
+      revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+      def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productModelId,jdbcType=BIGINT}, 
       #{priceType,jdbcType=VARCHAR}, #{installmentTime,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
-      #{effectiveTime,jdbcType=TIMESTAMP}, #{currencyType,jdbcType=VARCHAR}, #{currencyUnit,jdbcType=VARCHAR}, 
-      #{standardCurrency,jdbcType=VARCHAR}, #{prepaidDeposit,jdbcType=DECIMAL}, #{amountDiscount,jdbcType=DECIMAL}, 
-      #{countryCode,jdbcType=VARCHAR}, #{countryCity,jdbcType=VARCHAR}, #{countryLanguage,jdbcType=VARCHAR}, 
-      #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
-      #{def6,jdbcType=DECIMAL})
+      #{startPrice,jdbcType=DECIMAL}, #{effectiveTime,jdbcType=TIMESTAMP}, #{currencyType,jdbcType=VARCHAR}, 
+      #{currencyUnit,jdbcType=VARCHAR}, #{standardCurrency,jdbcType=VARCHAR}, #{prepaidDeposit,jdbcType=DECIMAL}, 
+      #{amountDiscount,jdbcType=DECIMAL}, #{countryCode,jdbcType=VARCHAR}, #{countryCity,jdbcType=VARCHAR}, 
+      #{countryLanguage,jdbcType=VARCHAR}, #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DECIMAL})
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
     `status` = #{status,jdbcType=VARCHAR}, 
-    product_id = #{productId,jdbcType=BIGINT}, 
+    product_model_id = #{productModelId,jdbcType=BIGINT}, 
     price_type = #{priceType,jdbcType=VARCHAR}, 
     installment_time = #{installmentTime,jdbcType=VARCHAR}, 
     price = #{price,jdbcType=DECIMAL}, 
+    start_price = #{startPrice,jdbcType=DECIMAL}, 
     effective_time = #{effectiveTime,jdbcType=TIMESTAMP}, 
     currency_type = #{currencyType,jdbcType=VARCHAR}, 
     currency_unit = #{currencyUnit,jdbcType=VARCHAR}, 
@@ -451,8 +468,8 @@
       <if test="status != null">
         `status`,
       </if>
-      <if test="productId != null">
-        product_id,
+      <if test="productModelId != null">
+        product_model_id,
       </if>
       <if test="priceType != null">
         price_type,
@@ -462,6 +479,9 @@
       </if>
       <if test="price != null">
         price,
+      </if>
+      <if test="startPrice != null">
+        start_price,
       </if>
       <if test="effectiveTime != null">
         effective_time,
@@ -535,8 +555,8 @@
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
       </if>
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
+      <if test="productModelId != null">
+        #{productModelId,jdbcType=BIGINT},
       </if>
       <if test="priceType != null">
         #{priceType,jdbcType=VARCHAR},
@@ -546,6 +566,9 @@
       </if>
       <if test="price != null">
         #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="startPrice != null">
+        #{startPrice,jdbcType=DECIMAL},
       </if>
       <if test="effectiveTime != null">
         #{effectiveTime,jdbcType=TIMESTAMP},
@@ -619,8 +642,8 @@
       <if test="status != null">
         `status` = #{status,jdbcType=VARCHAR},
       </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
+      <if test="productModelId != null">
+        product_model_id = #{productModelId,jdbcType=BIGINT},
       </if>
       <if test="priceType != null">
         price_type = #{priceType,jdbcType=VARCHAR},
@@ -630,6 +653,9 @@
       </if>
       <if test="price != null">
         price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="startPrice != null">
+        start_price = #{startPrice,jdbcType=DECIMAL},
       </if>
       <if test="effectiveTime != null">
         effective_time = #{effectiveTime,jdbcType=TIMESTAMP},

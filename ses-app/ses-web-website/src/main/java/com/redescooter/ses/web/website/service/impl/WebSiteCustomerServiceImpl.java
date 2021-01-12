@@ -9,7 +9,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
-import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.dm.SiteUser;
 import com.redescooter.ses.web.website.enums.AccountFlagEnums;
 import com.redescooter.ses.web.website.enums.CustomerTypeEnums;
@@ -23,10 +22,9 @@ import com.redescooter.ses.web.website.service.base.SiteCustomerService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductModelDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +50,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

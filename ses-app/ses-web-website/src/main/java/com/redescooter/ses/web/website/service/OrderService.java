@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
@@ -16,7 +17,15 @@ public interface OrderService {
      * @param enter
      * @return
      */
-    Boolean addOrder(AddOrderEnter enter);
+    GeneralResult addOrder(AddOrderEnter enter);
+
+    /**
+     * 修改订单
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult modifyOrder(AddOrderEnter enter);
 
     /**
      * 获取订单详情
@@ -24,4 +33,5 @@ public interface OrderService {
      * @param enter
      */
     OrderDetailsResult getOrderDetails(IdEnter enter);
+
 }

@@ -7,23 +7,20 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.SiteParts;
-import com.redescooter.ses.web.website.dm.SiteProduct;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentTypeEnums;
 import com.redescooter.ses.web.website.service.ProductPriceService;
 import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
-import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.*;
+import com.redescooter.ses.web.website.vo.product.AddProductPriceEnter;
+import com.redescooter.ses.web.website.vo.product.ProductPriceDetailsResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +34,7 @@ import java.util.List;
 @Service
 public class ProductPriceServiceImpl implements ProductPriceService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired(required = true)
@@ -57,7 +54,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         addProductPriceVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PRICE));
         addProductPriceVO.setDr(Constant.DR_FALSE);
         addProductPriceVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
-        addProductPriceVO.setProductId(enter.getProductId());
+        addProductPriceVO.setProductModelId(enter.getProductModelId());
+        addProductPriceVO.setStartPrice(enter.getStartPrice());
         addProductPriceVO.setPriceType(enter.getPriceType());
         if (enter.getPriceType().endsWith(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()))) {
             addProductPriceVO.setInstallmentTime(enter.getInstallmentTime());
@@ -76,9 +74,9 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         addProductPriceVO.setCountryLanguage("Fr");
         addProductPriceVO.setSynchronizeFlag(false);
         addProductPriceVO.setRevision(0);
-        addProductPriceVO.setCreatedBy(0L);
+        addProductPriceVO.setCreatedBy(enter.getUserId());
         addProductPriceVO.setCreatedTime(new Date());
-        addProductPriceVO.setUpdatedBy(0L);
+        addProductPriceVO.setUpdatedBy(enter.getUserId());
         addProductPriceVO.setUpdatedTime(new Date());
         siteProductPriceService.save(addProductPriceVO);
         return new GeneralResult(enter.getRequestId());

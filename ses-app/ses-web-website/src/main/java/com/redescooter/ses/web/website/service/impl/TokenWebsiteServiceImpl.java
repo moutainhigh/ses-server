@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +59,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Autowired
     private JedisCluster jedisCluster;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

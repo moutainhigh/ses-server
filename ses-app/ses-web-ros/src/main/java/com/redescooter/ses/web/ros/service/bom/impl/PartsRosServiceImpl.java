@@ -221,7 +221,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         
         List<EditSavePartsEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), EditSavePartsEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), EditSavePartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -284,7 +284,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         DetailsPartsResult detailsPartsResult = new DetailsPartsResult();
         List<DetailsPartsResult> result = new ArrayList<>();
         try {
-            partsDraft = JSONArray.parseArray(enter.getSt(), AddPartsEnter.class);
+            partsDraft = JSONArray.parseArray(enter.getKeyword(), AddPartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -346,7 +346,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         
         List<IdEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), IdEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -420,7 +420,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     public List<DeletePartResult> queryPartBindProduct(StringEnter enter) {
         List<IdEnter> enters = new ArrayList<>();
         try {
-            enters = JSONArray.parseArray(enter.getSt(), IdEnter.class);
+            enters = JSONArray.parseArray(enter.getKeyword(), IdEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }

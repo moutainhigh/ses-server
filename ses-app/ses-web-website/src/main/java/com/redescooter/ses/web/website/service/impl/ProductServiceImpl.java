@@ -19,7 +19,7 @@ import com.redescooter.ses.web.website.vo.product.ModityProductEnter;
 import com.redescooter.ses.web.website.vo.product.ProductDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired(required = true)
     private SiteProductService siteProductService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -65,8 +65,11 @@ public class ProductServiceImpl implements ProductService {
         addProductVO.setPicture(enter.getPicture());
         addProductVO.setProductModelId(enter.getProductModelId());
         addProductVO.setMinBatteryNum(enter.getMinBatteryNum());
-        addProductVO.setAfterSalesFlag(false);
-        addProductVO.setAddedServicesFlag(false);
+
+        addProductVO.setSpeed(enter.getSpeed());
+        addProductVO.setPower(enter.getPower());
+        addProductVO.setMileage(enter.getMileage());
+        addProductVO.setChargeCycle(enter.getChargeCycle());
 
         if (StringUtils.isNotBlank(enter.getMaterParameter())) {
             addProductVO.setMaterParameter(enter.getMaterParameter());
@@ -75,9 +78,8 @@ public class ProductServiceImpl implements ProductService {
             addProductVO.setOtherParameter(enter.getOtherParameter());
         }
 
-        addProductVO.setSpeed(enter.getSpeed());
-        addProductVO.setPower(enter.getPower());
-        addProductVO.setChargeCycle(enter.getChargeCycle());
+        addProductVO.setAfterSalesFlag(false);
+        addProductVO.setAddedServicesFlag(false);
         addProductVO.setSynchronizeFlag(false);
         addProductVO.setRevision(0);
         addProductVO.setCreatedBy(enter.getUserId());
