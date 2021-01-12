@@ -1,15 +1,11 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 出库单
@@ -105,10 +101,10 @@ public class OpeOutWhouseOrder {
     private Integer outWhType;
 
     /**
-     * 出库类型，1：销售调拨，2：补料出库，3：生产组装，4：其它
+     * 出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库
      */
     @TableField(value = "out_type")
-    @ApiModelProperty(value = "出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库'")
+    @ApiModelProperty(value = "出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库")
     private Integer outType;
 
     /**
@@ -145,6 +141,13 @@ public class OpeOutWhouseOrder {
     @TableField(value = "mail")
     @ApiModelProperty(value = "邮箱")
     private String mail;
+
+    /**
+     * 是否是不合格品库产生，0:否，1:是
+     */
+    @TableField(value = "`source`")
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
 
     /**
      * 备注
@@ -251,6 +254,8 @@ public class OpeOutWhouseOrder {
     public static final String COL_TELEPHONE = "telephone";
 
     public static final String COL_MAIL = "mail";
+
+    public static final String COL_SOURCE = "source";
 
     public static final String COL_REMARK = "remark";
 

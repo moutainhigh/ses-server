@@ -44,10 +44,13 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     private Integer whType;
 
     @ApiModelProperty(value = "国家类型，1:中国，2:法国")
-    private Integer countryType;
+    private Integer countryType = 1;
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
 
     @ApiModelProperty("入库明细")
     private String st;

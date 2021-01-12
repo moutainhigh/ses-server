@@ -32,4 +32,7 @@ public class InWhouseListEnter extends PageEnter {
     @ApiModelProperty(value = "国家类型，1:中国，2:法国")
     private Integer countryType;
 
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source;
+
 }

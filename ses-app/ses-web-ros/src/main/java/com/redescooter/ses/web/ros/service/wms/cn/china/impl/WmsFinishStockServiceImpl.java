@@ -2,6 +2,11 @@ package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -17,8 +22,14 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
+import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
+import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -91,6 +102,18 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     @Autowired
     private OpeOutWhPartsBService opeOutWhPartsBService;
+
+    @Autowired
+    private ProductionOrderTraceService productionOrderTraceService;
+
+    @Autowired
+    private OrderStatusFlowService orderStatusFlowService;
+
+    @Autowired
+    private ProductionPurchasService productionPurchasService;
+
+    @Autowired
+    private ProductionAssemblyOrderService productionAssemblyOrderService;
 
     @Reference
     private IdAppService idAppService;
@@ -326,11 +349,27 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         // 入库单
         QueryWrapper<OpeInWhouseOrder> in = new QueryWrapper<>();
         in.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
+        if (enter.getSource() == null){
+            in.eq(OpeInWhouseOrder.COL_SOURCE,0);
+        }else {
+            in.eq(OpeInWhouseOrder.COL_SOURCE,enter.getSource());
+        }
+        if (enter.getOrderType() != null){
+            in.eq(OpeInWhouseOrder.COL_ORDER_TYPE,enter.getOrderType());
+        }
         map.put("1",opeInWhouseOrderService.count(in));
 
         // 出库单
         QueryWrapper<OpeOutWhouseOrder> out = new QueryWrapper<>();
         out.eq(OpeOutWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
+        if (enter.getSource() == null){
+            out.eq(OpeOutWhouseOrder.COL_SOURCE,0);
+        }else {
+            out.eq(OpeOutWhouseOrder.COL_SOURCE,enter.getSource());
+        }
+        if (enter.getOrderType() != null){
+            out.eq(OpeOutWhouseOrder.COL_OUT_WH_TYPE,enter.getOrderType());
+        }
         map.put("2", opeOutWhouseOrderService.count(out));
         return map;
     }
@@ -371,6 +410,23 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+
+        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
+            // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
+            productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
+        }else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+            // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
+            productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
+        }
+
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+                inWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+
         List<WmsInStockRecordEnter> records = new ArrayList<>();
         switch (inWhouseOrder.getOrderType()){
             case 1:
@@ -500,6 +556,16 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         if (outWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
+        // 状态流转
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, outWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), outWhouseOrder.getId(), "");
+        orderStatusFlowService.save(orderStatusFlowEnter);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+                outWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
         List<WmsInStockRecordEnter> records = new ArrayList<>();
         switch (outWhouseOrder.getOutWhType()){
             case 1:

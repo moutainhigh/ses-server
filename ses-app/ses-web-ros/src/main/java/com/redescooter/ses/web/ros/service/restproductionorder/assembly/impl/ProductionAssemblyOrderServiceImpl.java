@@ -479,6 +479,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                                 // 拿到ID 去中国仓库原料库区去看看库存够不够
                                 QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
                                 partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,partsId);
+                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
                                 if (partStock == null || (partStock.getAbleStockQty() < scootermap.get(partsId))){
@@ -514,6 +515,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                                 // 拿到ID 去中国仓库原料库区去看看库存够不够
                                 QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
                                 partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,combinPartsId);
+                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
                                 if (partStock == null || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))){

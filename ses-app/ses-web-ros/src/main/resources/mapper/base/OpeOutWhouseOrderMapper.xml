@@ -22,6 +22,7 @@
     <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="mail" jdbcType="VARCHAR" property="mail" />
+    <result column="source" jdbcType="INTEGER" property="source" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -37,7 +38,7 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, country_type, relation_id, relation_no, relation_type, 
     wh_type, out_wh_no, out_wh_status, out_wh_type, out_type, out_wh_qty, already_out_wh_qty, 
-    country_code, telephone, mail, remark, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def4, def5
+    country_code, telephone, mail, `source`, remark, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
   </sql>
 </mapper>

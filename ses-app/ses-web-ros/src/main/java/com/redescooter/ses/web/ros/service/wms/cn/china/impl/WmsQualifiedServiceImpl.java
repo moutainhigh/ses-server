@@ -1,6 +1,10 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -14,14 +18,17 @@ import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -74,6 +81,9 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
 
     @Autowired
     private OpeOutWhPartsBService opeOutWhPartsBService;
+
+    @Autowired
+    private ProductionOrderTraceService productionOrderTraceService;
 
     @Reference
     private IdAppService idAppService;
@@ -204,12 +214,20 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
 
 
     @Override
+    @Transactional
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么样 先找到入库单
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+                inWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+
         List<WmsInStockRecordEnter> records = new ArrayList<>();
         switch (inWhouseOrder.getOrderType()){
             case 1:
@@ -338,6 +356,14 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         if (outWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+                outWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+
         List<WmsInStockRecordEnter> records = new ArrayList<>();
         switch (outWhouseOrder.getOutWhType()){
             case 1:

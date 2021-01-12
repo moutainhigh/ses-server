@@ -18,6 +18,7 @@
     <result column="relation_order_type" jdbcType="INTEGER" property="relationOrderType" />
     <result column="in_wh_type" jdbcType="INTEGER" property="inWhType" />
     <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+    <result column="source" jdbcType="INTEGER" property="source" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -33,7 +34,7 @@
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, country_type, in_wh_no, in_wh_status, wh_type, order_type, 
     relation_order_id, relation_order_no, relation_order_type, in_wh_type, in_wh_qty, 
-    remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
-    def5
+    `source`, remark, created_by, created_time, updated_by, updated_time, def1, def2, 
+    def3, def4, def5
   </sql>
 </mapper>

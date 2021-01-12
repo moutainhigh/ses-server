@@ -16,6 +16,15 @@
         <if test="classType != null">
            and  whorder.out_wh_type=#{classType}
         </if>
+        <choose>
+            <when test="source == null">
+              and whorder.source = 0
+            </when>
+            <otherwise>
+                and whorder.source = #{source}
+            </otherwise>
+        </choose>
+
         <if test="keyword != null and keyword != ''">
             and (
             staff.full_name like concat ('%',#{keyword},'%') or
@@ -104,7 +113,8 @@
         select combinB.id     as id,
                combin.en_name as name,
                combin.bom_no  as serialN,
-               combinB.qty    as totalQty
+               combinB.qty    as totalQty,
+               combinB.production_combin_bom_id as productId
         from ope_out_wh_combin_b combinB
                      left join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
         where combinB.out_wh_id=#{id} and combinB.dr = 0
@@ -116,7 +126,8 @@
                parts.en_name    as name,
                parts.parts_no   as serialN,
                parts.parts_type as partType,
-               partB.qty        as totalQty
+               partB.qty        as totalQty,
+               partB.parts_id as productId
         from ope_out_wh_parts_b partB
                      left join ope_production_parts parts on parts.id = partB.parts_id and parts.dr = 0
         where partB.out_wh_id=#{id} and partB.dr = 0

@@ -104,10 +104,10 @@ public class OpeInWhouseOrder {
     private Integer relationOrderType;
 
     /**
-     * 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * 入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库
      */
     @TableField(value = "in_wh_type")
-    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库'")
+    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库")
     private Integer inWhType;
 
     /**
@@ -116,6 +116,13 @@ public class OpeInWhouseOrder {
     @TableField(value = "in_wh_qty")
     @ApiModelProperty(value = "入库数量")
     private Integer inWhQty;
+
+    /**
+     * 是否是不合格品库产生，0:否，1:是
+     */
+    @TableField(value = "`source`")
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
 
     /**
      * 备注
@@ -214,6 +221,8 @@ public class OpeInWhouseOrder {
     public static final String COL_IN_WH_TYPE = "in_wh_type";
 
     public static final String COL_IN_WH_QTY = "in_wh_qty";
+
+    public static final String COL_SOURCE = "source";
 
     public static final String COL_REMARK = "remark";
 

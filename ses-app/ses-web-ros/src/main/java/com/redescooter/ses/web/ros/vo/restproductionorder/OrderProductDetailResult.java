@@ -22,6 +22,9 @@ public class OrderProductDetailResult extends GeneralResult {
     @ApiModelProperty(value = "字单据Id")
     private Long id;
 
+    @ApiModelProperty("产品ID")
+    private Long productId;
+
     @ApiModelProperty(value = "分组Id")
     private Long categoryId;
 
@@ -51,6 +54,9 @@ public class OrderProductDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "应发货总数量")
     private Integer totalQty = 0;
+
+    @ApiModelProperty("上限数量")
+    private Integer ableQty = 0;
 
     @ApiModelProperty(value = "SN集合")
     private List<String> snMap;

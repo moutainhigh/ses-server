@@ -177,8 +177,7 @@
            parts_name,
            parts_no,
            parts_type,
-           qty as purchaseQty,
-           qty as ableInWhQty
+           qty as purchaseQty
         from ope_production_purchase_parts_b
         where dr = 0 and production_purchase_id = #{enter.id}
     </select>

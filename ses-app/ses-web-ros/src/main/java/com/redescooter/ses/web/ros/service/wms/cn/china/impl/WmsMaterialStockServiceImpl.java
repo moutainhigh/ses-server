@@ -178,7 +178,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeInWhouseCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeInWhouseCombinB.COL_IN_WH_ID, id);
                 List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeInWhouseCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
@@ -329,7 +329,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeInWhouseCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeInWhouseCombinB.COL_IN_WH_ID, id);
                 List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeInWhouseCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
@@ -738,7 +738,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, id);
                 List<OpeOutWhCombinB> combinBS = opeOutWhCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeOutWhCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
@@ -882,7 +882,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, id);
                 List<OpeOutWhCombinB> combinBS = opeOutWhCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeOutWhCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
@@ -1001,7 +1001,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeEntrustCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeEntrustCombinB.COL_ENTRUST_ID, entrustId);
                 List<OpeEntrustCombinB> combinBS = opeEntrustCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeEntrustCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
@@ -1152,7 +1152,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                 QueryWrapper<OpeEntrustCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeEntrustCombinB.COL_ENTRUST_ID, entrustId);
                 List<OpeEntrustCombinB> combinBS = opeEntrustCombinBService.list(combin);
-                if (CollectionUtils.isEmpty(combinBS)) {
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeEntrustCombinB combinB : combinBS) {
                         // 先判断该组装件在库存中有没有 有的话编辑 否则新增
                         QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();

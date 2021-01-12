@@ -4,6 +4,7 @@
     <select id="totalNum" resultType="int">
         select count(*)
         from ope_in_whouse_order inwh
+        left join ope_sys_staff staff on staff.id = inwh.created_by
         <include refid="listCondition"></include>
     </select>
 
@@ -33,6 +34,15 @@
         <if test="enter.inWhType != null">
             and inwh.in_wh_type = #{enter.inWhType}
         </if>
+        <choose>
+            <when test="enter.source == null">
+               and inwh.source = 0
+            </when>
+            <otherwise>
+               and inwh.source = #{enter.source}
+            </otherwise>
+        </choose>
+
         <if test="enter.keyword != null and enter.keyword != ''">
             and (inwh.in_wh_no like concat('%', #{enter.keyword}, '%') or
                  staff.full_name like concat('%', #{enter.keyword}, '%')

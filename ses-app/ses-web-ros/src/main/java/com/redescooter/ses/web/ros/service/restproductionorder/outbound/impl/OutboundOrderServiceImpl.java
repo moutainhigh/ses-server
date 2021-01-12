@@ -8,7 +8,10 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -119,7 +122,14 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Autowired
     private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
 
+    @Autowired
+    private OpeWmsScooterStockService opeWmsScooterStockService;
 
+    @Autowired
+    private OpeWmsCombinStockService opeWmsCombinStockService;
+
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -241,12 +251,54 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         switch (opeOutWhouseOrder.getOutWhType()) {
             case 1:
                 resultList = outboundOrderServiceMapper.productionScooterByBussId(enter.getId());
+                if (CollectionUtils.isNotEmpty(resultList)){
+                    // 查看库存的可用数量
+                    for (OrderProductDetailResult result : resultList) {
+                        QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,opeOutWhouseOrder.getCountryType());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,result.getCategoryId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID,result.getColorId());
+                        scooterStockQueryWrapper.last("limit 1");
+                        OpeWmsScooterStock wmsScooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
+                        if (wmsScooterStock != null){
+                            result.setAbleQty(wmsScooterStock.getAbleStockQty());
+                        }
+                    }
+                }
                 break;
             case 2:
                 resultList = outboundOrderServiceMapper.productionCombinByBussId(enter.getId());
+                if (CollectionUtils.isNotEmpty(resultList)){
+                    QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
+                    combinStockQueryWrapper.in(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,resultList.stream().map(OrderProductDetailResult::getProductId).collect(Collectors.toList()));
+                    List<OpeWmsCombinStock> wmsCombinStockList = opeWmsCombinStockService.list(combinStockQueryWrapper);
+                    if (CollectionUtils.isNotEmpty(wmsCombinStockList)){
+                        for (OrderProductDetailResult result : resultList) {
+                            for (OpeWmsCombinStock combinStock : wmsCombinStockList) {
+                                if (result.getProductId().equals(combinStock.getProductionCombinBomId())){
+                                    result.setAbleQty(combinStock.getAbleStockQty());
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             default:
                 resultList = outboundOrderServiceMapper.productionPartByBussId(enter.getId());
+                if (CollectionUtils.isNotEmpty(resultList)){
+                    QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
+                    partsStockQueryWrapper.in(OpeWmsPartsStock.COL_PARTS_ID,resultList.stream().map(OrderProductDetailResult::getProductId).collect(Collectors.toList()));
+                    List<OpeWmsPartsStock> wmsPartsStockList = opeWmsPartsStockService.list(partsStockQueryWrapper);
+                    if (CollectionUtils.isNotEmpty(wmsPartsStockList)){
+                        for (OrderProductDetailResult result : resultList) {
+                            for (OpeWmsPartsStock partsStock : wmsPartsStockList) {
+                                if (result.getProductId().equals(partsStock.getPartsId())){
+                                    result.setAbleQty(partsStock.getAbleStockQty());
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
         }
         return resultList;
@@ -436,7 +488,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         orderOrder.setRelationNo(enter.getRelationOrderNo());
         orderOrder.setRelationType(enter.getRelationOrderType());
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
-        orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
+        orderOrder.setOutWhNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())));
+//        orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
         orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
         orderOrder.setCreatedBy(enter.getUserId());
         orderOrder.setCreatedTime(new Date());

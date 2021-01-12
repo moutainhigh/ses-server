@@ -571,6 +571,54 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Override
     public List<SaveOrUpdatePartsBEnter> relationPurchaseOrderPartsData(IdEnter enter) {
         List<SaveOrUpdatePartsBEnter> list = productionPurchasServiceMapper.relationPurchaseOrderPartsData(enter);
+        if (CollectionUtils.isNotEmpty(list)){
+            QueryWrapper<OpeInWhouseOrder> qw = new QueryWrapper<>();
+            qw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,enter.getId());
+            qw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_TYPE,OrderTypeEnums.FACTORY_PURCHAS.getValue());
+            List<OpeInWhouseOrder> inWhouseOrderList = opeInWhouseOrderService.list(qw);
+            if (CollectionUtils.isNotEmpty(inWhouseOrderList)){
+                // 已入库的入库单的集合
+                List<OpeInWhouseOrder> inList = inWhouseOrderList.stream().filter(o->o.getInWhStatus() == 30).collect(Collectors.toList());
+                // 已入库入库单的部件的集合
+                List<OpeInWhousePartsB> inPartsBList = new ArrayList<>();
+                if (CollectionUtils.isNotEmpty(inList)){
+                    // 找到所有已经入库的入库单的所有部件明细
+                    QueryWrapper<OpeInWhousePartsB> partsQw = new QueryWrapper<>();
+                    partsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,inList.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    inPartsBList = opeInWhousePartsBService.list(partsQw);
+                }
+                // 还未入库的入库单的集合(草稿状态的不算)
+                List<OpeInWhouseOrder> unInList = inWhouseOrderList.stream().filter(o->o.getInWhStatus() != 30).collect(Collectors.toList());
+                // 还未入库的入库单的部件的集合
+                List<OpeInWhousePartsB> unPartsBList = new ArrayList<>();
+                if (CollectionUtils.isNotEmpty(unInList)){
+                    // 找到所有已经入库的入库单的所有部件明细
+                    QueryWrapper<OpeInWhousePartsB> unPartsQw = new QueryWrapper<>();
+                    unPartsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,inList.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    unPartsBList = opeInWhousePartsBService.list(unPartsQw);
+                }
+                for (SaveOrUpdatePartsBEnter bEnter : list) {
+                    Integer alreadyNum = 0;
+                    if (CollectionUtils.isNotEmpty(inPartsBList)){
+                        Map<Long, List<OpeInWhousePartsB>> inPartsMap = inPartsBList.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+                        for (Long partsId : inPartsMap.keySet()) {
+                            if (bEnter.getPartsId().equals(partsId)){
+                                alreadyNum = alreadyNum + inPartsMap.get(partsId).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum();
+                            }
+                        }
+                    }
+                    if (CollectionUtils.isNotEmpty(unPartsBList)){
+                        Map<Long, List<OpeInWhousePartsB>> unPartsMap = unPartsBList.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+                        for (Long partsId : unPartsMap.keySet()) {
+                            if (bEnter.getPartsId().equals(partsId)){
+                                alreadyNum = alreadyNum + unPartsMap.get(partsId).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum();
+                            }
+                        }
+                    }
+                    bEnter.setAbleInWhQty(bEnter.getPurchaseQty() - alreadyNum);
+                }
+            }
+        }
         return list;
     }
 

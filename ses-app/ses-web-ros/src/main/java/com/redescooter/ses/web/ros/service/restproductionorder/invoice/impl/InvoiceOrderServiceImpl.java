@@ -117,6 +117,15 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Autowired
     private OpeEntrustOrderService opeEntrustOrderService;
 
+    @Autowired
+    private OpeWmsScooterStockService opeWmsScooterStockService;
+
+    @Autowired
+    private OpeWmsCombinStockService opeWmsCombinStockService;
+
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -321,6 +330,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opeInvoiceOrder.getInvoiceType() == 1){
             checkProtion(opeInvoiceOrder);
         }
+        // 追加 校验中国仓库的库存是否充足
+        checkStockNum(opeInvoiceOrder);
         //创建出库单
         saveOutbound(enter, opeInvoiceOrder);
 
@@ -346,6 +357,87 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         purchaseOrderService.purchaseStocking(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 发货单点击备货  校验中国库存是否足够
+    public void checkStockNum(OpeInvoiceOrder invoiceOrder){
+      switch (invoiceOrder.getInvoiceType()){
+          case 1:
+              // scooter
+              QueryWrapper<OpeInvoiceScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+              scooterBQueryWrapper.eq(OpeInvoiceScooterB.COL_INVOICE_ID,invoiceOrder.getId());
+              List<OpeInvoiceScooterB> scooterBList = opeInvoiceScooterBService.list(scooterBQueryWrapper);
+              if (CollectionUtils.isNotEmpty(scooterBList)){
+                  for (OpeInvoiceScooterB scooterB : scooterBList) {
+                      QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
+                      scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
+                      scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID,scooterB.getColorId());
+                      scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,1);
+                      scooterStockQueryWrapper.last("limit 1");
+                      OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
+                      if (scooterStock == null){
+                          throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                      }
+                      if(scooterStock.getAbleStockQty() < scooterB.getQty()){
+                          throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                      }
+                  }
+              }
+          default:
+              break;
+          case 2:
+              // combin
+              QueryWrapper<OpeInvoiceCombinB> combinBQueryWrapper = new QueryWrapper<>();
+              combinBQueryWrapper.eq(OpeInvoiceCombinB.COL_INVOICE_ID,invoiceOrder.getId());
+              List<OpeInvoiceCombinB> combinBList = opeInvoiceCombinBService.list(combinBQueryWrapper);
+              if (CollectionUtils.isNotEmpty(combinBList)){
+                  // 找到中国仓库的组装件的库存
+                  QueryWrapper<OpeWmsCombinStock> wmsCombinStockQueryWrapper = new QueryWrapper<>();
+                  wmsCombinStockQueryWrapper.in(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinBList.stream().map(OpeInvoiceCombinB::getProductionCombinBomId).collect(Collectors.toList()));
+                  List<OpeWmsCombinStock> combinStockList = opeWmsCombinStockService.list(wmsCombinStockQueryWrapper);
+                  if (CollectionUtils.isEmpty(combinStockList)){
+                      throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                  }
+                  if (combinBList.size() > combinStockList.size()){
+                      throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                  }
+                  for (OpeInvoiceCombinB combinB : combinBList) {
+                      for (OpeWmsCombinStock combinStock : combinStockList) {
+                          if (combinB.getProductionCombinBomId().equals(combinStock.getProductionCombinBomId()) && combinB.getQty() > combinStock.getAbleStockQty()){
+                              throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                          }
+                      }
+                  }
+              }
+              break;
+          case 3:
+              // parts
+              QueryWrapper<OpeInvoicePartsB> partsBQueryWrapper = new QueryWrapper<>();
+              partsBQueryWrapper.eq(OpeInvoicePartsB.COL_INVOICE_ID,invoiceOrder.getId());
+              List<OpeInvoicePartsB> partsBList = opeInvoicePartsBService.list(partsBQueryWrapper);
+              if (CollectionUtils.isNotEmpty(partsBList)){
+                  // 找到中国仓库的原料库存
+                  QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
+                  partsStockQueryWrapper.in(OpeWmsPartsStock.COL_PARTS_ID,partsBList.stream().map(OpeInvoicePartsB::getPartsId).collect(Collectors.toList()));
+                  List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockService.list(partsStockQueryWrapper);
+                  if (CollectionUtils.isEmpty(partsStockList)){
+                      throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                  }
+                  if (partsBList.size() > partsStockList.size()){
+                      throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                  }
+                  for (OpeInvoicePartsB partsB : partsBList) {
+                      for (OpeWmsPartsStock partsStock : partsStockList) {
+                          if (partsB.getPartsId().equals(partsStock.getPartsId()) && partsB.getQty() > partsStock.getAbleStockQty()){
+                              throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                          }
+                      }
+                  }
+              }
+              break;
+      }
+    }
+
 
 
     // 如果是整车的话 判断是否有符合颜色和车型的产品
