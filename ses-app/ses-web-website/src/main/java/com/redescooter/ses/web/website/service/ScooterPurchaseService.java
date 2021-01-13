@@ -23,7 +23,7 @@ public interface ScooterPurchaseService {
      * @param enter
      * @return
      */
-    List<ModelPriceResult> modelPriceList(GeneralEnter enter);
+    List<ModelPriceResult> modelAndPriceList(GeneralEnter enter);
 
     /**
      * 产品详情
@@ -31,7 +31,7 @@ public interface ScooterPurchaseService {
      * @param enter
      * @return
      */
-    List<ProductsResult> getProductDetails(IdEnter enter);
+    List<ProductsResult> getProductDetailByModel(IdEnter enter);
 
     /**
      * 配件列表
@@ -47,5 +47,5 @@ public interface ScooterPurchaseService {
      * @param enter
      * @return
      */
-    List<ProductPartsDetailsResult> getScooterBatteryConfigList(GeneralEnter enter);
+    List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter);
 }

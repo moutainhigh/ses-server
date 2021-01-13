@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproductionorder.invoice.impl;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
@@ -565,11 +564,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         List<QueryStaffResult> result = new ArrayList<>();
 
         QueryWrapper<OpeSysStaff> queryStaffResultQueryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(enter.getSt())) {
-            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_FIRST_NAME, enter.getSt());
-            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_LAST_NAME, enter.getSt());
-            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_TELEPHONE, enter.getSt());
-            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_EMAIL, enter.getSt());
+        if (StringUtils.isNotBlank(enter.getKeyword())) {
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_FIRST_NAME, enter.getKeyword());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_LAST_NAME, enter.getKeyword());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_TELEPHONE, enter.getKeyword());
+            queryStaffResultQueryWrapper.like(OpeSysStaff.COL_EMAIL, enter.getKeyword());
         }
         List<OpeSysStaff> opeSysStaffList = opeSysStaffService.list(queryStaffResultQueryWrapper);
         if (CollectionUtils.isNotEmpty(opeSysStaffList)) {

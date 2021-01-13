@@ -11,33 +11,33 @@ import lombok.EqualsAndHashCode;
  * @Date 2021/1/6 3:43 上午
  * @Description 新增经销商入参
  **/
-@ApiModel(value = "新增经销商入参", description = "新增经销商入参")
+@ApiModel(value = "New dealers join", description = "新增经销商入参")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QueryDistributorEnter extends GeneralEnter {
+public class QueryDealerEnter extends GeneralEnter {
 
     /**
      * 关键字查询
      */
-    @ApiModelProperty(value = "关键字查询")
+    @ApiModelProperty(value = "keyword")
     private String keyword;
 
     /**
      * 经度
      */
-    @ApiModelProperty(value = "经度")
+    @ApiModelProperty(value = "longitude")
     private String longitude;
 
     /**
      * 纬度
      */
-    @ApiModelProperty(value = "纬度")
+    @ApiModelProperty(value = "latitude")
     private String latitude;
 
     /**
      * 地图搜索距离范围
      */
-    @ApiModelProperty(value = "距离范围")
+    @ApiModelProperty(value = "Map search distance range")
     private String distanceRange;
 
 }

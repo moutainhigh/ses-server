@@ -31,7 +31,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
         highEnter.setRemark("");
         highEnter.setUserId(0L);
 
-        assertTrue(productClassService.addProductClass(highEnter));
+        productClassService.addProductClass(highEnter);
 
         AddProductClassEnter lowEnter = new AddProductClassEnter();
         lowEnter.setProductClassName("HIGH_SPEED");
@@ -40,7 +40,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
         lowEnter.setEnName("LOW SPEED");
         lowEnter.setRemark("no");
         lowEnter.setUserId(0L);
-        assertTrue(productClassService.addProductClass(lowEnter));
+        productClassService.addProductClass(lowEnter);
 
     }
 
@@ -56,7 +56,7 @@ public class ProductClassServiceImplTest extends SesWebsiteApplicationTests {
         modityEnter.setRemark("再次新过");
         modityEnter.setUserId(0L);
 
-        assertTrue(productClassService.modityProductClass(modityEnter));
+        productClassService.modityProductClass(modityEnter);
 
     }
 

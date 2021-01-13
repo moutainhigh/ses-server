@@ -16,7 +16,7 @@ spring: #spring config
       max-file-size: 20MB
       enabled: true
   datasource: #数据库连接
-    url: jdbc:mysql://172.31.6.136:2116/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.31.6.136:2116/website?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: 1qaz2wsx
     druid:
@@ -42,17 +42,47 @@ spring: #spring config
   swagger:
     enabled: true
     group:
-      Core-API:
-        group-name: Core API of official website
-        title: Signe OR Order
-        description: Signature management / Order management
-        base-package: com.redescooter.ses.web.ros.controller.website
-        path-regex: /website/.*
+      auth-API:
+        group-name: Auth API
+        title: LogIn/LogOut
+        description: LogIn/LogOut Service
+        base-package: com.redescooter.ses.web.website.controller.LoginController
+        path-regex: /auth/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company
         license-url: '#'
-        terms-of-service-url: https://pre.redelectric.fr/
+        terms-of-service-url: https://api.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+      Website-API:
+        group-name: Website API
+        title: Website
+        description: Website Service
+        base-package: com.redescooter.ses.web.website.controller.business
+        path-regex: /.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://api.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+      DataManagement-API:
+        group-name: Config API
+        title: Config
+        description: Config Service
+        base-package: com.redescooter.ses.web.website.controller.config
+        path-regex: /.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://api.redelectric.fr/
         contact:
           name: Jerry
           email: jerry@redescooter.com

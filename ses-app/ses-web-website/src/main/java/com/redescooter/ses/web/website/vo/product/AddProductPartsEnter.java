@@ -23,12 +23,6 @@ import java.util.Date;
 public class AddProductPartsEnter extends GeneralEnter {
 
     /**
-     * 主键 主键
-     */
-    @ApiModelProperty(value = "主键 主键")
-    private Long id;
-
-    /**
      * 配件ID
      */
     @ApiModelProperty(value = "配件ID")
@@ -52,12 +46,5 @@ public class AddProductPartsEnter extends GeneralEnter {
     @TableField(value = "`parameter`")
     @ApiModelProperty(value = "相关参数")
     private String parameter;
-
-    /**
-     * 备注
-     */
-    @TableField(value = "remark")
-    @ApiModelProperty(value = "备注")
-    private String remark;
 
 }

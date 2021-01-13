@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.website.controller;
+package com.redescooter.ses.web.website.controller.config;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -7,7 +7,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.ColourService;
 import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
-import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,21 +32,21 @@ public class ColourController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "创建产品颜色", response = GeneralResult.class)
+    @ApiOperation(value = "Add color", response = GeneralResult.class)
     public Response<GeneralResult> addColour(@ModelAttribute @ApiParam("请求参数") AddColourEnter enter) {
         return new Response<>(colourService.addColour(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/remove")
-    @ApiOperation(value = "移除产品颜色", response = GeneralResult.class)
+    @ApiOperation(value = "Remove color", response = GeneralResult.class)
     public Response<GeneralResult> remove(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(colourService.removeColour(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "获取产品颜色列表", response = GeneralResult.class)
+    @ApiOperation(value = "Get color list", response = ColourDetailsResult.class)
     public Response<List<ColourDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(colourService.getColourList(enter));
     }

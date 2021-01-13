@@ -53,18 +53,6 @@ public class AddProductEnter extends GeneralEnter {
     private Integer minBatteryNum;
 
     /**
-     * 是否支持售后服务
-     */
-    @ApiModelProperty(value = "是否支持售后服务")
-    private Boolean afterSalesFlag;
-
-    /**
-     * 是否支持增值服务
-     */
-    @ApiModelProperty(value = "是否支持增值服务")
-    private Boolean addedServicesFlag;
-
-    /**
      * 产品参数 存储JSON
      */
     @ApiModelProperty(value = "产品参数 存储JSON")

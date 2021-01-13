@@ -36,8 +36,6 @@ public class ProductServiceImplTest extends SesWebsiteApplicationTests {
 //        enter.setProductModelId(145745431121920L);
         enter.setProductModelId(145745431121920L);
         enter.setMinBatteryNum(2);
-        enter.setAfterSalesFlag(false);
-        enter.setAddedServicesFlag(false);
         enter.setMaterParameter("");
         enter.setOtherParameter("");
 //        enter.setSpeed("45 km/h");

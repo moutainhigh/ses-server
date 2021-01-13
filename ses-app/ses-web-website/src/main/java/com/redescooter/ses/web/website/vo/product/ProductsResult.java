@@ -12,12 +12,13 @@ import java.util.List;
  * @Date 2021/1/6 1:33 下午
  * @Description 产品详情结果集
  **/
-@ApiModel(value = "产品详情结果集", description = "产品详情结果集")
+@ApiModel(value = "Product details result set", description = "产品详情结果集")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductsResult extends GeneralResult {
+public class ProductsResult extends ProductDetailsResult {
 
-    private ProductDetailsResult productDetail;
-
+    /**
+     * 颜色集合
+     */
     private List<ColourDetailsResult> colourDetailslist;
 }

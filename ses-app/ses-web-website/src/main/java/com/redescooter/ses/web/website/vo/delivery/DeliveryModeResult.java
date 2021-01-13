@@ -13,15 +13,15 @@ import java.util.Map;
  * @Date 2021/1/6 7:59 下午
  * @Description 配送方式结果集出参
  **/
-@ApiModel(value = "配送方式结果集出参", description = "配送方式结果集出参")
+@ApiModel(value = "Parameters of distribution method result set", description = "配送方式结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DeliveryModeResult extends GeneralResult {
 
-    @ApiModelProperty(value = "配送方式编码")
+    @ApiModelProperty(value = "Delivery mode code")
     private String code;
-    @ApiModelProperty(value = "配送方式唯一代码")
+    @ApiModelProperty(value = "Delivery method unique code")
     private Integer value;
-    @ApiModelProperty(value = "配送方式费用")
+    @ApiModelProperty(value = "Cost of delivery mode")
     private String cost;
 }

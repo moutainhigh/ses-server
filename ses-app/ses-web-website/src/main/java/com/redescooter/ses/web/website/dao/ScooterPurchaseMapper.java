@@ -26,7 +26,7 @@ public interface ScooterPurchaseMapper {
      * @param enter
      * @return
      */
-    List<ModelPriceResult> modelPriceList(GeneralEnter enter);
+    List<ModelPriceResult> modelAndPriceList(GeneralEnter enter);
 
     /**
      * 根据产品型号获取产品详情
@@ -34,7 +34,7 @@ public interface ScooterPurchaseMapper {
      * @param enter
      * @return
      */
-    List<ProductsResult> getProductDetails(IdEnter enter);
+    List<ProductsResult> getProductDetailByModel(IdEnter enter);
 
     /**
      * 配件列表
@@ -50,5 +50,5 @@ public interface ScooterPurchaseMapper {
      * @param enter
      * @return
      */
-    List<ProductPartsDetailsResult> getScooterConfigList(GeneralEnter enter);
+    List<ProductPartsDetailsResult> getScooterConfigList(IdEnter enter);
 }

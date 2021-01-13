@@ -20,17 +20,13 @@ public class PartsServiceImplTest extends SesWebsiteApplicationTests {
     void addParts() {
 
         AddPartsEnter enter = new AddPartsEnter();
-        enter.setDr(0);
-        enter.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
         enter.setPartsType(String.valueOf(PartsTypeEnums.BATTERY.getValue()));
         enter.setPartsNumber("3770018097152");
         enter.setCnName("电池");
         enter.setFrName("Batt Model E H Capa");
         enter.setEnName("Batt Model E H Capa");
         enter.setSpecs("");
-        enter.setSources(String.valueOf(PartsProcurementSourceEnums.CN.getValue()));
         enter.setPrice(new BigDecimal("1290"));
-        enter.setCurrencyUnit("€");
         enter.setUserId(0L);
         partsService.addParts(enter);
 

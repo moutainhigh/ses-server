@@ -10,6 +10,7 @@ import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
+import org.apache.zookeeper.data.Id;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,7 +26,7 @@ public class ScooterPurchaseServiceImplTest extends SesWebsiteApplicationTests {
         GeneralEnter enter = new GeneralEnter();
         enter.setUserId(0L);
 
-        List<ModelPriceResult> modelPriceResults = scooterPurchaseService.modelPriceList(enter);
+        List<ModelPriceResult> modelPriceResults = scooterPurchaseService.modelAndPriceList(enter);
         System.out.println(JSON.toJSONString(modelPriceResults));
     }
 
@@ -33,7 +34,7 @@ public class ScooterPurchaseServiceImplTest extends SesWebsiteApplicationTests {
     void getProductDetails() {
         IdEnter enter = new IdEnter();
         enter.setId(121442149339136l);
-        List<ProductsResult> productDetails = scooterPurchaseService.getProductDetails(enter);
+        List<ProductsResult> productDetails = scooterPurchaseService.getProductDetailByModel(enter);
         System.out.println(JSON.toJSONString(productDetails));
     }
 
@@ -46,7 +47,7 @@ public class ScooterPurchaseServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void getScooterConfigList() {
-        List<ProductPartsDetailsResult> scooterConfigList = scooterPurchaseService.getScooterBatteryConfigList(new GeneralEnter());
+        List<ProductPartsDetailsResult> scooterConfigList = scooterPurchaseService.getScooterBatterysByProductId(new IdEnter());
         System.out.println(JSON.toJSONString(scooterConfigList));
     }
 }

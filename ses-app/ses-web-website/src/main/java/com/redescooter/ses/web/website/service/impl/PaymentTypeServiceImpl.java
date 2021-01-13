@@ -16,7 +16,7 @@ import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
     @Autowired
     private SitePaymentTypeService sitePaymentTypeService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
