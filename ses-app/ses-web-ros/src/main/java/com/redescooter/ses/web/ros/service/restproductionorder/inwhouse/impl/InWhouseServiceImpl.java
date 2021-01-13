@@ -1218,7 +1218,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 if (CollectionUtils.isNotEmpty(unInList)){
                     // 找到所有已经入库的入库单的所有部件明细
                     QueryWrapper<OpeInWhousePartsB> unPartsQw = new QueryWrapper<>();
-                    unPartsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,inList.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    unPartsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,unInList.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
                     unPartsBList = opeInWhousePartsBService.list(unPartsQw);
                 }
                 for (SaveOrUpdatePartsBEnter bEnter : list) {
