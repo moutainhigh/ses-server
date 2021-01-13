@@ -2,12 +2,16 @@ package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -17,11 +21,37 @@ import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatGroupMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
+import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
@@ -30,7 +60,18 @@ import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -38,7 +79,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @description: 成品库实现类
@@ -236,10 +282,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             relationWrapper.eq(OpeProductionPartsRelation::getProductionId, productionId);
             List<OpeProductionPartsRelation> relationList = opeProductionPartsRelationMapper.selectList(relationWrapper);
             if (CollectionUtils.isEmpty(relationList)) {
-                return result;
+                continue;
             }
 
-            Integer[] numArray = new Integer[relationList.size()];
+            List<Integer> numList = Lists.newArrayList();
             for (int i = 0; i < relationList.size(); i++) {
                 OpeProductionPartsRelation relation = relationList.get(i);
                 Long partsId = relation.getPartsId();
@@ -254,15 +300,15 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
                 List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
                 if (CollectionUtils.isEmpty(list)) {
-                    return result;
+                    continue;
                 }
 
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
                 int count = ableStockQty / partsQty;
-                numArray[i] = count;
+                numList.add(count);
             }
-            int num = Collections.min(Arrays.asList(numArray));
+            int num = Collections.min(numList);
 
             model.setNum(num);
             model.setColorName(getColorNameById(colorId));
