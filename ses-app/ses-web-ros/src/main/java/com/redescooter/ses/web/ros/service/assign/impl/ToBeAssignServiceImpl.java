@@ -401,6 +401,39 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCarDistributeMapper.updateById(model);
+
+            // 修改成品库车辆库存
+            // 获得询价单型号id和颜色id
+            CustomerIdEnter customerIdEnter = new CustomerIdEnter();
+            customerIdEnter.setCustomerId(enter.getCustomerId());
+            Map<String, Long> map = getSpecificatIdAndColorId(customerIdEnter);
+            Long specificatId = map.get("specificatId");
+            Long inquiryColorId = map.get("colorId");
+
+            // 法国仓库指定车型和颜色
+            LambdaQueryWrapper<OpeWmsScooterStock> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeWmsScooterStock::getDr, DelStatusEnum.VALID.getCode());
+            wrapper.eq(OpeWmsScooterStock::getGroupId, specificatId);
+            wrapper.eq(OpeWmsScooterStock::getColorId, inquiryColorId);
+            wrapper.eq(OpeWmsScooterStock::getStockType, 2);
+            wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
+            List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
+            if (CollectionUtils.isNotEmpty(stockList)) {
+                OpeWmsScooterStock stock = stockList.get(0);
+                // 得到原先库存的可用库存数量和已用库存数量
+                Long stockId = stock.getId();
+                Integer ableStockQty = stock.getAbleStockQty();
+                Integer usedStockQty = stock.getUsedStockQty();
+
+                // 原先库存的可用库存数量-1,已用库存数量+1
+                OpeWmsScooterStock param = new OpeWmsScooterStock();
+                param.setId(stockId);
+                param.setAbleStockQty(ableStockQty - 1);
+                param.setUsedStockQty(usedStockQty + 1);
+                param.setUpdatedBy(enter.getUserId());
+                param.setUpdatedTime(new Date());
+                opeWmsScooterStockMapper.updateById(param);
+            }
         }
 
         // node表node字段+1,flag标识改为已分配完
