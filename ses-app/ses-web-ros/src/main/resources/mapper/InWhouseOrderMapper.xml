@@ -73,4 +73,14 @@
         left join ope_combin_order purchase on purchase.id = inwhouse.relation_order_id
         where scooter.dr = 0 and purchase.id = #{combinId}
     </select>
+
+    <select id="outOrderByAllocateId" resultType="com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder">
+        select
+          *
+        from ope_out_whouse_order outOrder
+        left join  ope_invoice_order invoice on invoice.id = outOrder.relation_id
+        left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
+        left join ope_allocate_order allocate on allocate.id = purchase.allocate_id
+        where outOrder.dr = 0 and allocate.id = #{allocateId}
+    </select>
 </mapper>

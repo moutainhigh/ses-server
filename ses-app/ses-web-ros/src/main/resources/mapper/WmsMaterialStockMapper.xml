@@ -83,7 +83,8 @@
         able_stock_qty,
         used_stock_qty,
         wait_in_stock_qty,
-        wait_out_stock_qty
+        wait_out_stock_qty,
+        parts_type
         from ope_wms_parts_stock
         where dr = 0
         <include refid="frListCondition"/>

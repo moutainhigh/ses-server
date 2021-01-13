@@ -111,6 +111,15 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeAllocateOrderService opeAllocateOrderService;
 
+    @Autowired
+    private OpeOutWhScooterBService opeOutWhScooterBService;
+
+    @Autowired
+    private OpeOutWhCombinBService opeOutWhCombinBService;
+
+    @Autowired
+    private OpeOutWhPartsBService opeOutWhPartsBService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -407,12 +416,122 @@ public class InWhouseServiceImpl implements InWhouseService {
         result.setRemark(inWhouseOrder.getRemark());
         // 入库单下面的产品明细
         switch (inWhouseOrder.getOrderType()){
+            // 为了找到剩余的可入库数量 增加下面的操作
             case 1:
                 // scooter
                 List<InWhouseDetailScooterResult> scooterResults = inWhouseOrderScooterBServiceMapper.scooterBs(inWhouseOrder.getId());
                 if(CollectionUtils.isNotEmpty(scooterResults)){
+                    // 计算可入库数量 整车只会关联调拨单或者组装单
+                    // 存放中国仓库  已经出库的车辆信息
+                    Map<String, List<OpeOutWhScooterB>> outMap = new HashMap<>();
+                    // 存放中国仓库  还没有出库的车辆信息
+                    Map<String, List<OpeOutWhScooterB>> unOutMap = new HashMap<>();
+
+                    // 存放法国仓库  已经入库的车辆信息
+                    Map<String, List<OpeInWhouseScooterB>> frInMap = new HashMap<>();
+                    // 存放法国仓库  还没有入库的车辆信息
+                    Map<String, List<OpeInWhouseScooterB>> frUnInMap = new HashMap<>();
+                    if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())){
+                        // 关联的是调拨单（法国仓库）  先找到调拨单
+                        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(inWhouseOrder.getRelationOrderId());
+                        if (allocateOrder != null){
+                            // 找到调拨单产生的中国的出库单（就是法国要入库的）
+                            List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
+                            if (CollectionUtils.isEmpty(outWhouseOrders)){
+                                // 已经出库的出库单集合
+                                List<OpeOutWhouseOrder> outs = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+                                if (CollectionUtils.isEmpty(outs)){
+                                    QueryWrapper<OpeOutWhScooterB> outscooterQw = new QueryWrapper<>();
+                                    outscooterQw.in(OpeOutWhScooterB.COL_OUT_WH_ID,outs.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                                    List<OpeOutWhScooterB> outscooters = opeOutWhScooterBService.list(outscooterQw);
+                                    if (CollectionUtils.isNotEmpty(outscooters)){
+                                        outMap = outscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                                    }
+                                }
+                                // 还没有出库的出库单集合
+                                List<OpeOutWhouseOrder> unOuts = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+                                if (CollectionUtils.isNotEmpty(unOuts)){
+                                    QueryWrapper<OpeOutWhScooterB> unOutscooterQw = new QueryWrapper<>();
+                                    unOutscooterQw.in(OpeOutWhScooterB.COL_OUT_WH_ID,unOuts.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                                    List<OpeOutWhScooterB> unOutscooters = opeOutWhScooterBService.list(unOutscooterQw);
+                                    if (CollectionUtils.isNotEmpty(unOutscooters)){
+                                        unOutMap = unOutscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                                    }
+                                }
+                            }
+                            // 找到调拨单产生的法国仓库的入库单
+                            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQw = new QueryWrapper<>();
+                            inWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,allocateOrder.getId());
+                            List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
+                            if (CollectionUtils.isNotEmpty(inWhouseOrders)){
+                                // 法国仓库已经入库的入库单
+                                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o->o.getInWhStatus() == 30).collect(Collectors.toList());
+                                if (CollectionUtils.isNotEmpty(frInWhouseOrders)){
+                                    QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
+                                    inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID,frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                                    List<OpeInWhouseScooterB> inscooters = opeInWhouseScooterBService.list(inscooterQw);
+                                    if (CollectionUtils.isNotEmpty(inscooters)){
+                                        frInMap = inscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
+                                    }
+                                }
+                                // 法国仓库已经入库的入库单
+                                List<OpeInWhouseOrder> frUnWhouseOrders =
+                                        inWhouseOrders.stream().filter(o->o.getInWhStatus() == 10 || o.getInWhStatus() == 20 || o.getInWhStatus() == 25).collect(Collectors.toList());
+                                if (CollectionUtils.isNotEmpty(frInWhouseOrders)){
+                                    QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
+                                    inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID,frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                                    List<OpeInWhouseScooterB> inscooters = opeInWhouseScooterBService.list(inscooterQw);
+                                    if (CollectionUtils.isNotEmpty(inscooters)){
+                                        frUnInMap = inscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
+                                    }
+                                }
+                            }
+                        }
+                        for (InWhouseDetailScooterResult scooterResult : scooterResults) {
+                            // 定义已经入库的数量
+                            Integer alreadyNum = 0;
+                            if (outMap != null && outMap.size() > 0){
+                                // 中国仓库 已经出库的出库单
+                                for (String key : outMap.keySet()) {
+                                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                                        alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhScooterB::getAlreadyOutWhQty).sum());
+                                    }
+                                }
+                            }
+                            if (unOutMap != null && unOutMap.size() > 0){
+                                // 中国仓库 还没有出库的出库单
+                                for (String key : unOutMap.keySet()) {
+                                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                                        alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhScooterB::getQty).sum());
+                                    }
+                                }
+                            }
+                            if (frInMap != null && frInMap.size() > 0){
+                                // 法国仓库  已经入库的车辆信息
+                                for (String key : frInMap.keySet()) {
+                                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                                        alreadyNum = alreadyNum + (frInMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                                    }
+                                }
+                            }
+                            if (frUnInMap != null && frUnInMap.size() > 0){
+                                // 法国仓库  已经入库的车辆信息
+                                for (String key : frUnInMap.keySet()) {
+                                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                                        alreadyNum = alreadyNum + (frUnInMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                                    }
+                                }
+                            }
+                            scooterResult.setAbleInWhQty(scooterResult.getCombinQty() - alreadyNum);
+                        }
+                    }else if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+                        // 关联的是组装单
+
+                    }
                     for (InWhouseDetailScooterResult scooterResult : scooterResults) {
-                        scooterResult.setAbleInWhQty(scooterResult.getCombinQty());
+                        // 定义已经入库的数量
+                        Integer alreadyNum = 0;
+
                     }
                 }
                 result.setScooters(scooterResults);
@@ -422,9 +541,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 // combin
                 List<InWhouseDetailCombinResult> combinResults = inWhouseOrderCombinBServiceMapper.combinBs(inWhouseOrder.getId());
                 if (CollectionUtils.isNotEmpty(combinResults)){
-                    for (InWhouseDetailCombinResult combinResult : combinResults) {
-                        combinResult.setAbleInWhQty(combinResult.getCombinQty());
-                    }
+                   // 计算可入库的数量
                 }
                 result.setCombins(combinResults);
                 break;
@@ -432,9 +549,8 @@ public class InWhouseServiceImpl implements InWhouseService {
                 // parts
                 List<InWhouseDetailPartsResult> partsResults = inWhouseOrderPartsBServiceMapper.partsBs(inWhouseOrder.getId());
                 if (CollectionUtils.isNotEmpty(partsResults)){
-                    for (InWhouseDetailPartsResult partsResult : partsResults) {
-                        partsResult.setAbleInWhQty(partsResult.getPurchaseQty());
-                    }
+                    // 计算可入库数量
+
                 }
                 result.setParts(partsResults);
                 break;
@@ -492,6 +608,20 @@ public class InWhouseServiceImpl implements InWhouseService {
         return result;
     }
 
+
+    // 按照颜色和车型  进行嵌套分组
+    private static String fetchGroupKey(OpeOutWhScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+    // 按照颜色和车型  进行嵌套分组
+    private static String fetchGroupKey1(OpeInWhouseScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+
     @Override
     @Transactional
     public GeneralResult inWhConfirm(IdEnter enter) {
@@ -509,6 +639,10 @@ public class InWhouseServiceImpl implements InWhouseService {
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+
+        // 入库单确认入库 处理字表的实际入库数量
+        comfirmInHandleB(inWhouseOrder);
+
         // 操作记录
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
                 inWhouseOrder.getRemark());
@@ -529,6 +663,44 @@ public class InWhouseServiceImpl implements InWhouseService {
 
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    private void comfirmInHandleB(OpeInWhouseOrder inWhouseOrder) {
+        switch (inWhouseOrder.getOrderType()){
+            case 1:
+                QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhouseScooterB> scooterBS = opeInWhouseScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    for (OpeInWhouseScooterB scooterB : scooterBS) {
+                        scooterB.setActInWhQty(scooterB.getInWhQty());
+                    }
+                    opeInWhouseScooterBService.saveOrUpdateBatch(scooterBS);
+                }
+            default :
+                break;
+            case 2:
+                QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeInWhouseCombinB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    for (OpeInWhouseCombinB combinB : combinBS) {
+                        combinB.setActInWhQty(combinB.getInWhQty());
+                    }
+                    opeInWhouseCombinBService.saveOrUpdateBatch(combinBS);
+                }
+                break;
+            case 3:
+                QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeInWhousePartsB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhousePartsB> partsBS = opeInWhousePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    for (OpeInWhousePartsB partsB : partsBS) {
+                        partsB.setActInWhQty(partsB.getInWhQty());
+                    }
+                    opeInWhousePartsBService.saveOrUpdateBatch(partsBS);
+                }
+        }
     }
 
 

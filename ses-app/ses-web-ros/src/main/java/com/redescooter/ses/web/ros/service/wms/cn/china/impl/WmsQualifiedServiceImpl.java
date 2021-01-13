@@ -223,6 +223,44 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
         inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
+
+        switch (inWhouseOrder.getOrderType()){
+            case 1:
+                QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhouseScooterB> scooterBS = opeInWhouseScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    for (OpeInWhouseScooterB scooterB : scooterBS) {
+                        scooterB.setActInWhQty(scooterB.getInWhQty());
+                    }
+                    opeInWhouseScooterBService.saveOrUpdateBatch(scooterBS);
+                }
+            default :
+                break;
+            case 2:
+                QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeInWhouseCombinB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    for (OpeInWhouseCombinB combinB : combinBS) {
+                        combinB.setActInWhQty(combinB.getInWhQty());
+                    }
+                    opeInWhouseCombinBService.saveOrUpdateBatch(combinBS);
+                }
+                break;
+            case 3:
+                QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeInWhousePartsB.COL_IN_WH_ID, inWhouseOrder.getId());
+                List<OpeInWhousePartsB> partsBS = opeInWhousePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    for (OpeInWhousePartsB partsB : partsBS) {
+                        partsB.setActInWhQty(partsB.getInWhQty());
+                    }
+                    opeInWhousePartsBService.saveOrUpdateBatch(partsBS);
+                }
+        }
+
+
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
                 inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
@@ -358,6 +396,48 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
         outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
+
+        // 处理字表的数据
+        switch (outWhouseOrder.getOutWhType()){
+            case 1:
+                // scooter
+                QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
+                scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooter);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    for (OpeOutWhScooterB scooterB : scooterBS) {
+                        scooterB.setAlreadyOutWhQty(scooterB.getQty());
+                    }
+                    opeOutWhScooterBService.saveOrUpdateBatch(scooterBS);
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
+                combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhCombinB> combinBs = opeOutWhCombinBService.list(combin);
+                if (CollectionUtils.isNotEmpty(combinBs)){
+                    for (OpeOutWhCombinB combinB : combinBs) {
+                        combinB.setAlreadyOutWhQty(combinB.getQty());
+                    }
+                    opeOutWhCombinBService.saveOrUpdateBatch(combinBs);
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
+                parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, outWhouseOrder.getId());
+                List<OpeOutWhPartsB> partsBs = opeOutWhPartsBService.list(parts);
+                if (CollectionUtils.isNotEmpty(partsBs)){
+                    for (OpeOutWhPartsB partsB : partsBs) {
+                        partsB.setAlreadyOutWhQty(partsB.getQty());
+                    }
+                    opeOutWhPartsBService.saveOrUpdateBatch(partsBs);
+                }
+                break;
+        }
+
         // 操作记录
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
                 outWhouseOrder.getRemark());

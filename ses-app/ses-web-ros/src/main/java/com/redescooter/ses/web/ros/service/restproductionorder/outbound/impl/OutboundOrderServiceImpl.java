@@ -699,6 +699,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
+        // 出库单出库  处理字表的数据
+        comfirmOutHandleBs(opeOutWhouseOrder);
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -717,6 +719,49 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         }
         return new GeneralResult();
+    }
+
+    private void comfirmOutHandleBs(OpeOutWhouseOrder opeOutWhouseOrder) {
+        // 处理字表的数据
+        switch (opeOutWhouseOrder.getOutWhType()){
+            case 1:
+                // scooter
+                QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
+                scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, opeOutWhouseOrder.getId());
+                List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooter);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    for (OpeOutWhScooterB scooterB : scooterBS) {
+                        scooterB.setAlreadyOutWhQty(scooterB.getQty());
+                    }
+                    opeOutWhScooterBService.saveOrUpdateBatch(scooterBS);
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
+                combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, opeOutWhouseOrder.getId());
+                List<OpeOutWhCombinB> combinBs = opeOutWhCombinBService.list(combin);
+                if (CollectionUtils.isNotEmpty(combinBs)){
+                    for (OpeOutWhCombinB combinB : combinBs) {
+                        combinB.setAlreadyOutWhQty(combinB.getQty());
+                    }
+                    opeOutWhCombinBService.saveOrUpdateBatch(combinBs);
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
+                parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, opeOutWhouseOrder.getId());
+                List<OpeOutWhPartsB> partsBs = opeOutWhPartsBService.list(parts);
+                if (CollectionUtils.isNotEmpty(partsBs)){
+                    for (OpeOutWhPartsB partsB : partsBs) {
+                        partsB.setAlreadyOutWhQty(partsB.getQty());
+                    }
+                    opeOutWhPartsBService.saveOrUpdateBatch(partsBs);
+                }
+                break;
+        }
     }
 
 
@@ -993,6 +1038,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
+        // 出库单出库  处理字表的数据
+        comfirmOutHandleBs(opeOutWhouseOrder);
         // 状态流转
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeOutWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
