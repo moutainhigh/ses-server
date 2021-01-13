@@ -32,7 +32,7 @@ public class OutWarehouseOrderDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "出库单类型 1整车 2组装件 3部件", dataType = "Integer")
     private Integer orderType;
 
-    @ApiModelProperty(value = "出库总数", dataType = "Integer")
+    @ApiModelProperty(value = "应出库总数", dataType = "Integer")
     private Integer qty;
 
     @ApiModelProperty(value = "已质检数量", dataType = "Integer")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.mobile.rps.dao.qc.ProductionQualityTemplateMapper">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper">
 
     <!--根据templateId集合查询产品质检结果信息-->
     <select id="getProductQcTemplateResultByTemplateIds" parameterType="java.lang.Long"
@@ -15,12 +15,11 @@
     </select>
 
     <!--根据productId、productType查询产品质检模板信息-->
-    <select id="getProductQcTemplateByProductId" parameterType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO"
-            resultType="com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO">
+    <select id="getQcTemplateByProductIdAndType" resultType="com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO">
         select id, production_id bomId, production_type bomType,import_excel_batch_no importExcelBatchNo,
         source_type sourceType, production_type productType,qc_item_name qcItemName
         from ope_production_quality_tempate
-        where dr = 0
+        where dr = 0 and production_id = #{productionId} and production_type = #{productionType}
     </select>
 
 </mapper>

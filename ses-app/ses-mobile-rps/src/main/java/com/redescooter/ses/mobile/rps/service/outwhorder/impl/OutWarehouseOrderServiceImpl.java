@@ -23,12 +23,13 @@ import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper;
-import com.redescooter.ses.mobile.rps.dao.qc.ProductionQualityTemplateMapper;
+import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.enums.OutWhOrderErrorMessageEnum;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
+import com.redescooter.ses.mobile.rps.service.qc.QcService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateResultDTO;
@@ -82,6 +83,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     private OpeOrderQcItemMapper opeOrderQcItemMapper;
     @Resource
     private OpeOrderQcTraceMapper opeOrderQcTraceMapper;
+    @Resource
+    private QcService qcService;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -249,7 +252,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         /**
          * 当前接口在用户扫码时进入,此时能拿到的参数只有：产品编号、序列号和批次号
          */
-        OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+        OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(null);
         RpsAssert.isNull(opeOrderSerialBind, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
@@ -275,10 +278,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         }
 
         // 设置查询条件
-        paramDTO.setProductId(opeOrderSerialBind.getProductId());
-        paramDTO.setProductType(productType);
+//        paramDTO.setProductId(opeOrderSerialBind.getProductId());
+//        paramDTO.setProductType(productType);
 
-        List<ProductQcTemplateDTO> productQcTemplateList = templateMapper.getProductQcTemplateByProductId(paramDTO);
+        List<ProductQcTemplateDTO> productQcTemplateList = templateMapper.getQcTemplateByProductIdAndType(null, null);
         RpsAssert.isEmpty(productQcTemplateList, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
 
@@ -304,8 +307,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
          */
         QueryQcTemplateResultDTO resultDTO = new QueryQcTemplateResultDTO();
         resultDTO.setName(productName);
-        resultDTO.setProductId(opeOrderSerialBind.getOrderBId());
-        resultDTO.setProductType(opeOrderSerialBind.getProductType());
         resultDTO.setProductQcTemplateList(productQcTemplateList);
 
         return resultDTO;

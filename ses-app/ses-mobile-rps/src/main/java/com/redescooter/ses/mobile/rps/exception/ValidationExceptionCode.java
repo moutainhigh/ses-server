@@ -55,5 +55,7 @@ public interface ValidationExceptionCode {
     int LOGISTICS_NO_IS_EMPTY = 10046;
     // 序列号为空
     int SERIAL_NUMBER_IS_EMPTY = 10047;
+    // 批次号为空
+    int BATCH_NO_IS_EMPTY = 10048;
 
 }

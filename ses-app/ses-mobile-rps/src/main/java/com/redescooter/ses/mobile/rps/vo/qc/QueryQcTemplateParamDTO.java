@@ -1,11 +1,12 @@
 package com.redescooter.ses.mobile.rps.vo.qc;
 
-import com.redescooter.ses.api.common.annotation.NotEmpty;
+import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
 
 /**
  * 查询质检模板入参对象 DTO
@@ -16,14 +17,14 @@ import lombok.Data;
 @ApiModel(value = "查询质检模板入参对象")
 public class QueryQcTemplateParamDTO extends GeneralEnter {
 
-    @NotEmpty(code = ValidationExceptionCode.SERIAL_NUMBER_IS_EMPTY, message = "产品序列号不能为空")
-    @ApiModelProperty(value = "产品序列号", dataType = "String")
+    @ApiModelProperty(value = "部件号(部件类型时传递该值)", dataType = "String")
+    private String partsNo;
+
+    @ApiModelProperty(value = "序列号(车辆和组装件类型时传递)", dataType = "String")
     private String serialNum;
 
-    @ApiModelProperty(value = "产品id", dataType = "Long", hidden = true)
-    private Long productId;
-
-    @ApiModelProperty(value = "产品类型", dataType = "Integer", hidden = true)
+    @NotNull(code = ValidationExceptionCode.PRODUCT_TYPE_IS_EMPTY, message = "产品类型不能为空")
+    @ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer")
     private Integer productType;
 
 }

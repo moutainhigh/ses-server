@@ -16,12 +16,6 @@ import java.util.List;
 @ApiModel(value = "查询质检模板返回结果对象")
 public class QueryQcTemplateResultDTO extends GeneralResult {
 
-	@ApiModelProperty(value = "产品id", dataType = "Long")
-	private Long productId;
-
-	@ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer")
-	private Integer productType;
-
 	@ApiModelProperty(value = "产品名称", dataType = "String")
 	private String name;
 
