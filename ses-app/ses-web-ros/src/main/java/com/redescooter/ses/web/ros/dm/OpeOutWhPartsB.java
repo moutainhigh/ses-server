@@ -84,11 +84,25 @@ public class OpeOutWhPartsB {
     private Integer alreadyOutWhQty;
 
     /**
+     * 总数量
+     */
+    @TableField(value = "total_qty")
+    @ApiModelProperty(value = "总数量")
+    private Integer totalQty;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    /**
+     * 质检图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "质检图片")
+    private String picture;
 
     /**
      * 创建人
@@ -171,7 +185,11 @@ public class OpeOutWhPartsB {
 
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
+    public static final String COL_TOTAL_QTY = "total_qty";
+
     public static final String COL_REMARK = "remark";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_CREATED_BY = "created_by";
 

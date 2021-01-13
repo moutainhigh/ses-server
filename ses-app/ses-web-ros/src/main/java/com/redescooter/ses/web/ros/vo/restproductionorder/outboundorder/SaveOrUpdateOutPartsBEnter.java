@@ -28,4 +28,9 @@ public class SaveOrUpdateOutPartsBEnter {
     @ApiModelProperty("部件ID")
     private Long partsId;
 
+    @ApiModelProperty("上限数量")
+    private Integer ableQty;
+
+    @ApiModelProperty("总数量")
+    private Integer totalQty;
 }

@@ -674,7 +674,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(opeInvoiceScooterBList)) {
                     productEnterList =
-                            opeInvoiceScooterBList.stream().map(item -> new ProductEnter(null, item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            opeInvoiceScooterBList.stream().map(item -> new ProductEnter(null, item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
 
@@ -682,7 +682,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 List<OpeInvoiceCombinB> invoiceCombinBList = opeInvoiceCombinBService.list(new LambdaQueryWrapper<OpeInvoiceCombinB>().eq(OpeInvoiceCombinB::getInvoiceId, opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(invoiceCombinBList)) {
                     productEnterList =
-                            invoiceCombinBList.stream().map(item -> new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            invoiceCombinBList.stream().map(item -> new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
 
@@ -690,7 +690,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 List<OpeInvoicePartsB> opeInvoicePartsBList = opeInvoicePartsBService.list(new LambdaQueryWrapper<OpeInvoicePartsB>().eq(OpeInvoicePartsB::getInvoiceId, opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(opeInvoicePartsBList)) {
                     productEnterList =
-                            opeInvoicePartsBList.stream().map(item -> new ProductEnter(item.getPartsId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            opeInvoicePartsBList.stream().map(item -> new ProductEnter(item.getPartsId(), null, null, item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
         }

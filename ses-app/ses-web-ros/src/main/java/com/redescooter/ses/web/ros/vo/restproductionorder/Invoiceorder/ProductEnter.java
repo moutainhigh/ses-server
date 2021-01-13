@@ -35,4 +35,7 @@ public class ProductEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "备注")
     private String remark;
+
+    @ApiModelProperty("总数量")
+    private Integer totalQty;
 }

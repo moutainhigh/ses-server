@@ -427,7 +427,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
             productEnterList.addAll(opeCombinOrderScooterBList.stream().map(item->{
-                return new ProductEnter(item.getScooterBomId(),item.getColorId(),item.getGroupId(),item.getQty(),item.getRemark());
+                return new ProductEnter(item.getScooterBomId(),item.getColorId(),item.getGroupId(),item.getQty(),item.getRemark(),item.getQty());
             }).collect(Collectors.toList()));
         }else {
             List<OpeCombinOrderCombinB> opeCombinOrderCombinBList = opeCombinOrderCombinBService.list(new LambdaQueryWrapper<OpeCombinOrderCombinB>().eq(OpeCombinOrderCombinB::getCombinId, opeCombinOrder.getId()));
@@ -435,7 +435,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
             productEnterList.addAll(opeCombinOrderCombinBList.stream().map(item->{
-                return new ProductEnter(item.getProductionCombinBomId(),null,null,item.getQty(),item.getRemark());
+                return new ProductEnter(item.getProductionCombinBomId(),null,null,item.getQty(),item.getRemark(),item.getQty());
             }).collect(Collectors.toList()));
         }
 

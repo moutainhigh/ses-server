@@ -45,7 +45,8 @@
 
         <if test="enter.keyword != null and enter.keyword != ''">
             and (inwh.in_wh_no like concat('%', #{enter.keyword}, '%') or
-                 staff.full_name like concat('%', #{enter.keyword}, '%')
+                 staff.full_name like concat('%', #{enter.keyword}, '%') or
+                 inwh.relation_order_no like concat('%', #{enter.keyword}, '%')
             )
         </if>
     </sql>

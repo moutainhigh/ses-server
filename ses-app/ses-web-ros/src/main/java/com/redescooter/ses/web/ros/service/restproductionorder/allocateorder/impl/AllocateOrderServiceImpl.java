@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.im
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
@@ -16,6 +15,7 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -24,7 +24,6 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
-import com.redescooter.ses.web.ros.utils.OrderGenerateUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -38,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @ClassNameAllocateOrderServiceImpl
@@ -89,6 +87,30 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
     @Autowired
     private PurchaseOrderServiceMapper purchaseOrderServiceMapper;
+
+    @Autowired
+    private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
+
+    @Autowired
+    private OpeOutWhScooterBService opeOutWhScooterBService;
+
+    @Autowired
+    private OpeInWhouseOrderService opeInWhouseOrderService;
+
+    @Autowired
+    private OpeInWhouseScooterBService opeInWhouseScooterBService;
+
+    @Autowired
+    private OpeOutWhCombinBService opeOutWhCombinBService;
+
+    @Autowired
+    private OpeInWhouseCombinBService opeInWhouseCombinBService;
+
+    @Autowired
+    private OpeOutWhPartsBService opeOutWhPartsBService;
+
+    @Autowired
+    private OpeInWhousePartsBService opeInWhousePartsBService;
 
     @Reference
     private IdAppService idAppService;
@@ -818,15 +840,21 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         }
         allocateProductListResult.setAllocateId(allocateOrder.getId());
         allocateProductListResult.setAllocateType(allocateOrder.getAllocateType());
-        // 调拨的上限数量  先暂时写成和调拨数量一样的
+        // 调拨的上限数量
         switch (allocateOrder.getAllocateType()) {
             case 1:
                 List<AllocateOrderScooterDetailResult> scooters = allocateOrderServiceMapper.allocateScooter(enter.getId());
                 if (CollectionUtils.isNotEmpty(scooters)){
+                    // 追加 计算车辆的上限数量
+                    inWhOrderRelationScooterAllocate(enter,scooters);
+                    // 追加 上限数量为0的过滤掉
+                    List<AllocateOrderScooterDetailResult> scooterList = new ArrayList<>();
                     for (AllocateOrderScooterDetailResult scooter : scooters) {
-                        scooter.setAbleQty(scooter.getQty());
+                        if (scooter.getAbleQty() > 0){
+                            scooterList.add(scooter);
+                        }
                     }
-                    allocateProductListResult.setScooters(scooters);
+                    allocateProductListResult.setScooters(scooterList);
                 }else {
                     allocateProductListResult.setScooters(new ArrayList<>());
                 }
@@ -835,10 +863,16 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             case 2:
                 List<AllocateOrderCombinDetailResult> combins = allocateOrderServiceMapper.allocateCombin(enter.getId());
                 if (CollectionUtils.isNotEmpty(combins)){
+                    // 追加 计算组装件的上限数量
+                    inWhOrderRelationCombinAllocate(enter,combins);
+                    // 追加 上限数量为0的过滤掉
+                    List<AllocateOrderCombinDetailResult> combinList = new ArrayList<>();
                     for (AllocateOrderCombinDetailResult combin : combins) {
-                        combin.setAbleQty(combin.getQty());
+                        if (combin.getAbleQty() > 0){
+                            combinList.add(combin);
+                        }
                     }
-                    allocateProductListResult.setCombins(combins);
+                    allocateProductListResult.setCombins(combinList);
                 }else {
                     allocateProductListResult.setCombins(new ArrayList<>());
                 }
@@ -846,16 +880,353 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
             case 3:
                 List<AllocateOrderPartsDetailResult> parts = allocateOrderServiceMapper.allocateParts(enter.getId());
                 if (CollectionUtils.isNotEmpty(parts)){
+                    // 追加 计算部件的上限数量
+                    inWhOrderRelationPartsAllocate(enter,parts);
+                    // 追加 上限数量为0的过滤掉
+                    List<AllocateOrderPartsDetailResult> partsList = new ArrayList<>();
                     for (AllocateOrderPartsDetailResult part : parts) {
-                        part.setAbleQty(part.getQty());
+                        if (part.getAbleQty() > 0){
+                            partsList.add(part);
+                        }
                     }
-                    allocateProductListResult.setParts(parts);
+                    allocateProductListResult.setParts(partsList);
                 }else {
                     allocateProductListResult.setParts(new ArrayList<>());
                 }
                 break;
         }
         return allocateProductListResult;
+    }
+
+
+    // 入库单关联部件的调拨单 计算可用的数量
+    private void inWhOrderRelationPartsAllocate(IdEnter enter, List<AllocateOrderPartsDetailResult> partsResults) {
+        // 存放中国仓库  已经出库的车辆信息
+        Map<Long, List<OpeOutWhPartsB>> outMap = new HashMap<>();
+        // 存放中国仓库  还没有出库的车辆信息
+        Map<Long, List<OpeOutWhPartsB>> unOutMap = new HashMap<>();
+
+        // 存放法国仓库  已经入库的车辆信息
+        Map<Long, List<OpeInWhousePartsB>> frInMap = new HashMap<>();
+        // 存放法国仓库  还没有入库的车辆信息
+        Map<Long, List<OpeInWhousePartsB>> frUnInMap = new HashMap<>();
+        // 关联的是调拨单（法国仓库）  先找到调拨单
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder != null){
+            // 找到调拨单产生的中国的出库单（就是法国要入库的）
+            List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
+            if (CollectionUtils.isNotEmpty(outWhouseOrders)){
+                // 已经出库的出库单集合
+                List<OpeOutWhouseOrder> outs = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(outs)){
+                    QueryWrapper<OpeOutWhPartsB> outpartsQw = new QueryWrapper<>();
+                    outpartsQw.in(OpeOutWhPartsB.COL_OUT_WH_ID,outs.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhPartsB> outpartss = opeOutWhPartsBService.list(outpartsQw);
+                    if (CollectionUtils.isNotEmpty(outpartss)){
+                        outMap = outpartss.stream().collect(Collectors.groupingBy(OpeOutWhPartsB::getPartsId));
+                    }
+                }
+                // 还没有出库的出库单集合
+                List<OpeOutWhouseOrder> unOuts = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(unOuts)){
+                    QueryWrapper<OpeOutWhPartsB> unOutpartsQw = new QueryWrapper<>();
+                    unOutpartsQw.in(OpeOutWhPartsB.COL_OUT_WH_ID,unOuts.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhPartsB> unOutpartss = opeOutWhPartsBService.list(unOutpartsQw);
+                    if (CollectionUtils.isNotEmpty(unOutpartss)){
+                        unOutMap = unOutpartss.stream().collect(Collectors.groupingBy(OpeOutWhPartsB::getPartsId));
+                    }
+                }
+            }
+            // 找到调拨单产生的法国仓库的入库单
+            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQw = new QueryWrapper<>();
+            inWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,allocateOrder.getId());
+            List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
+            if (CollectionUtils.isNotEmpty(inWhouseOrders)){
+                // 法国仓库已经入库的入库单
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o->o.getInWhStatus() == 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frInWhouseOrders)){
+                    QueryWrapper<OpeInWhousePartsB> partsQw = new QueryWrapper<>();
+                    partsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhousePartsB> inpartss = opeInWhousePartsBService.list(partsQw);
+                    if (CollectionUtils.isNotEmpty(inpartss)){
+                        frInMap = inpartss.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+                    }
+                }
+                // 法国仓库还没有入库的入库单
+                List<OpeInWhouseOrder> frUnWhouseOrders =
+                        inWhouseOrders.stream().filter(o->o.getInWhStatus() != 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frUnWhouseOrders)){
+                    QueryWrapper<OpeInWhousePartsB> inpartsQw = new QueryWrapper<>();
+                    inpartsQw.in(OpeInWhousePartsB.COL_IN_WH_ID,frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhousePartsB> unincombins = opeInWhousePartsBService.list(inpartsQw);
+                    if (CollectionUtils.isNotEmpty(unincombins)){
+                        frUnInMap = unincombins.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
+                    }
+                }
+            }
+        }
+        for (AllocateOrderPartsDetailResult partsResult : partsResults) {
+            // 定义已经入库的数量
+            Integer alreadyNum = 0;
+            if (outMap != null && outMap.size() > 0){
+                // 中国仓库 已经出库的出库单
+                for (Long key : outMap.keySet()) {
+                    if (partsResult.getPartsId().equals(key)){
+                        alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhPartsB::getAlreadyOutWhQty).sum());
+                    }
+                }
+            }
+            if (unOutMap != null && unOutMap.size() > 0){
+                // 中国仓库 还没有出库的出库单
+                for (Long key : unOutMap.keySet()) {
+                    if (partsResult.getPartsId().equals(key)){
+                        alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhPartsB::getQty).sum());
+                    }
+                }
+            }
+            if (frInMap != null && frInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (Long key : frInMap.keySet()) {
+                    if (partsResult.getPartsId().equals(key)){
+                        alreadyNum = alreadyNum + (frInMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
+                    }
+                }
+            }
+            if (frUnInMap != null && frUnInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (Long key : frUnInMap.keySet()) {
+                    if (partsResult.getPartsId().equals(key)){
+                        alreadyNum = alreadyNum + (frUnInMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
+                    }
+                }
+            }
+            partsResult.setAbleQty(partsResult.getQty() - alreadyNum);
+        }
+    }
+
+
+    // 入库单关联组装件调拨单 计算可用的数量
+    private void inWhOrderRelationCombinAllocate(IdEnter enter, List<AllocateOrderCombinDetailResult> combinResults) {
+        // 存放中国仓库  已经出库的车辆信息
+        Map<Long, List<OpeOutWhCombinB>> outMap = new HashMap<>();
+        // 存放中国仓库  还没有出库的车辆信息
+        Map<Long, List<OpeOutWhCombinB>> unOutMap = new HashMap<>();
+
+        // 存放法国仓库  已经入库的车辆信息
+        Map<Long, List<OpeInWhouseCombinB>> frInMap = new HashMap<>();
+        // 存放法国仓库  还没有入库的车辆信息
+        Map<Long, List<OpeInWhouseCombinB>> frUnInMap = new HashMap<>();
+        // 关联的是调拨单（法国仓库）  先找到调拨单
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder != null){
+            // 找到调拨单产生的中国的出库单（就是法国要入库的）
+            List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
+            if (CollectionUtils.isNotEmpty(outWhouseOrders)){
+                // 已经出库的出库单集合
+                List<OpeOutWhouseOrder> outs = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(outs)){
+                    QueryWrapper<OpeOutWhCombinB> outcombinQw = new QueryWrapper<>();
+                    outcombinQw.in(OpeOutWhCombinB.COL_OUT_WH_ID,outs.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhCombinB> outcombins = opeOutWhCombinBService.list(outcombinQw);
+                    if (CollectionUtils.isNotEmpty(outcombins)){
+                        outMap = outcombins.stream().collect(Collectors.groupingBy(OpeOutWhCombinB::getProductionCombinBomId));
+                    }
+                }
+                // 还没有出库的出库单集合
+                List<OpeOutWhouseOrder> unOuts = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(unOuts)){
+                    QueryWrapper<OpeOutWhCombinB> unOutcombinQw = new QueryWrapper<>();
+                    unOutcombinQw.in(OpeOutWhCombinB.COL_OUT_WH_ID,unOuts.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhCombinB> unOutcombins = opeOutWhCombinBService.list(unOutcombinQw);
+                    if (CollectionUtils.isNotEmpty(unOutcombins)){
+                        unOutMap = unOutcombins.stream().collect(Collectors.groupingBy(OpeOutWhCombinB::getProductionCombinBomId));
+                    }
+                }
+            }
+            // 找到调拨单产生的法国仓库的入库单
+            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQw = new QueryWrapper<>();
+            inWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,allocateOrder.getId());
+            List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
+            if (CollectionUtils.isNotEmpty(inWhouseOrders)){
+                // 法国仓库已经入库的入库单
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o->o.getInWhStatus() == 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frInWhouseOrders)){
+                    QueryWrapper<OpeInWhouseCombinB> incombinQw = new QueryWrapper<>();
+                    incombinQw.in(OpeInWhouseCombinB.COL_IN_WH_ID,frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhouseCombinB> incombins = opeInWhouseCombinBService.list(incombinQw);
+                    if (CollectionUtils.isNotEmpty(incombins)){
+                        frInMap = incombins.stream().collect(Collectors.groupingBy(OpeInWhouseCombinB::getProductionCombinBomId));
+                    }
+                }
+                // 法国仓库还没有入库的入库单
+                List<OpeInWhouseOrder> frUnWhouseOrders =
+                        inWhouseOrders.stream().filter(o->o.getInWhStatus() != 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frUnWhouseOrders)){
+                    QueryWrapper<OpeInWhouseCombinB> incombinQw = new QueryWrapper<>();
+                    incombinQw.in(OpeInWhouseCombinB.COL_IN_WH_ID,frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhouseCombinB> unincombins = opeInWhouseCombinBService.list(incombinQw);
+                    if (CollectionUtils.isNotEmpty(unincombins)){
+                        frUnInMap = unincombins.stream().collect(Collectors.groupingBy(OpeInWhouseCombinB::getProductionCombinBomId));
+                    }
+                }
+            }
+        }
+        for (AllocateOrderCombinDetailResult combinResult : combinResults) {
+            // 定义已经入库的数量
+            Integer alreadyNum = 0;
+            if (outMap != null && outMap.size() > 0){
+                // 中国仓库 已经出库的出库单
+                for (Long key : outMap.keySet()) {
+                    if (combinResult.getProductionCombinBomId().equals(key)){
+                        alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhCombinB::getAlreadyOutWhQty).sum());
+                    }
+                }
+            }
+            if (unOutMap != null && unOutMap.size() > 0){
+                // 中国仓库 还没有出库的出库单
+                for (Long key : unOutMap.keySet()) {
+                    if (combinResult.getProductionCombinBomId().equals(key)){
+                        alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhCombinB::getQty).sum());
+                    }
+                }
+            }
+            if (frInMap != null && frInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (Long key : frInMap.keySet()) {
+                    if (combinResult.getProductionCombinBomId().equals(key)){
+                        alreadyNum = alreadyNum + (frInMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
+                    }
+                }
+            }
+            if (frUnInMap != null && frUnInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (Long key : frUnInMap.keySet()) {
+                    if (combinResult.getProductionCombinBomId().equals(key)){
+                        alreadyNum = alreadyNum + (frUnInMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
+                    }
+                }
+            }
+            combinResult.setAbleQty(combinResult.getQty() - alreadyNum);
+        }
+    }
+
+
+    // 入库单关联车辆调拨单 计算可用的数量
+    private void inWhOrderRelationScooterAllocate(IdEnter enter, List<AllocateOrderScooterDetailResult> scooters) {
+        // 存放中国仓库  已经出库的车辆信息
+        Map<String, List<OpeOutWhScooterB>> outMap = new HashMap<>();
+        // 存放中国仓库  还没有出库的车辆信息
+        Map<String, List<OpeOutWhScooterB>> unOutMap = new HashMap<>();
+
+        // 存放法国仓库  已经入库的车辆信息
+        Map<String, List<OpeInWhouseScooterB>> frInMap = new HashMap<>();
+        // 存放法国仓库  还没有入库的车辆信息
+        Map<String, List<OpeInWhouseScooterB>> frUnInMap = new HashMap<>();
+        // 关联的是调拨单（法国仓库）  先找到调拨单
+        OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
+        if (allocateOrder != null){
+            // 找到调拨单产生的中国的出库单（就是法国要入库的）
+            List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
+            if (CollectionUtils.isNotEmpty(outWhouseOrders)){
+                // 已经出库的出库单集合
+                List<OpeOutWhouseOrder> outs = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(outs)){
+                    QueryWrapper<OpeOutWhScooterB> outscooterQw = new QueryWrapper<>();
+                    outscooterQw.in(OpeOutWhScooterB.COL_OUT_WH_ID,outs.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhScooterB> outscooters = opeOutWhScooterBService.list(outscooterQw);
+                    if (CollectionUtils.isNotEmpty(outscooters)){
+                        outMap = outscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                    }
+                }
+                // 还没有出库的出库单集合
+                List<OpeOutWhouseOrder> unOuts = outWhouseOrders.stream().filter(o->o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(unOuts)){
+                    QueryWrapper<OpeOutWhScooterB> unOutscooterQw = new QueryWrapper<>();
+                    unOutscooterQw.in(OpeOutWhScooterB.COL_OUT_WH_ID,unOuts.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeOutWhScooterB> unOutscooters = opeOutWhScooterBService.list(unOutscooterQw);
+                    if (CollectionUtils.isNotEmpty(unOutscooters)){
+                        unOutMap = unOutscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                    }
+                }
+            }
+            // 找到调拨单产生的法国仓库的入库单
+            QueryWrapper<OpeInWhouseOrder> inWhouseOrderQw = new QueryWrapper<>();
+            inWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,allocateOrder.getId());
+            List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
+            if (CollectionUtils.isNotEmpty(inWhouseOrders)){
+                // 法国仓库已经入库的入库单
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o->o.getInWhStatus() == 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frInWhouseOrders)){
+                    QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
+                    inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID,frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhouseScooterB> inscooters = opeInWhouseScooterBService.list(inscooterQw);
+                    if (CollectionUtils.isNotEmpty(inscooters)){
+                        frInMap = inscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
+                    }
+                }
+                // 法国仓库还没有入库的入库单
+                List<OpeInWhouseOrder> frUnWhouseOrders =
+                        inWhouseOrders.stream().filter(o->o.getInWhStatus() != 30).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(frUnWhouseOrders)){
+                    QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
+                    inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID,frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
+                    List<OpeInWhouseScooterB> uninscooters = opeInWhouseScooterBService.list(inscooterQw);
+                    if (CollectionUtils.isNotEmpty(uninscooters)){
+                        frUnInMap = uninscooters.stream().collect(Collectors.groupingBy(o -> fetchGroupKey1(o)));
+                    }
+                }
+            }
+        }
+        for (AllocateOrderScooterDetailResult scooterResult : scooters) {
+            // 定义已经入库的数量
+            Integer alreadyNum = 0;
+            if (outMap != null && outMap.size() > 0){
+                // 中国仓库 已经出库的出库单
+                for (String key : outMap.keySet()) {
+                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                        alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhScooterB::getAlreadyOutWhQty).sum());
+                    }
+                }
+            }
+            if (unOutMap != null && unOutMap.size() > 0){
+                // 中国仓库 还没有出库的出库单
+                for (String key : unOutMap.keySet()) {
+                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                        alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhScooterB::getQty).sum());
+                    }
+                }
+            }
+            if (frInMap != null && frInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (String key : frInMap.keySet()) {
+                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                        alreadyNum = alreadyNum + (frInMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                    }
+                }
+            }
+            if (frUnInMap != null && frUnInMap.size() > 0){
+                // 法国仓库  已经入库的车辆信息
+                for (String key : frUnInMap.keySet()) {
+                    if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                        alreadyNum = alreadyNum + (frUnInMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                    }
+                }
+            }
+            scooterResult.setAbleQty(scooterResult.getQty() - alreadyNum);
+        }
+    }
+
+
+    // 按照颜色和车型  进行嵌套分组 (车辆)
+    private static String fetchGroupKey(OpeOutWhScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
+    }
+
+    // 按照颜色和车型  进行嵌套分组（车辆）
+    private static String fetchGroupKey1(OpeInWhouseScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
     }
 
 

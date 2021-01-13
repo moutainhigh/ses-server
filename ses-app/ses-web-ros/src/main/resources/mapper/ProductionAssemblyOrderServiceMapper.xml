@@ -156,8 +156,7 @@
            combin_name,
            combin_no,
            production_combin_bom_id,
-           qty as combinQty,
-           qty as ableInWhQty
+           qty as combinQty
         from ope_combin_order_combin_b
         where dr = 0 and combin_id = #{enter.id}
     </select>

@@ -1,14 +1,18 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 生产采购单表
@@ -23,7 +27,7 @@ public class OpeProductionPurchaseOrder {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键id")
     private Long id;
 

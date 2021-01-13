@@ -440,7 +440,193 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         List<SaveOrUpdateOutScooterBEnter> resultList = outboundOrderServiceMapper.relationInvoiceScooterData(enter.getId());
-        return resultList;
+        List<SaveOrUpdateOutScooterBEnter> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(resultList)){
+            // 追加 计算车辆的上限数量
+            scooterAbleNum(invoiceOrder,resultList);
+            // 追加 把上限数量为0的过滤掉
+            for (SaveOrUpdateOutScooterBEnter bEnter : resultList) {
+                if (bEnter.getAbleQty() > 0){
+                    result.add(bEnter);
+                }
+            }
+        }
+        return result;
+    }
+
+    // 计算车辆的上限数量
+    private void scooterAbleNum(OpeInvoiceOrder invoiceOrder,List<SaveOrUpdateOutScooterBEnter> resultList){
+        // 已经出库的出库单集合
+        Map<String,List<OpeOutWhScooterB>> outMap = new HashMap<>();
+        // 还没有出库的出库单集合
+        Map<String,List<OpeOutWhScooterB>> unOutMap = new HashMap<>();
+        // 找到发货单关联的所有的出库单
+        QueryWrapper<OpeOutWhouseOrder> outWhouseOrderQueryWrapper = new QueryWrapper<>();
+        outWhouseOrderQueryWrapper.eq(OpeOutWhouseOrder.COL_RELATION_ID,invoiceOrder.getId());
+        List<OpeOutWhouseOrder> outWhouseOrderList = opeOutWhouseOrderService.list(outWhouseOrderQueryWrapper);
+        if (CollectionUtils.isNotEmpty(outWhouseOrderList)){
+            // 过滤已出库的出库单
+            List<OpeOutWhouseOrder> outWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(outWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.in(OpeOutWhScooterB.COL_OUT_WH_ID,outWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    outMap = scooterBS.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                }
+            }
+
+            // 过滤出还没有出库的出库单
+            List<OpeOutWhouseOrder> unOutWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == -1 || o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(unOutWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.in(OpeOutWhScooterB.COL_OUT_WH_ID,unOutWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    unOutMap = scooterBS.stream().collect(Collectors.groupingBy(o -> fetchGroupKey(o)));
+                }
+            }
+            for (SaveOrUpdateOutScooterBEnter bEnter : resultList) {
+                Integer alreadyNum = 0;
+                if (outMap != null && outMap.size() > 0){
+                    for (String key : outMap.keySet()) {
+                        if ((bEnter.getGroupId() +""+bEnter.getColorId()).equals(key)){
+                            alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhScooterB::getAlreadyOutWhQty).sum());
+                        }
+                    }
+                }
+                if (unOutMap != null && unOutMap.size() > 0){
+                    for (String key : unOutMap.keySet()) {
+                        if ((bEnter.getGroupId() +""+bEnter.getColorId()).equals(key)){
+                            alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhScooterB::getQty).sum());
+                        }
+                    }
+                }
+                bEnter.setAbleQty(bEnter.getQty() - alreadyNum);
+            }
+        }
+    }
+
+
+
+    // 计算组装件的上限数量
+    private void combinAbleNum(OpeInvoiceOrder invoiceOrder,List<SaveOrUpdateOutCombinBEnter> resultList){
+        // 已经出库的出库单集合
+        Map<Long,List<OpeOutWhCombinB>> outMap = new HashMap<>();
+        // 还没有出库的出库单集合
+        Map<Long,List<OpeOutWhCombinB>> unOutMap = new HashMap<>();
+        // 找到发货单关联的所有的出库单
+        QueryWrapper<OpeOutWhouseOrder> outWhouseOrderQueryWrapper = new QueryWrapper<>();
+        outWhouseOrderQueryWrapper.eq(OpeOutWhouseOrder.COL_RELATION_ID,invoiceOrder.getId());
+        List<OpeOutWhouseOrder> outWhouseOrderList = opeOutWhouseOrderService.list(outWhouseOrderQueryWrapper);
+        if (CollectionUtils.isNotEmpty(outWhouseOrderList)){
+            // 过滤已出库的出库单
+            List<OpeOutWhouseOrder> outWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(outWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.in(OpeOutWhCombinB.COL_OUT_WH_ID,outWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhCombinB> combinBS = opeOutWhCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    outMap = combinBS.stream().collect(Collectors.groupingBy(OpeOutWhCombinB::getProductionCombinBomId));
+                }
+            }
+
+            // 过滤出还没有出库的出库单
+            List<OpeOutWhouseOrder> unOutWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == -1 || o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(unOutWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.in(OpeOutWhCombinB.COL_OUT_WH_ID,unOutWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhCombinB> scooterBS = opeOutWhCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    unOutMap = scooterBS.stream().collect(Collectors.groupingBy(OpeOutWhCombinB::getProductionCombinBomId));
+                }
+            }
+            for (SaveOrUpdateOutCombinBEnter bEnter : resultList) {
+                Integer alreadyNum = 0;
+                if (outMap != null && outMap.size() > 0){
+                    for (Long key : outMap.keySet()) {
+                        if (bEnter.getProductionCombinBomId().equals(key)){
+                            alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhCombinB::getAlreadyOutWhQty).sum());
+                        }
+                    }
+                }
+                if (unOutMap != null && unOutMap.size() > 0){
+                    for (Long key : unOutMap.keySet()) {
+                        if (bEnter.getProductionCombinBomId().equals(key)){
+                            alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhCombinB::getQty).sum());
+                        }
+                    }
+                }
+                bEnter.setAbleQty(bEnter.getQty() - alreadyNum);
+            }
+        }
+    }
+
+
+    // 计算部件的上限数量
+    private void partsAbleNum(OpeInvoiceOrder invoiceOrder,List<SaveOrUpdateOutPartsBEnter> resultList){
+        // 已经出库的出库单集合
+        Map<Long,List<OpeOutWhPartsB>> outMap = new HashMap<>();
+        // 还没有出库的出库单集合
+        Map<Long,List<OpeOutWhPartsB>> unOutMap = new HashMap<>();
+        // 找到发货单关联的所有的出库单
+        QueryWrapper<OpeOutWhouseOrder> outWhouseOrderQueryWrapper = new QueryWrapper<>();
+        outWhouseOrderQueryWrapper.eq(OpeOutWhouseOrder.COL_RELATION_ID,invoiceOrder.getId());
+        List<OpeOutWhouseOrder> outWhouseOrderList = opeOutWhouseOrderService.list(outWhouseOrderQueryWrapper);
+        if (CollectionUtils.isNotEmpty(outWhouseOrderList)){
+            // 过滤已出库的出库单
+            List<OpeOutWhouseOrder> outWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == 20).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(outWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhPartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.in(OpeOutWhPartsB.COL_OUT_WH_ID,outWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhPartsB> partsBS = opeOutWhPartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBS)){
+                    outMap = partsBS.stream().collect(Collectors.groupingBy(OpeOutWhPartsB::getPartsId));
+                }
+            }
+
+            // 过滤出还没有出库的出库单
+            List<OpeOutWhouseOrder> unOutWhList = outWhouseOrderList.stream().filter(o->o.getOutWhStatus() == -1 || o.getOutWhStatus() == 0 || o.getOutWhStatus() == 10).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(unOutWhList)) {
+                // 找到已出库的出库单下面的所有的车辆数据
+                QueryWrapper<OpeOutWhPartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.in(OpeOutWhPartsB.COL_OUT_WH_ID,unOutWhList.stream().map(OpeOutWhouseOrder::getId).collect(Collectors.toList()));
+                List<OpeOutWhPartsB> scooterBS = opeOutWhPartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    unOutMap = scooterBS.stream().collect(Collectors.groupingBy(OpeOutWhPartsB::getPartsId));
+                }
+            }
+            for (SaveOrUpdateOutPartsBEnter bEnter : resultList) {
+                Integer alreadyNum = 0;
+                if (outMap != null && outMap.size() > 0){
+                    for (Long key : outMap.keySet()) {
+                        if (bEnter.getPartsId().equals(key)){
+                            alreadyNum = alreadyNum + (outMap.get(key).stream().mapToInt(OpeOutWhPartsB::getAlreadyOutWhQty).sum());
+                        }
+                    }
+                }
+                if (unOutMap != null && unOutMap.size() > 0){
+                    for (Long key : unOutMap.keySet()) {
+                        if (bEnter.getPartsId().equals(key)){
+                            alreadyNum = alreadyNum + (unOutMap.get(key).stream().mapToInt(OpeOutWhPartsB::getQty).sum());
+                        }
+                    }
+                }
+                bEnter.setAbleQty(bEnter.getQty() - alreadyNum);
+            }
+        }
+    }
+
+
+    // 按照颜色和车型  进行嵌套分组 (车辆)
+    private static String fetchGroupKey(OpeOutWhScooterB scooterB){
+        // 按照分组和颜色进行分组
+        return scooterB.getGroupId() +""+scooterB.getColorId();
     }
 
 
@@ -457,7 +643,18 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         List<SaveOrUpdateOutCombinBEnter> resultList = outboundOrderServiceMapper.relationInvoiceCombinData(enter.getId());
-        return resultList;
+        List<SaveOrUpdateOutCombinBEnter> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(resultList)){
+            // 追加 计算车辆的上限数量
+            combinAbleNum(invoiceOrder,resultList);
+            // 追加 把上限数量为0的过滤掉
+            for (SaveOrUpdateOutCombinBEnter bEnter : resultList) {
+                if (bEnter.getAbleQty() > 0){
+                    result.add(bEnter);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -468,7 +665,18 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         List<SaveOrUpdateOutPartsBEnter> resultList = outboundOrderServiceMapper.relationInvoicePartsData(enter.getId());
-        return resultList;
+        List<SaveOrUpdateOutPartsBEnter> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(resultList)){
+            // 追加 计算部件的上限数量
+            partsAbleNum(invoiceOrder,resultList);
+            // 追加 把上限数量为0的过滤掉
+            for (SaveOrUpdateOutPartsBEnter bEnter : resultList) {
+                if (bEnter.getAbleQty() > 0){
+                    result.add(bEnter);
+                }
+            }
+        }
+        return result;
     }
 
 
@@ -684,7 +892,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         }
                     }
                 }
-
                 break;
         }
         return resultList;

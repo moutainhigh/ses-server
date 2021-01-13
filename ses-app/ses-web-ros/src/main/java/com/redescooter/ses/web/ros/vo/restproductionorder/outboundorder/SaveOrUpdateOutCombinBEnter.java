@@ -25,4 +25,10 @@ public class SaveOrUpdateOutCombinBEnter {
     @ApiModelProperty(value="组装数量")
     private Integer qty;
 
+    @ApiModelProperty("上限数量")
+    private Integer ableQty;
+
+    @ApiModelProperty("总数量")
+    private Integer totalQty;
+
 }

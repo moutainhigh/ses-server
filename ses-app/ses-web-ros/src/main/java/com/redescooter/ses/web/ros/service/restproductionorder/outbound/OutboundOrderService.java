@@ -105,7 +105,7 @@ public interface OutboundOrderService {
 
 
     /**
-     * 关联的整车产品信息
+     * 关联的整车发货单产品信息
      * @param enter
      * @return
      */
@@ -113,7 +113,7 @@ public interface OutboundOrderService {
 
 
     /**
-     * 关联的组装单的组装件产品信息
+     * 关联的组装件发货单产品信息
      * @param enter
      * @return
      */
@@ -121,7 +121,7 @@ public interface OutboundOrderService {
 
 
     /**
-     * 关联的部件的组装件产品信息
+     * 关联的发货单部件信息
      * @param enter
      * @return
      */
