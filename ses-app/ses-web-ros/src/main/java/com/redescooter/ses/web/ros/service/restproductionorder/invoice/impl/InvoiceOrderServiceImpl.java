@@ -393,6 +393,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                   // 找到中国仓库的组装件的库存
                   QueryWrapper<OpeWmsCombinStock> wmsCombinStockQueryWrapper = new QueryWrapper<>();
                   wmsCombinStockQueryWrapper.in(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinBList.stream().map(OpeInvoiceCombinB::getProductionCombinBomId).collect(Collectors.toList()));
+                  wmsCombinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,1);
                   List<OpeWmsCombinStock> combinStockList = opeWmsCombinStockService.list(wmsCombinStockQueryWrapper);
                   if (CollectionUtils.isEmpty(combinStockList)){
                       throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
