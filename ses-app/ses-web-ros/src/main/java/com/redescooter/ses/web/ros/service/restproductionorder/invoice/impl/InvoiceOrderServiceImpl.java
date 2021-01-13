@@ -419,6 +419,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                   // 找到中国仓库的原料库存
                   QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                   partsStockQueryWrapper.in(OpeWmsPartsStock.COL_PARTS_ID,partsBList.stream().map(OpeInvoicePartsB::getPartsId).collect(Collectors.toList()));
+                  partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,1);
                   List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockService.list(partsStockQueryWrapper);
                   if (CollectionUtils.isEmpty(partsStockList)){
                       throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
