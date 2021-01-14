@@ -140,6 +140,10 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
 
+    @Autowired
+    private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
+
+
 
     /**
      * 采购单状态统计
@@ -683,21 +687,44 @@ public class PurchasingServiceImpl implements PurchasingService {
         // 加上库存的数量
         if (CollectionUtils.isNotEmpty(resultList)){
             List<Long> partsIds = resultList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(partsIds)) {
-                QueryWrapper<OpeWmsPartsStock> qw = new QueryWrapper<>();
-                qw.in(OpeWmsPartsStock.COL_PARTS_ID,partsIds);
-                qw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
-                List<OpeWmsPartsStock> partsList = opeWmsPartsStockService.list(qw);
-                if (CollectionUtils.isNotEmpty(partsList)){
-                    for (PruchasingItemResult result : resultList) {
-                        for (OpeWmsPartsStock stock : partsList) {
-                            if (result.getId().equals(stock.getPartsId())){
-                                result.setAbleQty(stock.getAbleStockQty());
+            switch (enter.getSource()){
+                case 0:
+                    if (CollectionUtils.isNotEmpty(partsIds)) {
+                        QueryWrapper<OpeWmsPartsStock> qw = new QueryWrapper<>();
+                        qw.in(OpeWmsPartsStock.COL_PARTS_ID,partsIds);
+                        qw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
+                        List<OpeWmsPartsStock> partsList = opeWmsPartsStockService.list(qw);
+                        if (CollectionUtils.isNotEmpty(partsList)){
+                            for (PruchasingItemResult result : resultList) {
+                                for (OpeWmsPartsStock stock : partsList) {
+                                    if (result.getId().equals(stock.getPartsId())){
+                                        result.setAbleQty(stock.getAbleStockQty());
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                default:
+                    break;
+                case 1:
+                    // 这里表示从不合格品库创建出库 可出库的数量 需要从中国仓库不合格品库部件找数据
+                    if (CollectionUtils.isNotEmpty(partsIds)) {
+                        QueryWrapper<OpeWmsQualifiedPartsStock> qw = new QueryWrapper<>();
+                        qw.in(OpeWmsQualifiedPartsStock.COL_PARTS_ID,partsIds);
+                        List<OpeWmsQualifiedPartsStock> qualifiedPartsStocks = opeWmsQualifiedPartsStockService.list(qw);
+                        if (CollectionUtils.isNotEmpty(qualifiedPartsStocks)){
+                            for (PruchasingItemResult result : resultList) {
+                                for (OpeWmsQualifiedPartsStock qualifiedPartsStock : qualifiedPartsStocks) {
+                                    if (result.getId().equals(qualifiedPartsStock.getPartsId())){
+                                        result.setAbleQty(qualifiedPartsStock.getQty());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
             }
+
         }
         return resultList;
     }

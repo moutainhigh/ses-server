@@ -114,7 +114,7 @@ public class WmsFinishStockController {
 
     @PostMapping(value = "/ableStockQty")
     @ApiOperation(value = "根据组装件id获得成品库组装件库存可用库存数量", response = IntResult.class)
-    public Response<IntResult> getAbleStockQtyByProductionCombinBomId(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<IntResult> getAbleStockQtyByProductionCombinBomId(@ModelAttribute @ApiParam("请求参数") WmsQualifiedCombinEnter enter) {
         return new Response<>(wmsFinishStockService.getAbleStockQtyByProductionCombinBomId(enter));
     }
 

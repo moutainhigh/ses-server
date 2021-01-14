@@ -21,37 +21,11 @@ import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatGroupMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
-import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
-import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
@@ -60,18 +34,7 @@ import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -160,6 +123,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
+
+    @Autowired
+    private OpeWmsQualifiedCombinStockService opeWmsQualifiedCombinStockService;
 
     @Reference
     private IdAppService idAppService;
@@ -428,22 +394,40 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
      * @return
      */
     @Override
-    public IntResult getAbleStockQtyByProductionCombinBomId(IdEnter enter) {
+    public IntResult getAbleStockQtyByProductionCombinBomId(WmsQualifiedCombinEnter enter) {
         IntResult result = new IntResult();
-        LambdaQueryWrapper<OpeWmsCombinStock> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeWmsCombinStock::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeWmsCombinStock::getProductionCombinBomId, enter.getId());
-        wrapper.orderByDesc(OpeWmsCombinStock::getCreatedTime);
-        List<OpeWmsCombinStock> list = opeWmsCombinStockService.list(wrapper);
-        if (CollectionUtils.isEmpty(list)) {
-            result.setValue(0);
-        } else {
-            OpeWmsCombinStock stock = list.get(0);
-            if (null != stock) {
-                Integer ableStockQty = stock.getAbleStockQty();
-                result.setValue(ableStockQty);
-            }
+        switch (enter.getSource()){
+            case 0:
+                LambdaQueryWrapper<OpeWmsCombinStock> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeWmsCombinStock::getDr, DelStatusEnum.VALID.getCode());
+                wrapper.eq(OpeWmsCombinStock::getProductionCombinBomId, enter.getId());
+                wrapper.orderByDesc(OpeWmsCombinStock::getCreatedTime);
+                List<OpeWmsCombinStock> list = opeWmsCombinStockService.list(wrapper);
+                if (CollectionUtils.isEmpty(list)) {
+                    result.setValue(0);
+                } else {
+                    OpeWmsCombinStock stock = list.get(0);
+                    if (null != stock) {
+                        Integer ableStockQty = stock.getAbleStockQty();
+                        result.setValue(ableStockQty);
+                    }
+                }
+            default:
+                break;
+            case 1:
+                // 说明是中国不合格品库车辆库 创建出库单 需要从不合格品库找可出库的数据
+                QueryWrapper<OpeWmsQualifiedCombinStock> qw = new QueryWrapper<>();
+                qw.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,enter.getId());
+                qw.last("limit 1");
+                OpeWmsQualifiedCombinStock qualifiedCombinStock = opeWmsQualifiedCombinStockService.getOne(qw);
+                if (qualifiedCombinStock != null) {
+                    result.setValue(qualifiedCombinStock.getQty());
+                }else {
+                    result.setValue(0);
+                }
+                break;
         }
+
         result.setRequestId(enter.getRequestId());
         return result;
     }

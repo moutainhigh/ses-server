@@ -86,7 +86,7 @@ public interface WmsFinishStockService {
      * @param enter
      * @return
      */
-    IntResult getAbleStockQtyByProductionCombinBomId(IdEnter enter);
+    IntResult getAbleStockQtyByProductionCombinBomId(WmsQualifiedCombinEnter enter);
 
 
     /**

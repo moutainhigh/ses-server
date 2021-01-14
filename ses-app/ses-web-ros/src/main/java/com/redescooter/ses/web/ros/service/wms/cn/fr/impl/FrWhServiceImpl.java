@@ -11,11 +11,13 @@ import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
 import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -55,6 +57,9 @@ public class FrWhServiceImpl implements FrWhService {
 
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
+
+    @Autowired
+    private OpeWmsQualifiedScooterStockService opeWmsQualifiedScooterStockService;
 
 
     /**
@@ -228,16 +233,33 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public IntResult scooterNum(WmsFinishScooterListEnter enter, Integer whtype) {
         int num = 0;
-        if(enter.getGroupId() != null && enter.getColorId() != null){
-            QueryWrapper<OpeWmsScooterStock> qw = new QueryWrapper<>();
-            qw.eq(OpeWmsScooterStock.COL_GROUP_ID,enter.getGroupId());
-            qw.eq(OpeWmsScooterStock.COL_COLOR_ID,enter.getColorId());
-            qw.eq(OpeWmsScooterStock.COL_STOCK_TYPE,whtype);
-            List<OpeWmsScooterStock> list = opeWmsScooterStockService.list(qw);
-            if (CollectionUtils.isNotEmpty(list)){
-                num = list.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum();
+        if(enter.getGroupId() != null && enter.getColorId() != null) {
+            switch (enter.getSource()) {
+                case 0:
+                    QueryWrapper<OpeWmsScooterStock> qw = new QueryWrapper<>();
+                    qw.eq(OpeWmsScooterStock.COL_GROUP_ID,enter.getGroupId());
+                    qw.eq(OpeWmsScooterStock.COL_COLOR_ID,enter.getColorId());
+                    qw.eq(OpeWmsScooterStock.COL_STOCK_TYPE,whtype);
+                    List<OpeWmsScooterStock> list = opeWmsScooterStockService.list(qw);
+                    if (CollectionUtils.isNotEmpty(list)){
+                        num = list.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum();
+                    }
+                default:
+                    break;
+                case 1:
+                    // 说明是不合格品库正常创建出库单 可出库的数量来源与不合格品库的整车数量
+                    QueryWrapper<OpeWmsQualifiedScooterStock> qualifiedScooterStockQueryWrapper = new QueryWrapper<>();
+                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID,enter.getColorId());
+                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID,enter.getGroupId());
+                    qualifiedScooterStockQueryWrapper.last("limit 1");
+                    OpeWmsQualifiedScooterStock qualifiedScooterStock = opeWmsQualifiedScooterStockService.getOne(qualifiedScooterStockQueryWrapper);
+                    if (qualifiedScooterStock != null){
+                        num = qualifiedScooterStock.getQty();
+                    }
+                    break;
             }
         }
+
         return new IntResult(num);
     }
 
