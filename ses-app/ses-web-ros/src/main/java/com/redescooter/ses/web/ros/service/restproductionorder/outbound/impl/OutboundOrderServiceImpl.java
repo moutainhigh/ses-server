@@ -399,7 +399,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
         opeOutWhouseOrder.setUpdatedTime(new Date());
         // 由发货单备货产生的出库单  是为中国仓库的书库单
-        opeOutWhouseOrder.setCountryType(2);
+        opeOutWhouseOrder.setCountryType(1);
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
 
         //保存子单据
