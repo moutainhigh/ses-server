@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper">
+
+    <!--修改成品库组装件库存信息-->
+    <update id="updateWmsCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        update ope_wms_combin_stock
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="stockType != null">
+                stock_type = #{stockType,jdbcType=INTEGER},
+            </if>
+            <if test="productionCombinBomId != null">
+                production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinNo != null">
+                combin_no = #{combinNo,jdbcType=VARCHAR},
+            </if>
+            <if test="cnName != null">
+                cn_name = #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="frName != null">
+                fr_name = #{frName,jdbcType=VARCHAR},
+            </if>
+            <if test="ableStockQty != null">
+                able_stock_qty = #{ableStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="usedStockQty != null">
+                used_stock_qty = #{usedStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitInStockQty != null">
+                wait_in_stock_qty = #{waitInStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitOutStockQty != null">
+                wait_out_stock_qty = #{waitOutStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

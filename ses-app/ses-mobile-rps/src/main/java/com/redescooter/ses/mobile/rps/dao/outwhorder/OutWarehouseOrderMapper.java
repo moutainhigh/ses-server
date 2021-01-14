@@ -69,12 +69,12 @@ public interface OutWarehouseOrderMapper {
     int updateOutWarehouseOrder(OpeOutWhouseOrder outWhouseOrder);
 
     /**
-     * 根据id查询出库单质检数量
+     * 根据id查询出库单已出库总数
      * @param id
      * @return int
      * @author assert
      * @date 2021/1/12
     */
-    int getOutWhOrderQcQtyById(Long id);
+    int getOutWhOrderAlreadyOutWhQtyById(Long id);
 
 }

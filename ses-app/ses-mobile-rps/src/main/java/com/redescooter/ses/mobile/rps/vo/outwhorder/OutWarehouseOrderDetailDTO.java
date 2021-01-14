@@ -35,10 +35,7 @@ public class OutWarehouseOrderDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "应出库总数", dataType = "Integer")
     private Integer qty;
 
-    @ApiModelProperty(value = "已质检数量", dataType = "Integer")
-    private Integer qcQty;
-
-    @ApiModelProperty(value = "已出库数量", dataType = "Integer")
+    @ApiModelProperty(value = "已出库总数", dataType = "Integer")
     private Integer alreadyOutWhQty;
 
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)

@@ -100,13 +100,6 @@ public class OpeOutWhouseOrder {
     private Integer outWhQty;
 
     /**
-     * 已质检数量
-     */
-    @TableField(value = "qc_qty")
-    @ApiModelProperty(value = "已质检数量")
-    private Integer qcQty;
-
-    /**
      * 已出库数量
      */
     @TableField(value = "already_out_wh_qty")
@@ -232,8 +225,6 @@ public class OpeOutWhouseOrder {
     public static final String COL_OUT_TYPE = "out_type";
 
     public static final String COL_OUT_WH_QTY = "out_wh_qty";
-
-    public static final String COL_QC_QTY = "qc_qty";
 
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 

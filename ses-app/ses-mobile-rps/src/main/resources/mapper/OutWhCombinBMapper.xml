@@ -6,7 +6,7 @@
     <select id="getOutWhOrderCombinByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
         select owc.id, owc.out_wh_id outWhId, owc.combin_name`name`, bom.bom_no number, owc.qty,
-        ifnull(owc.already_out_wh_qty, 0) qcQty, true idClass
+        ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom
         on owc.production_combin_bom_id = bom.id and bom.dr = 0
@@ -17,7 +17,7 @@
     <select id="getCombinProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
         select owc.id, owc.out_wh_id outWhId, owc.combin_name`name`, bom.bom_no number, owc.qty,
-        ifnull(owc.already_out_wh_qty, 0) qcQty, true idClass
+        ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom
         on owc.production_combin_bom_id = bom.id and bom.dr = 0
@@ -70,12 +70,5 @@
         </set>
         where id = #{id}
     </update>
-
-    <!--根据outWhId统计出库单组装件质检数量-->
-    <select id="countOutWhCombinQcQtyByOutWhId" parameterType="java.lang.Long" resultType="java.lang.Integer">
-        select ifnull(sum(already_out_wh_qty), 0)
-        from ope_out_wh_combin_b
-        where dr = 0 and out_wh_id = #{outWhId}
-    </select>
 
 </mapper>

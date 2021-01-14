@@ -29,6 +29,9 @@ public class OutWarehouseOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "颜色名称 - 车辆出库单使用", dataType = "String")
     private String colorName;
 
+    @ApiModelProperty(value = "颜色值 - 车辆出库单使用", dataType = "String")
+    private String colorValue;
+
     @ApiModelProperty(value = "车型(高速、低速) - 车辆出库单使用", dataType = "String")
     private String groupName;
 
@@ -38,7 +41,7 @@ public class OutWarehouseOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "出库总数量", dataType = "Integer")
     private Integer qty;
 
-    @ApiModelProperty(value = "已质检数量", dataType = "Integer")
-    private Integer qcQty;
+    @ApiModelProperty(value = "已出库数量", dataType = "Integer")
+    private Integer alreadyOutWhQty;
 
 }

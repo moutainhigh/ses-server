@@ -64,15 +64,6 @@ public interface OutWarehouseOrderService {
     OutWarehouseOrderDetailDTO getOutWarehouseOrderDetailById(IdEnter enter);
 
     /**
-     * 保存质检结果
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
-     * @author assert
-     * @date 2021/1/4
-    */
-    GeneralResult saveQcResult(SaveQcResultParamDTO paramDTO);
-
-    /**
      * 根据id查询出库单产品详情
      * @param paramDTO
      * @return com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO
@@ -82,30 +73,21 @@ public interface OutWarehouseOrderService {
     OutWhOrderProductDetailDTO getOutWhOrderProductDetailByProductId(QueryProductDetailParamDTO paramDTO);
 
     /**
-     * 根据产品id查询产品质检模板信息
-     * @param paramDTO
-     * @return com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO
-     * @author assert
-     * @date 2021/1/6
-    */
-    QueryQcTemplateResultDTO getQcTemplateByIdAndType(QueryQcTemplateParamDTO paramDTO);
-
-    /**
      * 提交出库
      * @param enter
-     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
      * @date 2021-01-10
      */
-    OutWhOrderErrorMessageResponse outWarehouse(IdEnter enter);
+    GeneralResult outWarehouse(IdEnter enter);
     
     /**
      * 修改部件质检数量
      * @param paramDTO
-     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderErrorMessageResponse
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
      * @date 2021-01-10
      */
-    OutWhOrderErrorMessageResponse updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
+    GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
 
 }

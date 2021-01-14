@@ -5,11 +5,11 @@ import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcTraceMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhousePartsBMapper;
@@ -23,6 +23,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.*;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -30,13 +31,9 @@ import com.redescooter.ses.mobile.rps.service.qc.QcService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QcProductResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateResultDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -90,6 +87,20 @@ public class QcServiceImpl implements QcService {
     @Resource
     private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
     @Resource
+    private WmsPartsStockMapper wmsPartsStockMapper;
+    @Resource
+    private WmsScooterStockMapper wmsScooterStockMapper;
+    @Resource
+    private WmsCombinStockMapper wmsCombinStockMapper;
+    @Resource
+    private WmsQualifiedScooterStockMapper wmsQualifiedScooterStockMapper;
+    @Resource
+    private WmsQualifiedCombinStockMapper wmsQualifiedCombinStockMapper;
+    @Resource
+    private WmsQualifiedPartsStockMapper wmsQualifiedPartsStockMapper;
+    @Resource
+    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+    @Resource
     private TransactionTemplate transactionTemplate;
 
 
@@ -112,7 +123,6 @@ public class QcServiceImpl implements QcService {
 
         /**
          * 根据入参productType调整为质检模板的产品类型
-         * -productionId就理解成
          */
         Long productionId;
         Integer productionType;
@@ -166,8 +176,15 @@ public class QcServiceImpl implements QcService {
     }
 
     @Override
-    public GeneralResult saveQcResult(SaveQcResultParamDTO paramDTO) {
+    public SaveQcResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
+        /**
+         * 公共参数 ---- userId、qcResultFlag、saveQcResultDTO、opeOrderQcTraceList
+         */
+        Long userId = paramDTO.getUserId();
         boolean qcResultFlag = true;
+        // 质检结果返回对象
+        SaveQcResultDTO saveQcResultDTO = new SaveQcResultDTO();
+        // 质检记录集合对象
         List<OpeOrderQcTrace> opeOrderQcTraceList = new ArrayList<>();
 
         List<QcProductResultDTO> qcProductResultList = null;
@@ -229,6 +246,7 @@ public class QcServiceImpl implements QcService {
             opeOrderQcTrace.setCreatedTime(new Date());
             opeOrderQcTrace.setUpdatedTime(new Date());
 
+            // 质检结果校验
             for (ProductQcTemplateResultDTO result : qcResultMap.get(qc.getTemplateId())) {
                 if (qc.getTemplateResultId().equals(result.getId())) {
                     opeOrderQcTrace.setProductQcTemplateBName(result.getQcResult());
@@ -243,19 +261,15 @@ public class QcServiceImpl implements QcService {
         // 质检结果 pass/ng
         opeOrderQcItem.setQcResult(qcResultFlag ? 1 : 2);
 
-        OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(paramDTO.getSerialNum());
-        RpsAssert.isNull(opeOrderSerialBind, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-
         /**
-         * 保存订单序列号绑定信息
-         * [入库单]往ope_order_serial_bind表添加数据
-         * [出库单]往ope_invoice_product_serial_num表中添加数据, 数据来源于ope_order_serial_bind表中
+         * 保存订单序列号绑定信息,后面逻辑都是基于质检成功才会走的
+         */
+        Long bomId = null;
+        OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+        /**
+         * 入库单质检流程 start
          */
         if (1 == paramDTO.getType()) {
-            /**
-             * 入库单 start
-             */
             OpeOrderSerialBind opeOrderSerialBindNew = new OpeOrderSerialBind();
 
             /**
@@ -292,21 +306,35 @@ public class QcServiceImpl implements QcService {
             opeOrderQcItem.setId(qcItemId);
             opeOrderQcItem.setOrderSerialId(orderSerialId);
             opeOrderQcItem.setOrderType(OrderTypeEnums.SHIPPING.getValue());
+
+            // 质检结果返回对象,用于打印使用(只针对于入库单)
+            saveQcResultDTO.setSerialNum(opeOrderSerialBindNew.getSerialNum());
+            saveQcResultDTO.setLot(paramDTO.getLot());
+            saveQcResultDTO.setPartsNo(paramDTO.getPartsNo());
+
+            bomId = opeOrderSerialBindNew.getProductId();
+            /**
+             * 1.修改入库单产品的出库数量
+             * 2.库存增减操作
+             * 这里有个地方容易把人搞乱,订单序列号绑定表里面那个productId理论上应该是叫bomId的(由于表字段命名问题,所以导致现在有点乱)
+             */
+            if (qcResultFlag) {
+                updateInWhOrder(opeOrderSerialBindNew.getOrderBId(), paramDTO.getProductType(), paramDTO.getOrderId());
+            }
         } else {
             /**
-             * 出库单 start
+             * 出库单质检流程 start
              */
-
-            // 出库单产品序列号绑定表(它表面上是发货单的产品序列号绑定表,背地里却是出库单的0.0)
+            // 出库单产品序列号绑定表(它虽然表名是叫发货单产品序列号表,但是现在只有出库单才会对这张表做操作)
             OpeInvoiceProductSerialNum opeInvoiceProductSerialNum = new OpeInvoiceProductSerialNum();
             BeanUtils.copyProperties(opeOrderSerialBind, opeInvoiceProductSerialNum);
 
             opeInvoiceProductSerialNum.setId(idAppService.getId(SequenceName.OPE_INVOICE_PRODUCT_SERIAL_NUM));
             opeInvoiceProductSerialNum.setRelationId(opeOrderSerialBind.getOrderBId());
             opeInvoiceProductSerialNum.setRelationType(paramDTO.getProductType());
-            opeInvoiceProductSerialNum.setCreatedBy(paramDTO.getUserId());
+            opeInvoiceProductSerialNum.setCreatedBy(userId);
             opeInvoiceProductSerialNum.setCreatedTime(new Date());
-            opeInvoiceProductSerialNum.setUpdatedBy(paramDTO.getUserId());
+            opeInvoiceProductSerialNum.setUpdatedBy(userId);
             opeInvoiceProductSerialNum.setUpdatedTime(new Date());
 
             // 质检条目表
@@ -314,134 +342,226 @@ public class QcServiceImpl implements QcService {
             opeOrderQcItem.setId(qcItemId);
             opeOrderQcItem.setOrderSerialId(opeOrderSerialBind.getId());
             opeOrderQcItem.setOrderType(OrderTypeEnums.OUTBOUND.getValue());
-        }
 
-
-        // TODO 需要把生成的序列号返回给App那边,用于打印使用(只针对于入库质检)
-
-        return null;
-    }
-
-
-    /**
-     * TODO 待完善
-     * 保存质检结果编程式事务方法
-     * @param opeOrderQcItem
-     * @param opeOrderSerialBind
-     * @param opeOrderQcTraceList
-     * @param userId
-     */
-    private void saveQcResultTransaction(OpeOrderQcItem opeOrderQcItem, OpeOrderSerialBind opeOrderSerialBind,
-                                         List<OpeOrderQcTrace> opeOrderQcTraceList, Long userId) {
-        boolean result = transactionTemplate.execute(qcStatus -> {
-            boolean flag = true;
-            try {
-                Long outWhId = null;
-                OutWhOrderProductDetailDTO outWhOrderProduct = null;
-                /**
-                 * 更新出库单产品质检数量, 只有质检成功时才会更新
-                 */
-                if (opeOrderQcItem.getQcResult() == 1) {
-                    switch (opeOrderSerialBind.getProductType()) {
-                        case 1:
-                            outWhOrderProduct = outWhScooterBMapper.getScooterProductDetailByProductId(opeOrderSerialBind.getOrderBId());
-                            OpeOutWhScooterB opeOutWhScooterB = new OpeOutWhScooterB();
-                            opeOutWhScooterB.setId(outWhOrderProduct.getId());
-                            opeOutWhScooterB.setAlreadyOutWhQty(outWhOrderProduct.getQcQty() + 1);
-                            opeOutWhScooterB.setUpdatedTime(new Date());
-
-                            outWhId = outWhOrderProduct.getOutWhId();
-                            outWhScooterBMapper.updateOutWhScooterB(opeOutWhScooterB);
-                            break;
-                        case 2:
-                            outWhOrderProduct = outWhCombinBMapper.getCombinProductDetailByProductId(opeOrderSerialBind.getOrderBId());
-                            OpeOutWhCombinB opeOutWhCombinB = new OpeOutWhCombinB();
-                            opeOutWhCombinB.setId(outWhOrderProduct.getId());
-                            opeOutWhCombinB.setAlreadyOutWhQty(outWhOrderProduct.getQcQty() + 1);
-                            opeOutWhCombinB.setUpdatedTime(new Date());
-
-                            outWhId = outWhOrderProduct.getOutWhId();
-                            outWhCombinBMapper.updateOutWhCombinB(opeOutWhCombinB);
-                            break;
-                        default:
-                            outWhOrderProduct = outWhPartsBMapper.getPartsProductDetailByProductId(opeOrderSerialBind.getOrderBId());
-                            OpeOutWhPartsB opeOutWhPartsB = new OpeOutWhPartsB();
-                            opeOutWhPartsB.setId(outWhOrderProduct.getId());
-                            opeOutWhPartsB.setAlreadyOutWhQty(outWhOrderProduct.getQcQty() + 1);
-                            opeOutWhPartsB.setUpdatedTime(new Date());
-
-                            outWhId = outWhOrderProduct.getOutWhId();
-                            outWhPartsBMapper.updateOutWhPartsB(opeOutWhPartsB);
-                            break;
-                    }
-
-                    /**
-                     * 更新出库单状态为 【部分出库】
-                     */
-                    int qcQty = outWarehouseOrderMapper.getOutWhOrderQcQtyById(outWhId);
-                    outWarehouseOrderMapper.updateOutWarehouseOrder(buildOutWhouseOrder(outWhId,
-                            OutBoundOrderStatusEnums.PARTIAL_DELIVERY.getValue(), qcQty + 1,null, userId));
-                }
-
-                /**
-                 * 保存出库单产品序列号信息
-                 */
-                OpeInvoiceProductSerialNum opeInvoiceProductSerialNum = new OpeInvoiceProductSerialNum();
-                BeanUtils.copyProperties(opeOrderSerialBind, opeInvoiceProductSerialNum);
-
-                opeInvoiceProductSerialNum.setId(idAppService.getId(SequenceName.OPE_INVOICE_PRODUCT_SERIAL_NUM));
-                opeInvoiceProductSerialNum.setRelationId(opeOrderSerialBind.getOrderBId());
-                opeInvoiceProductSerialNum.setRelationType(opeOrderSerialBind.getProductType());
-                opeInvoiceProductSerialNum.setCreatedBy(userId);
-                opeInvoiceProductSerialNum.setCreatedTime(new Date());
-                opeInvoiceProductSerialNum.setUpdatedBy(userId);
-                opeInvoiceProductSerialNum.setUpdatedTime(new Date());
-                invoiceProductSerialNumMapper.insertInvoiceProductSerialNum(opeInvoiceProductSerialNum);
-
-                /**
-                 * 保存质检记录
-                 */
-                opeOrderQcItemMapper.insertOrUpdate(opeOrderQcItem);
-                opeOrderQcTraceMapper.batchInsert(opeOrderQcTraceList);
-
-                /**
-                 * 质检失败需要将质检的产品丢入不合格品库中去,通对库存做扣减操作
-                 */
-
-            } catch (Exception e) {
-                flag = false;
-                log.error("【保存质检结果失败】----{}", ExceptionUtils.getStackTrace(e));
-                qcStatus.setRollbackOnly();
+            bomId = opeInvoiceProductSerialNum.getProductId();
+            /**
+             * 1.修改出库单产品的出库数量
+             * 2.库存增减操作
+             */
+            if (qcResultFlag) {
+                updateOutWhOrder(opeInvoiceProductSerialNum.getRelationId(), paramDTO.getProductType(), paramDTO.getOrderId());
             }
-            return flag;
-        });
+        }
 
-        // 手动抛出编程式事务异常
-        RpsAssert.isFalse(result, ExceptionCodeEnums.QC_ERROR.getCode(), ExceptionCodeEnums.QC_ERROR.getMessage());
+        /**
+         * 保存产品质检记录
+         */
+        opeOrderQcItemMapper.insertOrUpdate(opeOrderQcItem);
+        opeOrderQcTraceMapper.batchInsert(opeOrderQcTraceList);
+
+        /**
+         * 库存增减, 这里会涉及到原料库、成品库和不合格品库
+         */
+        updateWmsStock(bomId,paramDTO.getProductType(), qcResultFlag, paramDTO.getType());
+
+        return saveQcResultDTO;
+    }
+
+
+    /**
+     * 修改出库单信息
+     * @param productId
+     * @param productType
+     * @param orderId
+     */
+    private void updateOutWhOrder(Long productId, Integer productType, Long orderId) {
+        OutWhOrderProductDetailDTO outWhOrderProduct = null;
+        switch (productType) {
+            case 1:
+                outWhOrderProduct = outWhScooterBMapper.getScooterProductDetailByProductId(productId);
+                // 出库单产品数量全部质检完后无需再质检
+                RpsAssert.isTrue(outWhOrderProduct.getQty().equals(outWhOrderProduct.getAlreadyOutWhQty()), ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
+
+                OpeOutWhScooterB opeOutWhScooterB = new OpeOutWhScooterB();
+                opeOutWhScooterB.setId(outWhOrderProduct.getId());
+                opeOutWhScooterB.setAlreadyOutWhQty(outWhOrderProduct.getAlreadyOutWhQty() + 1);
+                opeOutWhScooterB.setUpdatedTime(new Date());
+
+                outWhScooterBMapper.updateOutWhScooterB(opeOutWhScooterB);
+                break;
+            case 2:
+                outWhOrderProduct = outWhCombinBMapper.getCombinProductDetailByProductId(productId);
+                RpsAssert.isTrue(outWhOrderProduct.getQty().equals(outWhOrderProduct.getAlreadyOutWhQty()), ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
+
+                OpeOutWhCombinB opeOutWhCombinB = new OpeOutWhCombinB();
+                opeOutWhCombinB.setId(outWhOrderProduct.getId());
+                opeOutWhCombinB.setAlreadyOutWhQty(outWhOrderProduct.getAlreadyOutWhQty() + 1);
+                opeOutWhCombinB.setUpdatedTime(new Date());
+
+                outWhCombinBMapper.updateOutWhCombinB(opeOutWhCombinB);
+                break;
+            default:
+                outWhOrderProduct = outWhPartsBMapper.getPartsProductDetailByProductId(productId);
+                RpsAssert.isTrue(outWhOrderProduct.getQty().equals(outWhOrderProduct.getAlreadyOutWhQty()), ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
+
+                OpeOutWhPartsB opeOutWhPartsB = new OpeOutWhPartsB();
+                opeOutWhPartsB.setId(outWhOrderProduct.getId());
+                opeOutWhPartsB.setAlreadyOutWhQty(outWhOrderProduct.getAlreadyOutWhQty() + 1);
+                opeOutWhPartsB.setUpdatedTime(new Date());
+
+                outWhPartsBMapper.updateOutWhPartsB(opeOutWhPartsB);
+                break;
+        }
+
+        // 将出库单状态改为【部分出库】, 这里只会在产品第一次质检的时候才会修改出库单状态
+        if (outWhOrderProduct.getAlreadyOutWhQty() < 1) {
+            OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
+            opeOutWhouseOrder.setId(orderId);
+            opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.PARTIAL_DELIVERY.getValue());
+            outWarehouseOrderMapper.updateOutWarehouseOrder(opeOutWhouseOrder);
+        }
     }
 
     /**
-     * 组装出库单信息
-     * @param id 出库单id
-     * @param status 出库单状态,参照枚举类：{@link OutBoundOrderStatusEnums}
-     * @param qcQty 已质检数量
-     * @param alreadyOutWhQty 已出库数量
-     * @param userId 用户id
-     * @return
+     * 修改入库单信息：
+     * @param productId
+     * @param productType
+     * @param orderId
      */
-    private OpeOutWhouseOrder buildOutWhouseOrder(Long id, Integer status, Integer qcQty, Integer alreadyOutWhQty, Long userId) {
-        OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
-        opeOutWhouseOrder.setId(id);
-        opeOutWhouseOrder.setOutWhStatus(status);
-        opeOutWhouseOrder.setQcQty(qcQty);
-        opeOutWhouseOrder.setAlreadyOutWhQty(alreadyOutWhQty);
-        opeOutWhouseOrder.setUpdatedBy(userId);
-        opeOutWhouseOrder.setUpdatedTime(new Date());
-        if (null != alreadyOutWhQty) {
-            opeOutWhouseOrder.setOutStockTime(new Date());
+    private void updateInWhOrder(Long productId, Integer productType, Long orderId) {
+
+        switch (productType) {
+            case 1:
+                OpeInWhouseScooterB opeInWhouseScooterB = null;
+
+                break;
+            case 2:
+                OpeInWhouseCombinB opeInWhouseCombinB = null;
+
+                break;
+            default:
+                OpeInWhousePartsB opeInWhousePartsB = null;
+
+                break;
+        }
+    }
+
+    /**
+     * 库存增减, 这里会涉及到原料库、成品库和不合格品库
+     * @param bomId
+     * @param productType 产品类型 1车辆 2组装件 3部件
+     * @param qcResultFlag 质检结果标记 true/false
+     * @param type 单据类型 1入库单 2出库单
+     */
+    private void updateWmsStock(Long bomId, Integer productType, Boolean qcResultFlag, Integer type) {
+
+        if (1 == type) {
+            /**
+             * 入库单车辆、组装件和部件库存增减操作
+             * 入库：可用库存+, 待入库-
+             */
+            switch (productType) {
+                case 1:
+                    if (qcResultFlag) {
+                        OpeProductionScooterBom opeProductionScooterBom = null;
+
+                        OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper.getWmsScooterStockByGroupIdAndColorId(opeProductionScooterBom.getGroupId(),
+                                opeProductionScooterBom.getColorId());
+                        opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() + 1);
+                        opeWmsScooterStock.setWaitInStockQty(opeWmsScooterStock.getWaitInStockQty() - 1);
+
+                        wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
+                    } else {
+                        OpeWmsQualifiedScooterStock opeWmsQualifiedScooterStock = null;
+                        opeWmsQualifiedScooterStock.setQty(opeWmsQualifiedScooterStock.getQty() + 1);
+
+                        wmsQualifiedScooterStockMapper.updateWmsQualifiedScooterStock(opeWmsQualifiedScooterStock);
+                    }
+                    break;
+                case 2:
+                    if (qcResultFlag) {
+                        OpeWmsCombinStock opeWmsCombinStock = null;
+                        opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() + 1);
+                        opeWmsCombinStock.setWaitInStockQty(opeWmsCombinStock.getWaitInStockQty() - 1);
+
+                        wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
+                    } else {
+                        OpeWmsQualifiedCombinStock opeWmsQualifiedCombinStock = null;
+                        opeWmsQualifiedCombinStock.setQty(opeWmsQualifiedCombinStock.getQty() + 1);
+
+                        wmsQualifiedCombinStockMapper.updateWmsQualifiedCombinStock(opeWmsQualifiedCombinStock);
+                    }
+                    break;
+                default:
+                    if (qcResultFlag) {
+                        OpeWmsPartsStock opeWmsPartsStock = null;
+                        opeWmsPartsStock.setAbleStockQty(opeWmsPartsStock.getAbleStockQty() + 1);
+                        opeWmsPartsStock.setWaitInStockQty(opeWmsPartsStock.getWaitInStockQty() - 1);
+
+                        wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
+                    } else {
+                        OpeWmsQualifiedPartsStock opeWmsQualifiedPartsStock = null;
+                        opeWmsQualifiedPartsStock.setQty(opeWmsQualifiedPartsStock.getQty() + 1);
+
+                        wmsQualifiedPartsStockMapper.updateWmsQualifiedPartsStock(opeWmsQualifiedPartsStock);
+                    }
+                    break;
+            }
+        } else {
+            /**
+             * 出库单车辆、组装件和部件库存增减操作
+             * 出库：已用库存+, 待出库-
+             */
+            switch (productType) {
+                case 1:
+                    if (qcResultFlag) {
+                        OpeWmsScooterStock opeWmsScooterStock = null;
+                        opeWmsScooterStock.setUsedStockQty(opeWmsScooterStock.getUsedStockQty() + 1);
+                        opeWmsScooterStock.setWaitOutStockQty(opeWmsScooterStock.getWaitOutStockQty() - 1);
+
+                        wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
+                    } else {
+                        OpeWmsQualifiedScooterStock opeWmsQualifiedScooterStock = null;
+                        opeWmsQualifiedScooterStock.setQty(opeWmsQualifiedScooterStock.getQty() + 1);
+
+                        wmsQualifiedScooterStockMapper.updateWmsQualifiedScooterStock(opeWmsQualifiedScooterStock);
+                    }
+                    break;
+                case 2:
+                    if (qcResultFlag) {
+                        OpeWmsCombinStock opeWmsCombinStock = null;
+                        opeWmsCombinStock.setUsedStockQty(opeWmsCombinStock.getUsedStockQty() + 1);
+                        opeWmsCombinStock.setWaitOutStockQty(opeWmsCombinStock.getWaitOutStockQty() - 1);
+
+                        wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
+                    } else {
+                        OpeWmsQualifiedCombinStock opeWmsQualifiedCombinStock = null;
+                        opeWmsQualifiedCombinStock.setQty(opeWmsQualifiedCombinStock.getQty() + 1);
+
+                        wmsQualifiedCombinStockMapper.updateWmsQualifiedCombinStock(opeWmsQualifiedCombinStock);
+                    }
+                    break;
+                default:
+                    if (qcResultFlag) {
+                        OpeWmsPartsStock opeWmsPartsStock = null;
+                        opeWmsPartsStock.setUsedStockQty(opeWmsPartsStock.getUsedStockQty() + 1);
+                        opeWmsPartsStock.setWaitOutStockQty(opeWmsPartsStock.getWaitOutStockQty() - 1);
+
+                        wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
+                    } else {
+                        OpeWmsQualifiedPartsStock opeWmsQualifiedPartsStock = null;
+                        opeWmsQualifiedPartsStock.setQty(opeWmsQualifiedPartsStock.getQty() + 1);
+
+                        wmsQualifiedPartsStockMapper.updateWmsQualifiedPartsStock(opeWmsQualifiedPartsStock);
+                    }
+                    break;
+            }
+
         }
 
-        return opeOutWhouseOrder;
     }
 
 }

@@ -49,13 +49,4 @@ public interface OutWhCombinBMapper {
     */
     int updateOutWhCombinB(OpeOutWhCombinB opeOutWhCombinB);
 
-    /**
-     * 根据outWhId统计出库单组装件质检数量
-     * @param outWhId
-     * @return int
-     * @author assert
-     * @date 2021/1/11
-    */
-    int countOutWhCombinQcQtyByOutWhId(Long outWhId);
-
 }

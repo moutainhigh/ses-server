@@ -49,13 +49,4 @@ public interface OutWhScooterBMapper {
     */
     int updateOutWhScooterB(OpeOutWhScooterB opeOutWhScooterB);
 
-    /**
-     * 根据outWhId统计出库单车辆质检数量
-     * @param outWhId
-     * @return int
-     * @author assert
-     * @date 2021/1/11
-    */
-    int countOutWhScooterQcQtyByOutWhId(Long outWhId);
-
 }

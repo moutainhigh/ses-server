@@ -5,8 +5,8 @@
     <!--根据outWhId查询出库单车辆信息-->
     <select id="getOutWhOrderScooterByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
-        select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName,ows.qty,
-        ifnull(ows.already_out_wh_qty, 0) qcQty, true idClass
+        select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
+        ows.qty,ifnull(ows.already_out_wh_qty, 0) alreadyOutWhQty, true idClass
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -19,7 +19,7 @@
     <select id="getScooterProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
         select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName,ows.qty,
-        ifnull(ows.already_out_wh_qty, 0) qcQty, true idClass
+        ifnull(ows.already_out_wh_qty, 0) alreadyOutWhQty, true idClass
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -77,12 +77,5 @@
         </set>
         where id = #{id}
     </update>
-
-    <!--根据outWhId统计出库单车辆质检数量-->
-    <select id="countOutWhScooterQcQtyByOutWhId" parameterType="java.lang.Long" resultType="java.lang.Integer">
-        select ifnull(sum(already_out_wh_qty), 0)
-        from ope_out_wh_scooter_b
-        where dr = 0 and out_wh_id = #{outWhId}
-    </select>
 
 </mapper>

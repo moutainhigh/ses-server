@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.util.List;
 
-
 /**
  * 出库单产品详情 DTO
  * @author assert
@@ -32,11 +31,11 @@ public class OutWhOrderProductDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "产品编号", dataType = "String")
     private String number;
 
-    @ApiModelProperty(value = "出库数量", dataType = "Integer")
+    @ApiModelProperty(value = "应出库数量", dataType = "Integer")
     private Integer qty;
 
-    @ApiModelProperty(value = "质检数量", dataType = "Integer")
-    private Integer qcQty;
+    @ApiModelProperty(value = "已出库数量", dataType = "Integer")
+    private Integer alreadyOutWhQty;
 
     @ApiModelProperty(value = "车型(高速、低速) - 车辆出库单使用", dataType = "String")
     private String groupName;

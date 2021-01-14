@@ -39,7 +39,7 @@ public class SaveQcResultParamDTO extends GeneralEnter {
      * 我需要通过这个字段来知道此时是在入库质检还是出库质检,通过这个字段配合productType来确定后面对库存的操作
      * 比如单据类型为：入库单,产品类型是部件,这个时候就能确定是对原料库进行操作
      */
-    @ApiModelProperty(value = "单据类型(这个参数很重要,需要这个参数来知道后面流程怎么走) 1入库单 2出库单", dataType = "Integer")
+    @ApiModelProperty(value = "单据类型(这个参数很重要,需要这个参数来知道后面逻辑怎么走) 1入库单 2出库单", dataType = "Integer")
     private Integer type;
 
     @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"质检模板id\",\"templateResultId\":\"质检结果id\"," +
