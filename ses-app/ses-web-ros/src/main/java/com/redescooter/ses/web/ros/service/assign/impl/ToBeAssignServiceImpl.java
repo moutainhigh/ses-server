@@ -392,7 +392,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
             // 此处调仓库管理接口,进行三层校验
 
-
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setId(id);
@@ -401,6 +400,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCarDistributeMapper.updateById(model);
+
+            // 修改询价单表中客户需求车辆数
+            LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
+            inquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
+            inquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+            inquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
+            List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryMapper.selectList(inquiryWrapper);
+            if (CollectionUtils.isNotEmpty(inquiryList)) {
+                OpeCustomerInquiry inquiry = inquiryList.get(0);
+                if (null != inquiry) {
+                    Integer quantity = inquiry.getScooterQuantity();
+                    OpeCustomerInquiry param = new OpeCustomerInquiry();
+                    param.setId(inquiry.getId());
+                    param.setScooterQuantity(quantity - 1);
+                    param.setUpdatedBy(enter.getUserId());
+                    param.setUpdatedTime(new Date());
+                    opeCustomerInquiryMapper.updateById(param);
+                }
+            }
 
             // 修改成品库车辆库存
             // 获得询价单型号id和颜色id
