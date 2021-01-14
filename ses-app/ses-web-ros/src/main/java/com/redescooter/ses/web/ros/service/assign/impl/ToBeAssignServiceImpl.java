@@ -9,6 +9,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -17,6 +19,7 @@ import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
@@ -27,7 +30,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.enums.assign.CustomerTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
 import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
@@ -107,8 +110,17 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Autowired
     private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
 
+    @Autowired
+    private OpeCustomerMapper opeCustomerMapper;
+
     @Reference
     private IdAppService idAppService;
+
+    @Reference
+    private AccountBaseService accountBaseService;
+
+    @Reference
+    private ScooterService scooterService;
 
     /**
      * 待分配列表
@@ -172,7 +184,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         String customerType = customerInfo.getCustomerType();
         String industryType = customerInfo.getIndustryType();
         if (StringUtils.isNotBlank(customerType)) {
-            customerInfo.setCustomerTypeMsg(CustomerTypeEnum.showMsg(customerType));
+            customerInfo.setCustomerTypeMsg(CustomerFormEnum.showMsg(customerType));
         }
         if (StringUtils.isNotBlank(industryType)) {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));
@@ -496,7 +508,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         String customerType = customerInfo.getCustomerType();
         String industryType = customerInfo.getIndustryType();
         if (StringUtils.isNotBlank(customerType)) {
-            customerInfo.setCustomerTypeMsg(CustomerTypeEnum.showMsg(customerType));
+            customerInfo.setCustomerTypeMsg(CustomerFormEnum.showMsg(customerType));
         }
         if (StringUtils.isNotBlank(industryType)) {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));

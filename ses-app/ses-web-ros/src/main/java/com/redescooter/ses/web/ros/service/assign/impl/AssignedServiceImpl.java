@@ -9,7 +9,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.enums.assign.CustomerTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -83,7 +83,7 @@ public class AssignedServiceImpl implements AssignedService {
         String customerType = customerInfo.getCustomerType();
         String industryType = customerInfo.getIndustryType();
         if (StringUtils.isNotBlank(customerType)) {
-            customerInfo.setCustomerTypeMsg(CustomerTypeEnum.showMsg(customerType));
+            customerInfo.setCustomerTypeMsg(CustomerFormEnum.showMsg(customerType));
         }
         if (StringUtils.isNotBlank(industryType)) {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));
