@@ -1241,6 +1241,8 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                     bEnter.setAbleInWhQty(bEnter.getPurchaseQty() - alreadyNum);
                 }
+            }else {
+                list.forEach(o->o.setAbleInWhQty(o.getPurchaseQty()));
             }
         }
         // 追加 把可入库的数量为0的数据过滤掉 不反回给前端
@@ -1329,6 +1331,8 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                     combinResult.setAbleInWhQty(combinResult.getCombinQty() - alreadyNum);
                 }
+            }else {
+                list.forEach(o->o.setAbleInWhQty(o.getCombinQty()));
             }
         }
     }
@@ -1400,6 +1404,8 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                     bEnter.setAbleInWhQty(bEnter.getCombinQty() - alreadyNum);
                 }
+            }else {
+                list.forEach(o->o.setAbleInWhQty(o.getCombinQty()));
             }
         }
     }
