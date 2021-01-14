@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum CustomerTypeEnum {
+public enum CustomerFormEnum {
 
     BUSINESS("1", "Company"),
 
@@ -18,7 +18,7 @@ public enum CustomerTypeEnum {
     private String value;
 
     public static String showMsg(String key) {
-        for (CustomerTypeEnum o : CustomerTypeEnum.values()) {
+        for (CustomerFormEnum o : CustomerFormEnum.values()) {
             if (o.getKey().equals(key)) {
                 return o.getValue();
             }

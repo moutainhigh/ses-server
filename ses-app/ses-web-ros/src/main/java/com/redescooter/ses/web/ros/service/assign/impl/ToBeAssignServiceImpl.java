@@ -4,12 +4,26 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
@@ -17,17 +31,21 @@ import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.enums.assign.CustomerTypeEnum;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
 import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
@@ -66,6 +84,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -107,8 +126,26 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Autowired
     private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
 
+    @Autowired
+    private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+
     @Reference
     private IdAppService idAppService;
+
+    @Reference
+    private AccountBaseService accountBaseService;
+
+    @Reference
+    private ScooterService scooterService;
+
+    @Reference
+    private CorporateScooterService corporateScooterService;
+
+    @Reference
+    private CusotmerScooterService cusotmerScooterService;
 
     /**
      * 待分配列表
@@ -172,7 +209,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         String customerType = customerInfo.getCustomerType();
         String industryType = customerInfo.getIndustryType();
         if (StringUtils.isNotBlank(customerType)) {
-            customerInfo.setCustomerTypeMsg(CustomerTypeEnum.showMsg(customerType));
+            customerInfo.setCustomerTypeMsg(CustomerFormEnum.showMsg(customerType));
         }
         if (StringUtils.isNotBlank(industryType)) {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));
@@ -385,12 +422,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 客户信息
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
+        if (null == opeCustomer) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
+        }
+
+        // 车辆信息保存scooter库
+        List<BaseScooterEnter> saveScooterList = Lists.newArrayList();
+
+        // 客户和车辆产生绑定关系
+        List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
+
         for (ToBeAssignSubmitDetailEnter o : list) {
             Long id = o.getId();
             String rsn = o.getRsn();
             Long colorId = o.getColorId();
-
-            // 此处调仓库管理接口,进行三层校验
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -400,6 +450,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCarDistributeMapper.updateById(model);
+
+            // 获得车牌号
+            OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
+            String licensePlate = opeCarDistribute.getLicensePlate();
 
             // 修改询价单表中客户需求车辆数
             LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
@@ -436,8 +490,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             wrapper.eq(OpeWmsScooterStock::getStockType, 2);
             wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
             List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
+            OpeWmsScooterStock stock = null;
             if (CollectionUtils.isNotEmpty(stockList)) {
-                OpeWmsScooterStock stock = stockList.get(0);
+                stock = stockList.get(0);
                 // 得到原先库存的可用库存数量和已用库存数量
                 Long stockId = stock.getId();
                 Integer ableStockQty = stock.getAbleStockQty();
@@ -452,7 +507,79 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 param.setUpdatedTime(new Date());
                 opeWmsScooterStockMapper.updateById(param);
             }
+
+            // 新增出库记录
+            OpeWmsStockRecord record = new OpeWmsStockRecord();
+            record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+            record.setDr(DelStatusEnum.VALID.getCode());
+            if (null != stock) {
+                record.setRelationId(stock.getId());
+            }
+            record.setInWhQty(1);
+            record.setRecordType(2);
+            record.setStockType(2);
+            record.setCreatedBy(enter.getUserId());
+            record.setCreatedTime(new Date());
+            opeWmsStockRecordMapper.insert(record);
+
+            // 数据同步
+            // 车辆信息保存scooter库
+            BaseScooterEnter saveScooter = new BaseScooterEnter();
+            saveScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+            saveScooter.setScooterNo("1");
+            saveScooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
+            saveScooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
+            saveScooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+            saveScooter.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+            saveScooter.setLicensePlate(licensePlate);
+            saveScooter.setLicensePlatePicture(null);
+            saveScooter.setLicensePlateTime(new Date());
+            saveScooter.setScooterIdPicture(null);
+            saveScooter.setInsureTime(new Date());
+            saveScooter.setInsurance(null);
+            saveScooter.setRevision(0);
+            saveScooter.setScooterEcuId(0L);
+            saveScooter.setLongitule(BigDecimal.ZERO);
+            saveScooter.setLatitude(BigDecimal.ZERO);
+            saveScooter.setBattery(100);
+            saveScooterList.add(saveScooter);
+
+            // 查询客户的账号信息
+            QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+
+            // 将数据存储到corporate库
+            if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+                HubSaveScooterEnter item = new HubSaveScooterEnter();
+                item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                item.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+                item.setLongitude(MapUtil.randomLonLat(Constant.lng));
+                item.setLatitude(MapUtil.randomLonLat(Constant.lng));
+                item.setLicensePlate(licensePlate);
+                item.setLicensePlatePicture(null);
+                item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
+                item.setUserId(accountInfo.getId());
+                item.setTenantId(accountInfo.getTenantId());
+                saveRelationList.add(item);
+                corporateScooterService.saveScooter(saveRelationList);
+            }
+            // 将数据存储到consumer库
+            if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
+                HubSaveScooterEnter item = new HubSaveScooterEnter();
+                item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                item.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+                item.setLongitude(MapUtil.randomLonLat(Constant.lng));
+                item.setLatitude(MapUtil.randomLonLat(Constant.lng));
+                item.setLicensePlate(licensePlate);
+                item.setLicensePlatePicture(null);
+                item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
+                item.setUserId(accountInfo.getId());
+                item.setTenantId(accountInfo.getTenantId());
+                saveRelationList.add(item);
+                cusotmerScooterService.saveScooter(saveRelationList);
+            }
         }
+        // 将数据存储到scooter库
+        scooterService.saveScooter(saveScooterList);
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
@@ -464,7 +591,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
-        return new GeneralResult();
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -496,7 +623,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         String customerType = customerInfo.getCustomerType();
         String industryType = customerInfo.getIndustryType();
         if (StringUtils.isNotBlank(customerType)) {
-            customerInfo.setCustomerTypeMsg(CustomerTypeEnum.showMsg(customerType));
+            customerInfo.setCustomerTypeMsg(CustomerFormEnum.showMsg(customerType));
         }
         if (StringUtils.isNotBlank(industryType)) {
             customerInfo.setIndustryTypeMsg(IndustryTypeEnum.showMsg(industryType));
