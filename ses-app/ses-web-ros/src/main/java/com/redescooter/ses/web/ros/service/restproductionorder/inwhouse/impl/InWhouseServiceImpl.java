@@ -560,12 +560,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhScooterMap != null && inWhScooterMap.size() > 0){
                         for (String key : inWhScooterMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                            if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)){
+                                alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                            }
                         }
                     }
                     if (unInWhScooterMap != null && unInWhScooterMap.size() > 0){
                         for (String key : unInWhScooterMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                            if ((scooterResult.getGroupId() +""+scooterResult.getColorId()).equals(key)) {
+                                alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                            }
                         }
                     }
                     scooterResult.setAbleInWhQty(scooterResult.getCombinQty() - alreadyNum);
@@ -616,12 +620,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhCombinMap != null && inWhCombinMap.size() > 0){
                         for (Long key : inWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
+                            if (key.equals(combinResult.getProductionCombinBomId())){
+                                alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
+                            }
                         }
                     }
-                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0){
+                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0) {
                         for (Long key : unInWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
+                            if (key.equals(combinResult.getProductionCombinBomId())) {
+                                alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
+                            }
                         }
                     }
                     combinResult.setAbleInWhQty(combinResult.getCombinQty() - alreadyNum);
@@ -671,12 +679,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhCombinMap != null && inWhCombinMap.size() > 0){
                         for (Long key : inWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
+                            if (key.equals(partsResult.getPartsId())){
+                                alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
+                            }
                         }
                     }
                     if (unInWhCombinMap != null && unInWhCombinMap.size() > 0){
                         for (Long key : unInWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
+                            if (key.equals(partsResult.getPartsId())) {
+                                alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
+                            }
                         }
                     }
                     partsResult.setAbleInWhQty(partsResult.getPurchaseQty() - alreadyNum);
@@ -727,12 +739,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhCombinMap != null && inWhCombinMap.size() > 0){
                         for (Long key : inWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
+                            if (key.equals(partsResult.getPartsId())){
+                                alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
+                            }
                         }
                     }
                     if (unInWhCombinMap != null && unInWhCombinMap.size() > 0){
                         for (Long key : unInWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
+                            if (key.equals(partsResult.getPartsId())){
+                                alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
+                            }
                         }
                     }
                     partsResult.setAbleInWhQty(partsResult.getPurchaseQty() - alreadyNum);
@@ -1321,12 +1337,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhCombinMap != null && inWhCombinMap.size() > 0){
                         for (Long key : inWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
+                            if (key.equals(combinResult.getProductionCombinBomId())){
+                                alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
+                            }
                         }
                     }
                     if (unInWhCombinMap != null && unInWhCombinMap.size() > 0){
                         for (Long key : unInWhCombinMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
+                            if (key.equals(combinResult.getProductionCombinBomId())) {
+                                alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
+                            }
                         }
                     }
                     combinResult.setAbleInWhQty(combinResult.getCombinQty() - alreadyNum);
@@ -1394,12 +1414,16 @@ public class InWhouseServiceImpl implements InWhouseService {
                     Integer alreadyNum = 0;
                     if (inWhScooterMap != null && inWhScooterMap.size() > 0){
                         for (String key : inWhScooterMap.keySet()) {
-                            alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                            if (key.equals(bEnter.getGroupId() +""+bEnter.getColorId())){
+                                alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
+                            }
                         }
                     }
                     if (unInWhScooterMap != null && unInWhScooterMap.size() > 0){
                         for (String key : unInWhScooterMap.keySet()) {
-                            alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                            if (key.equals(bEnter.getGroupId() + "" + bEnter.getColorId())) {
+                                alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
+                            }
                         }
                     }
                     bEnter.setAbleInWhQty(bEnter.getCombinQty() - alreadyNum);
