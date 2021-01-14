@@ -85,6 +85,12 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Autowired
     private ProductionOrderTraceService productionOrderTraceService;
 
+    @Autowired
+    private OpeProductionCombinBomService opeProductionCombinBomservice;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -285,17 +291,27 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         if (scooterStock != null) {
                             scooterStock.setQty(scooterStock.getQty() + scooterB.getInWhQty());
                             scooterStocks.add(scooterStock);
-
-                            // 构建入库记录对象
-                            WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
-                            scooterRecord.setRelationId(scooterStock.getId());
-                            scooterRecord.setRelationType(4);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
-                            scooterRecord.setInWhQty(scooterB.getInWhQty());
-                            scooterRecord.setRecordType(1);
-                            scooterRecord.setStockType(enter.getStockType());
-                            records.add(scooterRecord);
+                        }else {
+                            scooterStock = new OpeWmsQualifiedScooterStock();
+                            scooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                            scooterStock.setGroupId(scooterB.getGroupId());
+                            scooterStock.setColorId(scooterB.getColorId());
+                            scooterStock.setQty(scooterB.getInWhQty());
+                            scooterStock.setCreatedBy(enter.getUserId());
+                            scooterStock.setCreatedTime(new Date());
+                            scooterStock.setUpdatedTime(new Date());
+                            scooterStock.setUpdatedBy(enter.getUserId());
+                            scooterStocks.add(scooterStock);
                         }
+                        // 构建入库记录对象
+                        WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
+                        scooterRecord.setRelationId(scooterStock.getId());
+                        scooterRecord.setRelationType(4);
+                        scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                        scooterRecord.setInWhQty(scooterB.getInWhQty());
+                        scooterRecord.setRecordType(1);
+                        scooterRecord.setStockType(enter.getStockType());
+                        records.add(scooterRecord);
                     }
                     opeWmsQualifiedScooterStockService.saveOrUpdateBatch(scooterStocks);
                 }
@@ -317,17 +333,35 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         if (combinStock != null) {
                             combinStock.setQty(combinStock.getQty() + combinB.getInWhQty());
                             combinStocks.add(combinStock);
+                        }else {
+                            combinStock = new OpeWmsQualifiedCombinStock();
+                            combinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
+                            // 找到组装件的中文/英文/法文
+                            OpeProductionCombinBom combinBom = opeProductionCombinBomservice.getById(combinB.getProductionCombinBomId());
+                            if (combinBom != null) {
+                                combinStock.setEnName(combinBom.getEnName());
+                                combinStock.setFrName(combinBom.getFrName());
+                                combinStock.setCnName(combinBom.getCnName());
+                                combinStock.setCombinNo(combinBom.getBomNo());
+                                combinStock.setProductionCombinBomId(combinB.getId());
+                            }
 
-                            // 构建入库记录对象
-                            WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
-                            scooterRecord.setRelationId(combinStock.getId());
-                            scooterRecord.setRelationType(5);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
-                            scooterRecord.setInWhQty(combinB.getInWhQty());
-                            scooterRecord.setRecordType(1);
-                            scooterRecord.setStockType(enter.getStockType());
-                            records.add(scooterRecord);
+                            combinStock.setQty(combinB.getInWhQty());
+                            combinStock.setCreatedTime(new Date());
+                            combinStock.setCreatedBy(enter.getUserId());
+                            combinStock.setUpdatedTime(new Date());
+                            combinStock.setUpdatedBy(enter.getUserId());
+                            combinStocks.add(combinStock);
                         }
+                        // 构建入库记录对象
+                        WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
+                        scooterRecord.setRelationId(combinStock.getId());
+                        scooterRecord.setRelationType(5);
+                        scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                        scooterRecord.setInWhQty(combinB.getInWhQty());
+                        scooterRecord.setRecordType(1);
+                        scooterRecord.setStockType(enter.getStockType());
+                        records.add(scooterRecord);
                     }
                     opeWmsQualifiedCombinStockService.saveOrUpdateBatch(combinStocks);
                 }
@@ -348,17 +382,35 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         if (partsStock != null) {
                             partsStock.setQty(partsStock.getQty() + partsB.getInWhQty());
                             partsStocks.add(partsStock);
-
-                            // 构建入库记录对象
-                            WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
-                            scooterRecord.setRelationId(partsStock.getId());
-                            scooterRecord.setRelationType(6);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
-                            scooterRecord.setInWhQty(partsB.getInWhQty());
-                            scooterRecord.setRecordType(1);
-                            scooterRecord.setStockType(enter.getStockType());
-                            records.add(scooterRecord);
+                        }else {
+                            partsStock = new OpeWmsQualifiedPartsStock();
+                            partsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
+                            partsStock.setQty(partsB.getActInWhQty());
+                            partsStock.setPartsNo(partsB.getPartsNo());
+                            partsStock.setPartsType(partsB.getPartsType());
+                            partsStock.setCreatedBy(enter.getUserId());
+                            partsStock.setCreatedTime(new Date());
+                            partsStock.setUpdatedBy(enter.getUserId());
+                            partsStock.setUpdatedTime(new Date());
+                            // 找到部件的中文/英文/法文名称
+                            OpeProductionParts partsBom = opeProductionPartsService.getById(partsB.getPartsId());
+                            if (partsBom != null) {
+                                partsStock.setCnName(partsBom.getCnName());
+                                partsStock.setEnName(partsBom.getEnName());
+                                partsStock.setFrName(partsBom.getFrName());
+                                partsStock.setPartsId(partsBom.getId());
+                            }
+                            partsStocks.add(partsStock);
                         }
+                        // 构建入库记录对象
+                        WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
+                        scooterRecord.setRelationId(partsStock.getId());
+                        scooterRecord.setRelationType(6);
+                        scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                        scooterRecord.setInWhQty(partsB.getInWhQty());
+                        scooterRecord.setRecordType(1);
+                        scooterRecord.setStockType(enter.getStockType());
+                        records.add(scooterRecord);
                     }
                     opeWmsQualifiedPartsStockService.saveOrUpdateBatch(partsStocks);
                 }

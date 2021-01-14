@@ -243,7 +243,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             OpeWmsPartsStock partsStock = new OpeWmsPartsStock();
                             partsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
                             partsStock.setStockType(stockType);
-                            partsStock.setWaitInStockQty(partsB.getActInWhQty());
+                            partsStock.setWaitInStockQty(partsB.getInWhQty());
                             partsStock.setAbleStockQty(0);
                             partsStock.setUsedStockQty(0);
                             partsStock.setWaitOutStockQty(0);

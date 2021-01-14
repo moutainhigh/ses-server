@@ -116,7 +116,7 @@
     </select>
 
     <sql id="combinListCondition">
-        and stock_type = 1
+        and stock_type = #{enter.stockType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
             combin_no like concat('%',#{enter.keyword},'%')

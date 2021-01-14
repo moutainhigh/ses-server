@@ -101,7 +101,8 @@
           cn_name,
           en_name,
           fr_name,
-          qty
+          qty,
+          parts_type
         from ope_wms_qualified_parts_stock
         where dr = 0
         <include refid="partsListCondition"/>

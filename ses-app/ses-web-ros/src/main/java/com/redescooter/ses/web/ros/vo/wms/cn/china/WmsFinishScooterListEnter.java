@@ -20,4 +20,7 @@ public class WmsFinishScooterListEnter extends PageEnter {
 
     @ApiModelProperty("颜色ID")
     private Long colorId;
+
+    @ApiModelProperty("库存类型,1:中国，2：法国")
+    private Integer stockType;
 }
