@@ -308,12 +308,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 int count = ableStockQty / partsQty;
                 numList.add(count);
             }
-            int num = Collections.min(numList);
-
-            model.setNum(num);
-            model.setColorName(getColorNameById(colorId));
-            model.setGroupName(getGroupNameById(groupId));
-            result.add(model);
+            if (CollectionUtils.isNotEmpty(numList)) {
+                int num = Collections.min(numList);
+                model.setNum(num);
+                model.setColorName(getColorNameById(colorId));
+                model.setGroupName(getGroupNameById(groupId));
+                result.add(model);
+            }
         }
         return result;
     }
