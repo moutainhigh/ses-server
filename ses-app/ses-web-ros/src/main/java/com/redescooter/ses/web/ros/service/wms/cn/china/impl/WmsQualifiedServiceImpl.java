@@ -416,7 +416,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getId());
+        createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -594,7 +594,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getId());
+        createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 }
