@@ -1235,7 +1235,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                         Map<Long, List<OpeInWhousePartsB>> unPartsMap = unPartsBList.stream().collect(Collectors.groupingBy(OpeInWhousePartsB::getPartsId));
                         for (Long partsId : unPartsMap.keySet()) {
                             if (bEnter.getPartsId().equals(partsId)){
-                                alreadyNum = alreadyNum + unPartsMap.get(partsId).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum();
+                                alreadyNum = alreadyNum + unPartsMap.get(partsId).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum();
                             }
                         }
                     }
