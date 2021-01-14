@@ -609,7 +609,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getId());
+        createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -794,7 +794,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getId());
+        createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
