@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhOrderMapper">
+
+    <!--入库单列表查询条件-->
+    <sql id="InWarehouseOrderListWhere">
+        <if test="orderType != null">and order_type = #{orderType}</if>
+        <if test="type != null">and in_wh_type = #{type}</if>
+        <if test="status == 0">and in_wh_status in(10, 20)</if>
+        <if test="status == 1">and in_wh_status = 30</if>
+    </sql>
+
+    <!--获取所有入库单类型数量-->
+    <select id="getInWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select order_type `status`, count(id) totalCount
+        from ope_in_whouse_order
+        where dr = 0
+        group by order_type
+    </select>
+
+    <!--获取所有入库类型数量-->
+    <select id="getInWarehouseTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select in_wh_type `status`, count(id) totalCount
+        from ope_in_whouse_order
+        where dr = 0 and order_type = #{type}
+        <if test="status == 0">and in_wh_status in(10, 20)</if>
+        <if test="status == 1">and in_wh_status = 30</if>
+        group by in_wh_type
+    </select>
+
+    <!--获取入库单数量-->
+    <select id="countByInWhOrder" parameterType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from ope_in_whouse_order
+	    where dr = 0
+	    <include refid="InWarehouseOrderListWhere" />
+    </select>
+
+    <!--入库单列表查询-->
+    <select id="getInWarehouseOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO">
+        select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
+        in_wh_type `type`, in_wh_status `status`
+	    from ope_in_whouse_order
+	    where dr = 0
+	    <include refid="InWarehouseOrderListWhere" />
+    </select>
+
+</mapper>
