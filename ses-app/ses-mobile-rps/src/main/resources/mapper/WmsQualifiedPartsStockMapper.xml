@@ -2,6 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsQualifiedPartsStockMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedPartsStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--修改不合格品库部件库存信息-->
     <update id="updateWmsQualifiedPartsStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedPartsStock">
         update ope_wms_qualified_parts_stock
@@ -48,5 +66,11 @@
         </set>
         where id = #{id}
     </update>
+
+    <!--根据bomId查询不合格品库部件库存信息-->
+    <select id="getWmsQualifiedPartsStockByBomId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_wms_qualified_parts_stock
+	    where dr = 0 and parts_id = #{bomId}
+    </select>
 
 </mapper>

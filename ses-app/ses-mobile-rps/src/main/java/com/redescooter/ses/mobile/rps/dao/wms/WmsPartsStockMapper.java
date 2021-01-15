@@ -18,4 +18,13 @@ public interface WmsPartsStockMapper {
     */
     int updateWmsPartsStock(OpeWmsPartsStock opeWmsPartsStock);
 
+    /**
+     * 根据bomId查询原料库部件库存信息(这里也可以把partsId理解成bomId)
+     * @param bomId
+     * @return com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock
+     * @author assert
+     * @date 2021/1/15
+    */
+    OpeWmsPartsStock getWmsPartsStockByBomId(Long bomId);
+
 }

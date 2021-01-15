@@ -16,10 +16,11 @@
     <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
     <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
     <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+    <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
@@ -30,8 +31,8 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-    in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
-    updated_time, def1, def2, def3, def4, def5
+    in_wh_qty, act_in_wh_qty, unqualified_qty, qc_qty, remark, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -92,6 +93,11 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.unqualifiedQty,jdbcType=INTEGER}
         </foreach>
       </trim>
+      <trim prefix="qc_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
@@ -109,7 +115,7 @@
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
@@ -152,34 +158,35 @@
     <!--@mbg.generated-->
     insert into ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def4, def5)
+      in_wh_qty, act_in_wh_qty, unqualified_qty, qc_qty, remark, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT}, 
         #{item.partsId,jdbcType=BIGINT}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR}, 
         #{item.partsType,jdbcType=INTEGER}, #{item.purchaseQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, 
         #{item.inWhQty,jdbcType=INTEGER}, #{item.actInWhQty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, 
-        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=INTEGER}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
-        #{item.def5,jdbcType=DECIMAL})
+        #{item.qcQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
     insert into ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty, 
-      in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def4, def5)
+      in_wh_qty, act_in_wh_qty, unqualified_qty, qc_qty, remark, created_by, created_time, 
+      updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT}, 
       #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, 
       #{purchaseQty,jdbcType=INTEGER}, #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, 
-      #{actInWhQty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=INTEGER}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
+      #{actInWhQty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{qcQty,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -193,10 +200,11 @@
     in_wh_qty = #{inWhQty,jdbcType=INTEGER}, 
     act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER}, 
     unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER}, 
+    qc_qty = #{qcQty,jdbcType=INTEGER}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
     created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=INTEGER}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
     updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
     def1 = #{def1,jdbcType=VARCHAR}, 
     def2 = #{def2,jdbcType=VARCHAR}, 
@@ -243,6 +251,9 @@
       </if>
       <if test="unqualifiedQty != null">
         unqualified_qty,
+      </if>
+      <if test="qcQty != null">
+        qc_qty,
       </if>
       <if test="remark != null">
         remark,
@@ -313,6 +324,9 @@
       <if test="unqualifiedQty != null">
         #{unqualifiedQty,jdbcType=INTEGER},
       </if>
+      <if test="qcQty != null">
+        #{qcQty,jdbcType=INTEGER},
+      </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
@@ -323,7 +337,7 @@
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=INTEGER},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
@@ -382,6 +396,9 @@
       <if test="unqualifiedQty != null">
         unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
       </if>
+      <if test="qcQty != null">
+        qc_qty = #{qcQty,jdbcType=INTEGER},
+      </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
@@ -392,7 +409,7 @@
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=INTEGER},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},

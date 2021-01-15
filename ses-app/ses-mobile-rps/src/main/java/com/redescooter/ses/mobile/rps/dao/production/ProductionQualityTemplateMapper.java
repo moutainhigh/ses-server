@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.dao.production;
 
 import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateResultDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -24,14 +23,12 @@ public interface ProductionQualityTemplateMapper {
     List<ProductQcTemplateResultDTO> getProductQcTemplateResultByTemplateIds(@Param("templateIds") List<Long> templateIds);
 
     /**
-     * 根据productionId、productionType查询产品质检模板信息
-     * @param productionId
-     * @param productionType
+     * 根据productId查询产品质检模板信息
+     * @param productId
      * @return java.util.List<com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO>
      * @author assert
      * @date 2021/1/6
     */
-    List<ProductQcTemplateDTO> getQcTemplateByProductIdAndType(@Param("productionId") Long productionId,
-                                                               @Param("productionType") Integer productionType);
+    List<ProductQcTemplateDTO> getQcTemplateByProductId(Long productId);
 
 }

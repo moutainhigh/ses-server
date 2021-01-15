@@ -8,7 +8,7 @@ import lombok.Data;
 
 /**
  * @author assert
- * @date 2021/1/13 16:10
+ * @date 2021/1/15 16:35
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhouseScooterB")
 @Data
@@ -72,6 +72,18 @@ public class OpeInWhouseScooterB {
      */
     @ApiModelProperty(value = "实际入库数量")
     private Integer actInWhQty;
+
+    /**
+     * 不合格数量
+     */
+    @ApiModelProperty(value = "不合格数量")
+    private Integer unqualifiedQty;
+
+    /**
+     * 已质检数量
+     */
+    @ApiModelProperty(value = "已质检数量")
+    private Integer qcQty;
 
     /**
      * 备注

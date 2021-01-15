@@ -57,5 +57,9 @@ public interface ValidationExceptionCode {
     int SERIAL_NUMBER_IS_EMPTY = 10047;
     // 批次号为空
     int BATCH_NO_IS_EMPTY = 10048;
+    // bomId为空
+    int BOM_ID_IS_EMPTY = 10049;
+    // 入库单类型为空
+    int IN_WH_ORDER_TYPE_IS_EMPTY = 10050;
 
 }

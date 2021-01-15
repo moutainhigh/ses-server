@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="stock_type" jdbcType="INTEGER" property="stockType" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="able_stock_qty" jdbcType="INTEGER" property="ableStockQty" />
+        <result column="used_stock_qty" jdbcType="INTEGER" property="usedStockQty" />
+        <result column="wait_in_stock_qty" jdbcType="INTEGER" property="waitInStockQty" />
+        <result column="wait_out_stock_qty" jdbcType="INTEGER" property="waitOutStockQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--修改原料库部件库存信息-->
     <update id="updateWmsPartsStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock">
         update ope_wms_parts_stock
@@ -60,5 +82,11 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+
+    <!--根据bomId查询原料库部件库存信息(这里也可以把partsId理解成bomId)-->
+    <select id="getWmsPartsStockByBomId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_wms_parts_stock
+	    where dr = 0 and stock_type = 1 and parts_id = #{bomId}
+    </select>
 
 </mapper>

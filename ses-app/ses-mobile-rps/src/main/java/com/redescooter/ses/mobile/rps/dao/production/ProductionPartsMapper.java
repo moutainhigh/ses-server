@@ -10,12 +10,12 @@ import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
 public interface ProductionPartsMapper {
 
     /**
-     * 根据partsNo查询部件信息
-     * @param partsNo
+     * 根据bomId查询部件信息
+     * @param bomId
      * @return com.redescooter.ses.mobile.rps.dm.OpeProductionParts
      * @author assert
      * @date 2021/1/13
     */
-    OpeProductionParts getProductionPartsByPartsNo(String partsNo);
+    OpeProductionParts getProductionPartsByBomId(Long bomId);
 
 }

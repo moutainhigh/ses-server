@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * @author assert
- * @date 2021/1/13 16:10
+ * @date 2021/1/15 16:35
  */
-public interface OpeInWhouseScooterBMapper extends BaseMapper<OpeInWhouseScooterB> {
+public interface OpeInWhouseScooterBMapper extends BaseMapper {
     int updateBatch(List<OpeInWhouseScooterB> list);
 
     int batchInsert(@Param("list") List<OpeInWhouseScooterB> list);

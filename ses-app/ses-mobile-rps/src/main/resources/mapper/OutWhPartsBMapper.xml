@@ -6,7 +6,7 @@
     <select id="getOutWhOrderPartsByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
         select owp.id, owp.out_wh_id outWhId, owp.parts_name `name`, owp.parts_no number, owp.qty,
-        ifnull(owp.already_out_wh_qty, 0) alreadyOutWhQty, pp.id_calss idClass
+        ifnull(owp.already_out_wh_qty, 0) alreadyOutWhQty, pp.id_calss idClass, pp.id bomId
         from ope_out_wh_parts_b owp
         inner join ope_production_parts pp
         on owp.parts_id = pp.id and pp.dr = 0
@@ -17,7 +17,7 @@
     <select id="getPartsProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
         select owp.id, owp.out_wh_id outWhId, owp.parts_name `name`, owp.parts_no number, owp.qty,
-        ifnull(owp.already_out_wh_qty, 0) alreadyOutWhQty, pp.id_calss idClass
+        ifnull(owp.already_out_wh_qty, 0) alreadyOutWhQty, pp.id_calss idClass, pp.id bomId
         from ope_out_wh_parts_b owp
         inner join ope_production_parts pp
         on owp.parts_id = pp.id and pp.dr = 0

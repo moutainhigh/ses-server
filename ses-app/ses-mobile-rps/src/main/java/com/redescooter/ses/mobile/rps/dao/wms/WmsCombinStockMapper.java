@@ -18,4 +18,13 @@ public interface WmsCombinStockMapper {
     */
     int updateWmsCombinStock(OpeWmsCombinStock opeWmsCombinStock);
 
+    /**
+     * 根据bomId查询成品库组装件库存信息
+     * @param bomId
+     * @return com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock
+     * @author assert
+     * @date 2021/1/15
+    */
+    OpeWmsCombinStock getWmsCombinStockByBomId(Long bomId);
+
 }

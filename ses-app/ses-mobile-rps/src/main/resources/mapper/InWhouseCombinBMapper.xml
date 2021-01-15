@@ -2,6 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseCombinBMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
+        <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+        <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+        <result column="combin_qty" jdbcType="INTEGER" property="combinQty" />
+        <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
 
+    <!--根据id查询入库单组装件信息-->
+    <select id="getInWhouseCombinById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_combin_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改入库单组装件信息-->
+    <update id="updateInWhouseCombin" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
+        update ope_in_whouse_combin_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="inWhId != null">
+                in_wh_id = #{inWhId,jdbcType=BIGINT},
+            </if>
+            <if test="combinName != null">
+                combin_name = #{combinName,jdbcType=VARCHAR},
+            </if>
+            <if test="combinNo != null">
+                combin_no = #{combinNo,jdbcType=VARCHAR},
+            </if>
+            <if test="productionCombinBomId != null">
+                production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinQty != null">
+                combin_qty = #{combinQty,jdbcType=INTEGER},
+            </if>
+            <if test="ableInWhQty != null">
+                able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="actInWhQty != null">
+                act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

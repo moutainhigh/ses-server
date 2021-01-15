@@ -20,4 +20,22 @@ public interface InWhousePartsBMapper {
     */
     OpeInWhousePartsB getInWhousePartsByPartsNoAndInWhId(@Param("partsNo") String partsNo, @Param("inWhId") Long inWhId);
 
+    /**
+     * 根据id查询入库单部件信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB
+     * @author assert
+     * @date 2021/1/15
+    */
+    OpeInWhousePartsB getInWhousePartsById(Long id);
+
+    /**
+     * 修改入库单部件信息
+     * @param opeInWhousePartsB
+     * @return int
+     * @author assert
+     * @date 2021/1/15
+    */
+    int updateInWhouseParts(OpeInWhousePartsB opeInWhousePartsB);
+
 }

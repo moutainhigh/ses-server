@@ -18,4 +18,13 @@ public interface OrderSerialBindMapper {
 	 */
 	OpeOrderSerialBind getOrderSerialBindBySerialNum(String serialNum);
 
+	/**
+	 * 新增订单序列号绑定信息
+	 * @param opeOrderSerialBind
+	 * @return int
+	 * @author assert
+	 * @date 2021/1/15
+	*/
+	int insertOrderSerialBind(OpeOrderSerialBind opeOrderSerialBind);
+
 }

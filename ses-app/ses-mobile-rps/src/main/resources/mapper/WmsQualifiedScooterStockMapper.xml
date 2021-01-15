@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsQualifiedScooterStockMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedScooterStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="group_id" jdbcType="INTEGER" property="groupId" />
+        <result column="color_id" jdbcType="INTEGER" property="colorId" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--修改不合格品库车辆库存信息-->
     <update id="updateWmsQualifiedScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedScooterStock">
         update ope_wms_qualified_scooter_stock
@@ -36,5 +50,11 @@
         </set>
         where id = #{id}
     </update>
+
+    <!--根据groupId、colorId查询不合格品库车辆库存信息-->
+    <select id="getWmsQualifiedScooterStockByGroupIdAndColorId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_wms_qualified_scooter_stock
+	    where dr = 0 and group_id = #{groupId} and color_id = #{colorId}
+    </select>
 
 </mapper>

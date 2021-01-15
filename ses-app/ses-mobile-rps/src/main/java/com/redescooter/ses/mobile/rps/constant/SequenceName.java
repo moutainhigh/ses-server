@@ -103,4 +103,6 @@ public interface SequenceName {
 
     String OPE_INVOICE_PRODUCT_SERIAL_NUM = "OPE_INVOICE_PRODUCT_SERIAL_NUM";
 
+    String OPE_WMS_STOCK_RECORD = "OPE_WMS_STOCK_RECORD";
+
 }

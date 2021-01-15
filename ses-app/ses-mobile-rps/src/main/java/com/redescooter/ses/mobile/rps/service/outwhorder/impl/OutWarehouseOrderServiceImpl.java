@@ -64,8 +64,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Resource
     private OrderStatusFlowMapper orderStatusFlowMapper;
     @Resource
-    private WmsStockMapper wmsStockMapper;
-    @Resource
     private TransactionTemplate transactionTemplate;
 
 

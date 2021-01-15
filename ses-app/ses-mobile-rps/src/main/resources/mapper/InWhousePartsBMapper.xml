@@ -16,16 +16,12 @@
         <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
         <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
         <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
         <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="def1" jdbcType="VARCHAR" property="def1" />
-        <result column="def2" jdbcType="VARCHAR" property="def2" />
-        <result column="def3" jdbcType="VARCHAR" property="def3" />
-        <result column="def4" jdbcType="VARCHAR" property="def4" />
-        <result column="def5" jdbcType="DECIMAL" property="def5" />
     </resultMap>
 
     <!--根据partsNo、inWhId查询入库单部件信息-->
@@ -33,5 +29,73 @@
         select * from ope_in_whouse_parts_b
 	    where dr = 0 and in_wh_id = #{inWhId} and parts_no = #{partsNo}
     </select>
+
+    <!--根据id查询入库单部件信息-->
+    <select id="getInWhousePartsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改入库单部件信息-->
+    <update id="updateInWhouseParts" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB">
+        update ope_in_whouse_parts_b
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="inWhId != null">
+                in_wh_id = #{inWhId,jdbcType=BIGINT},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId,jdbcType=BIGINT},
+            </if>
+            <if test="partsName != null">
+                parts_name = #{partsName,jdbcType=VARCHAR},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseQty != null">
+                purchase_qty = #{purchaseQty,jdbcType=INTEGER},
+            </if>
+            <if test="ableInWhQty != null">
+                able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="actInWhQty != null">
+                act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=INTEGER},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

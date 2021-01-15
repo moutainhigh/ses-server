@@ -42,9 +42,9 @@
     </resultMap>
 
     <!--根据partsNo查询部件信息-->
-    <select id="getProductionPartsByPartsNo" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    <select id="getProductionPartsByBomId" parameterType="java.lang.String"  resultMap="BaseResultMap">
         select * from ope_production_parts
-	    where dr = 0 and parts_no = #{partsNo}
+	    where dr = 0 and id = #{bomId}
     </select>
 
 </mapper>

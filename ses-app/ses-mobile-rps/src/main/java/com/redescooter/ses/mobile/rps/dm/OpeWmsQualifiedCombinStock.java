@@ -16,7 +16,7 @@ public class OpeWmsQualifiedCombinStock {
     * 主键
     */
     @ApiModelProperty(value="主键")
-    private Integer id;
+    private Long id;
 
     /**
     * 逻辑删除

@@ -27,6 +27,7 @@ public class QcController {
     @Resource
     private QcService qcService;
 
+
     /**
      * 根据产品id查询产品质检模板信息
      * @param paramDTO

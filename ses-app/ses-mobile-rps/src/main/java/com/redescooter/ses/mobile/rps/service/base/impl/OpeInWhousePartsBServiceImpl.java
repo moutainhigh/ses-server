@@ -6,12 +6,13 @@ import java.util.List;
 import com.redescooter.ses.mobile.rps.dao.base.OpeInWhousePartsBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
 import com.redescooter.ses.mobile.rps.service.base.OpeInWhousePartsBService;
+
 /**
- *@author assert
- *@date 2021/1/13 16:13
+ * @author assert
+ * @date 2021/1/13 16:13
  */
 @Service
-public class OpeInWhousePartsBServiceImpl implements OpeInWhousePartsBService{
+public class OpeInWhousePartsBServiceImpl implements OpeInWhousePartsBService {
 
     @Resource
     private OpeInWhousePartsBMapper opeInWhousePartsBMapper;
@@ -37,3 +38,5 @@ public class OpeInWhousePartsBServiceImpl implements OpeInWhousePartsBService{
     }
 
 }
+
+

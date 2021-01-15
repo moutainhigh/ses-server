@@ -23,7 +23,7 @@ public class QueryOutWarehouseOrderResultDTO extends GeneralResult {
     @ApiModelProperty(value = "出库数量", dataType = "int")
     private Integer qty;
 
-    @ApiModelProperty(value = "出库类型 1销售调拨 2补料出库 3生产组装 4其它", dataType = "Integer")
+    @ApiModelProperty(value = "出库类型 1发货 2组装 3补料 4其它", dataType = "Integer")
     private Integer type;
 
     @ApiModelProperty(value = "出库单类型 1整车 2组装件 3部件", dataType = "Integer")
