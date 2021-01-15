@@ -52,6 +52,9 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
     private Integer source = 0;
 
+    @ApiModelProperty("是否是仓库新增，0：否，1：是")
+    private Integer ifWh = 0;
+
     @ApiModelProperty("入库明细")
     private String st;
 

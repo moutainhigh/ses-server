@@ -842,6 +842,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Override
     @Async
     public void waitOutLowAbleLowUsedUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
+        List<WmsInStockRecordEnter> scooterRecordList = new ArrayList<>();
         switch (productionType) {
             case 1:
                 // scooter
@@ -870,6 +871,16 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbScooter.setUpdatedBy(userId);
                             dbScooter.setUpdatedTime(new Date());
                             scooterStockList.add(dbScooter);
+
+                            // 构建出库记录对象
+                            WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
+                            partsRecord.setRelationId(dbScooter.getId());
+                            partsRecord.setRelationType(1);
+                            partsRecord.setInWhType(inWhType);
+                            partsRecord.setInWhQty(scooterB.getQty());
+                            partsRecord.setRecordType(2);
+                            partsRecord.setStockType(stockType);
+                            scooterRecordList.add(partsRecord);
                         }
                     }
                     opeWmsScooterStockService.saveOrUpdateBatch(scooterStockList);
@@ -902,6 +913,16 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbCombine.setAbleStockQty(dbCombine.getAbleStockQty() - combinB.getQty());
                             dbCombine.setUsedStockQty(dbCombine.getUsedStockQty() + combinB.getQty());
                             combinStockList.add(dbCombine);
+
+                            // 构建入库记录对象
+                            WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
+                            partsRecord.setRelationId(dbCombine.getId());
+                            partsRecord.setRelationType(2);
+                            partsRecord.setInWhType(inWhType);
+                            partsRecord.setInWhQty(combinB.getQty());
+                            partsRecord.setRecordType(2);
+                            partsRecord.setStockType(stockType);
+                            scooterRecordList.add(partsRecord);
                         }
                     }
                     opeWmsCombinStockService.saveOrUpdateBatch(combinStockList);
@@ -933,12 +954,24 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             wmsPartsStock.setUpdatedBy(userId);
                             wmsPartsStock.setUpdatedTime(new Date());
                             partsList.add(wmsPartsStock);
+
+                            // 构建入库记录对象
+                            WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
+                            partsRecord.setRelationId(wmsPartsStock.getId());
+                            partsRecord.setRelationType(3);
+                            partsRecord.setInWhType(inWhType);
+                            partsRecord.setInWhQty(partsB.getQty());
+                            partsRecord.setRecordType(2);
+                            partsRecord.setStockType(stockType);
+                            scooterRecordList.add(partsRecord);
                         }
                     }
                     opeWmsPartsStockService.saveOrUpdateBatch(partsList);
                 }
                 break;
         }
+        // 保存入库记录
+        createInStockRecord(scooterRecordList, userId);
     }
 
 

@@ -522,7 +522,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(2);
+                                scooterRecord.setInWhType(7);
                                 scooterRecord.setRelationType(7);
                             }else {
                                 scooterRecord.setRelationType(1);
@@ -561,7 +561,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(2);
+                                scooterRecord.setInWhType(7);
                                 scooterRecord.setRelationType(8);
                             }else {
                                 scooterRecord.setRelationType(2);
@@ -599,7 +599,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(2);
+                                scooterRecord.setInWhType(7);
                                 scooterRecord.setRelationType(9);
                             }else {
                                 scooterRecord.setRelationType(3);
