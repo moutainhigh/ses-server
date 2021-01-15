@@ -504,7 +504,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 if (CollectionUtils.isNotEmpty(scooterBList)){
                     List<OpeWmsScooterStock> scooterStocks = new ArrayList<>();
                     for (OpeInWhouseScooterB scooterB : scooterBList) {
-                        // 在库存里面增加可用数量
+                        // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getColorId());
@@ -513,6 +513,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {
                             scooterStock.setAbleStockQty(scooterStock.getAbleStockQty() + scooterB.getInWhQty());
+                            scooterStock.setWaitInStockQty(scooterStock.getWaitInStockQty() - scooterB.getInWhQty());
                             scooterStocks.add(scooterStock);
 
                             // 构建入库记录对象
@@ -538,13 +539,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 if (CollectionUtils.isNotEmpty(combinBList)){
                     List<OpeWmsCombinStock> combinStocks = new ArrayList<>();
                     for (OpeInWhouseCombinB combinB : combinBList) {
-                        // 在库存里面增加可用数量
+                        // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
                         combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
                             combinStock.setAbleStockQty(combinStock.getAbleStockQty() + combinB.getInWhQty());
+                            combinStock.setWaitInStockQty(combinStock.getWaitInStockQty() - combinB.getInWhQty());
                             combinStocks.add(combinStock);
 
                             // 构建入库记录对象
@@ -569,13 +571,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 if (CollectionUtils.isNotEmpty(partsBList)){
                     List<OpeWmsPartsStock> partsStocks = new ArrayList<>();
                     for (OpeInWhousePartsB partsB : partsBList) {
-                        // 在库存里面增加可用数量
+                        // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                         partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
                             partsStock.setAbleStockQty(partsStock.getAbleStockQty() + partsB.getInWhQty());
+                            partsStock.setWaitInStockQty(partsStock.getWaitInStockQty() - partsB.getInWhQty());
                             partsStocks.add(partsStock);
 
                             // 构建入库记录对象

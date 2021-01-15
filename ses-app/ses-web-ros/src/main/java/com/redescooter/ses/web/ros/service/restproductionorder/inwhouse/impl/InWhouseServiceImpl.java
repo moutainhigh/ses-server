@@ -168,7 +168,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         try {
             // 如果是整车入库单或者是组装件入库单 生成的时候就是待入库状态 这个时候 要处理库存
             if (inWhouseOrder.getOrderType() == 1 || inWhouseOrder.getOrderType() == 2){
-                wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),1,enter.getUserId());
+                wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),inWhouseOrder.getCountryType(),enter.getUserId());
             }
         }catch (Exception e) {
 
