@@ -1477,16 +1477,16 @@ public class InWhouseServiceImpl implements InWhouseService {
         inWhouseOrder.setUpdatedBy(enter.getUserId());
         inWhouseOrder.setUpdatedTime(new Date());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
-        // todo 为了流程能走下去  这里先把部件的明细实际入库数量设置为可入库数量
-        QueryWrapper<OpeInWhousePartsB> qw = new QueryWrapper<>();
-        qw.eq(OpeInWhousePartsB.COL_IN_WH_ID,inWhouseOrder.getId());
-        List<OpeInWhousePartsB> whousePartsBList = opeInWhousePartsBService.list(qw);
-        if(CollectionUtils.isNotEmpty(whousePartsBList)){
-            for (OpeInWhousePartsB partsB : whousePartsBList) {
-                partsB.setActInWhQty(partsB.getInWhQty());
-            }
-            opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
-        }
+//        // todo 为了流程能走下去  这里先把部件的明细实际入库数量设置为可入库数量
+//        QueryWrapper<OpeInWhousePartsB> qw = new QueryWrapper<>();
+//        qw.eq(OpeInWhousePartsB.COL_IN_WH_ID,inWhouseOrder.getId());
+//        List<OpeInWhousePartsB> whousePartsBList = opeInWhousePartsBService.list(qw);
+//        if(CollectionUtils.isNotEmpty(whousePartsBList)){
+//            for (OpeInWhousePartsB partsB : whousePartsBList) {
+//                partsB.setActInWhQty(partsB.getInWhQty());
+//            }
+//            opeInWhousePartsBService.saveOrUpdateBatch(whousePartsBList);
+//        }
         // 入库单变为待入库的时候，需要在库存中插入数据，待入库数量（这里应该是库存的第一步）
         try {
             wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),1,enter.getUserId());

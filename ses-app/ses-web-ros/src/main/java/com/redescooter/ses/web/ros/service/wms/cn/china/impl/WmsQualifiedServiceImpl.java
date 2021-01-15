@@ -285,7 +285,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsQualifiedScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                         scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID,scooterB.getGroupId());
-                        scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {
@@ -509,7 +509,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsQualifiedScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                         scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID,scooterB.getGroupId());
-                        scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {

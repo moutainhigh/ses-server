@@ -144,14 +144,14 @@
 
     <select id="frTodayScooterInOrOutStockCount" resultType="java.lang.Integer">
         select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
-        where dr = 0 and record_type = #{recordType} and relation_type in (1)
+        where dr = 0 and record_type = #{recordType} and relation_type in (7)
         and created_time like concat('%',#{date},'%') and stock_type = 2
 
     </select>
 
     <select id="frTodayCombinInOrOutStockCount" resultType="java.lang.Integer">
         select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
-        where dr = 0 and record_type = #{recordType} and relation_type in (2)
+        where dr = 0 and record_type = #{recordType} and relation_type in (8)
         and created_time like concat('%',#{date},'%') and stock_type = 2
     </select>
 

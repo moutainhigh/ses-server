@@ -507,7 +507,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
@@ -519,8 +519,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
-                            scooterRecord.setRelationType(1);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            if(2 == enter.getStockType()){
+                                scooterRecord.setInWhType(2);
+                                scooterRecord.setRelationType(7);
+                            }else {
+                                scooterRecord.setRelationType(1);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            }
                             scooterRecord.setInWhQty(scooterB.getInWhQty());
                             scooterRecord.setRecordType(1);
                             scooterRecord.setStockType(enter.getStockType());
@@ -542,6 +547,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
                         combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
@@ -552,8 +558,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
-                            scooterRecord.setRelationType(2);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            if(2 == enter.getStockType()){
+                                scooterRecord.setInWhType(2);
+                                scooterRecord.setRelationType(8);
+                            }else {
+                                scooterRecord.setRelationType(2);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            }
                             scooterRecord.setInWhQty(combinB.getInWhQty());
                             scooterRecord.setRecordType(1);
                             scooterRecord.setStockType(enter.getStockType());
@@ -574,6 +585,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                         partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
@@ -584,8 +596,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
-                            scooterRecord.setRelationType(3);
-                            scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            if(2 == enter.getStockType()){
+                                scooterRecord.setInWhType(2);
+                                scooterRecord.setRelationType(9);
+                            }else {
+                                scooterRecord.setRelationType(3);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
+                            }
                             scooterRecord.setInWhQty(partsB.getInWhQty());
                             scooterRecord.setRecordType(1);
                             scooterRecord.setStockType(enter.getStockType());
@@ -692,7 +709,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
@@ -704,8 +721,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
-                            scooterRecord.setRelationType(1);
-                            scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                            if (2 == enter.getStockType()){
+                                scooterRecord.setRelationType(7);
+                                scooterRecord.setInWhType(7);
+                            }else {
+                                scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                                scooterRecord.setRelationType(1);
+                            }
                             scooterRecord.setInWhQty(scooterB.getQty());
                             scooterRecord.setRecordType(2);
                             scooterRecord.setStockType(enter.getStockType());
@@ -727,6 +749,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
                         combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
@@ -737,8 +760,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
-                            scooterRecord.setRelationType(2);
-                            scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                            if (2 == enter.getStockType()){
+                                scooterRecord.setInWhType(7);
+                                scooterRecord.setRelationType(8);
+                            }else {
+                                scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                                scooterRecord.setRelationType(2);
+                            }
                             scooterRecord.setInWhQty(combinB.getQty());
                             scooterRecord.setRecordType(2);
                             scooterRecord.setStockType(enter.getStockType());
@@ -759,6 +787,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                         partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
@@ -769,8 +798,13 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
-                            scooterRecord.setRelationType(3);
-                            scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                            if (2 == enter.getStockType()){
+                                scooterRecord.setInWhType(7);
+                                scooterRecord.setRelationType(9);
+                            }else {
+                                scooterRecord.setInWhType(outWhouseOrder.getOutType());
+                                scooterRecord.setRelationType(3);
+                            }
                             scooterRecord.setInWhQty(partsB.getQty());
                             scooterRecord.setRecordType(2);
                             scooterRecord.setStockType(enter.getStockType());

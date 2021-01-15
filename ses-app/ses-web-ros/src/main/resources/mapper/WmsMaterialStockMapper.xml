@@ -61,7 +61,7 @@
 
     <select id="frTodayPartsInOrOutStockCount" resultType="java.lang.Integer">
         select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
-        where dr = 0 and record_type = #{recordType} and relation_type in (3)
+        where dr = 0 and record_type = #{recordType} and relation_type in (9)
         and created_time like concat('%',#{date},'%') and stock_type = 2
     </select>
 
