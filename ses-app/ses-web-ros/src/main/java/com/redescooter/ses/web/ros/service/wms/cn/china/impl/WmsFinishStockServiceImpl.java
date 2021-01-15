@@ -522,7 +522,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(7);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(7);
                             }else {
                                 scooterRecord.setRelationType(1);
@@ -561,7 +561,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(7);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(8);
                             }else {
                                 scooterRecord.setRelationType(2);
@@ -599,7 +599,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
                             if(2 == enter.getStockType()){
-                                scooterRecord.setInWhType(7);
+                                scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(9);
                             }else {
                                 scooterRecord.setRelationType(3);
@@ -716,6 +716,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {
+                            if (scooterStock.getAbleStockQty() - scooterB.getQty() < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
                             scooterStock.setAbleStockQty(scooterStock.getAbleStockQty() - scooterB.getQty());
                             scooterStock.setUsedStockQty(scooterStock.getUsedStockQty() + scooterB.getQty());
                             scooterStocks.add(scooterStock);
@@ -755,6 +758,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
+                            if (combinStock.getAbleStockQty() - combinB.getQty() < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
                             combinStock.setAbleStockQty(combinStock.getAbleStockQty() - combinB.getQty());
                             combinStock.setUsedStockQty(combinStock.getUsedStockQty() + combinB.getQty());
                             combinStocks.add(combinStock);
@@ -793,6 +799,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
+                            if (partsStock.getAbleStockQty() - partsB.getQty() < 0){
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
                             partsStock.setAbleStockQty(partsStock.getAbleStockQty() - partsB.getQty());
                             partsStock.setUsedStockQty(partsStock.getUsedStockQty() + partsB.getQty());
                             partsStocks.add(partsStock);

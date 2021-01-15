@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * @description: ProductionPurchasServiceImpl
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/11 11:43 
+ * @create: 2020/11/11 11:43
  */
 @Service
 @Slf4j
@@ -564,7 +564,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 判断一波 是变成部分入库还是已入库
