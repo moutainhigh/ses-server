@@ -272,7 +272,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
                 int count = ableStockQty / partsQty;
-                numList.add(count);
+                if (count > 0) {
+                    numList.add(count);
+                }
             }
             if (CollectionUtils.isNotEmpty(numList)) {
                 int num = Collections.min(numList);
