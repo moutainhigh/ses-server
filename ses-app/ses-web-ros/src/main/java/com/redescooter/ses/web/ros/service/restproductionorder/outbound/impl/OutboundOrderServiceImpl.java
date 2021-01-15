@@ -1291,7 +1291,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         // 由组装单生成的出库单 是原料出库单
         outOrderEnter.setWhType(2);
         // 由于组装单生成的出库单  是为中国仓库的出库单
-        outOrderEnter.setCountryType(2);
+        outOrderEnter.setCountryType(1);
         // 组装单分为车辆和组装件两种  不管是哪种  都要生成部件的出库单
         switch (opeCombinOrder.getCombinType()){
             case 1:

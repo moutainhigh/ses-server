@@ -37,7 +37,7 @@
         select out_wh_type as status
              , count(1)     as totalCount
         from ope_out_whouse_order
-        where dr = 0
+        where dr = 0 and country_type = 1
         group by status
     </select>
 
