@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value = "Add order Parts", description = "添加配件")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AddPartsEnter extends GeneralEnter {
+public class AddPartListEnter extends GeneralEnter {
 
     /**
      * 配件ID

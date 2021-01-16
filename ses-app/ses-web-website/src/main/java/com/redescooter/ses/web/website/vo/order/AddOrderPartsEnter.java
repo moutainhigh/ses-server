@@ -29,6 +29,6 @@ public class AddOrderPartsEnter extends GeneralEnter {
      * 配件列表
      */
     @ApiModelProperty(value = "配件列表")
-    List<AddPartsEnter> partslist = new ArrayList<>();
+    List<AddPartListEnter> partslist = new ArrayList<>();
 
 }
