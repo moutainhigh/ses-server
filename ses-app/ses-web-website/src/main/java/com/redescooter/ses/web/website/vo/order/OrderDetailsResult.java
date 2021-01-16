@@ -20,6 +20,12 @@ import java.util.Date;
 public class OrderDetailsResult extends GeneralResult {
 
     /**
+     * 订单id
+     */
+    @ApiModelProperty(value = "order ID")
+    private Long id;
+
+    /**
      * 客户id
      */
     @ApiModelProperty(value = "customer_id")

@@ -19,18 +19,6 @@ import java.util.Date;
 public class AddOrderEnter extends GeneralEnter {
 
     /**
-     * 客户id
-     */
-    @ApiModelProperty(value = "customer_id")
-    private Long customerId;
-
-    /**
-     * 销售员id
-     */
-    @ApiModelProperty(value = "sales_id")
-    private Long salesId;
-
-    /**
      * 订单类型，1销售，2租赁
      */
     @ApiModelProperty(value = "Order type, 1 sales, 2 lease")
@@ -49,17 +37,10 @@ public class AddOrderEnter extends GeneralEnter {
     private Long colourId;
 
     /**
-     * 产品颜色
-     */
-    @ApiModelProperty(value = "product_colour_name ")
-    private String productColour;
-
-    /**
      * 提货方式
      */
     @ApiModelProperty(value = "delivery_type")
     private String deliveryType;
-
 
     /**
      * 支付方式

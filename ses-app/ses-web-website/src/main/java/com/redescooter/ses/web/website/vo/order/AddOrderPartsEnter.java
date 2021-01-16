@@ -6,23 +6,18 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author jerry
  * @Date 2021/1/6 3:41 上午
- * @Description 新增订单入参
+ * @Description 新增订单配件数量
  **/
-@ApiModel(value = "Add order into parameter", description = "新增订单入参")
+@ApiModel(value = "Add order parts qty", description = "新增订单配件数量")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AddOrderPartsEnter extends GeneralEnter {
-
-    /**
-     * 客户主建
-     */
-    @ApiModelProperty(value = "customer_id")
-    private Long customerId;
 
     /**
      * 订单主建
@@ -31,22 +26,9 @@ public class AddOrderPartsEnter extends GeneralEnter {
     private Long orderId;
 
     /**
-     * 配件ID
+     * 配件列表
      */
-    @ApiModelProperty(value = "partsId")
-    private Long partsId;
-
-    /**
-     * 配件数量
-     */
-    @ApiModelProperty(value = "Number of accessories")
-    private String qty;
-
-    /**
-     * 备注
-     */
-    @ApiModelProperty(value = "remark")
-    private String remark;
-
+    @ApiModelProperty(value = "配件列表")
+    List<AddPartsEnter> partslist = new ArrayList<>();
 
 }

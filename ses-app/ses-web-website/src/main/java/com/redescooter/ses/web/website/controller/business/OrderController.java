@@ -1,11 +1,12 @@
 package com.redescooter.ses.web.website.controller.business;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.OrderService;
 import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
+import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,23 +30,20 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "Add Order", response = GeneralResult.class)
-    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
+    @ApiOperation(value = "Add", response = IdResult.class)
+    public Response<IdResult> add(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
         return new Response<>(orderService.addOrder(enter));
     }
 
-    @IgnoreLoginCheck
-    @PostMapping(value = "/saveOrderParts")
-    @ApiOperation(value = "Save vehicle order parts information", response = GeneralResult.class)
-    public Response<GeneralResult> saveOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
-        return new Response<>(orderService.modifyOrder(enter));
+    @PostMapping(value = "/addOrderParts")
+    @ApiOperation(value = "AddOrderParts", response = GeneralResult.class)
+    public Response<GeneralResult> AddOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderPartsEnter enter) {
+        return new Response<>(orderService.AddOrderParts(enter));
     }
 
-    @IgnoreLoginCheck
     @PostMapping(value = "/details")
-    @ApiOperation(value = "Order Details", response = GeneralResult.class)
+    @ApiOperation(value = "Order Details", response = OrderDetailsResult.class)
     public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(orderService.getOrderDetails(enter));
     }
