@@ -28,7 +28,6 @@ public abstract class AbstractRequestFilter implements Filter {
     public void init(FilterConfig filterConfig) {
 
         log.info("服务启动,调用过滤器Filter初始化方法init()..........");
-
     }
 
     protected abstract AppIDEnums getAppId();

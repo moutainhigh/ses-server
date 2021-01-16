@@ -63,7 +63,7 @@ spring:                                                                         
         title: LogIn/LogOut
         description: LogIn/LogOut Service
         base-package: com.redescooter.ses.web.website.controller.LoginController
-        path-regex: /auth/.*
+        path-regex: /token/auth/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company

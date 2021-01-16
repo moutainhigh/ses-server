@@ -10,7 +10,6 @@ import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
-import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -180,7 +179,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         user.setLoginName(enter.getLoginName());
         user.setCustomerId(enter.getCustomerId());
         user.setSystemId(SystemIDEnums.REDE_SITE.getSystemId());
-        user.setAppId(AppIDEnums.SES_WEBSITE.getAppId());
+        user.setAppId(AppIDEnums.SES_WEBSITE.getValue());
 
         user.setSynchronizeFlag(false);
         user.setRevision(0);
@@ -205,7 +204,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         if (!StringUtils.equals(userToken.getClientType(), enter.getClientType())
                 || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId())
                 || !StringUtils.equals(userToken.getAppId(), enter.getAppId())) {
-            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         return userToken;
@@ -220,12 +219,12 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
     private UserToken getUserToken(String token) {
         if (StringUtils.isBlank(token)) {
-            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(token);
         if (map == null) {
-            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         UserToken userToken = new UserToken();

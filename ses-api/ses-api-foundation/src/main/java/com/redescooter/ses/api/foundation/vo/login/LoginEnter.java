@@ -32,10 +32,10 @@ public class LoginEnter extends GeneralEnter {
     @ApiModelProperty(value = "password")
     private String password;
 
-    @ApiModelProperty(value = "Verification Code")
+    @ApiModelProperty(value = "Verification Code",hidden = true)
     private String code;
 
-    @ApiModelProperty(value = "Customer Id")
+    @ApiModelProperty(value = "Customer Id",hidden = true)
     private Long customerId;
 
 }

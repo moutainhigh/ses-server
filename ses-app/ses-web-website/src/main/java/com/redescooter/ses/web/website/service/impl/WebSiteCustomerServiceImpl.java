@@ -2,6 +2,7 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
@@ -84,8 +85,22 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      */
     @Override
-    public CustomerDetailsResult getCustomerDetails(IdEnter enter) {
-        SiteCustomer customer = siteCustomerService.getById(enter.getId());
+    public CustomerDetailsResult getCustomerDetails(GeneralEnter enter) {
+
+        /*用户ID*/
+        Long userId = enter.getUserId();
+
+        if (userId == 0L) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        SiteUser siteUser = siteUserService.getById(enter.getUserId());
+        if (siteUser == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        SiteCustomer customer = siteCustomerService.getById(siteUser.getCustomerId());
         CustomerDetailsResult result = new CustomerDetailsResult();
 
         if (customer != null) {

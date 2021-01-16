@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
@@ -25,5 +26,5 @@ public interface WebSiteCustomerService {
      *
      * @param enter
      */
-    CustomerDetailsResult getCustomerDetails(IdEnter enter);
+    CustomerDetailsResult getCustomerDetails(GeneralEnter enter);
 }

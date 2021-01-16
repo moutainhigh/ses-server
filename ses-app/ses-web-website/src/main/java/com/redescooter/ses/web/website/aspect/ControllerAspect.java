@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.aspect;
 
+import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.exception.BaseException;
@@ -19,11 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -52,6 +58,20 @@ public class ControllerAspect {
         try {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
+                    /***获取请求API类型***/
+                    RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+                    ServletRequestAttributes sra = (ServletRequestAttributes) ra;
+                    HttpServletRequest request = sra.getRequest();
+                    String method = request.getMethod();
+
+                    if (objs.length > 0) {
+                        if ("POST".equals(method)) {
+                            log.warn("<<<<<<<<<POST>>>>>>>>");
+                        } else if ("GET".equals(method)) {
+                            log.warn("<<<<<<<<<POST>>>>>>>>");
+                        }
+                    }
+
                     //TODO 多个参数处理优化
                     GeneralEnter enter = (GeneralEnter) obj;
                     checkEnterParameter(enter);
@@ -127,19 +147,19 @@ public class ControllerAspect {
         }
         enter.setTimestamp((new Date()).getTime());
         if (StringUtils.isBlank(enter.getCountry())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getClientType())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getClientIp())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getTimeZone())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getVersion())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
         }
     }
 

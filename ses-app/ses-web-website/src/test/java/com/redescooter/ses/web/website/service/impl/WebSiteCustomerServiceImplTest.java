@@ -7,8 +7,6 @@ import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class WebSiteCustomerServiceImplTest extends SesWebsiteApplicationTests {
 
     @Autowired
@@ -18,7 +16,7 @@ public class WebSiteCustomerServiceImplTest extends SesWebsiteApplicationTests {
     void addCustomer() {
         AddCustomerEnter enter = new AddCustomerEnter();
         enter.setCountryCode("+33");
-        enter.setCustomerFirstName("test");
+        enter.setCustomerFirstName("jerry");
         enter.setCustomerLastName("jerry");
         enter.setCountryName("fr");
         enter.setCityName("Paris");
@@ -39,5 +37,13 @@ public class WebSiteCustomerServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void getCustomerDetails() {
+    }
+
+    @Test
+    void testAddCustomer() {
+    }
+
+    @Test
+    void testGetCustomerDetails() {
     }
 }

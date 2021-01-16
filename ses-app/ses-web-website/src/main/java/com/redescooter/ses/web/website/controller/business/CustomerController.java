@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -49,7 +50,7 @@ public class CustomerController {
      */
     @PostMapping(value = "/Details")
     @ApiOperation(value = "Customer Details", response = CustomerDetailsResult.class)
-    public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+    public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
     }
 }
