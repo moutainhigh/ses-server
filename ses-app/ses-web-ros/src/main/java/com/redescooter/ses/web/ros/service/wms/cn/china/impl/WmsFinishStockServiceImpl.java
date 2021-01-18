@@ -263,7 +263,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 wrapper.eq(OpeWmsPartsStock::getDr, DelStatusEnum.VALID.getCode());
                 wrapper.eq(OpeWmsPartsStock::getStockType, 1);
                 wrapper.eq(OpeWmsPartsStock::getPartsId, partsId);
-                wrapper.gt(OpeWmsPartsStock::getAbleStockQty, 0);
+                //wrapper.gt(OpeWmsPartsStock::getAbleStockQty, 0);
                 wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
                 List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
                 if (CollectionUtils.isEmpty(list)) {
@@ -272,14 +272,18 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
-                int count = ableStockQty / totalQty;
-                if (count > 0) {
-                    numList.add(count);
+                ableStockQty = null == ableStockQty ? 0 : ableStockQty;
+                if (ableStockQty == 0) {
+                    continue;
+                }
+                int num = ableStockQty / totalQty;
+                if (num > 0) {
+                    numList.add(num);
                 }
             }
             if (CollectionUtils.isNotEmpty(numList)) {
-                int num = Collections.min(numList);
-                model.setNum(num);
+                int minNum = Collections.min(numList);
+                model.setNum(minNum);
                 model.setColorName(getColorNameById(colorId));
                 model.setGroupName(getGroupNameById(groupId));
                 result.add(model);
