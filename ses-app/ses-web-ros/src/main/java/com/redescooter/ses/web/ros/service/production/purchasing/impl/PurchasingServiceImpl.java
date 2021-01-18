@@ -726,15 +726,15 @@ public class PurchasingServiceImpl implements PurchasingService {
             }
 
         }
-        List<PruchasingItemResult> result = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(resultList)){
-            for (PruchasingItemResult itemResult : resultList) {
-                if (itemResult.getAbleQty() > 0){
-                    result.add(itemResult);
-                }
-            }
-        }
-        return result;
+//        List<PruchasingItemResult> result = new ArrayList<>();
+//        if (CollectionUtils.isNotEmpty(resultList)){
+//            for (PruchasingItemResult itemResult : resultList) {
+//                if (itemResult.getAbleQty() > 0){
+//                    result.add(itemResult);
+//                }
+//            }
+//        }
+        return resultList;
     }
 
     /**
