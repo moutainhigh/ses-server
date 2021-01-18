@@ -7,19 +7,11 @@ import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderSta
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeProductionPartsRelationMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeSpecificatGroupMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
+import com.redescooter.ses.web.ros.dao.base.*;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
@@ -41,13 +33,9 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @description: 成品库实现类
@@ -644,6 +632,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
 
     @Override
+    @Transactional
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
