@@ -29,13 +29,13 @@ public class OutWarehouseOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "产品编号", dataType = "String")
     private String number;
 
-    @ApiModelProperty(value = "颜色名称 - 车辆出库单使用", dataType = "String")
+    @ApiModelProperty(value = "颜色名称(车辆出库单使用)", dataType = "String")
     private String colorName;
 
-    @ApiModelProperty(value = "颜色值 - 车辆出库单使用", dataType = "String")
+    @ApiModelProperty(value = "颜色值(车辆出库单使用)", dataType = "String")
     private String colorValue;
 
-    @ApiModelProperty(value = "车型(高速、低速) - 车辆出库单使用", dataType = "String")
+    @ApiModelProperty(value = "车型(车辆出库单使用)", dataType = "String")
     private String groupName;
 
     @ApiModelProperty(value = "是否有序列号 true/false", dataType = "Boolean")

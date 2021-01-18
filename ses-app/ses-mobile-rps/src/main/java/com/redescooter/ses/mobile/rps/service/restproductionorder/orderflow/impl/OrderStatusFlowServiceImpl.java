@@ -3,6 +3,8 @@ package com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.imp
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.mobile.rps.constant.SequenceName;
+import com.redescooter.ses.mobile.rps.dao.order.OrderStatusFlowMapper;
 import com.redescooter.ses.mobile.rps.dao.restproductionorder.OrderStatusFlowServiceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOrderStatusFlow;
 import com.redescooter.ses.mobile.rps.dm.OpeSysStaff;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,17 +37,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
 
-    @Autowired
+    @Resource
     private OpeOrderStatusFlowService opeOrderStatusFlowService;
-
-    @Autowired
+    @Resource
     private OrderStatusFlowServiceMapper orderStatusFlowServiceMapper;
-
-    @Autowired
+    @Resource
     private OpeSysStaffService opeSysStaffService;
-
+    @Resource
+    private OrderStatusFlowMapper orderStatusFlowMapper;
     @Reference
     private IdAppService idAppService;
+
 
     /**
      * @Description
@@ -176,10 +179,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();
         BeanUtils.copyProperties(enter, opeOrderStatusFlow);
         if (enter.getId() == null || enter.getId() == 0) {
-            opeOrderStatusFlow.setId(idAppService.getId(""));
-            opeOrderStatusFlow.setDr(0);
-            opeOrderStatusFlow.setCreatedBy(enter.getUserId());
-            opeOrderStatusFlow.setCreatedTime(new Date());
+            opeOrderStatusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
         }
         opeOrderStatusFlow.setCreatedBy(enter.getUserId());
         opeOrderStatusFlow.setCreatedTime(new Date());
@@ -188,4 +188,24 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
         opeOrderStatusFlowService.saveOrUpdate(opeOrderStatusFlow);
         return new GeneralResult(enter.getRequestId());
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int insertOrderStatusFlow(Long orderId, Integer orderType, Integer orderStatus, String remark, Long userId) {
+        OpeOrderStatusFlow orderStatusFlow = OpeOrderStatusFlow.builder()
+                .id(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW))
+                .dr(0)
+                .relationId(orderId)
+                .orderType(orderType)
+                .orderStatus(orderStatus)
+                .remark(remark)
+                .createdBy(userId)
+                .createdTime(new Date())
+                .updatedBy(userId)
+                .updatedTime(new Date())
+                .build();
+
+        return orderStatusFlowMapper.insertOrderStatusFlow(orderStatusFlow);
+    }
+
 }

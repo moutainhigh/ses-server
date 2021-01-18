@@ -5,6 +5,7 @@ import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +93,32 @@ public class InWarehouseOrderController {
     @PostMapping(value = "/detail")
     public Response<InWhOrderDetailDTO> getInWarehouseOrderDetailById(@ModelAttribute IdEnter enter) {
         return new Response<>(inWhOrderService.getInWarehouseOrderDetailById(enter));
+    }
+
+    /**
+     * 修改部件质检数量
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2021/1/18
+    */
+    @ApiOperation(value = "修改部件质检数量", notes = "修改部件质检数量(用于无码部件使用)")
+    @PostMapping(value = "/updatePartsQcQty")
+    public Response<GeneralResult> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
+        return new Response<>(inWhOrderService.updatePartsQcQty(paramDTO));
+    }
+
+    /**
+     * 完成质检
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2021/1/18
+    */
+    @ApiOperation(value = "完成质检")
+    @PostMapping(value = "/complete")
+    public Response<GeneralResult> completeQc(@ModelAttribute IdEnter enter) {
+        return new Response<>(inWhOrderService.completeQc(enter));
     }
 
 }

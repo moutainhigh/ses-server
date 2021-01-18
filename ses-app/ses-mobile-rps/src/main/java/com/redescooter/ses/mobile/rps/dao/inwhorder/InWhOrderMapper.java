@@ -1,6 +1,8 @@
 package com.redescooter.ses.mobile.rps.dao.inwhorder;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -49,5 +51,23 @@ public interface InWhOrderMapper {
      * @date 2021/1/15
     */
     List<QueryInWhOrderResultDTO> getInWarehouseOrderList(QueryInWhOrderParamDTO paramDTO);
+
+    /**
+     * 修改入库单信息
+     * @param opeInWhouseOrder
+     * @return int
+     * @author assert
+     * @date 2021/1/18
+    */
+    int updateInWhOrder(OpeInWhouseOrder opeInWhouseOrder);
+
+    /**
+     * 根据id查询入库单详情
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO
+     * @author assert
+     * @date 2021/1/18
+    */
+    InWhOrderDetailDTO getInWhOrderDetailById(Long id);
 
 }

@@ -5,18 +5,18 @@
     <!--根据outWhId查询出库单组装件信息-->
     <select id="getOutWhOrderCombinByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
-        select owc.id, owc.out_wh_id outWhId, owc.combin_name`name`, bom.bom_no number, owc.qty,
+        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number, owc.qty,
         ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom
-        on owc.production_combin_bom_id = bom.id and bom.dr = 0
+        on owc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
         where owc.dr = 0 and owc.out_wh_id = #{outWhId}
     </select>
 
     <!--根据productId查询组装件产品详情-->
     <select id="getCombinProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
-        select owc.id, owc.out_wh_id outWhId, owc.combin_name`name`, bom.bom_no number, owc.qty,
+        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number, owc.qty,
         ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom

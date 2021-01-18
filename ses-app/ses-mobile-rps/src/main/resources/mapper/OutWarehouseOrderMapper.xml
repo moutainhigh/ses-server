@@ -88,9 +88,6 @@
             <if test="outWhQty != null">
                 out_wh_qty = #{outWhQty},
             </if>
-            <if test="qcQty != null">
-                qc_qty = #{qcQty},
-            </if>
             <if test="alreadyOutWhQty != null">
                 already_out_wh_qty = #{alreadyOutWhQty},
             </if>

@@ -14,12 +14,12 @@
         </foreach>
     </select>
 
-    <!--根据productId查询产品质检模板信息-->
-    <select id="getQcTemplateByProductId" resultType="com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO">
+    <!--根据productId、productType查询产品质检模板信息-->
+    <select id="getQcTemplateByProductIdAndType" resultType="com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO">
         select id, production_id bomId, production_type bomType,import_excel_batch_no importExcelBatchNo,
         source_type sourceType, production_type productType,qc_item_name qcItemName
         from ope_production_quality_tempate
-        where dr = 0 and production_id = #{productionId}
+        where dr = 0 and production_type = #{productType} and production_id = #{productId}
     </select>
 
 </mapper>

@@ -1,7 +1,10 @@
 package com.redescooter.ses.mobile.rps.dao.inwhorder;
 
 import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 入库单部件 Mapper接口
@@ -37,5 +40,14 @@ public interface InWhousePartsBMapper {
      * @date 2021/1/15
     */
     int updateInWhouseParts(OpeInWhousePartsB opeInWhousePartsB);
+
+    /**
+     * 根据inWhId查询入库单部件信息
+     * @param inWhId
+     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO>
+     * @author assert
+     * @date 2021/1/18
+    */
+    List<InWhOrderProductDTO> getInWhOrderPartsByInWhId(Long inWhId);
 
 }

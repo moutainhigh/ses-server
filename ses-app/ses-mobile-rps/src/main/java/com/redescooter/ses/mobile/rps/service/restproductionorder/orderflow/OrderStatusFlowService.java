@@ -52,4 +52,14 @@ public interface OrderStatusFlowService {
      * @desc: 保存节点
      */
     GeneralResult save(OrderStatusFlowEnter enter);
+
+    /**
+     * 新增订单状态流转记录
+     * @param orderId, orderType, orderStatus, remark, userId
+     * @return int
+     * @author assert
+     * @date 2021/1/18
+    */
+    int insertOrderStatusFlow(Long orderId, Integer orderType, Integer orderStatus, String remark, Long userId);
+
 }

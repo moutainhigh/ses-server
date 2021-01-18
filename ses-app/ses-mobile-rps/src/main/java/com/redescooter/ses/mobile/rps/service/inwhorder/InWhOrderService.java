@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 
 import java.util.Map;
@@ -62,5 +63,23 @@ public interface InWhOrderService {
      * @date 2021/1/15
     */
     InWhOrderDetailDTO getInWarehouseOrderDetailById(IdEnter enter);
+
+    /**
+     * 完成质检
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2021/1/18
+    */
+    GeneralResult completeQc(IdEnter enter);
+
+    /**
+     * 修改部件质检数量
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+     * @author assert
+     * @date 2021/1/18
+    */
+    GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
 
 }

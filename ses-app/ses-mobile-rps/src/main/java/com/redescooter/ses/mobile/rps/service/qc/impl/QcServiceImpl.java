@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
@@ -113,22 +114,29 @@ public class QcServiceImpl implements QcService {
         /**
          * 根据入参productType调整为质检模板的产品类型
          */
+        Integer productType;
         switch (paramDTO.getProductType()) {
             case 1:
-                OpeProductionScooterBom opeProductionScooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
-                resultDTO.setName(opeProductionScooterBom.getEnName());
+                String scooterModel = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
+                resultDTO.setName(scooterModel);
+
+                productType = QcTemplateProductTypeEnum.SCOOTER.getType();
                 break;
             case 2 :
                 OpeProductionCombinBom opeProductionCombinBom = combinBomMapper.getCombinBomById(paramDTO.getBomId());
                 resultDTO.setName(opeProductionCombinBom.getCnName());
+
+                productType = QcTemplateProductTypeEnum.COMBINATION.getType();
                 break;
             default:
                 OpeProductionParts opeProductionParts = partsMapper.getProductionPartsByBomId(paramDTO.getBomId());
                 resultDTO.setName(opeProductionParts.getCnName());
+
+                productType = QcTemplateProductTypeEnum.PARTS.getType();
                 break;
         }
 
-        List<ProductQcTemplateDTO> productQcTemplateList = templateMapper.getQcTemplateByProductId(paramDTO.getBomId());
+        List<ProductQcTemplateDTO> productQcTemplateList = templateMapper.getQcTemplateByProductIdAndType(paramDTO.getBomId(), productType);
         RpsAssert.isEmpty(productQcTemplateList, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
 

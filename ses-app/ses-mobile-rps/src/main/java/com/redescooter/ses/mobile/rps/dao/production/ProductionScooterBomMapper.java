@@ -18,4 +18,13 @@ public interface ProductionScooterBomMapper {
     */
     OpeProductionScooterBom getScooterBomById(Long id);
 
+    /**
+     * 根据id查询车辆型号
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021/1/18
+    */
+    String getScooterModelById(Long id);
+
 }

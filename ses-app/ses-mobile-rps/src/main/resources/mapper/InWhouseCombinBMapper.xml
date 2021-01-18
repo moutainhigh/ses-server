@@ -81,4 +81,15 @@
         where id = #{id}
     </update>
 
+    <!--根据inWhId查询入库单组装件信息-->
+    <select id="getInWhOrderCombinByInWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
+        select iwc.id, iwc.in_wh_id inWhId, bom.id bomId, bom.cn_name `name`, bom.bom_no `number`,
+        iwc.in_wh_qty qty, iwc.unqualified_qty unqualifiedQty, iwc.qc_qty qcQty, true idClass
+        from ope_in_whouse_combin_b iwc
+        left join ope_production_combin_bom bom
+        on iwc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
+        where iwc.dr = 0 and iwc.in_wh_id = #{inWhId}
+    </select>
+
 </mapper>

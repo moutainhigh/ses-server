@@ -23,7 +23,7 @@ public class ProductQcTemplateResultDTO extends GeneralResult {
     @ApiModelProperty(value = "质检结果", dataType = "String")
     private String qcResult;
 
-    @ApiModelProperty(value = "通过标记 true/false", dataType = "Boolean", hidden = true)
+    @ApiModelProperty(value = "通过标记 true/false", dataType = "Boolean")
     private Boolean passFlag;
 
     @ApiModelProperty(value = "上传图片标志", dataType = "Boolean")

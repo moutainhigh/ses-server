@@ -45,6 +45,80 @@
 	    from ope_in_whouse_order
 	    where dr = 0
 	    <include refid="InWarehouseOrderListWhere" />
+        order by created_time asc
+    </select>
+
+    <!--修改入库单信息-->
+    <update id="updateInWhOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
+        update ope_in_whouse_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="countryType != null">
+                country_type = #{countryType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhNo != null">
+                in_wh_no = #{inWhNo,jdbcType=VARCHAR},
+            </if>
+            <if test="inWhStatus != null">
+                in_wh_status = #{inWhStatus,jdbcType=INTEGER},
+            </if>
+            <if test="whType != null">
+                wh_type = #{whType,jdbcType=INTEGER},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="relationOrderId != null">
+                relation_order_id = #{relationOrderId,jdbcType=BIGINT},
+            </if>
+            <if test="relationOrderNo != null">
+                relation_order_no = #{relationOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="relationOrderType != null">
+                relation_order_type = #{relationOrderType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhType != null">
+                in_wh_type = #{inWhType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="source != null">
+                `source` = #{source,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询入库单详情-->
+    <select id="getInWhOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO">
+        select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
+        in_wh_type `type`, in_wh_status `status`, remark
+	    from ope_in_whouse_order
+	    where dr = 0 and id = #{id}
     </select>
 
 </mapper>

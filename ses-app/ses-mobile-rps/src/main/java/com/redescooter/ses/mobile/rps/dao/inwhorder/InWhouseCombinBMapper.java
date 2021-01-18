@@ -1,6 +1,9 @@
 package com.redescooter.ses.mobile.rps.dao.inwhorder;
 
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
+
+import java.util.List;
 
 /**
  * 入库单组装件 Mapper接口
@@ -26,5 +29,14 @@ public interface InWhouseCombinBMapper {
      * @date 2021/1/15
     */
     int updateInWhouseCombin(OpeInWhouseCombinB opeInWhouseCombinB);
+
+    /**
+     * 根据inWhId查询入库单组装件信息
+     * @param inWhId
+     * @return java.util.List<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO>
+     * @author assert
+     * @date 2021/1/18
+    */
+    List<InWhOrderProductDTO> getInWhOrderCombinByInWhId(Long inWhId);
 
 }

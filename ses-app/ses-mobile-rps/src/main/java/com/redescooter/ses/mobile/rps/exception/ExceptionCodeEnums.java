@@ -185,7 +185,11 @@ public enum ExceptionCodeEnums {
 
     OUT_WAREHOUSE_ORDER_STATUS_ERROR(10089, "出库单状态有误"),
 
-    ENTRUST_ORDER_DELIVER_FAILED(10090, "委托单发货失败")
+    ENTRUST_ORDER_DELIVER_FAILED(10090, "委托单发货失败"),
+
+    IN_WH_ORDER_IS_NOT_EXISTS(10091, "入库单不存在"),
+
+    QC_QTY_GREATER_THAN_INBOUND_QTY(10092, "质检数量大于应入库数量")
     ;
 
     private int code;

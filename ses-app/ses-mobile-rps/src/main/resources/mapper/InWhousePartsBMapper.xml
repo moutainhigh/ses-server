@@ -98,4 +98,15 @@
         where id = #{id}
     </update>
 
+    <!--根据inWhId查询入库单部件信息-->
+    <select id="getInWhOrderPartsByInWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
+        select iwp.id, iwp.in_wh_id inWhId, pp.id bomId, pp.cn_name `name`, pp.parts_no `number`,
+        iwp.in_wh_qty qty, iwp.unqualified_qty unqualifiedQty, iwp.qc_qty qcQty, pp.id_calss idClass
+        from ope_in_whouse_parts_b iwp
+        left join ope_production_parts pp
+        on iwp.parts_id = pp.id and pp.disable = 0 and pp.dr = 0
+        where iwp.dr = 0 and iwp.in_wh_id = #{inWhId}
+    </select>
+
 </mapper>

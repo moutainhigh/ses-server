@@ -35,4 +35,15 @@
 	    where dr = 0 and bom_status = 1 and id = #{id}
     </select>
 
+    <!--根据id查询车辆型号-->
+    <select id="getScooterModelById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select concat(sg.group_name,' -- ', c.color_name)
+        from ope_production_scooter_bom bom
+        left join ope_specificat_group sg
+        on bom.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on bom.color_id = c.id and c.dr = 0
+        where bom.dr = 0 and bom.bom_status = 1 and bom.id = #{id}
+    </select>
+
 </mapper>

@@ -12,26 +12,25 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
-import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
-import com.redescooter.ses.mobile.rps.dao.order.*;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
+import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
+import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -60,11 +59,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Resource
     private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
     @Resource
-    private OpTraceMapper opTraceMapper;
+    private OpTraceService opTraceService;
     @Resource
-    private OrderStatusFlowMapper orderStatusFlowMapper;
+    private OrderStatusFlowService orderStatusFlowService;
     @Resource
-    private TransactionTemplate transactionTemplate;
+    private WmsPartsStockMapper wmsPartsStockMapper;
 
 
     @Override
@@ -115,6 +114,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         return PageResult.create(paramDTO, count, outWarehouseOrderMapper.getOutWarehouseOrderList(paramDTO));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
 
@@ -127,44 +127,22 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
             throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
 
-        /**
-         * 使用编程式事务保证多事务的一致性
-         */
-        boolean result = transactionTemplate.execute(outWarehouseOrderStatus -> {
-            boolean flag = true;
-            try {
-                OpeOutWhouseOrder outWhouseOrder = OpeOutWhouseOrder.builder()
-                        .id(enter.getId())
-                        .outWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())
-                        .updatedBy(enter.getUserId())
-                        .updatedTime(new Date())
-                        .build();
-                outWarehouseOrderMapper.updateOutWarehouseOrder(outWhouseOrder);
-
-                /**
-                 * 保存出库单操作记录、出库单状态流转信息
-                 */
-                OpeOpTrace opeOpTrace = buildOpTrace(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
-                        OrderOperationTypeEnums.START_QC.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
-
-                OpeOrderStatusFlow opeOrderStatusFlow = buildOrderStatusFlow(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
-                        OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
-
-                opTraceMapper.insertOpTrace(opeOpTrace);
-                orderStatusFlowMapper.insertOrderStatusFlow(opeOrderStatusFlow);
-            } catch (Exception e) {
-                flag = false;
-                log.error("【出库单开始质检失败】----{}", ExceptionUtils.getStackTrace(e));
-                outWarehouseOrderStatus.setRollbackOnly();
-            }
-            return flag;
-        });
+        OpeOutWhouseOrder outWhouseOrder = OpeOutWhouseOrder.builder()
+                .id(enter.getId())
+                .outWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())
+                .updatedBy(enter.getUserId())
+                .updatedTime(new Date())
+                .build();
+        outWarehouseOrderMapper.updateOutWarehouseOrder(outWhouseOrder);
 
         /**
-         * 出库单开始质检失败时抛出异常
+         * 保存出库单操作记录、出库单状态流转信息
          */
-        RpsAssert.isFalse(result, ExceptionCodeEnums.OUT_WH_ORDER_START_QC_ERROR.getCode(),
-                ExceptionCodeEnums.OUT_WH_ORDER_START_QC_ERROR.getMessage());
+        opTraceService.insertOpTrace(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
+                OrderOperationTypeEnums.START_QC.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
+
+        orderStatusFlowService.insertOrderStatusFlow(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
+                OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -284,64 +262,13 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         outWarehouseOrderMapper.updateOutWarehouseOrder(opeOutWhouseOrder);
 
         /**
-         * 质检完成库存操作扣减
+         * 质检完成库存操作扣减(出库)
          */
-
+        OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(outWhOrderProduct.getBomId());
+        opeWmsPartsStock.setUsedStockQty(opeWmsPartsStock.getUsedStockQty() + paramDTO.getQcQty());
+        wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
 
         return new GeneralResult(paramDTO.getRequestId());
-    }
-
-
-    /**
-     * 组装单据操作记录信息
-     * @param orderId
-     * @param orderType
-     * @param opType
-     * @param remark
-     * @param userId
-     * @return
-     */
-    private OpeOpTrace buildOpTrace(Long orderId, Integer orderType, Integer opType, String remark, Long userId) {
-        OpeOpTrace opeOpTrace = OpeOpTrace.builder()
-                .id(idAppService.getId(SequenceName.OPE_OP_TRACE))
-                .dr(0)
-                .relationId(orderId)
-                .orderType(orderType)
-                .opType(opType)
-                .remark(remark)
-                .createdBy(userId)
-                .createdTime(new Date())
-                .updatedBy(userId)
-                .updatedTime(new Date())
-                .build();
-
-        return opeOpTrace;
-    }
-
-    /**
-     * 组装单据状态流转信息
-     * @param orderId
-     * @param orderType
-     * @param orderStatus
-     * @param remark
-     * @param userId
-     * @return
-     */
-    private OpeOrderStatusFlow buildOrderStatusFlow(Long orderId, Integer orderType, Integer orderStatus, String remark, Long userId) {
-        OpeOrderStatusFlow orderStatusFlow = OpeOrderStatusFlow.builder()
-                .id(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW))
-                .dr(0)
-                .relationId(orderId)
-                .orderType(orderType)
-                .orderStatus(orderStatus)
-                .remark(remark)
-                .createdBy(userId)
-                .createdTime(new Date())
-                .updatedBy(userId)
-                .updatedTime(new Date())
-                .build();
-
-        return orderStatusFlow;
     }
 
 }

@@ -13,7 +13,7 @@
         left join ope_color c
         on ows.color_id = c.id and c.dr = 0
         left join ope_production_scooter_bom bom
-        on ows.group_id = bom.group_id and ows.color_id = bom.group_id and bom.dr = 0 and bom.bom_status = 1
+        on ows.group_id = bom.group_id and ows.color_id = bom.color_id and bom.dr = 0 and bom.bom_status = 1
         where ows.dr = 0 and ows.out_wh_id = #{outWhId}
     </select>
 
@@ -28,7 +28,7 @@
         left join ope_color c
         on ows.color_id = c.id and c.dr = 0
         left join ope_production_scooter_bom bom
-        on ows.group_id = bom.group_id and ows.color_id = bom.group_id and bom.dr = 0 and bom.bom_status = 1
+        on ows.group_id = bom.group_id and ows.color_id = bom.color_id and bom.dr = 0 and bom.bom_status = 1
         where ows.dr = 0 and ows.id = #{productId}
     </select>
 

@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.vo.outwhorder;
 
-import com.redescooter.ses.api.common.annotation.NotEmpty;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.mobile.rps.exception.ValidationExceptionCode;
@@ -38,8 +37,7 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "产品序列号", dataType = "String")
     private String serialNum;
 
-    @NotEmpty(code = ValidationExceptionCode.BATCH_NO_IS_EMPTY, message = "批次号不能为空")
-    @ApiModelProperty(value = "批次号", dataType = "String", required = true)
+    @ApiModelProperty(value = "批次号", dataType = "String")
     private String lot;
 
     @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"质检模板id\",\"templateResultId\":\"质检结果id\"," +

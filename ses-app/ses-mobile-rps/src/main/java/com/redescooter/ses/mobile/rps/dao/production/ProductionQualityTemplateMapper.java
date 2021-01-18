@@ -23,12 +23,13 @@ public interface ProductionQualityTemplateMapper {
     List<ProductQcTemplateResultDTO> getProductQcTemplateResultByTemplateIds(@Param("templateIds") List<Long> templateIds);
 
     /**
-     * 根据productId查询产品质检模板信息
+     * 根据productId、productType查询产品质检模板信息
      * @param productId
+     * @param productType
      * @return java.util.List<com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO>
      * @author assert
      * @date 2021/1/6
     */
-    List<ProductQcTemplateDTO> getQcTemplateByProductId(Long productId);
+    List<ProductQcTemplateDTO> getQcTemplateByProductIdAndType(@Param("productId") Long productId, @Param("productType") Integer productType);
 
 }
