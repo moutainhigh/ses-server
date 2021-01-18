@@ -699,6 +699,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, outWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), outWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 操作记录
+
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_OUT_WH.getValue(),
                 outWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
