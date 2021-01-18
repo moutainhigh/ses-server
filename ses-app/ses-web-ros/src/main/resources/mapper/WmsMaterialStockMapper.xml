@@ -24,7 +24,7 @@
        from ope_wms_parts_stock
        where dr = 0
         <include refid="listCondition"/>
-        order by able_stock_qty
+        order by able_stock_qty,created_time desc
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
