@@ -491,7 +491,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
 
         // 操作记录
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_OUT_WH.getValue(),
                 outWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);

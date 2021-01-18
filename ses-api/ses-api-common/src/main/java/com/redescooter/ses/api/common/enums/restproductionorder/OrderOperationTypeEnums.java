@@ -30,6 +30,8 @@ public enum OrderOperationTypeEnums {
     READY_QC("READY_QC", "准备质检", 13),
     CONFIRM_IN_WH("CONFIRM_IN_WH", "确认入库", 14),
     COMBIN("COMBIN","组装",15),
+    RELEASE("COMBIN","发布",16),
+    CONFIRM_OUT_WH("COMBIN","确认出库",17),
     ;
 
 

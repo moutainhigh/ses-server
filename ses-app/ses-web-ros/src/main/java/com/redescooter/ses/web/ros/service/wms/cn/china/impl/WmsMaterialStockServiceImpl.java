@@ -1169,7 +1169,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                         scooterRecord.setRelationId(dbScooter.getId());
                         scooterRecord.setRelationType(1);
-                        scooterRecord.setInWhType(inWhType);
+                        scooterRecord.setInWhType(7);
                         scooterRecord.setInWhQty(scooterB.getQty());
                         scooterRecord.setRecordType(1);
                         scooterRecord.setStockType(stockType);
@@ -1205,7 +1205,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         WmsInStockRecordEnter combinRecord = new WmsInStockRecordEnter();
                         combinRecord.setRelationId(dbCombine.getId());
                         combinRecord.setRelationType(2);
-                        combinRecord.setInWhType(inWhType);
+                        combinRecord.setInWhType(7);
                         combinRecord.setInWhQty(combinB.getQty());
                         combinRecord.setRecordType(1);
                         combinRecord.setStockType(stockType);
@@ -1241,7 +1241,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
                         partsRecord.setRelationId(wmsPartsStock.getId());
                         partsRecord.setRelationType(3);
-                        partsRecord.setInWhType(inWhType);
+                        partsRecord.setInWhType(7);
                         partsRecord.setInWhQty(partsB.getQty());
                         partsRecord.setRecordType(1);
                         partsRecord.setStockType(stockType);

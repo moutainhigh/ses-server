@@ -774,6 +774,13 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         outWhouseOrder.setUpdatedBy(enter.getUserId());
         outWhouseOrder.setUpdatedTime(new Date());
         opeOutWhouseOrderService.updateById(outWhouseOrder);
+
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.RELEASE.getValue(),
+                outWhouseOrder.getRemark());
+        opTraceEnter.setUserId(enter.getUserId());
+        productionOrderTraceService.save(opTraceEnter);
+
         // 出库单提交 可用库存减少，待出库的库存增加
         try {
             wmsMaterialStockService.waitOutUp(outWhouseOrder.getOutWhType(),outWhouseOrder.getId(),1, enter.getUserId(), outWhouseOrder.getWhType());
