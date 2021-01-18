@@ -241,6 +241,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             Long productionId = bom.getId();
             Long groupId = bom.getGroupId();
             Long colorId = bom.getColorId();
+            Integer bomQty = bom.getPartsQty();
 
             // 查询部件表
             LambdaQueryWrapper<OpeProductionPartsRelation> relationWrapper = new LambdaQueryWrapper<>();
@@ -252,10 +253,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             }
 
             List<Integer> numList = Lists.newArrayList();
-            for (int i = 0; i < relationList.size(); i++) {
-                OpeProductionPartsRelation relation = relationList.get(i);
+            for (OpeProductionPartsRelation relation : relationList) {
                 Long partsId = relation.getPartsId();
                 Integer partsQty = relation.getPartsQty();
+                Integer totalQty = bomQty * partsQty;
 
                 // 查询库存表中国仓库此部件的可用库存数量
                 LambdaQueryWrapper<OpeWmsPartsStock> wrapper = new LambdaQueryWrapper<>();
@@ -271,7 +272,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
-                int count = ableStockQty / partsQty;
+                int count = ableStockQty / totalQty;
                 if (count > 0) {
                     numList.add(count);
                 }
