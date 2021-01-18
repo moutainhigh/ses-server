@@ -343,7 +343,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
                                 combinStock.setCombinNo(combinBom.getBomNo());
-                                combinStock.setProductionCombinBomId(combinB.getId());
+                                combinStock.setProductionCombinBomId(combinB.getProductionCombinBomId());
                             }
 
                             combinStock.setQty(combinB.getInWhQty());

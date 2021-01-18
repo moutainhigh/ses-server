@@ -377,16 +377,19 @@ public class InWhouseServiceImpl implements InWhouseService {
         QueryWrapper<OpeInWhouseOrder> scooter = new QueryWrapper<>();
         scooter.eq(OpeInWhouseOrder.COL_ORDER_TYPE, ProductTypeEnums.SCOOTER.getValue());
         scooter.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE, 1);
+        scooter.eq(OpeInWhouseOrder.COL_SOURCE, 0);
         map.put("1",opeInWhouseOrderService.count(scooter));
 
         QueryWrapper<OpeInWhouseOrder> combin = new QueryWrapper<>();
         combin.eq(OpeInWhouseOrder.COL_ORDER_TYPE, ProductTypeEnums.COMBINATION.getValue());
         combin.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE, 1);
+        combin.eq(OpeInWhouseOrder.COL_SOURCE, 0);
         map.put("2",opeInWhouseOrderService.count(combin));
 
         QueryWrapper<OpeInWhouseOrder> parts = new QueryWrapper<>();
         parts.eq(OpeInWhouseOrder.COL_ORDER_TYPE, ProductTypeEnums.PARTS.getValue());
         parts.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE, 1);
+        parts.eq(OpeInWhouseOrder.COL_SOURCE, 0);
         map.put("3",opeInWhouseOrderService.count(parts));
         return map;
     }

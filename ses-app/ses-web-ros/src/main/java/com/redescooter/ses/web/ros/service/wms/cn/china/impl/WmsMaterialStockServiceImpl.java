@@ -763,7 +763,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
                                 combinStock.setCombinNo(combinBom.getBomNo());
-                                combinStock.setProductionCombinBomId(combinB.getId());
+                                combinStock.setProductionCombinBomId(combinB.getProductionCombinBomId());
                             }
                             combinStock.setWaitInStockQty(0);
                             combinStock.setAbleStockQty(0);
