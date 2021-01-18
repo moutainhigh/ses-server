@@ -427,6 +427,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
 
 
+    @Transactional
     @Override
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到入库单

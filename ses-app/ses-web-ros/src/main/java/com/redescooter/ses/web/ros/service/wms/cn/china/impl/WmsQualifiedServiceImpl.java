@@ -438,7 +438,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
     }
 
-
+    @Transactional
     @Override
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
