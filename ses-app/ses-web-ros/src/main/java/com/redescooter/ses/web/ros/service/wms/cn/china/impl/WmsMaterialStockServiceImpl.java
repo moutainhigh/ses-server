@@ -1168,7 +1168,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         // 构建入库记录对象
                         WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                         scooterRecord.setRelationId(dbScooter.getId());
-                        scooterRecord.setRelationType(1);
+                        scooterRecord.setRelationType(7);
                         scooterRecord.setInWhType(7);
                         scooterRecord.setInWhQty(scooterB.getQty());
                         scooterRecord.setRecordType(1);
