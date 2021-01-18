@@ -235,7 +235,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
                         if (wmsPartsStock != null) {
                             // 说明已经有了  编辑就行
-                            wmsPartsStock.setWaitInStockQty(wmsPartsStock.getWaitInStockQty() + partsB.getActInWhQty());
+                            wmsPartsStock.setWaitInStockQty(wmsPartsStock.getWaitInStockQty() + partsB.getInWhQty());
                             wmsPartsStock.setUpdatedBy(userId);
                             wmsPartsStock.setUpdatedTime(new Date());
                             partsList.add(wmsPartsStock);
