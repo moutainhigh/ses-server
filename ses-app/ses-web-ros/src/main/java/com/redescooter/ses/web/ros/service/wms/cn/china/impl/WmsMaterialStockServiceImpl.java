@@ -1204,7 +1204,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         // 构建入库记录对象
                         WmsInStockRecordEnter combinRecord = new WmsInStockRecordEnter();
                         combinRecord.setRelationId(dbCombine.getId());
-                        combinRecord.setRelationType(2);
+                        combinRecord.setRelationType(8);
                         combinRecord.setInWhType(7);
                         combinRecord.setInWhQty(combinB.getQty());
                         combinRecord.setRecordType(1);
@@ -1240,7 +1240,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         // 构建入库记录对象
                         WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
                         partsRecord.setRelationId(wmsPartsStock.getId());
-                        partsRecord.setRelationType(3);
+                        partsRecord.setRelationType(9);
                         partsRecord.setInWhType(7);
                         partsRecord.setInWhQty(partsB.getQty());
                         partsRecord.setRecordType(1);
