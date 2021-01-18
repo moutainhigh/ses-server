@@ -241,7 +241,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             Long productionId = bom.getId();
             Long groupId = bom.getGroupId();
             Long colorId = bom.getColorId();
-            //Integer bomQty = bom.getPartsQty();
+            Integer bomQty = bom.getPartsQty();
 
             // 查询部件表
             LambdaQueryWrapper<OpeProductionPartsRelation> relationWrapper = new LambdaQueryWrapper<>();
@@ -256,7 +256,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             for (OpeProductionPartsRelation relation : relationList) {
                 Long partsId = relation.getPartsId();
                 Integer partsQty = relation.getPartsQty();
-                //Integer totalQty = bomQty * partsQty;
+                Integer totalQty = bomQty * partsQty;
 
                 // 查询库存表中国仓库此部件的可用库存数量
                 LambdaQueryWrapper<OpeWmsPartsStock> wrapper = new LambdaQueryWrapper<>();
@@ -267,21 +267,21 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 wrapper.orderByDesc(OpeWmsPartsStock::getCreatedTime);
                 List<OpeWmsPartsStock> list = opeWmsPartsStockMapper.selectList(wrapper);
                 if (CollectionUtils.isEmpty(list)) {
-                    continue;
+                    break;
                 }
 
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
                 ableStockQty = null == ableStockQty ? 0 : ableStockQty;
                 if (ableStockQty == 0) {
-                    continue;
+                    break;
                 }
-                int num = ableStockQty / partsQty;
+                int num = ableStockQty / totalQty;
                 if (num > 0) {
                     numList.add(num);
                 }
             }
-            if (CollectionUtils.isNotEmpty(numList)) {
+            if (CollectionUtils.isNotEmpty(numList) && numList.size() == relationList.size()) {
                 int minNum = Collections.min(numList);
                 model.setNum(minNum);
                 model.setColorName(getColorNameById(colorId));
@@ -699,7 +699,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, outWhouseOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), outWhouseOrder.getId(), "");
         orderStatusFlowService.save(orderStatusFlowEnter);
         // 操作记录
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_OUT_WH.getValue(),
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CONFIRM_IN_WH.getValue(),
                 outWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
