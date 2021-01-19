@@ -1429,6 +1429,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
         opeOutWhouseOrderService.saveOrUpdate(orderOrder);
         opeOutWhPartsBService.saveOrUpdateBatch(partsBList);
+
+        // 操作记录
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, orderOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CREATE.getValue(), orderOrder.getRemark());
+        productionOrderTraceService.save(opTraceEnter);
+
         // 创建完出库单(部件出库单)之后  需要把中国仓库的原料库的待出库数量更改
         try {
             wmsMaterialStockService.waitOutUp(orderOrder.getOutWhType(),orderOrder.getId(),1,userId,orderOrder.getOutType());
