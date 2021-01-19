@@ -535,7 +535,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
              */
             // 车辆信息保存scooter库
             BaseScooterEnter saveScooter = new BaseScooterEnter();
-            saveScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+            long scooterId = idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK);
+            saveScooter.setId(scooterId);
             saveScooter.setScooterNo(o.getRsn());
             saveScooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
             saveScooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
@@ -559,9 +560,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             saveScooterList.add(saveScooter);
 
             // 将数据存储到corporate库
+            logger.info("客户类型是:[{}]", opeCustomer.getCustomerType());
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
-                item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                item.setScooterId(scooterId);
                 item.setModel(ScooterModelEnums.showValueByCode(specificatName));
                 item.setLongitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLatitude(MapUtil.randomLonLat(Constant.lng));
@@ -572,12 +574,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setTenantId(enter.getTenantId());
                 saveRelationList.add(item);
                 corporateScooterService.saveScooter(saveRelationList);
-                logger.info("新增corporate库");
+                logger.info("客户类型是公司,新增corporate库");
             }
             // 将数据存储到consumer库
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
-                item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                item.setScooterId(scooterId);
                 item.setModel(ScooterModelEnums.showValueByCode(specificatName));
                 item.setLongitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLatitude(MapUtil.randomLonLat(Constant.lng));
@@ -588,7 +590,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setTenantId(enter.getTenantId());
                 saveRelationList.add(item);
                 cusotmerScooterService.saveScooter(saveRelationList);
-                logger.info("新增consumer库");
+                logger.info("客户类型是个人,新增consumer库");
             }
         }
         // 将数据存储到scooter库
