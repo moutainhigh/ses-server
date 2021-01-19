@@ -35,3 +35,4 @@ public class OpeOutWhScooterBServiceImpl extends ServiceImpl<OpeOutWhScooterBMap
     }
 }
 
+

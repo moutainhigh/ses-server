@@ -6,12 +6,13 @@ import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder;
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dao.base.OpeInWhouseOrderMapper;
 import com.redescooter.ses.mobile.rps.service.base.OpeInWhouseOrderService;
+
 /**
- *@author assert
- *@date 2021/1/18 10:46
+ * @author assert
+ * @date 2021/1/18 10:46
  */
 @Service
-public class OpeInWhouseOrderServiceImpl implements OpeInWhouseOrderService{
+public class OpeInWhouseOrderServiceImpl implements OpeInWhouseOrderService {
 
     @Resource
     private OpeInWhouseOrderMapper opeInWhouseOrderMapper;
@@ -37,3 +38,4 @@ public class OpeInWhouseOrderServiceImpl implements OpeInWhouseOrderService{
     }
 
 }
+

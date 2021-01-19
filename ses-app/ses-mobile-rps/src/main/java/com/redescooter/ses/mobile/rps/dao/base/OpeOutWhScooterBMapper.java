@@ -5,6 +5,10 @@ import com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
+/**
+ * @author assert
+ * @date 2021/1/19 15:28
+ */
 public interface OpeOutWhScooterBMapper extends BaseMapper<OpeOutWhScooterB> {
     int updateBatch(List<OpeOutWhScooterB> list);
 

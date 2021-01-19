@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.dao.invoice;
 
 import com.redescooter.ses.mobile.rps.dm.OpeInvoiceProductSerialNum;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -47,5 +48,15 @@ public interface InvoiceProductSerialNumMapper {
      * @date 2021-01-10
      */
     int insertInvoiceProductSerialNum(OpeInvoiceProductSerialNum opeInvoiceProductSerialNum);
+
+    /**
+     * 根据relationId、relationType查询出库单序列号信息
+     * @param relationId, relationType
+     * @return com.redescooter.ses.mobile.rps.dm.OpeInvoiceProductSerialNum
+     * @author assert
+     * @date 2021/1/19
+    */
+    OpeInvoiceProductSerialNum getInvoiceProductSerialNumByRelationIdAndType(@Param("relationId") Long relationId,
+                                                                             @Param("relationType") Integer relationType);
 
 }

@@ -1,10 +1,14 @@
 package com.redescooter.ses.mobile.rps.vo.inwhorder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +41,11 @@ public class InWhOrderDetailDTO extends GeneralResult {
 
     @ApiModelProperty(value = "备注说明", dataType = "String")
     private String remark;
+
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @ApiModelProperty(value = "质检完成时间")
+    private Date qcCompletionTime;
 
     @ApiModelProperty(value = "待质检产品集合")
     private List<InWhOrderProductDTO> pendingQcProductList;

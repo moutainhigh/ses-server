@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.exception;
 
-import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -189,7 +188,11 @@ public enum ExceptionCodeEnums {
 
     IN_WH_ORDER_IS_NOT_EXISTS(10091, "入库单不存在"),
 
-    QC_QTY_GREATER_THAN_INBOUND_QTY(10092, "质检数量大于应入库数量")
+    QC_QTY_GREATER_THAN_INBOUND_QTY(10092, "质检数量大于应入库数量"),
+
+    QC_IS_NOT_COMPLETED(10093, "质检未完成"),
+
+    IN_WH_QTY_ERROR(10094, "入库数量有误")
     ;
 
     private int code;

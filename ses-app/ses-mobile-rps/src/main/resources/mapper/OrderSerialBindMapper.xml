@@ -118,4 +118,10 @@
         </trim>
     </insert>
 
+    <!--根据orderBId、orderType查询订单序列号绑定信息-->
+    <select id="getOrderSerialBindByOrderBIdAndOrderType" resultMap="BaseResultMap">
+        select * from ope_order_serial_bind
+	    where dr = 0 and order_b_id = #{orderBId} and order_type = #{orderType}
+    </select>
+
 </mapper>

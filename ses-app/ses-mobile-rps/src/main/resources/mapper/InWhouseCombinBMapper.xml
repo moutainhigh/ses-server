@@ -22,6 +22,25 @@
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     </resultMap>
 
+    <!--InWhOrderCombinResultMap-->
+    <resultMap id="InWhOrderCombinResultMap" type="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(组装件序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+        </collection>
+    </resultMap>
+
     <!--根据id查询入库单组装件信息-->
     <select id="getInWhouseCombinById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from ope_in_whouse_combin_b
@@ -90,6 +109,19 @@
         left join ope_production_combin_bom bom
         on iwc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
         where iwc.dr = 0 and iwc.in_wh_id = #{inWhId}
+    </select>
+
+    <!--根据id查询入库单组装件信息-->
+    <select id="getInWhOrderCombinById" parameterType="java.lang.Long" resultMap="InWhOrderCombinResultMap">
+        select iwc.id, iwc.in_wh_id, bom.id bom_id, bom.cn_name, bom.bom_no `number`,
+        iwc.in_wh_qty, iwc.unqualified_qty, iwc.qc_qty, true id_class, osb.id sn_id,
+        osb.lot, osb.serial_num, '奥格工厂' factory_name
+        from ope_in_whouse_combin_b iwc
+        left join ope_production_combin_bom bom
+        on iwc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
+        left join ope_order_serial_bind osb
+        on iwc.production_combin_bom_id = osb.product_id and osb.dr = 0
+        where iwc.dr = 0 and iwc.id = #{id}
     </select>
 
 </mapper>

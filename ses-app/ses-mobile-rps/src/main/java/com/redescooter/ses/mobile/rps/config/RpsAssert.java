@@ -61,6 +61,18 @@ public class RpsAssert {
     }
 
     /**
+     * collection is not empty throw SesMobileRpsException
+     * @param collection
+     * @param code
+     * @param msg
+     */
+    public static void isNotEmpty(Collection collection, Integer code, String msg) {
+        if (!collection.isEmpty()) {
+            throw new SesMobileRpsException(code, msg);
+        }
+    }
+
+    /**
      * flag is true throw SesMobileRpsException
      * @param flag
      * @param code

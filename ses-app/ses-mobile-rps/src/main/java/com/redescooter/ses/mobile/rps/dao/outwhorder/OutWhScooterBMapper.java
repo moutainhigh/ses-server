@@ -49,4 +49,13 @@ public interface OutWhScooterBMapper {
     */
     int updateOutWhScooterB(OpeOutWhScooterB opeOutWhScooterB);
 
+    /**
+     * 根据id查询出库单车辆信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB
+     * @author assert
+     * @date 2021/1/19
+    */
+    OpeOutWhScooterB getOutWhOrderScooterById(Long id);
+
 }

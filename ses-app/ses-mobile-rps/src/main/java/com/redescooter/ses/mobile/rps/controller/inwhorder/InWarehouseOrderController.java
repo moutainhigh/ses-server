@@ -2,9 +2,8 @@ package com.redescooter.ses.mobile.rps.controller.inwhorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
@@ -96,6 +95,19 @@ public class InWarehouseOrderController {
     }
 
     /**
+     * 根据productId查询入库单产品详情(1.0.0版本没有这个接口)
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO>
+     * @author assert
+     * @date 2021/1/19
+     */
+    @ApiOperation(value = "入库单产品详情(1.0.0版本没有这个接口)", notes = "根据productId查询入库单产品详情")
+    @PostMapping(value = "/productDetail")
+    public Response<InWhOrderProductDetailDTO> getProductDetailByProductId(@ModelAttribute QueryProductDetailParamDTO paramDTO) {
+        return new Response<>(inWhOrderService.getProductDetailByProductId(paramDTO));
+    }
+
+    /**
      * 修改部件质检数量
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
@@ -116,9 +128,22 @@ public class InWarehouseOrderController {
      * @date 2021/1/18
     */
     @ApiOperation(value = "完成质检")
-    @PostMapping(value = "/complete")
+    @PostMapping(value = "/completeQc")
     public Response<GeneralResult> completeQc(@ModelAttribute IdEnter enter) {
         return new Response<>(inWhOrderService.completeQc(enter));
+    }
+
+    /**
+     * 确认入库
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.ConfirmStorageResultDTO>
+     * @author assert
+     * @date 2021/1/19
+    */
+    @ApiOperation(value = "确认入库")
+    @PostMapping(value = "/confirmStorage")
+    public Response<ConfirmStorageResultDTO> confirmStorage(@ModelAttribute ConfirmStorageParamDTO paramDTO) {
+        return new Response<>(inWhOrderService.confirmStorage(paramDTO));
     }
 
 }

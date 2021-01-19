@@ -2,11 +2,12 @@ package com.redescooter.ses.mobile.rps.service.base;
 
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder;
 import java.util.List;
-    /**
- *@author assert
- *@date 2021/1/18 10:46
+
+/**
+ * @author assert
+ * @date 2021/1/18 10:46
  */
-public interface OpeInWhouseOrderService{
+public interface OpeInWhouseOrderService {
 
 
     int updateBatch(List<OpeInWhouseOrder> list);
@@ -18,3 +19,4 @@ public interface OpeInWhouseOrderService{
     int insertOrUpdateSelective(OpeInWhouseOrder record);
 
 }
+

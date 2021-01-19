@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.vo.outwhorder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,28 +22,30 @@ public class ProductSerialNumberDTO extends GeneralResult {
     @ApiModelProperty(value = "主键id", dataType = "Long")
     private Long id;
 
-    @ApiModelProperty(value = "产品id", dataType = "Long")
-    private Long productId;
-
     @ApiModelProperty(value = "序列号", dataType = "Long")
     private String serialNum;
 
     @ApiModelProperty(value = "批次号", dataType = "String")
     private String lot;
 
-    @ApiModelProperty(value = "供应商Id", dataType = "Long")
-    private Long supplierId;
+    @ApiModelProperty(value = "部件号", dataType = "String")
+    private String partsNo;
 
     @ApiModelProperty(value = "供应商名称", dataType = "String")
     private String supplierName;
 
-    @ApiModelProperty(value = "数量", dataType = "Integer")
-    private Integer qty;
+    @ApiModelProperty(value = "工厂名称", dataType = "String")
+    private String factoryName;
 
-    @ApiModelProperty(value = "入库时间", dataType = "Date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @ApiModelProperty(value = "入库时间")
     private Date arrivalTime;
+
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @ApiModelProperty(value = "质检时间")
+    private Date qualityInspectionTime;
 
     @ApiModelProperty(value = "附件 多个附件逗号分割", dataType = "String")
     private String annex;

@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
- *@author assert
- *@date 2021/1/18 10:46
+ * @author assert
+ * @date 2021/1/19 10:59
  */
 public interface OpeInWhouseOrderMapper extends BaseMapper {
     int updateBatch(List<OpeInWhouseOrder> list);

@@ -97,6 +97,9 @@
             <if test="remark != null">
                 remark = #{remark,jdbcType=VARCHAR},
             </if>
+            <if test="qcCompletionTime != null">
+                qc_completion_time = #{qcCompletionTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="createdBy != null">
                 created_by = #{createdBy,jdbcType=BIGINT},
             </if>
@@ -116,7 +119,7 @@
     <!--根据id查询入库单详情-->
     <select id="getInWhOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO">
         select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
-        in_wh_type `type`, in_wh_status `status`, remark
+        in_wh_type `type`, in_wh_status `status`, remark, qc_completion_time qcCompletionTime
 	    from ope_in_whouse_order
 	    where dr = 0 and id = #{id}
     </select>

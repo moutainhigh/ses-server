@@ -4,9 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 
@@ -81,5 +80,23 @@ public interface InWhOrderService {
      * @date 2021/1/18
     */
     GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
+
+    /**
+     * 根据productId查询入库单产品详情
+     * @param paramDTO
+     * @return com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO
+     * @author assert
+     * @date 2021/1/19
+    */
+    InWhOrderProductDetailDTO getProductDetailByProductId(QueryProductDetailParamDTO paramDTO);
+
+    /**
+     * 确认入库
+     * @param paramDTO
+     * @return com.redescooter.ses.mobile.rps.vo.inwhorder.ConfirmStorageResultDTO
+     * @author assert
+     * @date 2021/1/19
+    */
+    ConfirmStorageResultDTO confirmStorage(ConfirmStorageParamDTO paramDTO);
 
 }
