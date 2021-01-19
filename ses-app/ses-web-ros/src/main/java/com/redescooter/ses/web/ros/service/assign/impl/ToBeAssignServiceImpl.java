@@ -474,7 +474,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 }
             }
 
-            // 修改成品库车辆库存
+            /**
+             * 修改成品库车辆库存
+             */
             // 获得询价单型号id和颜色id
             CustomerIdEnter customerIdEnter = new CustomerIdEnter();
             customerIdEnter.setCustomerId(enter.getCustomerId());
@@ -525,7 +527,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 获得规格名称
             String specificatName = getSpecificatNameById(opeCarDistribute.getSpecificatTypeId());
 
-            // 数据同步
+            /**
+             * 数据同步
+             */
             // 车辆信息保存scooter库
             BaseScooterEnter saveScooter = new BaseScooterEnter();
             saveScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
@@ -787,7 +791,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            result.setSuccess(Boolean.FALSE);
+            //result.setSuccess(Boolean.FALSE); // 正确
+            result.setSuccess(Boolean.TRUE); //暂时
             return result;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
