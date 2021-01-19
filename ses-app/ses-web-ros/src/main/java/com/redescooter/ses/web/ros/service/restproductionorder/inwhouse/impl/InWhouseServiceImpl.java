@@ -120,6 +120,12 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeOutWhPartsBService opeOutWhPartsBService;
 
+    @Autowired
+    private OpeWmsScooterStockService opeWmsScooterStockService;
+
+    @Autowired
+    private OpeWmsCombinStockService opeWmsCombinStockService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -405,8 +411,65 @@ public class InWhouseServiceImpl implements InWhouseService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeInWhouseOrderService.removeById(enter.getId());
+        // 追加 入库单（车辆/组装件）新增的时候 会把库存的待入库数量增加  删除的时候要相应的减少
+        if(inWhouseOrder.getOrderType() == 1 || inWhouseOrder.getOrderType() == 2){
+            changeStock(inWhouseOrder);
+        }
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 入库单（车辆/组装件）新增的时候 会把库存的待入库数量增加  删除的时候要相应的减少
+    public void changeStock(OpeInWhouseOrder inWhouseOrder){
+        switch (inWhouseOrder.getOrderType()){
+            case 1:
+                // 车辆
+                QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID,inWhouseOrder.getId());
+                List<OpeInWhouseScooterB> scooterBS = opeInWhouseScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBS)){
+                    List<OpeWmsScooterStock> scooterStockList = new ArrayList<>();
+                    for (OpeInWhouseScooterB scooterB : scooterBS) {
+                        QueryWrapper<OpeWmsScooterStock> stockQueryWrapper = new QueryWrapper<>();
+                        stockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
+                        stockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID,scooterB.getColorId());
+                        stockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,inWhouseOrder.getCountryType());
+                        stockQueryWrapper.last("limit 1");
+                        OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(stockQueryWrapper);
+                        if (scooterStock != null){
+                            scooterStock.setWaitInStockQty(scooterStock.getWaitInStockQty() - scooterB.getInWhQty());
+                            scooterStockList.add(scooterStock);
+                        }
+                    }
+                    opeWmsScooterStockService.saveOrUpdateBatch(scooterStockList);
+                }
+
+            default:
+                break;
+            case 2:
+                // 组装件
+                QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeInWhouseCombinB.COL_IN_WH_ID,inWhouseOrder.getId());
+                List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBS)){
+                    List<OpeWmsCombinStock> combinStockList = new ArrayList<>();
+                    for (OpeInWhouseCombinB combinB : combinBS) {
+                        QueryWrapper<OpeWmsCombinStock> combinQueryWrapper = new QueryWrapper<>();
+                        combinQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
+                        combinQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,inWhouseOrder.getCountryType());
+                        combinQueryWrapper.last("limit 1");
+                        OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinQueryWrapper);
+                        if (combinStock != null){
+                            combinStock.setWaitInStockQty(combinStock.getWaitInStockQty() - combinB.getInWhQty());
+                            combinStockList.add(combinStock);
+                        }
+                    }
+                    opeWmsCombinStockService.saveOrUpdateBatch(combinStockList);
+                }
+                break;
+        }
+    }
+
 
     @Override
     public InWhouseDetailResult inWhouseDetail(IdEnter enter) {
