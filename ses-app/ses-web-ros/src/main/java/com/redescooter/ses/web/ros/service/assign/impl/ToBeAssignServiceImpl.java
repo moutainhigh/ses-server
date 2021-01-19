@@ -507,18 +507,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 新增出库记录
-            OpeWmsStockRecord record = new OpeWmsStockRecord();
-            record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
-            record.setDr(DelStatusEnum.VALID.getCode());
             if (null != stock) {
+                OpeWmsStockRecord record = new OpeWmsStockRecord();
+                record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+                record.setDr(DelStatusEnum.VALID.getCode());
                 record.setRelationId(stock.getId());
+                record.setInWhQty(1);
+                record.setRecordType(2);
+                record.setStockType(2);
+                record.setCreatedBy(enter.getUserId());
+                record.setCreatedTime(new Date());
+                opeWmsStockRecordMapper.insert(record);
             }
-            record.setInWhQty(1);
-            record.setRecordType(2);
-            record.setStockType(2);
-            record.setCreatedBy(enter.getUserId());
-            record.setCreatedTime(new Date());
-            opeWmsStockRecordMapper.insert(record);
 
             // 数据同步
             // 车辆信息保存scooter库
