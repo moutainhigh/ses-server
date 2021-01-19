@@ -126,6 +126,9 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeWmsCombinStockService opeWmsCombinStockService;
 
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
+
     @Reference
     private IdAppService idAppService;
 
@@ -337,6 +340,20 @@ public class InWhouseServiceImpl implements InWhouseService {
                 inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
+
+        try {
+            // 如果是从仓库新增的入库单 新增就是待入库状态
+            if (1 == enter.getIfWh()){
+                wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),inWhouseOrder.getCountryType(),enter.getUserId());
+            }else {
+                // 如果是整车入库单或者是组装件入库单 生成的时候就是待入库状态 这个时候 要处理库存
+                if (inWhouseOrder.getOrderType() == 1 || inWhouseOrder.getOrderType() == 2){
+                    wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(),inWhouseOrder.getId(),inWhouseOrder.getCountryType(),enter.getUserId());
+                }
+            }
+        }catch (Exception e) {
+
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -351,6 +368,21 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<OpeInWhouseScooterB> scooterBList = opeInWhouseScooterBService.list(scooter);
                 if (CollectionUtils.isNotEmpty(scooterBList)){
                     opeInWhouseScooterBService.removeByIds(scooterBList.stream().map(OpeInWhouseScooterB::getId).collect(Collectors.toList()));
+                    // 修改库存信息
+                    List<OpeWmsScooterStock> scooterStocks = new ArrayList<>();
+                    for (OpeInWhouseScooterB scooterB : scooterBList) {
+                        QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID,scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,inWhouseOrder.getCountryType());
+                        scooterStockQueryWrapper.last("limit 1");
+                        OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
+                        scooterStock.setWaitInStockQty(scooterStock.getWaitInStockQty() - scooterB.getInWhQty());
+                        scooterStocks.add(scooterStock);
+                    }
+                    if (CollectionUtils.isNotEmpty(scooterStocks)){
+                        opeWmsScooterStockService.saveOrUpdateBatch(scooterStocks);
+                    }
                 }
             default:
                 break;
@@ -361,6 +393,20 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<OpeInWhouseCombinB> combinBList = opeInWhouseCombinBService.list(combin);
                 if (CollectionUtils.isNotEmpty(combinBList)){
                     opeInWhouseCombinBService.removeByIds(combinBList.stream().map(OpeInWhouseCombinB::getId).collect(Collectors.toList()));
+                    // 修改库存信息
+                    List<OpeWmsCombinStock> combinStocks = new ArrayList<>();
+                    for (OpeInWhouseCombinB combinB : combinBList) {
+                        QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,inWhouseOrder.getCountryType());
+                        combinStockQueryWrapper.last("limit 1");
+                        OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
+                        combinStock.setWaitInStockQty(combinStock.getWaitInStockQty() - combinB.getInWhQty());
+                        combinStocks.add(combinStock);
+                    }
+                    if (CollectionUtils.isNotEmpty(combinStocks)){
+                        opeWmsCombinStockService.saveOrUpdateBatch(combinStocks);
+                    }
                 }
                 break;
             case 3:
@@ -370,6 +416,20 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<OpeInWhousePartsB> partsBList = opeInWhousePartsBService.list(parts);
                 if (CollectionUtils.isNotEmpty(partsBList)){
                     opeInWhousePartsBService.removeByIds(partsBList.stream().map(OpeInWhousePartsB::getId).collect(Collectors.toList()));
+                    // 修改库存信息
+                    List<OpeWmsPartsStock> partsStocks = new ArrayList<>();
+                    for (OpeInWhousePartsB partsB : partsBList) {
+                        QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,inWhouseOrder.getCountryType());
+                        partsStockQueryWrapper.last("limit 1");
+                        OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
+                        partsStock.setWaitInStockQty(partsStock.getWaitInStockQty() - partsB.getInWhQty());
+                        partsStocks.add(partsStock);
+                    }
+                    if (CollectionUtils.isNotEmpty(partsStocks)){
+                        opeWmsPartsStockService.saveOrUpdateBatch(partsStocks);
+                    }
                 }
                 break;
         }

@@ -727,7 +727,7 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         }
         List<PruchasingItemResult> result = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource()){
+        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource() && (enter.getSource() ==0 || enter.getSource() == 1)){
             for (PruchasingItemResult itemResult : resultList) {
                 if (itemResult.getAbleQty() > 0){
                     result.add(itemResult);

@@ -538,6 +538,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             type = 4;
         }else if("Combination".equals(partsTypeName)){
             type = 5;
+        }else if("Ecu_Meter".equals(partsTypeName)){
+            type = 6;
         }
         return type;
     }
