@@ -522,15 +522,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 opeWmsStockRecordMapper.insert(record);
             }
 
+            // 获得规格名称
+            String specificatName = getSpecificatNameById(opeCarDistribute.getSpecificatTypeId());
+
             // 数据同步
             // 车辆信息保存scooter库
             BaseScooterEnter saveScooter = new BaseScooterEnter();
             saveScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
-            saveScooter.setScooterNo("1");
+            saveScooter.setScooterNo(o.getRsn());
             saveScooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
             saveScooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
             saveScooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
-            saveScooter.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+            saveScooter.setModel(ScooterModelEnums.showValueByCode(specificatName));
             saveScooter.setLicensePlate(licensePlate);
             saveScooter.setLicensePlatePicture(null);
             saveScooter.setLicensePlateTime(new Date());
@@ -551,7 +554,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
                 item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
-                item.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+                item.setModel(ScooterModelEnums.showValueByCode(specificatName));
                 item.setLongitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLatitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLicensePlate(licensePlate);
@@ -566,7 +569,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
                 item.setScooterId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
-                item.setModel(ScooterModelEnums.SCOOTER_125_CC.getValue());
+                item.setModel(ScooterModelEnums.showValueByCode(specificatName));
                 item.setLongitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLatitude(MapUtil.randomLonLat(Constant.lng));
                 item.setLicensePlate(licensePlate);
