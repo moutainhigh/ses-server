@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
@@ -83,6 +84,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -522,7 +524,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
             // 数据同步
             // 车辆信息保存scooter库
-            /*BaseScooterEnter saveScooter = new BaseScooterEnter();
+            BaseScooterEnter saveScooter = new BaseScooterEnter();
             saveScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
             saveScooter.setScooterNo("1");
             saveScooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
@@ -540,7 +542,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             saveScooter.setLongitule(BigDecimal.ZERO);
             saveScooter.setLatitude(BigDecimal.ZERO);
             saveScooter.setBattery(100);
-            saveScooterList.add(saveScooter);*/
+            saveScooterList.add(saveScooter);
 
             // 查询客户的账号信息
             QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
@@ -577,7 +579,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
         }
         // 将数据存储到scooter库
-        /*scooterService.saveScooter(saveScooterList);*/
+        scooterService.saveScooter(saveScooterList);
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
@@ -779,8 +781,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            // result.setSuccess(Boolean.FALSE);  // 这是正确的
-            result.setSuccess(Boolean.TRUE);  // 这是为了走流程暂时的,后期删掉
+            result.setSuccess(Boolean.FALSE);
             return result;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
