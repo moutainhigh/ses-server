@@ -733,8 +733,10 @@ public class PurchasingServiceImpl implements PurchasingService {
                     result.add(itemResult);
                 }
             }
+            return result;
+        }else {
+            return resultList;
         }
-        return result;
     }
 
     /**
