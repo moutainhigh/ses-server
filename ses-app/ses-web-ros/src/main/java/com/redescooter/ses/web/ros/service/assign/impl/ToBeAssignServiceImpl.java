@@ -564,6 +564,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setTenantId(accountInfo.getTenantId());
                 saveRelationList.add(item);
                 corporateScooterService.saveScooter(saveRelationList);
+                logger.info("新增corporate库");
             }
             // 将数据存储到consumer库
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
@@ -579,10 +580,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setTenantId(accountInfo.getTenantId());
                 saveRelationList.add(item);
                 cusotmerScooterService.saveScooter(saveRelationList);
+                logger.info("新增consumer库");
             }
         }
         // 将数据存储到scooter库
         scooterService.saveScooter(saveScooterList);
+        logger.info("新增scooter库");
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
