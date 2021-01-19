@@ -21,6 +21,9 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
+import com.redescooter.ses.api.mobile.b.vo.CorDriver;
+import com.redescooter.ses.api.mobile.b.vo.CorDriverScooter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.MapUtil;
@@ -146,6 +149,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Reference
     private CusotmerScooterService cusotmerScooterService;
+
+    @Reference
+    private ScooterMobileBService scooterMobileBService;
 
     /**
      * 待分配列表
@@ -575,6 +581,26 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 saveRelationList.add(item);
                 corporateScooterService.saveScooter(saveRelationList);
                 logger.info("客户类型是公司,新增corporate库");
+
+                // 新增cor_driver表
+                long driverId = idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE);
+                CorDriver driver = new CorDriver();
+                driver.setId(driverId);
+                driver.setTenantId(enter.getTenantId());
+                driver.setUserId(enter.getUserId());
+                driver.setCreatedBy(enter.getUserId());
+                driver.setCreatedTime(new Date());
+                scooterMobileBService.addCorDriver(driver);
+
+                // 新增cor_driver_scooter表
+                CorDriverScooter scooter = new CorDriverScooter();
+                scooter.setTenantId(enter.getTenantId());
+                scooter.setDriverId(driverId);
+                scooter.setScooterId(scooterId);
+                scooter.setBeginTime(new Date());
+                scooter.setCreatedBy(enter.getUserId());
+                scooter.setCreatedTime(new Date());
+                scooterMobileBService.addCorDriverScooter(scooter);
             }
             // 将数据存储到consumer库
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
