@@ -552,9 +552,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             saveScooter.setLongitule(BigDecimal.ZERO);
             saveScooter.setLatitude(BigDecimal.ZERO);
             saveScooter.setBattery(100);
-            saveScooter.setCreatedBy(accountInfo.getId());
+            saveScooter.setCreatedBy(enter.getUserId());
             saveScooter.setCreatedTime(new Date());
-            saveScooter.setUpdatedBy(accountInfo.getId());
+            saveScooter.setUpdatedBy(enter.getUserId());
             saveScooter.setUpdatedTime(new Date());
             saveScooterList.add(saveScooter);
 
@@ -568,8 +568,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setLicensePlate(licensePlate);
                 item.setLicensePlatePicture(null);
                 item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
-                item.setUserId(accountInfo.getId());
-                item.setTenantId(accountInfo.getTenantId());
+                item.setUserId(enter.getUserId());
+                item.setTenantId(enter.getTenantId());
                 saveRelationList.add(item);
                 corporateScooterService.saveScooter(saveRelationList);
                 logger.info("新增corporate库");
@@ -584,8 +584,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setLicensePlate(licensePlate);
                 item.setLicensePlatePicture(null);
                 item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
-                item.setUserId(accountInfo.getId());
-                item.setTenantId(accountInfo.getTenantId());
+                item.setUserId(enter.getUserId());
+                item.setTenantId(enter.getTenantId());
                 saveRelationList.add(item);
                 cusotmerScooterService.saveScooter(saveRelationList);
                 logger.info("新增consumer库");
