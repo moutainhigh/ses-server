@@ -527,6 +527,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 获得规格名称
             String specificatName = getSpecificatNameById(opeCarDistribute.getSpecificatTypeId());
 
+            // 查询客户的账号信息
+            QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+
             /**
              * 数据同步
              */
@@ -549,10 +552,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             saveScooter.setLongitule(BigDecimal.ZERO);
             saveScooter.setLatitude(BigDecimal.ZERO);
             saveScooter.setBattery(100);
+            saveScooter.setCreatedBy(accountInfo.getId());
+            saveScooter.setCreatedTime(new Date());
+            saveScooter.setUpdatedBy(accountInfo.getId());
+            saveScooter.setUpdatedTime(new Date());
             saveScooterList.add(saveScooter);
-
-            // 查询客户的账号信息
-            QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
 
             // 将数据存储到corporate库
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
