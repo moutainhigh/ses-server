@@ -75,4 +75,17 @@ public class BaseScooterEnter extends GeneralEnter {
 
     @ApiModelProperty(value="电池电量")
     private Integer battery;
+
+    @ApiModelProperty(value = "创建人")
+    private Long createdBy;
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createdTime;
+
+    @ApiModelProperty(value = "更新人")
+    private Long updatedBy;
+
+    @ApiModelProperty(value = "更新时间")
+    private Date updatedTime;
+
 }
