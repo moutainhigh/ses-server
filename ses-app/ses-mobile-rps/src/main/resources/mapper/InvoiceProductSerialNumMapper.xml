@@ -45,8 +45,7 @@
     </select>
 
     <!--根据serialNum查询出库单序列号信息-->
-    <select id="getInvoiceProductSerialNumBySerialNum" parameterType="java.lang.String"
-            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+    <select id="getInvoiceProductSerialNumBySerialNum" parameterType="java.lang.String" resultMap="BaseResultMap">
         select id, relation_id productId, serial_num serialNum, lot batchNo, qty, arrival_time arrivalTime
         from ope_invoice_product_serial_num
         where dr = 0 and serial_num = #{serialNum}

@@ -34,11 +34,11 @@ public interface InvoiceProductSerialNumMapper {
     /**
      * 根据serialNum查询出库单序列号信息
      * @param serialNum
-     * @return com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO
+     * @return com.redescooter.ses.mobile.rps.dm.OpeInvoiceProductSerialNum
      * @author assert
      * @date 2021-01-10
      */
-    ProductSerialNumberDTO getInvoiceProductSerialNumBySerialNum(String serialNum);
+    OpeInvoiceProductSerialNum getInvoiceProductSerialNumBySerialNum(String serialNum);
 
     /**
      * 添加出库单产品序列号信息

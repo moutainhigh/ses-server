@@ -1,11 +1,12 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
 import com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind;
-    /**
-*@author assert
-*@date 2020/12/30 15:26
-*/
-public interface OpeOrderSerialBindService{
+
+/**
+ * @author assert
+ * @date 2020/12/30 15:26
+ */
+public interface OpeOrderSerialBindService {
 
 
     int deleteByPrimaryKey(Long id);
@@ -21,3 +22,4 @@ public interface OpeOrderSerialBindService{
     int updateByPrimaryKey(OpeOrderSerialBind record);
 
 }
+

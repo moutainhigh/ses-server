@@ -49,4 +49,13 @@ public interface OutWhPartsBMapper {
      */
     String getPartsNameById(Long id);
 
+    /**
+     * 根据id查询出库单部件信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB
+     * @author assert
+     * @date 2021/1/20
+    */
+    OpeOutWhPartsB getOutWhOrderPartsById(Long id);
+
 }

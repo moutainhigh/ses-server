@@ -25,7 +25,8 @@
     <select id="getOutWhOrderScooterByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
         select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
-        ows.qty,ifnull(ows.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
+        ows.qty,ows.already_out_wh_qty alreadyOutWhQty, ows.qc_qty qcQty, ows.unqualified_qty unqualifiedQty,
+        true idClass, bom.id bomId
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -40,7 +41,8 @@
     <select id="getScooterProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
         select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
-        ows.qty,ifnull(ows.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
+        ows.qty,ows.already_out_wh_qty alreadyOutWhQty, ows.qc_qty qcQty, ows.unqualified_qty unqualifiedQty,
+        true idClass, bom.id bomId
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -64,38 +66,50 @@
     <update id="updateOutWhScooterB" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB">
         update ope_out_wh_scooter_b
         <set>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
             <if test="dr != null">
-                #{dr,jdbcType=INTEGER},
+                dr = #{dr,jdbcType=INTEGER},
             </if>
             <if test="outWhId != null">
-                #{outWhId,jdbcType=BIGINT},
+                out_wh_id = #{outWhId,jdbcType=BIGINT},
             </if>
             <if test="groupId != null">
-                #{groupId,jdbcType=BIGINT},
+                group_id = #{groupId,jdbcType=BIGINT},
             </if>
             <if test="colorId != null">
-                #{colorId,jdbcType=BIGINT},
+                color_id = #{colorId,jdbcType=BIGINT},
             </if>
             <if test="qty != null">
-                #{qty,jdbcType=INTEGER},
+                qty = #{qty,jdbcType=INTEGER},
             </if>
             <if test="alreadyOutWhQty != null">
-                #{alreadyOutWhQty,jdbcType=INTEGER},
+                already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="totalQty != null">
+                total_qty = #{totalQty,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
             </if>
             <if test="remark != null">
-                #{remark,jdbcType=VARCHAR},
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
+                created_by = #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
+                updated_by = #{updatedBy,jdbcType=BIGINT},
             </if>
             <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
             </if>
         </set>
         where id = #{id}

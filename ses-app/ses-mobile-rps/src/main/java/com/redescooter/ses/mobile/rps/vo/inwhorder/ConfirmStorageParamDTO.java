@@ -37,7 +37,7 @@ public class ConfirmStorageParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "批次号", dataType = "String")
     private String lot;
 
-    @ApiModelProperty(value = "入库数量(有码无需传递)", dataType = "Integer")
+    @ApiModelProperty(value = "入库数量(无码部件时传递)", dataType = "Integer")
     private Integer qty;
 
 }

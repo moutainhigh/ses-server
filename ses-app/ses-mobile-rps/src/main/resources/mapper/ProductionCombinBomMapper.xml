@@ -36,4 +36,10 @@
 	    where dr = 0 and id = #{id}
     </select>
 
+    <!--根据id查询组装件中文名称-->
+    <select id="getCombinCnNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select cn_name from ope_production_combin_bom
+        where dr = 0 and id = #{id}
+    </select>
+
 </mapper>

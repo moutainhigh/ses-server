@@ -49,4 +49,13 @@ public interface OutWhCombinBMapper {
     */
     int updateOutWhCombinB(OpeOutWhCombinB opeOutWhCombinB);
 
+    /**
+     * 根据id查询出库单组装件信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB
+     * @author assert
+     * @date 2021/1/20
+    */
+    OpeOutWhCombinB getOutWhOrderCombinById(Long id);
+
 }

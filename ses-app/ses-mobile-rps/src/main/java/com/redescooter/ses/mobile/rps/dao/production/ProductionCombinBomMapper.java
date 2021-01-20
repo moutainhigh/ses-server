@@ -18,4 +18,13 @@ public interface ProductionCombinBomMapper {
     */
     OpeProductionCombinBom getCombinBomById(Long id);
 
+    /**
+     * 根据id查询组装件中文名称
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021/1/20
+    */
+    String getCombinCnNameById(Long id);
+
 }

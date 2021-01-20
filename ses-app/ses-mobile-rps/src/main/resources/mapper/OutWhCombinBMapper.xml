@@ -2,11 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="out_wh_id" jdbcType="INTEGER" property="outWhId" />
+        <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
+        <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="total_qty" jdbcType="INTEGER" property="totalQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--根据outWhId查询出库单组装件信息-->
     <select id="getOutWhOrderCombinByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
-        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number, owc.qty,
-        ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
+        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number,
+        owc.qty,owc.already_out_wh_qty alreadyOutWhQty, owc.qc_qty qcQty,
+        owc.unqualified_qty unqualifiedQty, true idClass, bom.id bomId
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom
         on owc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
@@ -16,8 +36,9 @@
     <!--根据productId查询组装件产品详情-->
     <select id="getCombinProductDetailByProductId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
-        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number, owc.qty,
-        ifnull(owc.already_out_wh_qty, 0) alreadyOutWhQty, true idClass, bom.id bomId
+        select owc.id, owc.out_wh_id outWhId, bom.cn_name `name`, bom.bom_no number,
+        owc.qty,owc.already_out_wh_qty alreadyOutWhQty, owc.qc_qty qcQty,
+        owc.unqualified_qty unqualifiedQty, true idClass, bom.id bomId
         from ope_out_wh_combin_b owc
         inner join ope_production_combin_bom bom
         on owc.production_combin_bom_id = bom.id and bom.dr = 0
@@ -34,41 +55,59 @@
     <update id="updateOutWhCombinB" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB">
         update ope_out_wh_combin_b
         <set>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
             <if test="dr != null">
-                #{dr,jdbcType=INTEGER},
+                dr = #{dr,jdbcType=INTEGER},
             </if>
             <if test="outWhId != null">
-                #{outWhId,jdbcType=BIGINT},
+                out_wh_id = #{outWhId,jdbcType=INTEGER},
             </if>
-            <if test="combinName != null and combinName != ''">
-                #{combinName,jdbcType=VARCHAR},
+            <if test="combinName != null">
+                combin_name = #{combinName,jdbcType=VARCHAR},
             </if>
             <if test="productionCombinBomId != null">
-                #{productionCombinBomId,jdbcType=BIGINT},
+                production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
             </if>
             <if test="qty != null">
-                #{qty,jdbcType=INTEGER},
+                qty = #{qty,jdbcType=INTEGER},
             </if>
             <if test="alreadyOutWhQty != null">
-                #{alreadyOutWhQty,jdbcType=INTEGER},
+                already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
             </if>
-            <if test="remark != null and remark != ''">
-                #{remark,jdbcType=VARCHAR},
+            <if test="totalQty != null">
+                total_qty = #{totalQty,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
+                created_by = #{createdBy,jdbcType=BIGINT},
             </if>
             <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
+                updated_by = #{updatedBy,jdbcType=BIGINT},
             </if>
             <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
             </if>
         </set>
         where id = #{id}
     </update>
+
+    <!--根据id查询出库单组装件信息-->
+    <select id="getOutWhOrderCombinById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_out_wh_combin_b
+	    where dr = 0 and id = #{id}
+    </select>
 
 </mapper>

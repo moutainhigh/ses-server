@@ -18,4 +18,13 @@ public interface ProductionPartsMapper {
     */
     OpeProductionParts getProductionPartsByBomId(Long bomId);
 
+    /**
+     * 根据id查询部件中文名称
+     * @param id
+     * @return java.lang.String
+     * @author assert
+     * @date 2021/1/20
+    */
+    String getPartsCnNameById(Long id);
+
 }

@@ -41,10 +41,16 @@ public class OutWarehouseOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "是否有序列号 true/false", dataType = "Boolean")
     private Boolean idClass;
 
-    @ApiModelProperty(value = "出库总数量", dataType = "Integer")
+    @ApiModelProperty(value = "应出库数量", dataType = "Integer")
     private Integer qty;
 
     @ApiModelProperty(value = "已出库数量", dataType = "Integer")
     private Integer alreadyOutWhQty;
+
+    @ApiModelProperty(value = "不合格数量", dataType = "Integer")
+    private Integer unqualifiedQty;
+
+    @ApiModelProperty(value = "质检数量", dataType = "Integer")
+    private Integer qcQty;
 
 }

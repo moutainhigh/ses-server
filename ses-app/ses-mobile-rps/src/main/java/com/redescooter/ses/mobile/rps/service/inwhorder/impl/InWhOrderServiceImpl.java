@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
@@ -15,6 +16,8 @@ import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhousePartsBMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
+import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
@@ -51,6 +54,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
     @Reference
     private IdAppService idAppService;
+    @Reference
+    private ScooterService scooterService;
     @Resource
     private InWhOrderMapper inWhOrderMapper;
     @Resource
@@ -73,6 +78,10 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     private ProductionScooterBomMapper scooterBomMapper;
     @Resource
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+    @Resource
+    private ProductionCombinBomMapper combinBomMapper;
+    @Resource
+    private ProductionPartsMapper partsMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -321,10 +330,10 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 RpsAssert.isTrue(opeInWhouseScooterB.getActInWhQty() > opeInWhouseScooterB.getActInWhQty(),
                         ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
 
-                remainingQty = opeInWhouseScooterB.getQcQty() - qty;
+                remainingQty = opeInWhouseScooterB.getQcQty() - 1;
                 name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
                 // 更新入库单车辆实际入库数量
-                opeInWhouseScooterB.setActInWhQty(opeInWhouseScooterB.getActInWhQty() + qty);
+                opeInWhouseScooterB.setActInWhQty(opeInWhouseScooterB.getActInWhQty() + 1);
                 opeInWhouseScooterB.setUpdatedBy(paramDTO.getUserId());
                 opeInWhouseScooterB.setUpdatedTime(new Date());
                 inWhouseScooterBMapper.updateInWhouseScooter(opeInWhouseScooterB);
@@ -338,19 +347,24 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
 
                 // 库存操作
-                opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() + qty);
-                opeWmsScooterStock.setWaitInStockQty(opeWmsScooterStock.getWaitInStockQty() - qty);
+                opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() + 1);
+                opeWmsScooterStock.setWaitInStockQty(opeWmsScooterStock.getWaitInStockQty() - 1);
                 wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
+
+                /**
+                 * TODO 保存车辆信息至scooter表
+                 */
+
                 break;
             case 2:
                 OpeInWhouseCombinB opeInWhouseCombinB = inWhouseCombinBMapper.getInWhouseCombinById(paramDTO.getProductId());
                 RpsAssert.isTrue(opeInWhouseCombinB.getActInWhQty() > opeInWhouseCombinB.getActInWhQty(),
                         ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
 
-                remainingQty = opeInWhouseCombinB.getQcQty() - qty;
-                name = null;
+                remainingQty = opeInWhouseCombinB.getQcQty() - 1;
+                name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
                 // 更新入库单组装件实际入库数量
-                opeInWhouseCombinB.setActInWhQty(opeInWhouseCombinB.getActInWhQty() + qty);
+                opeInWhouseCombinB.setActInWhQty(opeInWhouseCombinB.getActInWhQty() + 1);
                 opeInWhouseCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeInWhouseCombinB.setUpdatedTime(new Date());
                 inWhouseCombinBMapper.updateInWhouseCombin(opeInWhouseCombinB);
@@ -363,8 +377,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
 
                 // 库存操作
-                opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() + qty);
-                opeWmsCombinStock.setWaitInStockQty(opeWmsCombinStock.getWaitInStockQty() - qty);
+                opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() + 1);
+                opeWmsCombinStock.setWaitInStockQty(opeWmsCombinStock.getWaitInStockQty() - 1);
                 wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
                 break;
             default:
@@ -373,8 +387,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
 
                 remainingQty = opeInWhousePartsB.getQcQty() - qty;
-                name = null;
-                // 更新入库单部件实际入库数量
+                name = partsMapper.getPartsCnNameById(paramDTO.getBomId());
+                // 更新入库单部件实际入库数量,部件这边因为会存在有码跟无码的质检,所以质检数量需要根据入参来调整
                 opeInWhousePartsB.setActInWhQty(opeInWhousePartsB.getActInWhQty() + qty);
                 opeInWhousePartsB.setUpdatedBy(paramDTO.getUserId());
                 opeInWhousePartsB.setUpdatedTime(new Date());

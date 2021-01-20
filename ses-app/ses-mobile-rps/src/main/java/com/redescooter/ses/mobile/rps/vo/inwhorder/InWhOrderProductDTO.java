@@ -23,6 +23,9 @@ public class InWhOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "bomId", dataType = "Long")
     private Long bomId;
 
+    @ApiModelProperty(value = "部件类型(部件使用) 1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU", dataType = "Integer")
+    private Integer partsType;
+
     @ApiModelProperty(value = "产品名称", dataType = "String")
     private String name;
 

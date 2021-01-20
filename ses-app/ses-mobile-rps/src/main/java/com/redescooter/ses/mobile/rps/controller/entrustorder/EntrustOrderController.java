@@ -79,19 +79,6 @@ public class EntrustOrderController {
     }
 
     /**
-     * 修改部件实际发货数量
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
-     * @author assert
-     * @date 2021/1/4
-    */
-    @ApiOperation(value = "修改部件实际发货数量")
-    @PostMapping(value = "/updatePartActualDeliveryQty")
-    public Response<GeneralResult> updatePartActualDeliveryQty(@ModelAttribute UpdatePartActualDeliveryQtyParamDTO paramDTO) {
-        return new Response<>(entrustOrderService.updatePartActualDeliveryQty(paramDTO));
-    }
-
-    /**
      * 保存委托单产品发货数量信息
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>

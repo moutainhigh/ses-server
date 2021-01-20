@@ -5,12 +5,13 @@ import javax.annotation.Resource;
 import com.redescooter.ses.mobile.rps.dao.base.OpeOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind;
 import com.redescooter.ses.mobile.rps.service.base.OpeOrderSerialBindService;
+
 /**
-*@author assert
-*@date 2020/12/30 15:26
-*/
+ * @author assert
+ * @date 2020/12/30 15:26
+ */
 @Service
-public class OpeOrderSerialBindServiceImpl implements OpeOrderSerialBindService{
+public class OpeOrderSerialBindServiceImpl implements OpeOrderSerialBindService {
 
     @Resource
     private OpeOrderSerialBindMapper opeOrderSerialBindMapper;
@@ -46,3 +47,4 @@ public class OpeOrderSerialBindServiceImpl implements OpeOrderSerialBindService{
     }
 
 }
+

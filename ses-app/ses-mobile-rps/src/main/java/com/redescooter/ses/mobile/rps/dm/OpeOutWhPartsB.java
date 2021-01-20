@@ -4,14 +4,17 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @author assert
  * @date 2021/1/19 15:28
  */
-@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeOutWhPartsB")
 @Data
+@Builder
+@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeOutWhPartsB")
 public class OpeOutWhPartsB {
     /**
      * 主键id
