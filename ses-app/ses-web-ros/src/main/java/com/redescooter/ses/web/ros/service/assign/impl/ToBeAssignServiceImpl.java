@@ -461,25 +461,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
             String licensePlate = opeCarDistribute.getLicensePlate();
 
-            // 修改询价单表中客户需求车辆数
-            LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
-            inquiryWrapper.eq(OpeCustomerInquiry::getDr, DelStatusEnum.VALID.getCode());
-            inquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
-            inquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
-            List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryMapper.selectList(inquiryWrapper);
-            if (CollectionUtils.isNotEmpty(inquiryList)) {
-                OpeCustomerInquiry inquiry = inquiryList.get(0);
-                if (null != inquiry) {
-                    Integer quantity = inquiry.getScooterQuantity();
-                    OpeCustomerInquiry param = new OpeCustomerInquiry();
-                    param.setId(inquiry.getId());
-                    param.setScooterQuantity(quantity - 1);
-                    param.setUpdatedBy(enter.getUserId());
-                    param.setUpdatedTime(new Date());
-                    opeCustomerInquiryMapper.updateById(param);
-                }
-            }
-
             /**
              * 修改成品库车辆库存
              */
