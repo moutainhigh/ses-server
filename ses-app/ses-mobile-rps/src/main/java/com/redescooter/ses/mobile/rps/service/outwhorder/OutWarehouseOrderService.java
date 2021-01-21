@@ -5,8 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
-import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 
 import java.util.Map;
@@ -80,14 +78,5 @@ public interface OutWarehouseOrderService {
      * @date 2021-01-10
      */
     GeneralResult outWarehouse(IdEnter enter);
-    
-    /**
-     * 修改部件质检数量
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
-     * @author assert
-     * @date 2021-01-10
-     */
-    GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO);
 
 }

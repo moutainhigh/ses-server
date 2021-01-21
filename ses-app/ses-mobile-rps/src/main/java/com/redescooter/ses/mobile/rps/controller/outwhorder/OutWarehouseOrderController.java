@@ -104,19 +104,6 @@ public class OutWarehouseOrderController {
     public Response<OutWhOrderProductDetailDTO> getOutWhOrderProductDetailByProductId(@ModelAttribute QueryProductDetailParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.getOutWhOrderProductDetailByProductId(paramDTO));
     }
-    
-    /**
-     * 修改部件质检数量
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
-     * @author assert
-     * @date 2021-01-10
-     */
-    @ApiOperation(value = "修改部件质检数量")
-    @PostMapping(value = "/updatePartsQcQty")
-    public Response<GeneralResult> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
-        return new Response<>(outWarehouseOrderService.updatePartsQcQty(paramDTO));
-    }
 
     /**
      * 提交出库

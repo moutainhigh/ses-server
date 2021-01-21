@@ -27,15 +27,15 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
 import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
-import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -134,35 +134,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         return PageResult.create(paramDTO, count, inWhOrderMapper.getInWarehouseOrderList(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public GeneralResult startQc(IdEnter enter) {
-        InWhOrderDetailDTO inWhOrderDetail = inWhOrderMapper.getInWhOrderDetailById(enter.getId());
-        RpsAssert.isNull(inWhOrderDetail, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(),
-                ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
-
-        RpsAssert.isTrue(!InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue().equals(inWhOrderDetail.getStatus()),
-                ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
-
-        /**
-         * 更新入库单状态为 “质检中”, 保存订单操作记录
-         */
-        OpeInWhouseOrder opeInWhouseOrder = new OpeInWhouseOrder();
-        opeInWhouseOrder.setId(enter.getId());
-        opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.INSPECTING.getValue());
-        opeInWhouseOrder.setUpdatedBy(enter.getUserId());
-        opeInWhouseOrder.setUpdatedTime(new Date());
-        inWhOrderMapper.updateInWhOrder(opeInWhouseOrder);
-
-        opTraceService.insertOpTrace(inWhOrderDetail.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(),
-                OrderOperationTypeEnums.START_QC.getValue(), inWhOrderDetail.getRemark(), enter.getUserId());
-
-        orderStatusFlowService.insertOrderStatusFlow(inWhOrderDetail.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(),
-                InWhouseOrderStatusEnum.INSPECTING.getValue(), inWhOrderDetail.getRemark(), enter.getUserId());
-
-        return new GeneralResult(enter.getRequestId());
-    }
-
     @Override
     public InWhOrderDetailDTO getInWarehouseOrderDetailById(IdEnter enter) {
         InWhOrderDetailDTO inWhOrderDetail = inWhOrderMapper.getInWhOrderDetailById(enter.getId());
@@ -185,32 +156,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 break;
         }
 
-        /**
-         * 已质检数量+质检失败数量 < 应入库数量 ---- 待质检
-         */
-        List<InWhOrderProductDTO> pendingQcProductList = productList.stream().filter(
-                p -> (p.getQcQty() + p.getUnqualifiedQty()) < p.getQty()
-        ).collect(Collectors.toList());
-
-        /**
-         * 已质检数量 == 应入库数量 ---- 质检成功
-         */
-        List<InWhOrderProductDTO> qcSuccessProductList = productList.stream().filter(
-                p -> p.getQcQty().equals(p.getQty())
-        ).collect(Collectors.toList());
-
-        /**
-         * 质检失败数量>0 && 应入库数量 == 已质检数量+质检失败数量 ---- 质检失败
-         */
-        List<InWhOrderProductDTO> qcFailedProductList = productList.stream().filter(
-                p -> p.getUnqualifiedQty() > 0 && p.getQty().equals(p.getQcQty() + p.getUnqualifiedQty())
-        ).collect(Collectors.toList());
-
-
-        inWhOrderDetail.setPendingQcProductList(pendingQcProductList);
-        inWhOrderDetail.setQcSuccessProductList(qcSuccessProductList);
-        inWhOrderDetail.setQcFailedProductList(qcFailedProductList);
-
+        inWhOrderDetail.setProductList(productList);
         return inWhOrderDetail;
     }
 
@@ -237,82 +183,9 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         return inWhOrderProductDetail;
     }
 
-
-    @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO) {
-        OpeInWhousePartsB opeInWhousePartsB = inWhousePartsBMapper.getInWhousePartsById(paramDTO.getProductId());
-        RpsAssert.isNull(opeInWhousePartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-
-        RpsAssert.isTrue(paramDTO.getQcQty() > opeInWhousePartsB.getInWhQty(),
-                ExceptionCodeEnums.QC_QTY_GREATER_THAN_INBOUND_QTY.getCode(), ExceptionCodeEnums.QC_QTY_GREATER_THAN_INBOUND_QTY.getMessage());
-
-        /**
-         * 修改入库单部件信息
-         */
-        opeInWhousePartsB.setQcQty(paramDTO.getQcQty());
-        opeInWhousePartsB.setUnqualifiedQty(opeInWhousePartsB.getInWhQty() - paramDTO.getQcQty());
-        opeInWhousePartsB.setUpdatedBy(paramDTO.getUserId());
-        opeInWhousePartsB.setUpdatedTime(new Date());
-
-        inWhousePartsBMapper.updateInWhouseParts(opeInWhousePartsB);
-
-        return new GeneralResult(paramDTO.getRequestId());
-    }
-
-    @Override
-    public GeneralResult completeQc(IdEnter enter) {
-        InWhOrderDetailDTO inWhOrderDetail = inWhOrderMapper.getInWhOrderDetailById(enter.getId());
-        RpsAssert.isNull(inWhOrderDetail, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(),
-                ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
-
-        /**
-         * 查询入库单产品信息 1车辆 2组装件 3部件
-         */
-        List<InWhOrderProductDTO> productList = null;
-        switch (inWhOrderDetail.getOrderType()) {
-            case 1:
-                productList = inWhouseScooterBMapper.getInWhOrderScooterByInWhId(inWhOrderDetail.getId());
-                break;
-            case 2:
-                productList = inWhouseCombinBMapper.getInWhOrderCombinByInWhId(inWhOrderDetail.getId());
-                break;
-            default:
-                productList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(inWhOrderDetail.getId());
-                break;
-        }
-
-        List<InWhOrderProductDTO> pendingQcProductList = productList.stream().filter(
-                p -> (p.getQcQty() + p.getUnqualifiedQty()) < p.getQty()
-        ).collect(Collectors.toList());
-
-        RpsAssert.isNotEmpty(pendingQcProductList, ExceptionCodeEnums.QC_IS_NOT_COMPLETED.getCode(),
-                ExceptionCodeEnums.QC_IS_NOT_COMPLETED.getMessage());
-
-        /**
-         * 修改入库单状态为 “待入库”
-         */
-        OpeInWhouseOrder opeInWhouseOrder = new OpeInWhouseOrder();
-        opeInWhouseOrder.setId(inWhOrderDetail.getId());
-        opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_IN_WH.getValue());
-        opeInWhouseOrder.setQcCompletionTime(new Date());
-        opeInWhouseOrder.setUpdatedBy(enter.getUserId());
-        opeInWhouseOrder.setUpdatedTime(new Date());
-        inWhOrderMapper.updateInWhOrder(opeInWhouseOrder);
-
-        /**
-         * 保存单据状态流转信息
-         */
-        orderStatusFlowService.insertOrderStatusFlow(inWhOrderDetail.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(),
-                InWhouseOrderStatusEnum.WAIT_IN_WH.getValue(), inWhOrderDetail.getRemark(), enter.getUserId());
-
-        return new GeneralResult(enter.getRequestId());
-    }
-
-    @Override
-    public ConfirmStorageResultDTO confirmStorage(ConfirmStorageParamDTO paramDTO) {
-        ConfirmStorageResultDTO resultDTO = new ConfirmStorageResultDTO();
+    public SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
+        SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         // 公共参数
         Integer qty = null == paramDTO.getQty() ? 1 : paramDTO.getQty();
         Long relationId;
@@ -429,13 +302,15 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         /**
          * 设置确认入库返回结果信息
          */
-        resultDTO.setQty(remainingQty);
         resultDTO.setName(name);
-        resultDTO.setPartsNo(paramDTO.getPartsNo());
-        resultDTO.setLot(paramDTO.getLot());
-        resultDTO.setSerialNum(paramDTO.getSerialNum());
 
         return resultDTO;
+    }
+
+    @Override
+    public GeneralResult confirmStorage(IdEnter enter) {
+
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

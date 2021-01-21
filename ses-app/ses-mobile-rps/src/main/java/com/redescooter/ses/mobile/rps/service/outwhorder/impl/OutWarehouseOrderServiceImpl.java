@@ -87,6 +87,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
     @Override
     public Map<Integer, Integer> getOutWarehouseTypeCount(CountByOrderTypeParamDTO paramDTO) {
+        // 调整status值,避免恶意传参导致查询数据有问题
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
         List<CountByStatusResult> countByStatusResultList = outWarehouseOrderMapper.getOutWarehouseTypeCount(paramDTO);
         /**
          * {outType, totalCount}
@@ -106,6 +108,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
     @Override
     public PageResult<QueryOutWarehouseOrderResultDTO> getOutWarehouseOrderList(QueryOutWarehouseOrderParamDTO paramDTO) {
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
         int count = outWarehouseOrderMapper.countByOutWarehouseOrder(paramDTO);
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
@@ -217,58 +220,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         rosOutWhOrderService.outWarehouse(enter);
 
         return new GeneralResult(enter.getRequestId());
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public GeneralResult updatePartsQcQty(UpdatePartsQcQtyParamDTO paramDTO) {
-        OutWhOrderProductDetailDTO outWhOrderProduct = outWhPartsBMapper.getPartsProductDetailByProductId(paramDTO.getProductId());
-
-        /**
-         * 数据完整性校验 1.产品不存在 2.产品已质检,无需再次质检 3.质检数量有误
-         */
-        RpsAssert.isNull(outWhOrderProduct, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-
-        RpsAssert.isTrue(outWhOrderProduct.getAlreadyOutWhQty() > 0, ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_NOT_NEED_QC.getMessage());
-
-        RpsAssert.isTrue(paramDTO.getQcQty() > outWhOrderProduct.getQty(), ExceptionCodeEnums.QC_QTY_GREATER_THAN_QTY.getCode(),
-                ExceptionCodeEnums.QC_QTY_GREATER_THAN_QTY.getMessage());
-
-        /**
-         * 更新部件质检数量、质检图片信息
-         */
-        OpeOutWhPartsB opeOutWhPartsB = OpeOutWhPartsB.builder()
-                .id(paramDTO.getProductId())
-                .alreadyOutWhQty(paramDTO.getQcQty())
-                .picture(paramDTO.getImageUrls())
-                .updatedBy(paramDTO.getUserId())
-                .updatedTime(new Date())
-                .build();
-        outWhPartsBMapper.updateOutWhPartsB(opeOutWhPartsB);
-
-        /**
-         * 更新出库单状态为部分出库和已质检总数
-         */
-        int alreadyOutWhQty = outWarehouseOrderMapper.getOutWhOrderAlreadyOutWhQtyById(outWhOrderProduct.getOutWhId());
-
-        OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
-        opeOutWhouseOrder.setId(outWhOrderProduct.getOutWhId());
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.PARTIAL_DELIVERY.getValue());
-        opeOutWhouseOrder.setAlreadyOutWhQty(alreadyOutWhQty + paramDTO.getQcQty());
-        opeOutWhouseOrder.setUpdatedBy(paramDTO.getUserId());
-        opeOutWhouseOrder.setUpdatedTime(new Date());
-        outWarehouseOrderMapper.updateOutWarehouseOrder(opeOutWhouseOrder);
-
-        /**
-         * 质检完成库存操作扣减(出库)
-         */
-        OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(outWhOrderProduct.getBomId());
-        opeWmsPartsStock.setUsedStockQty(opeWmsPartsStock.getUsedStockQty() + paramDTO.getQcQty());
-        wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
-
-        return new GeneralResult(paramDTO.getRequestId());
     }
 
 }

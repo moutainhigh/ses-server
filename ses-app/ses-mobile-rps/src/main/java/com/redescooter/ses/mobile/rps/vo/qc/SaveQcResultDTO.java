@@ -14,13 +14,19 @@ import lombok.Data;
 @ApiModel(value = "保存质检结果返回对象")
 public class SaveQcResultDTO extends GeneralResult {
 
-    @ApiModelProperty(value = "序列号", dataType = "String")
-    private String serialNum;
+    @ApiModelProperty(value = "剩余数量", dataType = "String")
+    private Integer qty;
+
+    @ApiModelProperty(value = "名称", dataType = "String")
+    private String name;
+
+    @ApiModelProperty(value = "部件号", dataType = "String")
+    private String partsNo;
 
     @ApiModelProperty(value = "批次号", dataType = "String")
     private String lot;
 
-    @ApiModelProperty(value = "部件号", dataType = "String")
-    private String partsNo;
+    @ApiModelProperty(value = "序列号", dataType = "String")
+    private String serialNum;
 
 }

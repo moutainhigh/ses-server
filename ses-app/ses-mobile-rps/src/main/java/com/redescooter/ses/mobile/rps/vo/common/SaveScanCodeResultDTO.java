@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.vo.inwhorder;
+package com.redescooter.ses.mobile.rps.vo.common;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -6,13 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 确认入库返回结果对象 DTO
+ * 保存扫码结果返回对象 DTO
  * @author assert
- * @date 2021/1/19 17:29
+ * @date 2021/1/21 15:35
  */
 @Data
-@ApiModel(value = "确认入库返回结果对象")
-public class ConfirmStorageResultDTO extends GeneralResult {
+@ApiModel(value = "保存扫码结果返回对象")
+public class SaveScanCodeResultDTO extends GeneralResult {
 
     @ApiModelProperty(value = "剩余数量", dataType = "String")
     private Integer qty;

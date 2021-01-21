@@ -89,6 +89,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
 
     @Override
     public PageResult<QueryEntrustOrderResultDTO> getEntrustOrderList(QueryEntrustOrderParamDTO paramDTO) {
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
         int count = entrustOrderMapper.countByEntrustOrder(paramDTO);
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);

@@ -47,13 +47,7 @@ public class InWhOrderDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "质检完成时间")
     private Date qcCompletionTime;
 
-    @ApiModelProperty(value = "待质检产品集合")
-    private List<InWhOrderProductDTO> pendingQcProductList;
-
-    @ApiModelProperty(value = "质检成功产品集合")
-    private List<InWhOrderProductDTO> qcSuccessProductList;
-
-    @ApiModelProperty(value = "质检失败产品集合")
-    private List<InWhOrderProductDTO> qcFailedProductList;
+    @ApiModelProperty(value = "入库单产品列表")
+    private List<InWhOrderProductDTO> productList;
 
 }

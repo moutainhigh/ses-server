@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
@@ -32,10 +33,11 @@ import com.redescooter.ses.mobile.rps.dao.wms.*;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.qc.QcService;
+import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QcProductResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
+import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -53,7 +55,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class QcServiceImpl implements QcService {
+public class QcOrderServiceImpl implements QcOrderService {
 
     @Reference
     private IdAppService idAppService;
@@ -106,6 +108,16 @@ public class QcServiceImpl implements QcService {
     @Resource
     private TransactionTemplate transactionTemplate;
 
+
+    @Override
+    public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Integer> getQcTypeCount(CountByOrderTypeParamDTO paramDTO) {
+        return null;
+    }
 
     @Override
     public QueryQcTemplateResultDTO getQcTemplateByIdAndType(QueryQcTemplateParamDTO paramDTO) {

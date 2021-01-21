@@ -2,9 +2,11 @@ package com.redescooter.ses.mobile.rps.controller.inwhorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
-import com.redescooter.ses.mobile.rps.vo.outwhorder.UpdatePartsQcQtyParamDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,19 +71,6 @@ public class InWarehouseOrderController {
     }
 
     /**
-     * 入库单开始质检
-     * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
-     * @author assert
-     * @date 2021/1/15
-    */
-    @ApiOperation(value = "入库单开始质检")
-    @PostMapping(value = "/qc")
-    public Response<GeneralResult> startQc(@ModelAttribute IdEnter enter) {
-        return new Response<>(inWhOrderService.startQc(enter));
-    }
-
-    /**
      * 根据id查询入库单详情
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO>
@@ -95,55 +84,42 @@ public class InWarehouseOrderController {
     }
 
     /**
-     * 根据productId查询入库单产品详情(1.0.0版本没有这个接口)
+     * 根据productId查询入库单产品详情
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO>
      * @author assert
      * @date 2021/1/19
      */
-    @ApiOperation(value = "入库单产品详情(1.0.0版本没有这个接口)", notes = "根据productId查询入库单产品详情")
+    @ApiOperation(value = "入库单产品详情", notes = "根据productId查询入库单产品详情")
     @PostMapping(value = "/productDetail")
     public Response<InWhOrderProductDetailDTO> getProductDetailByProductId(@ModelAttribute QueryProductDetailParamDTO paramDTO) {
         return new Response<>(inWhOrderService.getProductDetailByProductId(paramDTO));
     }
 
     /**
-     * 修改部件质检数量
+     * 保存扫码结果
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
      * @author assert
-     * @date 2021/1/18
+     * @date 2021/1/21
     */
-    @ApiOperation(value = "修改部件质检数量", notes = "修改部件质检数量(用于无码部件使用)")
-    @PostMapping(value = "/updatePartsQcQty")
-    public Response<GeneralResult> updatePartsQcQty(@ModelAttribute UpdatePartsQcQtyParamDTO paramDTO) {
-        return new Response<>(inWhOrderService.updatePartsQcQty(paramDTO));
-    }
-
-    /**
-     * 完成质检
-     * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
-     * @author assert
-     * @date 2021/1/18
-    */
-    @ApiOperation(value = "完成质检")
-    @PostMapping(value = "/completeQc")
-    public Response<GeneralResult> completeQc(@ModelAttribute IdEnter enter) {
-        return new Response<>(inWhOrderService.completeQc(enter));
+    @ApiOperation(value = "保存扫码结果")
+    @PostMapping(value = "/saveScanCodeResult")
+    public Response<SaveScanCodeResultDTO> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
+        return new Response<>(inWhOrderService.saveScanCodeResult(paramDTO));
     }
 
     /**
      * 确认入库
-     * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.ConfirmStorageResultDTO>
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/19
     */
     @ApiOperation(value = "确认入库")
     @PostMapping(value = "/confirmStorage")
-    public Response<ConfirmStorageResultDTO> confirmStorage(@ModelAttribute ConfirmStorageParamDTO paramDTO) {
-        return new Response<>(inWhOrderService.confirmStorage(paramDTO));
+    public Response<GeneralResult> confirmStorage(@ModelAttribute IdEnter enter) {
+        return new Response<>(inWhOrderService.confirmStorage(enter));
     }
 
 }

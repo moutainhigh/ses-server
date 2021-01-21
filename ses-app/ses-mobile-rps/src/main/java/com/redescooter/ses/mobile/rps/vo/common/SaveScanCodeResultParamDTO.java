@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.rps.vo.inwhorder;
+package com.redescooter.ses.mobile.rps.vo.common;
 
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -8,28 +8,25 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 确认入库入参对象 DTO
+ * 保存扫码结果入参对象 DTO
  * @author assert
  * @date 2021/1/19 17:23
  */
 @Data
-@ApiModel(value = "确认入库入参对象")
-public class ConfirmStorageParamDTO extends GeneralEnter {
+@ApiModel(value = "保存扫码结果入参对象")
+public class SaveScanCodeResultParamDTO extends GeneralEnter {
 
     @NotNull(code = ValidationExceptionCode.BOM_ID_IS_EMPTY, message = "bomId不能为空")
     @ApiModelProperty(value = "bomId", dataType = "Long", required = true)
     private Long bomId;
 
-    @NotNull(code = ValidationExceptionCode.PRODUCT_ID_IS_EMPTY, message = "产品id不存在")
+    @NotNull(code = ValidationExceptionCode.PRODUCT_ID_IS_EMPTY, message = "产品id不能为空")
     @ApiModelProperty(value = "产品id", dataType = "Long", required = true)
     private Long productId;
 
-    @NotNull(code = ValidationExceptionCode.PRODUCT_TYPE_IS_EMPTY, message = "产品类型不存在")
+    @NotNull(code = ValidationExceptionCode.PRODUCT_TYPE_IS_EMPTY, message = "产品类型不能为空")
     @ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer")
     private Integer productType;
-
-    @ApiModelProperty(value = "部件号", dataType = "String")
-    private String partsNo;
 
     @ApiModelProperty(value = "产品序列号", dataType = "String")
     private String serialNum;
