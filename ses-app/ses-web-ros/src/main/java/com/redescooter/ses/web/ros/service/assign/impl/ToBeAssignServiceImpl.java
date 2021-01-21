@@ -594,6 +594,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
                 // 新增cor_driver_scooter表
                 CorDriverScooter scooter = new CorDriverScooter();
+                scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
                 scooter.setTenantId(enter.getTenantId());
                 scooter.setDriverId(driverId);
                 scooter.setScooterId(scooterId);
