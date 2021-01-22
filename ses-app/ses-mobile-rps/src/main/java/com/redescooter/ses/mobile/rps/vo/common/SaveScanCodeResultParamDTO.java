@@ -28,6 +28,9 @@ public class SaveScanCodeResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer")
     private Integer productType;
 
+    @ApiModelProperty(value = "部件号", dataType = "String")
+    private String partsNo;
+
     @ApiModelProperty(value = "产品序列号", dataType = "String")
     private String serialNum;
 

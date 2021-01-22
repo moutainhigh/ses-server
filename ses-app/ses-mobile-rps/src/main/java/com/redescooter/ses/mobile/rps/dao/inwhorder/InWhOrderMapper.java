@@ -6,7 +6,6 @@ import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -70,5 +69,14 @@ public interface InWhOrderMapper {
      * @date 2021/1/18
     */
     InWhOrderDetailDTO getInWhOrderDetailById(Long id);
+
+    /**
+     * 根据id查询入库单信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder
+     * @author assert
+     * @date 2021-01-21
+     */
+    OpeInWhouseOrder getInWhOrderById(Long id);
 
 }

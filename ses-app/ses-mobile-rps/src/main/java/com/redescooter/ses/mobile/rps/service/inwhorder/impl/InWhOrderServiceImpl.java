@@ -2,6 +2,8 @@ package com.redescooter.ses.mobile.rps.service.inwhorder.impl;
 
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
+import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -225,8 +227,9 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
 
                 /**
-                 * TODO 保存车辆信息至scooter表
+                 * 保存车辆信息至scooter表
                  */
+
 
                 break;
             case 2:
@@ -296,19 +299,43 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         opeWmsStockRecord.setCreatedTime(new Date());
         opeWmsStockRecord.setUpdatedBy(paramDTO.getUserId());
         opeWmsStockRecord.setUpdatedTime(new Date());
-
         opeWmsStockRecordMapper.insert(opeWmsStockRecord);
 
         /**
          * 设置确认入库返回结果信息
          */
+        resultDTO.setQty(remainingQty);
         resultDTO.setName(name);
+        resultDTO.setPartsNo(paramDTO.getPartsNo());
+        resultDTO.setLot(paramDTO.getLot());
+        resultDTO.setSerialNum(paramDTO.getSerialNum());
+        resultDTO.setProductionDate(new Date());
 
         return resultDTO;
     }
 
     @Override
     public GeneralResult confirmStorage(IdEnter enter) {
+        OpeInWhouseOrder opeInWhouseOrder = inWhOrderMapper.getInWhOrderById(enter.getId());
+        RpsAssert.isNull(opeInWhouseOrder, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
+
+        if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
+            /**
+             * 更新采购单状态为 “已入库”
+             */
+            ProductionPurchasEnums.HAS_BEEN_STORED.getValue();
+        } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
+            /**
+             * 更新组装单为 “已入库”
+             */
+            CombinOrderStatusEnums.ALREADY_IN_WHOUSE.getValue();
+        }
+
+        // 修改入库单状态为 “已入库”
+        opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        opeInWhouseOrder.setUpdatedBy(enter.getUserId());
+        opeInWhouseOrder.setUpdatedTime(new Date());
 
         return new GeneralResult(enter.getRequestId());
     }

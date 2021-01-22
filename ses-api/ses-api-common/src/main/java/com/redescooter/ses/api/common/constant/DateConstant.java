@@ -24,6 +24,12 @@ public interface DateConstant {
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss
      */
     String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * 缺省的日期时间显示格式：yyyy/MM/dd HH:mm:ss
+     */
+    String DEFAULT_DATETIME_FORMAT_TWO = "yyyy/MM/dd HH:mm:ss";
+
     /**
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss:sss
      */

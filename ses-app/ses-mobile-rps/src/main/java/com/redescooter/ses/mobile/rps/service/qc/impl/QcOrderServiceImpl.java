@@ -40,6 +40,7 @@ import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
@@ -298,7 +299,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeOrderSerialBindNew.setOrderBId(paramDTO.getProductId());
                     opeOrderSerialBindNew.setOrderType(OrderTypeEnums.FACTORY_INBOUND.getValue());
                     opeOrderSerialBindNew.setProductType(paramDTO.getProductType());
-                    opeOrderSerialBindNew.setSerialNum(getProductSerialNum(paramDTO.getProductType()));
+                    opeOrderSerialBindNew.setSerialNum(getProductSerialNum(paramDTO.getProductType(), paramDTO.getSerialNum()));
                     opeOrderSerialBindNew.setLot(paramDTO.getLot());
                     opeOrderSerialBindNew.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
                     opeOrderSerialBindNew.setCreatedBy(userId);
@@ -710,9 +711,10 @@ public class QcOrderServiceImpl implements QcOrderService {
     /**
      * 获取产品序列号
      * @param productType 产品类型 1车辆 2组装件 3部件
+     * @param serialNum 序列号
      * @return
      */
-    private String getProductSerialNum(Integer productType) {
+    private String getProductSerialNum(Integer productType, String serialNum) {
         Calendar cal = Calendar.getInstance();
         // 年、月、日
         String year = String.valueOf(cal.get(Calendar.YEAR));
@@ -733,9 +735,9 @@ public class QcOrderServiceImpl implements QcOrderService {
                 structureType = "D";
                 break;
             case 2:
-                return "COMBINATION" + System.currentTimeMillis();
+                return StringUtils.isNotBlank(serialNum) ? serialNum : "COMBINATION" + System.currentTimeMillis();
             default:
-                return "PARTS" + System.currentTimeMillis();
+                return StringUtils.isNotBlank(serialNum) ? serialNum : "PARTS" + System.currentTimeMillis();
         }
 
         /**

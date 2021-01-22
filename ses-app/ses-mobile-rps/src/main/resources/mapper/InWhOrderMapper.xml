@@ -2,6 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhOrderMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="country_type" jdbcType="INTEGER" property="countryType" />
+        <result column="in_wh_no" jdbcType="VARCHAR" property="inWhNo" />
+        <result column="in_wh_status" jdbcType="INTEGER" property="inWhStatus" />
+        <result column="wh_type" jdbcType="INTEGER" property="whType" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="relation_order_id" jdbcType="BIGINT" property="relationOrderId" />
+        <result column="relation_order_no" jdbcType="VARCHAR" property="relationOrderNo" />
+        <result column="relation_order_type" jdbcType="INTEGER" property="relationOrderType" />
+        <result column="in_wh_type" jdbcType="INTEGER" property="inWhType" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="qc_completion_time" jdbcType="TIMESTAMP" property="qcCompletionTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--入库单列表查询条件-->
     <sql id="InWarehouseOrderListWhere">
         <if test="orderType != null">and order_type = #{orderType}</if>
@@ -121,6 +146,12 @@
         select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
         in_wh_type `type`, in_wh_status `status`, remark, qc_completion_time qcCompletionTime
 	    from ope_in_whouse_order
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据id查询入库单信息-->
+    <select id="getInWhOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_order
 	    where dr = 0 and id = #{id}
     </select>
 
