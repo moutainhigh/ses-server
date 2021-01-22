@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.qc.OpeQcOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeQcOrder">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="country_type" property="countryType"/>
+        <result column="qc_no" property="qcNo"/>
+        <result column="qc_status" property="qcStatus"/>
+        <result column="order_type" property="orderType"/>
+        <result column="relation_order_id" property="relationOrderId"/>
+        <result column="relation_order_no" property="relationOrderNo"/>
+        <result column="relation_order_type" property="relationOrderType"/>
+        <result column="qc_type" property="qcType"/>
+        <result column="qc_qty" property="qcQty"/>
+        <result column="remark" property="remark"/>
+        <result column="qc_completion_time" property="qcCompletionTime"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, tenant_id, dept_id, country_type, qc_no, qc_status, order_type, relation_order_id, relation_order_no, relation_order_type, qc_type, qc_qty, remark, qc_completion_time, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    </sql>
+
+</mapper>
