@@ -2,6 +2,8 @@ package com.redescooter.ses.service.scooter.dm.base;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 /**
@@ -18,6 +20,7 @@ public class ScoScooterEcu {
     /**
      * 逻辑删除标识 0正常 1删除
      */
+    @TableLogic
     private Integer dr;
 
     /**

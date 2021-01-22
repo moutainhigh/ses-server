@@ -256,4 +256,7 @@
 	    where id = #{id}
     </update>
 
+    <update id="deleteScooterById">
+        update adm_scooter set dr = 1 where id = #{id}
+    </update>
 </mapper>

@@ -112,7 +112,7 @@ public interface ScooterService {
      * @date 2020/11/26
      */
     BaseScooterResult getScooterByTabletSn(String tabletSn);
-    
+
     /**
      * 根据tabletSn查询车辆id
      * @param tabletSn
@@ -130,5 +130,12 @@ public interface ScooterService {
      * @date 2020/11/23
      */
     String getScooterStatusByTabletSn(String tabletSn);
+
+
+    /**
+     * OMS删除车辆时  需要把对应的车辆数据也删除
+     * @param sn
+     */
+    void deleteScooterData(String sn);
 
 }

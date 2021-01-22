@@ -5,6 +5,7 @@ import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
@@ -151,4 +152,11 @@ public class ScooterController {
         return new Response<>(adminScooterService.setScooterModel(paramDTO));
     }
 
+
+    @ApiOperation(value = "删除车辆", notes = "删除车辆")
+    @PostMapping(value = "/delete")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> deleteScooter(@ModelAttribute IdEnter enter) {
+        return new Response<>(adminScooterService.deleteScooter(enter));
+    }
 }

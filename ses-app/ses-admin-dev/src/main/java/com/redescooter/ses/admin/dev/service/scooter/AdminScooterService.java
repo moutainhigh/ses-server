@@ -5,7 +5,9 @@ import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * 车辆管理业务层接口
@@ -49,5 +51,13 @@ public interface AdminScooterService {
      * @date 2020/12/14
     */
     GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO);
+
+
+    /**
+     * 删除车辆
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteScooter(IdEnter enter);
 
 }

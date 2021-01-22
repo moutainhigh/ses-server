@@ -8,6 +8,7 @@ import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
 import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
+import com.redescooter.ses.admin.dev.service.base.AdmScooterService;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.*;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -71,6 +73,9 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     private TransactionTemplate transactionTemplate;
     @Reference
     private ScooterEmqXService scooterEmqXService;
+
+    @Autowired
+    private AdmScooterService admScooterService;
 
 
     @Override
@@ -384,4 +389,20 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         return specificDefGroupPublishList;
     }
 
+
+    /**
+     * 删除车辆
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult deleteScooter(IdEnter enter) {
+        AdminScooterDTO admScooter = adminScooterMapper.getAdminScooterById(enter.getId());
+        if (admScooter != null){
+            adminScooterMapper.deleteScooterById(enter.getId());
+            // 删除scooter的数据库的sco_scooter_ecu / sco_scooter数据
+            scooterService.deleteScooterData(admScooter.getSn());
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
 }

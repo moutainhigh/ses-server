@@ -231,4 +231,8 @@
         </foreach>
     </select>
 
+
+    <update id="deleteScooterEcuById">
+        update sco_scooter_ecu set dr = 1 where id = #{id}
+    </update>
 </mapper>
