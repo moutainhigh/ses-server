@@ -1,11 +1,15 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 出库单
@@ -150,6 +154,13 @@ public class OpeOutWhouseOrder {
     private Integer source = 0;
 
     /**
+     * 是否是仓库新增 0否 1是
+     */
+    @TableField(value = "if_wh")
+    @ApiModelProperty(value = "是否是仓库新增 0否 1是")
+    private Integer ifWh = 0;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
@@ -256,6 +267,8 @@ public class OpeOutWhouseOrder {
     public static final String COL_MAIL = "mail";
 
     public static final String COL_SOURCE = "source";
+
+    public static final String COL_IF_WH = "if_wh";
 
     public static final String COL_REMARK = "remark";
 

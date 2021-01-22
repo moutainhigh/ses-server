@@ -49,4 +49,7 @@ public class SaveOrUpdateOutOrderEnter extends GeneralEnter {
     @ApiModelProperty("出库明细")
     private String st;
 
+    @ApiModelProperty("是否是仓库新增，0：否，1：是")
+    private Integer ifWh = 0;
+
 }

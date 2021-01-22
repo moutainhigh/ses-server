@@ -368,6 +368,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         opeOutWhouseOrder.setCountryCode(opeSysStaff.getCountryCode());
         opeOutWhouseOrder.setMail(opeSysStaff.getEmail());
         opeOutWhouseOrder.setTelephone(opeSysStaff.getTelephone());
+        opeOutWhouseOrder.setIfWh(0);
         SaveOpTraceEnter saveOpTraceEnter = null;
         if (enter.getId() == null || enter.getId() == 0) {
             opeOutWhouseOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));

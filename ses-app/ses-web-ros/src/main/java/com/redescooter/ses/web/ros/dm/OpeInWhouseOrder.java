@@ -125,6 +125,13 @@ public class OpeInWhouseOrder {
     private Integer source = 0;
 
     /**
+     * 是否是仓库新增 0否 1是
+     */
+    @TableField(value = "if_wh")
+    @ApiModelProperty(value = "是否是仓库新增 0否 1是")
+    private Integer ifWh = 0;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
@@ -223,6 +230,8 @@ public class OpeInWhouseOrder {
     public static final String COL_IN_WH_QTY = "in_wh_qty";
 
     public static final String COL_SOURCE = "source";
+
+    public static final String COL_IF_WH = "if_wh";
 
     public static final String COL_REMARK = "remark";
 
