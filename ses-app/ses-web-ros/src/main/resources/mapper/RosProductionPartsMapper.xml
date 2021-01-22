@@ -50,7 +50,8 @@
     parts.supplier_id,
     supplier.supplier_name,
     parts.disable,
-    parts.id_calss
+    parts.id_calss,
+    parts.qc_flag
     from ope_production_parts parts
     left join ope_parts_sec sec on parts.parts_sec = sec.id
     left join ope_supplier supplier on  parts.supplier_id = supplier.id

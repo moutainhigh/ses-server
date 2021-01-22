@@ -8,8 +8,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
-import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
@@ -19,14 +23,35 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsDraftServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpePartsSec;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsDraft;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeSupplier;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpePartsSecService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsDraftService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
 import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.*;
+import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosCheckAnnounSafeCodeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosParseExcelData;
+import com.redescooter.ses.web.ros.vo.restproduct.RosPartsBatchOpEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosPartsExportEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosPartsSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosRepeatResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -39,7 +64,14 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -320,7 +352,19 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     return PageResult.createZeroRowResult(enter);
                 }
                 resultList = rosProductionPartsServiceMapper.partsList(enter);
-                partsQualityTempate(resultList);
+                //partsQualityTempate(resultList);
+                if (CollectionUtils.isNotEmpty(resultList)) {
+                    for (RosPartsListResult o : resultList) {
+                        // 是否有质检模板 0否 1是
+                        Integer qcFlag = o.getQcFlag();
+                        qcFlag = qcFlag == null ? 0 : qcFlag;
+                        if (qcFlag == 0) {
+                            o.setQcTempletePromptIcon(Boolean.TRUE);
+                        } else if (qcFlag == 1) {
+                            o.setQcTempletePromptIcon(Boolean.FALSE);
+                        }
+                    }
+                }
                 break;
         }
 
@@ -332,7 +376,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }
 
 
-    private List<RosPartsListResult> partsQualityTempate(List<RosPartsListResult> resultList) {
+    /*private List<RosPartsListResult> partsQualityTempate(List<RosPartsListResult> resultList) {
         if (CollectionUtils.isNotEmpty(resultList)) {
             QueryWrapper<OpeProductionQualityTempate> queryWrapper = new QueryWrapper<OpeProductionQualityTempate>();
             queryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
@@ -354,7 +398,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                     .forEach(item -> item.setQcTempletePromptIcon(Boolean.FALSE));
         }
         return resultList;
-    }
+    }*/
 
     @Override
     @Transactional
