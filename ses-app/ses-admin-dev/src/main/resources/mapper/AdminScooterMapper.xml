@@ -183,9 +183,9 @@
             and color_id = #{colorId}
         </if>
         <if test="keyWord != null and keyWord != ''">
-            and `sn` like concat('%',#{keyWord},'%')
+            and (`sn` like concat('%',#{keyWord},'%')
             or mac_address like concat('%',#{keyWord},'%')
-            or mac_name like concat('%',#{keyWord},'%')
+            or mac_name like concat('%',#{keyWord},'%'))
         </if>
         order by created_time desc
         limit #{startRow}, #{pageSize}
