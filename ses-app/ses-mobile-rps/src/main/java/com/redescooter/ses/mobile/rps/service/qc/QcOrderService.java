@@ -1,10 +1,10 @@
 package com.redescooter.ses.mobile.rps.service.qc;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 
 import java.util.Map;
@@ -46,10 +46,10 @@ public interface QcOrderService {
     /**
      * 保存质检结果
      * @param paramDTO
-     * @return com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO
+     * @return com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO
      * @author assert
      * @date 2021/1/4
      */
-    SaveQcResultDTO saveQcResult(SaveQcResultParamDTO paramDTO);
+    SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO);
 
 }

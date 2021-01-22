@@ -101,9 +101,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     @Override
     public EntrustOrderDetailDTO getEntrustOrderDetailById(IdEnter enter) {
         EntrustOrderDetailDTO entrustOrderDetail = entrustOrderMapper.getEntrustOrderDetailById(enter.getId());
-        if (null == entrustOrderDetail) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
-        }
+        RpsAssert.isNull(entrustOrderDetail, ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
 
         List<EntrustOrderProductDTO> productList = null;
 

@@ -13,7 +13,7 @@
     <select id="getEntrustOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select entrust_type `status`, count(id) totalCount
 	    from ope_entrust_order
-	    where dr = 0 and entrust_status = 0
+	    where dr = 0
 	    group by entrust_type
     </select>
 
@@ -39,7 +39,7 @@
 
     <!--根据id查询委托单详情-->
     <select id="getEntrustOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO">
-        select id, entrust_no entrustNo, entrust_status entrustStatus, entrust_type entrustType,delivery_date deliveryDate,
+        select id, entrust_no entrustNo, entrust_status `status`, entrust_type `type`,delivery_date deliveryDate,
         actual_delivery_time actualDeliveryTime, trans_type transType, consignor_qty qty, already_consignor_qty alreadyConsignorQty
         from ope_entrust_order
         where dr = 0 and id = #{id}

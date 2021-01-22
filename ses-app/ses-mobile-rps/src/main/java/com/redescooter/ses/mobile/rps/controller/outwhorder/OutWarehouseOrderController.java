@@ -2,6 +2,8 @@ package com.redescooter.ses.mobile.rps.controller.outwhorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
@@ -103,6 +105,19 @@ public class OutWarehouseOrderController {
     @PostMapping(value = "/productDetail")
     public Response<OutWhOrderProductDetailDTO> getOutWhOrderProductDetailByProductId(@ModelAttribute QueryProductDetailParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.getOutWhOrderProductDetailByProductId(paramDTO));
+    }
+
+    /**
+     * 保存出库单产品扫码结果
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
+     * @author assert
+     * @date 2021/1/22
+    */
+    @ApiOperation(value = "保存扫码结果", notes = "保存出库单产品扫码结果")
+    @PostMapping(value = "/saveScanCodeResult")
+    public Response<SaveScanCodeResultDTO> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
+        return new Response<>(outWarehouseOrderService.saveScanCodeResult(paramDTO));
     }
 
     /**

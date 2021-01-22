@@ -24,6 +24,8 @@ import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -203,6 +205,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
         productDetail.setProductSerialNumberList(productSerialNumberList);
         return productDetail;
+    }
+
+    @Override
+    public SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
+        return null;
     }
 
     @Override

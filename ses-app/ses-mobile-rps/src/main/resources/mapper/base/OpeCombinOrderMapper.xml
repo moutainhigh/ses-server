@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeCombinOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+    <!--@mbg.generated-->
+    <!--@Table ope_combin_order-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+    <result column="combin_type" jdbcType="INTEGER" property="combinType" />
+    <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+    <result column="combin_status" jdbcType="INTEGER" property="combinStatus" />
+    <result column="combin_qty" jdbcType="INTEGER" property="combinQty" />
+    <result column="combin_start_date" jdbcType="TIMESTAMP" property="combinStartDate" />
+    <result column="combin_end_date" jdbcType="TIMESTAMP" property="combinEndDate" />
+    <result column="principal_id" jdbcType="BIGINT" property="principalId" />
+    <result column="principal_name" jdbcType="VARCHAR" property="principalName" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, combin_type, combin_no, combin_status, combin_qty, combin_start_date, 
+    combin_end_date, principal_id, principal_name, country_code, telephone, remark, created_by, 
+    created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from ope_combin_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from ope_combin_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+    <!--@mbg.generated-->
+    insert into ope_combin_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="combinType != null">
+        combin_type,
+      </if>
+      <if test="combinNo != null">
+        combin_no,
+      </if>
+      <if test="combinStatus != null">
+        combin_status,
+      </if>
+      <if test="combinQty != null">
+        combin_qty,
+      </if>
+      <if test="combinStartDate != null">
+        combin_start_date,
+      </if>
+      <if test="combinEndDate != null">
+        combin_end_date,
+      </if>
+      <if test="principalId != null">
+        principal_id,
+      </if>
+      <if test="principalName != null">
+        principal_name,
+      </if>
+      <if test="countryCode != null">
+        country_code,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="combinType != null">
+        #{combinType,jdbcType=INTEGER},
+      </if>
+      <if test="combinNo != null">
+        #{combinNo,jdbcType=VARCHAR},
+      </if>
+      <if test="combinStatus != null">
+        #{combinStatus,jdbcType=INTEGER},
+      </if>
+      <if test="combinQty != null">
+        #{combinQty,jdbcType=INTEGER},
+      </if>
+      <if test="combinStartDate != null">
+        #{combinStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="combinEndDate != null">
+        #{combinEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="principalId != null">
+        #{principalId,jdbcType=BIGINT},
+      </if>
+      <if test="principalName != null">
+        #{principalName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+    <!--@mbg.generated-->
+    update ope_combin_order
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="combinType != null">
+        combin_type = #{combinType,jdbcType=INTEGER},
+      </if>
+      <if test="combinNo != null">
+        combin_no = #{combinNo,jdbcType=VARCHAR},
+      </if>
+      <if test="combinStatus != null">
+        combin_status = #{combinStatus,jdbcType=INTEGER},
+      </if>
+      <if test="combinQty != null">
+        combin_qty = #{combinQty,jdbcType=INTEGER},
+      </if>
+      <if test="combinStartDate != null">
+        combin_start_date = #{combinStartDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="combinEndDate != null">
+        combin_end_date = #{combinEndDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="principalId != null">
+        principal_id = #{principalId,jdbcType=BIGINT},
+      </if>
+      <if test="principalName != null">
+        principal_name = #{principalName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null">
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+    <!--@mbg.generated-->
+    update ope_combin_order
+    set dr = #{dr,jdbcType=INTEGER},
+      tenant_id = #{tenantId,jdbcType=INTEGER},
+      dept_id = #{deptId,jdbcType=BIGINT},
+      combin_type = #{combinType,jdbcType=INTEGER},
+      combin_no = #{combinNo,jdbcType=VARCHAR},
+      combin_status = #{combinStatus,jdbcType=INTEGER},
+      combin_qty = #{combinQty,jdbcType=INTEGER},
+      combin_start_date = #{combinStartDate,jdbcType=TIMESTAMP},
+      combin_end_date = #{combinEndDate,jdbcType=TIMESTAMP},
+      principal_id = #{principalId,jdbcType=BIGINT},
+      principal_name = #{principalName,jdbcType=VARCHAR},
+      country_code = #{countryCode,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def4 = #{def4,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

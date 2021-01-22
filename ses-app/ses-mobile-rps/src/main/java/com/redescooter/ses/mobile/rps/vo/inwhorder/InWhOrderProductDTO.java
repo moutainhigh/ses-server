@@ -47,6 +47,9 @@ public class InWhOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "应入库数量", dataType = "Integer")
     private Integer qty;
 
+    @ApiModelProperty(value="实际入库数量", dataType = "Integer")
+    private Integer actInWhQty;
+
     @ApiModelProperty(value = "不合格数量", dataType = "Integer")
     private Integer unqualifiedQty;
 

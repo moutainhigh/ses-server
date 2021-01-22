@@ -10,7 +10,6 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
@@ -34,6 +33,7 @@ import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QcProductResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
@@ -60,8 +60,6 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Reference
     private IdAppService idAppService;
-    @Reference
-    private ScooterService scooterService;
     @Resource
     private OpeOrderQcItemMapper opeOrderQcItemMapper;
     @Resource
@@ -174,15 +172,15 @@ public class QcOrderServiceImpl implements QcOrderService {
     }
 
     @Override
-    public SaveQcResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
+    public SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
         /**
          * 公共参数 ---- userId、qcQty、qcResultFlag、saveQcResultDTO、opeOrderQcTraceList
          */
         Long userId = paramDTO.getUserId();
-        Integer qcQty = null == paramDTO.getQcQty() ? 1 : paramDTO.getQcQty();
+        Integer qcQty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQcQty();
         boolean qcResultFlag = true;
         // 质检结果返回对象
-        SaveQcResultDTO saveQcResultDTO = new SaveQcResultDTO();
+        SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         // 质检记录集合对象
         List<OpeOrderQcTrace> opeOrderQcTraceList = new ArrayList<>();
 
@@ -292,40 +290,32 @@ public class QcOrderServiceImpl implements QcOrderService {
                  */
                 if (1 == paramDTO.getType()) {
                     // 订单序列号绑定表(这张表放的都是入库单质检完成所产生的数据)
-                    OpeOrderSerialBind opeOrderSerialBindNew = new OpeOrderSerialBind();
+                    OpeOrderSerialBind opeOrderSerialBind = new OpeOrderSerialBind();
                     Long orderSerialId = idAppService.getId(SequenceName.OPE_ORDER_SERIAL_BIND);
 
-                    opeOrderSerialBindNew.setId(orderSerialId);
-                    opeOrderSerialBindNew.setOrderBId(paramDTO.getProductId());
-                    opeOrderSerialBindNew.setOrderType(OrderTypeEnums.FACTORY_INBOUND.getValue());
-                    opeOrderSerialBindNew.setProductType(paramDTO.getProductType());
-                    opeOrderSerialBindNew.setSerialNum(getProductSerialNum(paramDTO.getProductType(), paramDTO.getSerialNum()));
-                    opeOrderSerialBindNew.setLot(paramDTO.getLot());
-                    opeOrderSerialBindNew.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
-                    opeOrderSerialBindNew.setCreatedBy(userId);
-                    opeOrderSerialBindNew.setCreatedTime(new Date());
-                    opeOrderSerialBindNew.setUpdatedBy(userId);
-                    opeOrderSerialBindNew.setUpdatedTime(new Date());
+                    opeOrderSerialBind.setId(orderSerialId);
+                    opeOrderSerialBind.setOrderBId(paramDTO.getProductId());
+                    opeOrderSerialBind.setOrderType(OrderTypeEnums.FACTORY_INBOUND.getValue());
+                    opeOrderSerialBind.setProductType(paramDTO.getProductType());
+                    opeOrderSerialBind.setSerialNum(getProductSerialNum(paramDTO.getProductType(), paramDTO.getSerialNum()));
+                    opeOrderSerialBind.setLot(paramDTO.getLot());
+                    opeOrderSerialBind.setQty(qcQty);
+                    opeOrderSerialBind.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
+                    opeOrderSerialBind.setCreatedBy(userId);
+                    opeOrderSerialBind.setCreatedTime(new Date());
+                    opeOrderSerialBind.setUpdatedBy(userId);
+                    opeOrderSerialBind.setUpdatedTime(new Date());
 
                     // 质检条目表
                     opeOrderQcItem.setOrderType(OrderTypeEnums.FACTORY_INBOUND.getValue());
-
-                    // 质检结果返回对象,用于打印使用(只针对于入库单)
-                    saveQcResultDTO.setSerialNum(opeOrderSerialBindNew.getSerialNum());
-                    saveQcResultDTO.setLot(paramDTO.getLot());
-                    saveQcResultDTO.setPartsNo(paramDTO.getPartsNo());
 
                     /**
                      * 1.修改入库单产品的出库数量
                      * 2.库存增减操作
                      * 这里有个地方容易把人搞乱,订单序列号绑定表里面那个productId理论上应该是叫bomId的(由于表字段命名问题,所以导致现在有点乱)
                      */
-                    updateInWhOrder(paramDTO.getProductId(), paramDTO.getProductType(), qcResultFlagFinal, qcQty, opeOrderSerialBindNew);
-
-                    /**
-                     * 入库单库存增减操作
-                     */
-                    updateWmsStock(paramDTO.getBomId(), paramDTO.getProductType(), 1, userId, qcQty, qcResultFlagFinal);
+                    updateInWhOrder(paramDTO.getProductId(), paramDTO.getProductType(), qcResultFlagFinal,
+                            qcQty, opeOrderSerialBind);
                 } else {
                     /**
                      * 出库单质检流程 start
@@ -338,7 +328,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeInvoiceProductSerialNum.setRelationId(paramDTO.getProductId());
                     opeInvoiceProductSerialNum.setRelationType(paramDTO.getProductType());
                     opeInvoiceProductSerialNum.setLot(paramDTO.getLot());
-                    opeInvoiceProductSerialNum.setIdClass(null == paramDTO.getQcQty() ? 1 : 0);
+                    opeInvoiceProductSerialNum.setIdClass(StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : 0);
                     opeInvoiceProductSerialNum.setProductId(paramDTO.getBomId());
                     opeInvoiceProductSerialNum.setProductType(paramDTO.getProductType());
                     opeInvoiceProductSerialNum.setSerialNum(paramDTO.getSerialNum());
@@ -355,13 +345,14 @@ public class QcOrderServiceImpl implements QcOrderService {
                      * 1.修改出库单产品的出库数量
                      * 2.库存增减操作
                      */
-                    updateOutWhOrder(paramDTO.getProductId(), paramDTO.getProductType(), qcResultFlagFinal, userId, qcQty, opeInvoiceProductSerialNum);
-
-                    /**
-                     * 出库单库存增减操作
-                     */
-                    updateWmsStock(paramDTO.getBomId(), paramDTO.getProductType(), 2, userId, qcQty, qcResultFlagFinal);
+                    updateOutWhOrder(paramDTO.getProductId(), paramDTO.getProductType(), qcResultFlagFinal,
+                            userId, qcQty, opeInvoiceProductSerialNum);
                 }
+
+                /**
+                 * 出入库单库存增减操作
+                 */
+                updateWmsStock(paramDTO.getBomId(), paramDTO.getProductType(), paramDTO.getType(), userId, qcQty, qcResultFlagFinal);
 
                 /**
                  * 保存产品质检记录
@@ -379,7 +370,15 @@ public class QcOrderServiceImpl implements QcOrderService {
         // 手动抛出事务失败异常
         RpsAssert.isFalse(result, ExceptionCodeEnums.QC_ERROR.getCode(), ExceptionCodeEnums.QC_ERROR.getMessage());
 
-        return saveQcResultDTO;
+        // 设置质检返回结果
+        resultDTO.setQty(null);
+        resultDTO.setName(null);
+        resultDTO.setPartsNo(paramDTO.getPartsNo());
+        resultDTO.setLot(paramDTO.getLot());
+        resultDTO.setSerialNum(paramDTO.getSerialNum());
+        resultDTO.setProductionDate(new Date());
+
+        return resultDTO;
     }
 
 
@@ -721,9 +720,6 @@ public class QcOrderServiceImpl implements QcOrderService {
         int month = cal.get(Calendar.MONTH ) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        // 查询当前数据库车辆数量
-        int count = 0;
-
         String productRange = null;
         String structureType = null;
         /**
@@ -757,7 +753,8 @@ public class QcOrderServiceImpl implements QcOrderService {
         sb.append("0");
         sb.append(year.substring(2, 4));
         sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
-        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", count + 1);
+        // 生产流水号在质检单这边暂时只有 “生产日” + “工单号”组成, 流水号在确认入库时生成
+        String number = String.format("%s%s", DayCodeEnum.getDayCodeByDay(day), "1");
         sb.append(number);
 
         return sb.toString();

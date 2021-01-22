@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dm;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ public class OpeInWhouseOrder {
     /**
      * 逻辑删除
      */
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 

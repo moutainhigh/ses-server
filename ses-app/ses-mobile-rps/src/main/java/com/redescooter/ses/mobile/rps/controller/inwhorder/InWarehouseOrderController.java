@@ -6,7 +6,6 @@ import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -97,13 +96,13 @@ public class InWarehouseOrderController {
     }
 
     /**
-     * 保存扫码结果
+     * 保存入库单产品扫码结果
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
      * @author assert
      * @date 2021/1/21
     */
-    @ApiOperation(value = "保存扫码结果")
+    @ApiOperation(value = "保存扫码结果", notes = "保存入库单产品扫码结果")
     @PostMapping(value = "/saveScanCodeResult")
     public Response<SaveScanCodeResultDTO> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
         return new Response<>(inWhOrderService.saveScanCodeResult(paramDTO));

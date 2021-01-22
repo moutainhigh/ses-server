@@ -79,4 +79,14 @@
         and color_id = #{colorId}
     </select>
 
+    <!--批量修改成品库车辆库存信息-->
+    <update id="batchUpdateWmsScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        <foreach collection="opeWmsScooterStockList" item="item" separator=";">
+            update ope_wms_scooter_stock
+            set able_stock_qty = #{item.ableStockQty}, wait_in_stock_qty = #{item.waitInStockQty},
+            updated_by = #{item.updatedBy}, updated_time = #{item.updatedTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
 </mapper>

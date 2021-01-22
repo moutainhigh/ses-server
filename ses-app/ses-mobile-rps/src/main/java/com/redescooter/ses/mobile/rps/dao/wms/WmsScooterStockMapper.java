@@ -3,6 +3,8 @@ package com.redescooter.ses.mobile.rps.dao.wms;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 成品库车辆库存 Mapper接口
  * @author assert
@@ -29,5 +31,14 @@ public interface WmsScooterStockMapper {
     */
     OpeWmsScooterStock getWmsScooterStockByGroupIdAndColorId(@Param("groupId") Long groupId,
                                                              @Param("colorId") Long colorId);
+
+    /**
+     * 批量修改成品库车辆库存信息
+     * @param opeWmsScooterStockList
+     * @return int
+     * @author assert
+     * @date 2021/1/22
+    */
+    int batchUpdateWmsScooterStock(@Param("opeWmsScooterStockList") List<OpeWmsScooterStock> opeWmsScooterStockList);
 
 }

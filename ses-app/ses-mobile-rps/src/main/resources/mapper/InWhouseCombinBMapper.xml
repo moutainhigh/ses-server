@@ -30,7 +30,9 @@
         <result column="cn_name" jdbcType="VARCHAR" property="name" />
         <result column="number" jdbcType="VARCHAR" property="number" />
         <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
         <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
         <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
         <!--一对多映射(组装件序列号信息)-->
         <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
@@ -104,7 +106,7 @@
     <select id="getInWhOrderCombinByInWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
         select iwc.id, iwc.in_wh_id inWhId, bom.id bomId, bom.cn_name `name`, bom.bom_no `number`,
-        iwc.in_wh_qty qty, iwc.unqualified_qty unqualifiedQty, iwc.qc_qty qcQty, true idClass
+        iwc.in_wh_qty qty, iwc.act_in_wh_qty actInWhQty, iwc.unqualified_qty unqualifiedQty, iwc.qc_qty qcQty, true idClass
         from ope_in_whouse_combin_b iwc
         left join ope_production_combin_bom bom
         on iwc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
@@ -114,7 +116,7 @@
     <!--根据id查询入库单组装件信息-->
     <select id="getInWhOrderCombinById" parameterType="java.lang.Long" resultMap="InWhOrderCombinResultMap">
         select iwc.id, iwc.in_wh_id, bom.id bom_id, bom.cn_name, bom.bom_no `number`,
-        iwc.in_wh_qty, iwc.unqualified_qty, iwc.qc_qty, true id_class, osb.id sn_id,
+        iwc.in_wh_qty, iwc.act_in_wh_qty, iwc.unqualified_qty, iwc.qc_qty, true id_class, osb.id sn_id,
         osb.lot, osb.serial_num, '奥格工厂' factory_name
         from ope_in_whouse_combin_b iwc
         left join ope_production_combin_bom bom

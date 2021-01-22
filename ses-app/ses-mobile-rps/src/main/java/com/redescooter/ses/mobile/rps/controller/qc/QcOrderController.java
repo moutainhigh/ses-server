@@ -3,10 +3,10 @@ package com.redescooter.ses.mobile.rps.controller.qc;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,13 +73,13 @@ public class QcOrderController {
     /**
      * 保存质检结果
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.qc.SaveQcResultDTO>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
      * @author assert
      * @date 2021/1/4
      */
     @ApiOperation(value = "保存质检结果")
     @PostMapping(value = "/saveQcResult")
-    public Response<SaveQcResultDTO> saveQcResult(@ModelAttribute SaveQcResultParamDTO paramDTO) {
+    public Response<SaveScanCodeResultDTO> saveQcResult(@ModelAttribute SaveQcResultParamDTO paramDTO) {
         return new Response<>(qcOrderService.saveQcResult(paramDTO));
     }
 

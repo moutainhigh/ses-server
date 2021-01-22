@@ -32,7 +32,9 @@
         <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
         <result column="color_name" jdbcType="VARCHAR" property="colorName" />
         <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
         <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
         <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
         <!--一对多映射(车辆序列号信息)-->
         <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
@@ -109,7 +111,7 @@
     <select id="getInWhOrderScooterByInWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
         select iws.id, iws.in_wh_id inWhId, bom.id bomId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
-        iws.in_wh_qty qty, iws.unqualified_qty unqualifiedQty, iws.qc_qty qcQty, true idClass
+        iws.in_wh_qty qty, iws.act_in_wh_qty actInWhQty, iws.unqualified_qty unqualifiedQty, iws.qc_qty qcQty, true idClass
         from ope_in_whouse_scooter_b iws
         left join ope_specificat_group sg
         on iws.group_id = sg.id and sg.dr = 0
@@ -120,10 +122,10 @@
         where iws.dr = 0 and iws.in_wh_id = #{inWhId}
     </select>
 
-    <!--根据id查询入库单车辆信息(工厂名称默认写死为“奥格工厂”)-->
+    <!--根据id查询入库单车辆信息(工厂名称默认为“奥格工厂”)-->
     <select id="getInWhOrderScooterById" parameterType="java.lang.Long" resultMap="InWhOrderScooterResultMap">
         select iws.id, iws.in_wh_id, bom.id bom_id,sg.group_name, c.color_name, c.color_value,
-        iws.in_wh_qty, iws.unqualified_qty, iws.qc_qty, true id_class, osb.id sn_id,osb.lot,
+        iws.in_wh_qty, iws.act_in_wh_qty, iws.unqualified_qty, iws.qc_qty, true id_class, osb.id sn_id,osb.lot,
         '奥格工厂' factory_name, osb.serial_num
         from ope_in_whouse_scooter_b iws
         left join ope_specificat_group sg

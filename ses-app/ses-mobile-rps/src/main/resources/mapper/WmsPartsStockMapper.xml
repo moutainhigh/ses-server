@@ -89,4 +89,14 @@
 	    where dr = 0 and stock_type = 1 and parts_id = #{bomId}
     </select>
 
+    <!--批量修改原料库部件库存信息-->
+    <update id="batchUpdateWmsPartsStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock">
+        <foreach collection="opeWmsPartsStockList" item="item" separator=";">
+            update ope_wms_parts_stock
+            set able_stock_qty = #{item.ableStockQty}, wait_in_stock_qty = #{item.waitInStockQty},
+            updated_by = #{item.updatedBy}, updated_time = #{item.updatedTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
 </mapper>

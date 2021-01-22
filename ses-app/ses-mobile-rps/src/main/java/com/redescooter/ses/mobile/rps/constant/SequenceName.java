@@ -105,4 +105,6 @@ public interface SequenceName {
 
     String OPE_WMS_STOCK_RECORD = "OPE_WMS_STOCK_RECORD";
 
+    String OPE_IN_WHOUSE_ORDER_SERIAL_BIND = "OPE_IN_WHOUSE_ORDER_SERIAL_BIND";
+
 }

@@ -4,8 +4,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Map;
 
@@ -69,6 +72,15 @@ public interface OutWarehouseOrderService {
      * @date 2021/1/5
     */
     OutWhOrderProductDetailDTO getOutWhOrderProductDetailByProductId(QueryProductDetailParamDTO paramDTO);
+
+    /**
+     * 保存出库单产品扫码结果
+     * @param paramDTO
+     * @return com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO
+     * @author assert
+     * @date 2021/1/22
+    */
+    SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO);
 
     /**
      * 提交出库

@@ -1,6 +1,9 @@
 package com.redescooter.ses.mobile.rps.dao.wms;
 
 import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 成品库组装件库存 Mapper接口
@@ -26,5 +29,14 @@ public interface WmsCombinStockMapper {
      * @date 2021/1/15
     */
     OpeWmsCombinStock getWmsCombinStockByBomId(Long bomId);
+
+    /**
+     * 批量修改成品库组装件库存信息
+     * @param opeWmsCombinStockList
+     * @return int
+     * @author assert
+     * @date 2021/1/22
+    */
+    int batchUpdateWmsCombinStock(@Param("opeWmsCombinStockList") List<OpeWmsCombinStock> opeWmsCombinStockList);
 
 }

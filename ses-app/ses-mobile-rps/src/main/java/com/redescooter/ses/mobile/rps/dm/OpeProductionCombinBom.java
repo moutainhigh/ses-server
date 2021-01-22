@@ -2,6 +2,8 @@ package com.redescooter.ses.mobile.rps.dm;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 /**
@@ -18,6 +20,7 @@ public class OpeProductionCombinBom {
     /**
     * 逻辑删除
     */
+    @TableLogic
     private Integer dr;
 
     /**
