@@ -1,14 +1,19 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 生产采购部件表
@@ -76,6 +81,13 @@ public class OpeProductionPurchasePartsB {
     @TableField(value = "qty")
     @ApiModelProperty(value = "数量")
     private Integer qty;
+
+    /**
+     * 合格数量
+     */
+    @TableField(value = "qualified_qty")
+    @ApiModelProperty(value = "合格数量")
+    private Integer qualifiedQty;
 
     /**
      * 采购单价
@@ -169,6 +181,8 @@ public class OpeProductionPurchasePartsB {
     public static final String COL_PARTS_TYPE = "parts_type";
 
     public static final String COL_QTY = "qty";
+
+    public static final String COL_QUALIFIED_QTY = "qualified_qty";
 
     public static final String COL_UNIT_PRICE = "unit_price";
 
