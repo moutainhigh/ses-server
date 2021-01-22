@@ -104,25 +104,6 @@ public class AddCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "email")
     private String email;
 
-    /**
-     * 持卡人
-     */
-    @ApiModelProperty(value = "Cardholder")
-    private String cardholder;
-
-    /**
-     * cvv
-     */
-    @ApiModelProperty(value = "cvv")
-    private String cvv;
-
-    /**
-     * 卡号
-     */
-    @ApiModelProperty(value = "Card number")
-    private String cardNum;
-
-
     /******************/
 
     @ApiModelProperty(value = "password")
@@ -131,7 +112,7 @@ public class AddCustomerEnter extends GeneralEnter {
 
     @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY, message = "密码为空")
     @ApiModelProperty(value = "Second confirmation password")
-    private String ConfirmPassword;
+    private String confirmPassword;
 
 
 }

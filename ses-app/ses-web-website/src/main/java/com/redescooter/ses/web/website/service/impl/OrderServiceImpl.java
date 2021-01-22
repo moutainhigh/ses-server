@@ -7,18 +7,15 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.SiteCustomer;
-import com.redescooter.ses.web.website.dm.SiteOrder;
-import com.redescooter.ses.web.website.dm.SiteParts;
-import com.redescooter.ses.web.website.dm.SiteUser;
+import com.redescooter.ses.web.website.dm.*;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
+import com.redescooter.ses.web.website.enums.DeliveryMethodEnums;
 import com.redescooter.ses.web.website.enums.PaymentStatusEnums;
+import com.redescooter.ses.web.website.enums.SiteOrderTypeEnums;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.OrderService;
-import com.redescooter.ses.web.website.service.base.SiteCustomerService;
-import com.redescooter.ses.web.website.service.base.SiteOrderService;
-import com.redescooter.ses.web.website.service.base.SiteUserService;
+import com.redescooter.ses.web.website.service.base.*;
 import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
@@ -27,6 +24,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -49,6 +47,18 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private SiteCustomerService siteCustomerService;
 
+    @Autowired
+    private SiteProductService siteProductService;
+
+    @Autowired
+    private SiteColourService siteColourService;
+
+    @Autowired
+    private SiteProductPriceService siteProductPriceService;
+
+    @Autowired
+    private SiteProductColourService siteProductColourService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -58,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
      * @param enter
      * @return
      */
+    @Transactional
     @Override
     public IdResult addOrder(AddOrderEnter enter) {
         SiteUser user = siteUserService.getOne(new QueryWrapper<SiteUser>()
@@ -75,6 +86,25 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
         }
+
+        SiteProductColour productColour = siteProductColourService.getOne(new QueryWrapper<SiteProductColour>()
+                .eq(SiteProductColour.COL_COLOUR_ID, enter.getColourId())
+                .eq(SiteProductColour.COL_PRODUCT_ID, enter.getProductId()));
+
+        if (productColour == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
+
+        SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
+                .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
+                .eq(SiteProductPrice.COL_ID, productColour.getProductId()));
+
+        if (productPrice == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
+
         SiteOrder addSiteOrderVO = new SiteOrder();
         addSiteOrderVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addSiteOrderVO.setDr(Constant.DR_FALSE);
@@ -82,15 +112,15 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setOrderNo(String.valueOf(idAppService.getId(SequenceName.SITE_PARTS)));
         addSiteOrderVO.setCustomerId(user.getCustomerId());
         addSiteOrderVO.setSalesId(0L);
-        addSiteOrderVO.setOrderType(enter.getOrderType());
-        addSiteOrderVO.setProductId(enter.getProductId());
-        addSiteOrderVO.setColourId(enter.getColourId());
+        addSiteOrderVO.setOrderType(SiteOrderTypeEnums.getValueByInt(enter.getOrderType()));
+        addSiteOrderVO.setProductId(productColour.getProductId());
+        addSiteOrderVO.setColourId(productColour.getColourId());
         addSiteOrderVO.setFullName(customer.getCustomerFullName());
         addSiteOrderVO.setCountryName(customer.getCountryName());
         addSiteOrderVO.setCityName(customer.getCityName());
         addSiteOrderVO.setPostcode(customer.getPostcode());
         addSiteOrderVO.setAddress(customer.getAddress());
-        addSiteOrderVO.setDeliveryType(enter.getDeliveryType());
+        addSiteOrderVO.setDeliveryType(DeliveryMethodEnums.getValueByInt(enter.getDeliveryType()));
         /**
          * 价格自动计算 TODO 接来下下要做的
          */
@@ -126,11 +156,12 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
+        log.info(enter.toString());
         /**
          * 1. 添加配件
          * 2. 计算价格
          */
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

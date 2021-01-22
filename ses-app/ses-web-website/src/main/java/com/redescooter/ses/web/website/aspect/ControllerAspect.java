@@ -58,21 +58,7 @@ public class ControllerAspect {
         try {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
-                    /***获取请求API类型***/
-                    RequestAttributes ra = RequestContextHolder.getRequestAttributes();
-                    ServletRequestAttributes sra = (ServletRequestAttributes) ra;
-                    HttpServletRequest request = sra.getRequest();
-                    String method = request.getMethod();
-
-                    if (objs.length > 0) {
-                        if ("POST".equals(method)) {
-                            log.warn("<<<<<<<<<POST>>>>>>>>");
-                        } else if ("GET".equals(method)) {
-                            log.warn("<<<<<<<<<POST>>>>>>>>");
-                        }
-                    }
-
-                    //TODO 多个参数处理优化
+                    /**TODO 多个参数处理优化**/
                     GeneralEnter enter = (GeneralEnter) obj;
                     checkEnterParameter(enter);
                     checkToken(point, enter);

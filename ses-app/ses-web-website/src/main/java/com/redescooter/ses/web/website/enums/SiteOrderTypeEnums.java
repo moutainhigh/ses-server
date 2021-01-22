@@ -6,17 +6,16 @@ import lombok.NoArgsConstructor;
 
 /**
  * @Author jerry
- * @Date 2021/1/6 7:48 下午
- * @Description 取货方式
+ * @Date 2021/1/17 1:10 下午
+ * @Description 订单类型
  **/
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public enum DeliveryMethodEnums {
+public enum SiteOrderTypeEnums {
 
-    SELF_LIFT("自提", "SELF_LIFT", 1, "199"),
-    DELIVER_HOME("送货到家", "DELIVER_HOME", -1, "199"),
+    SALE("销售", "SALE", 1),
+    LEASE("租赁", "LEASE", 2),
     ;
 
     private String remark;
@@ -25,14 +24,8 @@ public enum DeliveryMethodEnums {
 
     private int value;
 
-    /**
-     * 费用
-     **/
-    private String cost;
-
-
     public static String getEnumsCodeByValue(int value) {
-        for (DeliveryMethodEnums item : DeliveryMethodEnums.values()) {
+        for (SiteOrderTypeEnums item : SiteOrderTypeEnums.values()) {
             if (value == item.value) {
                 return item.getCode();
             }
@@ -41,9 +34,9 @@ public enum DeliveryMethodEnums {
     }
 
     public static String getValueByInt(int value) {
-        for (DeliveryMethodEnums item : DeliveryMethodEnums.values()) {
+        for (SiteOrderTypeEnums item : SiteOrderTypeEnums.values()) {
             if (value == item.value) {
-                return item.getCode();
+                return String.valueOf(item.value);
             }
         }
         return null;

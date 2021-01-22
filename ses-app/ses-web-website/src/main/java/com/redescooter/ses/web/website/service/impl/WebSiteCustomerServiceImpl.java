@@ -158,8 +158,6 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setPurchasedScooterQty(1);
         addCustomer.setAssignationScooterQty(0);
         addCustomer.setAccountFlag(AccountFlagEnums.INACTIVATED.getValue());
-        addCustomer.setCvv(enter.getCvv());
-        addCustomer.setCardNum(enter.getCardNum());
         addCustomer.setSynchronizeFlag(false);
         addCustomer.setRevision(0);
         addCustomer.setCreatedBy(0L);

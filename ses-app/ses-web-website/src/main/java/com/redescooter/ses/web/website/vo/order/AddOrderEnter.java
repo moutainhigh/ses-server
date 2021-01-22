@@ -22,7 +22,7 @@ public class AddOrderEnter extends GeneralEnter {
      * 订单类型，1销售，2租赁
      */
     @ApiModelProperty(value = "Order type, 1 sales, 2 lease")
-    private String orderType;
+    private int orderType;
 
     /**
      * 产品Id
@@ -39,8 +39,8 @@ public class AddOrderEnter extends GeneralEnter {
     /**
      * 提货方式
      */
-    @ApiModelProperty(value = "delivery_type")
-    private String deliveryType;
+    @ApiModelProperty(value = "delivery type: 1SELF_LIFT,-1DELIVER_HOME")
+    private int deliveryType;
 
     /**
      * 支付方式
