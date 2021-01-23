@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.web.website.dao.ScooterPurchaseMapper">
     <resultMap id="getProductDetailByModelMap" type="com.redescooter.ses.web.website.vo.product.ProductsResult">
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="productId" jdbcType="BIGINT" property="productId"/>
         <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
         <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
         <result column="en_name" jdbcType="VARCHAR" property="enName"/>
@@ -25,7 +25,7 @@
     </resultMap>
 
     <select id="getProductDetailByModel" resultMap="getProductDetailByModelMap">
-        select sp.id,
+        select sp.id as productId,
                sp.cn_name,
                sp.fr_name,
                sp.en_name,
@@ -52,7 +52,7 @@
     </select>
 
     <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.parts.PartsDetailsResult">
-        select id,
+        select id as partsId,
                parts_type,
                parts_number,
                cn_name,
@@ -76,7 +76,7 @@
     </select>
 
     <select id="getScooterConfigList" resultType="com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult">
-        select spp.id,
+        select spp.id as productPartsId,
                spp.parts_id,
                spp.product_id,
                spp.parameter,
@@ -92,7 +92,7 @@
     </select>
 
     <select id="modelAndPriceList" resultType="com.redescooter.ses.web.website.vo.product.ModelPriceResult">
-        select spm.id,
+        select spm.id                 as modelid,
                spm.product_model_name as productModelName,
                spp.id                 as productPriceId,
                spp.price_type         as priceType,
@@ -102,6 +102,6 @@
                      left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
         where spm.dr = 0
           and spp.price_type = 0
-        group by id, productPriceId
+        group by modelid, productPriceId
     </select>
 </mapper>

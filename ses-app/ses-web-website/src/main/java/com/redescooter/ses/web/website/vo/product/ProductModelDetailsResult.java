@@ -22,7 +22,7 @@ public class ProductModelDetailsResult extends GeneralResult {
      * 主键
      */
     @ApiModelProperty(value = "ID")
-    private Long id;
+    private Long modelid;
 
     /**
      * 产品类型单项名称

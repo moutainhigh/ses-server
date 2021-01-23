@@ -20,8 +20,8 @@ public class ProductPartsDetailsResult extends GeneralResult {
     /**
      * 主键 主键
      */
-    @ApiModelProperty(value = "ID")
-    private Long id;
+    @ApiModelProperty(value = "product Parts Id")
+    private Long productPartsId;
 
     /**
      * 配件ID

@@ -21,7 +21,7 @@ public class PartsDetailsResult extends GeneralResult {
      * 主键
      */
     @ApiModelProperty(value = "主键")
-    private Long id;
+    private Long partsId;
 
     /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery

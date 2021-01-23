@@ -104,7 +104,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         if (list.size() > 0) {
             list.forEach(p -> {
                 PaymentTypeDetailsResult result = new PaymentTypeDetailsResult();
-                result.setId(p.getId());
+                result.setPaymentTypeId(p.getId());
                 result.setPaymentCode(p.getPaymentCode());
                 result.setPaymentName(p.getPaymentName());
                 result.setOtherParam(p.getOtherParam());
