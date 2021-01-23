@@ -276,7 +276,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
     private void savePaymentRecords(SiteOrder order, String stripeJson) {
         SitePaymentRecords records = new SitePaymentRecords();
-        records.setId(idAppService.getId(SequenceName.SITE_USER));
+        records.setId(idAppService.getId(SequenceName.SITE_PAYMENT_RECORDS));
         records.setDr(Constant.DR_FALSE);
         records.setStatus(CommonStatusEnums.NORMAL.getValue());
         records.setOrderId(order.getId());

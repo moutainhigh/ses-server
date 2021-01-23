@@ -1,15 +1,14 @@
 package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.web.website.service.SitePageHomeService;
+import com.redescooter.ses.web.website.vo.aboutus.SiteSaveAboutUsEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -24,26 +23,13 @@ import java.util.List;
 @RequestMapping(value = "/contactus")
 public class ContactUsController {
 
-    @IgnoreLoginCheck
-    @PostMapping(value = "/list")
-    @ApiOperation(value = "About our list Data", response = GeneralResult.class)
-    public Response<List<GeneralResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
-    }
+    @Autowired
+    private SitePageHomeService sitePageHomeService;
 
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
-    @ApiOperation(value = "save About our Data", response = GeneralResult.class)
-    public Response<List<GeneralResult>> save(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
+    @ApiOperation(value = "contact Us", response = GeneralResult.class)
+    public Response<GeneralResult> save(@RequestBody SiteSaveAboutUsEnter enter) {
+        return new Response<>(sitePageHomeService.saveAboutUs(enter));
     }
-
-    @IgnoreLoginCheck
-    @PostMapping(value = "/details")
-    @ApiOperation(value = "About our detailed data", response = GeneralResult.class)
-    public Response<List<GeneralResult>> details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>();
-    }
-
-
 }

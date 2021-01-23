@@ -34,4 +34,6 @@ public interface SequenceName {
     String SITE_ORDER_B = "SITE_ORDER_B";
 
     String SITE_PAYMENT_RECORDS = "SITE_PAYMENT_RECORDS";
+
+    String SITE_CONTACT_US = "SITE_CONTACT_US";
 }
