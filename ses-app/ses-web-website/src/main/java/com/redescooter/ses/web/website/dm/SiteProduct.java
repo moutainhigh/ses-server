@@ -30,7 +30,6 @@ public class SiteProduct implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-
     private Integer dr;
 
     /**
@@ -38,7 +37,7 @@ public class SiteProduct implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态 up上架，down下架(默认)")
-    private String status;
+    private Integer status;
 
     /**
      * 产品类型 如1整车，2组装套件，电池

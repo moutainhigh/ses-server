@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 public class AddPartsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "类型,全部类型AllType，1电池Battery，2配件Accessory")
-    private String partsType;
+    private int partsType;
 
     @ApiModelProperty(value = "部品号")
     private String partsNumber;

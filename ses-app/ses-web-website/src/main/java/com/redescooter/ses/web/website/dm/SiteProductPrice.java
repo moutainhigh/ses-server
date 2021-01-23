@@ -37,7 +37,7 @@ public class SiteProductPrice implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
+    private Integer status;
 
     /**
      * 产品型号Id
@@ -51,7 +51,7 @@ public class SiteProductPrice implements Serializable {
      */
     @TableField(value = "price_type")
     @ApiModelProperty(value = "状态,0全额付款，1分期付款")
-    private String priceType;
+    private Integer priceType;
 
     /**
      * 分期付款时间数，单位month

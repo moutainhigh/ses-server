@@ -28,7 +28,7 @@ public class AddProductPriceEnter extends GeneralEnter {
      * 状态,0全额付款，1分期付款
      */
     @ApiModelProperty(value = "状态,0全额付款，1分期付款")
-    private String priceType;
+    private int priceType;
 
     /**
      * 分期付款时间数，单位month

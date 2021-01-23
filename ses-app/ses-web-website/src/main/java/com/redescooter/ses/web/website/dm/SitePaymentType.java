@@ -37,7 +37,7 @@ public class SitePaymentType implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态,正常/失效")
-    private String status;
+    private Integer status;
 
     /**
      * 支付方式名称

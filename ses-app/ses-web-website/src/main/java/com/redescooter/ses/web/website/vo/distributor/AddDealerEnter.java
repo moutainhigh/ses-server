@@ -96,5 +96,5 @@ public class AddDealerEnter extends GeneralEnter {
      * 门店类型,1销售门店,2维修仓库，3销售及维修
      */
     @ApiModelProperty(value="门店类型,1销售门店,2维修仓库，3销售及维修")
-    private String type;
+    private int type;
 }

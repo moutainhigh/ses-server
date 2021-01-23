@@ -6,9 +6,9 @@
     <!--@Table site_product_price-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="product_model_id" jdbcType="BIGINT" property="productModelId" />
-    <result column="price_type" jdbcType="VARCHAR" property="priceType" />
+    <result column="price_type" jdbcType="INTEGER" property="priceType" />
     <result column="installment_time" jdbcType="VARCHAR" property="installmentTime" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="start_price" jdbcType="DECIMAL" property="startPrice" />
@@ -52,7 +52,7 @@
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="product_model_id = case" suffix="end,">
@@ -62,7 +62,7 @@
       </trim>
       <trim prefix="price_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="installment_time = case" suffix="end,">
@@ -200,7 +200,7 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -214,7 +214,7 @@
       <trim prefix="price_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.priceType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.priceType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -395,8 +395,8 @@
       def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.productModelId,jdbcType=BIGINT}, #{item.priceType,jdbcType=VARCHAR}, #{item.installmentTime,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
+        #{item.productModelId,jdbcType=BIGINT}, #{item.priceType,jdbcType=INTEGER}, #{item.installmentTime,jdbcType=VARCHAR}, 
         #{item.price,jdbcType=DECIMAL}, #{item.startPrice,jdbcType=DECIMAL}, #{item.effectiveTime,jdbcType=TIMESTAMP}, 
         #{item.currencyType,jdbcType=VARCHAR}, #{item.currencyUnit,jdbcType=VARCHAR}, #{item.standardCurrency,jdbcType=VARCHAR}, 
         #{item.prepaidDeposit,jdbcType=DECIMAL}, #{item.amountDiscount,jdbcType=DECIMAL}, 
@@ -416,8 +416,8 @@
       revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{productModelId,jdbcType=BIGINT}, 
-      #{priceType,jdbcType=VARCHAR}, #{installmentTime,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{productModelId,jdbcType=BIGINT}, 
+      #{priceType,jdbcType=INTEGER}, #{installmentTime,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
       #{startPrice,jdbcType=DECIMAL}, #{effectiveTime,jdbcType=TIMESTAMP}, #{currencyType,jdbcType=VARCHAR}, 
       #{currencyUnit,jdbcType=VARCHAR}, #{standardCurrency,jdbcType=VARCHAR}, #{prepaidDeposit,jdbcType=DECIMAL}, 
       #{amountDiscount,jdbcType=DECIMAL}, #{countryCode,jdbcType=VARCHAR}, #{countryCity,jdbcType=VARCHAR}, 
@@ -428,9 +428,9 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=INTEGER}, 
     product_model_id = #{productModelId,jdbcType=BIGINT}, 
-    price_type = #{priceType,jdbcType=VARCHAR}, 
+    price_type = #{priceType,jdbcType=INTEGER}, 
     installment_time = #{installmentTime,jdbcType=VARCHAR}, 
     price = #{price,jdbcType=DECIMAL}, 
     start_price = #{startPrice,jdbcType=DECIMAL}, 
@@ -553,13 +553,13 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="productModelId != null">
         #{productModelId,jdbcType=BIGINT},
       </if>
       <if test="priceType != null">
-        #{priceType,jdbcType=VARCHAR},
+        #{priceType,jdbcType=INTEGER},
       </if>
       <if test="installmentTime != null">
         #{installmentTime,jdbcType=VARCHAR},
@@ -640,13 +640,13 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="productModelId != null">
         product_model_id = #{productModelId,jdbcType=BIGINT},
       </if>
       <if test="priceType != null">
-        price_type = #{priceType,jdbcType=VARCHAR},
+        price_type = #{priceType,jdbcType=INTEGER},
       </if>
       <if test="installmentTime != null">
         installment_time = #{installmentTime,jdbcType=VARCHAR},

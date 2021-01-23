@@ -6,8 +6,8 @@
     <!--@Table site_parts-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="parts_type" jdbcType="VARCHAR" property="partsType" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="parts_type" jdbcType="INTEGER" property="partsType" />
     <result column="parts_number" jdbcType="VARCHAR" property="partsNumber" />
     <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
     <result column="fr_name" jdbcType="VARCHAR" property="frName" />
@@ -58,12 +58,12 @@
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="parts_number = case" suffix="end,">
@@ -236,14 +236,14 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
       <trim prefix="parts_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.partsType != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.partsType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -473,8 +473,8 @@
       def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
-        #{item.partsType,jdbcType=VARCHAR}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
+        #{item.partsType,jdbcType=INTEGER}, #{item.partsNumber,jdbcType=VARCHAR}, #{item.cnName,jdbcType=VARCHAR}, 
         #{item.frName,jdbcType=VARCHAR}, #{item.enName,jdbcType=VARCHAR}, #{item.partsQty,jdbcType=INTEGER}, 
         #{item.price,jdbcType=DECIMAL}, #{item.picture,jdbcType=VARCHAR}, #{item.specs,jdbcType=VARCHAR}, 
         #{item.sources,jdbcType=VARCHAR}, #{item.effectiveTime,jdbcType=TIMESTAMP}, #{item.currencyType,jdbcType=VARCHAR}, 
@@ -497,7 +497,7 @@
       synchronize_flag, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{partsType,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{partsType,jdbcType=INTEGER}, 
       #{partsNumber,jdbcType=VARCHAR}, #{cnName,jdbcType=VARCHAR}, #{frName,jdbcType=VARCHAR}, 
       #{enName,jdbcType=VARCHAR}, #{partsQty,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, 
       #{picture,jdbcType=VARCHAR}, #{specs,jdbcType=VARCHAR}, #{sources,jdbcType=VARCHAR}, 
@@ -511,8 +511,8 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
-    parts_type = #{partsType,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=INTEGER}, 
+    parts_type = #{partsType,jdbcType=INTEGER}, 
     parts_number = #{partsNumber,jdbcType=VARCHAR}, 
     cn_name = #{cnName,jdbcType=VARCHAR}, 
     fr_name = #{frName,jdbcType=VARCHAR}, 
@@ -660,10 +660,10 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="partsType != null">
-        #{partsType,jdbcType=VARCHAR},
+        #{partsType,jdbcType=INTEGER},
       </if>
       <if test="partsNumber != null">
         #{partsNumber,jdbcType=VARCHAR},
@@ -765,10 +765,10 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="partsType != null">
-        parts_type = #{partsType,jdbcType=VARCHAR},
+        parts_type = #{partsType,jdbcType=INTEGER},
       </if>
       <if test="partsNumber != null">
         parts_number = #{partsNumber,jdbcType=VARCHAR},

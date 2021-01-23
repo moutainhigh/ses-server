@@ -3,7 +3,8 @@ package com.redescooter.ses.web.website.service.base;
 import java.util.List;
 import com.redescooter.ses.web.website.dm.SiteContactUsTrace;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface SiteContactUsTraceService extends IService<SiteContactUsTrace>{
+
+public interface SiteContactUsTraceService extends IService<SiteContactUsTrace> {
 
 
     int updateBatch(List<SiteContactUsTrace> list);
@@ -17,3 +18,4 @@ public interface SiteContactUsTraceService extends IService<SiteContactUsTrace>{
     int insertOrUpdateSelective(SiteContactUsTrace record);
 
 }
+

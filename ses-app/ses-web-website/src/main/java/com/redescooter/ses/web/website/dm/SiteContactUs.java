@@ -11,9 +11,9 @@ import java.util.Date;
 import lombok.Data;
 
 /**
-    * 联系我们
-    */
-@ApiModel(value="com-redescooter-ses-web-website-dm-SiteContactUs")
+ * 联系我们
+ */
+@ApiModel(value = "com-redescooter-ses-web-website-dm-SiteContactUs")
 @Data
 @TableName(value = "site_contact_us")
 public class SiteContactUs implements Serializable {
@@ -21,189 +21,189 @@ public class SiteContactUs implements Serializable {
      * 主键
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /**
      * 删除标志
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="删除标志")
+    @ApiModelProperty(value = "删除标志")
     private Integer dr;
+
+    /**
+     * 状态
+     */
+    @TableField(value = "`status`")
+    @ApiModelProperty(value = "状态")
+    private Integer status;
 
     /**
      * 客户邮箱
      */
     @TableField(value = "email")
-    @ApiModelProperty(value="客户邮箱")
+    @ApiModelProperty(value = "客户邮箱")
     private String email;
 
     /**
      * 名
      */
     @TableField(value = "first_name")
-    @ApiModelProperty(value="名")
+    @ApiModelProperty(value = "名")
     private String firstName;
 
     /**
      * 姓
      */
     @TableField(value = "last_name")
-    @ApiModelProperty(value="姓")
+    @ApiModelProperty(value = "姓")
     private String lastName;
 
     /**
      * 全名
      */
     @TableField(value = "full_name")
-    @ApiModelProperty(value="全名")
+    @ApiModelProperty(value = "全名")
     private String fullName;
 
     /**
      * 电话
      */
     @TableField(value = "telephone")
-    @ApiModelProperty(value="电话")
+    @ApiModelProperty(value = "电话")
     private String telephone;
 
     /**
      * 国家Id
      */
     @TableField(value = "country")
-    @ApiModelProperty(value="国家Id")
+    @ApiModelProperty(value = "国家Id")
     private Long country;
 
     /**
      * 国家代码
      */
     @TableField(value = "country_code")
-    @ApiModelProperty(value="国家代码")
+    @ApiModelProperty(value = "国家代码")
     private String countryCode;
 
     /**
      * 国家名称
      */
     @TableField(value = "country_name")
-    @ApiModelProperty(value="国家名称")
+    @ApiModelProperty(value = "国家名称")
     private String countryName;
 
     /**
      * 城市名称
      */
     @TableField(value = "city_name")
-    @ApiModelProperty(value="城市名称")
+    @ApiModelProperty(value = "城市名称")
     private String cityName;
 
     /**
      * 区域Id
      */
     @TableField(value = "district")
-    @ApiModelProperty(value="区域Id")
+    @ApiModelProperty(value = "区域Id")
     private Long district;
 
     /**
      * 区域编码
      */
     @TableField(value = "district_name")
-    @ApiModelProperty(value="区域编码")
+    @ApiModelProperty(value = "区域编码")
     private String districtName;
 
     /**
      * 地址
      */
     @TableField(value = "address")
-    @ApiModelProperty(value="地址")
+    @ApiModelProperty(value = "地址")
     private String address;
 
     /**
      * 联系次数
      */
     @TableField(value = "frequency")
-    @ApiModelProperty(value="联系次数")
+    @ApiModelProperty(value = "联系次数")
     private Integer frequency;
-
-    /**
-     * 状态
-     */
-    @TableField(value = "`status`")
-    @ApiModelProperty(value="状态")
-    private String status;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
     /**
      * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁")
+    @ApiModelProperty(value = "乐观锁")
     private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;
@@ -211,6 +211,8 @@ public class SiteContactUs implements Serializable {
     public static final String COL_ID = "id";
 
     public static final String COL_DR = "dr";
+
+    public static final String COL_STATUS = "status";
 
     public static final String COL_EMAIL = "email";
 
@@ -237,8 +239,6 @@ public class SiteContactUs implements Serializable {
     public static final String COL_ADDRESS = "address";
 
     public static final String COL_FREQUENCY = "frequency";
-
-    public static final String COL_STATUS = "status";
 
     public static final String COL_REMARK = "remark";
 
