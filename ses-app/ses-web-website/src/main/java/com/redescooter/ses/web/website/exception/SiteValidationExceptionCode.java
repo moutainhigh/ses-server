@@ -58,9 +58,9 @@ public interface SiteValidationExceptionCode {
     int COUNTRY_CODE_IS_EMPTY = 10024;
     //URL不能为空
     int URL_IS_EMPTY = 10025;
-    // 名 为空
+    //名子不能为空
     int FIRST_NAME_IS_EMPTY = 10026;
-    // 姓为空
+    //姓氏不能为空
     int LAST_NAME_IS_EMPTY = 10027;
     //消息不能为空
     int MESSAGE_IS_EMPTY = 10031;
