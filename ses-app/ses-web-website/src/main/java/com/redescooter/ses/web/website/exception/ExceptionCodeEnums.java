@@ -63,6 +63,11 @@ public enum ExceptionCodeEnums {
 
     UN_COMPLETE_ORDER_ERROR(10022, "存在未完成的订单"),
 
+    PAYMENT_INFO_IS_NOT_EXIST(10023, "付款信息不存在"),
+
+    STRIPE_RESPONSE_EXIST(10024, "STRIPE响应异常"),
+
+    ORDER_NOT_EXIST_EXIST(10025, "订单不存在"),
     ;
 
 

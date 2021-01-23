@@ -33,10 +33,10 @@ public enum SiteOrderTypeEnums {
         return null;
     }
 
-    public static String getValueByInt(int value) {
+    public static Integer checkValue(int value) {
         for (SiteOrderTypeEnums item : SiteOrderTypeEnums.values()) {
             if (value == item.value) {
-                return String.valueOf(item.value);
+                return item.getValue();
             }
         }
         return null;

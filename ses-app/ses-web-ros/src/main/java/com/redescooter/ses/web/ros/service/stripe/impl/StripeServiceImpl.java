@@ -155,13 +155,12 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public GeneralResult succeeHooks(String enter) {
         if (StringUtils.isEmpty(enter)) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+
         String payload = enter;
         log.info("=============================");
         log.info("网络钩子数据回调===={}", payload);

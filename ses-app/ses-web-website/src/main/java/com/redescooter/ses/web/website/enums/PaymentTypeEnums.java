@@ -31,4 +31,13 @@ public enum PaymentTypeEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (PaymentTypeEnums item : PaymentTypeEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

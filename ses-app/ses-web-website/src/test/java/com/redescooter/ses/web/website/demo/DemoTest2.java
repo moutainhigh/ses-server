@@ -1,7 +1,11 @@
 package com.redescooter.ses.web.website.demo;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -17,21 +21,11 @@ public class DemoTest2 {
 
     @Test
     public void test1() {
-//        BigDecimal bigDecimal = new BigDecimal("180.12").multiply(new BigDecimal("120"));
-//
-//        System.out.printf(bigDecimal.toString());
-//
-//        System.out.printf("-----");
-        BigDecimal total = new BigDecimal("0");
-        for (int i = 0; i < 100; i++) {
-            System.out.println(new BigDecimal("2").multiply(new BigDecimal("2")));
-            total = total.add(new BigDecimal("2").multiply(new BigDecimal("2")));
-            System.out.println("i ===========" + i);
-            System.out.println(total);
+        GeneralEnter enter = null;
+        if (StringUtils.isEmpty(enter)) {
+            System.out.println("11111");
         }
 
-        System.out.printf("--------------");
-        System.out.println(total.toPlainString());
 
     }
 

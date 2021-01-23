@@ -30,4 +30,13 @@ public enum PartsTypeEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (PartsTypeEnums item : PartsTypeEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

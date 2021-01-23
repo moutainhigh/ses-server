@@ -119,6 +119,12 @@ public class OrderDetailsResult extends GeneralResult {
     private BigDecimal amountPaid;
 
     /**
+     * 创建时间
+     */
+    @ApiModelProperty(value = "createdTime")
+    private Date createdTime;
+
+    /**
      * 子订单
      */
     private List<orderBlist> orderBlist = new ArrayList<>();

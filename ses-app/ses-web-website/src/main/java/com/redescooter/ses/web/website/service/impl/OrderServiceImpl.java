@@ -146,17 +146,20 @@ public class OrderServiceImpl implements OrderService {
         SiteOrder addSiteOrderVO = new SiteOrder();
         addSiteOrderVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addSiteOrderVO.setDr(Constant.DR_FALSE);
-        addSiteOrderVO.setStatus(String.valueOf(SiteOrderStatusEnums.NEWS.getValue()));
+        addSiteOrderVO.setStatus(SiteOrderStatusEnums.NEWS.getValue());
+
         /**创建订单编号，临时编写的**/
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddss");
         String format = dateFormat.format(calendar.getTime());
         String orderNo = new StringBuffer().append("RED").append(format).append(String.valueOf(idAppService.getId(SequenceName.SITE_ORDER)).substring(5)).toString();
         /***********************/
+
         addSiteOrderVO.setOrderNo(orderNo);
         addSiteOrderVO.setCustomerId(user.getCustomerId());
         addSiteOrderVO.setSalesId(0L);
-        addSiteOrderVO.setOrderType(SiteOrderTypeEnums.getValueByInt(enter.getOrderType()));
+        addSiteOrderVO.setOrderType(SiteOrderTypeEnums.checkValue(enter.getOrderType()));
+        addSiteOrderVO.setDeliveryType(DeliveryMethodEnums.checkValue(enter.getDeliveryType()));
         addSiteOrderVO.setProductId(productColour.getProductId());
         addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         addSiteOrderVO.setColourId(productColour.getColourId());
@@ -165,7 +168,6 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setCityName(customer.getCityName());
         addSiteOrderVO.setPostcode(customer.getPostcode());
         addSiteOrderVO.setAddress(customer.getAddress());
-        addSiteOrderVO.setDeliveryType(DeliveryMethodEnums.getValueByInt(enter.getDeliveryType()));
         //运费
         addSiteOrderVO.setFreight(new BigDecimal("190"));
         //整车价格
@@ -178,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
         totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
-        //优惠价
+        //已付金额
         addSiteOrderVO.setAmountPaid(new BigDecimal("0"));
         //代付款金额
         addSiteOrderVO.setAmountObligation(addSiteOrderVO.getTotalPrice());
@@ -189,7 +191,7 @@ public class OrderServiceImpl implements OrderService {
         //支付类型
         addSiteOrderVO.setPaymentTypeId(enter.getPaymentTypeId());
         //支付状态
-        addSiteOrderVO.setPayStatus(String.valueOf(SiteOrderPaymentStatusEnums.UN_PAID.getValue()));
+        addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
         //购买车辆数
         addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         addSiteOrderVO.setScooterQuantity(enter.getScooterQuantity());

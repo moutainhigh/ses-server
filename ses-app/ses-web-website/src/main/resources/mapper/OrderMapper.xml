@@ -18,6 +18,7 @@
         <result column="scooterQuantity" jdbcType="INTEGER" property="scooterQuantity"/>
         <result column="batteryQty" jdbcType="INTEGER" property="batteryQty"/>
         <result column="etdDeliveryTime" jdbcType="TIMESTAMP" property="etdDeliveryTime"/>
+        <result column="createdTime" jdbcType="TIMESTAMP" property="createdTime"/>
         <collection property="orderBlist" javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.website.vo.order.orderBlist">
             <id column="orderBId" jdbcType="BIGINT" property="orderBId"/>
@@ -46,7 +47,8 @@
                sob.id               as orderBId,
                sps.en_name          as enName,
                sob.parts_qty        as partsQty,
-               sob.parts_price      as partsPrice
+               sob.parts_price      as partsPrice,
+               sob.created_time     as createdTime
         from site_order so
                      left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
                      left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0

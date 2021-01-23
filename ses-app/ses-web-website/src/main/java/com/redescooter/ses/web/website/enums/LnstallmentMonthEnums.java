@@ -34,4 +34,13 @@ public enum LnstallmentMonthEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (LnstallmentMonthEnums item : LnstallmentMonthEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

@@ -32,4 +32,13 @@ public enum AccountFlagEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (AccountFlagEnums item : AccountFlagEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

@@ -32,4 +32,13 @@ public enum ColourRangeEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (ColourRangeEnums item : ColourRangeEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }
