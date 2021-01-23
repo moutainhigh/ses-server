@@ -6,7 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author jerry
@@ -23,25 +26,25 @@ public class OrderDetailsResult extends GeneralResult {
      * 订单id
      */
     @ApiModelProperty(value = "order ID")
-    private Long id;
+    private Long orderId;
 
     /**
-     * 客户id
+     * 订单编号
      */
-    @ApiModelProperty(value = "customer_id")
-    private Long customerId;
-
-    /**
-     * 销售员id
-     */
-    @ApiModelProperty(value = "sales_id")
-    private Long salesId;
+    @ApiModelProperty(value = "Order number")
+    private String orderNo;
 
     /**
      * 状态,1进行中，2支付中，3取消退款，4已完成，5关闭
      */
-    @ApiModelProperty(value = "Status: 1 new, 2 deposit paid successfully, 3 balance to be paid, 4 refund cancelled, 5 completed, 6 closed")
+    @ApiModelProperty(value = "Start: 1 NEWS, 2 TO_BE_PAID, 3 in_progress, 4 CANCELLED, 5 COMPLETED, 6 CLOSED")
     private String status;
+
+    /**
+     * 支付状态
+     */
+    @ApiModelProperty(value = "pay_status: 1 UN_PAID, 2 PARTIALLY_PAID, 3 PAID")
+    private String payStatus;
 
     /**
      * 订单类型，1销售，2租赁
@@ -50,16 +53,16 @@ public class OrderDetailsResult extends GeneralResult {
     private String orderType;
 
     /**
-     * 产品Id
+     * 产品名称
      */
-    @ApiModelProperty(value = "product_id ")
-    private Long productId;
+    @ApiModelProperty(value = "productName")
+    private String productName;
 
     /**
-     * 颜色主建
+     * 运费
      */
-    @ApiModelProperty(value = "colour_id")
-    private Long colourId;
+    @ApiModelProperty(value = "freight")
+    private String freight;
 
     /**
      * 产品颜色
@@ -73,12 +76,11 @@ public class OrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "delivery_type")
     private String deliveryType;
 
-
     /**
      * 支付方式
      */
-    @ApiModelProperty(value = "payment_type_id")
-    private Long paymentTypeId;
+    @ApiModelProperty(value = "payment Type Name")
+    private String paymentName;
 
     /**
      * 需求车辆数
@@ -87,16 +89,67 @@ public class OrderDetailsResult extends GeneralResult {
     private Integer scooterQuantity;
 
     /**
+     * 购买电池数量
+     */
+    @ApiModelProperty(value = "battery Qty")
+    private Integer batteryQty;
+
+    /**
      * 预计交货时间
      */
     @ApiModelProperty(value = "Estimated delivery time")
     private Date etdDeliveryTime;
 
     /**
-     * 备注
+     * 整车价格
      */
-    @ApiModelProperty(value = "remarks")
-    private String remarks;
+    @ApiModelProperty(value = "Scooter product Price")
+    private BigDecimal productPrice;
 
+    /**
+     * 单据总价
+     */
+    @ApiModelProperty(value = "total_price")
+    private BigDecimal totalPrice;
 
+    /**
+     * 已付金额
+     */
+    @ApiModelProperty(value = "amount_paid")
+    private BigDecimal amountPaid;
+
+    /**
+     * 子订单
+     */
+    private List<orderBlist> orderBlist = new ArrayList<>();
+}
+
+@ApiModel(value = "子订单结果集出参", description = "子订单结果集出参")
+@Data
+@EqualsAndHashCode(callSuper = true)
+class orderBlist extends GeneralResult {
+
+    /**
+     * 子订单主建
+     */
+    @ApiModelProperty(value = "order Suborder id")
+    private Long orderBId;
+
+    /**
+     * 英文名称
+     */
+    @ApiModelProperty(value = "English name")
+    private String enName;
+
+    /**
+     * 销售价格
+     */
+    @ApiModelProperty(value = "parts Price")
+    private BigDecimal partsPrice;
+
+    /**
+     * 配件数量
+     */
+    @ApiModelProperty(value = "parts_qty")
+    private Integer partsQty;
 }

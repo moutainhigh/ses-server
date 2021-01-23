@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.website.vo.product;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

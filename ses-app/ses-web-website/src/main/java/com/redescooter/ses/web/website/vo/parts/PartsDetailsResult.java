@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.website.vo.parts;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -63,8 +62,7 @@ public class PartsDetailsResult extends GeneralResult {
     /**
      * 销售价格
      */
-    @TableField(value = "price")
-    @ApiModelProperty(value = "销售价格 浮点型价格")
+    @ApiModelProperty(value = "price")
     private BigDecimal price;
 
     /**

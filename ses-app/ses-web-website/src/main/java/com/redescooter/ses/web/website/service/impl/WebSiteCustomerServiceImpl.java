@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -64,7 +63,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
 
-        if (!enter.getConfirmPassword().trim().equals(enter.getPassword().trim())) {
+        if (!enter.getCfmPassword().trim().equals(enter.getPassword().trim())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
@@ -74,7 +73,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
-        signUp.setPassword(enter.getConfirmPassword().trim());
+        signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
     }
@@ -140,7 +139,6 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setCountryCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
         addCustomer.setCustomerSource(WebSiteCustomerSourceEnums.OFFICIAL.getValue());
         addCustomer.setCustomerType(CustomerTypeEnums.PERSONAL.getValue());
-        addCustomer.setCustomerHeadPicture(enter.getCustomerHeadPicture());
         addCustomer.setCustomerFirstName(enter.getCustomerFirstName());
         addCustomer.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {

@@ -6,11 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
 import lombok.Data;
 
 /**
@@ -63,10 +61,10 @@ public class SiteOrder implements Serializable {
     private Long salesId;
 
     /**
-     * 状态,1新建，2待支付，3进行中，4取消，5已完成，6关闭
+     * 1新建，2待支付，3进行中，4取消，5已完成，6关闭
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态,1新建，2待支付，3进行中，4取消，5已完成，6关闭")
+    @ApiModelProperty(value = "1新建，2待支付，3进行中，4取消，5已完成，6关闭")
     private String status;
 
     /**
@@ -147,6 +145,13 @@ public class SiteOrder implements Serializable {
     private String deliveryType;
 
     /**
+     * 购买电池数
+     */
+    @TableField(value = "battery_qty")
+    @ApiModelProperty(value = "购买电池数")
+    private Integer batteryQty;
+
+    /**
      * 运费
      */
     @TableField(value = "freight")
@@ -203,7 +208,7 @@ public class SiteOrder implements Serializable {
     private Long paymentTypeId;
 
     /**
-     * 支付状态
+     * 支付状态,1待支付，2部分支付，3已支付
      */
     @TableField(value = "pay_status")
     @ApiModelProperty(value = "支付状态,1待支付，2部分支付，3已支付")
@@ -337,6 +342,8 @@ public class SiteOrder implements Serializable {
     public static final String COL_ADDRESS = "address";
 
     public static final String COL_DELIVERY_TYPE = "delivery_type";
+
+    public static final String COL_BATTERY_QTY = "battery_qty";
 
     public static final String COL_FREIGHT = "freight";
 

@@ -3,13 +3,18 @@ package com.redescooter.ses.web.website.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
+import com.redescooter.ses.web.website.dao.OrderMapper;
 import com.redescooter.ses.web.website.dm.*;
-import com.redescooter.ses.web.website.enums.*;
+import com.redescooter.ses.web.website.enums.DeliveryMethodEnums;
+import com.redescooter.ses.web.website.enums.SiteOrderPaymentStatusEnums;
+import com.redescooter.ses.web.website.enums.SiteOrderStatusEnums;
+import com.redescooter.ses.web.website.enums.SiteOrderTypeEnums;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.OrderService;
@@ -57,6 +62,9 @@ public class OrderServiceImpl implements OrderService {
     private SiteProductService siteProductService;
 
     @Autowired
+    private SiteProductPartsService siteProductPartsService;
+
+    @Autowired
     private SitePartsService sitePartsService;
 
     @Autowired
@@ -64,6 +72,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private SiteProductColourService siteProductColourService;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
     @DubboReference
     private IdAppService idAppService;
@@ -122,16 +133,32 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
         }
+        //获取所选车辆电池数量
+        SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
+
+        //获取电池
+        SiteParts battery = sitePartsService.getById(scooterBatteryParts.getPartsId());
+        if (battery == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
 
         SiteOrder addSiteOrderVO = new SiteOrder();
         addSiteOrderVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addSiteOrderVO.setDr(Constant.DR_FALSE);
         addSiteOrderVO.setStatus(String.valueOf(SiteOrderStatusEnums.NEWS.getValue()));
-        addSiteOrderVO.setOrderNo(String.valueOf(idAppService.getId(SequenceName.SITE_PARTS)));
+        /**创建订单编号，临时编写的**/
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddss");
+        String format = dateFormat.format(calendar.getTime());
+        String orderNo = new StringBuffer().append("RED").append(format).append(String.valueOf(idAppService.getId(SequenceName.SITE_ORDER)).substring(5)).toString();
+        /***********************/
+        addSiteOrderVO.setOrderNo(orderNo);
         addSiteOrderVO.setCustomerId(user.getCustomerId());
         addSiteOrderVO.setSalesId(0L);
         addSiteOrderVO.setOrderType(SiteOrderTypeEnums.getValueByInt(enter.getOrderType()));
         addSiteOrderVO.setProductId(productColour.getProductId());
+        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         addSiteOrderVO.setColourId(productColour.getColourId());
         addSiteOrderVO.setFullName(customer.getCustomerFullName());
         addSiteOrderVO.setCountryName(customer.getCountryName());
@@ -143,8 +170,13 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setFreight(new BigDecimal("190"));
         //整车价格
         addSiteOrderVO.setProductPrice(productPrice.getPrice());
-        //总价格
+        //没有选着其他配件前，只是整车的价格+运费
         BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        //实际付款电池数: 选配电池总数-产品最小电池数
+        int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
+        //加上选购电池的价格
+        totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
         //优惠价
         addSiteOrderVO.setAmountPaid(new BigDecimal("0"));
@@ -159,6 +191,7 @@ public class OrderServiceImpl implements OrderService {
         //支付状态
         addSiteOrderVO.setPayStatus(String.valueOf(SiteOrderPaymentStatusEnums.UN_PAID.getValue()));
         //购买车辆数
+        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         addSiteOrderVO.setScooterQuantity(enter.getScooterQuantity());
         addSiteOrderVO.setEtdDeliveryTime(this.getDateForDay(45));
         addSiteOrderVO.setRevision(0);
@@ -227,7 +260,10 @@ public class OrderServiceImpl implements OrderService {
             partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
         }
         BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
+        //更新总金额
         order.setTotalPrice(orderTotalPrice);
+        //更新待付金额
+        order.setAmountObligation(orderTotalPrice);
         //所选择配件总价格做备份记录
         order.setDef1(partAllTotalPrice.toPlainString());
 
@@ -252,6 +288,27 @@ public class OrderServiceImpl implements OrderService {
         result.setRequestId(enter.getRequestId());
 
         return result;
+    }
+
+    /**
+     * @param enter
+     * @return
+     */
+    @Override
+    public OrderDetailsResult getOrderDetailsByMyself(GeneralEnter enter) {
+
+        SiteUser user = siteUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
+        SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(customer.getId());
+        OrderDetailsResult orderDetails = orderMapper.getOrderDetails(idEnter);
+        orderDetails.setRequestId(enter.getRequestId());
+
+        return orderDetails;
     }
 
     /**

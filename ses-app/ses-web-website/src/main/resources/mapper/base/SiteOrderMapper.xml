@@ -22,6 +22,7 @@
     <result column="postcode" jdbcType="VARCHAR" property="postcode" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
+    <result column="battery_qty" jdbcType="INTEGER" property="batteryQty" />
     <result column="freight" jdbcType="DECIMAL" property="freight" />
     <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
     <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
@@ -49,10 +50,10 @@
     <!--@mbg.generated-->
     id, dr, order_no, customer_id, customer_source, sales_id, `status`, order_type, product_id, 
     colour_id, product_colour, full_name, company_name, country_name, city_name, postcode, 
-    address, delivery_type, freight, product_price, total_price, amount_paid, amount_obligation, 
-    prepaid_deposit, amount_discount, payment_type_id, pay_status, scooter_quantity, 
-    etd_delivery_time, remarks, revision, created_by, created_time, updated_by, updated_time, 
-    def1, def2, def3, def5, def6
+    address, delivery_type, battery_qty, freight, product_price, total_price, amount_paid, 
+    amount_obligation, prepaid_deposit, amount_discount, payment_type_id, pay_status, 
+    scooter_quantity, etd_delivery_time, remarks, revision, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -141,6 +142,11 @@
       <trim prefix="delivery_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.deliveryType,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="battery_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.batteryQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="freight = case" suffix="end,">
@@ -382,6 +388,13 @@
           </if>
         </foreach>
       </trim>
+      <trim prefix="battery_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.batteryQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.batteryQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
       <trim prefix="freight = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.freight != null">
@@ -547,10 +560,10 @@
     insert into site_order
     (id, dr, order_no, customer_id, customer_source, sales_id, `status`, order_type, 
       product_id, colour_id, product_colour, full_name, company_name, country_name, city_name, 
-      postcode, address, delivery_type, freight, product_price, total_price, amount_paid, 
-      amount_obligation, prepaid_deposit, amount_discount, payment_type_id, pay_status, 
-      scooter_quantity, etd_delivery_time, remarks, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+      postcode, address, delivery_type, battery_qty, freight, product_price, total_price, 
+      amount_paid, amount_obligation, prepaid_deposit, amount_discount, payment_type_id, 
+      pay_status, scooter_quantity, etd_delivery_time, remarks, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR}, 
@@ -559,8 +572,8 @@
         #{item.colourId,jdbcType=BIGINT}, #{item.productColour,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, 
         #{item.companyName,jdbcType=VARCHAR}, #{item.countryName,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, 
         #{item.postcode,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, #{item.deliveryType,jdbcType=VARCHAR}, 
-        #{item.freight,jdbcType=DECIMAL}, #{item.productPrice,jdbcType=DECIMAL}, #{item.totalPrice,jdbcType=DECIMAL}, 
-        #{item.amountPaid,jdbcType=DECIMAL}, #{item.amountObligation,jdbcType=DECIMAL}, 
+        #{item.batteryQty,jdbcType=INTEGER}, #{item.freight,jdbcType=DECIMAL}, #{item.productPrice,jdbcType=DECIMAL}, 
+        #{item.totalPrice,jdbcType=DECIMAL}, #{item.amountPaid,jdbcType=DECIMAL}, #{item.amountObligation,jdbcType=DECIMAL}, 
         #{item.prepaidDeposit,jdbcType=DECIMAL}, #{item.amountDiscount,jdbcType=DECIMAL}, 
         #{item.paymentTypeId,jdbcType=BIGINT}, #{item.payStatus,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER}, 
         #{item.etdDeliveryTime,jdbcType=TIMESTAMP}, #{item.remarks,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
@@ -575,24 +588,25 @@
     insert into site_order
     (id, dr, order_no, customer_id, customer_source, sales_id, `status`, order_type, 
       product_id, colour_id, product_colour, full_name, company_name, country_name, city_name, 
-      postcode, address, delivery_type, freight, product_price, total_price, amount_paid, 
-      amount_obligation, prepaid_deposit, amount_discount, payment_type_id, pay_status, 
-      scooter_quantity, etd_delivery_time, remarks, revision, created_by, created_time, 
-      updated_by, updated_time, def1, def2, def3, def5, def6)
+      postcode, address, delivery_type, battery_qty, freight, product_price, total_price, 
+      amount_paid, amount_obligation, prepaid_deposit, amount_discount, payment_type_id, 
+      pay_status, scooter_quantity, etd_delivery_time, remarks, revision, created_by, 
+      created_time, updated_by, updated_time, def1, def2, def3, def5, def6)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
       #{customerSource,jdbcType=VARCHAR}, #{salesId,jdbcType=BIGINT}, #{status,jdbcType=VARCHAR}, 
       #{orderType,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, #{colourId,jdbcType=BIGINT}, 
       #{productColour,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{countryName,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{freight,jdbcType=DECIMAL}, 
-      #{productPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{amountPaid,jdbcType=DECIMAL}, 
-      #{amountObligation,jdbcType=DECIMAL}, #{prepaidDeposit,jdbcType=DECIMAL}, #{amountDiscount,jdbcType=DECIMAL}, 
-      #{paymentTypeId,jdbcType=BIGINT}, #{payStatus,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, 
-      #{etdDeliveryTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{address,jdbcType=VARCHAR}, #{deliveryType,jdbcType=VARCHAR}, #{batteryQty,jdbcType=INTEGER}, 
+      #{freight,jdbcType=DECIMAL}, #{productPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, 
+      #{amountPaid,jdbcType=DECIMAL}, #{amountObligation,jdbcType=DECIMAL}, #{prepaidDeposit,jdbcType=DECIMAL}, 
+      #{amountDiscount,jdbcType=DECIMAL}, #{paymentTypeId,jdbcType=BIGINT}, #{payStatus,jdbcType=VARCHAR}, 
+      #{scooterQuantity,jdbcType=INTEGER}, #{etdDeliveryTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE}
+      )
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
@@ -612,6 +626,7 @@
     postcode = #{postcode,jdbcType=VARCHAR}, 
     address = #{address,jdbcType=VARCHAR}, 
     delivery_type = #{deliveryType,jdbcType=VARCHAR}, 
+    battery_qty = #{batteryQty,jdbcType=INTEGER}, 
     freight = #{freight,jdbcType=DECIMAL}, 
     product_price = #{productPrice,jdbcType=DECIMAL}, 
     total_price = #{totalPrice,jdbcType=DECIMAL}, 
@@ -692,6 +707,9 @@
       </if>
       <if test="deliveryType != null">
         delivery_type,
+      </if>
+      <if test="batteryQty != null">
+        battery_qty,
       </if>
       <if test="freight != null">
         freight,
@@ -816,6 +834,9 @@
       <if test="deliveryType != null">
         #{deliveryType,jdbcType=VARCHAR},
       </if>
+      <if test="batteryQty != null">
+        #{batteryQty,jdbcType=INTEGER},
+      </if>
       <if test="freight != null">
         #{freight,jdbcType=DECIMAL},
       </if>
@@ -938,6 +959,9 @@
       </if>
       <if test="deliveryType != null">
         delivery_type = #{deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="batteryQty != null">
+        battery_qty = #{batteryQty,jdbcType=INTEGER},
       </if>
       <if test="freight != null">
         freight = #{freight,jdbcType=DECIMAL},

@@ -27,12 +27,6 @@ public class AddCustomerEnter extends GeneralEnter {
     private String countryCode;
 
     /**
-     * 客户头像
-     */
-    @ApiModelProperty(value = "Customer profile")
-    private String customerHeadPicture;
-
-    /**
      * 客户名字
      */
     @ApiModelProperty(value = "Customer name")
@@ -112,7 +106,5 @@ public class AddCustomerEnter extends GeneralEnter {
 
     @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY, message = "密码为空")
     @ApiModelProperty(value = "Second confirmation password")
-    private String confirmPassword;
-
-
+    private String cfmPassword;
 }
