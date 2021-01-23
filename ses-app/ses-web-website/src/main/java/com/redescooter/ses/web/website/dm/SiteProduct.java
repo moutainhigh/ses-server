@@ -30,6 +30,7 @@ public class SiteProduct implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+
     private Integer dr;
 
     /**

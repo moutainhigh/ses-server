@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.website.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.exception.BaseException;
@@ -11,26 +10,27 @@ import com.redescooter.ses.tool.utils.ValidationUtil;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -54,13 +54,15 @@ public class ControllerAspect {
 
     @Around("execution(* com.redescooter.ses.web.website.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
+
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
         Object[] objs = point.getArgs();
         try {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
-                    /**TODO 多个参数处理优化**/
                     GeneralEnter enter = (GeneralEnter) obj;
-                    checkEnterParameter(enter);
+                    checkEnterParameter(enter, request);
                     checkToken(point, enter);
                 }
                 ValidationUtil.validation(obj);
@@ -124,9 +126,14 @@ public class ControllerAspect {
         }
     }
 
-    private void checkEnterParameter(GeneralEnter enter) {
+    @SneakyThrows
+    private void checkEnterParameter(GeneralEnter enter, HttpServletRequest request) {
         if (StringUtils.isEmpty(enter.getRequestId())) {
             enter.setRequestId(UUID.randomUUID().toString().replaceAll("-", ""));
+        }
+        /**笨方法解决@RequestBody映射参数的问题**/
+        if (StringUtils.isEmpty(enter.getLanguage())) {
+            BeanUtils.populate(enter, request.getParameterMap());
         }
         if (StringUtils.isEmpty(enter.getLanguage())) {
             enter.setLanguage(Locale.ENGLISH.getLanguage());
@@ -149,4 +156,25 @@ public class ControllerAspect {
         }
     }
 
+    /**
+     * 获取参数列表
+     *
+     * @param joinPoint
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     */
+    private static Map<String, Object> getFieldsName(ProceedingJoinPoint joinPoint) {
+        // 参数值
+        Object[] args = joinPoint.getArgs();
+        ParameterNameDiscoverer pnd = new DefaultParameterNameDiscoverer();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        String[] parameterNames = pnd.getParameterNames(method);
+        Map<String, Object> paramMap = new HashMap<>(32);
+        for (int i = 0; i < parameterNames.length; i++) {
+            paramMap.put(parameterNames[i], args[i]);
+        }
+        return paramMap;
+    }
 }

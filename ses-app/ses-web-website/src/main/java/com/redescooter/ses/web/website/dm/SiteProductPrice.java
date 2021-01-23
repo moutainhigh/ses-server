@@ -18,7 +18,6 @@ import lombok.Data;
 @Data
 @TableName(value = "site_product_price")
 public class SiteProductPrice implements Serializable {
-    public static final String COL_PRODUCT_ID = "product_id";
     /**
      * 主键
      */

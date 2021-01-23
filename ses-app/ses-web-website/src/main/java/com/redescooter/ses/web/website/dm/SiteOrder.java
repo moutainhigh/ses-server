@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -61,10 +63,10 @@ public class SiteOrder implements Serializable {
     private Long salesId;
 
     /**
-     * 状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭
+     * 状态,1新建，2待支付，3进行中，4取消，5已完成，6关闭
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭")
+    @ApiModelProperty(value = "状态,1新建，2待支付，3进行中，4取消，5已完成，6关闭")
     private String status;
 
     /**
@@ -204,7 +206,7 @@ public class SiteOrder implements Serializable {
      * 支付状态
      */
     @TableField(value = "pay_status")
-    @ApiModelProperty(value = "支付状态")
+    @ApiModelProperty(value = "支付状态,1待支付，2部分支付，3已支付")
     private String payStatus;
 
     /**

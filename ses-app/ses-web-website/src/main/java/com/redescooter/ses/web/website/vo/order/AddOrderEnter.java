@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
-
 /**
  * @Author jerry
  * @Date 2021/1/6 3:41 上午
@@ -53,12 +51,6 @@ public class AddOrderEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "Number of vehicles required")
     private Integer scooterQuantity;
-
-    /**
-     * 预计交货时间
-     */
-    @ApiModelProperty(value = "Estimated delivery time")
-    private Date etdDeliveryTime;
 
     /**
      * 备注

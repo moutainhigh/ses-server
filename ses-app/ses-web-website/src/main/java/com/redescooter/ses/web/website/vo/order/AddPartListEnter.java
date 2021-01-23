@@ -26,5 +26,5 @@ public class AddPartListEnter extends GeneralEnter {
      * 配件数量
      */
     @ApiModelProperty(value = "parts_qty")
-    private String parts_qty;
+    private Integer parts_qty;
 }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @Date: 03/01/2021 10:50
  * @ClassName: ExceptionCodeEnums
  * @Function: 异常配置
+ * TODO：规则：异常说明_ERROR
  */
 @Getter
 @AllArgsConstructor
@@ -59,6 +60,8 @@ public enum ExceptionCodeEnums {
     VERSION_CANNOT_EMPTY(10020, "版本号为空"),
 
     PARAM_ERROR(10021, "参数错误"),
+
+    UN_COMPLETE_ORDER_ERROR(10022, "存在未完成的订单"),
 
     ;
 
