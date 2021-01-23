@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.StripePaymentService;
 import io.swagger.annotations.Api;
@@ -50,7 +49,6 @@ public class SiteStripeController {
         return new Response<>(stripePaymentService.cancelledPaymentIntent(enter));
     }
 
-    @WebsiteSignIn
     @PostMapping(value = "/publicSecret")
     @ApiOperation(value = "Get public key", response = StringResult.class)
     public Response<PublicSecretResult> publicSecret() {
