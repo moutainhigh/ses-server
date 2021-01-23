@@ -51,7 +51,7 @@ public class SiteStripeController {
 
     @PostMapping(value = "/publicSecret")
     @ApiOperation(value = "Get public key", response = StringResult.class)
-    public Response<PublicSecretResult> publicSecret() {
+    public Response<PublicSecretResult> publicSecret(GeneralEnter enter) {
         return new Response(stripePaymentService.publicSecret());
     }
 
