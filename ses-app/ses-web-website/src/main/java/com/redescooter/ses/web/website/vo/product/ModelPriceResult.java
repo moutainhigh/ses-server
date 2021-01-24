@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * @Date 2021/1/6 9:16 上午
  * @Description 车型及价格结果集出参
  **/
-@ApiModel(value = "车型及价格结果集出参", description = "车型及价格结果集出参")
+@ApiModel(value = "Model Result", description = "车型及价格结果集出参")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ModelPriceResult extends ProductModelDetailsResult {

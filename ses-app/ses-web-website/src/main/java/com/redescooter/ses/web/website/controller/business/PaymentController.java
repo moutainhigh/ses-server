@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
-import com.redescooter.ses.web.website.service.StripePaymentService;
 import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
 import io.swagger.annotations.Api;
@@ -31,9 +31,6 @@ public class PaymentController {
     @Autowired
     private PaymentTypeService paymentTypeService;
 
-    @Autowired
-    private StripePaymentService stripePaymentService;
-
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
     @ApiOperation(value = "Payment method list", response = PaymentTypeDetailsResult.class)
@@ -41,9 +38,9 @@ public class PaymentController {
         return new Response<>(paymentTypeService.getPaymentTypeList(enter));
     }
 
-    @PostMapping(value = "/add")
-    @ApiOperation(value = "New payment method", response = GeneralResult.class)
-    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddPaymentTypeEnter enter) {
-        return new Response<>(paymentTypeService.addPaymentType(enter));
-    }
+//    @PostMapping(value = "/add")
+//    @ApiOperation(value = "New payment method", response = GeneralResult.class)
+//    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddPaymentTypeEnter enter) {
+//        return new Response<>(paymentTypeService.addPaymentType(enter));
+//    }
 }

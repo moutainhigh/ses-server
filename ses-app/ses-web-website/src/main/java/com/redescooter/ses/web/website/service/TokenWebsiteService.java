@@ -49,14 +49,12 @@ public interface TokenWebsiteService {
     UserToken checkToken(GeneralEnter enter);
 
     /**
-     * @desc: 修改密码
-     * @param: enter
-     * @return: generresult
-     * @auther: alex
-     * @date: 2019/7/24 16:52
-     * @Version: 1.1
+     * 设置密码
+     *
+     * @param enter
+     * @return
      */
-    GeneralResult modifyPassword(ModifyPasswordEnter enter);
+    GeneralResult setPassword(ModifyPasswordEnter enter);
 
     /**
      * 发送重置密码邮件
@@ -64,5 +62,5 @@ public interface TokenWebsiteService {
      * @param enter
      * @return
      */
-    GeneralResult sendCode(BaseSendMailEnter enter);
+    GeneralResult forgetPasswordEmail(BaseSendMailEnter enter);
 }

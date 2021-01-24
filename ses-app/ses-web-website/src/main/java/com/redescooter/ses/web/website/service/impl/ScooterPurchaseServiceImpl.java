@@ -71,5 +71,4 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
         return scooterPurchaseMapper.getScooterConfigList(enter);
     }
 
-
 }

@@ -21,7 +21,7 @@ public class CustomerDetailsResult extends GeneralResult {
     /**
      * 主键
      */
-    @ApiModelProperty(value = "主建")
+    @ApiModelProperty(value = "customer id")
     private Long id;
 
     /**

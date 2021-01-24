@@ -32,12 +32,11 @@ public class DealerController {
     @Autowired
     private DealerService dealerService;
 
-    @IgnoreLoginCheck
-    @PostMapping(value = "/add")
-    @ApiOperation(value = "New dealer", response = DealerDetailsResult.class)
-    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddDealerEnter enter) {
-        return new Response<>(dealerService.addDistributor(enter));
-    }
+//    @PostMapping(value = "/add")
+//    @ApiOperation(value = "New dealer", response = DealerDetailsResult.class)
+//    public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddDealerEnter enter) {
+//        return new Response<>(dealerService.addDistributor(enter));
+//    }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")

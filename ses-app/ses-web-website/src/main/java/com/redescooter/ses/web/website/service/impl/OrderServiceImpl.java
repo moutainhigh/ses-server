@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public IdResult addOrder(AddOrderEnter enter) {
 
@@ -214,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
 

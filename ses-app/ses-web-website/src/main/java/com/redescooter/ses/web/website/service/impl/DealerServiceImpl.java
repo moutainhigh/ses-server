@@ -49,7 +49,7 @@ public class DealerServiceImpl implements DealerService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addDistributor(AddDealerEnter enter) {
         SiteDistributor addDistributorVO = new SiteDistributor();
@@ -78,8 +78,6 @@ public class DealerServiceImpl implements DealerService {
         addDistributorVO.setCreatedTime(new Date());
         addDistributorVO.setUpdatedBy(enter.getUserId());
         addDistributorVO.setUpdatedTime(new Date());
-
-        addDistributorVO.setRevision(0);
         addDistributorVO.setSynchronizeFlag(false);
         addDistributorVO.setCreatedBy(enter.getUserId());
         addDistributorVO.setCreatedTime(new Date());
