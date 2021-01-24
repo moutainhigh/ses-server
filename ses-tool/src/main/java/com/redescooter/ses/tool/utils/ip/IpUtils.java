@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.ip;
 
 import com.redescooter.ses.api.common.constant.WebConstants;
 import com.redescooter.ses.tool.utils.http.HttpUtils;
@@ -24,16 +24,28 @@ public class IpUtils {
 	private static final String[] lanIpPrefixs = new String[]{"127.","192.168","10.","100.64.","172."};
 	
 	public static boolean isIp(String ipAddr){
-		if(StringUtils.isBlank(ipAddr))return false;
+		if(StringUtils.isBlank(ipAddr)) {
+			return false;
+		}
 		return ipPattern.matcher(ipAddr).matches();
 	}
 
 	public static boolean isInnerIp(String ipAddr){
-		if(StringUtils.isBlank(ipAddr) || !isIp(ipAddr))return false;
-		if(ipAddr.startsWith(lanIpPrefixs[0]))return true;
-		if(ipAddr.startsWith(lanIpPrefixs[1]))return true;
-		if(ipAddr.startsWith(lanIpPrefixs[2]))return true;
-		if(ipAddr.startsWith(lanIpPrefixs[3]))return true;
+		if(StringUtils.isBlank(ipAddr) || !isIp(ipAddr)) {
+			return false;
+		}
+		if(ipAddr.startsWith(lanIpPrefixs[0])) {
+			return true;
+		}
+		if(ipAddr.startsWith(lanIpPrefixs[1])) {
+			return true;
+		}
+		if(ipAddr.startsWith(lanIpPrefixs[2])) {
+			return true;
+		}
+		if(ipAddr.startsWith(lanIpPrefixs[3])) {
+			return true;
+		}
 		if(ipAddr.startsWith(lanIpPrefixs[4])){
 			//172.16.0.0--172.31.255.255
 			try {				
@@ -90,7 +102,9 @@ public class IpUtils {
     }
     
     public static String getLocalIpAddr()  {  
-		if(localIp != null)return localIp;
+		if(localIp != null) {
+			return localIp;
+		}
 		try {			
 			Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();  
 			String currentIp = null;
@@ -111,7 +125,9 @@ public class IpUtils {
 				} 
 				
 			}  
-			if(localIp == null)localIp = currentIp;
+			if(localIp == null) {
+				localIp = currentIp;
+			}
 		} catch (Exception e) {}
 		
 		if(localIp == null){
@@ -134,7 +150,9 @@ public class IpUtils {
     
     @SuppressWarnings("rawtypes")
 	public static String ipToLocation(String ip) {
-    	if(isInnerIp(ip))return null;
+    	if(isInnerIp(ip)) {
+			return null;
+		}
 		try {			
 			String url = "http://ip.taobao.com/service/getIpInfo.php?ip="+ip;
 			String content = HttpUtils.get(url).getBody();
@@ -146,8 +164,6 @@ public class IpUtils {
 				return city;
 			}
 		} catch (Exception e) {}
-		
-		
 		return null;
 	}
     

@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.object;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.aspect;
 
 import com.redescooter.ses.api.common.annotation.*;
 import com.redescooter.ses.api.common.exception.ValidationException;

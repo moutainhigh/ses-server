@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.mobile.b.aspect;
 
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
-import com.redescooter.ses.tool.utils.ServiceAspectUtil;
+import com.redescooter.ses.tool.aspect.ServiceAspectUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

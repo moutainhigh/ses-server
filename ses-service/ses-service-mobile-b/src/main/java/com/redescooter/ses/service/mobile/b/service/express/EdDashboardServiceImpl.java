@@ -8,7 +8,7 @@ import com.redescooter.ses.api.mobile.b.service.express.EdDashboardService;
 import com.redescooter.ses.api.mobile.b.vo.express.EdMobileBExpressOrderChartResult;
 import com.redescooter.ses.api.mobile.b.vo.express.EdMonthlyExpressOrderChartResult;
 import com.redescooter.ses.service.mobile.b.dao.EdDashboardServiceMapper;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,7 +10,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.TokenService;
-import com.redescooter.ses.tool.utils.ValidationUtil;
+import com.redescooter.ses.tool.aspect.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

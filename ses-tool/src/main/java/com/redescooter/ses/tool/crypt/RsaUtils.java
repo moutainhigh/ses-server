@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils.accountType;
+package com.redescooter.ses.tool.crypt;
 
 import lombok.SneakyThrows;
 import org.apache.commons.codec.binary.Base64;

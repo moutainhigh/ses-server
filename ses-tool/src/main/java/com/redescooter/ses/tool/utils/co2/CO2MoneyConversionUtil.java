@@ -1,4 +1,6 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.co2;
+
+import com.redescooter.ses.tool.utils.ArithUtils;
 
 import java.text.DecimalFormat;
 

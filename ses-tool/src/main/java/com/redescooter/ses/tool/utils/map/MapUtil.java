@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.map;
 
 
 import ch.hsr.geohash.GeoHash;
@@ -10,7 +10,7 @@ import java.util.Random;
 
 /**
  * @description: MapUtil
- * @author: Darren
+ * @author: jerry
  * @create: 2019/01/21 17:44
  */
 public class MapUtil {

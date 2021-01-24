@@ -2,7 +2,7 @@ package com.redescooter.ses.admin.dev.service.impl;
 
 import com.redescooter.ses.admin.dev.service.FileUploadService;
 import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
-import com.redescooter.ses.tool.utils.FileUtil;
+import com.redescooter.ses.tool.utils.file.FileUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

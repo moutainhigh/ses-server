@@ -1,6 +1,6 @@
 package com.redescooter.ses.tool.utils.chart;
 
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
