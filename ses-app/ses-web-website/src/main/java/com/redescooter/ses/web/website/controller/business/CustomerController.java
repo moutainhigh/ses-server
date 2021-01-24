@@ -48,9 +48,15 @@ public class CustomerController {
      * @param enter
      * @return
      */
-    @PostMapping(value = "/Details")
+    @PostMapping(value = "/details")
     @ApiOperation(value = "Customer Details", response = CustomerDetailsResult.class)
-    public Response<CustomerDetailsResult> Details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<CustomerDetailsResult> details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
+    }
+
+    @PostMapping(value = "/edit")
+    @ApiOperation(value = "Customer Details", response = CustomerDetailsResult.class)
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
     }
 }

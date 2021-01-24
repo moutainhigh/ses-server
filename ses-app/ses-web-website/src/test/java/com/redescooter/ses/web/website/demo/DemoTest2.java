@@ -1,16 +1,11 @@
 package com.redescooter.ses.web.website.demo;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.constant.DateConstant;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.StringUtils;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @Author jerry
@@ -21,12 +16,14 @@ public class DemoTest2 {
 
     @Test
     public void test1() {
-        GeneralEnter enter = null;
-        if (StringUtils.isEmpty(enter)) {
-            System.out.println("11111");
-        }
-
-
+        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+        // 加密密钥
+        textEncryptor.setPassword("RED@Scooter2021");
+        // 要加密的数据（如数据库的用户名或密码）
+        String username = textEncryptor.encrypt("root");
+        String password = textEncryptor.encrypt("1qaz2wsx");
+        System.out.println("username:" + username);
+        System.out.println("password:" + password);
     }
 
     @Test

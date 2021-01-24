@@ -23,11 +23,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-            </dependency>
             <!-- dubbo-springboot-starter 引入-->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
@@ -44,11 +39,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!--集成dubbo start-->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-        </dependency>
         <!-- dubbo-springboot-starter 引入-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -58,6 +48,12 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-metadata-report-zookeeper</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.dubbo</groupId>
+                    <artifactId>dubbo-remoting-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Zookeeper -->
         <dependency>

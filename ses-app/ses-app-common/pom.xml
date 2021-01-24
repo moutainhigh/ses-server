@@ -88,10 +88,6 @@
             <artifactId>ses-api-hub</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-emqx</artifactId>
         </dependency>
