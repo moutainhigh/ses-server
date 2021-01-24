@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * @Date 2021/1/6 3:45 上午
  * @Description 新增客户入参
  **/
-@ApiModel(value = "新增客户入参", description = "新增客户入参")
+@ApiModel(value = "add customer", description = "add customer")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AddCustomerEnter extends GeneralEnter {

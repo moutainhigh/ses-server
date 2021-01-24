@@ -62,6 +62,8 @@ public interface SiteValidationExceptionCode {
     int FIRST_NAME_IS_EMPTY = 10026;
     //姓氏不能为空
     int LAST_NAME_IS_EMPTY = 10027;
+    //主键不能为空
+    int ID_IS_EMPTY = 10028;
     //消息不能为空
     int MESSAGE_IS_EMPTY = 10031;
 }

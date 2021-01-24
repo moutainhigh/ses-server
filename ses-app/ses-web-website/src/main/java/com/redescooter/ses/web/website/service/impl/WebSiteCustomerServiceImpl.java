@@ -22,6 +22,7 @@ import com.redescooter.ses.web.website.service.base.SiteCustomerService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
+import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -59,7 +60,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
 
@@ -107,6 +108,23 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             result.setRequestId(enter.getRequestId());
         }
         return result;
+    }
+
+    /**
+     * 客户编辑
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
+
+        SiteCustomer edit = new SiteCustomer();
+        BeanUtils.copyProperties(edit, edit);
+        siteCustomerService.updateById(edit);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     private void checkEmail(String email) {

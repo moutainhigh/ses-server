@@ -12,7 +12,6 @@
     <name>ses-starter-dubbo</name>
     <description>Demo project for Spring Boot</description>
 
-
     <dependencyManagement>
         <dependencies>
             <!-- Apache dubbo  -->

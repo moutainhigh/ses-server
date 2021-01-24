@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.WebSiteCustomerService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
+import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +38,7 @@ public class CustomerController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/add")
-    @ApiOperation(value = "Create Customer", response = ModelPriceResult.class)
+    @ApiOperation(value = "Create Customer", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddCustomerEnter enter) {
         return new Response<>(webSiteCustomerService.addCustomer(enter));
     }
@@ -54,9 +55,15 @@ public class CustomerController {
         return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
     }
 
+    /**
+     * 编辑客户
+     *
+     * @param enter
+     * @return
+     */
     @PostMapping(value = "/edit")
-    @ApiOperation(value = "Customer Details", response = CustomerDetailsResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(webSiteCustomerService.getCustomerDetails(enter));
+    @ApiOperation(value = "Edit Customer", response = GeneralResult.class)
+    public Response<GeneralResult> edit(@RequestBody EditSiteCustomerEnter enter) {
+        return new Response<>(webSiteCustomerService.editCustomer(enter));
     }
 }

@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.website.vo.customer;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,17 +13,18 @@ import java.math.BigDecimal;
 /**
  * @Author jerry
  * @Date 2021/1/6 3:46 上午
- * @Description 客户结果集出参
+ * @Description 客户编辑
  **/
-@ApiModel(value = "customer result", description = "customer result")
+@ApiModel(value = "Edit Site Customer", description = "Edit Site Customer")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CustomerDetailsResult extends GeneralResult {
+public class EditSiteCustomerEnter extends GeneralEnter {
 
     /**
      * 主键
      */
-    @ApiModelProperty(value = "主建")
+    @ApiModelProperty(value = "Customer Id")
+    @NotNull(code = SiteValidationExceptionCode.ID_IS_EMPTY, message = "Id 不为空")
     private Long id;
 
     /**
@@ -101,11 +104,5 @@ public class CustomerDetailsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "telephone")
     private String telephone;
-
-    /**
-     * 邮件
-     */
-    @ApiModelProperty(value = "email")
-    private String email;
 
 }
