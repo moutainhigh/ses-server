@@ -38,7 +38,7 @@ public class SitePageHomeServiceImpl implements SitePageHomeService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAboutUs(SiteSaveAboutUsEnter enter) {
 

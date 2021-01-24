@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * @Date 2021/1/24 5:53 上午
  * @Description 官网联系我们
  **/
-@ApiModel(value = "官网联系我们", description = "官网联系我们")
+@ApiModel(value = "Contact our", description = "Contact our")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SiteSaveAboutUsEnter extends GeneralEnter {

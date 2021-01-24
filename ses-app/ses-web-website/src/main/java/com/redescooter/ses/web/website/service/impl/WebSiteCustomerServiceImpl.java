@@ -121,7 +121,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
 
         SiteCustomer edit = new SiteCustomer();
-        BeanUtils.copyProperties(edit, edit);
+        BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
 
         return new GeneralResult(enter.getRequestId());
