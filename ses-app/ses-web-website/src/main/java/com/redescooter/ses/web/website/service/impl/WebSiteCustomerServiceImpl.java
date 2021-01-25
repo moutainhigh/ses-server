@@ -9,6 +9,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.code.MainCode;
+import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
 import com.redescooter.ses.web.website.dm.SiteUser;
@@ -54,8 +55,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
-    @Value("${Request.privateKey}")
-    private String privatekey;
+    @Autowired
+    private RequestsKeyProperties requestsKeyProperties;
 
     @DubboReference
     private IdAppService idAppService;
@@ -76,8 +77,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         String phone = null;
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             try {
-                // 邮箱解密
-                decryptEamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+                //邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getEmail(), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
@@ -85,8 +86,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         }
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             try {
-                // 手机号解密
-                phone = RsaUtils.decrypt(enter.getTelephone(), privatekey);
+                //手机号解密
+                phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
@@ -94,9 +95,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         }
         if (StringUtils.isNotEmpty(enter.getPassword())) {
             try {
-                // 密码解密
-                psd = RsaUtils.decrypt(enter.getPassword(), privatekey);
-                confirmPsd = RsaUtils.decrypt(enter.getCfmPassword(), privatekey);
+                //密码解密
+                psd = RsaUtils.decrypt(enter.getPassword(), requestsKeyProperties.getPrivateKey());
+                confirmPsd = RsaUtils.decrypt(enter.getCfmPassword(), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }

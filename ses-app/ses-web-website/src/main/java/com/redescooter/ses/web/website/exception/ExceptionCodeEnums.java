@@ -74,6 +74,16 @@ public enum ExceptionCodeEnums {
     NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10027, "新密码不能和就密码一样"),
 
     DATA_EXCEPTION(10028, "数据异常"),
+
+    PRODUCT_NOT_EXIST_EXIST(10029, "产品不存在"),
+
+    COLOR_NOT_EXIST_EXIST(10030, "颜色不存在"),
+
+    PARTS_NOT_EXIST_EXIST(10031, "配件不存在"),
+
+    PAYMENTTYPE_NOT_EXIST_EXIST(10032, "付款方式不存在"),
+
+    BATTERIES_NUM_ERROR(10032, "电池数量匹配"),
     ;
 
 

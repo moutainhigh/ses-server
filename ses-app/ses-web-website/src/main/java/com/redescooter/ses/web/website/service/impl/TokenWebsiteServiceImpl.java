@@ -20,6 +20,7 @@ import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.ip.IpUtils;
+import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteUser;
 import com.redescooter.ses.web.website.enums.SiteUserStatusEnum;
@@ -65,14 +66,14 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Autowired
     private JedisCluster jedisCluster;
 
-    @Value("${Request.privateKey}")
-    private String privatekey;
+    @Autowired
+    private RequestsKeyProperties requestsKeyProperties;
+
+    @Autowired
+    private SendinBlueConfig sendinBlueConfig;
 
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
-
-    @DubboReference
-    private SendinBlueConfig sendinBlueConfig;
 
     @DubboReference
     private IdAppService idAppService;
@@ -120,8 +121,8 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             String decryptPassword = "";
             String email = "";
             try {
-                email = RsaUtils.decrypt(enter.getLoginName(), privatekey);
-                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+                email = RsaUtils.decrypt(enter.getLoginName(), requestsKeyProperties.getPrivateKey());
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
@@ -191,8 +192,8 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             String confirmDecrypt = null;
             try {
                 //密码校验
-                decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
-                confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
+                decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
+                confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
@@ -257,7 +258,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         if (StringUtils.isNotEmpty(enter.getMail())) {
             try {
                 //邮箱解密
-                decryptMail = RsaUtils.decrypt(enter.getMail(), privatekey);
+                decryptMail = RsaUtils.decrypt(enter.getMail(), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
@@ -298,8 +299,8 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             String oldPsd = "";
             try {
                 //密码校验
-                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), privatekey);
-                oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), privatekey);
+                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
+                oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
