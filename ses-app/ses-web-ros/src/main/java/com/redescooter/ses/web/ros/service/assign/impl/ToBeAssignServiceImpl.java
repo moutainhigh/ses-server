@@ -35,15 +35,19 @@ import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
@@ -134,6 +138,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+
+    @Autowired
+    private OpeInWhouseOrderSerialBindMapper opeInWhouseOrderSerialBindMapper;
+
+    @Autowired
+    private OpeProductionScooterBomMapper opeProductionScooterBomMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -387,22 +397,33 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public ToBeAssignColorResult getColorByRSN(StringEnter enter) {
-        // 暂时模拟
         logger.info("根据R.SN获得颜色的入参是:[{}]", enter);
         ToBeAssignColorResult result = new ToBeAssignColorResult();
-        String colorName = "Noir";
-        LambdaQueryWrapper<OpeColor> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeColor::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeColor::getColorName, colorName);
-        List<OpeColor> list = opeColorMapper.selectList(wrapper);
-        if (CollectionUtils.isEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+
+        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeInWhouseOrderSerialBind::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeInWhouseOrderSerialBind::getSerialNum, enter.getKeyword());
+        wrapper.orderByDesc(OpeInWhouseOrderSerialBind::getCreatedTime);
+        List<OpeInWhouseOrderSerialBind> list = opeInWhouseOrderSerialBindMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            OpeInWhouseOrderSerialBind model = list.get(0);
+            Long productId = model.getProductId();
+            if (null == productId) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
+            OpeProductionScooterBom bom = opeProductionScooterBomMapper.selectById(productId);
+            Long colorId = bom.getColorId();
+            if (null == colorId) {
+                throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            }
+            OpeColor color = opeColorMapper.selectById(colorId);
+            if (null != color) {
+                result.setColorId(color.getId());
+                result.setColorName(color.getColorName());
+                result.setColorValue(color.getColorValue());
+                result.setRequestId(enter.getRequestId());
+            }
         }
-        OpeColor color = list.get(0);
-        result.setColorId(color.getId());
-        result.setColorName(color.getColorName());
-        result.setColorValue(color.getColorValue());
-        result.setRequestId(enter.getRequestId());
         return result;
     }
 

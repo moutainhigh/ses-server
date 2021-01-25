@@ -263,6 +263,9 @@ public interface SequenceName {
 
     String OPE_QC_PARTS_B = "OPE_QC_PARTS_B";
 
+    String OPE_QC_SCOOTER_B = "OPE_QC_SCOOTER_B";
+
+    String OPE_QC_COMBIN_B = "OPE_QC_COMBIN_B";
 
 
 }
