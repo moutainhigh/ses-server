@@ -28,6 +28,19 @@ public class AuthentionController {
     private TokenWebsiteService tokenWebsiteService;
 
     /**
+     * 获取加密公钥
+     *
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @PostMapping(value = "/publicSecret")
+    @ApiOperation(value = "Get public key", response = GetAccountKeyResult.class)
+    public Response<GetAccountKeyResult> publicSecret(GeneralEnter enter) {
+        return new Response(tokenWebsiteService.getAccountKey(enter));
+    }
+
+    /**
      * 登录
      *
      * @param enter

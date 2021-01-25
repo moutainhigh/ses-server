@@ -49,10 +49,4 @@ public class SiteStripeController {
         return new Response<>(stripePaymentService.cancelledPaymentIntent(enter));
     }
 
-    @PostMapping(value = "/publicSecret")
-    @ApiOperation(value = "Get public key", response = StringResult.class)
-    public Response<PublicSecretResult> publicSecret(GeneralEnter enter) {
-        return new Response(stripePaymentService.publicSecret());
-    }
-
 }

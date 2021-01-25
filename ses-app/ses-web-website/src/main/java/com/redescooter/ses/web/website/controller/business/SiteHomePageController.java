@@ -32,10 +32,15 @@ public class SiteHomePageController {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
+    /**
+     * 联系我们
+     * @param enter
+     * @return
+     */
     @IgnoreLoginCheck
-    @PostMapping(value = "/save")
+    @PostMapping(value = "/contactUsSave")
     @ApiOperation(value = "contact Us", response = GeneralResult.class)
-    public Response<GeneralResult> save(@RequestBody SiteSaveAboutUsEnter enter) {
+    public Response<GeneralResult> contactUsSave(@RequestBody SiteSaveAboutUsEnter enter) {
         return new Response<>(sitePageHomeService.saveAboutUs(enter));
     }
 
