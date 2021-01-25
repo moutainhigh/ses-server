@@ -2,13 +2,16 @@ package com.redescooter.ses.web.ros.service.restproductionorder.purchas.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -16,32 +19,51 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionPurchasePartsBMapper;
+import com.redescooter.ses.web.ros.dao.qc.OpeQcOrderMapper;
+import com.redescooter.ses.web.ros.dao.qc.OpeQcPartsBMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeProductionPurchaseOrder;
+import com.redescooter.ses.web.ros.dm.OpeProductionPurchasePartsB;
+import com.redescooter.ses.web.ros.dm.OpeQcOrder;
+import com.redescooter.ses.web.ros.dm.OpeQcPartsB;
+import com.redescooter.ses.web.ros.dm.OpeSupplier;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPurchasePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeQcPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
-import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierPrincipaleResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SaveProductionPurchasEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SavePurchasPaymentEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SavePurchasProductEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +74,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -71,6 +97,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private OpeProductionPurchaseOrderService opeProductionPurchaseOrderService;
+
+    @Autowired
+    private OpeProductionPurchasePartsBMapper opeProductionPurchasePartsBMapper;
 
     @Autowired
     private ProductionPurchasServiceMapper productionPurchasServiceMapper;
@@ -101,6 +130,15 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     @Autowired
     private InWhouseOrderServiceMapper inWhouseOrderServiceMapper;
+
+    @Autowired
+    private OpeQcOrderMapper opeQcOrderMapper;
+
+    @Autowired
+    private OpeQcPartsBMapper opeQcPartsBMapper;
+
+    @Autowired
+    private OpeQcPartsBService opeQcPartsBService;
 
     @Reference
     private IdAppService idAppService;
@@ -520,14 +558,57 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
-                null);
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(), null);
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
+
+        // 生成部件质检单
+        OpeQcOrder model = new OpeQcOrder();
+        long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
+        model.setId(qcId);
+        model.setDr(DelStatusEnum.VALID.getCode());
+        model.setTenantId(enter.getTenantId());
+        model.setDeptId(enter.getOpeDeptId());
+        model.setCountryType(1);
+        model.setQcNo(null);
+        model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
+        model.setOrderType(ProductTypeEnums.PARTS.getValue());
+        model.setRelationOrderId(opeProductionPurchaseOrder.getId());
+        model.setRelationOrderNo(opeProductionPurchaseOrder.getPurchaseNo());
+        model.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+        model.setQcType(QcTypeEnums.PURCHASE.getValue());
+        model.setQcQty(opeProductionPurchaseOrder.getPurchaseQty());
+        model.setCreatedBy(enter.getUserId());
+        model.setCreatedTime(new Date());
+        opeQcOrderMapper.insert(model);
+
+        // 根据采购单id获得此次的生产采购部件集合
+        LambdaQueryWrapper<OpeProductionPurchasePartsB> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeProductionPurchasePartsB::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeProductionPurchasePartsB::getProductionPurchaseId, opeProductionPurchaseOrder.getId());
+        List<OpeProductionPurchasePartsB> list = opeProductionPurchasePartsBMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            List<OpeQcPartsB> saveList = Lists.newArrayList();
+            for (OpeProductionPurchasePartsB part : list) {
+                // 生成质检单部件子表
+                OpeQcPartsB param = new OpeQcPartsB();
+                param.setId(idAppService.getId(SequenceName.OPE_QC_PARTS_B));
+                param.setDr(DelStatusEnum.VALID.getCode());
+                param.setQcId(qcId);
+                param.setPartsId(part.getPartsId());
+                param.setPartsName(part.getPartsName());
+                param.setPartsNo(part.getPartsNo());
+                param.setPartsType(part.getPartsType());
+                param.setQty(part.getQty());
+                param.setCreatedBy(enter.getUserId());
+                param.setCreatedTime(new Date());
+                saveList.add(param);
+            }
+            opeQcPartsBService.saveBatch(saveList);
+        }
         return new GeneralResult(enter.getRequestId());
     }
-
 
     // 部件入库单准备质检时，将关联的部件入库单的状态变为待入库
     @Override

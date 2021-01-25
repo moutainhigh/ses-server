@@ -259,6 +259,10 @@ public interface SequenceName {
 
     String OPE_WMS_QUALIFIED_PARTS_STOCK = "OPE_WMS_QUALIFIED_PARTS_STOCK";
 
+    String OPE_QC_ORDER = "OPE_QC_ORDER";
+
+    String OPE_QC_PARTS_B = "OPE_QC_PARTS_B";
+
 
 
 }

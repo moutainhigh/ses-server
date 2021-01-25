@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 出库单状态
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
