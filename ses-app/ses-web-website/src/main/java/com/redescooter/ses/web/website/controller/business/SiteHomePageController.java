@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"Contact us"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/contactus")
+@RequestMapping(value = "/home/page")
 public class SiteHomePageController {
 
     @Autowired
