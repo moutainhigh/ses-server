@@ -5,12 +5,13 @@ import javax.annotation.Resource;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.service.base.OpeWmsStockSerialNumberService;
+
 /**
- *@author assert
- *@date 2021/1/22 20:10
+ * @author assert
+ * @date 2021/1/22 20:10
  */
 @Service
-public class OpeWmsStockSerialNumberServiceImpl implements OpeWmsStockSerialNumberService{
+public class OpeWmsStockSerialNumberServiceImpl implements OpeWmsStockSerialNumberService {
 
     @Resource
     private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
@@ -41,3 +42,4 @@ public class OpeWmsStockSerialNumberServiceImpl implements OpeWmsStockSerialNumb
     }
 
 }
+

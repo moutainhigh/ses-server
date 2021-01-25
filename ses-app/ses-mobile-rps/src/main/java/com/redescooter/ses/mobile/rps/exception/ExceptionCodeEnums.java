@@ -192,7 +192,13 @@ public enum ExceptionCodeEnums {
 
     QC_IS_NOT_COMPLETED(10093, "质检未完成"),
 
-    IN_WH_QTY_ERROR(10094, "入库数量有误")
+    IN_WH_QTY_ERROR(10094, "入库数量有误"),
+
+    WAREHOUSING_FAILED(10095, "入库失败"),
+
+    OUT_WH_QTY_ERROR(10096, "出库数量有误"),
+
+    DELIVERY_FAILURE(10097, "出库失败")
     ;
 
     private int code;

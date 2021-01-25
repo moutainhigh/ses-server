@@ -47,13 +47,13 @@ public interface OutWarehouseOrderService {
     PageResult<QueryOutWarehouseOrderResultDTO> getOutWarehouseOrderList(QueryOutWarehouseOrderParamDTO paramDTO);
 
     /**
-     * 出库单开始质检
+     * 出库单提交质检
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
      * @date 2021/1/4
     */
-    GeneralResult startQc(IdEnter enter);
+    GeneralResult submitQc(IdEnter enter);
 
     /**
      * 根据id查询出库单详情
@@ -76,11 +76,11 @@ public interface OutWarehouseOrderService {
     /**
      * 保存出库单产品扫码结果
      * @param paramDTO
-     * @return com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO
+     * @return com.redescooter.ses.api.common.vo.base.GeneralResult
      * @author assert
      * @date 2021/1/22
     */
-    SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO);
+    GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO);
 
     /**
      * 提交出库

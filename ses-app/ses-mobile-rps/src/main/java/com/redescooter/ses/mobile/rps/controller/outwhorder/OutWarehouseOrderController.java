@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.controller.outwhorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
-import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -69,16 +68,16 @@ public class OutWarehouseOrderController {
     }
 
     /**
-     * 出库单开始质检
+     * 出库单提交质检
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/4
     */
-    @ApiOperation(value = "开始质检")
-    @PostMapping(value = "/qc")
-    public Response<GeneralResult> startQc(@ModelAttribute IdEnter enter) {
-        return new Response<>(outWarehouseOrderService.startQc(enter));
+    @ApiOperation(value = "提交质检")
+    @PostMapping(value = "/submitQc")
+    public Response<GeneralResult> submitQc(@ModelAttribute IdEnter enter) {
+        return new Response<>(outWarehouseOrderService.submitQc(enter));
     }
 
     /**
@@ -110,13 +109,13 @@ public class OutWarehouseOrderController {
     /**
      * 保存出库单产品扫码结果
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/22
     */
     @ApiOperation(value = "保存扫码结果", notes = "保存出库单产品扫码结果")
     @PostMapping(value = "/saveScanCodeResult")
-    public Response<SaveScanCodeResultDTO> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
+    public Response<GeneralResult> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.saveScanCodeResult(paramDTO));
     }
 

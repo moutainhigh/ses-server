@@ -11,14 +11,35 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author assert
- * @date 2021/1/25 15:09
+ * @date 2021/1/25 15:08
  */
-@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhouseOrderSerialBind")
+@ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeQcOrderSerialBind")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpeInWhouseOrderSerialBind {
+public class OpeQcOrderSerialBind {
+    public static final String COL_ID = "id";
+    public static final String COL_DR = "dr";
+    public static final String COL_ORDER_B_ID = "order_b_id";
+    public static final String COL_ORDER_TYPE = "order_type";
+    public static final String COL_SERIAL_NUM = "serial_num";
+    public static final String COL_DEFAULT_SERIAL_NUM = "default_serial_num";
+    public static final String COL_LOT = "lot";
+    public static final String COL_PRODUCT_ID = "product_id";
+    public static final String COL_PRODUCT_TYPE = "product_type";
+    public static final String COL_QTY = "qty";
+    public static final String COL_REMARK = "remark";
+    public static final String COL_BLUETOOTH_MAC_ADDRESS = "bluetooth_mac_address";
+    public static final String COL_CREATED_BY = "created_by";
+    public static final String COL_CREATED_TIME = "created_time";
+    public static final String COL_UPDATED_BY = "updated_by";
+    public static final String COL_UPDATED_TIME = "updated_time";
+    public static final String COL_DEF1 = "def1";
+    public static final String COL_DEF2 = "def2";
+    public static final String COL_DEF3 = "def3";
+    public static final String COL_DEF4 = "def4";
+    public static final String COL_DEF5 = "def5";
     /**
      * 主键
      */
@@ -32,15 +53,15 @@ public class OpeInWhouseOrderSerialBind {
     private Integer dr;
 
     /**
-     * 入库单产品表id
+     * 质检单产品id
      */
-    @ApiModelProperty(value = "入库单产品表id")
+    @ApiModelProperty(value = "质检单产品id")
     private Long orderBId;
 
     /**
-     * 入库单产品类型 1车辆 2组装件 3部件
+     * 质检单产品类型 1车辆 2组装件 3部件
      */
-    @ApiModelProperty(value = "入库单产品类型 1车辆 2组装件 3部件")
+    @ApiModelProperty(value = "质检单产品类型 1车辆 2组装件 3部件")
     private Integer orderType;
 
     /**
@@ -60,12 +81,6 @@ public class OpeInWhouseOrderSerialBind {
      */
     @ApiModelProperty(value = "车辆平板序列号(整车时才会有值)")
     private String tabletSn;
-
-    /**
-     * 蓝牙mac地址
-     */
-    @ApiModelProperty(value = "蓝牙mac地址")
-    private String bluetoothMacAddress;
 
     /**
      * 批次号
@@ -98,10 +113,16 @@ public class OpeInWhouseOrderSerialBind {
     private String remark;
 
     /**
+     * 蓝牙mac地址
+     */
+    @ApiModelProperty(value = "蓝牙mac地址")
+    private String bluetoothMacAddress;
+
+    /**
      * 创建人
      */
     @ApiModelProperty(value = "创建人")
-    private Long createdBy;
+    private Integer createdBy;
 
     /**
      * 创建时间
@@ -151,7 +172,7 @@ public class OpeInWhouseOrderSerialBind {
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
-    public static OpeInWhouseOrderSerialBindBuilder builder() {
-        return new OpeInWhouseOrderSerialBindBuilder();
+    public static OpeQcOrderSerialBindBuilder builder() {
+        return new OpeQcOrderSerialBindBuilder();
     }
 }

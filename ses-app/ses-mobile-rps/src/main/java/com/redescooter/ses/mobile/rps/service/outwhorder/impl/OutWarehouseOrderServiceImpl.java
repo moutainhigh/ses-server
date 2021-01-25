@@ -1,10 +1,13 @@
 package com.redescooter.ses.mobile.rps.service.outwhorder.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutWhOrderTypeEnum;
+import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.service.RosOutWhOrderService;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -12,27 +15,29 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
+import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
+import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
-import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -66,6 +71,14 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     private OrderStatusFlowService orderStatusFlowService;
     @Resource
     private WmsPartsStockMapper wmsPartsStockMapper;
+    @Resource
+    private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+    @Resource
+    private OutWhouseOrderSerialBindMapper outWhouseOrderSerialBindMapper;
+    @Resource
+    private SaveWmsStockDataComponent saveWmsStockDataComponent;
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -121,33 +134,17 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult startQc(IdEnter enter) {
-
+    public GeneralResult submitQc(IdEnter enter) {
         OutWarehouseOrderDetailDTO outWarehouseOrderDetail = outWarehouseOrderMapper.getOutWarehouseOrderDetailById(enter.getId());
-        if (null == outWarehouseOrderDetail) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
-        }
+        RpsAssert.isNull(outWarehouseOrderDetail, ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),
+                ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
 
-        if (!OutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(outWarehouseOrderDetail.getStatus())){
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
-        }
-
-        OpeOutWhouseOrder outWhouseOrder = OpeOutWhouseOrder.builder()
-                .id(enter.getId())
-                .outWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())
-                .updatedBy(enter.getUserId())
-                .updatedTime(new Date())
-                .build();
-        outWarehouseOrderMapper.updateOutWarehouseOrder(outWhouseOrder);
-
+        RpsAssert.isTrue(!OutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(outWarehouseOrderDetail.getStatus()),
+                ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         /**
-         * 保存出库单操作记录、出库单状态流转信息
+         * TODO 生成出库质检单
          */
-        opTraceService.insertOpTrace(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
-                OrderOperationTypeEnums.START_QC.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
 
-        orderStatusFlowService.insertOrderStatusFlow(outWarehouseOrderDetail.getId(), OrderTypeEnums.OUTBOUND.getValue(),
-                OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue(), outWarehouseOrderDetail.getRemark(), enter.getUserId());
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -207,9 +204,99 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         return productDetail;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
-        return null;
+    public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
+        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+
+        // 避免产品重复扫码出库
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            OpeOutWhouseOrderSerialBind opeOutWhouseOrderSerialBind = outWhouseOrderSerialBindMapper
+                    .getOutWhouseOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNotNull(opeOutWhouseOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+        }
+
+        /**
+         * 产品扫码出库 1车辆 2组装件 3部件
+         */
+        switch (paramDTO.getProductType()) {
+            case 1:
+                OpeOutWhScooterB opeOutWhScooterB = outWhScooterBMapper.getOutWhOrderScooterById(paramDTO.getProductId());
+                RpsAssert.isNull(opeOutWhScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                // 更新出库单车辆已出库数量
+                opeOutWhScooterB.setAlreadyOutWhQty(opeOutWhScooterB.getAlreadyOutWhQty() + 1);
+                opeOutWhScooterB.setUpdatedBy(paramDTO.getUserId());
+                opeOutWhScooterB.setUpdatedTime(new Date());
+                outWhScooterBMapper.updateOutWhScooterB(opeOutWhScooterB);
+
+                break;
+            case 2:
+                OpeOutWhCombinB opeOutWhCombinB = outWhCombinBMapper.getOutWhOrderCombinById(paramDTO.getProductId());
+                RpsAssert.isNull(opeOutWhCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                // 更新出库单组装件已出库数量
+                opeOutWhCombinB.setAlreadyOutWhQty(opeOutWhCombinB.getAlreadyOutWhQty() + 1);
+                opeOutWhCombinB.setUpdatedBy(paramDTO.getUserId());
+                opeOutWhCombinB.setUpdatedTime(new Date());
+                outWhCombinBMapper.updateOutWhCombinB(opeOutWhCombinB);
+
+                break;
+            default:
+                OpeOutWhPartsB opeOutWhPartsB = outWhPartsBMapper.getOutWhOrderPartsById(paramDTO.getProductId());
+                RpsAssert.isNull(opeOutWhPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                RpsAssert.isTrue(qty > opeOutWhPartsB.getQcQty(), ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
+                        ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
+
+                // 更新出库单部件已出库数量
+                if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+                    opeOutWhPartsB.setAlreadyOutWhQty(opeOutWhPartsB.getAlreadyOutWhQty() + qty);
+                } else {
+                    opeOutWhPartsB.setAlreadyOutWhQty(qty);
+                }
+                opeOutWhPartsB.setUpdatedBy(paramDTO.getUserId());
+                opeOutWhPartsB.setUpdatedTime(new Date());
+                outWhPartsBMapper.updateOutWhPartsB(opeOutWhPartsB);
+
+                break;
+        }
+
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            /**
+             * 修改库存产品序列号绑定信息
+             */
+            OpeWmsStockSerialNumber opeWmsStockSerialNumber = new OpeWmsStockSerialNumber();
+            opeWmsStockSerialNumber.setRsn(paramDTO.getSerialNum());
+            opeWmsStockSerialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+            opeWmsStockSerialNumber.setUpdatedBy(paramDTO.getUserId());
+            opeWmsStockSerialNumber.setUpdatedTime(new Date());
+            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(opeWmsStockSerialNumber);
+
+            /**
+             * 保存出库单产品序列号绑定信息(无码产品无需保存)
+             */
+            OpeOutWhouseOrderSerialBind opeOutWhouseOrderSerialBind = new OpeOutWhouseOrderSerialBind();
+            opeOutWhouseOrderSerialBind.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER_SERIAL_BIND));
+            opeOutWhouseOrderSerialBind.setOrderBId(paramDTO.getProductId());
+            opeOutWhouseOrderSerialBind.setOrderType(paramDTO.getProductType());
+            opeOutWhouseOrderSerialBind.setSerialNum(paramDTO.getSerialNum());
+            opeOutWhouseOrderSerialBind.setLot(paramDTO.getLot());
+            opeOutWhouseOrderSerialBind.setProductId(paramDTO.getBomId());
+            opeOutWhouseOrderSerialBind.setProductType(paramDTO.getProductType());
+            opeOutWhouseOrderSerialBind.setQty(qty);
+            opeOutWhouseOrderSerialBind.setCreatedBy(paramDTO.getUserId());
+            opeOutWhouseOrderSerialBind.setCreatedTime(new Date());
+            opeOutWhouseOrderSerialBind.setUpdatedBy(paramDTO.getUserId());
+            opeOutWhouseOrderSerialBind.setUpdatedTime(new Date());
+            outWhouseOrderSerialBindMapper.insertOutWhouseOrderSerialBind(opeOutWhouseOrderSerialBind);
+        }
+
+        return new GeneralResult(paramDTO.getRequestId());
     }
 
     @Override
@@ -221,10 +308,82 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isTrue(outWarehouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
                 ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
 
-        /**
-         * 调用Aleks提交出库后的状态流转方法
-         */
-        rosOutWhOrderService.outWarehouse(enter);
+        transactionTemplate.execute(outWarehouseStatus -> {
+            boolean flag = true;
+            try {
+                /**
+                 * 出库操作(仓库库存操作) 1车辆 2组装件 3部件
+                 */
+                List<OutWarehouseOrderProductDTO> productList = null;
+                List<String> serialNumList = null;
+                switch (outWarehouseOrder.getOrderType()) {
+                    case 1:
+                        productList = outWhScooterBMapper.getOutWhOrderScooterByOutWhId(enter.getId());
+
+                        List<Long> outWhScooterIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhScooterIds);
+
+                        /**
+                         * {bomId, List<OutWarehouseOrderProductDTO>}
+                         */
+                        Map<Long, List<OutWarehouseOrderProductDTO>> scooterMap = productList.stream().collect(
+                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                        );
+
+                        saveWmsStockDataComponent.saveWmsScooterStockData(null,null, scooterMap,
+                                InOutWhEnums.IN.getValue(), enter.getUserId());
+                        break;
+                    case 2:
+                        productList = outWhCombinBMapper.getOutWhOrderCombinByOutWhId(enter.getId());
+
+                        List<Long> outWhCombinIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhCombinIds);
+
+                        /**
+                         * {bomId, List<OutWarehouseOrderProductDTO>}
+                         */
+                        Map<Long, List<OutWarehouseOrderProductDTO>> combinationMap = productList.stream().collect(
+                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                        );
+
+                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, combinationMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+                        break;
+                    default:
+                        productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
+
+                        List<Long> outWhPartsIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhPartsIds);
+
+                        /**
+                         * {bomId, List<OutWarehouseOrderProductDTO>}
+                         */
+                        Map<Long, List<OutWarehouseOrderProductDTO>> partsMap = productList.stream().collect(
+                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                        );
+
+                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, partsMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+                        break;
+                }
+
+                /**
+                 * 产品出库后将信息从库存产品序列号表中删除
+                 */
+                wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+
+                /**
+                 * 调用Aleks提交出库后的状态流转方法
+                 */
+                rosOutWhOrderService.outWarehouse(enter);
+            } catch (Exception e) {
+                flag = false;
+                log.error("【确认出库失败】----{}", ExceptionUtils.getStackTrace(e));
+                outWarehouseStatus.setRollbackOnly();
+            }
+            return flag;
+        });
+
+        // 手动抛出异常
+        RpsAssert.isFalse(false, ExceptionCodeEnums.DELIVERY_FAILURE.getCode(), ExceptionCodeEnums.DELIVERY_FAILURE.getMessage());
 
         return new GeneralResult(enter.getRequestId());
     }

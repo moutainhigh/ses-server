@@ -5,7 +5,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
 
 /**
  * @author assert
- * @date 2021/1/22 20:09
+ * @date 2021/1/25 15:09
  */
 public interface OpeInWhouseOrderSerialBindMapper extends BaseMapper<OpeInWhouseOrderSerialBind> {
     /**

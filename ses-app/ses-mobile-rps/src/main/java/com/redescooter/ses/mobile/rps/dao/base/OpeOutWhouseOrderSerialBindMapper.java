@@ -1,20 +1,20 @@
 package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrderSerialBind;
 
 /**
  * @author assert
- * @date 2021/1/25 10:55
+ * @date 2021/1/25 15:28
  */
-public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSerialNumber> {
+public interface OpeOutWhouseOrderSerialBindMapper extends BaseMapper<OpeOutWhouseOrderSerialBind> {
     /**
      * delete by primary key
      *
      * @param id primaryKey
      * @return deleteCount
      */
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     /**
      * insert record to table selective
@@ -22,7 +22,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the record
      * @return insert count
      */
-    int insertSelective(OpeWmsStockSerialNumber record);
+    int insertSelective(OpeOutWhouseOrderSerialBind record);
 
     /**
      * select by primary key
@@ -30,7 +30,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param id primary key
      * @return object by primary key
      */
-    OpeWmsStockSerialNumber selectByPrimaryKey(Long id);
+    OpeOutWhouseOrderSerialBind selectByPrimaryKey(Integer id);
 
     /**
      * update record
@@ -38,7 +38,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the updated record
      * @return update count
      */
-    int updateByPrimaryKeySelective(OpeWmsStockSerialNumber record);
+    int updateByPrimaryKeySelective(OpeOutWhouseOrderSerialBind record);
 
     /**
      * update record selective
@@ -46,5 +46,5 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the updated record
      * @return update count
      */
-    int updateByPrimaryKey(OpeWmsStockSerialNumber record);
+    int updateByPrimaryKey(OpeOutWhouseOrderSerialBind record);
 }

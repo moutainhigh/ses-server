@@ -1,13 +1,13 @@
 package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
 
 /**
  * @author assert
- * @date 2021/1/25 10:55
+ * @date 2021/1/25 15:08
  */
-public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSerialNumber> {
+public interface OpeQcOrderSerialBindMapper extends BaseMapper<OpeQcOrderSerialBind> {
     /**
      * delete by primary key
      *
@@ -22,7 +22,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the record
      * @return insert count
      */
-    int insertSelective(OpeWmsStockSerialNumber record);
+    int insertSelective(OpeQcOrderSerialBind record);
 
     /**
      * select by primary key
@@ -30,7 +30,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param id primary key
      * @return object by primary key
      */
-    OpeWmsStockSerialNumber selectByPrimaryKey(Long id);
+    OpeQcOrderSerialBind selectByPrimaryKey(Long id);
 
     /**
      * update record
@@ -38,7 +38,7 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the updated record
      * @return update count
      */
-    int updateByPrimaryKeySelective(OpeWmsStockSerialNumber record);
+    int updateByPrimaryKeySelective(OpeQcOrderSerialBind record);
 
     /**
      * update record selective
@@ -46,5 +46,5 @@ public interface OpeWmsStockSerialNumberMapper extends BaseMapper<OpeWmsStockSer
      * @param record the updated record
      * @return update count
      */
-    int updateByPrimaryKey(OpeWmsStockSerialNumber record);
+    int updateByPrimaryKey(OpeQcOrderSerialBind record);
 }
