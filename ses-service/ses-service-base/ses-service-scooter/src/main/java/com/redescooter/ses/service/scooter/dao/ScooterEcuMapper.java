@@ -42,4 +42,6 @@ public interface ScooterEcuMapper {
      */
     List<ScooterEcuDTO> getScooterEcuByTabletSnList(@Param("tabletSnList") List<String> tabletSnList);
 
+
+    int deleteScooterEcuById(@Param("id") Long id);
 }

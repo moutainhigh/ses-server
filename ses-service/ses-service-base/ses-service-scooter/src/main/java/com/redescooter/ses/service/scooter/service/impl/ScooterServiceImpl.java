@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.scooter.service.impl;
-import	java.util.ArrayList;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
@@ -14,9 +14,11 @@ import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 import com.redescooter.ses.service.scooter.constant.ScooterDefaultData;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
+import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
@@ -35,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +62,9 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Autowired
     private ScoScooterStatusService scoScooterStatusService;
+
+    @Autowired
+    private ScooterEcuMapper scooterEcuMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -230,7 +236,7 @@ public class ScooterServiceImpl implements ScooterService {
     public int syncScooterData(SyncScooterDataDTO syncScooterData) {
         ScoScooter scooter = new ScoScooter();
         BeanUtils.copyProperties(syncScooterData, scooter);
-
+        scooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
         scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
         scooter.setTotalMileage(0L);
         scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
@@ -268,6 +274,24 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public String getScooterStatusByTabletSn(String tabletSn) {
         return scooterServiceMapper.getScooterStatusByTabletSn(tabletSn);
+    }
+
+
+    @Override
+    public void deleteScooterData(String sn) {
+        // 先删除车辆、
+        QueryWrapper<ScoScooter> sc = new QueryWrapper<>();
+        sc.eq(ScoScooter.COL_TABLET_SN,sn);
+        sc.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(sc);
+        if (scooter != null) {
+            scoScooterService.removeById(scooter.getId());
+        }
+        // 再删除车辆的ECU
+        ScooterEcuDTO ecu = scooterEcuMapper.getScooterEcuBySerialNumber(sn);
+        if (ecu != null) {
+            scooterEcuMapper.deleteScooterEcuById(ecu.getId());
+        }
     }
 
 }
