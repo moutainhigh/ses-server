@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTy
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.assembly.NewCombinOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -425,12 +426,12 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.DRAF.getValue())) {
+        if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.DRAF.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 组装单备料时 生成部件的出库单 这个时候需要校验部件库存是否足够
         checkPartsStock(opeCombinOrder);
-        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.PREPARED.getValue());
+        opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.PREPARED.getValue());
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.updateById(opeCombinOrder);
@@ -577,10 +578,10 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())) {
+        if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.TO_BE_ASSEMBLED.getValue());
+        opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.ASSEMBLING.getValue());
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.updateById(opeCombinOrder);
@@ -616,7 +617,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.DRAF.getValue())) {
+        if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.DRAF.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         opeCombinOrder.setUpdatedBy(enter.getUserId());
@@ -843,7 +844,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
         BeanUtils.copyProperties(enter, opeCombinOrder);
         opeCombinOrder.setDr(0);
-        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.DRAF.getValue());
+        opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.DRAF.getValue());
         opeCombinOrder.setCombinQty(productQty);
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
@@ -859,13 +860,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if(opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())){
+        if(opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())){
             return;
         }
-        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PREPARED.getValue())) {
+        if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.PREPARATION_COMPLETED.getValue());
+        opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue());
         opeCombinOrder.setUpdatedBy(userId);
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
@@ -891,13 +892,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.ASSEMBLING.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.ASSEMBLING.getValue())){
             return new GeneralResult(enter.getRequestId());
         }
-        if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.TO_BE_ASSEMBLED.getValue())) {
+        /*if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.TO_BE_ASSEMBLED.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-        }
-        opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.ASSEMBLING.getValue());
+        }*/
+        opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.ASSEMBLING.getValue());
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
