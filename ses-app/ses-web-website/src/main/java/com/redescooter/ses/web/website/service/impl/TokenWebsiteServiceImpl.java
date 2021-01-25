@@ -37,7 +37,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -67,10 +66,10 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     private JedisCluster jedisCluster;
 
     @Autowired
-    private RequestsKeyProperties requestsKeyProperties;
+    private SendinBlueConfig sendinBlueConfig;
 
     @Autowired
-    private SendinBlueConfig sendinBlueConfig;
+    private RequestsKeyProperties requestsKeyProperties;
 
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
@@ -251,19 +250,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      */
     @Override
     public GeneralResult forgetPasswordEmail(BaseSendMailEnter enter) {
-        if (Strings.isNullOrEmpty(enter.getMail())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_EMPTY.getCode(), ExceptionCodeEnums.EMAIL_EMPTY.getMessage());
-        }
-        String decryptMail = null;
-        if (StringUtils.isNotEmpty(enter.getMail())) {
-            try {
-                //邮箱解密
-                decryptMail = RsaUtils.decrypt(enter.getMail(), requestsKeyProperties.getPrivateKey());
-            } catch (Exception e) {
-                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
-            enter.setMail(decryptMail);
-        }
+
         SiteUser user = siteUserService.getOne(new QueryWrapper<SiteUser>()
                 .eq(SiteUser.COL_LOGIN_NAME, enter.getMail()));
         if (user == null) {
@@ -290,26 +277,16 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
     @Override
     public GeneralResult editPassword(ModifyPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
-            String newPassword = null;
-            String confirmDecrypt = null;
-            String oldPsd = "";
-            try {
-                //密码校验
-                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
-                oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
-            } catch (Exception e) {
-                throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-            }
-            enter.setNewPassword(newPassword);
-            enter.setOldPassword(oldPsd);
+            // todo 后面密码什么的在前后端传输的时候会加密处理
         }
 
         //比较两个密码是否一致
-        if (StringUtils.equals(enter.getOldPassword(), enter.getNewPassword())) {
+        if (StringUtils.equals(enter.getNewPassword(), enter.getNewPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
         }
         if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
