@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import java.io.*;
-@Slf4j
+
 
 /**
  * @author Mr.lijiating
@@ -16,6 +16,7 @@ import java.io.*;
  * @ClassName: DownloadFileUtil
  * @Function: TODO
  */
+@Slf4j
 public class DownloadFileUtil {
 
     public static final String separator = File.separator;

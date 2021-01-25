@@ -35,5 +35,12 @@ public enum WebSiteCustomerStatusEnums {
         return null;
     }
 
-
+    public static Integer checkValue(int value) {
+        for (WebSiteCustomerStatusEnums item : WebSiteCustomerStatusEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

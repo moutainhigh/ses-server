@@ -18,7 +18,6 @@ import lombok.Data;
 @Data
 @TableName(value = "site_product_model")
 public class SiteProductModel implements Serializable {
-
     /**
      * 主键 主键
      */
@@ -38,7 +37,7 @@ public class SiteProductModel implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
+    private Integer status;
 
     /**
      * 产品种类主建

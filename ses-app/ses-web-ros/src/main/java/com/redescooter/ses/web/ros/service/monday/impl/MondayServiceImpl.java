@@ -3,7 +3,7 @@ package com.redescooter.ses.web.ros.service.monday.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
 import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;

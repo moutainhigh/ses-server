@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
-
 /**
  * @Author jerry
  * @Date 2021/1/6 3:41 上午
@@ -27,8 +25,14 @@ public class AddOrderEnter extends GeneralEnter {
     /**
      * 产品Id
      */
-    @ApiModelProperty(value = "product_id ")
+    @ApiModelProperty(value = "product_id",notes = "According to the vehicle model list, call the ID in the response result of vehicle product details")
     private Long productId;
+
+    /**
+     *
+     */
+    @ApiModelProperty(value = "productPartsId",notes = "Call to get the list of battery accessories according to the vehicle ID，142822372544512")
+    private Long productPartsId;
 
     /**
      * 颜色主建
@@ -45,20 +49,14 @@ public class AddOrderEnter extends GeneralEnter {
     /**
      * 支付方式
      */
-    @ApiModelProperty(value = "payment_type_id")
+    @ApiModelProperty(value = "payment_type_id",notes = "The ID in the response result of the interface calling the payment type")
     private Long paymentTypeId;
 
     /**
      * 需求车辆数
      */
-    @ApiModelProperty(value = "Number of vehicles required")
+    @ApiModelProperty(value = "Number of vehicles required",example = "1")
     private Integer scooterQuantity;
-
-    /**
-     * 预计交货时间
-     */
-    @ApiModelProperty(value = "Estimated delivery time")
-    private Date etdDeliveryTime;
 
     /**
      * 备注

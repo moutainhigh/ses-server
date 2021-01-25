@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils.json.deserializer;
+package com.redescooter.ses.tool.utils.json.dateJson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,8 +13,6 @@ import java.util.Date;
 
 
 public class DateConvertDeserializer extends JsonDeserializer<Date> {
-
-//	private static LoggerAdapter log = LoggerAdapterFacory.getLogger(JsonToDateDeserializer.class);
 
 	private static final String pattern = "yyyy-MM-dd";
 

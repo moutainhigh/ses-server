@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils.json.deserializer;
+package com.redescooter.ses.tool.utils.json.dateJson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

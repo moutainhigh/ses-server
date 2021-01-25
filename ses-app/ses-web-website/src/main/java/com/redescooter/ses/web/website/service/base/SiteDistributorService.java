@@ -3,7 +3,8 @@ package com.redescooter.ses.web.website.service.base;
 import java.util.List;
 import com.redescooter.ses.web.website.dm.SiteDistributor;
 import com.baomidou.mybatisplus.extension.service.IService;
-public interface SiteDistributorService extends IService<SiteDistributor>{
+
+public interface SiteDistributorService extends IService<SiteDistributor> {
 
 
     int updateBatch(List<SiteDistributor> list);
@@ -14,4 +15,6 @@ public interface SiteDistributorService extends IService<SiteDistributor>{
 
     int insertOrUpdateSelective(SiteDistributor record);
 
+    int updateBatchSelective(List<SiteDistributor> list);
 }
+

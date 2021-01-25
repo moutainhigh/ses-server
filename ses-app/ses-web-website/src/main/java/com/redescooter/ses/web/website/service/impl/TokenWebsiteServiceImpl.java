@@ -2,7 +2,6 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
@@ -15,9 +14,10 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.IpUtils;
+import com.redescooter.ses.tool.utils.ip.IpUtils;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteUser;
+import com.redescooter.ses.web.website.enums.SiteUserStatusEnum;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
@@ -175,7 +175,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
         user.setPassword(DigestUtils.md5Hex(enter.getPassword() + salt));
         user.setSalt(String.valueOf(salt));
-        user.setStatus(SysUserStatusEnum.NORMAL.getValue());
+        user.setStatus(SiteUserStatusEnum.NORMAL.getValue());
         user.setLoginName(enter.getLoginName());
         user.setCustomerId(enter.getCustomerId());
         user.setSystemId(SystemIDEnums.REDE_SITE.getSystemId());

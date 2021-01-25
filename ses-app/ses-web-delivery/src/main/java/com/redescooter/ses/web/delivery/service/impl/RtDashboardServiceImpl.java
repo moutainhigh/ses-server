@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;

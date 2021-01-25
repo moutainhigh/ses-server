@@ -20,14 +20,14 @@ public class ModelPriceResult extends ProductModelDetailsResult {
     /**
      * 价格主键
      */
-    @ApiModelProperty(value = "ID")
+    @ApiModelProperty(value = "Price primary key")
     private Long productPriceId;
 
     /**
      * 价格类型
      */
     @ApiModelProperty(value = "Status, 0 full payment, 1 installment")
-    private String priceType;
+    private int priceType;
 
     /**
      * 销售价格 浮点型价格

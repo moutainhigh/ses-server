@@ -37,14 +37,14 @@ public class SiteParts implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态")
-    private String status;
+    private Integer status;
 
     /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
      */
     @TableField(value = "parts_type")
     @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
-    private String partsType;
+    private Integer partsType;
 
     /**
      * 部品号

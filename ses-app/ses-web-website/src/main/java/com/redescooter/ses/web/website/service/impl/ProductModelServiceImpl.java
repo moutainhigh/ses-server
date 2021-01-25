@@ -56,7 +56,7 @@ public class ProductModelServiceImpl implements ProductModelService {
 
         addProductModelVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_MODEL));
         addProductModelVO.setDr(Constant.DR_FALSE);
-        addProductModelVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addProductModelVO.setStatus(CommonStatusEnums.NORMAL.getValue());
         addProductModelVO.setProductClassId(enter.getProductClassId());
         addProductModelVO.setProductModelName(enter.getProductModelName());
         addProductModelVO.setProductModelCode(new StringBuffer().append("ML_").append(MainCode.generateByShuffle()).toString());

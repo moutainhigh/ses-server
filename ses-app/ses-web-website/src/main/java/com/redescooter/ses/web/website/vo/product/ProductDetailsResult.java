@@ -19,8 +19,8 @@ public class ProductDetailsResult extends GeneralResult {
     /**
      * 主建
      */
-    @ApiModelProperty(value = "ID")
-    private Long id;
+    @ApiModelProperty(value = "Product Id")
+    private Long productId;
 
     /**
      * 图片

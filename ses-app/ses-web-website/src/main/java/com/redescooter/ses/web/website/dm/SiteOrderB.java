@@ -12,9 +12,9 @@ import java.util.Date;
 import lombok.Data;
 
 /**
-    * 销售订单子表
-    */
-@ApiModel(value="com-redescooter-ses-web-website-dm-SiteOrderB")
+ * 销售订单子表
+ */
+@ApiModel(value = "com-redescooter-ses-web-website-dm-SiteOrderB")
 @Data
 @TableName(value = "site_order_b")
 public class SiteOrderB implements Serializable {
@@ -22,119 +22,119 @@ public class SiteOrderB implements Serializable {
      * 主建
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value="主建")
+    @ApiModelProperty(value = "主建")
     private Long id;
 
     /**
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除标识 0正常 1删除")
+    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
     /**
      * 销售订单Id
      */
     @TableField(value = "order_id")
-    @ApiModelProperty(value="销售订单Id")
+    @ApiModelProperty(value = "销售订单Id")
     private Long orderId;
 
     /**
      * 产品Id
      */
     @TableField(value = "product_id")
-    @ApiModelProperty(value="产品Id")
+    @ApiModelProperty(value = "产品Id")
     private Long productId;
 
     /**
      * 配件ID
      */
     @TableField(value = "parts_id")
-    @ApiModelProperty(value="配件ID")
-    private BigDecimal partsId;
+    @ApiModelProperty(value = "配件ID")
+    private Long partsId;
 
     /**
      * 配件数量
      */
     @TableField(value = "parts_qty")
-    @ApiModelProperty(value="配件数量")
+    @ApiModelProperty(value = "配件数量")
     private Integer partsQty;
 
     /**
      * 配件单价
      */
     @TableField(value = "parts_price")
-    @ApiModelProperty(value="配件单价")
+    @ApiModelProperty(value = "配件单价")
     private BigDecimal partsPrice;
 
     /**
      * 乐观锁
      */
     @TableField(value = "revision")
-    @ApiModelProperty(value="乐观锁")
+    @ApiModelProperty(value = "乐观锁")
     private Integer revision;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def5;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def6")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private Double def6;
 
     private static final long serialVersionUID = 1L;

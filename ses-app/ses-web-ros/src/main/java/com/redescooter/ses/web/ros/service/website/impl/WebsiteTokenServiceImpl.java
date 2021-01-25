@@ -21,7 +21,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;

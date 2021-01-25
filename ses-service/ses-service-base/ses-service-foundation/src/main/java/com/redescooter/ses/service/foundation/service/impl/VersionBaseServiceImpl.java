@@ -11,7 +11,7 @@ import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.redescooter.ses.service.foundation.service.base.PlaAppVersionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.FileUtil;
+import com.redescooter.ses.tool.utils.file.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Reference;

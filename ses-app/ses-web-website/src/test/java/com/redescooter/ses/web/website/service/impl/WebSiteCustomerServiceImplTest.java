@@ -30,7 +30,7 @@ public class WebSiteCustomerServiceImplTest extends SesWebsiteApplicationTests {
         enter.setTelephone("1111111111");
         enter.setEmail("alex@redelectric.fr");
         enter.setPassword("Alex@123");
-        enter.setConfirmPassword("Alex@123");
+        enter.setCfmPassword("Alex@123");
         enter.setUserId(0L);
 
         webSiteCustomerService.addCustomer(enter);

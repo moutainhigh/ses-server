@@ -6,6 +6,7 @@
     <!--@Table site_contact_us-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="first_name" jdbcType="VARCHAR" property="firstName" />
     <result column="last_name" jdbcType="VARCHAR" property="lastName" />
@@ -19,7 +20,6 @@
     <result column="district_name" jdbcType="VARCHAR" property="districtName" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="frequency" jdbcType="INTEGER" property="frequency" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -34,10 +34,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, email, first_name, last_name, full_name, telephone, country, country_code, 
-    country_name, city_name, district, district_name, address, frequency, `status`, remark, 
-    revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, 
-    def6
+    id, dr, `status`, email, first_name, last_name, full_name, telephone, country, country_code, 
+    country_name, city_name, district, district_name, address, frequency, remark, revision, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -46,6 +45,11 @@
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="email = case" suffix="end,">
@@ -111,11 +115,6 @@
       <trim prefix="frequency = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.frequency,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="`status` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
@@ -187,6 +186,13 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.dr != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -281,13 +287,6 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="`status` = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.remark != null">
@@ -374,18 +373,18 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into site_contact_us
-    (id, dr, email, first_name, last_name, full_name, telephone, country, country_code, 
-      country_name, city_name, district, district_name, address, frequency, `status`, 
-      remark, revision, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def5, def6)
+    (id, dr, `status`, email, first_name, last_name, full_name, telephone, country, country_code, 
+      country_name, city_name, district, district_name, address, frequency, remark, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.email,jdbcType=VARCHAR}, 
-        #{item.firstName,jdbcType=VARCHAR}, #{item.lastName,jdbcType=VARCHAR}, #{item.fullName,jdbcType=VARCHAR}, 
-        #{item.telephone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, #{item.countryCode,jdbcType=VARCHAR}, 
-        #{item.countryName,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, #{item.district,jdbcType=BIGINT}, 
-        #{item.districtName,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, #{item.frequency,jdbcType=INTEGER}, 
-        #{item.status,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
+        #{item.email,jdbcType=VARCHAR}, #{item.firstName,jdbcType=VARCHAR}, #{item.lastName,jdbcType=VARCHAR}, 
+        #{item.fullName,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR}, #{item.country,jdbcType=BIGINT}, 
+        #{item.countryCode,jdbcType=VARCHAR}, #{item.countryName,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, 
+        #{item.district,jdbcType=BIGINT}, #{item.districtName,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+        #{item.frequency,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
         #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
         #{item.def3,jdbcType=VARCHAR}, #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}
@@ -395,16 +394,16 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.website.dm.SiteContactUs">
     <!--@mbg.generated-->
     insert into site_contact_us
-    (id, dr, email, first_name, last_name, full_name, telephone, country, country_code, 
-      country_name, city_name, district, district_name, address, frequency, `status`, 
-      remark, revision, created_by, created_time, updated_by, updated_time, def1, def2, 
-      def3, def5, def6)
+    (id, dr, `status`, email, first_name, last_name, full_name, telephone, country, country_code, 
+      country_name, city_name, district, district_name, address, frequency, remark, revision, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+      )
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{firstName,jdbcType=VARCHAR}, 
-      #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, #{countryName,jdbcType=VARCHAR}, 
-      #{cityName,jdbcType=VARCHAR}, #{district,jdbcType=BIGINT}, #{districtName,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{frequency,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, 
+      #{firstName,jdbcType=VARCHAR}, #{lastName,jdbcType=VARCHAR}, #{fullName,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{country,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR}, 
+      #{countryName,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{district,jdbcType=BIGINT}, 
+      #{districtName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{frequency,jdbcType=INTEGER}, 
       #{remark,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
       #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, 
@@ -412,6 +411,7 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
+    `status` = #{status,jdbcType=INTEGER}, 
     email = #{email,jdbcType=VARCHAR}, 
     first_name = #{firstName,jdbcType=VARCHAR}, 
     last_name = #{lastName,jdbcType=VARCHAR}, 
@@ -425,7 +425,6 @@
     district_name = #{districtName,jdbcType=VARCHAR}, 
     address = #{address,jdbcType=VARCHAR}, 
     frequency = #{frequency,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
     remark = #{remark,jdbcType=VARCHAR}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -447,6 +446,9 @@
       </if>
       <if test="dr != null">
         dr,
+      </if>
+      <if test="status != null">
+        `status`,
       </if>
       <if test="email != null">
         email,
@@ -486,9 +488,6 @@
       </if>
       <if test="frequency != null">
         frequency,
-      </if>
-      <if test="status != null">
-        `status`,
       </if>
       <if test="remark != null">
         remark,
@@ -532,6 +531,9 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
       <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
@@ -570,9 +572,6 @@
       </if>
       <if test="frequency != null">
         #{frequency,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -616,6 +615,9 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
       <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
       </if>
@@ -654,9 +656,6 @@
       </if>
       <if test="frequency != null">
         frequency = #{frequency,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},

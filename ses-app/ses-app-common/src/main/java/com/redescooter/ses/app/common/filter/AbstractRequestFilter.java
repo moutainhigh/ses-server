@@ -16,7 +16,7 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.CountryEnums;
 import com.redescooter.ses.api.common.vo.base.ReqHeader;
 import com.redescooter.ses.app.common.exception.HttpHeaderException;
-import com.redescooter.ses.tool.utils.IpUtils;
+import com.redescooter.ses.tool.utils.ip.IpUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

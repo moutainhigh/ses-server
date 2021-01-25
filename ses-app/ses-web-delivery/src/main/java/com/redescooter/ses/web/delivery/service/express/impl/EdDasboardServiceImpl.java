@@ -1,14 +1,13 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
 import com.redescooter.ses.web.delivery.dao.EdDasboardServiceMapper;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
@@ -19,7 +18,6 @@ import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.service.express.EdDasboardService;
 import com.redescooter.ses.web.delivery.vo.*;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;

@@ -1,6 +1,6 @@
 package com.redescooter.ses.app.common.aspect;
 
-import com.redescooter.ses.tool.utils.aspect.MethodLockAspectUtils;
+import com.redescooter.ses.tool.aspect.MethodLockAspectUtils;
 import lombok.extern.log4j.Log4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

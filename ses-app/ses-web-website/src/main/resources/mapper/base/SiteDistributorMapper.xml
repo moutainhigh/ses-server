@@ -21,7 +21,7 @@
     <result column="area" jdbcType="VARCHAR" property="area" />
     <result column="contract_url" jdbcType="VARCHAR" property="contractUrl" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -126,7 +126,7 @@
       </trim>
       <trim prefix="`type` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="synchronize_flag = case" suffix="end,">
@@ -190,6 +190,212 @@
       #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update site_distributor
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.status != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.code != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.code,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`name` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.name != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.name,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="logo_url = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.logoUrl != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.logoUrl,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryCode != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tel = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tel != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tel,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="email = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.email != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.email,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.address != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.address,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="longitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.longitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.longitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="latitude = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.latitude != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.latitude,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="cp = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.cp != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.cp,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="city = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.city != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.city,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="area = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.area != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.area,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="contract_url = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.contractUrl != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.contractUrl,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`type` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.type != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.type,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="synchronize_flag = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.synchronizeFlag != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.synchronizeFlag,jdbcType=BOOLEAN}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.revision != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def4 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into site_distributor
@@ -204,7 +410,7 @@
         #{item.countryCode,jdbcType=VARCHAR}, #{item.tel,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 
         #{item.address,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL}, 
         #{item.cp,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR}, #{item.area,jdbcType=VARCHAR}, 
-        #{item.contractUrl,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR}, 
+        #{item.contractUrl,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.type,jdbcType=INTEGER}, 
         #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
@@ -224,7 +430,7 @@
       #{tel,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, #{cp,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{contractUrl,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{synchronizeFlag,jdbcType=BOOLEAN}, 
+      #{remark,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{synchronizeFlag,jdbcType=BOOLEAN}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}
@@ -247,7 +453,7 @@
     area = #{area,jdbcType=VARCHAR}, 
     contract_url = #{contractUrl,jdbcType=VARCHAR}, 
     remark = #{remark,jdbcType=VARCHAR}, 
-    `type` = #{type,jdbcType=VARCHAR}, 
+    `type` = #{type,jdbcType=INTEGER}, 
     synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN}, 
     revision = #{revision,jdbcType=INTEGER}, 
     created_by = #{createdBy,jdbcType=BIGINT}, 
@@ -406,7 +612,7 @@
         #{remark,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        #{type,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
       </if>
       <if test="synchronizeFlag != null">
         #{synchronizeFlag,jdbcType=BOOLEAN},
@@ -496,7 +702,7 @@
         remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        `type` = #{type,jdbcType=VARCHAR},
+        `type` = #{type,jdbcType=INTEGER},
       </if>
       <if test="synchronizeFlag != null">
         synchronize_flag = #{synchronizeFlag,jdbcType=BOOLEAN},

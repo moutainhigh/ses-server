@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.aspect;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
-import com.redescooter.ses.tool.utils.IpUtils;
+import com.redescooter.ses.tool.utils.ip.IpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

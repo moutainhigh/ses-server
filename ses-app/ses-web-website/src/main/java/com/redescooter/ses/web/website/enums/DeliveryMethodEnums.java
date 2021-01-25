@@ -40,10 +40,10 @@ public enum DeliveryMethodEnums {
         return null;
     }
 
-    public static String getValueByInt(int value) {
+    public static Integer checkValue(int value) {
         for (DeliveryMethodEnums item : DeliveryMethodEnums.values()) {
             if (value == item.value) {
-                return item.getCode();
+                return item.getValue();
             }
         }
         return null;

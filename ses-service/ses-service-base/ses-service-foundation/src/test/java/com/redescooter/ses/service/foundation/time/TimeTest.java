@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.time;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 

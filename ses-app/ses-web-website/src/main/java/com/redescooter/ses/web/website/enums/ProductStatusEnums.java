@@ -30,4 +30,13 @@ public enum ProductStatusEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (ProductStatusEnums item : ProductStatusEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

@@ -45,7 +45,7 @@ public class ProductPartsServiceImpl implements ProductPartsService {
         SiteProductParts addProductPartsVO = new SiteProductParts();
         addProductPartsVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PARTS));
         addProductPartsVO.setDr(Constant.DR_FALSE);
-        addProductPartsVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addProductPartsVO.setStatus(CommonStatusEnums.NORMAL.getValue());
         addProductPartsVO.setPartsId(enter.getPartsId());
         addProductPartsVO.setProductId(enter.getProductId());
         addProductPartsVO.setQty(enter.getQty());

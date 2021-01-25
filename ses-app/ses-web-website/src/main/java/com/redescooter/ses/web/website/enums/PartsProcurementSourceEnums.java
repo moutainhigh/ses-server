@@ -31,4 +31,13 @@ public enum PartsProcurementSourceEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (PartsProcurementSourceEnums item : PartsProcurementSourceEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

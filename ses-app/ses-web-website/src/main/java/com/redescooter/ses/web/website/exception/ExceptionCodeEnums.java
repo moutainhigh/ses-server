@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * @Date: 03/01/2021 10:50
  * @ClassName: ExceptionCodeEnums
  * @Function: 异常配置
+ * TODO：规则：异常说明_ERROR
  */
 @Getter
 @AllArgsConstructor
@@ -60,6 +61,13 @@ public enum ExceptionCodeEnums {
 
     PARAM_ERROR(10021, "参数错误"),
 
+    UN_COMPLETE_ORDER_ERROR(10022, "存在未完成的订单"),
+
+    PAYMENT_INFO_IS_NOT_EXIST(10023, "付款信息不存在"),
+
+    STRIPE_RESPONSE_EXIST(10024, "STRIPE响应异常"),
+
+    ORDER_NOT_EXIST_EXIST(10025, "订单不存在"),
     ;
 
 

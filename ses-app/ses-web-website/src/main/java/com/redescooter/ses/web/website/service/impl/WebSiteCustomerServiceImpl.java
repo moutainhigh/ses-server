@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
@@ -23,6 +22,7 @@ import com.redescooter.ses.web.website.service.base.SiteCustomerService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
+import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -60,11 +60,11 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
 
-        if (!enter.getConfirmPassword().trim().equals(enter.getPassword().trim())) {
+        if (!enter.getCfmPassword().trim().equals(enter.getPassword().trim())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
@@ -74,7 +74,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
-        signUp.setPassword(enter.getConfirmPassword().trim());
+        signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
     }
@@ -110,6 +110,23 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         return result;
     }
 
+    /**
+     * 客户编辑
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
+
+        SiteCustomer edit = new SiteCustomer();
+        BeanUtils.copyProperties(enter, edit);
+        siteCustomerService.updateById(edit);
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
     private void checkEmail(String email) {
         if (StringUtils.isBlank(email)) {
             throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_EMPTY.getCode(),
@@ -140,7 +157,6 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setCountryCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
         addCustomer.setCustomerSource(WebSiteCustomerSourceEnums.OFFICIAL.getValue());
         addCustomer.setCustomerType(CustomerTypeEnums.PERSONAL.getValue());
-        addCustomer.setCustomerHeadPicture(enter.getCustomerHeadPicture());
         addCustomer.setCustomerFirstName(enter.getCustomerFirstName());
         addCustomer.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {

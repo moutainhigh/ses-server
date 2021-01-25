@@ -9,7 +9,7 @@ import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.tool.utils.ValidationUtil;
+import com.redescooter.ses.tool.aspect.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

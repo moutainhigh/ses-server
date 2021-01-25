@@ -13,10 +13,17 @@ import java.math.BigDecimal;
  * @Date 2021/1/6 3:46 上午
  * @Description 客户结果集出参
  **/
-@ApiModel(value = "客户结果集出参", description = "客户结果集出参")
+@ApiModel(value = "customer result", description = "customer result")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CustomerDetailsResult extends GeneralResult {
+
+    /**
+     * 主键
+     */
+    @ApiModelProperty(value = "主建")
+    private Long id;
+
     /**
      * 国家编号，中国 +86
      */
@@ -101,9 +108,4 @@ public class CustomerDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "email")
     private String email;
 
-    /**
-     * 持卡人
-     */
-    @ApiModelProperty(value = "Cardholder")
-    private String cardholder;
 }

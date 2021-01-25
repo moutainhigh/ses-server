@@ -10,7 +10,7 @@ import com.redescooter.ses.service.hub.source.operation.dm.OpeProductionScooterB
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;

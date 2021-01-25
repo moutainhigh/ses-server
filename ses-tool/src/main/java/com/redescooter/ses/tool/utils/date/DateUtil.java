@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.date;
 
 import com.redescooter.ses.api.common.constant.DateConstant;
 

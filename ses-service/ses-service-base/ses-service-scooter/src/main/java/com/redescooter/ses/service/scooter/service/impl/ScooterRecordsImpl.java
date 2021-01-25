@@ -10,7 +10,7 @@ import com.redescooter.ses.service.scooter.dao.ScooterRecordServiceMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;

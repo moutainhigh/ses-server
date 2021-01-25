@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
         SiteProduct addProductVO = new SiteProduct();
         addProductVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
         addProductVO.setDr(Constant.DR_FALSE);
-        addProductVO.setStatus(String.valueOf(ProductStatusEnums.UP.getValue()));
+        addProductVO.setStatus(ProductStatusEnums.UP.getValue());
         addProductVO.setProductType(ProductTypeEnums.VEHICLE.getValue());
         addProductVO.setProductCode(new StringBuffer().append("PT_").append(MainCode.generateByShuffle()).toString());
         addProductVO.setCnName(enter.getCnName());

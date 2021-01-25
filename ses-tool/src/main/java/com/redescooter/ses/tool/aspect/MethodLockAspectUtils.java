@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils.aspect;
+package com.redescooter.ses.tool.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 

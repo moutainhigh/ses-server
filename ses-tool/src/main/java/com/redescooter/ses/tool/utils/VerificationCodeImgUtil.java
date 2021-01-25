@@ -1,6 +1,8 @@
 package com.redescooter.ses.tool.utils;
 
 
+import com.redescooter.ses.tool.crypt.Base64Util;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;

@@ -12,6 +12,8 @@ import com.redescooter.ses.web.website.dm.SiteParts;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PartsProcurementSourceEnums;
 import com.redescooter.ses.web.website.enums.PartsTypeEnums;
+import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.PartsService;
 import com.redescooter.ses.web.website.service.base.SitePartsService;
 import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
@@ -56,11 +58,16 @@ public class PartsServiceImpl implements PartsService {
         SiteParts addSitePartsVO = new SiteParts();
         addSitePartsVO.setId(idAppService.getId(SequenceName.SITE_PARTS));
         addSitePartsVO.setDr(Constant.DR_FALSE);
-        addSitePartsVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
-        if (enter.getPartsType().equals(String.valueOf(PartsTypeEnums.BATTERY.getValue()))) {
-            addSitePartsVO.setPartsType(String.valueOf(PartsTypeEnums.BATTERY.getValue()));
-        } else {
-            addSitePartsVO.setPartsType(String.valueOf(PartsTypeEnums.ACCESSORY.getValue()));
+        addSitePartsVO.setStatus(CommonStatusEnums.NORMAL.getValue());
+
+        if(enter.getPartsType()==PartsTypeEnums.BATTERY.getValue()){
+            addSitePartsVO.setPartsType(PartsTypeEnums.BATTERY.getValue());
+        }
+        if(enter.getPartsType()==PartsTypeEnums.ACCESSORY.getValue()){
+            addSitePartsVO.setPartsType(PartsTypeEnums.ACCESSORY.getValue());
+        }else{
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
+                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
         }
         addSitePartsVO.setPartsNumber(enter.getPartsNumber());
         addSitePartsVO.setCnName(enter.getCnName());

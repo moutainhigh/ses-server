@@ -12,8 +12,7 @@ import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -155,13 +154,12 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public GeneralResult succeeHooks(String enter) {
         if (StringUtils.isEmpty(enter)) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+
         String payload = enter;
         log.info("=============================");
         log.info("网络钩子数据回调===={}", payload);

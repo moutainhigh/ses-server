@@ -1,4 +1,4 @@
-package com.redescooter.ses.tool.utils;
+package com.redescooter.ses.tool.utils.file;
 
 import org.apache.http.entity.ContentType;
 import org.springframework.mock.web.MockMultipartFile;

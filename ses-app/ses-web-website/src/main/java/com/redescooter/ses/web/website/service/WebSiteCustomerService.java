@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
+import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
 
 /**
  * @Author jerry
@@ -12,7 +13,7 @@ import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
  * @Description 客户服务
  **/
 public interface WebSiteCustomerService {
-    
+
     /**
      * 创建客户
      *
@@ -27,4 +28,12 @@ public interface WebSiteCustomerService {
      * @param enter
      */
     CustomerDetailsResult getCustomerDetails(GeneralEnter enter);
+
+    /**
+     * 客户编辑
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult editCustomer(EditSiteCustomerEnter enter);
 }

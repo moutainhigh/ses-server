@@ -56,13 +56,14 @@ spring:
     enabled: false                                       # 是否启用swagger
 
 ## stripe pay
-stripe:
-  currency: eur
-  payment_method_types: card
-  payment_event: payment_intent.succeeded
-  publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
-  secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
-  receipt_email: etienne@redescooter.fr
+rede:
+  stripe:
+    currency: eur
+    payment_method_types: card
+    payment_event: payment_intent.succeeded
+    publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
+    secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
+    receipt_email: etienne@redescooter.fr
 
 oss:                                                                                                                    #阿里oss上传
   #oss 使用HTTPS、HTTP请求方式

@@ -31,7 +31,7 @@ import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;

@@ -36,7 +36,7 @@ public class SiteProductParts implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
+    private Integer status;
 
     /**
      * 配件ID

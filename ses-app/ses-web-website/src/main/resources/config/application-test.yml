@@ -61,13 +61,14 @@ spring:                                                                         
           url: https://github.com/mrjerryli                                                                             #联系地址
 
 ## stripe pay
-stripe:
-  currency: eur
-  payment_method_types: card
-  payment_event: accept_a_payment
-  publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
-  secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
-  receipt_email: etienne@redescooter.fr
+rede:
+  stripe:
+    currency: eur
+    payment_method_types: card
+    payment_event: accept_a_payment
+    publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+    secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+    receipt_email: etienne@redescooter.fr
 
 oss:                                                                                                                    #阿里oss上传
   #调整最大文件大小为10M 默认单位为字节

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * @Date 2021/1/6 3:45 上午
  * @Description 新增客户入参
  **/
-@ApiModel(value = "新增客户入参", description = "新增客户入参")
+@ApiModel(value = "add customer", description = "add customer")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class AddCustomerEnter extends GeneralEnter {
@@ -25,12 +25,6 @@ public class AddCustomerEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "Country number, China + 86")
     private String countryCode;
-
-    /**
-     * 客户头像
-     */
-    @ApiModelProperty(value = "Customer profile")
-    private String customerHeadPicture;
 
     /**
      * 客户名字
@@ -112,7 +106,5 @@ public class AddCustomerEnter extends GeneralEnter {
 
     @NotNull(code = ValidationExceptionBaseCode.PASSWORD_IS_EMPTY, message = "密码为空")
     @ApiModelProperty(value = "Second confirmation password")
-    private String confirmPassword;
-
-
+    private String cfmPassword;
 }

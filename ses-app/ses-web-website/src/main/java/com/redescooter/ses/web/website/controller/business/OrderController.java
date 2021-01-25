@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.controller.business;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.OrderService;
 import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
@@ -32,19 +29,19 @@ public class OrderController {
 
     @PostMapping(value = "/add")
     @ApiOperation(value = "Add", response = IdResult.class)
-    public Response<IdResult> add(@ModelAttribute @ApiParam("请求参数") AddOrderEnter enter) {
+    public Response<IdResult> add(@RequestBody AddOrderEnter enter) {
         return new Response<>(orderService.addOrder(enter));
     }
 
     @PostMapping(value = "/addOrderParts")
     @ApiOperation(value = "AddOrderParts", response = GeneralResult.class)
-    public Response<GeneralResult> AddOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderPartsEnter enter) {
+    public Response<GeneralResult> AddOrderParts(@RequestBody AddOrderPartsEnter enter) {
         return new Response<>(orderService.AddOrderParts(enter));
     }
 
-    @PostMapping(value = "/details")
+    @GetMapping(value = "/details")
     @ApiOperation(value = "Order Details", response = OrderDetailsResult.class)
-    public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(orderService.getOrderDetails(enter));
+    public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderService.getOrderDetailsByMyself(enter));
     }
 }

@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.service.EdAddressServices;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
