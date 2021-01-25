@@ -81,6 +81,7 @@ public class AuthentionController {
 
     /**
      * 修改密码
+     *
      * @param enter
      * @return
      */
@@ -89,13 +90,5 @@ public class AuthentionController {
     @ApiOperation(value = "Edit Password", response = GeneralResult.class)
     public Response<GeneralResult> editPassword(@ModelAttribute @ApiParam("Parameter") ModifyPasswordEnter enter) {
         return new Response<>(tokenWebsiteService.editPassword(enter));
-    }
-
-
-    @IgnoreLoginCheck
-    @PostMapping(value = "/emailSubscribe")
-    @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
-    public Response<GeneralResult> emailSubscribe(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
-        return new Response<>(tokenWebsiteService.emailSubscribe(enter));
     }
 }

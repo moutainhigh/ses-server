@@ -1,12 +1,15 @@
 package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.SitePageHomeService;
+import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import com.redescooter.ses.web.website.vo.aboutus.SiteSaveAboutUsEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,15 +24,31 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/contactus")
-public class ContactUsController {
+public class SiteHomePageController {
 
     @Autowired
     private SitePageHomeService sitePageHomeService;
+
+    @Autowired
+    private TokenWebsiteService tokenWebsiteService;
 
     @IgnoreLoginCheck
     @PostMapping(value = "/save")
     @ApiOperation(value = "contact Us", response = GeneralResult.class)
     public Response<GeneralResult> save(@RequestBody SiteSaveAboutUsEnter enter) {
         return new Response<>(sitePageHomeService.saveAboutUs(enter));
+    }
+
+    /**
+     * 邮件订阅
+     *
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @PostMapping(value = "/emailSubscribe")
+    @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
+    public Response<GeneralResult> emailSubscribe(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
+        return new Response<>(tokenWebsiteService.emailSubscribe(enter));
     }
 }
