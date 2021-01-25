@@ -267,5 +267,7 @@ public interface SequenceName {
 
     String OPE_QC_COMBIN_B = "OPE_QC_COMBIN_B";
 
+    String OPE_WMS_STOCK_SERIAL_NUMBER = "OPE_WMS_STOCK_SERIAL_NUMBER";
+
 
 }
