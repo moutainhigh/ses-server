@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
-import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.PaymentTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.NewProductionPurchasEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcTypeEnums;
@@ -375,7 +376,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
         BeanUtils.copyProperties(enter,opeProductionPurchaseOrder);
         opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.DRAFT.getValue());
+        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.DRAFT.getValue());
         opeProductionPurchaseOrder.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
         opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
         opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
@@ -466,10 +467,10 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.HAS_BEEN_STORED.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.FINISHED.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.FINISHED.getValue());
+        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.FINISHED.getValue());
         opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
@@ -503,10 +504,10 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.PURCHASING.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.CANCEL.getValue());
+        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.FINISHED.getValue());
         opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
@@ -540,7 +541,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.DRAFT.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
@@ -569,10 +570,10 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.DRAFT.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.PURCHASING.getValue());
+        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.PURCHASING.getValue());
         opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
@@ -643,14 +644,14 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if(opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())
+        /*if(opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue())
         || opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
             return;
-        }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue())){
+        }*/
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.PURCHASING.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.TO_BE_STORED.getValue());
+        //opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.TO_BE_STORED.getValue());
         opeProductionPurchaseOrder.setUpdatedBy(userId);
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
@@ -670,7 +671,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (Objects.isNull(opeProductionPurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PURCHASING.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
+        if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.PURCHASING.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.TO_BE_STORED.getValue()) && !opeProductionPurchaseOrder.getPurchaseStatus().equals(ProductionPurchasEnums.PARTIAL_STORAGE.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 判断一波 是变成部分入库还是已入库
@@ -814,7 +815,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             QueryWrapper<OpeInWhouseOrder> inWhouseOrderQueryWrapper = new QueryWrapper<>();
             inWhouseOrderQueryWrapper.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,productionPurchaseId);
             inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID,inWhId);
-            inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+            inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
             int inWhNum = opeInWhouseOrderService.count(inWhouseOrderQueryWrapper);
             if (inWhNum > 0){
                 flag = false;

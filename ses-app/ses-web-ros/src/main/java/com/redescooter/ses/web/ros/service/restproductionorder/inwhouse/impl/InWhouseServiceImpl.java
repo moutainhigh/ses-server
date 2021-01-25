@@ -156,7 +156,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         inWhouseOrder.setCreatedTime(new Date());
         inWhouseOrder.setUpdatedBy(enter.getUserId());
         inWhouseOrder.setUpdatedTime(new Date());
-        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.DRAFT.getValue());
+        inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.DRAFT.getValue());
         // 单据号
         inWhouseOrder.setInWhNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.FACTORY_INBOUND.getValue())));
         // 统计入库数量
@@ -323,7 +323,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+        if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         BeanUtils.copyProperties(enter,inWhouseOrder);
@@ -467,7 +467,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+        if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeInWhouseOrderService.removeById(enter.getId());
@@ -1231,15 +1231,15 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if ((inWhouseOrder.getOrderType().equals(ProductTypeEnums.SCOOTER.getValue()) || inWhouseOrder.getOrderType().equals(ProductTypeEnums.COMBINATION.getValue())) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+        if ((inWhouseOrder.getOrderType().equals(ProductTypeEnums.SCOOTER.getValue()) || inWhouseOrder.getOrderType().equals(ProductTypeEnums.COMBINATION.getValue())) && !inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())){
             // 整车和组装件 是草稿状态的时候才能点击
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue()) && !inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.WAIT_IN_WH.getValue())){
+        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue()) && !inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())){
             // 部件 是待入库状态的时候才能点击
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
 
         // 入库单确认入库 处理字表的实际入库数量
@@ -1313,10 +1313,10 @@ public class InWhouseServiceImpl implements InWhouseService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.DRAFT.getValue())){
+        if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue());
+        //inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
         // 操作记录
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.READY_QC.getValue(),
