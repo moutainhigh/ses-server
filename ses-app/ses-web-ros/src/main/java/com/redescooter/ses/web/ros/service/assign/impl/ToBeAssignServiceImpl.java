@@ -41,6 +41,7 @@ import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper;
+import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
@@ -52,6 +53,7 @@ import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
 import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
@@ -64,6 +66,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
@@ -144,6 +147,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeProductionScooterBomMapper opeProductionScooterBomMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
 
     @Reference
     private IdAppService idAppService;
@@ -464,6 +473,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
 
+        // 库存产品序列号表id集合
+        List<Long> idList = Lists.newArrayList();
+
         for (ToBeAssignSubmitDetailEnter o : list) {
             Long id = o.getId();
             String rsn = o.getRsn();
@@ -621,10 +633,29 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 cusotmerScooterService.saveScooter(saveRelationList);
                 logger.info("客户类型是个人,新增consumer库");
             }
+
+            // 根据rsn删除库存产品序列号表
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            qw.orderByDesc(OpeWmsStockSerialNumber::getCreatedTime);
+            List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
+            if (CollectionUtils.isNotEmpty(serialNumberList)) {
+                OpeWmsStockSerialNumber serialNumber = serialNumberList.get(0);
+                if (null != serialNumber) {
+                    Long serialNumberId = serialNumber.getId();
+                    idList.add(serialNumberId);
+                }
+            }
         }
         // 将数据存储到scooter库
         scooterService.saveScooter(saveScooterList);
         logger.info("新增scooter库");
+
+        // 删除库存产品序列号表
+        if (CollectionUtils.isNotEmpty(idList)) {
+            opeWmsStockSerialNumberService.removeByIds(idList);
+        }
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
