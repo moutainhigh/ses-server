@@ -27,7 +27,6 @@ public class AuthentionController {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
-
     /**
      * 获取密钥（加密的公钥）
      * @param enter
@@ -93,9 +92,9 @@ public class AuthentionController {
         return new Response<>(tokenWebsiteService.setPassword(enter));
     }
 
-
     /**
      * 修改密码
+     *
      * @param enter
      * @return
      */
@@ -106,16 +105,4 @@ public class AuthentionController {
         return new Response<>(tokenWebsiteService.editPassword(enter));
     }
 
-
-    /**
-     * 官网邮件订阅
-     * @param enter
-     * @return
-     */
-    @IgnoreLoginCheck
-    @PostMapping(value = "/emailSubscribe")
-    @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
-    public Response<GeneralResult> emailSubscribe(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
-        return new Response<>(tokenWebsiteService.emailSubscribe(enter));
-    }
 }

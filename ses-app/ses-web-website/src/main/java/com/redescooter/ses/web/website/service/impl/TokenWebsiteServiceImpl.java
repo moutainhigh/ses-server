@@ -185,7 +185,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      */
     @Override
     public GeneralResult setPassword(ModifyPasswordEnter enter) {
-//先给两个密码去空格（这个事应该前端就要做的）
+        //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
             String decrypt = null;
             String confirmDecrypt = null;
@@ -213,7 +213,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         }
         // 已经从缓存里拿到了用户信息
         String userId = map.get("userId");
-        if (StringUtils.isEmpty(userId)){
+        if (StringUtils.isEmpty(userId)) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         changeUserPsd(enter, Long.valueOf(userId));
@@ -227,7 +227,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     // 修改用户的密码
     private void changeUserPsd(ModifyPasswordEnter enter, Long userId) {
         SiteUser siteUser = siteUserService.getById(userId);
-        if (siteUser == null){
+        if (siteUser == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //新旧密码一致 不可以
@@ -289,7 +289,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     @Override
     public GeneralResult editPassword(ModifyPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
@@ -318,8 +317,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         changeUserPsd(enter, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
-
-
 
     @Override
     public GeneralResult emailSubscribe(CheckEmailEnter enter) {
@@ -369,7 +366,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         // todo  数据同步Monday
 //        mondayService.websiteSubscriptionEmail(email);
     }
-
 
 
     private SiteUser getUser(LoginEnter enter) {
