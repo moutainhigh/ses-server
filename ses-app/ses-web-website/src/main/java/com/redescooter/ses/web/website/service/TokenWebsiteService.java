@@ -23,6 +23,10 @@ public interface TokenWebsiteService {
      */
     GeneralResult signUp(LoginEnter enter);
 
+
+    GetAccountKeyResult getAccountKey(GeneralEnter enter);
+
+
     /**
      * 用户登录
      *

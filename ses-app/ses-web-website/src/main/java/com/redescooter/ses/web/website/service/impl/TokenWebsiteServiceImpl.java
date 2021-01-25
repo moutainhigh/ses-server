@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -64,6 +65,9 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Value("${Request.privateKey}")
+    private String privatekey;
+
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -86,6 +90,21 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         return createUser(enter);
     }
 
+    @Override
+    public GetAccountKeyResult getAccountKey(GeneralEnter enter) {
+        Map<String, String> stringStringMap = RsaUtils.generateRsaKey(RsaUtils.DEFAULT_RSA_KEY_SIZE);
+
+        //设置缓存
+        String key = new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString();
+        jedisCluster.setex(key, (int) RedisExpireEnum.getSeconds(RedisExpireEnum.DAY_1.getTime()), stringStringMap.get(RsaUtils.PRIVATE_KEY));
+
+        GetAccountKeyResult getAccountKeyResult = new GetAccountKeyResult();
+        getAccountKeyResult.setPublicKey(stringStringMap.get(RsaUtils.PUBLIC_KEY));
+        getAccountKeyResult.setRequestId(enter.getRequestId());
+        return getAccountKeyResult;
+    }
+
+
     /**
      * 用户登录
      *
@@ -95,7 +114,20 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
-
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
+        if (enter.getPassword() != null) {
+            String decryptPassword = "";
+            String email = "";
+            try {
+                email = RsaUtils.decrypt(enter.getLoginName(), privatekey);
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setPassword(decryptPassword);
+            enter.setLoginName(email);
+        }
         SiteUser user = getUser(enter);
         if (user == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),

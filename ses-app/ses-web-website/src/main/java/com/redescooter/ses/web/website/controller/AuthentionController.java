@@ -27,6 +27,20 @@ public class AuthentionController {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
+
+    /**
+     * 获取密钥（加密的公钥）
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @ApiOperation(value = "Get key (encrypted public key)", response = GetAccountKeyResult.class)
+    @PostMapping(value = "/getAccountKey")
+    public Response<GetAccountKeyResult> getAccountKey(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(tokenWebsiteService.getAccountKey(enter));
+    }
+
+
     /**
      * 登录
      *
