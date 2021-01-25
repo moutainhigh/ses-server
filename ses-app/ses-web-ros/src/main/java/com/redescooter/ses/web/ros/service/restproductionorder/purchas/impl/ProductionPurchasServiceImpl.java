@@ -704,95 +704,99 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
         Integer combinType = combinOrder.getCombinType();
         // 组装单的类型是车辆
-        if (ProductTypeEnums.SCOOTER.getValue().equals(combinType)) {
-            // 生成组装单车辆的质检单
-            OpeQcOrder model = new OpeQcOrder();
-            long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
-            model.setId(qcId);
-            model.setDr(DelStatusEnum.VALID.getCode());
-            model.setTenantId(enter.getTenantId());
-            model.setDeptId(enter.getOpeDeptId());
-            model.setCountryType(1);
-            model.setQcNo(null);
-            model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-            model.setOrderType(ProductTypeEnums.SCOOTER.getValue());
-            model.setRelationOrderId(combinOrder.getId());
-            model.setRelationOrderNo(combinOrder.getCombinNo());
-            model.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
-            model.setQcType(QcTypeEnums.PRODUCTION.getValue());
-            model.setQcQty(combinOrder.getCombinQty());
-            model.setCreatedBy(enter.getUserId());
-            model.setCreatedTime(new Date());
-            opeQcOrderMapper.insert(model);
+        switch (combinType) {
+            case 1:
+                // 生成组装单车辆的质检单
+                OpeQcOrder model = new OpeQcOrder();
+                long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
+                model.setId(qcId);
+                model.setDr(DelStatusEnum.VALID.getCode());
+                model.setTenantId(enter.getTenantId());
+                model.setDeptId(enter.getOpeDeptId());
+                model.setCountryType(1);
+                model.setQcNo(null);
+                model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
+                model.setOrderType(ProductTypeEnums.SCOOTER.getValue());
+                model.setRelationOrderId(combinOrder.getId());
+                model.setRelationOrderNo(combinOrder.getCombinNo());
+                model.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                model.setQcType(QcTypeEnums.PRODUCTION.getValue());
+                model.setQcQty(combinOrder.getCombinQty());
+                model.setCreatedBy(enter.getUserId());
+                model.setCreatedTime(new Date());
+                opeQcOrderMapper.insert(model);
 
-            // 根据组装单id获得车辆组装单集合
-            LambdaQueryWrapper<OpeCombinOrderScooterB> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(OpeCombinOrderScooterB::getDr, DelStatusEnum.VALID.getCode());
-            wrapper.eq(OpeCombinOrderScooterB::getCombinId, combinOrder.getId());
-            List<OpeCombinOrderScooterB> list = opeCombinOrderScooterBMapper.selectList(wrapper);
-            if (CollectionUtils.isNotEmpty(list)) {
-                List<OpeQcScooterB> saveList = Lists.newArrayList();
-                for (OpeCombinOrderScooterB scooter : list) {
-                    // 生成质检单车辆组装单子表
-                    OpeQcScooterB param = new OpeQcScooterB();
-                    param.setId(idAppService.getId(SequenceName.OPE_QC_SCOOTER_B));
-                    param.setDr(DelStatusEnum.VALID.getCode());
-                    param.setQcId(qcId);
-                    param.setGroupId(scooter.getGroupId());
-                    param.setColorId(scooter.getColorId());
-                    param.setScooterBomId(scooter.getScooterBomId());
-                    param.setQty(scooter.getQty());
-                    param.setCreatedBy(enter.getUserId());
-                    param.setCreatedTime(new Date());
-                    saveList.add(param);
+                // 根据组装单id获得车辆组装单集合
+                LambdaQueryWrapper<OpeCombinOrderScooterB> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeCombinOrderScooterB::getDr, DelStatusEnum.VALID.getCode());
+                wrapper.eq(OpeCombinOrderScooterB::getCombinId, combinOrder.getId());
+                List<OpeCombinOrderScooterB> list = opeCombinOrderScooterBMapper.selectList(wrapper);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    List<OpeQcScooterB> saveList = Lists.newArrayList();
+                    for (OpeCombinOrderScooterB scooter : list) {
+                        // 生成质检单车辆组装单子表
+                        OpeQcScooterB param = new OpeQcScooterB();
+                        param.setId(idAppService.getId(SequenceName.OPE_QC_SCOOTER_B));
+                        param.setDr(DelStatusEnum.VALID.getCode());
+                        param.setQcId(qcId);
+                        param.setGroupId(scooter.getGroupId());
+                        param.setColorId(scooter.getColorId());
+                        param.setScooterBomId(scooter.getScooterBomId());
+                        param.setQty(scooter.getQty());
+                        param.setCreatedBy(enter.getUserId());
+                        param.setCreatedTime(new Date());
+                        saveList.add(param);
+                    }
+                    opeQcScooterBService.saveBatch(saveList);
                 }
-                opeQcScooterBService.saveBatch(saveList);
-            }
+            default:
+                break;
             // 组装单的类型是组装件
-        } else if (ProductTypeEnums.COMBINATION.getValue().equals(combinType)) {
-            // 生成组装单组装件的质检单
-            OpeQcOrder model = new OpeQcOrder();
-            long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
-            model.setId(qcId);
-            model.setDr(DelStatusEnum.VALID.getCode());
-            model.setTenantId(enter.getTenantId());
-            model.setDeptId(enter.getOpeDeptId());
-            model.setCountryType(1);
-            model.setQcNo(null);
-            model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-            model.setOrderType(ProductTypeEnums.COMBINATION.getValue());
-            model.setRelationOrderId(combinOrder.getId());
-            model.setRelationOrderNo(combinOrder.getCombinNo());
-            model.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
-            model.setQcType(QcTypeEnums.PRODUCTION.getValue());
-            model.setQcQty(combinOrder.getCombinQty());
-            model.setCreatedBy(enter.getUserId());
-            model.setCreatedTime(new Date());
-            opeQcOrderMapper.insert(model);
+            case 2:
+                // 生成组装单组装件的质检单
+                OpeQcOrder instance = new OpeQcOrder();
+                long id = idAppService.getId(SequenceName.OPE_QC_ORDER);
+                instance.setId(id);
+                instance.setDr(DelStatusEnum.VALID.getCode());
+                instance.setTenantId(enter.getTenantId());
+                instance.setDeptId(enter.getOpeDeptId());
+                instance.setCountryType(1);
+                instance.setQcNo(null);
+                instance.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
+                instance.setOrderType(ProductTypeEnums.COMBINATION.getValue());
+                instance.setRelationOrderId(combinOrder.getId());
+                instance.setRelationOrderNo(combinOrder.getCombinNo());
+                instance.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
+                instance.setQcType(QcTypeEnums.PRODUCTION.getValue());
+                instance.setQcQty(combinOrder.getCombinQty());
+                instance.setCreatedBy(enter.getUserId());
+                instance.setCreatedTime(new Date());
+                opeQcOrderMapper.insert(instance);
 
-            // 根据组装单id获得组装件组装单集合
-            LambdaQueryWrapper<OpeCombinOrderCombinB> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(OpeCombinOrderCombinB::getDr, DelStatusEnum.VALID.getCode());
-            wrapper.eq(OpeCombinOrderCombinB::getCombinId, combinOrder.getId());
-            List<OpeCombinOrderCombinB> list = opeCombinOrderCombinBMapper.selectList(wrapper);
-            if (CollectionUtils.isNotEmpty(list)) {
-                List<OpeQcCombinB> saveList = Lists.newArrayList();
-                for (OpeCombinOrderCombinB combin : list) {
-                    // 生成质检单组装件组装单子表
-                    OpeQcCombinB param = new OpeQcCombinB();
-                    param.setId(idAppService.getId(SequenceName.OPE_QC_COMBIN_B));
-                    param.setDr(DelStatusEnum.VALID.getCode());
-                    param.setQcId(qcId);
-                    param.setCombinName(combin.getCombinName());
-                    param.setCombinNo(combin.getCombinNo());
-                    param.setProductionCombinBomId(combin.getProductionCombinBomId());
-                    param.setQty(combin.getQty());
-                    param.setCreatedBy(enter.getUserId());
-                    param.setCreatedTime(new Date());
-                    saveList.add(param);
+                // 根据组装单id获得组装件组装单集合
+                LambdaQueryWrapper<OpeCombinOrderCombinB> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeCombinOrderCombinB::getDr, DelStatusEnum.VALID.getCode());
+                qw.eq(OpeCombinOrderCombinB::getCombinId, combinOrder.getId());
+                List<OpeCombinOrderCombinB> tempList = opeCombinOrderCombinBMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(tempList)) {
+                    List<OpeQcCombinB> saveList = Lists.newArrayList();
+                    for (OpeCombinOrderCombinB combin : tempList) {
+                        // 生成质检单组装件组装单子表
+                        OpeQcCombinB param = new OpeQcCombinB();
+                        param.setId(idAppService.getId(SequenceName.OPE_QC_COMBIN_B));
+                        param.setDr(DelStatusEnum.VALID.getCode());
+                        param.setQcId(id);
+                        param.setCombinName(combin.getCombinName());
+                        param.setCombinNo(combin.getCombinNo());
+                        param.setProductionCombinBomId(combin.getProductionCombinBomId());
+                        param.setQty(combin.getQty());
+                        param.setCreatedBy(enter.getUserId());
+                        param.setCreatedTime(new Date());
+                        saveList.add(param);
+                    }
+                    opeQcCombinBService.saveBatch(saveList);
                 }
-                opeQcCombinBService.saveBatch(saveList);
-            }
+                break;
         }
         return new GeneralResult(enter.getRequestId());
     }
