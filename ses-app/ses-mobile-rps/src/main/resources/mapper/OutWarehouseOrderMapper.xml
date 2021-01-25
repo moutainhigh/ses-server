@@ -46,6 +46,7 @@
         where dr = 0
         <include refid="getOutWarehouseOrderListWhere" />
         order by created_time asc
+        limit #{startRow}, #{pageSize}
     </select>
 
     <!--根据id查询出库单详情-->

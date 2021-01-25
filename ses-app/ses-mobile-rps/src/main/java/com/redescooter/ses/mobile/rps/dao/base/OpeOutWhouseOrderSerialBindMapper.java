@@ -14,7 +14,7 @@ public interface OpeOutWhouseOrderSerialBindMapper extends BaseMapper<OpeOutWhou
      * @param id primaryKey
      * @return deleteCount
      */
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     /**
      * insert record to table selective
@@ -30,7 +30,7 @@ public interface OpeOutWhouseOrderSerialBindMapper extends BaseMapper<OpeOutWhou
      * @param id primary key
      * @return object by primary key
      */
-    OpeOutWhouseOrderSerialBind selectByPrimaryKey(Integer id);
+    OpeOutWhouseOrderSerialBind selectByPrimaryKey(Long id);
 
     /**
      * update record

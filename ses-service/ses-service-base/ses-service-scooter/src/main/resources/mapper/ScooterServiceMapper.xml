@@ -148,134 +148,15 @@
 	    where dr = 0
     </select>
 
-    <!--新增车辆信息-->
-    <insert id="insertScooter" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
-        insert into sco_scooter
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="scooterNo != null">
-                scooter_no,
-            </if>
-            <if test="tabletSn != null">
-                tablet_sn,
-            </if>
-            <if test="picture != null">
-                picture,
-            </if>
-            <if test="status != null">
-                `status`,
-            </if>
-            <if test="totalMileage != null">
-                total_mileage,
-            </if>
-            <if test="availableStatus != null">
-                available_status,
-            </if>
-            <if test="boxStatus != null">
-                box_status,
-            </if>
-            <if test="model != null">
-                model,
-            </if>
-            <if test="licensePlate != null">
-                license_plate,
-            </if>
-            <if test="licensePlatePicture != null">
-                license_plate_picture,
-            </if>
-            <if test="licensePlateTime != null">
-                license_plate_time,
-            </if>
-            <if test="scooterIdPicture != null">
-                scooter_id_picture,
-            </if>
-            <if test="insureTime != null">
-                insure_time,
-            </if>
-            <if test="insurance != null">
-                insurance,
-            </if>
-            <if test="revision != null">
-                revision,
-            </if>
-            <if test="createdBy != null">
-                created_by,
-            </if>
-            <if test="createdTime != null">
-                created_time,
-            </if>
-            <if test="updatedBy != null">
-                updated_by,
-            </if>
-            <if test="updatedTime != null">
-                updated_time,
-            </if>
-        </trim>
+    <!--批量新增车辆信息-->
+    <insert id="batchInsertScooter" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
+        insert into sco_scooter(id, scooter_no, tablet_sn, `status`, total_mileage, available_status,
+        box_status, model, created_by, created_time, updated_by, updated_time)
         values
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
-            <if test="scooterNo != null">
-                #{scooterNo,jdbcType=VARCHAR},
-            </if>
-            <if test="tabletSn != null">
-                #{tabletSn,jdbcType=VARCHAR},
-            </if>
-            <if test="picture != null">
-                #{picture,jdbcType=VARCHAR},
-            </if>
-            <if test="status != null">
-                #{status,jdbcType=VARCHAR},
-            </if>
-            <if test="totalMileage != null">
-                #{totalMileage,jdbcType=BIGINT},
-            </if>
-            <if test="availableStatus != null">
-                #{availableStatus,jdbcType=VARCHAR},
-            </if>
-            <if test="boxStatus != null">
-                #{boxStatus,jdbcType=VARCHAR},
-            </if>
-            <if test="model != null">
-                #{model,jdbcType=VARCHAR},
-            </if>
-            <if test="licensePlate != null">
-                #{licensePlate,jdbcType=VARCHAR},
-            </if>
-            <if test="licensePlatePicture != null">
-                #{licensePlatePicture,jdbcType=VARCHAR},
-            </if>
-            <if test="licensePlateTime != null">
-                #{licensePlateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="scooterIdPicture != null">
-                #{scooterIdPicture,jdbcType=VARCHAR},
-            </if>
-            <if test="insureTime != null">
-                #{insureTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="insurance != null">
-                #{insurance,jdbcType=VARCHAR},
-            </if>
-            <if test="revision != null">
-                #{revision,jdbcType=INTEGER},
-            </if>
-            <if test="createdBy != null">
-                #{createdBy,jdbcType=BIGINT},
-            </if>
-            <if test="createdTime != null">
-                #{createdTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatedBy != null">
-                #{updatedBy,jdbcType=BIGINT},
-            </if>
-            <if test="updatedTime != null">
-                #{updatedTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
+        <foreach collection="scooterList" item="item" separator=",">
+            (#{item.id}, #{item.scooterNo},#{item.tabletSn} , #{item.status}, #{item.totalMileage}, #{item.availableStatus},
+            #{item.boxStatus}, #{item.model}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
     </insert>
 
     <!--查询车辆数量-->

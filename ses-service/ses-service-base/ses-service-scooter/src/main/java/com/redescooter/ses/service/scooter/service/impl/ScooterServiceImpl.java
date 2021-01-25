@@ -227,21 +227,26 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int syncScooterData(SyncScooterDataDTO syncScooterData) {
-        ScoScooter scooter = new ScoScooter();
-        BeanUtils.copyProperties(syncScooterData, scooter);
+    public int syncScooterData(List<SyncScooterDataDTO> syncScooterDataList) {
+        List<ScoScooter> scooterList = new ArrayList<>();
 
-        scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
-        scooter.setTotalMileage(0L);
-        scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
-        scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
-        scooter.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
-        scooter.setCreatedBy(syncScooterData.getUserId());
-        scooter.setCreatedTime(new Date());
-        scooter.setUpdatedBy(syncScooterData.getUserId());
-        scooter.setUpdatedTime(new Date());
+        syncScooterDataList.forEach(scooterData -> {
+            ScoScooter scooter = new ScoScooter();
+            BeanUtils.copyProperties(scooterData, scooter);
+            scooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+            scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
+            scooter.setTotalMileage(0L);
+            scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
+            scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+            scooter.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
+            scooter.setCreatedBy(scooterData.getUserId());
+            scooter.setCreatedTime(new Date());
+            scooter.setUpdatedBy(scooterData.getUserId());
+            scooter.setUpdatedTime(new Date());
+            scooterList.add(scooter);
+        });
 
-        return scooterServiceMapper.insertScooter(scooter);
+        return scooterServiceMapper.batchInsertScooter(scooterList);
     }
 
     @Override

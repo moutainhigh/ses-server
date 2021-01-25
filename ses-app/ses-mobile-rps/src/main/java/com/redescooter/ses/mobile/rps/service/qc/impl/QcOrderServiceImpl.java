@@ -5,11 +5,18 @@ import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
+import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutWhOrderTypeEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
+import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
@@ -28,6 +35,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.*;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -105,16 +113,67 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Resource
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
     @Resource
+    private QcOrderMapper qcOrderMapper;
+    @Resource
     private TransactionTemplate transactionTemplate;
 
 
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
-        return null;
+        List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcOrderTypeCount();
+        /**
+         * {orderType, totalCount}
+         */
+        Map<Integer, Integer> map = countByStatusResultList.stream().collect(
+                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
+        );
+
+        for (ProductTypeEnums item : ProductTypeEnums.values()) {
+            if (null == map.get(item.getValue())) {
+                map.put(item.getValue(), 0);
+            }
+        }
+        return map;
     }
 
     @Override
     public Map<Integer, Integer> getQcTypeCount(CountByOrderTypeParamDTO paramDTO) {
+        // 调整status值,避免恶意传参导致查询数据有问题
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
+        List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcTypeCount(paramDTO);
+        /**
+         * {qcType, totalCount}
+         */
+        Map<Integer, Integer> map = countByStatusResultList.stream().collect(
+                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult:: getTotalCount)
+        );
+
+        for (QcTypeEnum item : QcTypeEnum.values()) {
+            if (null == map.get(item.getType())) {
+                map.put(item.getType(), 0);
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public PageResult<QueryQcOrderResultDTO> getQcOrderList(QueryQcOrderParamDTO paramDTO) {
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
+        int count = qcOrderMapper.countByQcOrder(paramDTO);
+        if (0 == count) {
+            return PageResult.createZeroRowResult(paramDTO);
+        }
+
+        return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
+    }
+
+    @Override
+    public GeneralResult startQc(IdEnter enter) {
+        return null;
+    }
+
+    @Override
+    public QcOrderDetailDTO getQcOrderDetailById(IdEnter enter) {
         return null;
     }
 
@@ -379,6 +438,11 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setProductionDate(new Date());
 
         return resultDTO;
+    }
+
+    @Override
+    public GeneralResult completeQc(IdEnter enter) {
+        return null;
     }
 
 

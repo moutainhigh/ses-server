@@ -78,12 +78,12 @@ public interface ScooterService {
 
     /**
      * 同步车辆数据
-     * @param syncScooterData
+     * @param syncScooterDataList
      * @return int
      * @author assert
      * @date 2020/12/10
     */
-    int syncScooterData(SyncScooterDataDTO syncScooterData);
+    int syncScooterData(List<SyncScooterDataDTO> syncScooterDataList);
 
     /**
      * 查询车辆数量

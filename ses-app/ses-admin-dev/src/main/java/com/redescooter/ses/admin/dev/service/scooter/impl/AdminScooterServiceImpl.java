@@ -277,7 +277,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
      * @param scooterNo
      * @return
      */
-    private SyncScooterDataDTO buildSyncScooterData(Long scooterId,String tabletSn,Integer scooterModel, Long userId,
+    private List<SyncScooterDataDTO> buildSyncScooterData(Long scooterId,String tabletSn,Integer scooterModel, Long userId,
                                                     String scooterNo) {
         SyncScooterDataDTO syncScooterData = new SyncScooterDataDTO();
         syncScooterData.setId(scooterId);
@@ -286,7 +286,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         syncScooterData.setModel(String.valueOf(scooterModel));
         syncScooterData.setUserId(userId);
 
-        return syncScooterData;
+        return Arrays.asList(syncScooterData);
     }
 
     /**

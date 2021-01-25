@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
+import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
@@ -104,7 +106,7 @@ public class SaveWmsStockDataComponent {
                 syncScooterData.setUserId(userId);
                 scooterDataDTOList.add(syncScooterData);
             }
-            scooterService.syncScooterData(null);
+            scooterService.syncScooterData(scooterDataDTOList);
 
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {

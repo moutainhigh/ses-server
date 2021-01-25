@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper">
+    
+    <!--质检单列表查询条件-->
+    <sql id="getQcOrderListWhere">
+        <if test="orderType != null">and order_type = #{orderType}</if>
+        <if test="type != null">and qc_type = #{type}</if>
+        <if test="status == 0">and qc_status in(1, 10)</if>
+        <if test="status == 1">and qc_status = 20</if>
+    </sql>
+    
+    <!--质检单据类型数量统计-->
+    <select id="getQcOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select order_type `status`, count(id) totalCount
+        from ope_qc_order
+        where dr = 0
+        group by order_type
+    </select>
+
+    <!--质检类型数量统计-->
+    <select id="getQcTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select qc_type `status`, count(1) totalCount
+        from ope_qc_order
+        where dr = 0 and order_type = 1
+        <if test="status == 0">and qc_status in(1, 10)</if>
+        <if test="status == 1">and qc_status = 20</if>
+        group by qc_type
+    </select>
+
+    <!--质检单数量统计-->
+    <select id="countByQcOrder" parameterType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0
+	    <include refid="getQcOrderListWhere" />
+    </select>
+
+    <!--质检单列表查询-->
+    <select id="getQcOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderResultDTO">
+        select id, qc_no qcNo, qc_qty qcQty, order_type orderType, qc_type `type`, qc_status `status`
+        from ope_qc_order
+        where dr = 0
+        <include refid="getQcOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+</mapper>

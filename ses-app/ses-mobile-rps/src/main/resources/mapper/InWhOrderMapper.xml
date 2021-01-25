@@ -71,6 +71,7 @@
 	    where dr = 0
 	    <include refid="InWarehouseOrderListWhere" />
         order by created_time asc
+        limit #{startRow}, #{pageSize}
     </select>
 
     <!--修改入库单信息-->
