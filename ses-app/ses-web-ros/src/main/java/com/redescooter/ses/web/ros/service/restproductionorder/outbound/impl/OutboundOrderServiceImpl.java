@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcTypeEnums;
@@ -444,7 +445,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
         BeanUtils.copyProperties(enter, opeOutWhouseOrder);
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
+        opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.DRAFT.getValue());
         opeOutWhouseOrder.setCountryCode(opeSysStaff.getCountryCode());
         opeOutWhouseOrder.setMail(opeSysStaff.getEmail());
         opeOutWhouseOrder.setTelephone(opeSysStaff.getTelephone());
@@ -958,7 +959,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
         orderOrder.setOutWhNo(orderNumberService.generateOrderNo(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())));
 //        orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
-        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
+        orderOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.DRAFT.getValue());
         orderOrder.setCreatedBy(enter.getUserId());
         orderOrder.setCreatedTime(new Date());
         orderOrder.setUpdatedBy(enter.getUserId());
@@ -1001,7 +1002,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 只有新建状态才能编辑
-        if (!outWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.DRAFT.getValue())) {
+        if (!outWhouseOrder.getOutWhStatus().equals(NewOutBoundOrderStatusEnums.DRAFT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         BeanUtils.copyProperties(enter, outWhouseOrder);
@@ -1027,10 +1028,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 只有新建状态才能点击提交按钮
-        if (!outWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.DRAFT.getValue())) {
+        if (!outWhouseOrder.getOutWhStatus().equals(NewOutBoundOrderStatusEnums.DRAFT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+        outWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
         outWhouseOrder.setUpdatedBy(enter.getUserId());
         outWhouseOrder.setUpdatedTime(new Date());
         opeOutWhouseOrderService.updateById(outWhouseOrder);
@@ -1171,7 +1172,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeOutWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
         // 出库单出库  处理字表的数据
         comfirmOutHandleBs(opeOutWhouseOrder);
@@ -1464,7 +1465,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         qw.eq(OpeOutWhouseOrder.COL_RELATION_ID, invoiceId);
         OpeOutWhouseOrder whouseOrder = opeOutWhouseOrderService.getOne(qw);
         if (whouseOrder != null) {
-            whouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.CANCEL.getValue());
+            whouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.CANCEL.getValue());
             opeOutWhouseOrderService.saveOrUpdate(whouseOrder);
             // 操作记录
             SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, whouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), remark);
@@ -1488,7 +1489,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (opeOutWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())) {
+        if (!opeOutWhouseOrder.getOutWhStatus().equals(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue());
@@ -1510,7 +1511,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
         // 出库单出库  处理字表的数据
         comfirmOutHandleBs(opeOutWhouseOrder);
@@ -1657,7 +1658,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         BeanUtils.copyProperties(outOrderEnter,orderOrder);
         orderOrder.setId(idAppService.getId(SequenceName.OPE_OUT_WHOUSE_ORDER));
         orderOrder.setOutWhNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.OUTBOUND.getValue())).getValue());
-        orderOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+        orderOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
         orderOrder.setRelationId(outOrderEnter.getRelationOrderId());
         orderOrder.setRelationNo(outOrderEnter.getRelationOrderNo());
         orderOrder.setRelationType(outOrderEnter.getRelationOrderType());
