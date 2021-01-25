@@ -74,6 +74,9 @@ public class OrderServiceImpl implements OrderService {
     private SiteProductColourService siteProductColourService;
 
     @Autowired
+    private SitePaymentTypeService sitePaymentTypeService;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @DubboReference
@@ -93,14 +96,14 @@ public class OrderServiceImpl implements OrderService {
         SiteUser user = siteUserService.getById(enter.getUserId());
 
         if (user == null || enter.getColourId() == null || enter.getProductId() == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //获取客户
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         if (customer == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //查询该用户是否有订单
         List<SiteOrder> orderSize = siteOrderService.list(new QueryWrapper<SiteOrder>()
@@ -110,11 +113,17 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.UN_COMPLETE_ORDER_ERROR.getCode(),
                     ExceptionCodeEnums.UN_COMPLETE_ORDER_ERROR.getMessage());
         }
+
+        SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());
+        if (paymentType == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PAYMENTTYPE_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PAYMENTTYPE_NOT_EXIST_EXIST.getMessage());
+        }
         //获取产品
         SiteProduct product = siteProductService.getById(enter.getProductId());
         if (product == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品颜色
         SiteProductColour productColour = siteProductColourService.getOne(new QueryWrapper<SiteProductColour>()
@@ -122,8 +131,8 @@ public class OrderServiceImpl implements OrderService {
                 .eq(SiteProductColour.COL_PRODUCT_ID, enter.getProductId()));
 
         if (productColour == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.COLOR_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.COLOR_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品价格
         SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
@@ -133,14 +142,18 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
         }
+
         //获取所选车辆电池数量
         SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
-
+        if (scooterBatteryParts == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.BATTERIES_NUM_ERROR.getCode(),
+                    ExceptionCodeEnums.BATTERIES_NUM_ERROR.getMessage());
+        }
         //获取电池
         SiteParts battery = sitePartsService.getById(scooterBatteryParts.getPartsId());
         if (battery == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getMessage());
         }
 
         SiteOrder addSiteOrderVO = new SiteOrder();
@@ -220,8 +233,8 @@ public class OrderServiceImpl implements OrderService {
 
         Long orderId = enter.getOrderId();
         if (orderId == 0) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
         }
         //获取订单
         SiteOrder order = siteOrderService.getById(orderId);
@@ -301,8 +314,8 @@ public class OrderServiceImpl implements OrderService {
 
         SiteUser user = siteUserService.getById(enter.getUserId());
         if (user == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
-                    ExceptionCodeEnums.PARAM_ERROR.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         IdEnter idEnter = new IdEnter();

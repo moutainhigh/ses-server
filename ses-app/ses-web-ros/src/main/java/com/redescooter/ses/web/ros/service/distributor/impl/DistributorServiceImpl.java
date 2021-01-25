@@ -6,12 +6,14 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.service.WebDistributorService;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.distributor.SavaOrUpdateDistributorEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -40,6 +42,7 @@ import com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorSaleProductResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.slf4j.Logger;
@@ -49,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,6 +93,9 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @DubboReference
+    private WebDistributorService webDistributorService;
 
     @Reference
     private IdAppService idAppService;
@@ -213,6 +220,40 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         int i = opeDistributorMapper.updateById(model);
         if (i > 0) {
             return new Response<>();
+        }
+        // 数据同步到官网的经销商模块
+        try {
+            OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());
+            SavaOrUpdateDistributorEnter parameter = new SavaOrUpdateDistributorEnter();
+            parameter.setStatus(distributor.getStatus());
+            parameter.setCode(distributor.getCode());
+            parameter.setName(distributor.getName());
+            parameter.setLogoUrl(distributor.getLogoUrl());
+            parameter.setCountryCode(distributor.getCountryCode());
+            parameter.setTel(distributor.getTel());
+            parameter.setEmail(distributor.getEmail());
+            parameter.setAddress(distributor.getAddress());
+            if (StringUtils.isNotBlank(distributor.getLongitude())){
+                parameter.setLongitude(new BigDecimal(distributor.getLongitude()));
+            }
+            if (StringUtils.isNotBlank(distributor.getLatitude())){
+                parameter.setLatitude(new BigDecimal(distributor.getLatitude()));
+            }
+            parameter.setCp(distributor.getCp());
+            parameter.setCity(distributor.getCity());
+            parameter.setArea(distributor.getArea());
+            parameter.setContractUrl(distributor.getContractUrl());
+            parameter.setRemark(distributor.getNote());
+            if (StringUtils.isNotBlank(distributor.getType())){
+                parameter.setType(Integer.parseInt(distributor.getType()));
+            }
+            parameter.setCreatedBy(distributor.getCreatedBy());
+            parameter.setCreatedTime(distributor.getCreatedTime());
+            parameter.setUpdatedBy(distributor.getUpdatedBy());
+            parameter.setUpdatedTime(distributor.getUpdatedTime());
+            webDistributorService.saveOrUpdateDistribut(parameter);
+        }catch (Exception e) {
+
         }
         throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
     }

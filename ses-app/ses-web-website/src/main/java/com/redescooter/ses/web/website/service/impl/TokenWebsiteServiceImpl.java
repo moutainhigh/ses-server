@@ -20,6 +20,7 @@ import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.ip.IpUtils;
+import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteUser;
 import com.redescooter.ses.web.website.enums.SiteUserStatusEnum;
@@ -64,11 +65,14 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Autowired
     private JedisCluster jedisCluster;
 
-    @DubboReference
-    private MailMultiTaskService mailMultiTaskService;
+    @Autowired
+    private SendinBlueConfig sendinBlueConfig;
+
+    @Autowired
+    private RequestsKeyProperties requestsKeyProperties;
 
     @DubboReference
-    private SendinBlueConfig sendinBlueConfig;
+    private MailMultiTaskService mailMultiTaskService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -86,6 +90,21 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         return createUser(enter);
     }
 
+    @Override
+    public GetAccountKeyResult getAccountKey(GeneralEnter enter) {
+        Map<String, String> stringStringMap = RsaUtils.generateRsaKey(RsaUtils.DEFAULT_RSA_KEY_SIZE);
+
+        //设置缓存
+        String key = new StringBuilder(enter.getRequestId()).append(":::").append(RsaUtils.PRIVATE_KEY).toString();
+        jedisCluster.setex(key, (int) RedisExpireEnum.getSeconds(RedisExpireEnum.DAY_1.getTime()), stringStringMap.get(RsaUtils.PRIVATE_KEY));
+
+        GetAccountKeyResult getAccountKeyResult = new GetAccountKeyResult();
+        getAccountKeyResult.setPublicKey(stringStringMap.get(RsaUtils.PUBLIC_KEY));
+        getAccountKeyResult.setRequestId(enter.getRequestId());
+        return getAccountKeyResult;
+    }
+
+
     /**
      * 用户登录
      *
@@ -95,7 +114,20 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
-
+        //入参对象去空格
+        SesStringUtils.objStringTrim(enter);
+        if (enter.getPassword() != null) {
+            String decryptPassword = "";
+            String email = "";
+            try {
+                email = RsaUtils.decrypt(enter.getLoginName(), requestsKeyProperties.getPrivateKey());
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setPassword(decryptPassword);
+            enter.setLoginName(email);
+        }
         SiteUser user = getUser(enter);
         if (user == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
@@ -155,7 +187,17 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     public GeneralResult setPassword(ModifyPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
-            // todo 后面密码什么的在前后端传输的时候会加密处理
+            String decrypt = null;
+            String confirmDecrypt = null;
+            try {
+                //密码校验
+                decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
+                confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(decrypt);
+            enter.setOldPassword(confirmDecrypt);
         }
         //比较两个密码是否一致
         if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {

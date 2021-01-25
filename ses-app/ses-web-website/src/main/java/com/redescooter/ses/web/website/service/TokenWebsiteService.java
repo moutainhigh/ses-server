@@ -23,6 +23,16 @@ public interface TokenWebsiteService {
      */
     GeneralResult signUp(LoginEnter enter);
 
+
+    /**
+     * 获取账号公钥
+     *
+     * @param enter
+     * @return
+     */
+    GetAccountKeyResult getAccountKey(GeneralEnter enter);
+
+
     /**
      * 用户登录
      *
@@ -66,6 +76,7 @@ public interface TokenWebsiteService {
 
     /**
      * 修改密码
+     *
      * @param enter
      * @return
      */
@@ -74,6 +85,7 @@ public interface TokenWebsiteService {
 
     /**
      * 邮件订阅
+     *
      * @param enter
      * @return
      */

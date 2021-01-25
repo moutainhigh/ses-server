@@ -28,6 +28,19 @@ public class AuthentionController {
     private TokenWebsiteService tokenWebsiteService;
 
     /**
+     * 获取加密公钥
+     *
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @PostMapping(value = "/publicSecret")
+    @ApiOperation(value = "Get public key", response = GetAccountKeyResult.class)
+    public Response<GetAccountKeyResult> publicSecret(GeneralEnter enter) {
+        return new Response(tokenWebsiteService.getAccountKey(enter));
+    }
+
+    /**
      * 登录
      *
      * @param enter
@@ -72,12 +85,12 @@ public class AuthentionController {
      * @param enter
      * @return
      */
+    @IgnoreLoginCheck
     @ApiOperation(value = "Set password", response = GeneralResult.class)
     @PostMapping(value = "/setPassword")
     public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenWebsiteService.setPassword(enter));
     }
-
 
     /**
      * 修改密码
