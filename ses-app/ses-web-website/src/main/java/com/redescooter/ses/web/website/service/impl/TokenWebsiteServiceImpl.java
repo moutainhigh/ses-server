@@ -328,7 +328,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             e.printStackTrace();
         }
 
-
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
         enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getEvent());
         enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
