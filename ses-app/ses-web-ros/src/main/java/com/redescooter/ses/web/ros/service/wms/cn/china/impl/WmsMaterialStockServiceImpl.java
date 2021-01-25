@@ -8,12 +8,44 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeEntrustCombinB;
+import com.redescooter.ses.web.ros.dm.OpeEntrustPartsB;
+import com.redescooter.ses.web.ros.dm.OpeEntrustScooterB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -21,7 +53,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,6 +133,18 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
             return PageResult.createZeroRowResult(enter);
         }
         List<MaterialStockPartsListResult> list = wmsMaterialStockMapper.materialPartsList(enter);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (MaterialStockPartsListResult model : list) {
+                Long partsId = model.getPartsId();
+                if (null != partsId) {
+                    OpeProductionParts parts = opeProductionPartsService.getById(partsId);
+                    if (null != parts) {
+                        Integer idClass = parts.getIdCalss();
+                        model.setIdClass(idClass);
+                    }
+                }
+            }
+        }
         return PageResult.create(enter, totalRows, list);
     }
 

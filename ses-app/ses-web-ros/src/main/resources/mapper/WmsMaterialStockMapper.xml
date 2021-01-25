@@ -13,6 +13,7 @@
        select
          id,
          parts_no,
+         parts_id,
          parts_type,
          cn_name,
          en_name,

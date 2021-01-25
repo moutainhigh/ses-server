@@ -17,6 +17,9 @@ public class MaterialStockPartsListResult extends GeneralResult {
     @ApiModelProperty("id")
     private Long id;
 
+    @ApiModelProperty("部件id")
+    private Long partsId;
+
     @ApiModelProperty("部件编号")
     private String partsNo;
 
@@ -31,6 +34,9 @@ public class MaterialStockPartsListResult extends GeneralResult {
 
     @ApiModelProperty("可用库存数量")
     private Integer ableStockQty;
+
+    @ApiModelProperty("是否有序列号 0否，1是")
+    private Integer idClass;
 
     /**
      * 已用库存数量
