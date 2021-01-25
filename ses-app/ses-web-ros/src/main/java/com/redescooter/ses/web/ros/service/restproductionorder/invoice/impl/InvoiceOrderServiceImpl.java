@@ -696,7 +696,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 }
                 break;
         }
-        //发货单
+        //出库单
         SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter();
         BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
         saveOutboundOrderEnter.setId(null);

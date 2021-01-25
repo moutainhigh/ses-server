@@ -364,7 +364,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
         OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
         BeanUtils.copyProperties(enter, opeOutWhouseOrder);
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.DRAFT.getValue());
         opeOutWhouseOrder.setCountryCode(opeSysStaff.getCountryCode());
         opeOutWhouseOrder.setMail(opeSysStaff.getEmail());
         opeOutWhouseOrder.setTelephone(opeSysStaff.getTelephone());
