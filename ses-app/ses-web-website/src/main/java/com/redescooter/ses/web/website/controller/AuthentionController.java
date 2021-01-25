@@ -86,6 +86,7 @@ public class AuthentionController {
      * @param enter
      * @return
      */
+    @IgnoreLoginCheck
     @ApiOperation(value = "Set password", response = GeneralResult.class)
     @PostMapping(value = "/setPassword")
     public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
@@ -106,6 +107,11 @@ public class AuthentionController {
     }
 
 
+    /**
+     * 官网邮件订阅
+     * @param enter
+     * @return
+     */
     @IgnoreLoginCheck
     @PostMapping(value = "/emailSubscribe")
     @ApiOperation(value = "Mail subscription", response = GeneralResult.class)

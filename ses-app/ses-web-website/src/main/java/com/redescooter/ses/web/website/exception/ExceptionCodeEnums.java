@@ -72,6 +72,8 @@ public enum ExceptionCodeEnums {
     TOKEN_IS_EXPIRED(10026, "缓存已失效，请重新发送邮件"),
 
     NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10027, "新密码不能和就密码一样"),
+
+    DATA_EXCEPTION(10028, "数据异常"),
     ;
 
 

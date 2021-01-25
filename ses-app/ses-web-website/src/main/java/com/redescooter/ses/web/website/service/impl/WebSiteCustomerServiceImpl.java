@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
@@ -28,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +54,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
+    @Value("${Request.privateKey}")
+    private String privatekey;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -63,8 +69,41 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
-
-        if (!enter.getCfmPassword().trim().equals(enter.getPassword().trim())) {
+        SesStringUtils.objStringTrim(enter);
+        String decryptEamil = null;
+        String psd = null;
+        String confirmPsd = null;
+        String phone = null;
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                // 邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getEmail(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setEmail(decryptEamil);
+        }
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                // 手机号解密
+                phone = RsaUtils.decrypt(enter.getTelephone(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setTelephone(phone);
+        }
+        if (StringUtils.isNotEmpty(enter.getPassword())) {
+            try {
+                // 密码解密
+                psd = RsaUtils.decrypt(enter.getPassword(), privatekey);
+                confirmPsd = RsaUtils.decrypt(enter.getCfmPassword(), privatekey);
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setPassword(psd);
+            enter.setCfmPassword(confirmPsd);
+        }
+        if (!enter.getCfmPassword().equals(enter.getPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
