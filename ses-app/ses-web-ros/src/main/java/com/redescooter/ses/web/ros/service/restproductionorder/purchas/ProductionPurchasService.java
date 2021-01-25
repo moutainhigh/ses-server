@@ -141,4 +141,9 @@ public interface ProductionPurchasService {
      * @return
      **/
     void statusToPartWhOrAllInWh(Long productionPurchaseId,Long inWhId,Long userId);
+
+    /**
+     * 生成组装单的质检单
+     */
+    GeneralResult generatorQcOrderByCombin(IdEnter enter);
 }

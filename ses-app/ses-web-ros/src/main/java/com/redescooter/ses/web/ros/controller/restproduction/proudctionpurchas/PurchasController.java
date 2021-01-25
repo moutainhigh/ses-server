@@ -85,4 +85,14 @@ public class PurchasController {
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productionPurchasService.delete(enter));
     }
+
+    /**
+     * 生成组装单的质检单
+     */
+    @PostMapping(value = "/qcByCombin")
+    @ApiOperation(value = "生成组装单的质检单", tags = "生成组装单的质检单")
+    public Response<GeneralResult> generatorQcOrderByCombin(@ModelAttribute IdEnter enter) {
+        return new Response<>(productionPurchasService.generatorQcOrderByCombin(enter));
+    }
+
 }
