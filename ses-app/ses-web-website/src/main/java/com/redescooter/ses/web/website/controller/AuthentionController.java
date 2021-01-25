@@ -2,11 +2,9 @@ package com.redescooter.ses.web.website.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,15 +17,21 @@ import org.springframework.web.bind.annotation.*;
  * @Date 2021/1/7 2:27 上午
  * @Description 登录服务
  **/
-@Api(tags = {"Login"})
+@Api(tags = {"Authention"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/token/auth")
-public class LoginController {
+public class AuthentionController {
 
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
+    /**
+     * 登录
+     *
+     * @param enter
+     * @return
+     */
     @IgnoreLoginCheck
     @ApiOperation(value = "login", response = TokenResult.class)
     @PostMapping(value = "/login")
@@ -36,9 +40,40 @@ public class LoginController {
         return new Response<>(tokenWebsiteService.login(enter));
     }
 
+    /**
+     * 登出
+     *
+     * @param enter
+     * @return
+     */
     @ApiOperation(value = "logout", response = GeneralResult.class)
     @PostMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(tokenWebsiteService.logout(enter));
+    }
+
+    /**
+     * 忘记密码
+     *
+     * @param enter
+     * @return
+     */
+    @IgnoreLoginCheck
+    @ApiOperation(value = "Forget the password", response = GeneralResult.class)
+    @PostMapping(value = "/forgetPassword")
+    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
+        return new Response<>(tokenWebsiteService.forgetPasswordEmail(enter));
+    }
+
+    /**
+     * 设置密码
+     *
+     * @param enter
+     * @return
+     */
+    @ApiOperation(value = "Set password", response = GeneralResult.class)
+    @PostMapping(value = "/setPassword")
+    public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+        return new Response<>(tokenWebsiteService.setPassword(enter));
     }
 }

@@ -150,7 +150,13 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     @Override
     public GeneralResult addSetPasswordWebUserTask(BaseMailTaskEnter enter) {
         PlaMailTemplate mailtemplate = getTemplateByEvent(enter.getEvent());
-        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo(), enter.getMailSystemId(), enter.getMailAppId(), enter.getUserRequestId(), enter.getName(), enter.getToUserId(), enter.getToMail());
+        Map<String, String> map = getParameterMap(mailtemplate.getMailTemplateNo()
+                , enter.getMailSystemId()
+                , enter.getMailAppId()
+                , enter.getUserRequestId()
+                , enter.getName()
+                , enter.getToUserId()
+                , enter.getToMail());
 
         PlaMailTask mailTask = new PlaMailTask();
         mailTask.setMailTemplateNo(mailtemplate.getMailTemplateNo());
@@ -566,7 +572,9 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         //轮训发送，提高稳定性
         for (PlaMailTask mailTask : mailTasks) {
             Map<String, String> map = JSON.parseObject(mailTask.getParameter(), Map.class);
-            iMailService.sendHtmlMail(mailTask.getReceiveMail(), mailTask.getSubject(), getContent(map, getTemplateByNo(mailTask.getMailTemplateNo())));
+            iMailService.sendHtmlMail(mailTask.getReceiveMail(),
+                    mailTask.getSubject(),
+                    getContent(map, getTemplateByNo(mailTask.getMailTemplateNo())));
             mailTask.setStatus(MailTaskStatusEnums.SUCCESS.getCode());
         }
         if (mailTasks != null && mailTasks.size() > 0) {
@@ -713,7 +721,6 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     private void pullResdis(PlaMailTask mailTask, int seconds) {
         String sendParameter = mailTask.getParameter();
         Map<String, String> map = JSONObject.parseObject(sendParameter, Map.class);
-        //String key = new StringBuffer().append("activation:::").append(map.get("email")).append("systemId").toString();
         String key = map.get("requestId");
         jedisCluster.hmset(key, map);
         //默认为72小时

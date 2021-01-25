@@ -3,6 +3,7 @@ package com.redescooter.ses.web.website.service.impl;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.website.constant.SiteCacheConstants;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
@@ -11,6 +12,8 @@ import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +36,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @param enter
      * @return
      */
+    @Cacheable(value = SiteCacheConstants.SCOOTER_MODEL_DETAILS)
     @Override
     public List<ModelPriceResult> modelAndPriceList(GeneralEnter enter) {
         return scooterPurchaseMapper.modelAndPriceList(enter);
@@ -44,6 +48,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @param enter
      * @return
      */
+
     @Override
     public List<ProductsResult> getProductDetailByModel(IdEnter enter) {
         return scooterPurchaseMapper.getProductDetailByModel(enter);
@@ -55,6 +60,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @param enter
      * @return
      */
+    @Cacheable(value = SiteCacheConstants.PARTS_DETAILS)
     @Override
     public List<PartsDetailsResult> getPartsList(StringEnter enter) {
         return scooterPurchaseMapper.getPartsList(enter);
@@ -70,6 +76,5 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
     public List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter) {
         return scooterPurchaseMapper.getScooterConfigList(enter);
     }
-
 
 }

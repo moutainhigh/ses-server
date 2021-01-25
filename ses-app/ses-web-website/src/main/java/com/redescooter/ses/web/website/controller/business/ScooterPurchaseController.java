@@ -86,5 +86,4 @@ public class ScooterPurchaseController {
         return new Response<>(scooterPurchaseService.getScooterBatterysByProductId(enter));
     }
 
-
 }

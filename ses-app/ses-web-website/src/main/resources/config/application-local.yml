@@ -63,7 +63,7 @@ spring:                                                                         
         group-name: Auth API
         title: LogIn/LogOut
         description: LogIn/LogOut Service
-        base-package: com.redescooter.ses.web.website.controller.LoginController
+        base-package: com.redescooter.ses.web.website.controller.AuthentionController
         path-regex: /token/auth/.*
         path-mapping: /
         version: v1.2.1

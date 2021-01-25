@@ -5,11 +5,14 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -27,6 +30,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +63,9 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     private JedisCluster jedisCluster;
 
     @DubboReference
+    private MailMultiTaskService mailMultiTaskService;
+
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -67,7 +74,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signUp(LoginEnter enter) {
         checkUser(getUser(enter));
@@ -80,7 +87,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
 
@@ -134,16 +141,14 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     }
 
     /**
+     * 设置密码
+     *
      * @param enter
-     * @desc: 修改密码
-     * @param: enter
-     * @return: generresult
-     * @auther: alex
-     * @date: 2019/7/24 16:52
-     * @Version: 1.1
+     * @return
      */
     @Override
-    public GeneralResult modifyPassword(ModifyPasswordEnter enter) {
+    public GeneralResult setPassword(ModifyPasswordEnter enter) {
+
         return null;
     }
 
@@ -154,8 +159,32 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @return
      */
     @Override
-    public GeneralResult sendCode(BaseSendMailEnter enter) {
-        return null;
+    public GeneralResult forgetPasswordEmail(BaseSendMailEnter enter) {
+
+        SiteUser user = siteUserService.getOne(new QueryWrapper<SiteUser>()
+                .eq(SiteUser.COL_LOGIN_NAME, enter.getMail()));
+        if (user == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        SendCodeMobileUserTaskEnter baseMailTask = new SendCodeMobileUserTaskEnter();
+        BeanUtils.copyProperties(enter, baseMailTask);
+        baseMailTask.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
+
+        if (enter.getMail().indexOf("@") == (-1)) {
+            baseMailTask.setName(enter.getMail());
+        } else {
+            baseMailTask.setName(enter.getMail().split("@", 2)[0]);
+        }
+        baseMailTask.setToMail(enter.getMail());
+        baseMailTask.setToUserId(new Long("0"));
+        baseMailTask.setUserRequestId(enter.getRequestId());
+        baseMailTask.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
+        baseMailTask.setMailAppId(AppIDEnums.SES_WEBSITE.getValue());
+        baseMailTask.setMailSystemId(AppIDEnums.SES_WEBSITE.getSystemId());
+        mailMultiTaskService.addSetPasswordWebUserTask(baseMailTask);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     private SiteUser getUser(LoginEnter enter) {
