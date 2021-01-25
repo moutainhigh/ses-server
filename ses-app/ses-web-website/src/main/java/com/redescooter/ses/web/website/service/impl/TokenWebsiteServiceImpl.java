@@ -1,22 +1,24 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.ip.IpUtils;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteUser;
@@ -26,6 +28,8 @@ import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
+import okhttp3.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,11 +43,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import redis.clients.jedis.JedisCluster;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Jerry
@@ -64,6 +66,9 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
+
+    @DubboReference
+    private SendinBlueConfig sendinBlueConfig;
 
     @DubboReference
     private IdAppService idAppService;
@@ -148,8 +153,51 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      */
     @Override
     public GeneralResult setPassword(ModifyPasswordEnter enter) {
+//先给两个密码去空格（这个事应该前端就要做的）
+        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
+            // todo 后面密码什么的在前后端传输的时候会加密处理
+        }
+        //比较两个密码是否一致
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
+        if (!jedisCluster.exists(enter.getRequestId())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
+        if (map == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
+        }
+        // 已经从缓存里拿到了用户信息
+        String userId = map.get("userId");
+        if (StringUtils.isEmpty(userId)){
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        changeUserPsd(enter, Long.valueOf(userId));
 
-        return null;
+        //清楚缓存（一封邮件只允许设置一次密码）
+        jedisCluster.del(enter.getRequestId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    // 修改用户的密码
+    private void changeUserPsd(ModifyPasswordEnter enter, Long userId) {
+        SiteUser siteUser = siteUserService.getById(userId);
+        if (siteUser == null){
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        //新旧密码一致 不可以
+        if (StringUtils.equals(DigestUtils.md5Hex(enter.getNewPassword() + siteUser.getSalt()), siteUser.getPassword())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+
+        int salt = RandomUtils.nextInt(10000, 99999);
+        String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
+        siteUser.setPassword(newPassword);
+        siteUser.setSalt(String.valueOf(salt));
+        siteUserService.updateById(siteUser);
     }
 
     /**
@@ -186,6 +234,78 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    @Override
+    public GeneralResult editPassword(ModifyPasswordEnter enter) {
+        //先给两个密码去空格（这个事应该前端就要做的）
+        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
+           // todo 后面密码什么的在前后端传输的时候会加密处理
+        }
+
+        //比较两个密码是否一致
+        if (StringUtils.equals(enter.getNewPassword(), enter.getNewPassword())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
+        }
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
+        }
+        changeUserPsd(enter, enter.getUserId());
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+
+    @Override
+    public GeneralResult emailSubscribe(CheckEmailEnter enter) {
+        String eamil = enter.getEmail();
+        adPush(eamil);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    private void adPush(String email) {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
+
+        Map<String, String> map = new HashMap<>();
+        map.put("updateEnabled", sendinBlueConfig.getUpdateEnabled());
+        map.put("email", email);
+
+        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(map));
+        Request request = new Request.Builder()
+                .url(sendinBlueConfig.getUrl())
+                .post(body)
+                .addHeader("accept", sendinBlueConfig.getAccept())
+                .addHeader("content-type", sendinBlueConfig.getContentType())
+                .addHeader("api-key", sendinBlueConfig.getApiKey())
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            System.out.println("response" + response.message());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIBE_TO_EMAIL_SUCCESSFULLY.getEvent());
+        enter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
+        enter.setMailAppId(SystemIDEnums.REDE_SES.getValue());
+        enter.setToMail(email);
+        enter.setCode("0");
+        enter.setRequestId("0");
+        enter.setUserRequestId("0");
+        enter.setToUserId(0L);
+        enter.setUserId(0L);
+        mailMultiTaskService.subscribeToEmailSuccessfully(enter);
+
+        // todo  数据同步Monday
+//        mondayService.websiteSubscriptionEmail(email);
+    }
+
+
 
     private SiteUser getUser(LoginEnter enter) {
         return siteUserService.getOne(new QueryWrapper<SiteUser>()

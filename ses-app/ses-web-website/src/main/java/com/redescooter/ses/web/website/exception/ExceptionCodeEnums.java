@@ -68,6 +68,10 @@ public enum ExceptionCodeEnums {
     STRIPE_RESPONSE_EXIST(10024, "STRIPE响应异常"),
 
     ORDER_NOT_EXIST_EXIST(10025, "订单不存在"),
+
+    TOKEN_IS_EXPIRED(10026, "缓存已失效，请重新发送邮件"),
+
+    NEW_AND_OLD_PASSWORDS_ARE_THE_SAME(10027, "新密码不能和就密码一样"),
     ;
 
 

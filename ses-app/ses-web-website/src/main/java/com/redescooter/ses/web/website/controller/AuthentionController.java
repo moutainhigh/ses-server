@@ -2,6 +2,7 @@ package com.redescooter.ses.web.website.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
+import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
@@ -75,5 +76,26 @@ public class AuthentionController {
     @PostMapping(value = "/setPassword")
     public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
         return new Response<>(tokenWebsiteService.setPassword(enter));
+    }
+
+
+    /**
+     * 修改密码
+     * @param enter
+     * @return
+     */
+    @WebsiteSignIn
+    @PostMapping(value = "/editPassword")
+    @ApiOperation(value = "Edit Password", response = GeneralResult.class)
+    public Response<GeneralResult> editPassword(@ModelAttribute @ApiParam("Parameter") ModifyPasswordEnter enter) {
+        return new Response<>(tokenWebsiteService.editPassword(enter));
+    }
+
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/emailSubscribe")
+    @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
+    public Response<GeneralResult> emailSubscribe(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
+        return new Response<>(tokenWebsiteService.emailSubscribe(enter));
     }
 }

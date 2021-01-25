@@ -1,12 +1,11 @@
 package com.redescooter.ses.web.website.service;
 
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * @author Mr.lijiating
@@ -63,4 +62,20 @@ public interface TokenWebsiteService {
      * @return
      */
     GeneralResult forgetPasswordEmail(BaseSendMailEnter enter);
+
+
+    /**
+     * 修改密码
+     * @param enter
+     * @return
+     */
+    GeneralResult editPassword(ModifyPasswordEnter enter);
+
+
+    /**
+     * 邮件订阅
+     * @param enter
+     * @return
+     */
+    GeneralResult emailSubscribe(CheckEmailEnter enter);
 }
