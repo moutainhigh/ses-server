@@ -638,6 +638,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
             qw.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
             qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            qw.in(OpeWmsStockSerialNumber::getStockStatus, 1,2);
             qw.orderByDesc(OpeWmsStockSerialNumber::getCreatedTime);
             List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
             if (CollectionUtils.isNotEmpty(serialNumberList)) {
