@@ -179,7 +179,9 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         if (null != adminScooter) {
             // 去operation库查询用户的姓名和头像
             SysUserStaffDTO userStaff = sysUserService.getSysUserStaffByUserId(adminScooter.getCreatedBy());
-            adminScooter.setCreator(userStaff.getFullName());
+            if (null != userStaff) {
+                adminScooter.setCreator(userStaff.getFullName());
+            }
         }
 
         adminScooter.setScooterModel(ScooterModelEnum.getScooterModelByType(adminScooter.getScooterController()));
