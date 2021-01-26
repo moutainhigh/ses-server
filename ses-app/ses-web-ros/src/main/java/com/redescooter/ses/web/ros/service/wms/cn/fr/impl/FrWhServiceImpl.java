@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.fr.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -7,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
@@ -14,6 +16,8 @@ import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
@@ -76,6 +80,9 @@ public class FrWhServiceImpl implements FrWhService {
 
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
 
     /**
@@ -247,6 +254,22 @@ public class FrWhServiceImpl implements FrWhService {
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeWmsStockSerialNumber::getStockType, 2);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationType, 3);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationId, enter.getId());
+        List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeWmsStockSerialNumber obj : list) {
+                if (CollectionUtils.isNotEmpty(record)) {
+                    for (WmsStockRecordResult o : record) {
+                        o.setLotNum(obj.getLotNum());
+                    }
+                }
+            }
+        }
         result.setRecordList(record);
         return result;
     }
