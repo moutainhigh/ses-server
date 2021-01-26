@@ -24,6 +24,8 @@ public enum NewCombinOrderStatusEnums {
 
     ASSEMBL_FINISH("ASSEMBL_FINISH", "组装完成", 40),
 
+    QCING("QCING", "质检中", 45),
+
     QC_FINISH("QC_FINISH", "质检完成", 50);
 
     private String code;

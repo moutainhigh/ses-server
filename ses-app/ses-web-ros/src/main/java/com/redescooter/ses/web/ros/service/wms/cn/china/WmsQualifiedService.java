@@ -5,13 +5,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedDetailEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountResult;
@@ -102,5 +100,5 @@ public interface WmsQualifiedService {
     /**
      * 中国仓库不合格品库车辆,组装件和部件详情
      */
-    PageResult<WmsDetailResult> getDetail(WmsQualifiedDetailEnter enter);
+    //PageResult<WmsDetailResult> getDetail(WmsQualifiedDetailEnter enter);
 }

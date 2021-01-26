@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -24,6 +25,8 @@ import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeEntrustCombinBService;
@@ -161,6 +164,22 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeWmsStockSerialNumber::getStockType, 1);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationType, 3);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationId, enter.getId());
+        List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeWmsStockSerialNumber obj : list) {
+                if (CollectionUtils.isNotEmpty(record)) {
+                    for (WmsStockRecordResult o : record) {
+                        o.setLotNum(obj.getLotNum());
+                    }
+                }
+            }
+        }
         result.setRecordList(record);
         return result;
     }

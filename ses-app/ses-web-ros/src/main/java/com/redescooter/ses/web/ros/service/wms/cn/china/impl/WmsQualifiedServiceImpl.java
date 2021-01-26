@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
@@ -12,6 +13,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsQualifiedMapper;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
@@ -28,6 +30,8 @@ import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
@@ -48,14 +52,12 @@ import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionO
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedDetailEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountResult;
@@ -134,6 +136,9 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
 
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -225,6 +230,22 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         MaterialpartsStockDetailResult result = wmsQualifiedMapper.partsDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
+
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeWmsStockSerialNumber::getStockType, 1);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationType, 3);
+        wrapper.eq(OpeWmsStockSerialNumber::getRelationId, enter.getId());
+        List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeWmsStockSerialNumber obj : list) {
+                if (CollectionUtils.isNotEmpty(record)) {
+                    for (WmsStockRecordResult o : record) {
+                        o.setSn(obj.getSn());
+                    }
+                }
+            }
+        }
         result.setRecordList(record);
         return result;
     }
@@ -657,7 +678,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     /**
      * 中国仓库不合格品库车辆,组装件和部件详情
      */
-    @Override
+    /*@Override
     public PageResult<WmsDetailResult> getDetail(WmsQualifiedDetailEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int count = wmsQualifiedMapper.getDetailCount(enter);
@@ -666,6 +687,6 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         }
         List<WmsDetailResult> list = wmsQualifiedMapper.getDetail(enter);
         return PageResult.create(enter, count, list);
-    }
+    }*/
 
 }
