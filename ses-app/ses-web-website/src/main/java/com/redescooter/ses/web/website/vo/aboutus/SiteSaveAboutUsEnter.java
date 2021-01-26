@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.website.exception.ExceptionCode;
 import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +22,7 @@ import lombok.EqualsAndHashCode;
 public class SiteSaveAboutUsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "email")
-    @NotNull(code = SiteValidationExceptionCode.EMAIL_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = ExceptionCode.EMAIL_EMPTY, message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "message")
