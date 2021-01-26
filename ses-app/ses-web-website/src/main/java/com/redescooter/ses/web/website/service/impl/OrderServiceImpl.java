@@ -290,27 +290,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 获取订单详情
+     * 客户订单列表
      *
-     * @param enter
-     */
-    @Override
-    public OrderDetailsResult getOrderDetails(IdEnter enter) {
-        SiteOrder order = siteOrderService.getById(enter.getId());
-
-        OrderDetailsResult result = new OrderDetailsResult();
-        BeanUtils.copyProperties(order, result);
-        result.setRequestId(enter.getRequestId());
-
-        return result;
-    }
-
-    /**
      * @param enter
      * @return
      */
     @Override
-    public OrderDetailsResult getOrderDetailsByMyself(GeneralEnter enter) {
+    public List<OrderDetailsResult> getOrderList(GeneralEnter enter) {
 
         SiteUser user = siteUserService.getById(enter.getUserId());
         if (user == null) {
@@ -320,11 +306,29 @@ public class OrderServiceImpl implements OrderService {
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         IdEnter idEnter = new IdEnter();
         idEnter.setId(customer.getId());
-        OrderDetailsResult orderDetails = orderMapper.getOrderDetails(idEnter);
-        orderDetails.setRequestId(enter.getRequestId());
+        List<OrderDetailsResult> orderlist = orderMapper.getOrderlist(idEnter);
+        return orderlist;
+    }
 
+    /**
+     * 获取订单详情
+     *
+     * @param enter
+     */
+    @Override
+    public OrderDetailsResult getOrderDetails(IdEnter enter) {
+
+        SiteUser user = siteUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        ;
+        OrderDetailsResult orderDetails = orderMapper.getOrderDetails(enter);
+        orderDetails.setRequestId(enter.getRequestId());
         return orderDetails;
     }
+
 
     /**
      * 私有方法，计算当天后的多少天

@@ -31,7 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -194,7 +193,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setId(idAppService.getId(SequenceName.SITE_CUSTOMER));
         addCustomer.setDr(Constant.DR_FALSE);
         addCustomer.setStatus(WebSiteCustomerStatusEnums.INTENTION.getValue());
-        addCustomer.setCountryCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
+        addCustomer.setCustomerCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
         addCustomer.setCustomerSource(WebSiteCustomerSourceEnums.OFFICIAL.getValue());
         addCustomer.setCustomerType(CustomerTypeEnums.PERSONAL.getValue());
         addCustomer.setCustomerFirstName(enter.getCustomerFirstName());
@@ -209,6 +208,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setPlaceId(enter.getPlaceId());
         addCustomer.setLongitude(enter.getLongitude());
         addCustomer.setLatitude(enter.getLatitude());
+        addCustomer.setCountryCode(enter.getCountryCode());
         addCustomer.setTelephone(enter.getTelephone());
         addCustomer.setEmail(enter.getEmail());
         addCustomer.setPurchasedScooterQty(1);

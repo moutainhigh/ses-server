@@ -1,7 +1,10 @@
 package com.redescooter.ses.web.website.dao;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
+
+import java.util.List;
 
 /**
  * @Author jerry
@@ -18,4 +21,12 @@ public interface OrderMapper {
      */
     OrderDetailsResult getOrderDetails(IdEnter enter);
 
+
+    /**
+     * 获取订单列表
+     *
+     * @param enter
+     * @return
+     */
+    List<OrderDetailsResult> getOrderlist(GeneralEnter enter);
 }

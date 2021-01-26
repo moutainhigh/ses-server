@@ -31,7 +31,7 @@ public class RsaUtilsTest extends SesWebsiteApplicationTests {
     @SneakyThrows
     @Test
     public void encrypt() {
-        String email = RsaUtils.encrypt("jerry@redescooter.com", requestsKeyProperties.getPublicKey());
+        String email = RsaUtils.encrypt("jerry@redelectric.fr", requestsKeyProperties.getPublicKey());
         System.out.println(email);
         System.out.println("--------------------------------");
         String password = RsaUtils.encrypt("123456", requestsKeyProperties.getPublicKey());
