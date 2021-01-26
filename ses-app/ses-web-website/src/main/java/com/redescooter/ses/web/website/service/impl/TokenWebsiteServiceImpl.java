@@ -282,13 +282,20 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     public GeneralResult editPassword(ModifyPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
-            // todo 后面密码什么的在前后端传输的时候会加密处理
+            String newPassword = null;
+            String oldPsd = "";
+            try {
+                //密码校验
+                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
+                oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setNewPassword(newPassword);
+            enter.setOldPassword(oldPsd);
         }
 
         //比较两个密码是否一致
-        if (StringUtils.equals(enter.getNewPassword(), enter.getNewPassword())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
-        }
         if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
