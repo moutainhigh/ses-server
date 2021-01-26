@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
+import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutWhOrderTypeEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -35,7 +35,10 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcCombinMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcPartsMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcScooterMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.*;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -43,6 +46,7 @@ import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QcProductResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -115,6 +119,12 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Resource
     private QcOrderMapper qcOrderMapper;
     @Resource
+    private QcScooterMapper qcScooterMapper;
+    @Resource
+    private QcCombinMapper qcCombinMapper;
+    @Resource
+    private QcPartsMapper qcPartsMapper;
+    @Resource
     private TransactionTemplate transactionTemplate;
 
 
@@ -169,12 +179,93 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Override
     public GeneralResult startQc(IdEnter enter) {
-        return null;
+        QcOrderDetailDTO qcOrderDetailDTO = qcOrderMapper.getQcOrderDetailById(enter.getId());
+        RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
+
+        RpsAssert.isTrue(!QcStatusEnum.PENDING_QUALITY_INSPECTION.getStatus().equals(qcOrderDetailDTO.getStatus()),
+                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
+
+        // 更新质检单状态为【质检中】
+        OpeQcOrder opeQcOrder = new OpeQcOrder();
+        opeQcOrder.setId(qcOrderDetailDTO.getId());
+        opeQcOrder.setQcStatus(QcStatusEnum.QUALITY_INSPECTION.getStatus());
+        opeQcOrder.setUpdatedBy(enter.getUserId());
+        opeQcOrder.setUpdatedTime(new Date());
+        qcOrderMapper.updateQcOrder(opeQcOrder);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public QcOrderDetailDTO getQcOrderDetailById(IdEnter enter) {
-        return null;
+        QcOrderDetailDTO qcOrderDetailDTO = qcOrderMapper.getQcOrderDetailById(enter.getId());
+        RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
+
+        /**
+         * 查询质检单产品信息 1车辆 2组装件 3部件
+         */
+        List<QcOrderProductDTO> productList = null;
+        switch (qcOrderDetailDTO.getOrderType()) {
+            case 1:
+                productList = qcScooterMapper.getQcScooterByQcId(enter.getId());
+                break;
+            case 2:
+                productList = qcCombinMapper.getQcCombinByQcId(enter.getId());
+                break;
+            default:
+                productList = qcPartsMapper.getQcPartsByQcId(enter.getId());
+                break;
+        }
+
+        /**
+         * (合格数量 + 不合格数量) < 质检数量 ---- 待质检
+         */
+        List<QcOrderProductDTO> pendingQcProductList = productList.stream().filter(
+                p -> (p.getQualifiedQty() + p.getUnqualifiedQty()) < p.getQty()
+        ).collect(Collectors.toList());
+
+        /**
+         * 合格数量 > 0 ---- 质检通过
+         */
+        List<QcOrderProductDTO> qcSuccessProductList = productList.stream().filter(
+                p -> p.getQualifiedQty() > 0
+        ).collect(Collectors.toList());
+
+        /**
+         * 不合格数量 > 0 ---- 质检失败
+         */
+        List<QcOrderProductDTO> qcFailedProductList = productList.stream().filter(
+                p -> p.getUnqualifiedQty() > 0
+        ).collect(Collectors.toList());
+
+        qcOrderDetailDTO.setPendingQcProductList(pendingQcProductList);
+        qcOrderDetailDTO.setQcSuccessProductList(qcSuccessProductList);
+        qcOrderDetailDTO.setQcFailedProductList(qcFailedProductList);
+        return qcOrderDetailDTO;
+    }
+
+    @Override
+    public QcOrderProductDetailDTO getProductDetailByProductId(QueryProductDetailParamDTO paramDTO) {
+        QcOrderProductDetailDTO qcOrderProductDetail = null;
+
+        /**
+         * 查询质检单产品详情 1车辆 2组装件 3部件
+         */
+        switch (paramDTO.getProductType()) {
+            case 1:
+                qcOrderProductDetail = qcScooterMapper.getQcScooterDetailById(paramDTO.getProductId());
+                break;
+            case 2:
+                qcOrderProductDetail = qcCombinMapper.getQcCombinDetailById(paramDTO.getProductId());
+                break;
+            default:
+                qcOrderProductDetail = qcPartsMapper.getQcPartsDetailById(paramDTO.getProductId());
+                break;
+        }
+
+        return qcOrderProductDetail;
     }
 
     @Override
@@ -278,11 +369,10 @@ public class QcOrderServiceImpl implements QcOrderService {
          * 已经质检的产品不需要再次质检
          */
         if (1 == paramDTO.getType()) {
-            OpeOrderSerialBind opeOrderSerialBind = orderSerialBindMapper.getOrderSerialBindByOrderBIdAndOrderType(paramDTO.getProductId(),
-                    OrderTypeEnums.FACTORY_INBOUND.getValue());
-
-            RpsAssert.isNotNull(opeOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+            OpeQcOrderSerialBind opeQcOrderSerialBind = null;
+            RpsAssert.isNotNull(opeQcOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+
         } else {
             OpeInvoiceProductSerialNum opeInvoiceProductSerialNum = invoiceProductSerialNumMapper
                     .getInvoiceProductSerialNumByRelationIdAndType(paramDTO.getProductId(), paramDTO.getProductType());
@@ -341,7 +431,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeOrderQcItem.setQcResult(qcResultFlag ? 1 : 2);
 
         boolean qcResultFlagFinal = qcResultFlag;
-        boolean result = transactionTemplate.execute(saveQcResultStatus -> {
+        transactionTemplate.execute(saveQcResultStatus -> {
             boolean flag = true;
             try {
                 /**
@@ -427,7 +517,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         });
 
         // 手动抛出事务失败异常
-        RpsAssert.isFalse(result, ExceptionCodeEnums.QC_ERROR.getCode(), ExceptionCodeEnums.QC_ERROR.getMessage());
+        RpsAssert.isFalse(true, ExceptionCodeEnums.QC_ERROR.getCode(), ExceptionCodeEnums.QC_ERROR.getMessage());
 
         // 设置质检返回结果
         resultDTO.setQty(null);
@@ -442,7 +532,21 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Override
     public GeneralResult completeQc(IdEnter enter) {
-        return null;
+        QcOrderDetailDTO qcOrderDetailDTO = qcOrderMapper.getQcOrderDetailById(enter.getId());
+        RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
+
+        RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(qcOrderDetailDTO.getStatus()),
+                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
+
+        OpeQcOrder opeQcOrder = new OpeQcOrder();
+        opeQcOrder.setId(qcOrderDetailDTO.getId());
+        opeQcOrder.setQcStatus(QcStatusEnum.QUALITY_INSPECTION_COMPLETED.getStatus());
+        opeQcOrder.setUpdatedBy(enter.getUserId());
+        opeQcOrder.setUpdatedTime(new Date());
+        qcOrderMapper.updateQcOrder(opeQcOrder);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
 

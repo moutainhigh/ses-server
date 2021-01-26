@@ -308,7 +308,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isTrue(outWarehouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
                 ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
 
-        transactionTemplate.execute(outWarehouseStatus -> {
+        boolean result = transactionTemplate.execute(outWarehouseStatus -> {
             boolean flag = true;
             try {
                 /**
@@ -383,7 +383,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         });
 
         // 手动抛出异常
-        RpsAssert.isFalse(false, ExceptionCodeEnums.DELIVERY_FAILURE.getCode(), ExceptionCodeEnums.DELIVERY_FAILURE.getMessage());
+        RpsAssert.isFalse(result, ExceptionCodeEnums.DELIVERY_FAILURE.getCode(), ExceptionCodeEnums.DELIVERY_FAILURE.getMessage());
 
         return new GeneralResult(enter.getRequestId());
     }

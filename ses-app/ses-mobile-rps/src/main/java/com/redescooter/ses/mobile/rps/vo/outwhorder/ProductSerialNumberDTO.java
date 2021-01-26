@@ -22,6 +22,9 @@ public class ProductSerialNumberDTO extends GeneralResult {
     @ApiModelProperty(value = "主键id", dataType = "Long")
     private Long id;
 
+    @ApiModelProperty(value = "产品名称", dataType = "String")
+    private String name;
+
     @ApiModelProperty(value = "序列号", dataType = "Long")
     private String serialNum;
 
@@ -30,6 +33,9 @@ public class ProductSerialNumberDTO extends GeneralResult {
 
     @ApiModelProperty(value = "部件号", dataType = "String")
     private String partsNo;
+
+    @ApiModelProperty(value = "蓝牙mac地址", dataType = "String")
+    private String bluetoothMacAddress;
 
     @ApiModelProperty(value = "供应商名称", dataType = "String")
     private String supplierName;
@@ -42,12 +48,9 @@ public class ProductSerialNumberDTO extends GeneralResult {
     @ApiModelProperty(value = "入库时间")
     private Date arrivalTime;
 
-    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT_TWO)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT_TWO, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "质检时间")
     private Date qualityInspectionTime;
-
-    @ApiModelProperty(value = "附件 多个附件逗号分割", dataType = "String")
-    private String annex;
 
 }

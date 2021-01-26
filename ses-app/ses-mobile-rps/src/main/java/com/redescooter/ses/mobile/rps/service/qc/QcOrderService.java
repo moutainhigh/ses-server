@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -62,6 +63,15 @@ public interface QcOrderService {
      * @date 2021/1/25
     */
     QcOrderDetailDTO getQcOrderDetailById(IdEnter enter);
+
+    /**
+     * 查询质检单产品详情
+     * @param paramDTO
+     * @return com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO
+     * @author assert
+     * @date 2021/1/26
+    */
+    QcOrderProductDetailDTO getProductDetailByProductId(QueryProductDetailParamDTO paramDTO);
 
     /**
      * 根据产品id查询产品质检模板信息

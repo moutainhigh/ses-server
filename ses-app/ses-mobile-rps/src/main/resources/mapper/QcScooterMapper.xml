@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcScooterMapper">
+
+    <!--QcScooterDetailResultMap(质检单车辆详情自定义返回结果)-->
+    <resultMap id="QcScooterDetailResultMap" type="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+        <result column="scooter_bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
+        <!--车辆序列号信息(一对多映射)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="created_time" jdbcType="TIMESTAMP" property="qualityInspectionTime" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+            <result column="name" jdbcType="VARCHAR" property="name" />
+        </collection>
+    </resultMap>
+
+    <!--根据qcId查询质检单车辆信息-->
+    <select id="getQcScooterByQcId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO">
+        select scooter.id, scooter.qc_id qcId, scooter.scooter_bom_id bomId, c.color_name colorName,
+        c.color_value colorValue, g.group_name groupName, scooter.qty, scooter.qualified_qty qualifiedQty,
+        scooter.unqualified_qty unqualifiedQty, scooter.qty - (scooter.unqualified_qty + scooter.qualified_qty) pendingQcQty,
+        true idClass
+        from ope_qc_scooter_b scooter
+        left join ope_specificat_group g
+        on scooter.group_id = g.id and g.dr = 0
+        left join ope_color c
+        on scooter.color_id = c.id and c.dr = 0
+        where scooter.dr = 0 and scooter.qc_id = #{qcId}
+    </select>
+
+    <!--根据id查询质检单车辆详情-->
+    <select id="getQcScooterDetailById" parameterType="java.lang.Long" resultMap="QcScooterDetailResultMap">
+        select scooter.id, scooter.qc_id, scooter.scooter_bom_id, c.color_name,c.color_value, g.group_name, scooter.qty,
+        scooter.qualified_qty,scooter.unqualified_qty,serial.id sn_id,serial.serial_num, serial.bluetooth_mac_address,
+        serial.lot, serial.created_time, '奥格工厂' factory_name,concat(g.group_name,'-',c.color_name) `name`,true id_class
+        from ope_qc_scooter_b scooter
+        left join ope_specificat_group g
+        on scooter.group_id = g.id and g.dr = 0
+        left join ope_color c
+        on scooter.color_id = c.id and c.dr = 0
+        left join ope_qc_order_serial_bind serial
+        on scooter.id = serial.order_b_id and serial.dr = 0
+        where scooter.dr = 0 and scooter.id = #{id}
+    </select>
+
+</mapper>

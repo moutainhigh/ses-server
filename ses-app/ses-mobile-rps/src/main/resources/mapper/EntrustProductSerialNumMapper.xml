@@ -23,12 +23,6 @@
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     </resultMap>
 
-    <!--根据relationId、relationType查询委托单产品序列号信息-->
-    <select id="getEntrustProductSerialNumByRelationIdAndType" resultMap="BaseResultMap">
-        select * from ope_entrust_product_serial_num
-	    where dr = 0 and relation_id = #{relationId} and relation_type = #{relationType}
-    </select>
-
     <!--新增委托单产品序列号信息-->
     <insert id="insertEntrustProductSerialNum" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustProductSerialNum">
         insert into ope_entrust_product_serial_num
@@ -140,5 +134,11 @@
             </if>
         </trim>
     </insert>
+
+    <!--根据serialNum查询委托单产品序列号信息-->
+    <select id="getEntrustProductSerialNumBySerialNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_entrust_product_serial_num
+	    where dr = 0 and serial_num = #{serialNum}
+    </select>
 
 </mapper>

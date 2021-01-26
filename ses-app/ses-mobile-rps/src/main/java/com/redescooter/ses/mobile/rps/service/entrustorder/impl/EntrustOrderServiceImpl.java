@@ -16,15 +16,14 @@ import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.order.OrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -59,10 +58,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private EntrustProductSerialNumMapper entrustProductSerialNumMapper;
     @Resource
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
-    @Resource
-    private OrderSerialBindMapper orderSerialBindMapper;
-    @Resource
-    private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -126,7 +121,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return entrustOrderDetail;
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO) {
         /**
@@ -210,23 +204,18 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return new GeneralResult(paramDTO.getRequestId());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult saveDeliverInfo(SaveProductDeliverInfoParamDTO paramDTO) {
+    public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         Long userId = paramDTO.getUserId();
-        Integer qty = null == paramDTO.getQty() ? 1 : paramDTO.getQty();
+        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
 
-        OpeInvoiceProductSerialNum invoiceProductSerialNum = invoiceProductSerialNumMapper
-                .getInvoiceProductSerialNumByRelationIdAndType(paramDTO.getProductId(), paramDTO.getProductType());
-        RpsAssert.isNull(invoiceProductSerialNum, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
-                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-
-        /**
-         * 已扫码无需再次扫码
-         */
-        OpeEntrustProductSerialNum opeEntrustProductSerialNum = entrustProductSerialNumMapper
-                .getEntrustProductSerialNumByRelationIdAndType(paramDTO.getProductId(), paramDTO.getProductType());
-        RpsAssert.isNotNull(opeEntrustProductSerialNum, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
-                ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+        // 避免重复扫码发货
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            OpeEntrustProductSerialNum opeEntrustProductSerialNum = entrustProductSerialNumMapper.getEntrustProductSerialNumBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNotNull(opeEntrustProductSerialNum, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+        }
 
         /**
          * 更新委托单产品实际发货数量
@@ -234,10 +223,17 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         switch (paramDTO.getProductType()) {
             case 1:
                 OpeEntrustScooterB opeEntrustScooterB = entrustScooterBMapper.getEntrustScooterById(paramDTO.getProductId());
+                // 保存扫码序列号信息到委托单表中
+                String serialNum = opeEntrustScooterB.getDef1();
+                if (StringUtils.isNotBlank(serialNum)) {
+                    serialNum += "," + paramDTO.getSerialNum();
+                } else {
+                    serialNum = paramDTO.getSerialNum();
+                }
+                opeEntrustScooterB.setDef1(serialNum);
                 opeEntrustScooterB.setConsignorQty(opeEntrustScooterB.getConsignorQty() + 1); // 扫一下数量+1
                 opeEntrustScooterB.setUpdatedBy(userId);
                 opeEntrustScooterB.setUpdatedTime(new Date());
-
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
                 break;
             case 2:
@@ -245,7 +241,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustCombinB.setConsignorQty(opeEntrustCombinB.getConsignorQty() + 1);
                 opeEntrustCombinB.setUpdatedBy(userId);
                 opeEntrustCombinB.setUpdatedTime(new Date());
-
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
                 break;
             default:
@@ -253,22 +248,31 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 RpsAssert.isTrue(qty > opeEntrustPartsB.getQty(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
                         ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
-                opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty() + qty);
+                if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+                    opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty() + qty);
+                } else {
+                    opeEntrustPartsB.setConsignorQty(qty);
+                }
                 opeEntrustPartsB.setUpdatedBy(userId);
                 opeEntrustPartsB.setUpdatedTime(new Date());
-
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
                 break;
         }
 
+
         /**
          * 保存委托单产品序列号信息(有码产品时保存)
          */
-        if (null == paramDTO.getQty()) {
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
             OpeEntrustProductSerialNum entrustProductSerialNum = new OpeEntrustProductSerialNum();
-            BeanUtils.copyProperties(invoiceProductSerialNum, entrustProductSerialNum);
-
             entrustProductSerialNum.setId(idAppService.getId(SequenceName.OPE_ENTRUST_PRODUCT_SERIAL_NUM));
+            entrustProductSerialNum.setRelationId(paramDTO.getProductId());
+            entrustProductSerialNum.setRelationType(paramDTO.getProductType());
+            entrustProductSerialNum.setLot(paramDTO.getLot());
+            entrustProductSerialNum.setIdClass(StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : 0);
+            entrustProductSerialNum.setProductId(paramDTO.getBomId());
+            entrustProductSerialNum.setProductType(paramDTO.getProductType());
+            entrustProductSerialNum.setSerialNum(paramDTO.getSerialNum());
             entrustProductSerialNum.setQty(qty);
             entrustProductSerialNum.setCreatedBy(userId);
             entrustProductSerialNum.setCreatedTime(new Date());

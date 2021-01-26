@@ -1,6 +1,8 @@
 package com.redescooter.ses.mobile.rps.dao.qcorder;
 
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
+import com.redescooter.ses.mobile.rps.dm.OpeQcOrder;
+import com.redescooter.ses.mobile.rps.vo.qc.QcOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -49,5 +51,23 @@ public interface QcOrderMapper {
      * @date 2021/1/25
     */
     List<QueryQcOrderResultDTO> getQcOrderList(QueryQcOrderParamDTO paramDTO);
+
+    /**
+     * 根据id查询质检单详情
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.vo.qc.QcOrderDetailDTO
+     * @author assert
+     * @date 2021/1/26
+    */
+    QcOrderDetailDTO getQcOrderDetailById(Long id);
+
+    /**
+     * 修改质检单信息
+     * @param opeQcOrder
+     * @return int
+     * @author assert
+     * @date 2021/1/26
+    */
+    int updateQcOrder(OpeQcOrder opeQcOrder);
 
 }

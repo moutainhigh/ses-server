@@ -341,7 +341,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
         // 编程式事务
-        transactionTemplate.execute(confirmStorageStatus -> {
+        boolean result = transactionTemplate.execute(confirmStorageStatus -> {
             boolean flag = true;
             try {
                 /**
@@ -404,23 +404,23 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 List<String> serialNumList = inWhouseOrderSerialBinds.stream().map(OpeInWhouseOrderSerialBind::getSerialNum).collect(Collectors.toList());
                 wmsStockSerialNumberMapper.batchUpdateStockStatusByRsnList(serialNumList, enter.getUserId(), new Date());
 
-                if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
-                    // 更新采购单状态为 【已入库】
-                    OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
-                    opeProductionPurchaseOrder.setId(opeInWhouseOrder.getRelationOrderId());
-                    opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.HAS_BEEN_STORED.getValue());
-                    opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
-                    opeProductionPurchaseOrder.setUpdatedTime(new Date());
-                    purchaseOrderMapper.updatePurchaseOrder(opeProductionPurchaseOrder);
-                } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
-                    // 更新组装单为 【已入库】
-                    OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
-                    opeCombinOrder.setId(opeInWhouseOrder.getRelationOrderId());
-                    opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.ALREADY_IN_WHOUSE.getValue());
-                    opeCombinOrder.setUpdatedBy(enter.getUserId());
-                    opeCombinOrder.setUpdatedTime(new Date());
-                    combinOrderMapper.updateCombinOrder(opeCombinOrder);
-                }
+//                if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
+//                    // 更新采购单状态为 【已入库】
+//                    OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
+//                    opeProductionPurchaseOrder.setId(opeInWhouseOrder.getRelationOrderId());
+//                    opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.HAS_BEEN_STORED.getValue());
+//                    opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
+//                    opeProductionPurchaseOrder.setUpdatedTime(new Date());
+//                    purchaseOrderMapper.updatePurchaseOrder(opeProductionPurchaseOrder);
+//                } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
+//                    // 更新组装单为 【已入库】
+//                    OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
+//                    opeCombinOrder.setId(opeInWhouseOrder.getRelationOrderId());
+//                    opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.ALREADY_IN_WHOUSE.getValue());
+//                    opeCombinOrder.setUpdatedBy(enter.getUserId());
+//                    opeCombinOrder.setUpdatedTime(new Date());
+//                    combinOrderMapper.updateCombinOrder(opeCombinOrder);
+//                }
 
                 // 修改入库单状态为 【已入库】
                 opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
@@ -437,7 +437,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         });
 
         // 手动抛出异常
-        RpsAssert.isFalse(false, ExceptionCodeEnums.WAREHOUSING_FAILED.getCode(),
+        RpsAssert.isFalse(result, ExceptionCodeEnums.WAREHOUSING_FAILED.getCode(),
                 ExceptionCodeEnums.WAREHOUSING_FAILED.getMessage());
 
         return new GeneralResult(enter.getRequestId());

@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.controller.entrustorder;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,16 +80,16 @@ public class EntrustOrderController {
     }
 
     /**
-     * 保存委托单产品发货数量信息
+     * 保存委托单产品扫码结果
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/7
     */
-    @ApiOperation(value = "保存委托单产品发货数量信息")
-    @PostMapping(value = "/saveDeliverInfo")
-    public Response<GeneralResult> saveDeliverInfo(@ModelAttribute SaveProductDeliverInfoParamDTO paramDTO) {
-        return new Response<>(entrustOrderService.saveDeliverInfo(paramDTO));
+    @ApiOperation(value = "保存委托单产品扫码结果")
+    @PostMapping(value = "/saveScanCodeResult")
+    public Response<GeneralResult> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
+        return new Response<>(entrustOrderService.saveScanCodeResult(paramDTO));
     }
 
 }

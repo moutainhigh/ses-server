@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.controller.qc;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -89,9 +90,22 @@ public class QcOrderController {
      * @date 2021/1/25
     */
     @ApiOperation(value = "质检单详情", notes = "根据id查询质检单详情")
-    @PostMapping(value = "detail")
+    @PostMapping(value = "/detail")
     public Response<QcOrderDetailDTO> getQcOrderDetailById(@ModelAttribute IdEnter enter) {
         return new Response<>(qcOrderService.getQcOrderDetailById(enter));
+    }
+
+    /**
+     * 查询质检单产品详情
+     * @param paramDTO
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO>
+     * @author assert
+     * @date 2021/1/26
+    */
+    @ApiOperation(value = "质检单产品详情")
+    @PostMapping(value = "/productDetail")
+    public Response<QcOrderProductDetailDTO> getProductDetailByProductId(@ModelAttribute QueryProductDetailParamDTO paramDTO) {
+        return new Response<>(qcOrderService.getProductDetailByProductId(paramDTO));
     }
 
     /**

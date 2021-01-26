@@ -198,7 +198,11 @@ public enum ExceptionCodeEnums {
 
     OUT_WH_QTY_ERROR(10096, "出库数量有误"),
 
-    DELIVERY_FAILURE(10097, "出库失败")
+    DELIVERY_FAILURE(10097, "出库失败"),
+
+    QC_ORDER_IS_NOT_EXISTS(10098, "质检单不存在"),
+
+    QC_ORDER_STATUS_ERROR(10099, "质检单状态有误")
     ;
 
     private int code;

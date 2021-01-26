@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 
 import java.util.Map;
@@ -58,6 +59,6 @@ public interface EntrustOrderService {
      * @author assert
      * @date 2021/1/7
     */
-    GeneralResult saveDeliverInfo(SaveProductDeliverInfoParamDTO paramDTO);
+    GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO);
 
 }

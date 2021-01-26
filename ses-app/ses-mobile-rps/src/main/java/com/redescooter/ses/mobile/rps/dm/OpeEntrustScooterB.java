@@ -109,7 +109,7 @@ public class OpeEntrustScooterB {
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value="冗余字段(存放车辆序列号,通过逗号分隔)")
     private String def1;
 
     /**

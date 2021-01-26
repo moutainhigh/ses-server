@@ -15,6 +15,11 @@
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="LONGVARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def4" jdbcType="VARCHAR" property="def4" />
+        <result column="def5" jdbcType="DECIMAL" property="def5" />
     </resultMap>
 
     <!--委托单车辆信息自定义返回结果-->
@@ -83,6 +88,9 @@
             </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime},
+            </if>
+            <if test="def1 != null and def1 != ''">
+                def1 = #{def1},
             </if>
         </set>
         where id = #{id}
