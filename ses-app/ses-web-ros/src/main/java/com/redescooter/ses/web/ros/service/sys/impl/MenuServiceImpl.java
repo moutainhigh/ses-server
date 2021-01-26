@@ -302,10 +302,12 @@ public class MenuServiceImpl implements MenuService {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
         // 根节点不可编辑
-        if (menuUpdate.getPId().equals(Constant.MENU_TREE_ROOT_ID) || enter.getPid().equals(Constant.MENU_TREE_ROOT_ID)) {
+        if (menuUpdate.getPId().equals(Constant.MENU_TREE_ROOT_ID)) {
             throw new SesWebRosException(ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getCode(), ExceptionCodeEnums.THE_ROOT_NODE_MENU_CANNOT_BE_EDIT.getMessage());
         }
-        sysMenuService.updateById(this.buildMenuVo(menuUpdate.getId(), enter));
+//        sysMenuService.updateById(this.buildMenuVo(menuUpdate.getId(), enter));
+        BeanUtils.copyProperties(enter,menuUpdate);
+        sysMenuService.updateById(menuUpdate);
         return new GeneralResult(enter.getRequestId());
     }
 
