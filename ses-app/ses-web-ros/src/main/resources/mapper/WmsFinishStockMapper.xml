@@ -254,14 +254,6 @@
         <include refid="scooterAndCombinDetailCondition"/>
     </select>
 
-    <!-- 法国仓库车辆,组装件和部件详情count -->
-    <select id="getDetailCount" resultType="java.lang.Integer">
-        select count(*)
-        from ope_wms_stock_serial_number
-        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
-        <include refid="frDetailCondition"/>
-    </select>
-
     <!-- 法国仓库车辆,组装件和部件详情 -->
     <select id="getDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
         select *
@@ -272,6 +264,15 @@
         limit #{enter.startRow}, #{enter.pageSize}
     </select>
 
+    <!-- 法国仓库车辆,组装件和部件详情count -->
+    <select id="getDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
+        <include refid="frDetailCondition"/>
+    </select>
+
+    <!-- 法国仓库车辆,组装件和部件详情sql -->
     <sql id="frDetailCondition">
         <if test="enter.type != null">
             and relation_type = #{enter.type}
@@ -289,6 +290,7 @@
         </if>
     </sql>
 
+    <!-- 中国仓库成品库车辆和组装件详情sql -->
     <sql id="scooterAndCombinDetailCondition">
         <if test="enter.type != null">
             and relation_type = #{enter.type}
@@ -305,6 +307,7 @@
         </if>
     </sql>
 
+    <!-- 中国仓库原料库详情sql -->
     <sql id="detailCondition">
         <if test="enter.stockStatus != null">
             and stock_status = #{enter.stockStatus}
