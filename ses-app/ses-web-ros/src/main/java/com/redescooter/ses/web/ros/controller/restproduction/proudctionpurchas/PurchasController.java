@@ -87,12 +87,21 @@ public class PurchasController {
     }
 
     /**
-     * 生成组装单的质检单
+     * 生成组装单的质检单(提供给rps使用)
      */
     @PostMapping(value = "/qcByCombin")
-    @ApiOperation(value = "生成组装单的质检单", tags = "生成组装单的质检单")
+    @ApiOperation(value = "生成组装单的质检单(提供给rps使用)", tags = "生成组装单的质检单(提供给rps使用)")
     public Response<GeneralResult> generatorQcOrderByCombin(@ModelAttribute IdEnter enter) {
         return new Response<>(productionPurchasService.generatorQcOrderByCombin(enter));
+    }
+
+    /**
+     * 生成出库单的质检单(提供给rps使用)
+     */
+    @PostMapping(value = "/qcByOutBound")
+    @ApiOperation(value = "生成出库单的质检单(提供给rps使用)", tags = "生成出库单的质检单(提供给rps使用)")
+    public Response<GeneralResult> generatorQcOrderByOutBound(@ModelAttribute IdEnter enter) {
+        return new Response<>(productionPurchasService.generatorQcOrderByOutBound(enter));
     }
 
 }

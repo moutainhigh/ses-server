@@ -143,7 +143,13 @@ public interface ProductionPurchasService {
     void statusToPartWhOrAllInWh(Long productionPurchaseId,Long inWhId,Long userId);
 
     /**
-     * 生成组装单的质检单
+     * 生成组装单的质检单(提供给rps使用)
      */
     GeneralResult generatorQcOrderByCombin(IdEnter enter);
+
+    /**
+     * 生成出库单的质检单(提供给rps使用)
+     */
+    GeneralResult generatorQcOrderByOutBound(IdEnter enter);
+
 }
