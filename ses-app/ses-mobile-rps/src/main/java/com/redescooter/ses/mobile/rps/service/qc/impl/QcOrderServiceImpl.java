@@ -3,15 +3,11 @@ package com.redescooter.ses.mobile.rps.service.qc.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
-import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
-import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -51,9 +47,9 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -75,8 +71,6 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Resource
     private OpeOrderQcTraceMapper opeOrderQcTraceMapper;
     @Resource
-    private OrderSerialBindMapper orderSerialBindMapper;
-    @Resource
     private ProductionQualityTemplateMapper templateMapper;
     @Resource
     private ProductionScooterBomMapper scooterBomMapper;
@@ -84,36 +78,6 @@ public class QcOrderServiceImpl implements QcOrderService {
     private ProductionCombinBomMapper combinBomMapper;
     @Resource
     private ProductionPartsMapper partsMapper;
-    @Resource
-    private InWhouseScooterBMapper inWhouseScooterBMapper;
-    @Resource
-    private InWhouseCombinBMapper inWhouseCombinBMapper;
-    @Resource
-    private InWhousePartsBMapper inWhousePartsBMapper;
-    @Resource
-    private OutWhScooterBMapper outWhScooterBMapper;
-    @Resource
-    private OutWhCombinBMapper outWhCombinBMapper;
-    @Resource
-    private OutWhPartsBMapper outWhPartsBMapper;
-    @Resource
-    private OutWarehouseOrderMapper outWarehouseOrderMapper;
-    @Resource
-    private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
-    @Resource
-    private WmsPartsStockMapper wmsPartsStockMapper;
-    @Resource
-    private WmsScooterStockMapper wmsScooterStockMapper;
-    @Resource
-    private WmsCombinStockMapper wmsCombinStockMapper;
-    @Resource
-    private WmsQualifiedScooterStockMapper wmsQualifiedScooterStockMapper;
-    @Resource
-    private WmsQualifiedCombinStockMapper wmsQualifiedCombinStockMapper;
-    @Resource
-    private WmsQualifiedPartsStockMapper wmsQualifiedPartsStockMapper;
-    @Resource
-    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
     @Resource
     private QcOrderMapper qcOrderMapper;
     @Resource
@@ -321,6 +285,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return resultDTO;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
