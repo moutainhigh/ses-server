@@ -1,6 +1,10 @@
 package com.redescooter.ses.web.website.vo.order;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.hub.exception.ValidationExceptionCode;
+import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,12 +24,14 @@ public class AddOrderEnter extends GeneralEnter {
      * 订单类型，1销售，2租赁
      */
     @ApiModelProperty(value = "Order type, 1 sales, 2 lease")
+    @NotNull(code = SiteValidationExceptionCode.TYPE_IS_EMPTY,message = "类型为空")
     private int orderType;
 
     /**
      * 产品Id
      */
     @ApiModelProperty(value = "product_id",notes = "According to the vehicle model list, call the ID in the response result of vehicle product details")
+    @NotNull(code = SiteValidationExceptionCode.PRODUCT_ID_IS_EMPTY,message = "产品ID为空")
     private Long productId;
 
     /**
@@ -50,6 +56,7 @@ public class AddOrderEnter extends GeneralEnter {
      * 支付方式
      */
     @ApiModelProperty(value = "payment_type_id",notes = "The ID in the response result of the interface calling the payment type")
+    @NotNull(code = SiteValidationExceptionCode.PAY_TYPE_IS_EMPTY,message = "支付方式为空")
     private Long paymentTypeId;
 
     /**

@@ -43,24 +43,28 @@ public class EditSiteCustomerEnter extends GeneralEnter {
      * 客户名字
      */
     @ApiModelProperty(value = "Customer name")
+    @NotNull(code = SiteValidationExceptionCode.FIRST_NAME_IS_EMPTY,message = "名字为空")
     private String customerFirstName;
 
     /**
      * 客户姓氏
      */
     @ApiModelProperty(value = "Customer last name")
+    @NotNull(code = SiteValidationExceptionCode.LAST_NAME_IS_EMPTY,message = "姓氏为空")
     private String customerLastName;
 
     /**
      * 国家名称
      */
     @ApiModelProperty(value = "Country name")
+    @NotNull(code = SiteValidationExceptionCode.COUNTRY_CANNOT_EMPTY,message = "国家为空")
     private String countryName;
 
     /**
      * 城市名称
      */
     @ApiModelProperty(value = "City name")
+    @NotNull(code = SiteValidationExceptionCode.CITY_IS_EMPTY,message = "城市为空")
     private String cityName;
 
     /**
@@ -73,6 +77,7 @@ public class EditSiteCustomerEnter extends GeneralEnter {
      * 区域邮编
      */
     @ApiModelProperty(value = "Regional zip code")
+    @NotNull(code = SiteValidationExceptionCode.POST_CODE_IS_EMPTY,message = "邮编为空")
     private String postcode;
 
     /**

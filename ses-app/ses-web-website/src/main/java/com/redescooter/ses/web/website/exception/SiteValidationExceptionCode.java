@@ -66,4 +66,14 @@ public interface SiteValidationExceptionCode {
     int ID_IS_EMPTY = 10028;
     //消息不能为空
     int MESSAGE_IS_EMPTY = 10031;
+    // 城市不能为空
+    int CITY_IS_EMPTY = 10032;
+    // 邮编为空
+    int POST_CODE_IS_EMPTY = 10033;
+    // 类型为空
+    int TYPE_IS_EMPTY = 10034;
+    // 产品ID为空
+    int PRODUCT_ID_IS_EMPTY = 10035;
+    // 支付方式为空
+    int PAY_TYPE_IS_EMPTY = 10036;
 }

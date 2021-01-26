@@ -26,7 +26,7 @@ public class LoginEnter extends GeneralEnter {
     private int loginType = 1;
 
     @ApiModelProperty(value = "Login name")
-    @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "用户名为空")
+    @NotNull(code = ValidationExceptionBaseCode.NAME_ILLEAGE, message = "用户名为空")
     private String loginName;
 
     @ApiModelProperty(value = "password")
