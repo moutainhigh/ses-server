@@ -63,8 +63,11 @@ import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialDetailEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
@@ -879,6 +882,34 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         }
         createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 中国仓库原料库详情
+     */
+    @Override
+    public PageResult<WmsDetailResult> getMaterialPartsDetail(MaterialDetailEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        int count = wmsFinishStockMapper.getMaterialPartsDetailCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsDetailResult> list = wmsFinishStockMapper.getMaterialPartsDetail(enter);
+        return PageResult.create(enter, count, list);
+    }
+
+    /**
+     * 中国仓库成品库车辆和组装件详情
+     */
+    @Override
+    public PageResult<WmsDetailResult> getScooterAndCombinDetail(WmsDetailEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        int count = wmsFinishStockMapper.getScooterAndCombinDetailCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsDetailResult> list = wmsFinishStockMapper.getScooterAndCombinDetail(enter);
+        return PageResult.create(enter, count, list);
     }
 
 }

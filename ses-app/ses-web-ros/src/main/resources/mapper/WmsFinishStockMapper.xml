@@ -218,6 +218,106 @@
         limit #{enter.startRow},#{enter.pageSize}
     </select>
 
+    <!-- 中国仓库原料库详情 -->
+    <select id="getMaterialPartsDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
+        select *
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_type = 3 and relation_id = #{enter.id}
+        <include refid="detailCondition"/>
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>
+
+    <!-- 中国仓库原料库详情count -->
+    <select id="getMaterialPartsDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_type = 3 and relation_id = #{enter.id}
+        <include refid="detailCondition"/>
+    </select>
+
+    <!-- 中国仓库成品库车辆和组装件详情 -->
+    <select id="getScooterAndCombinDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
+        select *
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <include refid="scooterAndCombinDetailCondition"/>
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>
+
+    <!-- 中国仓库成品库车辆和组装件详情count -->
+    <select id="getScooterAndCombinDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <include refid="scooterAndCombinDetailCondition"/>
+    </select>
+
+    <!-- 法国仓库车辆,组装件和部件详情count -->
+    <select id="getDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
+        <include refid="frDetailCondition"/>
+    </select>
+
+    <!-- 法国仓库车辆,组装件和部件详情 -->
+    <select id="getDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
+        select *
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
+        <include refid="frDetailCondition"/>
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>
+
+    <sql id="frDetailCondition">
+        <if test="param.type != null">
+            and relation_type = #{enter.type}
+        </if>
+        <if test="enter.stockStatus != null">
+            and stock_status = #{enter.stockStatus}
+        </if>
+        <if test="enter.keyword != null">
+            and (
+                    rsn like concat('%', #{enter.keyword}, '%') or
+                    lot_num like concat('%', #{enter.keyword}, '%') or
+                    bluetooth_mac_address like concat('%', #{enter.keyword}, '%') or
+                    sn like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </sql>
+
+    <sql id="scooterAndCombinDetailCondition">
+        <if test="param.type != null">
+            and relation_type = #{enter.type}
+        </if>
+        <if test="enter.stockStatus != null">
+            and stock_status = #{enter.stockStatus}
+        </if>
+        <if test="enter.keyword != null">
+            and (
+                    rsn like concat('%', #{enter.keyword}, '%') or
+                    lot_num like concat('%', #{enter.keyword}, '%') or
+                    bluetooth_mac_address like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </sql>
+
+    <sql id="detailCondition">
+        <if test="enter.stockStatus != null">
+            and stock_status = #{enter.stockStatus}
+        </if>
+        <if test="enter.keyword != null">
+            and (
+                    rsn like concat('%', #{enter.keyword}, '%') or
+                    lot_num like concat('%', #{enter.keyword}, '%') or
+                    sn like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </sql>
+
     <sql id="frCombinListCondition">
         and stock_type = 2
         <if test="enter.keyword != null and enter.keyword != ''">
@@ -228,4 +328,5 @@
             )
         </if>
     </sql>
+
 </mapper>

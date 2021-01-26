@@ -20,6 +20,9 @@ public class WmsQualifiedPartsListResult extends GeneralResult {
     @ApiModelProperty("部件编号")
     private String partsNo;
 
+    @ApiModelProperty("部件id")
+    private Long partsId;
+
     @ApiModelProperty("部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
     private Integer partsType;
 
@@ -34,6 +37,9 @@ public class WmsQualifiedPartsListResult extends GeneralResult {
 
     @ApiModelProperty("已用库存数量")
     private Integer qty;
+
+    @ApiModelProperty("是否有序列号 0否，1是")
+    private Integer idClass;
 
 
 }

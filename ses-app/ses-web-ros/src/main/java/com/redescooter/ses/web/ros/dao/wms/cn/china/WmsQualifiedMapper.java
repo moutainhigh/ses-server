@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.wms.cn.china;
 
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -91,4 +92,14 @@ public interface WmsQualifiedMapper {
      * @return
      */
     Integer qualifiedTodayStockCount(@Param("date")String date,@Param("recordType") Integer recordType);
+
+    /**
+     * 中国仓库不合格品库车辆,组装件和部件详情count
+     */
+    int getDetailCount(@Param("enter") WmsQualifiedDetailEnter enter);
+
+    /**
+     * 中国仓库不合格品库车辆,组装件和部件详情
+     */
+    List<WmsDetailResult> getDetail(@Param("enter") WmsQualifiedDetailEnter enter);
 }

@@ -9,19 +9,32 @@ import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrStockCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrTodayInOrOutStockCountResult;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +73,9 @@ public class FrWhServiceImpl implements FrWhService {
 
     @Autowired
     private OpeWmsQualifiedScooterStockService opeWmsQualifiedScooterStockService;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
 
 
     /**
@@ -201,6 +217,18 @@ public class FrWhServiceImpl implements FrWhService {
             return PageResult.createZeroRowResult(enter);
         }
         List<MaterialStockPartsListResult> list = wmsMaterialStockMapper.frPartsList(enter);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (MaterialStockPartsListResult model : list) {
+                Long partsId = model.getPartsId();
+                if (null != partsId) {
+                    OpeProductionParts parts = opeProductionPartsService.getById(partsId);
+                    if (null != parts) {
+                        Integer idClass = parts.getIdCalss();
+                        model.setIdClass(idClass);
+                    }
+                }
+            }
+        }
         return PageResult.create(enter, totalRows, list);
     }
 
@@ -283,5 +311,18 @@ public class FrWhServiceImpl implements FrWhService {
         return map;
     }
 
+    /**
+     * 法国仓库车辆,组装件和部件详情
+     */
+    @Override
+    public PageResult<WmsDetailResult> getDetail(WmsDetailEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        int count = wmsFinishStockMapper.getDetailCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsDetailResult> list = wmsFinishStockMapper.getDetail(enter);
+        return PageResult.create(enter, count, list);
+    }
 
 }

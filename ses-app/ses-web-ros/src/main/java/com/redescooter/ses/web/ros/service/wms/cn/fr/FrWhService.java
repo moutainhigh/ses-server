@@ -5,7 +5,17 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrStockCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrTodayInOrOutStockCountResult;
 import io.swagger.annotations.ApiParam;
@@ -98,4 +108,9 @@ public interface FrWhService {
      * @return
      */
     Map<String, Integer> stockTabCount(@ModelAttribute @ApiParam("请求参数") WmsStockCountEnter enter);
+
+    /**
+     * 法国仓库车辆,组装件和部件详情
+     */
+    PageResult<WmsDetailResult> getDetail(WmsDetailEnter enter);
 }
