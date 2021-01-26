@@ -1,16 +1,41 @@
 package com.redescooter.ses.web.ros.controller.wms.china;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -130,6 +155,24 @@ public class WmsFinishStockController {
     @ApiOperation(value = "出库确认（中国仓库和法国仓库是共用的）", response = GeneralResult.class)
     public Response<GeneralResult> outWhConfirm(@ModelAttribute @ApiParam("请求参数") OutOrInWhConfirmEnter enter) {
         return new Response<>(wmsFinishStockService.outWhConfirm(enter));
+    }
+
+    /**
+     * 中国仓库原料库详情
+     */
+    @PostMapping(value = "/partDetail")
+    @ApiOperation(value = "中国仓库原料库详情", tags = "中国仓库原料库详情")
+    public Response<PageResult<WmsDetailResult>> getMaterialPartsDetail(@ModelAttribute MaterialDetailEnter enter) {
+        return new Response<>(wmsFinishStockService.getMaterialPartsDetail(enter));
+    }
+
+    /**
+     * 中国仓库成品库车辆和组装件详情
+     */
+    @PostMapping(value = "/detail")
+    @ApiOperation(value = "中国仓库成品库车辆和组装件详情", tags = "中国仓库成品库车辆和组装件详情")
+    public Response<PageResult<WmsDetailResult>> getScooterAndCombinDetail(@ModelAttribute WmsDetailEnter enter) {
+        return new Response<>(wmsFinishStockService.getScooterAndCombinDetail(enter));
     }
 
 }

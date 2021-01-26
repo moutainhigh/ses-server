@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.wms.fr;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrStockCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrTodayInOrOutStockCountResult;
@@ -100,6 +101,15 @@ public class FrWhController {
     @ApiOperation(value = "法国仓库tab的数量统计（车辆/组装件/部件）", response = Map.class)
     public Response<Map<String, Integer>> stockTabCount(@ModelAttribute @ApiParam("请求参数") WmsStockCountEnter enter) {
         return new Response<>(frWhService.stockTabCount(enter));
+    }
+
+    /**
+     * 法国仓库车辆,组装件和部件详情
+     */
+    @PostMapping(value = "/detail")
+    @ApiOperation(value = "法国仓库车辆,组装件和部件详情", tags = "法国仓库车辆,组装件和部件详情")
+    public Response<PageResult<WmsDetailResult>> getDetail(@ModelAttribute WmsDetailEnter enter) {
+        return new Response<>(frWhService.getDetail(enter));
     }
 
 }

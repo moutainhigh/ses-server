@@ -98,6 +98,7 @@
         select
           id,
           parts_no,
+          parts_id,
           cn_name,
           en_name,
           fr_name,
@@ -139,4 +140,27 @@
         where dr = 0 and record_type = #{recordType} and relation_type in (4,5,6)
            and created_time like concat('%',#{date},'%') and stock_type = 1
     </select>
+
+    <!-- 中国仓库不合格品库车辆,组装件和部件详情count -->
+    <select id="getDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <if test="param.type != null">
+            and relation_type = #{enter.type}
+        </if>
+    </select>
+
+    <!-- 中国仓库不合格品库车辆,组装件和部件详情 -->
+    <select id="getDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
+        select *
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <if test="param.type != null">
+            and relation_type = #{enter.type}
+        </if>
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>
+
 </mapper>

@@ -1,10 +1,25 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.AbleProductionScooterResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 
 import java.util.List;
 import java.util.Map;
@@ -103,4 +118,15 @@ public interface WmsFinishStockService {
      * @return
      */
     GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter);
+
+    /**
+     * 中国仓库原料库详情
+     */
+    PageResult<WmsDetailResult> getMaterialPartsDetail(MaterialDetailEnter enter);
+
+    /**
+     * 中国仓库成品库车辆和组装件详情
+     */
+    PageResult<WmsDetailResult> getScooterAndCombinDetail(WmsDetailEnter enter);
+
 }

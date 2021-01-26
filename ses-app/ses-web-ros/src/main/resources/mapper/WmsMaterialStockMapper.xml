@@ -78,6 +78,7 @@
         select
         id,
         parts_no,
+        parts_id,
         cn_name,
         en_name,
         fr_name,

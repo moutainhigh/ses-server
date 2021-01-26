@@ -1,7 +1,16 @@
 package com.redescooter.ses.web.ros.dao.wms.cn.china;
 
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsDetailEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -151,5 +160,34 @@ public interface WmsFinishStockMapper {
      */
     List<WmsFinishCombinListResult> frCombinList(@Param("enter") CombinationListEnter enter);
 
+    /**
+     * 中国仓库原料库详情
+     */
+    List<WmsDetailResult> getMaterialPartsDetail(@Param("enter") MaterialDetailEnter enter);
+
+    /**
+     * 中国仓库原料库详情count
+     */
+    int getMaterialPartsDetailCount(@Param("enter") MaterialDetailEnter enter);
+
+    /**
+     * 中国仓库成品库车辆和组装件详情
+     */
+    List<WmsDetailResult> getScooterAndCombinDetail(@Param("enter") WmsDetailEnter enter);
+
+    /**
+     * 中国仓库成品库车辆和组装件详情count
+     */
+    int getScooterAndCombinDetailCount(@Param("enter") WmsDetailEnter enter);
+
+    /**
+     * 法国仓库车辆,组装件和部件详情count
+     */
+    int getDetailCount(@Param("enter") WmsDetailEnter enter);
+
+    /**
+     * 法国仓库车辆,组装件和部件详情
+     */
+    List<WmsDetailResult> getDetail(@Param("enter") WmsDetailEnter enter);
 
 }

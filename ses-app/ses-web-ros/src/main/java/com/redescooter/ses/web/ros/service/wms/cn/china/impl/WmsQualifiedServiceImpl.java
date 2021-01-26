@@ -48,12 +48,14 @@ import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionO
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedDetailEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountResult;
@@ -198,6 +200,18 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsQualifiedPartsListResult> list = wmsQualifiedMapper.partsList(enter);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (WmsQualifiedPartsListResult model : list) {
+                Long partsId = model.getPartsId();
+                if (null != partsId) {
+                    OpeProductionParts parts = opeProductionPartsService.getById(partsId);
+                    if (null != parts) {
+                        Integer idClass = parts.getIdCalss();
+                        model.setIdClass(idClass);
+                    }
+                }
+            }
+        }
         return PageResult.create(enter, totalRows, list);
     }
 
@@ -639,4 +653,19 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         createInStockRecord(records,enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+    /**
+     * 中国仓库不合格品库车辆,组装件和部件详情
+     */
+    @Override
+    public PageResult<WmsDetailResult> getDetail(WmsQualifiedDetailEnter enter) {
+        SesStringUtils.objStringTrim(enter);
+        int count = wmsQualifiedMapper.getDetailCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<WmsDetailResult> list = wmsQualifiedMapper.getDetail(enter);
+        return PageResult.create(enter, count, list);
+    }
+
 }
