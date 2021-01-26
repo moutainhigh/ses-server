@@ -94,13 +94,13 @@ public interface ScooterServiceMapper {
     List<String> getAllScooterTabletSn();
 
     /**
-     * 新增车辆信息
-     * @param scooter
+     * 批量新增车辆信息
+     * @param scooterList
      * @return int
      * @author assert
      * @date 2020/12/10
     */
-    int insertScooter(ScoScooter scooter);
+    int batchInsertScooter(@Param("scooterList") List<ScoScooter> scooterList);
 
     /**
      * 查询车辆数量

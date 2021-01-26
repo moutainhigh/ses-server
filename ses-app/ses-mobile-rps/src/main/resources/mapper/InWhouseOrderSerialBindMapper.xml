@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseOrderSerialBindMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="order_b_id" jdbcType="BIGINT" property="orderBId" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+        <result column="lot" jdbcType="VARCHAR" property="lot" />
+        <result column="product_id" jdbcType="BIGINT" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+        <result column="default_serial_num" jdbcType="VARCHAR" property="defaultSerialNum" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--新增入库单产品序列号绑定信息-->
+    <insert id="insertInWhouseOrderSerialBind" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind">
+        insert into ope_in_whouse_order_serial_bind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="orderBId != null">
+                order_b_id,
+            </if>
+            <if test="orderType != null">
+                order_type,
+            </if>
+            <if test="serialNum != null">
+                serial_num,
+            </if>
+            <if test="lot != null">
+                lot,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="qty != null">
+                qty,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address,
+            </if>
+            <if test="defaultSerialNum != null">
+                default_serial_num,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="orderBId != null">
+                #{orderBId,jdbcType=BIGINT},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="serialNum != null">
+                #{serialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="lot != null">
+                #{lot,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultSerialNum != null">
+                #{defaultSerialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据serialNum查询入库单产品序列号信息-->
+    <select id="getInWhouseOrderSerialBindBySerialNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_in_whouse_order_serial_bind
+	    where dr = 0 and serial_num = #{serialNum}
+    </select>
+
+    <!--批量根据orderBId查询入库单产品序列号信息-->
+    <select id="batchGetInWhouseOrderSerialBindByOrderBIds" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_order_serial_bind
+        where dr = 0
+        <foreach collection="orderBIds" item="orderBId" open="and order_b_id in (" separator="," close=")">
+            #{orderBId}
+        </foreach>
+    </select>
+
+</mapper>

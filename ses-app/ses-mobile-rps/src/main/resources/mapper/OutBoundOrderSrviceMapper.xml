@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.restproductionorder.outbound.OutBoundOrderSrviceMapper">
+
+    <sql id="WHERE_LIST">
+        where whorder.dr = 0
+        <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and whorder.out_wh_status in (15, 20)</if>
+        <if test="productType != null">
+            and whorder.out_wh_type = #{productType}
+        </if>
+        <if test="outboundOrderType != null">
+            and whorder.out_type = #{outboundOrderType}
+        </if>
+    </sql>
+    <select id="countByProductType" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_wh_type as status, count(out_wh_type) as totalCount
+        from ope_out_whouse_order whorder
+        where whorder.dr=0
+        and whorder.out_wh_status in (0,10,15)
+        group by status
+    </select>
+
+    <select id="countByOrderType" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_type as status, count(out_type) as totalCount
+        from ope_out_whouse_order whorder
+        where whorder.dr = 0 and out_wh_type = #{type}
+        <if test="status == 0">and whorder.out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and whorder.out_wh_status in (15, 20)</if>
+        group by status
+    </select>
+
+    <select id="listCount" resultType="int">
+        select count(1)
+        from ope_out_whouse_order whorder
+        <include refid="WHERE_LIST"/>
+    </select>
+
+    <select id="list" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundOrderResult">
+        select whorder.id            as id,
+               whorder.out_wh_no     as outboundNo,
+               whorder.out_wh_status as status,
+               whorder.out_wh_type   as productType,
+               whorder.out_type      as orderType,
+               whorder.out_wh_qty    as qty
+        from ope_out_whouse_order whorder
+        <include refid="WHERE_LIST"/>
+        order by whorder.created_time asc
+    </select>
+
+    <select id="detail" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailResult">
+        select whorder.id                 as id,
+        whorder.out_wh_no          as outboundOrderNo,
+        whorder.out_wh_status      as status,
+        whorder.out_wh_qty         as stockTotal,
+        whorder.already_out_wh_qty as qcQty,
+        whorder.out_wh_type        as productType
+        from ope_out_whouse_order whorder
+        where whorder.dr = 0
+        and whorder.id=#{id}
+    </select>
+
+    <select id="detailProductListByPart" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailProductResult">
+        select partB.id                 as id,
+        partB.parts_id           as productId,
+        partB.parts_name         as productName,
+        partB.parts_no           as productN,
+        '3'                      as productType,
+        partB.qty                as stockTotal,
+        part.id_calss            as idclass,
+        partB.already_out_wh_qty as qcQty
+        from ope_out_wh_parts_b partB
+        inner join ope_production_parts part on partB.parts_id = part.id and part.dr = 0
+        where partB.dr = 0
+        and partB.out_wh_id =#{id}
+    </select>
+
+    <select id="detailProductListByCombin" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailProductResult">
+        select combinB.id                       as id,
+        combinB.production_combin_bom_id as productId,
+        combinB.combin_name              as productName,
+        combin.bom_no                    as productN,
+        '2'                              as productType,
+        combinB.qty                      as stockTotal,
+        combinB.already_out_wh_qty       as qcQty,
+        true as idclass
+        from ope_out_wh_combin_b combinB
+        inner join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
+        where combinB.dr = 0
+        and combinB.out_wh_id =#{id}
+    </select>
+
+    <select id="detailProductListByScooter" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.OutboundDetailProductResult">
+        select scooterB.id        as id,
+               scooterB.color_id  as colorId,
+               color.color_name   as colorName,
+               color.color_value  as colorValue,
+               scooterB.group_id  as groupId,
+               spgroup.group_name as groupName,
+               scooterB.qty       as stockTotal,
+               scooterB.already_out_wh_qty as qcQty,
+                '1'                as productType,
+                true as idclass
+        from ope_out_wh_scooter_b scooterB
+                 left join ope_specificat_group spgroup on scooterB.group_id = spgroup.id and spgroup.dr = 0
+                 left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        where scooterB.dr=0
+        and scooterB.out_wh_id = #{id}
+    </select>
+
+    <select id="productOutWhDetailByScooter" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductDetailResult">
+        select scooterB.id        as id,
+               scooterB.group_id  as groupId,
+               spgroup.group_name as groupName,
+               scooterB.color_id  as colorId,
+               color.color_name   as colorName,
+               color.color_value  as colorValue,
+               qty                as stockTotal,
+               already_out_wh_qty as qcQty,
+                1                         as productType
+        from ope_out_wh_scooter_b scooterB
+                 left join ope_specificat_group spgroup on scooterB.group_id = spgroup.id and spgroup.dr = 0
+                 left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        where scooterB.dr=0
+        and scooterB.id=#{id}
+    </select>
+
+    <select id="productOutWhDetailByCombin" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductDetailResult">
+        select combinB.id                       as id,
+        combinB.production_combin_bom_id as productId,
+        combinB.combin_name              as productName,
+        combinB.qty                      as stockTotal,
+        combinB.already_out_wh_qty       as qcQty,
+        combin.bom_no                    as productN,
+        combin.en_name                   as productName,
+        2                                as productType
+        from ope_out_wh_combin_b combinB
+        left join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
+        where combinB.dr = 0
+        and  combinB.id=#{id}
+    </select>
+
+    <select id="productOutWhDetailByPart" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductDetailResult">
+        select partB.id                 as id,
+        partB.parts_id           as productId,
+        partB.parts_name         as productName,
+        partB.parts_no           as productN,
+        partB.qty                as stockTotal,
+        partB.already_out_wh_qty as qcQty,
+        3                        as productType,
+        partB.parts_type         as productionType
+        from ope_out_wh_parts_b partB
+        left join ope_production_parts part on partB.parts_id = part.id and part.dr = 0
+        where partB.dr = 0
+        and  partB.id=#{id}
+    </select>
+
+    <select id="productOutWhDetailByScooterSnList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductSnResult">
+        select serial.id           as id,
+               serial.order_b_id   as orderBId,
+               serial.serial_num   as serialN,
+               serial.arrival_time as arrivalDate,
+               serial.lot          as lot,
+               serial.qty          as qty
+        from ope_order_serial_bind serial
+                 left join ope_out_wh_scooter_b scooterB on serial.order_b_id = scooterB.id and serial.order_type = 4
+        where serial.dr=0 and serial.order_b_id =#{id}
+    </select>
+
+    <select id="productOutWhDetailByCombinSnList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductSnResult">
+        select serial.id           as id,
+               serial.order_b_id   as orderBId,
+               serial.serial_num   as serialN,
+               serial.arrival_time as arrivalDate,
+               serial.lot          as lot,
+               serial.qty          as qty
+        from ope_order_serial_bind serial
+                 left join ope_out_wh_combin_b combinB on serial.order_b_id = combinB.id and serial.order_type = 4
+        where serial.dr=0
+        and serial.id=#{id}
+    </select>
+
+    <select id="productOutWhDetailByPartSnList" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductSnResult">
+        select serial.id           as id,
+               serial.order_b_id   as orderBId,
+               serial.serial_num   as serialN,
+               serial.arrival_time as arrivalDate,
+               serial.lot          as lot,
+               serial.qty          as qty,
+               supplier.id         as supplierId,
+               supplier_name       as supplierName,
+               qcitem.annex        as annex
+        from ope_order_serial_bind serial
+                 left join ope_production_parts part on serial.product_id = part.id and serial.product_type = 3 and part.dr = 0
+                 left join ope_supplier supplier on supplier.id = part.supplier_id and supplier.dr = 0
+                 left join ope_order_qc_item qcitem
+                           on qcitem.order_serial_id = serial.id and qcitem.dr = 0 and qcitem.qc_result = 1
+        where serial.dr = 0
+        and serial.orderBId =#{id}
+    </select>
+
+    <!--根据productionId和productType查询产品质检模板信息-->
+    <select id="qcTemplete" resultType="com.redescooter.ses.mobile.rps.vo.restproductionorder.ProductQcTempleteItemResult">
+        select templete.id, templete.qc_item_name as itemName
+        from ope_production_quality_tempate templete
+        where templete.dr = 0 and templete.production_id = #{id}
+        and templete.production_type = #{productType}
+    </select>
+
+</mapper>

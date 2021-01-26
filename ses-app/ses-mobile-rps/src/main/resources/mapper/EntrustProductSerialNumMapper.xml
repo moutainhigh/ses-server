@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustProductSerialNumMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeEntrustProductSerialNum">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="relation_id" jdbcType="BIGINT" property="relationId" />
+        <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+        <result column="lot" jdbcType="VARCHAR" property="lot" />
+        <result column="id_class" jdbcType="INTEGER" property="idClass" />
+        <result column="product_id" jdbcType="BIGINT" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="arrival_time" jdbcType="TIMESTAMP" property="arrivalTime" />
+        <result column="version" jdbcType="VARCHAR" property="version" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--新增委托单产品序列号信息-->
+    <insert id="insertEntrustProductSerialNum" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustProductSerialNum">
+        insert into ope_entrust_product_serial_num
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="relationId != null">
+                relation_id,
+            </if>
+            <if test="relationType != null">
+                relation_type,
+            </if>
+            <if test="lot != null">
+                lot,
+            </if>
+            <if test="idClass != null">
+                id_class,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="serialNum != null">
+                serial_num,
+            </if>
+            <if test="qty != null">
+                qty,
+            </if>
+            <if test="arrivalTime != null">
+                arrival_time,
+            </if>
+            <if test="version != null">
+                version,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="relationId != null">
+                #{relationId,jdbcType=BIGINT},
+            </if>
+            <if test="relationType != null">
+                #{relationType,jdbcType=INTEGER},
+            </if>
+            <if test="lot != null">
+                #{lot,jdbcType=VARCHAR},
+            </if>
+            <if test="idClass != null">
+                #{idClass,jdbcType=INTEGER},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="serialNum != null">
+                #{serialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null">
+                #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="arrivalTime != null">
+                #{arrivalTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据serialNum查询委托单产品序列号信息-->
+    <select id="getEntrustProductSerialNumBySerialNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_entrust_product_serial_num
+	    where dr = 0 and serial_num = #{serialNum}
+    </select>
+
+</mapper>

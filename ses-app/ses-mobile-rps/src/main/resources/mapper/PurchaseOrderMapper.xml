@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.purchaseorder.PurchaseOrderMapper">
+
+    <!--修改采购单信息-->
+    <update id="updatePurchaseOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionPurchaseOrder">
+        update ope_production_purchase_order
+        <set>
+            <if test="purchaseNo != null">
+                purchase_no = #{purchaseNo,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseStatus != null">
+                purchase_status = #{purchaseStatus,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseQty != null">
+                purchase_qty = #{purchaseQty,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseAmount != null">
+                purchase_amount = #{purchaseAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="factoryId != null">
+                factory_id = #{factoryId,jdbcType=BIGINT},
+            </if>
+            <if test="factoryPrincipalId != null">
+                factory_principal_id = #{factoryPrincipalId,jdbcType=BIGINT},
+            </if>
+            <if test="factoryPrincipalName != null">
+                factory_principal_name = #{factoryPrincipalName,jdbcType=VARCHAR},
+            </if>
+            <if test="principalCountryCode != null">
+                principal_country_code = #{principalCountryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="principalTelephone != null">
+                principal_telephone = #{principalTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dockingUser != null">
+                docking_user = #{dockingUser,jdbcType=BIGINT},
+            </if>
+            <if test="dockingUserName != null">
+                docking_user_name = #{dockingUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="dockingCountryCode != null">
+                docking_country_code = #{dockingCountryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dockingUserTelephone != null">
+                docking_user_telephone = #{dockingUserTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneeUser != null">
+                consignee_user = #{consigneeUser,jdbcType=INTEGER},
+            </if>
+            <if test="consigneeUserName != null">
+                consignee_user_name = #{consigneeUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneeCountryCode != null">
+                consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneeUserTelephone != null">
+                consignee_user_telephone = #{consigneeUserTelephone,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneeAddress != null">
+                consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="paymentType != null">
+                payment_type = #{paymentType,jdbcType=INTEGER},
+            </if>
+            <if test="plannedPaymentTime != null">
+                planned_payment_time = #{plannedPaymentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="paymentDay != null">
+                payment_day = #{paymentDay,jdbcType=INTEGER},
+            </if>
+            <if test="paymentTime != null">
+                payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="purchaseContract != null">
+                purchase_contract = #{purchaseContract,jdbcType=VARCHAR},
+            </if>
+            <if test="amountType != null">
+                amount_type = #{amountType,jdbcType=INTEGER},
+            </if>
+            <if test="prePayRatio != null">
+                pre_pay_ratio = #{prePayRatio,jdbcType=DECIMAL},
+            </if>
+            <if test="payAmount != null">
+                pay_amount = #{payAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

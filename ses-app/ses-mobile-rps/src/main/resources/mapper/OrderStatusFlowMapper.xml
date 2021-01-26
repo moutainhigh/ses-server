@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.order.OrderStatusFlowMapper">
+
+    <!--新增单据状态流转信息-->
+    <insert id="insertOrderStatusFlow" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderStatusFlow">
+        insert into ope_order_status_flow(id, dr, relation_id, order_type, order_status, remark, created_by,
+        created_time,updated_by, updated_time)
+        values (#{id}, #{dr}, #{relationId}, #{orderType}, #{orderStatus}, #{remark}, #{createdBy},
+        #{createdTime}, #{updatedBy}, #{updatedTime})
+    </insert>
+
+</mapper>

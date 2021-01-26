@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOrderQcItem">
+    <!--@mbg.generated-->
+    <!--@Table ope_order_qc_item-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="order_serial_id" jdbcType="BIGINT" property="orderSerialId" />
+    <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+    <result column="lot" jdbcType="VARCHAR" property="lot" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="order_b_id" jdbcType="BIGINT" property="orderBId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="qc_result" jdbcType="INTEGER" property="qcResult" />
+    <result column="annex" jdbcType="VARCHAR" property="annex" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DOUBLE" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, order_serial_id, serial_num, lot, order_type, order_b_id, product_id, product_type, 
+    qc_result, annex, revision, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_order_qc_item
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_serial_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderSerialId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="serial_num = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.serialNum,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="lot = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.lot,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_b_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderBId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="product_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="product_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.productType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="qc_result = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcResult,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="annex = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.annex,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="revision = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.revision,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_order_qc_item
+    (id, dr, order_serial_id, serial_num, lot, order_type, order_b_id, product_id, product_type, 
+      qc_result, annex, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderSerialId,jdbcType=BIGINT}, 
+        #{item.serialNum,jdbcType=VARCHAR}, #{item.lot,jdbcType=VARCHAR}, #{item.orderType,jdbcType=INTEGER}, 
+        #{item.orderBId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.productType,jdbcType=INTEGER}, 
+        #{item.qcResult,jdbcType=INTEGER}, #{item.annex,jdbcType=VARCHAR}, #{item.revision,jdbcType=INTEGER}, 
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+        #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DOUBLE}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderQcItem">
+    <!--@mbg.generated-->
+    insert into ope_order_qc_item
+    (id, dr, order_serial_id, serial_num, lot, order_type, order_b_id, product_id, product_type, 
+      qc_result, annex, revision, created_by, created_time, updated_by, updated_time, 
+      def1, def2, def3, def4, def5)
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderSerialId,jdbcType=BIGINT}, 
+      #{serialNum,jdbcType=VARCHAR}, #{lot,jdbcType=VARCHAR}, #{orderType,jdbcType=INTEGER}, 
+      #{orderBId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{productType,jdbcType=INTEGER}, 
+      #{qcResult,jdbcType=INTEGER}, #{annex,jdbcType=VARCHAR}, #{revision,jdbcType=INTEGER}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+      #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DOUBLE})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    order_serial_id = #{orderSerialId,jdbcType=BIGINT}, 
+    serial_num = #{serialNum,jdbcType=VARCHAR}, 
+    lot = #{lot,jdbcType=VARCHAR}, 
+    order_type = #{orderType,jdbcType=INTEGER}, 
+    order_b_id = #{orderBId,jdbcType=BIGINT}, 
+    product_id = #{productId,jdbcType=BIGINT}, 
+    product_type = #{productType,jdbcType=INTEGER}, 
+    qc_result = #{qcResult,jdbcType=INTEGER}, 
+    annex = #{annex,jdbcType=VARCHAR}, 
+    revision = #{revision,jdbcType=INTEGER}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DOUBLE}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderQcItem">
+    <!--@mbg.generated-->
+    insert into ope_order_qc_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="orderSerialId != null">
+        order_serial_id,
+      </if>
+      <if test="serialNum != null">
+        serial_num,
+      </if>
+      <if test="lot != null">
+        lot,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="orderBId != null">
+        order_b_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="qcResult != null">
+        qc_result,
+      </if>
+      <if test="annex != null">
+        annex,
+      </if>
+      <if test="revision != null">
+        revision,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderSerialId != null">
+        #{orderSerialId,jdbcType=BIGINT},
+      </if>
+      <if test="serialNum != null">
+        #{serialNum,jdbcType=VARCHAR},
+      </if>
+      <if test="lot != null">
+        #{lot,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="orderBId != null">
+        #{orderBId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="qcResult != null">
+        #{qcResult,jdbcType=INTEGER},
+      </if>
+      <if test="annex != null">
+        #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DOUBLE},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="orderSerialId != null">
+        order_serial_id = #{orderSerialId,jdbcType=BIGINT},
+      </if>
+      <if test="serialNum != null">
+        serial_num = #{serialNum,jdbcType=VARCHAR},
+      </if>
+      <if test="lot != null">
+        lot = #{lot,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="orderBId != null">
+        order_b_id = #{orderBId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="qcResult != null">
+        qc_result = #{qcResult,jdbcType=INTEGER},
+      </if>
+      <if test="annex != null">
+        annex = #{annex,jdbcType=VARCHAR},
+      </if>
+      <if test="revision != null">
+        revision = #{revision,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+</mapper>

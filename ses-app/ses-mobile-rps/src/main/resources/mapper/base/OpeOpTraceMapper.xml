@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeOpTraceMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOpTrace">
+    <!--@mbg.generated-->
+    <!--@Table ope_op_trace-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="relation_id" property="relationId" />
+    <result column="order_type" property="orderType" />
+    <result column="op_type" property="opType" />
+    <result column="remark" property="remark" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, relation_id, order_type, op_type, remark, created_by, created_time, updated_by, 
+    updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_op_trace
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="relation_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.relationId}
+        </foreach>
+      </trim>
+      <trim prefix="order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.orderType}
+        </foreach>
+      </trim>
+      <trim prefix="op_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.opType}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.remark}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_op_trace
+    (id, dr, relation_id, order_type, op_type, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.relationId}, #{item.orderType}, #{item.opType}, #{item.remark}, 
+        #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOpTrace">
+    <!--@mbg.generated-->
+    insert into ope_op_trace
+    (id, dr, relation_id, order_type, op_type, remark, created_by, created_time, updated_by, 
+      updated_time, def1, def2, def3, def4, def5)
+    values
+    (#{id}, #{dr}, #{relationId}, #{orderType}, #{opType}, #{remark}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    relation_id = #{relationId}, 
+    order_type = #{orderType}, 
+    op_type = #{opType}, 
+    remark = #{remark}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOpTrace">
+    <!--@mbg.generated-->
+    insert into ope_op_trace
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="relationId != null">
+        relation_id,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="opType != null">
+        op_type,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="relationId != null">
+        #{relationId},
+      </if>
+      <if test="orderType != null">
+        #{orderType},
+      </if>
+      <if test="opType != null">
+        #{opType},
+      </if>
+      <if test="remark != null">
+        #{remark},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="relationId != null">
+        relation_id = #{relationId},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType},
+      </if>
+      <if test="opType != null">
+        op_type = #{opType},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>

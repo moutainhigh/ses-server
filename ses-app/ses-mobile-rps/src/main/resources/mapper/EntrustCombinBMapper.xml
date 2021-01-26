@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustCombinBMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeEntrustCombinB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="entrust_id" jdbcType="BIGINT" property="entrustId" />
+        <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
+        <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--委托单组装件信息自定义返回结果-->
+    <resultMap id="EntrustOrderCombinResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="combin_name" jdbcType="VARCHAR" property="name" />
+        <result column="bom_no" jdbcType="VARCHAR" property="number" />
+        <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(车辆序列号信息)-->
+        <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+        </collection>
+    </resultMap>
+
+    <!--根据entrustId查询委托单组装件信息-->
+    <select id="getEntrustOrderCombinByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderCombinResultMap">
+        select ec.id, ec.combin_name, bom.bom_no, ifnull(ec.consignor_qty, 0) consignor_qty,
+        ifnull(ec.qty, 0) qty, true idClass,epsn.id sn_id,epsn.serial_num, epsn.lot
+        from ope_entrust_combin_b ec
+        left join ope_production_combin_bom bom
+        on ec.production_combin_bom_id = bom.id and bom.dr = 0
+        left join ope_entrust_product_serial_num epsn
+        on ec.id = epsn.relation_id and epsn.dr = 0
+        where ec.dr = 0 and ec.entrust_id = #{entrustId}
+    </select>
+
+    <!--修改委托单组装件信息-->
+    <update id="updateEntrustCombin" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustCombinB">
+        update ope_entrust_combin_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="entrustId != null">
+                entrust_id = #{entrustId},
+            </if>
+            <if test="combinName != null">
+                combin_name = #{combinName},
+            </if>
+            <if test="productionCombinBomId != null">
+                production_combin_bom_id = #{productionCombinBomId},
+            </if>
+            <if test="qty != null">
+                qty = #{qty},
+            </if>
+            <if test="consignorQty != null">
+                consignor_qty = #{consignorQty},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询委托单组装件信息-->
+    <select id="getEntrustCombinById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_entrust_combin_b
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据entrustId统计委托单组装件实际发货数量-->
+    <select id="countEntrustCombinConsignorQtyByEntrustId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select ifnull(sum(consignor_qty), 0) from ope_entrust_combin_b
+	    where dr = 0 and entrust_id = #{entrustId}
+    </select>
+
+</mapper>

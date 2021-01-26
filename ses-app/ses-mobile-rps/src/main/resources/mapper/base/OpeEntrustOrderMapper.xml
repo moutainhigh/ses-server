@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeEntrustOrderMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+    <!--@mbg.generated-->
+    <!--@Table ope_entrust_order-->
+    <id column="id" property="id" />
+    <result column="dr" property="dr" />
+    <result column="tenant_id" property="tenantId" />
+    <result column="dept_id" property="deptId" />
+    <result column="invoice_id" property="invoiceId" />
+    <result column="invoice_no" property="invoiceNo" />
+    <result column="entrust_no" property="entrustNo" />
+    <result column="entrust_status" property="entrustStatus" />
+    <result column="entrust_type" property="entrustType" />
+    <result column="consignor_qty" property="consignorQty" />
+    <result column="delivery_date" property="deliveryDate" />
+    <result column="trans_type" property="transType" />
+    <result column="consignee_user" property="consigneeUser" />
+    <result column="consignee_country_code" property="consigneeCountryCode" />
+    <result column="consignee_user_telephone" property="consigneeUserTelephone" />
+    <result column="consignee_user_mail" property="consigneeUserMail" />
+    <result column="consignee_address" property="consigneeAddress" />
+    <result column="consignee_post_code" property="consigneePostCode" />
+    <result column="consignor_user" property="consignorUser" />
+    <result column="consignor_country_code" property="consignorCountryCode" />
+    <result column="consignor_telephone" property="consignorTelephone" />
+    <result column="consignor_mail" property="consignorMail" />
+    <result column="notify_user" property="notifyUser" />
+    <result column="notify_user_name" property="notifyUserName" />
+    <result column="notify_country_code" property="notifyCountryCode" />
+    <result column="notify_user_telephone" property="notifyUserTelephone" />
+    <result column="notify_user_mail" property="notifyUserMail" />
+    <result column="remark" property="remark" />
+    <result column="created_by" property="createdBy" />
+    <result column="created_time" property="createdTime" />
+    <result column="updated_by" property="updatedBy" />
+    <result column="updated_time" property="updatedTime" />
+    <result column="def1" property="def1" />
+    <result column="def2" property="def2" />
+    <result column="def3" property="def3" />
+    <result column="def4" property="def4" />
+    <result column="def5" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, entrust_type, 
+    consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
+    consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
+    consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
+    notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, remark, 
+    created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+  </sql>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update ope_entrust_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.dr}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.tenantId}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deptId}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.invoiceId}
+        </foreach>
+      </trim>
+      <trim prefix="invoice_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.invoiceNo}
+        </foreach>
+      </trim>
+      <trim prefix="entrust_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.entrustNo}
+        </foreach>
+      </trim>
+      <trim prefix="entrust_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.entrustStatus}
+        </foreach>
+      </trim>
+      <trim prefix="entrust_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.entrustType}
+        </foreach>
+      </trim>
+      <trim prefix="consignor_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consignorQty}
+        </foreach>
+      </trim>
+      <trim prefix="delivery_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.deliveryDate}
+        </foreach>
+      </trim>
+      <trim prefix="trans_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.transType}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneeUser}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneeCountryCode}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_user_telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneeUserTelephone}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_user_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneeUserMail}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_address = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneeAddress}
+        </foreach>
+      </trim>
+      <trim prefix="consignee_post_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consigneePostCode}
+        </foreach>
+      </trim>
+      <trim prefix="consignor_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consignorUser}
+        </foreach>
+      </trim>
+      <trim prefix="consignor_country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consignorCountryCode}
+        </foreach>
+      </trim>
+      <trim prefix="consignor_telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consignorTelephone}
+        </foreach>
+      </trim>
+      <trim prefix="consignor_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.consignorMail}
+        </foreach>
+      </trim>
+      <trim prefix="notify_user = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyUser}
+        </foreach>
+      </trim>
+      <trim prefix="notify_user_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyUserName}
+        </foreach>
+      </trim>
+      <trim prefix="notify_country_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyCountryCode}
+        </foreach>
+      </trim>
+      <trim prefix="notify_user_telephone = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyUserTelephone}
+        </foreach>
+      </trim>
+      <trim prefix="notify_user_mail = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.notifyUserMail}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.remark}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdBy}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.createdTime}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedBy}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.updatedTime}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def1}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def2}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def3}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def4}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id} then #{item.def5}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into ope_entrust_order
+    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
+      entrust_type, consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
+      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
+      consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
+      notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id}, #{item.dr}, #{item.tenantId}, #{item.deptId}, #{item.invoiceId}, #{item.invoiceNo}, 
+        #{item.entrustNo}, #{item.entrustStatus}, #{item.entrustType}, #{item.consignorQty}, 
+        #{item.deliveryDate}, #{item.transType}, #{item.consigneeUser}, #{item.consigneeCountryCode}, 
+        #{item.consigneeUserTelephone}, #{item.consigneeUserMail}, #{item.consigneeAddress}, 
+        #{item.consigneePostCode}, #{item.consignorUser}, #{item.consignorCountryCode}, 
+        #{item.consignorTelephone}, #{item.consignorMail}, #{item.notifyUser}, #{item.notifyUserName}, 
+        #{item.notifyCountryCode}, #{item.notifyUserTelephone}, #{item.notifyUserMail}, 
+        #{item.remark}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}, 
+        #{item.def1}, #{item.def2}, #{item.def3}, #{item.def4}, #{item.def5})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+    <!--@mbg.generated-->
+    insert into ope_entrust_order
+    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
+      entrust_type, consignor_qty, delivery_date, trans_type, consignee_user, consignee_country_code, 
+      consignee_user_telephone, consignee_user_mail, consignee_address, consignee_post_code, 
+      consignor_user, consignor_country_code, consignor_telephone, consignor_mail, notify_user, 
+      notify_user_name, notify_country_code, notify_user_telephone, notify_user_mail, 
+      remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+      def5)
+    values
+    (#{id}, #{dr}, #{tenantId}, #{deptId}, #{invoiceId}, #{invoiceNo}, #{entrustNo}, 
+      #{entrustStatus}, #{entrustType}, #{consignorQty}, #{deliveryDate}, #{transType}, 
+      #{consigneeUser}, #{consigneeCountryCode}, #{consigneeUserTelephone}, #{consigneeUserMail}, 
+      #{consigneeAddress}, #{consigneePostCode}, #{consignorUser}, #{consignorCountryCode}, 
+      #{consignorTelephone}, #{consignorMail}, #{notifyUser}, #{notifyUserName}, #{notifyCountryCode}, 
+      #{notifyUserTelephone}, #{notifyUserMail}, #{remark}, #{createdBy}, #{createdTime}, 
+      #{updatedBy}, #{updatedTime}, #{def1}, #{def2}, #{def3}, #{def4}, #{def5})
+    on duplicate key update 
+    id = #{id}, 
+    dr = #{dr}, 
+    tenant_id = #{tenantId}, 
+    dept_id = #{deptId}, 
+    invoice_id = #{invoiceId}, 
+    invoice_no = #{invoiceNo}, 
+    entrust_no = #{entrustNo}, 
+    entrust_status = #{entrustStatus}, 
+    entrust_type = #{entrustType}, 
+    consignor_qty = #{consignorQty}, 
+    delivery_date = #{deliveryDate}, 
+    trans_type = #{transType}, 
+    consignee_user = #{consigneeUser}, 
+    consignee_country_code = #{consigneeCountryCode}, 
+    consignee_user_telephone = #{consigneeUserTelephone}, 
+    consignee_user_mail = #{consigneeUserMail}, 
+    consignee_address = #{consigneeAddress}, 
+    consignee_post_code = #{consigneePostCode}, 
+    consignor_user = #{consignorUser}, 
+    consignor_country_code = #{consignorCountryCode}, 
+    consignor_telephone = #{consignorTelephone}, 
+    consignor_mail = #{consignorMail}, 
+    notify_user = #{notifyUser}, 
+    notify_user_name = #{notifyUserName}, 
+    notify_country_code = #{notifyCountryCode}, 
+    notify_user_telephone = #{notifyUserTelephone}, 
+    notify_user_mail = #{notifyUserMail}, 
+    remark = #{remark}, 
+    created_by = #{createdBy}, 
+    created_time = #{createdTime}, 
+    updated_by = #{updatedBy}, 
+    updated_time = #{updatedTime}, 
+    def1 = #{def1}, 
+    def2 = #{def2}, 
+    def3 = #{def3}, 
+    def4 = #{def4}, 
+    def5 = #{def5}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+    <!--@mbg.generated-->
+    insert into ope_entrust_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="invoiceId != null">
+        invoice_id,
+      </if>
+      <if test="invoiceNo != null">
+        invoice_no,
+      </if>
+      <if test="entrustNo != null">
+        entrust_no,
+      </if>
+      <if test="entrustStatus != null">
+        entrust_status,
+      </if>
+      <if test="entrustType != null">
+        entrust_type,
+      </if>
+      <if test="consignorQty != null">
+        consignor_qty,
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date,
+      </if>
+      <if test="transType != null">
+        trans_type,
+      </if>
+      <if test="consigneeUser != null">
+        consignee_user,
+      </if>
+      <if test="consigneeCountryCode != null">
+        consignee_country_code,
+      </if>
+      <if test="consigneeUserTelephone != null">
+        consignee_user_telephone,
+      </if>
+      <if test="consigneeUserMail != null">
+        consignee_user_mail,
+      </if>
+      <if test="consigneeAddress != null">
+        consignee_address,
+      </if>
+      <if test="consigneePostCode != null">
+        consignee_post_code,
+      </if>
+      <if test="consignorUser != null">
+        consignor_user,
+      </if>
+      <if test="consignorCountryCode != null">
+        consignor_country_code,
+      </if>
+      <if test="consignorTelephone != null">
+        consignor_telephone,
+      </if>
+      <if test="consignorMail != null">
+        consignor_mail,
+      </if>
+      <if test="notifyUser != null">
+        notify_user,
+      </if>
+      <if test="notifyUserName != null">
+        notify_user_name,
+      </if>
+      <if test="notifyCountryCode != null">
+        notify_country_code,
+      </if>
+      <if test="notifyUserTelephone != null">
+        notify_user_telephone,
+      </if>
+      <if test="notifyUserMail != null">
+        notify_user_mail,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="dr != null">
+        #{dr},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId},
+      </if>
+      <if test="deptId != null">
+        #{deptId},
+      </if>
+      <if test="invoiceId != null">
+        #{invoiceId},
+      </if>
+      <if test="invoiceNo != null">
+        #{invoiceNo},
+      </if>
+      <if test="entrustNo != null">
+        #{entrustNo},
+      </if>
+      <if test="entrustStatus != null">
+        #{entrustStatus},
+      </if>
+      <if test="entrustType != null">
+        #{entrustType},
+      </if>
+      <if test="consignorQty != null">
+        #{consignorQty},
+      </if>
+      <if test="deliveryDate != null">
+        #{deliveryDate},
+      </if>
+      <if test="transType != null">
+        #{transType},
+      </if>
+      <if test="consigneeUser != null">
+        #{consigneeUser},
+      </if>
+      <if test="consigneeCountryCode != null">
+        #{consigneeCountryCode},
+      </if>
+      <if test="consigneeUserTelephone != null">
+        #{consigneeUserTelephone},
+      </if>
+      <if test="consigneeUserMail != null">
+        #{consigneeUserMail},
+      </if>
+      <if test="consigneeAddress != null">
+        #{consigneeAddress},
+      </if>
+      <if test="consigneePostCode != null">
+        #{consigneePostCode},
+      </if>
+      <if test="consignorUser != null">
+        #{consignorUser},
+      </if>
+      <if test="consignorCountryCode != null">
+        #{consignorCountryCode},
+      </if>
+      <if test="consignorTelephone != null">
+        #{consignorTelephone},
+      </if>
+      <if test="consignorMail != null">
+        #{consignorMail},
+      </if>
+      <if test="notifyUser != null">
+        #{notifyUser},
+      </if>
+      <if test="notifyUserName != null">
+        #{notifyUserName},
+      </if>
+      <if test="notifyCountryCode != null">
+        #{notifyCountryCode},
+      </if>
+      <if test="notifyUserTelephone != null">
+        #{notifyUserTelephone},
+      </if>
+      <if test="notifyUserMail != null">
+        #{notifyUserMail},
+      </if>
+      <if test="remark != null">
+        #{remark},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        #{def1},
+      </if>
+      <if test="def2 != null">
+        #{def2},
+      </if>
+      <if test="def3 != null">
+        #{def3},
+      </if>
+      <if test="def4 != null">
+        #{def4},
+      </if>
+      <if test="def5 != null">
+        #{def5},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id},
+      </if>
+      <if test="dr != null">
+        dr = #{dr},
+      </if>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId},
+      </if>
+      <if test="invoiceId != null">
+        invoice_id = #{invoiceId},
+      </if>
+      <if test="invoiceNo != null">
+        invoice_no = #{invoiceNo},
+      </if>
+      <if test="entrustNo != null">
+        entrust_no = #{entrustNo},
+      </if>
+      <if test="entrustStatus != null">
+        entrust_status = #{entrustStatus},
+      </if>
+      <if test="entrustType != null">
+        entrust_type = #{entrustType},
+      </if>
+      <if test="consignorQty != null">
+        consignor_qty = #{consignorQty},
+      </if>
+      <if test="deliveryDate != null">
+        delivery_date = #{deliveryDate},
+      </if>
+      <if test="transType != null">
+        trans_type = #{transType},
+      </if>
+      <if test="consigneeUser != null">
+        consignee_user = #{consigneeUser},
+      </if>
+      <if test="consigneeCountryCode != null">
+        consignee_country_code = #{consigneeCountryCode},
+      </if>
+      <if test="consigneeUserTelephone != null">
+        consignee_user_telephone = #{consigneeUserTelephone},
+      </if>
+      <if test="consigneeUserMail != null">
+        consignee_user_mail = #{consigneeUserMail},
+      </if>
+      <if test="consigneeAddress != null">
+        consignee_address = #{consigneeAddress},
+      </if>
+      <if test="consigneePostCode != null">
+        consignee_post_code = #{consigneePostCode},
+      </if>
+      <if test="consignorUser != null">
+        consignor_user = #{consignorUser},
+      </if>
+      <if test="consignorCountryCode != null">
+        consignor_country_code = #{consignorCountryCode},
+      </if>
+      <if test="consignorTelephone != null">
+        consignor_telephone = #{consignorTelephone},
+      </if>
+      <if test="consignorMail != null">
+        consignor_mail = #{consignorMail},
+      </if>
+      <if test="notifyUser != null">
+        notify_user = #{notifyUser},
+      </if>
+      <if test="notifyUserName != null">
+        notify_user_name = #{notifyUserName},
+      </if>
+      <if test="notifyCountryCode != null">
+        notify_country_code = #{notifyCountryCode},
+      </if>
+      <if test="notifyUserTelephone != null">
+        notify_user_telephone = #{notifyUserTelephone},
+      </if>
+      <if test="notifyUserMail != null">
+        notify_user_mail = #{notifyUserMail},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5},
+      </if>
+    </trim>
+  </insert>
+</mapper>

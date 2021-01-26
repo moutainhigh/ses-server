@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public enum OutBoundOrderTypeEnums {
     SALES("SALES", "销售", 1),
-    PRODUCT("PRODUCT","生产",2);
+    RECEIVING("RECEIVING","领用",2),
+    ASSEMBLY("ASSEMBLY","组装",3),
+    OTHER("OTHER","其他",4);
 
     private String code;
 

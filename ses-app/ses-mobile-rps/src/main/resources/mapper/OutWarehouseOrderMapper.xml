@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper">
+
+    <!--出库单列表查询条件sql-->
+    <sql id="getOutWarehouseOrderListWhere">
+        <if test="status == 0">and out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
+        <if test="orderType != null">and out_wh_type = #{orderType}</if>
+        <if test="type != null">and out_type = #{type}</if>
+    </sql>
+
+    <!--查询所有出库单类型数量-->
+    <select id="getOutWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_wh_type `status`, count(id) totalCount
+        from ope_out_whouse_order whorder
+        where whorder.dr = 0
+        group by out_wh_type
+    </select>
+
+    <!--查询所有出库类型数量-->
+    <select id="getOutWarehouseTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_type `status`, count(id) totalCount
+        from ope_out_whouse_order
+        where dr = 0 and out_wh_type = #{type}
+        <if test="status == 0">and out_wh_status in (0, 10, 15)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
+        group by out_type
+    </select>
+
+    <!--查询出库单数量-->
+    <select id="countByOutWarehouseOrder" parameterType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from ope_out_whouse_order
+	    where dr = 0
+	    <include refid="getOutWarehouseOrderListWhere" />
+    </select>
+
+    <!--出库单列表查询-->
+    <select id="getOutWarehouseOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderResultDTO">
+        select id,out_wh_no outWarehouseNo,out_wh_status `status`,out_wh_type orderType,
+        out_type `type`,out_wh_qty qty
+        from ope_out_whouse_order
+        where dr = 0
+        <include refid="getOutWarehouseOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--根据id查询出库单详情-->
+    <select id="getOutWarehouseOrderDetailById" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderDetailDTO">
+        select id,out_wh_no outWarehouseNo,out_wh_status `status`, out_wh_type orderType,out_wh_qty qty
+        ,ifnull(already_out_wh_qty, 0) alreadyOutWhQty, out_stock_time outStockTime,remark
+        from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改出库单信息-->
+    <update id="updateOutWarehouseOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
+        update ope_out_whouse_order
+        <set>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="invoiceId != null">
+                invoice_id = #{invoiceId},
+            </if>
+            <if test="invoiceNo != null">
+                invoice_no = #{invoiceNo},
+            </if>
+            <if test="outWhNo != null">
+                out_wh_no = #{outWhNo},
+            </if>
+            <if test="outWhStatus != null">
+                out_wh_status = #{outWhStatus},
+            </if>
+            <if test="outWhType != null">
+                out_wh_type = #{outWhType},
+            </if>
+            <if test="outType != null">
+                out_type = #{outType},
+            </if>
+            <if test="outWhQty != null">
+                out_wh_qty = #{outWhQty},
+            </if>
+            <if test="alreadyOutWhQty != null">
+                already_out_wh_qty = #{alreadyOutWhQty},
+            </if>
+            <if test="outStockTime != null">
+                out_stock_time = #{outStockTime},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone},
+            </if>
+            <if test="mail != null">
+                mail = #{mail},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询出库单已出库总数-->
+    <select id="getOutWhOrderAlreadyOutWhQtyById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select qc_qty from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
+
+</mapper>

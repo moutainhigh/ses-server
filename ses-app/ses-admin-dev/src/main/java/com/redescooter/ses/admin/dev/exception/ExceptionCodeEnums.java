@@ -75,7 +75,9 @@ public enum ExceptionCodeEnums {
 
     DATA_EXCEPTION(10038, "数据异常"),
 
-    SCOOTER_NOT_CLOSED(10039, "车辆未关闭")
+    SCOOTER_NOT_CLOSED(10039, "车辆未关闭"),
+
+    CREATE_SCOOTER_ERROR(10040, "创建车辆信息失败")
     ;
 
     private int code;

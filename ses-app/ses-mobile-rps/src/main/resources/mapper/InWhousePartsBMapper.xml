@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhousePartsBMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_name" jdbcType="VARCHAR" property="partsName" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="purchase_qty" jdbcType="INTEGER" property="purchaseQty" />
+        <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--InWhOrderPartsResultMap-->
+    <resultMap id="InWhOrderPartsResultMap" type="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(部件序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+        </collection>
+    </resultMap>
+
+    <!--根据partsNo、inWhId查询入库单部件信息-->
+    <select id="getInWhousePartsByPartsNoAndInWhId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_in_whouse_parts_b
+	    where dr = 0 and in_wh_id = #{inWhId} and parts_no = #{partsNo}
+    </select>
+
+    <!--根据id查询入库单部件信息-->
+    <select id="getInWhousePartsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改入库单部件信息-->
+    <update id="updateInWhouseParts" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB">
+        update ope_in_whouse_parts_b
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="inWhId != null">
+                in_wh_id = #{inWhId,jdbcType=BIGINT},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId,jdbcType=BIGINT},
+            </if>
+            <if test="partsName != null">
+                parts_name = #{partsName,jdbcType=VARCHAR},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType,jdbcType=INTEGER},
+            </if>
+            <if test="purchaseQty != null">
+                purchase_qty = #{purchaseQty,jdbcType=INTEGER},
+            </if>
+            <if test="ableInWhQty != null">
+                able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="actInWhQty != null">
+                act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=INTEGER},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据inWhId查询入库单部件信息-->
+    <select id="getInWhOrderPartsByInWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
+        select iwp.id, iwp.in_wh_id inWhId, pp.id bomId, pp.parts_type partsType, pp.cn_name `name`, pp.parts_no `number`,
+        iwp.in_wh_qty qty, iwp.act_in_wh_qty actInWhQty, iwp.unqualified_qty unqualifiedQty, iwp.qc_qty qcQty, pp.id_calss idClass
+        from ope_in_whouse_parts_b iwp
+        left join ope_production_parts pp
+        on iwp.parts_id = pp.id and pp.disable = 0 and pp.dr = 0
+        where iwp.dr = 0 and iwp.in_wh_id = #{inWhId}
+    </select>
+
+    <!--根据id查询入库单部件信息-->
+    <select id="getInWhOrderPartsById" parameterType="java.lang.Long" resultMap="InWhOrderPartsResultMap">
+        select iwp.id, iwp.in_wh_id, pp.id bom_id, pp.parts_type,pp.cn_name, pp.parts_no `number`,
+        iwp.in_wh_qty, iwp.act_in_wh_qty, iwp.unqualified_qty, iwp.qc_qty, pp.id_calss,osb.id sn_id, osb.lot,
+        osb.serial_num,s.supplier_name
+        from ope_in_whouse_parts_b iwp
+        left join ope_production_parts pp
+        on iwp.parts_id = pp.id and pp.disable = 0 and pp.dr = 0
+        left join ope_order_serial_bind osb
+        on iwp.parts_id = osb.product_id and osb.dr = 0
+        left join ope_supplier s
+        on pp.supplier_id = s.id and s.dr = 0
+        where iwp.dr = 0 and iwp.id = #{id}
+    </select>
+
+</mapper>

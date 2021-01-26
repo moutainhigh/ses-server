@@ -70,6 +70,8 @@ public class RpsHeadServiceImpl implements RpsHeadService {
                 .scooterQcTotal(rpsHeadServiceMapper.rpsHeadProductQc(enter))
                 //生产入库(组装单、调拨单)
                 .productionInWhTotal(productionInWh)
+                .outboundTotal(rpsHeadServiceMapper.rpsHeadOutboundTotal(enter))
+                .consignTotal(rpsHeadServiceMapper.rpsHeadConsignTotal(enter))
                 .build();
     }
 }

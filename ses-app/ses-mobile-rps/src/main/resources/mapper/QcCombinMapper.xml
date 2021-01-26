@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcCombinMapper">
+
+    <!--质检单组装件详情自定义返回结果-->
+    <resultMap id="QcCombinDetailResultMap" type="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="bom_no" jdbcType="VARCHAR" property="number" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
+        <!--组装件序列号信息-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+            <result column="name" jdbcType="VARCHAR" property="name" />
+        </collection>
+    </resultMap>
+
+    <!--根据qcId查询质检单组装件信息-->
+    <select id="getQcCombinByQcId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO">
+        select combin.id, combin.qc_id qcId, bom.id bomId, bom.cn_name `name`, bom.bom_no `number`,
+        combin.qty, combin.qualified_qty qualifiedQty, combin.unqualified_qty unqualifiedQty,
+        combin.qty - (combin.unqualified_qty + combin.qualified_qty) pendingQcQty,true idClass
+        from ope_qc_combin_b combin
+        left join ope_production_combin_bom bom
+        on combin.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
+        where combin.dr = 0 and combin.qc_id = #{qcId}
+    </select>
+
+    <!--根据id查询质检单组装件详情-->
+    <select id="getQcCombinDetailById" parameterType="java.lang.Long" resultMap="QcCombinDetailResultMap">
+        select combin.id, combin.qc_id, bom.id bom_id, bom.cn_name, bom.bom_no,combin.qty, combin.qualified_qty, combin.unqualified_qty,
+        serial.id sn_id,serial.serial_num, serial.lot, '奥格工厂' factory_name,bom.cn_name `name`,true id_class
+        from ope_qc_combin_b combin
+        left join ope_production_combin_bom bom
+        on combin.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
+        left join ope_qc_order_serial_bind serial
+        on combin.id = serial.order_b_id and serial.dr = 0
+        where combin.dr = 0 and combin.id = #{id}
+    </select>
+
+</mapper>

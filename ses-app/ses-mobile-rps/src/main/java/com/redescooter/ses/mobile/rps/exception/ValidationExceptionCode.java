@@ -8,6 +8,8 @@ package com.redescooter.ses.mobile.rps.exception;
 public interface ValidationExceptionCode {
 
     // ###############################10001~10030公共入参异常#######################################
+    // id 为空
+    int ID_IS_EMPTY = 10008;
     //长度过长，长度为2-20字符
     int CHARACTER_IS_TOO_LONG = 10010;
     //长度过短，长度为2-20字符
@@ -32,5 +34,34 @@ public interface ValidationExceptionCode {
     int BATCH_NO = 10036;
     //序列号
     int SERIAL_NUM=10037;
+
+    //状态为空
+    int STATUS_IS_EMPTY = 10038;
+    //类型为空
+    int TYPE_IS_EMPTY = 10039;
+    // 出库单类型为空
+    int OUT_WH_ORDER_TYPE_IS_EMPTY = 10040;
+    // 产品id为空
+    int PRODUCT_ID_IS_EMPTY = 10041;
+    // 产品类型为空
+    int PRODUCT_TYPE_IS_EMPTY = 10042;
+    // 出库单id为空
+    int OUT_WH_ORDER_ID_IS_EMPTY = 10043;
+    // 委托的id为空
+    int ENTRUST_ORDER_ID_IS_EMPTY = 10044;
+    // 物流公司为空
+    int LOGISTICS_COMPANY_IS_EMPTY = 10045;
+    // 物流单号为空
+    int LOGISTICS_NO_IS_EMPTY = 10046;
+    // 序列号为空
+    int SERIAL_NUMBER_IS_EMPTY = 10047;
+    // 批次号为空
+    int BATCH_NO_IS_EMPTY = 10048;
+    // bomId为空
+    int BOM_ID_IS_EMPTY = 10049;
+    // 入库单类型为空
+    int IN_WH_ORDER_TYPE_IS_EMPTY = 10050;
+    // 质检单类型为空
+    int QC_ORDER_TYPE_IS_EMPTY = 10051;
 
 }
