@@ -3,14 +3,11 @@ package com.redescooter.ses.web.ros.service.restproductionorder.outbound.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.qc.QcTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -19,11 +16,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeOutWhCombinBMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeOutWhPartsBMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeOutWhScooterBMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
-import com.redescooter.ses.web.ros.dao.qc.OpeQcOrderMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
@@ -37,16 +29,10 @@ import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpeQcCombinB;
-import com.redescooter.ses.web.ros.dm.OpeQcOrder;
-import com.redescooter.ses.web.ros.dm.OpeQcPartsB;
-import com.redescooter.ses.web.ros.dm.OpeQcScooterB;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCombinOrderCombinBService;
@@ -60,9 +46,6 @@ import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeQcCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeQcPartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeQcScooterBService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
@@ -175,7 +158,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
 
-
     @Autowired
     private ProductionAssemblyOrderServiceMapper productionAssemblyOrderServiceMapper;
 
@@ -187,30 +169,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
 
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
-
-    @Autowired
-    private OpeQcOrderMapper opeQcOrderMapper;
-
-    @Autowired
-    private OpeOutWhScooterBMapper opeOutWhScooterBMapper;
-
-    @Autowired
-    private OpeQcScooterBService opeQcScooterBService;
-
-    @Autowired
-    private OpeQcCombinBService opeQcCombinBService;
-
-    @Autowired
-    private OpeQcPartsBService opeQcPartsBService;
-
-    @Autowired
-    private OpeProductionScooterBomMapper opeProductionScooterBomMapper;
-
-    @Autowired
-    private OpeOutWhCombinBMapper opeOutWhCombinBMapper;
-
-    @Autowired
-    private OpeOutWhPartsBMapper opeOutWhPartsBMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -489,191 +447,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }catch (Exception e) {
 
         }
-
-        // 生成出库单质检单
-        generatorQc(enter, opeOutWhouseOrder);
         return new GeneralResult(enter.getRequestId());
     }
-
-    /**
-     * 生成出库单质检单
-     */
-    private void generatorQc(SaveOutboundOrderEnter enter, OpeOutWhouseOrder outOrder) {
-        // 限制是发货单生成的组装单
-        if (null != outOrder && outOrder.getRelationType() == 3) {
-            Integer outWhType = outOrder.getOutWhType();
-            switch (outWhType) {
-                case 1:
-                    // 生成出库单车辆的质检单
-                    OpeQcOrder model = new OpeQcOrder();
-                    long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
-                    model.setId(qcId);
-                    model.setDr(DelStatusEnum.VALID.getCode());
-                    model.setTenantId(enter.getTenantId());
-                    model.setDeptId(enter.getOpeDeptId());
-                    model.setCountryType(1);
-                    model.setQcNo(null);
-                    model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-                    model.setOrderType(ProductTypeEnums.SCOOTER.getValue());
-                    model.setRelationOrderId(outOrder.getId());
-                    model.setRelationOrderNo(outOrder.getOutWhNo());
-                    model.setRelationOrderType(OrderTypeEnums.OUTBOUND.getValue());
-                    model.setQcType(QcTypeEnums.SEND_GOOD.getValue());
-                    model.setQcQty(outOrder.getOutWhQty());
-                    model.setCreatedBy(enter.getUserId());
-                    model.setCreatedTime(new Date());
-                    opeQcOrderMapper.insert(model);
-
-                    // 根据出库单id获得车辆出库单集合
-                    LambdaQueryWrapper<OpeOutWhScooterB> wrapper = new LambdaQueryWrapper<>();
-                    wrapper.eq(OpeOutWhScooterB::getDr, DelStatusEnum.VALID.getCode());
-                    wrapper.eq(OpeOutWhScooterB::getOutWhId, outOrder.getId());
-                    List<OpeOutWhScooterB> list = opeOutWhScooterBMapper.selectList(wrapper);
-                    if (CollectionUtils.isNotEmpty(list)) {
-                        List<OpeQcScooterB> saveList = Lists.newArrayList();
-                        for (OpeOutWhScooterB scooter : list) {
-                            // 生成质检单车辆出库单子表
-                            OpeQcScooterB param = new OpeQcScooterB();
-                            param.setId(idAppService.getId(SequenceName.OPE_QC_SCOOTER_B));
-                            param.setDr(DelStatusEnum.VALID.getCode());
-                            param.setQcId(qcId);
-                            param.setGroupId(scooter.getGroupId());
-                            param.setColorId(scooter.getColorId());
-                            param.setScooterBomId(getBomIdByGroupIdAndColorId(scooter.getGroupId(), scooter.getColorId()));
-                            param.setQty(scooter.getQty());
-                            param.setCreatedBy(enter.getUserId());
-                            param.setCreatedTime(new Date());
-                            saveList.add(param);
-                        }
-                        opeQcScooterBService.saveBatch(saveList);
-                    }
-                default:
-                    break;
-                case 2:
-                    // 生成出库单组装件的质检单
-                    OpeQcOrder instance = new OpeQcOrder();
-                    long id = idAppService.getId(SequenceName.OPE_QC_ORDER);
-                    instance.setId(id);
-                    instance.setDr(DelStatusEnum.VALID.getCode());
-                    instance.setTenantId(enter.getTenantId());
-                    instance.setDeptId(enter.getOpeDeptId());
-                    instance.setCountryType(1);
-                    instance.setQcNo(null);
-                    instance.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-                    instance.setOrderType(ProductTypeEnums.COMBINATION.getValue());
-                    instance.setRelationOrderId(outOrder.getId());
-                    instance.setRelationOrderNo(outOrder.getOutWhNo());
-                    instance.setRelationOrderType(OrderTypeEnums.OUTBOUND.getValue());
-                    instance.setQcType(QcTypeEnums.SEND_GOOD.getValue());
-                    instance.setQcQty(outOrder.getOutWhQty());
-                    instance.setCreatedBy(enter.getUserId());
-                    instance.setCreatedTime(new Date());
-                    opeQcOrderMapper.insert(instance);
-
-                    // 根据出库单id获得组装件出库单集合
-                    LambdaQueryWrapper<OpeOutWhCombinB> qw = new LambdaQueryWrapper<>();
-                    qw.eq(OpeOutWhCombinB::getDr, DelStatusEnum.VALID.getCode());
-                    qw.eq(OpeOutWhCombinB::getOutWhId, outOrder.getId());
-                    List<OpeOutWhCombinB> tempList = opeOutWhCombinBMapper.selectList(qw);
-                    if (CollectionUtils.isNotEmpty(tempList)) {
-                        List<OpeQcCombinB> saveList = Lists.newArrayList();
-                        for (OpeOutWhCombinB combin : tempList) {
-                            // 生成质检单组装件出库单子表
-                            OpeQcCombinB param = new OpeQcCombinB();
-                            param.setId(idAppService.getId(SequenceName.OPE_QC_COMBIN_B));
-                            param.setDr(DelStatusEnum.VALID.getCode());
-                            param.setQcId(id);
-                            param.setCombinName(combin.getCombinName());
-                            param.setCombinNo(getCombinBomNoById(combin.getProductionCombinBomId()));
-                            param.setProductionCombinBomId(combin.getProductionCombinBomId());
-                            param.setQty(combin.getQty());
-                            param.setCreatedBy(enter.getUserId());
-                            param.setCreatedTime(new Date());
-                            saveList.add(param);
-                        }
-                        opeQcCombinBService.saveBatch(saveList);
-                    }
-                    break;
-                case 3:
-                    // 生成出库单部件的质检单
-                    OpeQcOrder order = new OpeQcOrder();
-                    long tempId = idAppService.getId(SequenceName.OPE_QC_ORDER);
-                    order.setId(tempId);
-                    order.setDr(DelStatusEnum.VALID.getCode());
-                    order.setTenantId(enter.getTenantId());
-                    order.setDeptId(enter.getOpeDeptId());
-                    order.setCountryType(1);
-                    order.setQcNo(null);
-                    order.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-                    order.setOrderType(ProductTypeEnums.PARTS.getValue());
-                    order.setRelationOrderId(outOrder.getId());
-                    order.setRelationOrderNo(outOrder.getOutWhNo());
-                    order.setRelationOrderType(OrderTypeEnums.OUTBOUND.getValue());
-                    order.setQcType(QcTypeEnums.SEND_GOOD.getValue());
-                    order.setQcQty(outOrder.getOutWhQty());
-                    order.setCreatedBy(enter.getUserId());
-                    order.setCreatedTime(new Date());
-                    opeQcOrderMapper.insert(order);
-
-                    // 根据出库单id获得部件出库单集合
-                    LambdaQueryWrapper<OpeOutWhPartsB> lqw = new LambdaQueryWrapper<>();
-                    lqw.eq(OpeOutWhPartsB::getDr, DelStatusEnum.VALID.getCode());
-                    lqw.eq(OpeOutWhPartsB::getOutWhId, outOrder.getId());
-                    List<OpeOutWhPartsB> partsList = opeOutWhPartsBMapper.selectList(lqw);
-                    if (CollectionUtils.isNotEmpty(partsList)) {
-                        List<OpeQcPartsB> saveList = Lists.newArrayList();
-                        for (OpeOutWhPartsB parts : partsList) {
-                            OpeQcPartsB param = new OpeQcPartsB();
-                            param.setId(idAppService.getId(SequenceName.OPE_QC_PARTS_B));
-                            param.setDr(DelStatusEnum.VALID.getCode());
-                            param.setQcId(tempId);
-                            param.setPartsId(parts.getPartsId());
-                            param.setPartsName(parts.getPartsName());
-                            param.setPartsNo(parts.getPartsNo());
-                            param.setPartsType(parts.getPartsType());
-                            param.setQty(parts.getQty());
-                            param.setCreatedBy(enter.getUserId());
-                            param.setCreatedTime(new Date());
-                            saveList.add(param);
-                        }
-                        opeQcPartsBService.saveBatch(saveList);
-                    }
-                    break;
-            }
-        }
-    }
-
-
-    /**
-     * 根据groupId和colorId获取整车bom表id
-     */
-    private Long getBomIdByGroupIdAndColorId(Long groupId, Long colorId) {
-        LambdaQueryWrapper<OpeProductionScooterBom> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeProductionScooterBom::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeProductionScooterBom::getGroupId, groupId);
-        wrapper.eq(OpeProductionScooterBom::getColorId, colorId);
-        wrapper.orderByDesc(OpeProductionScooterBom::getCreatedTime);
-        List<OpeProductionScooterBom> list = opeProductionScooterBomMapper.selectList(wrapper);
-        if (CollectionUtils.isNotEmpty(list)) {
-            OpeProductionScooterBom bom = list.get(0);
-            if (null != bom) {
-                return bom.getId();
-            }
-        }
-        throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-    }
-
-    /**
-     * 根据组装件id获得组装件no
-     */
-    private String getCombinBomNoById(Long id) {
-        OpeProductionCombinBom bom = opeProductionCombinBomService.getById(id);
-        if (null != bom) {
-            return bom.getBomNo();
-        }
-        throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-    }
-
 
 
     /**
