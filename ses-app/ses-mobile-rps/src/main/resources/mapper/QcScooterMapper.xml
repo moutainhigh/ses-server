@@ -2,6 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcScooterMapper">
 
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcScooterB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="color_id" jdbcType="BIGINT" property="colorId" />
+        <result column="scooter_bom_id" jdbcType="BIGINT" property="scooterBomId" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
     <!--QcScooterDetailResultMap(质检单车辆详情自定义返回结果)-->
     <resultMap id="QcScooterDetailResultMap" type="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
@@ -54,5 +72,58 @@
         on scooter.id = serial.order_b_id and serial.dr = 0
         where scooter.dr = 0 and scooter.id = #{id}
     </select>
+
+    <!--根据id查询质检单车辆信息-->
+    <select id="getQcScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_qc_scooter_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改质检单车辆信息-->
+    <update id="updateQcScooter" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcScooterB">
+        update ope_qc_scooter_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="qcId != null">
+                qc_id = #{qcId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId,jdbcType=BIGINT},
+            </if>
+            <if test="scooterBomId != null">
+                scooter_bom_id = #{scooterBomId,jdbcType=BIGINT},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="qualifiedQty != null">
+                qualified_qty = #{qualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

@@ -28,9 +28,6 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "产品类型 1车辆 2组装件 3部件", dataType = "Integer", required = true)
     private Integer productType;
 
-    @ApiModelProperty(value = "单据类型(需要这个参数来知道后面逻辑怎么走) 1入库单 2出库单", dataType = "Integer", required = true)
-    private Integer type;
-
     @ApiModelProperty(value = "部件号", dataType = "String")
     private String partsNo;
 
@@ -42,6 +39,9 @@ public class SaveQcResultParamDTO extends GeneralEnter {
 
     @ApiModelProperty(value = "质检数量(无码产品传递)", dataType = "Integer")
     private Integer qcQty;
+
+    @ApiModelProperty(value = "车载平板序列号(车辆质检扫码时传递", dataType = "String")
+    private String tabletSn;
 
     @ApiModelProperty(value = "蓝牙mac地址(仪表质检时传递)", dataType = "String")
     private String bluetoothMacAddress;

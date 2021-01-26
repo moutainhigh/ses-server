@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dao.qcorder;
 
+import com.redescooter.ses.mobile.rps.dm.OpeQcCombinB;
 import com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO;
 
@@ -29,5 +30,23 @@ public interface QcCombinMapper {
      * @date 2021/1/26
     */
     QcOrderProductDetailDTO getQcCombinDetailById(Long id);
+
+    /**
+     * 根据id查询质检单组装件信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeQcCombinB
+     * @author assert
+     * @date 2021/1/26
+    */
+    OpeQcCombinB getQcCombinById(Long id);
+
+    /**
+     * 修改质检单组装件信息
+     * @param opeQcCombinB
+     * @return int
+     * @author assert
+     * @date 2021/1/26
+    */
+    int updateQcCombin(OpeQcCombinB opeQcCombinB);
 
 }

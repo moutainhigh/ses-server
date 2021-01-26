@@ -49,6 +49,18 @@ public class RpsAssert {
     }
 
     /**
+     * obj is not blank throw SesMobileRpsException
+     * @param obj
+     * @param code
+     * @param msg
+     */
+    public static void isNotBlank(String obj, Integer code, String msg) {
+        if (StringUtils.isNotBlank(obj)) {
+            throw new SesMobileRpsException(code, msg);
+        }
+    }
+
+    /**
      * collection is empty throw SesMobileRpsException
      * @param collection
      * @param code

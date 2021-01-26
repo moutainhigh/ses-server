@@ -122,7 +122,7 @@ public class OpeQcOrderSerialBind {
      * 创建人
      */
     @ApiModelProperty(value = "创建人")
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
      * 创建时间

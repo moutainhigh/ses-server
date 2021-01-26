@@ -111,4 +111,6 @@ public interface SequenceName {
 
     String OPE_WMS_STOCK_SERIAL_NUMBER = "OPE_WMS_STOCK_SERIAL_NUMBER";
 
+    String OPE_QC_ORDER_SERIAL_BIND = "OPE_QC_ORDER_SERIAL_BIND";
+
 }

@@ -70,4 +70,13 @@ public interface QcOrderMapper {
     */
     int updateQcOrder(OpeQcOrder opeQcOrder);
 
+    /**
+     * 根据id查询质检单信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeQcOrder
+     * @author assert
+     * @date 2021/1/26
+    */
+    OpeQcOrder getQcOrderById(Long id);
+
 }

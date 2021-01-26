@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeQcCombinBMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcCombinB">
+    <!--@mbg.generated-->
+    <!--@Table ope_qc_combin_b-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+    <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
+    <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+    <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+    <result column="qty" jdbcType="INTEGER" property="qty" />
+    <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+    <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DECIMAL" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, qc_id, combin_name, combin_no, production_combin_bom_id, qty, unqualified_qty, 
+    qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def4, def5
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from ope_qc_combin_b
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from ope_qc_combin_b
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcCombinB">
+    <!--@mbg.generated-->
+    insert into ope_qc_combin_b
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="qcId != null">
+        qc_id,
+      </if>
+      <if test="combinName != null">
+        combin_name,
+      </if>
+      <if test="combinNo != null">
+        combin_no,
+      </if>
+      <if test="productionCombinBomId != null">
+        production_combin_bom_id,
+      </if>
+      <if test="qty != null">
+        qty,
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty,
+      </if>
+      <if test="qualifiedQty != null">
+        qualified_qty,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="def1 != null">
+        def1,
+      </if>
+      <if test="def2 != null">
+        def2,
+      </if>
+      <if test="def3 != null">
+        def3,
+      </if>
+      <if test="def4 != null">
+        def4,
+      </if>
+      <if test="def5 != null">
+        def5,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="qcId != null">
+        #{qcId,jdbcType=BIGINT},
+      </if>
+      <if test="combinName != null">
+        #{combinName,jdbcType=VARCHAR},
+      </if>
+      <if test="combinNo != null">
+        #{combinNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productionCombinBomId != null">
+        #{productionCombinBomId,jdbcType=BIGINT},
+      </if>
+      <if test="qty != null">
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="unqualifiedQty != null">
+        #{unqualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="qualifiedQty != null">
+        #{qualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        #{def5,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcCombinB">
+    <!--@mbg.generated-->
+    update ope_qc_combin_b
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="qcId != null">
+        qc_id = #{qcId,jdbcType=BIGINT},
+      </if>
+      <if test="combinName != null">
+        combin_name = #{combinName,jdbcType=VARCHAR},
+      </if>
+      <if test="combinNo != null">
+        combin_no = #{combinNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productionCombinBomId != null">
+        production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+      </if>
+      <if test="qty != null">
+        qty = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="unqualifiedQty != null">
+        unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="qualifiedQty != null">
+        qualified_qty = #{qualifiedQty,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="def1 != null">
+        def1 = #{def1,jdbcType=VARCHAR},
+      </if>
+      <if test="def2 != null">
+        def2 = #{def2,jdbcType=VARCHAR},
+      </if>
+      <if test="def3 != null">
+        def3 = #{def3,jdbcType=VARCHAR},
+      </if>
+      <if test="def4 != null">
+        def4 = #{def4,jdbcType=VARCHAR},
+      </if>
+      <if test="def5 != null">
+        def5 = #{def5,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcCombinB">
+    <!--@mbg.generated-->
+    update ope_qc_combin_b
+    set dr = #{dr,jdbcType=INTEGER},
+      qc_id = #{qcId,jdbcType=BIGINT},
+      combin_name = #{combinName,jdbcType=VARCHAR},
+      combin_no = #{combinNo,jdbcType=VARCHAR},
+      production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+      qty = #{qty,jdbcType=INTEGER},
+      unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+      qualified_qty = #{qualifiedQty,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      def1 = #{def1,jdbcType=VARCHAR},
+      def2 = #{def2,jdbcType=VARCHAR},
+      def3 = #{def3,jdbcType=VARCHAR},
+      def4 = #{def4,jdbcType=VARCHAR},
+      def5 = #{def5,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

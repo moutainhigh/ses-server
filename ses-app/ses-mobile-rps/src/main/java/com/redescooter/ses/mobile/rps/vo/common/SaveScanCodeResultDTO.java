@@ -39,4 +39,7 @@ public class SaveScanCodeResultDTO extends GeneralResult {
     @ApiModelProperty(value = "生产日期", dataType = "Date")
     private Date productionDate;
 
+    @ApiModelProperty(value = "是否打印标识 true是/false否", dataType = "Boolean")
+    private Boolean printFlag;
+
 }
