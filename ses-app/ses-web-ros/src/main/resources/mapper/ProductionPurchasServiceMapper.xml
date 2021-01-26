@@ -165,7 +165,7 @@
           id as relationOrderId,
           purchase_no as relationOrderNo
         from ope_production_purchase_order
-        where dr = 0 and purchase_status in (10,20,30)
+        where dr = 0 and purchase_status in (20)
         <if test="enter.keyword != null and enter.keyword != ''">
             and purchase_no like concat('%', #{enter.keyword}, '%')
         </if>
