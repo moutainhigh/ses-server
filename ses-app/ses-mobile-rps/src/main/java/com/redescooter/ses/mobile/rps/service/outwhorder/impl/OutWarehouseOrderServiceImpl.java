@@ -142,9 +142,9 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isTrue(!OutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(outWarehouseOrderDetail.getStatus()),
                 ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         /**
-         * TODO 生成出库质检单
+         * 调用Chris生成出库质检单接口
          */
-
+        rosOutWhOrderService.generatorQcOrderByOutBound(enter);
 
         return new GeneralResult(enter.getRequestId());
     }

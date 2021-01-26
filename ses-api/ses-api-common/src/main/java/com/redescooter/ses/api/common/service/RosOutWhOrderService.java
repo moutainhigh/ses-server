@@ -19,4 +19,13 @@ public interface RosOutWhOrderService {
 	 */
 	GeneralResult outWarehouse(IdEnter enter);
 
+	/**
+	 * 生成出库质检单
+	 * @param enter
+	 * @return com.redescooter.ses.api.common.vo.base.GeneralResult
+	 * @author assert
+	 * @date 2021/1/26
+	*/
+	GeneralResult generatorQcOrderByOutBound(IdEnter enter);
+
 }
