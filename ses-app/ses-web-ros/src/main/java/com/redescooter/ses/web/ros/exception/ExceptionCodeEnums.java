@@ -390,7 +390,7 @@ public enum ExceptionCodeEnums {
 
     BOM_HAS_REACHED_EFFECTIVE_TIME(10186, "Bom未到生效时间"),
 
-    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少又一个部件"),
+    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少有一个部件"),
 
     PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
 
