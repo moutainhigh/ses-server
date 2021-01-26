@@ -92,7 +92,6 @@ public class OutboundOrderController {
     }
 
 
-
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存", response = GeneralResult.class)
     public Response<GeneralResult> outOrderSave(@ModelAttribute @ApiParam("请求参数") SaveOrUpdateOutOrderEnter enter) {
@@ -134,6 +133,7 @@ public class OutboundOrderController {
     }
 
 
+    /***************以下两个接口是模拟RPS操作,后续可删掉*****************/
 
     @PostMapping(value = "/startQc")
     @ApiOperation(value = "模拟RPS开始质检", response = GeneralResult.class)
@@ -141,13 +141,10 @@ public class OutboundOrderController {
         return new Response<>(outboundOrderService.startQc(enter));
     }
 
-
     @PostMapping(value = "/endQc")
     @ApiOperation(value = "模拟RPS质检完成", response = GeneralResult.class)
     public Response<GeneralResult> endQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(outboundOrderService.endQc(enter));
     }
-
-
 
 }

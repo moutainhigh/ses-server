@@ -73,10 +73,10 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetail
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -152,20 +152,18 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
 
-
-
     @Autowired
     private IdAppService idAppService;
 
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/12 7:15 下午
      * @Param: enter
      * @Return: map
      * @desc: 类型统计
-     * @param enter
      */
     @Override
     public Map<Integer, Integer> countByType(GeneralEnter enter) {
@@ -173,7 +171,6 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         Map<Integer, Integer> result = countByStatusResultList.stream().collect(Collectors.toMap(item -> {
             return Integer.valueOf(item.getStatus());
         }, CountByStatusResult::getTotalCount));
-
         if (!result.containsKey(ProductTypeEnums.SCOOTER.getValue())) {
             result.put(ProductTypeEnums.SCOOTER.getValue(), 0);
         }
@@ -184,13 +181,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/10 2:34 下午
      * @Param: enter
      * @Return: ProductionAssemblyOrderListResult
      * @desc: 列表
-     * @param enter
      */
     @Override
     public PageResult<ProductionAssemblyOrderListResult> list(ProductionAssemblyOrderListEnter enter) {
@@ -203,13 +200,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/11 2:45 下午
      * @Param: AssemblyOrderDetailEnter
      * @Return: ProductionAssemblyOrderDetailResult
      * @desc: 详情
-     * @param enter
      */
     @Override
     public ProductionAssemblyOrderDetailResult detail(AssemblyOrderDetailEnter enter) {
@@ -224,13 +221,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/11 4:18 下午
      * @Param: enter
      * @Return: List<PurchasDetailProductListResult>
      * @desc: 产品详情
-     * @param enter
      */
     @Override
     public List<AssemblyDetailProductListResult> detailProductList(AssemblyOrderDetailEnter enter) {
@@ -245,13 +242,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/11 5:02 下午
      * @Param: enter
      * @Return: List<AssociatedOrderResult>
      * @desc: 关联订单
-     * @param enter
      */
     @Override
     public List<AssociatedOrderResult> associatedOrder(IdEnter enter) {
@@ -278,13 +275,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/11 2:47 下午
      * @Param: enter
      * @Return:
      * @desc:
-     * @param enter
      */
     @Override
     public List<PurchasDetailProductListResult> productPartDetail(AssemblyOrderDetailEnter enter) {
@@ -329,13 +326,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/11 3:10 下午
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 保存组装单
-     * @param enter
      */
     @Transactional
     @Override
@@ -373,8 +370,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                 buildOpeCombinOrderCombinB(enter, productEnterList, assemblyProductId, saveOpeCombinOrderCominBList);
             }
             //订单节点
-            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                    enter.getRemark());
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), enter.getRemark());
             BeanUtils.copyProperties(enter, orderStatusFlowEnter);
             orderStatusFlowEnter.setId(null);
             orderStatusFlowService.save(orderStatusFlowEnter);
@@ -411,13 +407,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/12 3:46 下午
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 备料
-     * @param enter
      */
     @Transactional
     @Override
@@ -436,36 +432,34 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.updateById(opeCombinOrder);
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.STOCK_UP.getValue(),
-                opeCombinOrder.getRemark());
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.STOCK_UP.getValue(), opeCombinOrder.getRemark());
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
 
         //查询子订单
-        List<ProductEnter> productEnterList=new ArrayList<>();
-        if (opeCombinOrder.getCombinType().equals(ProductTypeEnums.SCOOTER.getValue())){
+        List<ProductEnter> productEnterList = new ArrayList<>();
+        if (opeCombinOrder.getCombinType().equals(ProductTypeEnums.SCOOTER.getValue())) {
             List<OpeCombinOrderScooterB> opeCombinOrderScooterBList = opeCombinOrderScooterBService.list(new LambdaQueryWrapper<OpeCombinOrderScooterB>().eq(OpeCombinOrderScooterB::getCombinId, opeCombinOrder.getId()));
-            if (CollectionUtils.isEmpty(opeCombinOrderScooterBList)){
-                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            if (CollectionUtils.isEmpty(opeCombinOrderScooterBList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
-            productEnterList.addAll(opeCombinOrderScooterBList.stream().map(item->{
-                return new ProductEnter(item.getScooterBomId(),item.getColorId(),item.getGroupId(),item.getQty(),item.getRemark(),item.getQty());
+            productEnterList.addAll(opeCombinOrderScooterBList.stream().map(item -> {
+                return new ProductEnter(item.getScooterBomId(), item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark(), item.getQty());
             }).collect(Collectors.toList()));
-        }else {
+        } else {
             List<OpeCombinOrderCombinB> opeCombinOrderCombinBList = opeCombinOrderCombinBService.list(new LambdaQueryWrapper<OpeCombinOrderCombinB>().eq(OpeCombinOrderCombinB::getCombinId, opeCombinOrder.getId()));
-            if (CollectionUtils.isEmpty(opeCombinOrderCombinBList)){
-                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+            if (CollectionUtils.isEmpty(opeCombinOrderCombinBList)) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
             }
-            productEnterList.addAll(opeCombinOrderCombinBList.stream().map(item->{
-                return new ProductEnter(item.getProductionCombinBomId(),null,null,item.getQty(),item.getRemark(),item.getQty());
+            productEnterList.addAll(opeCombinOrderCombinBList.stream().map(item -> {
+                return new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark(), item.getQty());
             }).collect(Collectors.toList()));
         }
 
@@ -476,45 +470,45 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 //        saveOutboundOrderEnter.setUserId(enter.getUserId());
 //        outboundOrderService.save(saveOutboundOrderEnter);
         // 追加  组装单备料生成部件的出库单
-        outboundOrderService.createOutWhByCombin(opeCombinOrder.getId(),enter.getUserId());
+        outboundOrderService.createOutWhByCombin(opeCombinOrder.getId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
 
     // 校验库存是否足够(中国仓库原料库存)
-    public void checkPartsStock(OpeCombinOrder opeCombinOrder){
-        switch (opeCombinOrder.getCombinType()){
+    public void checkPartsStock(OpeCombinOrder opeCombinOrder) {
+        switch (opeCombinOrder.getCombinType()) {
             case 1:
                 // scooter
                 // 找到车辆组装单车型
                 QueryWrapper<OpeCombinOrderScooterB> scooterBs = new QueryWrapper<>();
-                scooterBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,opeCombinOrder.getId());
+                scooterBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, opeCombinOrder.getId());
                 List<OpeCombinOrderScooterB> combinOrderScooterBS = opeCombinOrderScooterBomService.list(scooterBs);
-                if (CollectionUtils.isNotEmpty(combinOrderScooterBS)){
+                if (CollectionUtils.isNotEmpty(combinOrderScooterBS)) {
                     // 到这里已经找到了需要哪些车，再找到对应的部件
                     for (OpeCombinOrderScooterB scooterB : combinOrderScooterBS) {
                         // 遍历 这些车型/颜色的车 找到没种需要多少种 多少个部件
-                        QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
-                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID,scooterB.getScooterBomId());
-                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,2);
+                        QueryWrapper<OpeProductionPartsRelation> partsRelation = new QueryWrapper<>();
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID, scooterB.getScooterBomId());
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE, 2);
                         List<OpeProductionPartsRelation> partsRelations = opeProductionPartsRelationService.list(partsRelation);
-                        if (CollectionUtils.isNotEmpty(partsRelations)){
+                        if (CollectionUtils.isNotEmpty(partsRelations)) {
                             // 到这里已经找到当前这个车型/颜色所需要的所有部件信息了  再计算需要多少个这样的部件
-                            Map<Long,Integer> scootermap = new HashMap<>();
+                            Map<Long, Integer> scootermap = new HashMap<>();
                             for (OpeProductionPartsRelation relation : partsRelations) {
-                                scootermap.put(relation.getPartsId(),relation.getPartsQty() * scooterB.getQty());
+                                scootermap.put(relation.getPartsId(), relation.getPartsQty() * scooterB.getQty());
                             }
                             // 到这里已经知道所需要的部件的数量  下面就开始校验了
                             for (Long partsId : scootermap.keySet()) {
                                 // 拿到ID 去中国仓库原料库区去看看库存够不够
                                 QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
-                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,partsId);
-                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,1);
+                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID, partsId);
+                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
-                                if (partStock == null || (partStock.getAbleStockQty() < scootermap.get(partsId))){
+                                if (partStock == null || (partStock.getAbleStockQty() < scootermap.get(partsId))) {
                                     // 中国仓库原料库的库存不足
-                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                                 }
                             }
                         }
@@ -526,31 +520,31 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             case 2:
                 // combin
                 QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
-                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID,opeCombinOrder.getId());
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, opeCombinOrder.getId());
                 List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBService.list(combinBs);
-                if (CollectionUtils.isNotEmpty(combinOrderCombinBS)){
+                if (CollectionUtils.isNotEmpty(combinOrderCombinBS)) {
                     for (OpeCombinOrderCombinB combinB : combinOrderCombinBS) {
                         // 找到每个组装件所需要的部件
-                        QueryWrapper<OpeProductionPartsRelation>  partsRelation = new QueryWrapper<>();
-                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID,combinB.getProductionCombinBomId());
-                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,4);
+                        QueryWrapper<OpeProductionPartsRelation> partsRelation = new QueryWrapper<>();
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID, combinB.getProductionCombinBomId());
+                        partsRelation.eq(OpeProductionPartsRelation.COL_PRODUCTION_TYPE, 4);
                         List<OpeProductionPartsRelation> partsComRelations = opeProductionPartsRelationService.list(partsRelation);
-                        if (CollectionUtils.isNotEmpty(partsComRelations)){
-                            Map<Long,Integer> scootercombinMap = new HashMap<>();
+                        if (CollectionUtils.isNotEmpty(partsComRelations)) {
+                            Map<Long, Integer> scootercombinMap = new HashMap<>();
                             for (OpeProductionPartsRelation combinRelation : partsComRelations) {
-                                scootercombinMap.put(combinRelation.getPartsId(),combinRelation.getPartsQty() * combinB.getQty());
+                                scootercombinMap.put(combinRelation.getPartsId(), combinRelation.getPartsQty() * combinB.getQty());
                             }
                             // 到这里已经知道所需要的部件的数量  下面就开始校验了
                             for (Long combinPartsId : scootercombinMap.keySet()) {
                                 // 拿到ID 去中国仓库原料库区去看看库存够不够
                                 QueryWrapper<OpeWmsPartsStock> partStockQw = new QueryWrapper<>();
-                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID,combinPartsId);
-                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,1);
+                                partStockQw.eq(OpeWmsPartsStock.COL_PARTS_ID, combinPartsId);
+                                partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
-                                if (partStock == null || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))){
+                                if (partStock == null || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))) {
                                     // 中国仓库原料库的库存不足
-                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                                 }
                             }
                         }
@@ -561,15 +555,14 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
 
-
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/12 3:46 下午
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 组装
-     * @param enter
      */
     @Transactional
     @Override
@@ -586,15 +579,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.updateById(opeCombinOrder);
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.COMBIN.getValue(),
-                opeCombinOrder.getRemark());
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.COMBIN.getValue(), opeCombinOrder.getRemark());
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -602,13 +593,13 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/12
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 删除
-     * @param enter
      */
     @Transactional
     @Override
@@ -624,8 +615,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.removeById(opeCombinOrder.getId());
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.DELETE.getValue(),
-                opeCombinOrder.getRemark());
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue(), OrderOperationTypeEnums.DELETE.getValue(), opeCombinOrder.getRemark());
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
@@ -633,79 +623,76 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/13 10:15 上午
      * @Param: enter
      * @Return: 车辆分组
      * @desc: 车辆分组
-     * @param enter
      */
     @Override
     public List<SpecificatGroupDataResult> scooterGroupData(GeneralEnter enter) {
-        List<SpecificatGroupDataResult> result =productionAssemblyOrderServiceMapper.scooterGroupData();
-        return CollectionUtils.isEmpty(result)?new ArrayList<> ():result;
+        List<SpecificatGroupDataResult> result = productionAssemblyOrderServiceMapper.scooterGroupData();
+        return CollectionUtils.isEmpty(result) ? new ArrayList<>() : result;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/13 10:16 上午
      * @Param: enter
      * @Return: ColorDataResult
      * @desc: 根据颜色查询分组
-     * @param enter
      */
     @Override
     public List<ColorDataResult> colorData(IdEnter enter) {
-        List<ColorDataResult> result =productionAssemblyOrderServiceMapper.colorData(enter);
-        return CollectionUtils.isEmpty(result)?new ArrayList<> ():result;
+        List<ColorDataResult> result = productionAssemblyOrderServiceMapper.colorData(enter);
+        return CollectionUtils.isEmpty(result) ? new ArrayList<>() : result;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/13 10:17 上午
      * @Param: enter
      * @Return: CombinNameData
      * @desc: 查询组装件数据
-     * @param enter
      */
     @Override
     public List<CombinNameData> combinNameData(CombinNameEnter enter) {
-        List<CombinNameData> result =productionAssemblyOrderServiceMapper.combinNameData(enter);
-        return CollectionUtils.isEmpty(result)?new ArrayList<> ():result;
+        List<CombinNameData> result = productionAssemblyOrderServiceMapper.combinNameData(enter);
+        return CollectionUtils.isEmpty(result) ? new ArrayList<>() : result;
     }
 
     /**
+     * @param enter
+     * @return
      * @Author Aleks
      * @Description 组装件编号下拉数据源接口
      * @Date 2020/10/20 13:19
      * @Param [enter]
-     * @return
-     *
-     * @param enter*/
+     */
     @Override
     public List<BomNameData> bomNoData(BomNoEnter enter) {
-        List<BomNameData> result =productionAssemblyOrderServiceMapper.bomNoData(enter);
-        return CollectionUtils.isEmpty(result)?new ArrayList<> ():result;
+        List<BomNameData> result = productionAssemblyOrderServiceMapper.bomNoData(enter);
+        return CollectionUtils.isEmpty(result) ? new ArrayList<>() : result;
     }
 
     private List<OpeCombinOrderCombinB> buildOpeCombinOrderCombinB(SaveAssemblyOrderEnter enter, List<SaveAssemblyProductListEnter> productEnterList, Long assemblyProductId,
                                                                    List<OpeCombinOrderCombinB> saveOpeCombinOrderCominBList) {
-        List<OpeProductionCombinBom> opeProductionCombinBomList =
-                opeProductionCombinBomService.listByIds(productEnterList.stream().map(SaveAssemblyProductListEnter::getId).collect(Collectors.toSet()));
+        List<OpeProductionCombinBom> opeProductionCombinBomList = opeProductionCombinBomService.listByIds(productEnterList.stream().map(SaveAssemblyProductListEnter::getId).collect(Collectors.toSet()));
         if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         productEnterList.forEach(item -> {
-
             OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomList.stream().filter(combin -> combin.getId().equals(item.getId())).findFirst().orElse(null);
             if (Objects.isNull(opeProductionCombinBom)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             OpeCombinOrderCombinB opeCombinOrderCombinB = new OpeCombinOrderCombinB();
-
             opeCombinOrderCombinB.setId(idAppService.getId(SequenceName.OPE_COMBIN_ORDER_SCOOTER_B));
             opeCombinOrderCombinB.setDr(0);
             opeCombinOrderCombinB.setCombinId(assemblyProductId);
@@ -721,46 +708,45 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             opeCombinOrderCombinB.setUpdatedBy(enter.getUserId());
             opeCombinOrderCombinB.setUpdatedTime(new Date());
             saveOpeCombinOrderCominBList.add(opeCombinOrderCombinB);
-
         });
         return saveOpeCombinOrderCominBList;
     }
 
     /**
+     * @param id
+     * @param response
      * @Description
      * @Author: alex
      * @Date: 2020/11/17 11:23 上午
      * @Param: id, response
      * @Return: GeneralResult
      * @desc: 产品导出
-     * @param id
-     * @param response
      */
     @Override
     public GeneralResult export(Long id, HttpServletResponse response) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(id);
-        if (opeCombinOrder == null){
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        if (opeCombinOrder == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         List<ProductionCombinScooterExport> scooterExportList = new ArrayList<>();
         List<ProductionCombinAssemblyExport> combinExportList = new ArrayList<>();
-        switch (opeCombinOrder.getCombinType()){
+        switch (opeCombinOrder.getCombinType()) {
             case 1:
                 // scooter
                 // 找到车辆组装单的明细
                 scooterExportList = productionAssemblyOrderServiceMapper.scooterExportList(id);
-                if (CollectionUtils.isNotEmpty(scooterExportList)){
+                if (CollectionUtils.isNotEmpty(scooterExportList)) {
                     for (ProductionCombinScooterExport scooterExport : scooterExportList) {
                         scooterExport.setOrderNo(opeCombinOrder.getCombinNo());
                         scooterExport.setProductType(ProductTypeEnums.SCOOTER.getMessage());
                     }
                 }
-                default:
-                    break;
+            default:
+                break;
             case 2:
                 // combin
                 combinExportList = productionAssemblyOrderServiceMapper.combinExportList(id);
-                if (CollectionUtils.isNotEmpty(combinExportList)){
+                if (CollectionUtils.isNotEmpty(combinExportList)) {
                     for (ProductionCombinAssemblyExport combin : combinExportList) {
                         combin.setOrderNo(opeCombinOrder.getCombinNo());
                         combin.setProductType(ProductTypeEnums.COMBINATION.getMessage());
@@ -776,12 +762,12 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             // =========easypoi部分
             ExportParams exportParams = new ExportParams();
             Workbook workbook = null;
-            switch (opeCombinOrder.getCombinType()){
+            switch (opeCombinOrder.getCombinType()) {
                 case 1:
                     exportParams.setSheetName("整车");
                     workbook = ExcelExportUtil.exportExcel(exportParams, ProductionCombinScooterExport.class, scooterExportList);
-                    default:
-                        break;
+                default:
+                    break;
                 case 2:
                     exportParams.setSheetName("组装件");
                     workbook = ExcelExportUtil.exportExcel(exportParams, ProductionCombinAssemblyExport.class, combinExportList);
@@ -809,7 +795,6 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         productEnterList.forEach(item -> {
-
             OpeProductionScooterBom opeProductionScooterBom = byGroupAndColorIds.stream().filter(scooter -> {
                 scooter.getColorId().equals(item.getColorId());
                 scooter.getGroupId().equals(item.getGroupId());
@@ -851,7 +836,6 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         return opeCombinOrder;
     }
 
-
     // 备料完成
     @Override
     @Transactional
@@ -860,7 +844,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if(opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())) {
             return;
         }
         if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARED.getValue())) {
@@ -871,19 +855,18 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(userId);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
     }
 
     /**
-     * @Author Aleks
-     * @Description  模拟RPS的开始组装
-     * @Date  2020/11/17 14:05
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 模拟RPS的开始组装
+     * @Date 2020/11/17 14:05
+     * @Param [enter]
      **/
     @Transactional
     @Override
@@ -892,7 +875,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.ASSEMBLING.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.ASSEMBLING.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
         /*if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.TO_BE_ASSEMBLED.getValue())) {
@@ -903,21 +886,19 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
-
     /**
-     * @Author Aleks
-     * @Description  模拟RPS的组装完成
-     * @Date  2020/11/17 14:06
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 模拟RPS的组装完成
+     * @Date 2020/11/17 14:06
+     * @Param [enter]
      **/
     @Override
     @Transactional
@@ -926,7 +907,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.ASSEMBLING.getValue())) {
@@ -937,8 +918,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -947,11 +927,11 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
 
     /**
-     * @Author Aleks
-     * @Description  模拟RPS对质检单的开始质检的操作
-     * @Date  2020/11/17 14:23
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 模拟RPS对质检单的开始质检的操作
+     * @Date 2020/11/17 14:23
+     * @Param [enter]
      **/
     @Transactional
     @Override
@@ -960,7 +940,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())) {
@@ -971,8 +951,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -981,11 +960,11 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
 
     /**
+     * @return
      * @Author Aleks
      * @Description 模拟RPS对质检单的质检完成的操作
-     * @Date  2020/11/17 14:23
+     * @Date 2020/11/17 14:23
      * @Param [enter]
-     * @return
      **/
     @Transactional
     @Override
@@ -994,7 +973,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (opeCombinOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue())){
+        if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())) {
@@ -1005,8 +984,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -1015,11 +993,11 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
 
     /**
+     * @return
      * @Author Aleks
      * @Description 点击入库单的确认入库 如果关联的是组装单  需要改变组装单的状态
-     * @Date  2020/11/17 14:38
+     * @Date 2020/11/17 14:38
      * @Param [productionPurchaseId, inWhId, userId]
-     * @return
      **/
     @Transactional
     @Override
@@ -1031,10 +1009,10 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue()) && !opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PART_IN_WH.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        if (checkCombinStatusChange(opeCombinOrder,inWhId)){
+        if (checkCombinStatusChange(opeCombinOrder, inWhId)) {
             // 状态变为已入库
             opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.ALREADY_IN_WHOUSE.getValue());
-        }else {
+        } else {
             // 状态变为部分入库
             opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.PART_IN_WH.getValue());
         }
@@ -1042,8 +1020,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         opeCombinOrder.setUpdatedTime(new Date());
         opeCombinOrderService.saveOrUpdate(opeCombinOrder);
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(),
-                opeCombinOrder.getRemark());
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeCombinOrder.getCombinStatus(), OrderTypeEnums.COMBIN_ORDER.getValue(), opeCombinOrder.getId(), opeCombinOrder.getRemark());
         orderStatusFlowEnter.setUserId(userId);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
@@ -1051,64 +1028,64 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
 
     // 检验这次是部分入库还是已入库
-    public boolean checkCombinStatusChange(OpeCombinOrder opeCombinOrder, Long inWhId){
+    public boolean checkCombinStatusChange(OpeCombinOrder opeCombinOrder, Long inWhId) {
         boolean flag = true;
         // 1、看看组装单下面除了当前的入库单外 是否还有没有状态小于已入入库的
         QueryWrapper<OpeInWhouseOrder> inWhouseOrderQueryWrapper = new QueryWrapper<>();
-        inWhouseOrderQueryWrapper.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID,opeCombinOrder.getId());
-        inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID,inWhId);
+        inWhouseOrderQueryWrapper.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, opeCombinOrder.getId());
+        inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID, inWhId);
         inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         int inWhNum = opeInWhouseOrderService.count(inWhouseOrderQueryWrapper);
-        if (inWhNum > 0){
+        if (inWhNum > 0) {
             flag = false;
             return flag;
         }
         // 先判断是车辆组装单还是 组装件组装单
-        switch (opeCombinOrder.getCombinType()){
+        switch (opeCombinOrder.getCombinType()) {
             case 1:
                 // scooter
                 QueryWrapper<OpeCombinOrderScooterB> scooterBQueryWrapper = new QueryWrapper<>();
-                scooterBQueryWrapper.eq(OpeCombinOrderScooterB.COL_COMBIN_ID,opeCombinOrder.getId());
+                scooterBQueryWrapper.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, opeCombinOrder.getId());
                 List<OpeCombinOrderScooterB> scooterBList = opeCombinOrderScooterBService.list(scooterBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(scooterBList)){
+                if (CollectionUtils.isNotEmpty(scooterBList)) {
                     // scooterBList按照车型和颜色进行分组
-                    Map<String,List<OpeCombinOrderScooterB>> allScooterMap = new HashMap<>();
+                    Map<String, List<OpeCombinOrderScooterB>> allScooterMap = new HashMap<>();
                     for (OpeCombinOrderScooterB scooterB : scooterBList) {
                         String key = scooterB.getGroupId() + scooterB.getColorId() + "";
                         List<OpeCombinOrderScooterB> orderScooterBS = allScooterMap.get(key);
-                        if (CollectionUtils.isEmpty(orderScooterBS)){
+                        if (CollectionUtils.isEmpty(orderScooterBS)) {
                             orderScooterBS = new ArrayList<>();
-                            allScooterMap.put(key,orderScooterBS);
+                            allScooterMap.put(key, orderScooterBS);
                         }
                         orderScooterBS.add(scooterB);
                     }
                     // 找到当前组装单下面的入库单的所有组装件明细（包含当前这条）
                     List<OpeInWhouseScooterB> inWhouseScooterBList = inWhouseOrderServiceMapper.inWhouseScooterList(opeCombinOrder.getId());
-                    if (CollectionUtils.isEmpty(inWhouseScooterBList)){
+                    if (CollectionUtils.isEmpty(inWhouseScooterBList)) {
                         flag = false;
                         return flag;
                     }
                     // inWhouseScooterBList按照车型和颜色进行分组
-                    Map<String,List<OpeInWhouseScooterB>> inWhScooterMap = new HashMap<>();
+                    Map<String, List<OpeInWhouseScooterB>> inWhScooterMap = new HashMap<>();
                     for (OpeInWhouseScooterB scooter : inWhouseScooterBList) {
                         String key = scooter.getGroupId() + scooter.getColorId() + "";
                         List<OpeInWhouseScooterB> orderScooterS = inWhScooterMap.get(key);
-                        if (CollectionUtils.isEmpty(orderScooterS)){
+                        if (CollectionUtils.isEmpty(orderScooterS)) {
                             orderScooterS = new ArrayList<>();
-                            inWhScooterMap.put(key,orderScooterS);
+                            inWhScooterMap.put(key, orderScooterS);
                         }
                         orderScooterS.add(scooter);
                     }
-                    if (allScooterMap.size() > inWhScooterMap.size()){
+                    if (allScooterMap.size() > inWhScooterMap.size()) {
                         flag = false;
                         return flag;
                     }
                     for (String scooterKey1 : allScooterMap.keySet()) {
                         int combinScooterNum = allScooterMap.get(scooterKey1).stream().mapToInt(OpeCombinOrderScooterB::getQty).sum();
                         for (String scooterKey2 : inWhScooterMap.keySet()) {
-                            if (scooterKey1.equals(scooterKey2)){
+                            if (scooterKey1.equals(scooterKey2)) {
                                 int inWhScooterNum = inWhScooterMap.get(scooterKey2).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum();
-                                if (combinScooterNum > inWhScooterNum){
+                                if (combinScooterNum > inWhScooterNum) {
                                     flag = false;
                                     return flag;
                                 }
@@ -1116,20 +1093,20 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                         }
                     }
                 }
-                default:
-                    break;
+            default:
+                break;
             case 2:
                 // combin
                 // 2、找到组装单下面的明细
                 QueryWrapper<OpeCombinOrderCombinB> combinBQueryWrapper = new QueryWrapper<>();
-                combinBQueryWrapper.eq(OpeCombinOrderCombinB.COL_COMBIN_ID,opeCombinOrder.getId());
+                combinBQueryWrapper.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, opeCombinOrder.getId());
                 List<OpeCombinOrderCombinB> combinBList = opeCombinOrderCombinBService.list(combinBQueryWrapper);
-                if(CollectionUtils.isNotEmpty(combinBList)){
+                if (CollectionUtils.isNotEmpty(combinBList)) {
                     // combinBList按照组装件的id进行分组
                     Map<Long, List<OpeCombinOrderCombinB>> allCombinBMap = combinBList.stream().collect(Collectors.groupingBy(OpeCombinOrderCombinB::getProductionCombinBomId));
                     // 找到当前组装单下面的入库单的所有组装件明细（包含当前这条）
                     List<OpeInWhouseCombinB> inWhouseCombinBList = inWhouseOrderServiceMapper.inWhouseCombinList(opeCombinOrder.getId());
-                    if (CollectionUtils.isEmpty(inWhouseCombinBList)){
+                    if (CollectionUtils.isEmpty(inWhouseCombinBList)) {
                         flag = false;
                         return flag;
                     }
@@ -1138,9 +1115,9 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                     for (Long key1 : allCombinBMap.keySet()) {
                         int combinNum = allCombinBMap.get(key1).stream().mapToInt(OpeCombinOrderCombinB::getQty).sum();
                         for (Long key2 : inWhouseCombinBMap.keySet()) {
-                            if (key1.equals(key2)){
+                            if (key1.equals(key2)) {
                                 int inWhCombinNum = inWhouseCombinBMap.get(key2).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum();
-                                if (combinNum > inWhCombinNum){
+                                if (combinNum > inWhCombinNum) {
                                     flag = false;
                                     return flag;
                                 }

@@ -18,9 +18,9 @@ import java.util.List;
  * @description: PurchasController
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/11 11:59 
+ * @create: 2020/11/11 11:59
  */
-@Api(tags = {"Purchas采购单"})
+@Api(tags = {"生产采购单"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/restproduction/purchas")
@@ -35,13 +35,11 @@ public class PurchasController {
         return new Response<>(productionPurchasService.list(enter));
     }
 
-
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = ProductionPurchasDetailResult.class)
     public Response<ProductionPurchasDetailResult> detail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productionPurchasService.detail(enter));
     }
-
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "保存订单", response = GeneralResult.class)

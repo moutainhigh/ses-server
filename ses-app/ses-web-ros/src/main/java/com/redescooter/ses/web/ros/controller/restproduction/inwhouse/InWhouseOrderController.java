@@ -31,7 +31,6 @@ import java.util.Map;
 @RequestMapping(value = "/sys/inWhouse/order")
 public class InWhouseOrderController {
 
-
     @Autowired
     private InWhouseService inWhouseService;
 

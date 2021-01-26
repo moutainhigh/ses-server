@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  @author: alex
- *  @Date: 2020/10/22 13:26
- *  @version：V ROS 1.8.3
- *  @Description:
+ * @author: alex
+ * @Date: 2020/10/22 13:26
+ * @version：V ROS 1.8.3
+ * @Description:
  */
 public interface OutboundOrderService {
     /**
@@ -98,6 +98,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的发货单号下拉接口
+     *
      * @param enter
      * @return
      */
@@ -106,6 +107,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的整车发货单产品信息
+     *
      * @param enter
      * @return
      */
@@ -114,6 +116,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的组装件发货单产品信息
+     *
      * @param enter
      * @return
      */
@@ -122,6 +125,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的发货单部件信息
+     *
      * @param enter
      * @return
      */
@@ -130,6 +134,7 @@ public interface OutboundOrderService {
 
     /**
      * 出库单新增
+     *
      * @param enter
      * @return
      */
@@ -138,6 +143,7 @@ public interface OutboundOrderService {
 
     /**
      * 出库单编辑
+     *
      * @param enter
      * @return
      */
@@ -146,6 +152,7 @@ public interface OutboundOrderService {
 
     /**
      * 出库单提交
+     *
      * @param enter
      * @return
      */
@@ -154,6 +161,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的组装单单据号下拉数据源,由组装单创建的出库单，只可能是部件出库单
+     *
      * @param enter
      * @return
      */
@@ -162,6 +170,7 @@ public interface OutboundOrderService {
 
     /**
      * 关联的组装单的产品信息，转为部件数据,由组装单创建的出库单，只可能是部件出库单
+     *
      * @param enter
      * @return
      */
@@ -170,47 +179,48 @@ public interface OutboundOrderService {
 
     /**
      * 出库单确认出库
+     *
      * @param enter
      * @return
      */
     GeneralResult outWhConfirm(IdEnter enter);
 
 
-
     /**
+     * @return
      * @Author Aleks
-     * @Description  发货单取消 下面的出库单也要取消
-     * @Date  2020/10/30 16:19
+     * @Description 发货单取消 下面的出库单也要取消
+     * @Date 2020/10/30 16:19
      * @Param [purchaseId, userId, remark]
-     * @return
      **/
-    void cancelOutWh(Long invoiceId,Long userId,String remark);
+    void cancelOutWh(Long invoiceId, Long userId, String remark);
 
 
     /**
-     * @Author Aleks
-     * @Description  开始质检
-     * @Date  2020/11/5 10:12
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 开始质检
+     * @Date 2020/11/5 10:12
+     * @Param [enter]
      **/
     GeneralResult startQc(IdEnter enter);
 
 
     /**
-     * @Author Aleks
-     * @Description  质检完成
-     * @Date  2020/11/5 10:12
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 质检完成
+     * @Date 2020/11/5 10:12
+     * @Param [enter]
      **/
     GeneralResult endQc(IdEnter enter);
 
 
     /**
      * 组装件点击备料  产生出库单（不管是哪种组装单都是生成部件出库单）
+     *
      * @param combinId
      */
-    void createOutWhByCombin(Long combinId,Long userId);
+    void createOutWhByCombin(Long combinId, Long userId);
 
 }
