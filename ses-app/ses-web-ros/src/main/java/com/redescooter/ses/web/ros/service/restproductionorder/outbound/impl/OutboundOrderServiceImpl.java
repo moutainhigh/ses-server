@@ -1307,11 +1307,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             productionAssemblyOrderService.materialPreparationFinish(opeOutWhouseOrder.getRelationId(), enter.getUserId());
         }
         // 出库单变为已出库 可已用库存增加，可用库存减少，待出库的库存减少
-        try {
-            wmsMaterialStockService.waitOutLowAbleLowUsedUp(opeOutWhouseOrder.getOutWhType(), opeOutWhouseOrder.getId(), 1, enter.getUserId(), opeOutWhouseOrder.getWhType());
-        } catch (Exception e) {
-
-        }
+//        try {
+//                wmsMaterialStockService.waitOutLowAbleLowUsedUp(opeOutWhouseOrder.getOutWhType(), opeOutWhouseOrder.getId(), 1, enter.getUserId(), opeOutWhouseOrder.getWhType());
+//            } catch (Exception e) {
+//
+//        }
         return new GeneralResult(enter.getRequestId());
     }
 

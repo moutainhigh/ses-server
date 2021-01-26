@@ -8,6 +8,11 @@ import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.assembly.NewCombinOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.NewProductionPurchasEnums;
+import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
+import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -15,24 +20,16 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
-import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcTraceMapper;
-import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
-import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
-import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseCombinBMapper;
-import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhousePartsBMapper;
-import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseScooterBMapper;
-import com.redescooter.ses.mobile.rps.dao.order.OrderSerialBindMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.base.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.*;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -47,7 +44,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -64,7 +61,7 @@ import java.util.stream.Collectors;
 @Service
 public class QcOrderServiceImpl implements QcOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     @Resource
     private OpeOrderQcItemMapper opeOrderQcItemMapper;
@@ -88,6 +85,20 @@ public class QcOrderServiceImpl implements QcOrderService {
     private QcPartsMapper qcPartsMapper;
     @Resource
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
+    @Resource
+    private OpeProductionPurchaseOrderMapper opeProductionPurchaseOrderMapper;
+    @Resource
+    private OpeOutWhouseOrderMapper opeOutWhouseOrderMapper;
+    @Resource
+    private OpeCombinOrderMapper opeCombinOrderMapper;
+    @Resource
+    private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+    @Resource
+    private WmsScooterStockMapper wmsScooterStockMapper;
+    @Resource
+    private WmsCombinStockMapper wmsCombinStockMapper;
+    @Resource
+    private WmsPartsStockMapper wmsPartsStockMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -390,6 +401,7 @@ public class QcOrderServiceImpl implements QcOrderService {
          * 产品扫码质检 1车辆 2组装件 3部件
          */
         Long qcId = null;
+        Long stockId = null;
         switch (paramDTO.getProductType()) {
             case 1:
                 OpeQcScooterB opeQcScooterB = qcScooterMapper.getQcScooterById(paramDTO.getProductId());
@@ -400,14 +412,19 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeQcScooterB.setQualifiedQty(opeQcScooterB.getQualifiedQty() + 1);
                 } else {
                     opeQcScooterB.setUnqualifiedQty(opeQcScooterB.getUnqualifiedQty() + 1);
+                    // 成品库车辆id
+                    OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
+                    OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper.getWmsScooterStockByGroupIdAndColorId(scooterBom.getGroupId(),
+                            scooterBom.getColorId());
+                    stockId = opeWmsScooterStock.getId();
                 }
-                name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
-                remainingQty = opeQcScooterB.getQty() - (opeQcScooterB.getQualifiedQty() + opeQcScooterB.getUnqualifiedQty());
-                qcId = opeQcScooterB.getQcId();
-
                 opeQcScooterB.setUpdatedBy(paramDTO.getUserId());
                 opeQcScooterB.setUpdatedTime(new Date());
                 qcScooterMapper.updateQcScooter(opeQcScooterB);
+
+                name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
+                remainingQty = opeQcScooterB.getQty() - (opeQcScooterB.getQualifiedQty() + opeQcScooterB.getUnqualifiedQty());
+                qcId = opeQcScooterB.getQcId();
                 break;
             case 2:
                 OpeQcCombinB opeQcCombinB = qcCombinMapper.getQcCombinById(paramDTO.getProductId());
@@ -419,14 +436,17 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
                 } else {
                     opeQcCombinB.setUnqualifiedQty(opeQcCombinB.getUnqualifiedQty() + 1);
+                    // 成品库组装件id
+                    OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(paramDTO.getBomId());
+                    stockId = opeWmsCombinStock.getId();
                 }
-                name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
-                remainingQty = opeQcCombinB.getQty() - (opeQcCombinB.getQualifiedQty() + opeQcCombinB.getUnqualifiedQty());
-                qcId = opeQcCombinB.getQcId();
-
                 opeQcCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeQcCombinB.setUpdatedTime(new Date());
                 qcCombinMapper.updateQcCombin(opeQcCombinB);
+
+                name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
+                remainingQty = opeQcCombinB.getQty() - (opeQcCombinB.getQualifiedQty() + opeQcCombinB.getUnqualifiedQty());
+                qcId = opeQcCombinB.getQcId();
                 break;
             default:
                 OpeQcPartsB opeQcPartsB = qcPartsMapper.getQcPartsById(paramDTO.getProductId());
@@ -443,14 +463,17 @@ public class QcOrderServiceImpl implements QcOrderService {
                 } else {
                     qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
+                    // 原料库部件id
+                    OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(paramDTO.getBomId());
+                    stockId = opeWmsPartsStock.getId();
                 }
-                name = partsMapper.getPartsCnNameById(paramDTO.getBomId());
-                remainingQty = opeQcPartsB.getQty() - (opeQcPartsB.getQualifiedQty() + opeQcPartsB.getUnqualifiedQty());
-                qcId = opeQcPartsB.getQcId();
-
                 opeQcPartsB.setUpdatedBy(paramDTO.getUserId());
                 opeQcPartsB.setUpdatedTime(new Date());
                 qcPartsMapper.updateQcParts(opeQcPartsB);
+
+                name = partsMapper.getPartsCnNameById(paramDTO.getBomId());
+                remainingQty = opeQcPartsB.getQty() - (opeQcPartsB.getQualifiedQty() + opeQcPartsB.getUnqualifiedQty());
+                qcId = opeQcPartsB.getQcId();
                 break;
         }
 
@@ -474,6 +497,23 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeQcOrderSerialBind.setUpdatedBy(paramDTO.getUserId());
         opeQcOrderSerialBind.setUpdatedTime(new Date());
 
+        /**
+         * 保存库存产品序列号信息(质检失败时保存, 质检成功在入库单那边保存)
+         */
+        OpeWmsStockSerialNumber opeWmsStockSerialNumber = new OpeWmsStockSerialNumber();
+        opeWmsStockSerialNumber.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
+        opeWmsStockSerialNumber.setRelationId(stockId);
+        opeWmsStockSerialNumber.setRelationType(paramDTO.getProductType());
+        opeWmsStockSerialNumber.setStockType(WmsStockTypeEnum.CHINA_WAREHOUSE.getType());
+        opeWmsStockSerialNumber.setRsn(paramDTO.getSerialNum());
+        opeWmsStockSerialNumber.setStockStatus(WmsStockStatusEnum.AVAILABLE.getStatus());
+        opeWmsStockSerialNumber.setLotNum(paramDTO.getLot());
+        opeWmsStockSerialNumber.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
+        opeWmsStockSerialNumber.setCreatedBy(paramDTO.getUserId());
+        opeWmsStockSerialNumber.setCreatedTime(new Date());
+        opeWmsStockSerialNumber.setUpdatedBy(paramDTO.getUserId());
+        opeWmsStockSerialNumber.setUpdatedTime(new Date());
+
         // 当质检单为【生产采购单】产生时才需要打印二维码
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(qcId);
         if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
@@ -481,9 +521,14 @@ public class QcOrderServiceImpl implements QcOrderService {
             if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
                 opeQcOrderSerialBind.setDefaultSerialNum(paramDTO.getSerialNum());
                 opeQcOrderSerialBind.setSerialNum("PARTS" + System.currentTimeMillis());
+                // 部件自身序列号
+                opeWmsStockSerialNumber.setSn(paramDTO.getSerialNum());
             }
         }
         qcOrderSerialBindMapper.insertQcOrderSerialBind(opeQcOrderSerialBind);
+        if (!qcResultFlag) {
+            wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
+        }
 
         /**
          * 保存产品质检记录
@@ -504,21 +549,48 @@ public class QcOrderServiceImpl implements QcOrderService {
         return resultDTO;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult completeQc(IdEnter enter) {
-        QcOrderDetailDTO qcOrderDetailDTO = qcOrderMapper.getQcOrderDetailById(enter.getId());
-        RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());
+
+        RpsAssert.isNull(opeQcOrder, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(qcOrderDetailDTO.getStatus()),
+        RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
                 ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
 
-        OpeQcOrder opeQcOrder = new OpeQcOrder();
-        opeQcOrder.setId(qcOrderDetailDTO.getId());
+        opeQcOrder.setId(opeQcOrder.getId());
         opeQcOrder.setQcStatus(QcStatusEnum.QUALITY_INSPECTION_COMPLETED.getStatus());
         opeQcOrder.setUpdatedBy(enter.getUserId());
         opeQcOrder.setUpdatedTime(new Date());
         qcOrderMapper.updateQcOrder(opeQcOrder);
+
+        /**
+         * 完成质检修改关联单据状态
+         */
+        if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
+            OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
+            opeProductionPurchaseOrder.setId(opeQcOrder.getRelationOrderId());
+            opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.FINISHED.getValue());
+            opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
+            opeProductionPurchaseOrder.setUpdatedTime(new Date());
+            opeProductionPurchaseOrderMapper.updateByPrimaryKeySelective(opeProductionPurchaseOrder);
+        } else if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())) {
+            OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
+            opeOutWhouseOrder.setId(opeQcOrder.getRelationOrderId());
+            opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
+            opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
+            opeOutWhouseOrder.setUpdatedTime(new Date());
+            opeOutWhouseOrderMapper.insertOrUpdateSelective(opeOutWhouseOrder);
+        } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
+            OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
+            opeCombinOrder.setId(opeQcOrder.getRelationOrderId());
+            opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.QC_FINISH.getValue());
+            opeCombinOrder.setUpdatedBy(enter.getUserId());
+            opeCombinOrder.setUpdatedTime(new Date());
+            opeCombinOrderMapper.updateByPrimaryKeySelective(opeCombinOrder);
+        }
 
         return new GeneralResult(enter.getRequestId());
     }

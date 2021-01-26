@@ -2,8 +2,6 @@ package com.redescooter.ses.mobile.rps.service.inwhorder.impl;
 
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
-import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.ProductionPurchasEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -15,7 +13,6 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.combinorder.CombinOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
@@ -30,8 +27,6 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
-import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
-import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
@@ -41,7 +36,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -60,9 +55,9 @@ import java.util.stream.Collectors;
 @Service
 public class InWhOrderServiceImpl implements InWhOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
     @Resource
     private InWhOrderMapper inWhOrderMapper;
@@ -319,6 +314,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
             opeWmsStockSerialNumber.setCreatedTime(new Date());
             opeWmsStockSerialNumber.setUpdatedBy(paramDTO.getUserId());
             opeWmsStockSerialNumber.setUpdatedTime(new Date());
+            wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
         }
 
         /**
@@ -403,24 +399,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                  */
                 List<String> serialNumList = inWhouseOrderSerialBinds.stream().map(OpeInWhouseOrderSerialBind::getSerialNum).collect(Collectors.toList());
                 wmsStockSerialNumberMapper.batchUpdateStockStatusByRsnList(serialNumList, enter.getUserId(), new Date());
-
-//                if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
-//                    // 更新采购单状态为 【已入库】
-//                    OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
-//                    opeProductionPurchaseOrder.setId(opeInWhouseOrder.getRelationOrderId());
-//                    opeProductionPurchaseOrder.setPurchaseStatus(ProductionPurchasEnums.HAS_BEEN_STORED.getValue());
-//                    opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
-//                    opeProductionPurchaseOrder.setUpdatedTime(new Date());
-//                    purchaseOrderMapper.updatePurchaseOrder(opeProductionPurchaseOrder);
-//                } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeInWhouseOrder.getRelationOrderType())) {
-//                    // 更新组装单为 【已入库】
-//                    OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
-//                    opeCombinOrder.setId(opeInWhouseOrder.getRelationOrderId());
-//                    opeCombinOrder.setCombinStatus(CombinOrderStatusEnums.ALREADY_IN_WHOUSE.getValue());
-//                    opeCombinOrder.setUpdatedBy(enter.getUserId());
-//                    opeCombinOrder.setUpdatedTime(new Date());
-//                    combinOrderMapper.updateCombinOrder(opeCombinOrder);
-//                }
 
                 // 修改入库单状态为 【已入库】
                 opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
