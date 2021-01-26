@@ -292,7 +292,7 @@ public enum ExceptionCodeEnums {
 
     INVOICE_NUM_IS_NOT_ILLEGAL(10137, "发票号不合法"),
 
-    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138, "发票编号不合法"),
+    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138, "营业执照编号不合法"),
 
     SCOOTER_QTY_IS_NOT_ILLEGAL(10139, "车辆数量不合法"),
 
