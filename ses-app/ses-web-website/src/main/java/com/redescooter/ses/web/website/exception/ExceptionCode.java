@@ -9,7 +9,4 @@ package com.redescooter.ses.web.website.exception;
  */
 public interface ExceptionCode {
 
-    //邮箱为空
-    int EMAIL_EMPTY = 10004;
-
 }

@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 public class SiteSaveAboutUsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "email")
-    @NotNull(code = ExceptionCode.EMAIL_EMPTY, message = "邮箱不能为空")
+    @NotNull(code = SiteValidationExceptionCode.EMAIL_EMPTY, message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "message")

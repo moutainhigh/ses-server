@@ -14,8 +14,8 @@ public interface SiteValidationExceptionCode {
     int USER_NOT_EXIST = 10002;
     //密码为空
     int PASSWORD_EMPTY = 10003;
-//    //邮箱为空
-//    int EMAIL_EMPTY = 10004;
+    //邮箱为空
+    int EMAIL_EMPTY = 10004;
     //账户未激活
     int ACCOUNT_NOT_ACTIVATED = 10005;
     //密码错误
