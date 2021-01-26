@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
 import com.redescooter.ses.web.ros.dm.OpeEntrustCombinB;
@@ -75,6 +76,9 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     @Autowired
     private WmsFinishStockMapper wmsFinishStockMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
     @Autowired
     private OpeInWhouseScooterBService opeInWhouseScooterBService;

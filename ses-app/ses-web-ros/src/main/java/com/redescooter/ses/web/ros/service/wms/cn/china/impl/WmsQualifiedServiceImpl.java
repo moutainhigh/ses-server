@@ -1,10 +1,10 @@
 package com.redescooter.ses.web.ros.service.wms.cn.china.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -14,15 +14,53 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsQualifiedMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedCombinStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.OutOrInWhConfirmEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedQtyCountResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +68,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -227,7 +269,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         if (inWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        inWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+        inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
 
         switch (inWhouseOrder.getOrderType()){
@@ -446,7 +488,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
         if (outWhouseOrder == null){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        outWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.OUT_STOCK.getValue());
+        outWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
 
         // 处理字表的数据
