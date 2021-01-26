@@ -273,7 +273,7 @@
     </select>
 
     <sql id="frDetailCondition">
-        <if test="param.type != null">
+        <if test="enter.type != null">
             and relation_type = #{enter.type}
         </if>
         <if test="enter.stockStatus != null">
@@ -290,7 +290,7 @@
     </sql>
 
     <sql id="scooterAndCombinDetailCondition">
-        <if test="param.type != null">
+        <if test="enter.type != null">
             and relation_type = #{enter.type}
         </if>
         <if test="enter.stockStatus != null">

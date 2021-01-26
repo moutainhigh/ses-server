@@ -146,7 +146,7 @@
         select count(*)
         from ope_wms_stock_serial_number
         where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
-        <if test="param.type != null">
+        <if test="enter.type != null">
             and relation_type = #{enter.type}
         </if>
     </select>
@@ -156,7 +156,7 @@
         select *
         from ope_wms_stock_serial_number
         where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
-        <if test="param.type != null">
+        <if test="enter.type != null">
             and relation_type = #{enter.type}
         </if>
         order by created_time desc

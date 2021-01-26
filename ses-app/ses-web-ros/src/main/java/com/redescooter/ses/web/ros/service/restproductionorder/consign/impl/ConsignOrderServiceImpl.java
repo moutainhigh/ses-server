@@ -22,6 +22,9 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustCombinBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustPartsBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustScooterBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsCombinStockMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsPartsStockMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ConsignOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeEntrustCombinB;
 import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
@@ -34,6 +37,9 @@ import com.redescooter.ses.web.ros.dm.OpeInvoiceScooterB;
 import com.redescooter.ses.web.ros.dm.OpeLogisticsOrder;
 import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -166,6 +172,15 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
+
+    @Autowired
+    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
+
+    @Autowired
+    private OpeWmsCombinStockMapper opeWmsCombinStockMapper;
+
+    @Autowired
+    private OpeWmsPartsStockMapper opeWmsPartsStockMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -359,9 +374,25 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             List<OpeEntrustScooterB> list = opeEntrustScooterBMapper.selectList(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustScooterB model = list.get(0);
-                id = model.getId();
                 rsn = model.getDef1();
                 relationType = ProductTypeEnums.SCOOTER.getValue();
+
+                // 获得成品库车辆库存表id
+                Long groupId = model.getGroupId();
+                Long colorId = model.getColorId();
+                LambdaQueryWrapper<OpeWmsScooterStock> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeWmsScooterStock::getDr, DelStatusEnum.VALID.getCode());
+                qw.eq(OpeWmsScooterStock::getGroupId, groupId);
+                qw.eq(OpeWmsScooterStock::getColorId, colorId);
+                qw.eq(OpeWmsScooterStock::getStockType, 2);
+                qw.orderByDesc(OpeWmsScooterStock::getCreatedTime);
+                List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(stockList)) {
+                    OpeWmsScooterStock stock = stockList.get(0);
+                    if (null != stock) {
+                        id = stock.getId();
+                    }
+                }
             }
         } else if (ProductTypeEnums.COMBINATION.getValue().equals(entrustType)) {
             LambdaQueryWrapper<OpeEntrustCombinB> wrapper = new LambdaQueryWrapper<>();
@@ -371,9 +402,23 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             List<OpeEntrustCombinB> list = opeEntrustCombinBMapper.selectList(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustCombinB model = list.get(0);
-                id = model.getId();
                 rsn = model.getDef1();
                 relationType = ProductTypeEnums.COMBINATION.getValue();
+
+                // 获得成品库组装件库存表id
+                Long bomId = model.getProductionCombinBomId();
+                LambdaQueryWrapper<OpeWmsCombinStock> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeWmsCombinStock::getDr, DelStatusEnum.VALID.getCode());
+                qw.eq(OpeWmsCombinStock::getProductionCombinBomId, bomId);
+                qw.eq(OpeWmsCombinStock::getStockType, 2);
+                qw.orderByDesc(OpeWmsCombinStock::getCreatedTime);
+                List<OpeWmsCombinStock> stockList = opeWmsCombinStockMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(stockList)) {
+                    OpeWmsCombinStock stock = stockList.get(0);
+                    if (null != stock) {
+                        id = stock.getId();
+                    }
+                }
             }
         } else if (ProductTypeEnums.PARTS.getValue().equals(entrustType)) {
             LambdaQueryWrapper<OpeEntrustPartsB> wrapper = new LambdaQueryWrapper<>();
@@ -383,9 +428,23 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             List<OpeEntrustPartsB> list = opeEntrustPartsBMapper.selectList(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustPartsB model = list.get(0);
-                id = model.getId();
                 rsn = model.getDef1();
                 relationType = ProductTypeEnums.PARTS.getValue();
+
+                // 获得原料库部件库存表id
+                Long partsId = model.getPartsId();
+                LambdaQueryWrapper<OpeWmsPartsStock> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeWmsPartsStock::getDr, DelStatusEnum.VALID.getCode());
+                qw.eq(OpeWmsPartsStock::getPartsId, partsId);
+                qw.eq(OpeWmsPartsStock::getStockType, 2);
+                qw.orderByDesc(OpeWmsPartsStock::getCreatedTime);
+                List<OpeWmsPartsStock> stockList = opeWmsPartsStockMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(stockList)) {
+                    OpeWmsPartsStock stock = stockList.get(0);
+                    if (null != stock) {
+                        id = stock.getId();
+                    }
+                }
             }
         }
 
