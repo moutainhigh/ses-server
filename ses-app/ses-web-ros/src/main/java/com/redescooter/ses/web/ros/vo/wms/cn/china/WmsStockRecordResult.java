@@ -28,10 +28,13 @@ public class WmsStockRecordResult implements Serializable {
     @ApiModelProperty("操作人")
     private String createdName;
 
-    @ApiModelProperty("/SN 供应商序列号")
+    @ApiModelProperty("SN 供应商序列号")
     private String sn;
 
-    @ApiModelProperty("/批次号")
+    @ApiModelProperty("批次号")
     private String lotNum;
+
+    @ApiModelProperty("关联的库存表id")
+    private Long relationId;
 
 }

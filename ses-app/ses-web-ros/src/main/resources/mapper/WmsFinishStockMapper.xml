@@ -55,6 +55,7 @@
           record.in_wh_type,
           record.in_wh_qty,
           record.created_time,
+          record.relation_id,
           staff.full_name as createdName
         from ope_wms_stock_record record
         left join ope_sys_staff staff on staff.id = record.created_by
