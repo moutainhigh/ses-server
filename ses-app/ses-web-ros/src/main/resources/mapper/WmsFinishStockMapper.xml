@@ -60,6 +60,7 @@
         from ope_wms_stock_record record
         left join ope_sys_staff staff on staff.id = record.created_by
         where record.relation_id = #{id} and record.dr = 0 and record_type = 1
+        order by record.created_time desc
     </select>
 
     <select id="wmsScooterStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
