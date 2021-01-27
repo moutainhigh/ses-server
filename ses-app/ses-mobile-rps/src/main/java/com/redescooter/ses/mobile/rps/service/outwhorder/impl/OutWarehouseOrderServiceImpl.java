@@ -1,8 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.outwhorder.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
@@ -19,14 +17,11 @@ import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
+import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
-import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
@@ -34,7 +29,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -51,9 +46,9 @@ import java.util.stream.Collectors;
 @Service
 public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private RosOutWhOrderService rosOutWhOrderService;
     @Resource
     private OutWarehouseOrderMapper outWarehouseOrderMapper;
@@ -66,17 +61,13 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Resource
     private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
     @Resource
-    private OpTraceService opTraceService;
-    @Resource
-    private OrderStatusFlowService orderStatusFlowService;
-    @Resource
-    private WmsPartsStockMapper wmsPartsStockMapper;
-    @Resource
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
     @Resource
     private OutWhouseOrderSerialBindMapper outWhouseOrderSerialBindMapper;
     @Resource
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
+    @Resource
+    private CombinationOrderService combinationOrderService;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -301,11 +292,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
     @Override
     public GeneralResult outWarehouse(IdEnter enter) {
-        OutWarehouseOrderDetailDTO outWarehouseOrder = outWarehouseOrderMapper.getOutWarehouseOrderDetailById(enter.getId());
-        RpsAssert.isNull(outWarehouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
+        RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(outWarehouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
+        RpsAssert.isTrue(opeOutWhouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
                 ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
 
         boolean result = transactionTemplate.execute(outWarehouseStatus -> {
@@ -316,7 +307,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                  */
                 List<OutWarehouseOrderProductDTO> productList = null;
                 List<String> serialNumList = null;
-                switch (outWarehouseOrder.getOrderType()) {
+                switch (opeOutWhouseOrder.getOutWhType()) {
                     case 1:
                         productList = outWhScooterBMapper.getOutWhOrderScooterByOutWhId(enter.getId());
 
@@ -362,6 +353,17 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                         );
 
                         saveWmsStockDataComponent.saveWmsCombinationStockData(null, partsMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+
+                        /**
+                         * 如果是组装单生成的出库单则生成组装单清单信息
+                         */
+                        if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeOutWhouseOrder.getRelationType())) {
+                            IdEnter idEnter = new IdEnter();
+                            idEnter.setId(opeOutWhouseOrder.getRelationId());
+                            idEnter.setUserId(enter.getUserId());
+                            combinationOrderService.generateCombinationOrderList(idEnter);
+                        }
+
                         break;
                 }
 

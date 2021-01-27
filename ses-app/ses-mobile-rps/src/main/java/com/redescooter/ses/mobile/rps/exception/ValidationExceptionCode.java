@@ -63,5 +63,7 @@ public interface ValidationExceptionCode {
     int IN_WH_ORDER_TYPE_IS_EMPTY = 10050;
     // 质检单类型为空
     int QC_ORDER_TYPE_IS_EMPTY = 10051;
+    // 组装单类型为空
+    int COMBINATION_ORDER_TYPE_IS_EMPTY = 10052;
 
 }

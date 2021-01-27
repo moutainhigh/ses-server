@@ -13,7 +13,7 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.combinorder.CombinOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
@@ -80,7 +80,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     @Resource
     private ProductionPartsMapper partsMapper;
     @Resource
-    private CombinOrderMapper combinOrderMapper;
+    private CombinationOrderMapper combinationOrderMapper;
     @Resource
     private PurchaseOrderMapper purchaseOrderMapper;
     @Resource
@@ -203,10 +203,12 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         Long stockId;
 
         // 避免重复扫码
-        OpeInWhouseOrderSerialBind opeInWhouseOrderSerialBind = inWhouseOrderSerialBindMapper
-                .getInWhouseOrderSerialBindBySerialNum(paramDTO.getSerialNum());
-        RpsAssert.isNotNull(opeInWhouseOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
-                ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            OpeInWhouseOrderSerialBind opeInWhouseOrderSerialBind = inWhouseOrderSerialBindMapper
+                    .getInWhouseOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNotNull(opeInWhouseOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+        }
 
         /**
          * 这里只会是质检成功的产品入库 1车辆 2组装件 3部件
@@ -223,7 +225,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 opeInWhouseScooterB.setUpdatedTime(new Date());
                 inWhouseScooterBMapper.updateInWhouseScooter(opeInWhouseScooterB);
 
-                remainingQty = opeInWhouseScooterB.getQcQty() - opeInWhouseScooterB.getActInWhQty();
+                remainingQty = opeInWhouseScooterB.getInWhQty() - opeInWhouseScooterB.getActInWhQty();
                 name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
 
                 // 成品库车辆id
@@ -243,7 +245,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 opeInWhouseCombinB.setUpdatedTime(new Date());
                 inWhouseCombinBMapper.updateInWhouseCombin(opeInWhouseCombinB);
 
-                remainingQty = opeInWhouseCombinB.getQcQty() - opeInWhouseCombinB.getActInWhQty();
+                remainingQty = opeInWhouseCombinB.getInWhQty() - opeInWhouseCombinB.getActInWhQty();
                 name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
 
                 // 成品库组装件id
@@ -252,12 +254,18 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 break;
             default:
                 OpeInWhousePartsB opeInWhousePartsB = inWhousePartsBMapper.getInWhousePartsById(paramDTO.getProductId());
-                RpsAssert.isTrue(qty > opeInWhousePartsB.getQcQty(),
-                        ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+                // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
+                if (StringUtils.isBlank(paramDTO.getSerialNum())) {
+                    RpsAssert.isTrue(!qty.equals(opeInWhousePartsB.getInWhQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+                            ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+                    RpsAssert.isTrue(opeInWhousePartsB.getActInWhQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                            ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+                }
 
                 // 更新入库单部件实际入库数量
                 if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
                     opeInWhousePartsB.setActInWhQty(opeInWhousePartsB.getActInWhQty() + qty);
+                    defaultSerialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
                 } else {
                     opeInWhousePartsB.setActInWhQty(qty);
                 }
@@ -265,9 +273,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 opeInWhousePartsB.setUpdatedTime(new Date());
                 inWhousePartsBMapper.updateInWhouseParts(opeInWhousePartsB);
 
-                remainingQty = opeInWhousePartsB.getQcQty() - opeInWhousePartsB.getActInWhQty();
+                remainingQty = opeInWhousePartsB.getInWhQty() - opeInWhousePartsB.getActInWhQty();
                 name = partsMapper.getPartsCnNameById(paramDTO.getBomId());
-                defaultSerialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
 
                 // 原料库部件id
                 OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(paramDTO.getBomId());

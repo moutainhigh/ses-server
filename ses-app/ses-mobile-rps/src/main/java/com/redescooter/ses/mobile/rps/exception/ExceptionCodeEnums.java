@@ -202,7 +202,11 @@ public enum ExceptionCodeEnums {
 
     QC_ORDER_IS_NOT_EXISTS(10098, "质检单不存在"),
 
-    QC_ORDER_STATUS_ERROR(10099, "质检单状态有误")
+    QC_ORDER_STATUS_ERROR(10099, "质检单状态有误"),
+
+    COMBINATION_ORDER_IS_NOT_EXISTS(10100, "组装单不存在"),
+
+    COMBINATION_ORDER_STATUS_ERROR(10101, "组装单状态有误")
     ;
 
     private int code;

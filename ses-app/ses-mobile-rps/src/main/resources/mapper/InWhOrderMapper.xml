@@ -31,8 +31,8 @@
     <sql id="InWarehouseOrderListWhere">
         <if test="orderType != null">and order_type = #{orderType}</if>
         <if test="type != null">and in_wh_type = #{type}</if>
-        <if test="status == 0">and in_wh_status in(10, 20)</if>
-        <if test="status == 1">and in_wh_status = 30</if>
+        <if test="status == 0">and in_wh_status = 1</if>
+        <if test="status == 1">and in_wh_status = 10</if>
     </sql>
 
     <!--获取所有入库单类型数量-->
@@ -49,8 +49,8 @@
         select in_wh_type `status`, count(id) totalCount
         from ope_in_whouse_order
         where dr = 0 and order_type = #{type}
-        <if test="status == 0">and in_wh_status in(10, 20)</if>
-        <if test="status == 1">and in_wh_status = 30</if>
+        <if test="status == 0">and in_wh_status = 1</if>
+        <if test="status == 1">and in_wh_status = 10</if>
         group by in_wh_type
     </select>
 

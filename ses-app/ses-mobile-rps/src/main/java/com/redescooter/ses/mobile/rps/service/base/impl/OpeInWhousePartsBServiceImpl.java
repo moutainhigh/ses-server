@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.service.base.impl;
 
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
-import java.util.List;
 import com.redescooter.ses.mobile.rps.dao.base.OpeInWhousePartsBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
 import com.redescooter.ses.mobile.rps.service.base.OpeInWhousePartsBService;
@@ -18,25 +17,31 @@ public class OpeInWhousePartsBServiceImpl implements OpeInWhousePartsBService {
     private OpeInWhousePartsBMapper opeInWhousePartsBMapper;
 
     @Override
-    public int updateBatch(List<OpeInWhousePartsB> list) {
-        return opeInWhousePartsBMapper.updateBatch(list);
+    public int deleteByPrimaryKey(Long id) {
+        return opeInWhousePartsBMapper.deleteByPrimaryKey(id);
     }
 
     @Override
-    public int batchInsert(List<OpeInWhousePartsB> list) {
-        return opeInWhousePartsBMapper.batchInsert(list);
+    public int insertSelective(OpeInWhousePartsB record) {
+        return opeInWhousePartsBMapper.insertSelective(record);
     }
 
     @Override
-    public int insertOrUpdate(OpeInWhousePartsB record) {
-        return opeInWhousePartsBMapper.insertOrUpdate(record);
+    public OpeInWhousePartsB selectByPrimaryKey(Long id) {
+        return opeInWhousePartsBMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public int insertOrUpdateSelective(OpeInWhousePartsB record) {
-        return opeInWhousePartsBMapper.insertOrUpdateSelective(record);
+    public int updateByPrimaryKeySelective(OpeInWhousePartsB record) {
+        return opeInWhousePartsBMapper.updateByPrimaryKeySelective(record);
     }
 
+    @Override
+    public int updateByPrimaryKey(OpeInWhousePartsB record) {
+        return opeInWhousePartsBMapper.updateByPrimaryKey(record);
+    }
 }
+
+
 
 

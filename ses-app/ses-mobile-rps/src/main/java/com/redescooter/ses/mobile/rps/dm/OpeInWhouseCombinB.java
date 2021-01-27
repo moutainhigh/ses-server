@@ -1,18 +1,23 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author assert
- * @date 2021/1/15 16:35
+ * @date 2021/1/27 11:54
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhouseCombinB")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeInWhouseCombinB {
     /**
      * 主键id
@@ -23,7 +28,6 @@ public class OpeInWhouseCombinB {
     /**
      * 逻辑删除
      */
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
@@ -80,12 +84,6 @@ public class OpeInWhouseCombinB {
      */
     @ApiModelProperty(value = "不合格数量")
     private Integer unqualifiedQty;
-
-    /**
-     * 已质检数量
-     */
-    @ApiModelProperty(value = "已质检数量")
-    private Integer qcQty;
 
     /**
      * 备注
@@ -146,4 +144,8 @@ public class OpeInWhouseCombinB {
      */
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
+
+    public static OpeInWhouseCombinBBuilder builder() {
+        return new OpeInWhouseCombinBBuilder();
+    }
 }

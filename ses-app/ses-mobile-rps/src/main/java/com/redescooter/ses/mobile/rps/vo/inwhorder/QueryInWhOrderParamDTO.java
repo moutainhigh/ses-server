@@ -25,8 +25,8 @@ public class QueryInWhOrderParamDTO extends PageEnter {
             dataType = "Integer", required = true)
     private Integer type;
 
-    @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "出库单状态不能为空")
-    @ApiModelProperty(value = "出库单状态 0未出库 1已出库(历史记录查询)", dataType = "Integer", required = true)
+    @NotNull(code = ValidationExceptionCode.STATUS_IS_EMPTY, message = "入库单状态不能为空")
+    @ApiModelProperty(value = "入库单状态 0未入库 1已入库(历史记录查询)", dataType = "Integer", required = true)
     private Integer status;
 
 }

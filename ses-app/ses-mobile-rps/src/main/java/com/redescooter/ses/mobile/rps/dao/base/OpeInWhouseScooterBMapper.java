@@ -1,20 +1,50 @@
 package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB;import org.apache.ibatis.annotations.Param;import java.util.List;
 
 /**
  * @author assert
- * @date 2021/1/15 16:35
+ * @date 2021/1/27 11:54
  */
-public interface OpeInWhouseScooterBMapper extends BaseMapper {
-    int updateBatch(List<OpeInWhouseScooterB> list);
+public interface OpeInWhouseScooterBMapper extends BaseMapper<OpeInWhouseScooterB> {
+    /**
+     * delete by primary key
+     *
+     * @param id primaryKey
+     * @return deleteCount
+     */
+    int deleteByPrimaryKey(Long id);
 
-    int batchInsert(@Param("list") List<OpeInWhouseScooterB> list);
+    /**
+     * insert record to table selective
+     *
+     * @param record the record
+     * @return insert count
+     */
+    int insertSelective(OpeInWhouseScooterB record);
 
-    int insertOrUpdate(OpeInWhouseScooterB record);
+    /**
+     * select by primary key
+     *
+     * @param id primary key
+     * @return object by primary key
+     */
+    OpeInWhouseScooterB selectByPrimaryKey(Long id);
 
-    int insertOrUpdateSelective(OpeInWhouseScooterB record);
+    /**
+     * update record
+     *
+     * @param record the updated record
+     * @return update count
+     */
+    int updateByPrimaryKeySelective(OpeInWhouseScooterB record);
+
+    /**
+     * update record selective
+     *
+     * @param record the updated record
+     * @return update count
+     */
+    int updateByPrimaryKey(OpeInWhouseScooterB record);
 }

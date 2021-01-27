@@ -33,5 +33,31 @@ public class OpeOutWhouseOrderServiceImpl extends ServiceImpl<OpeOutWhouseOrderM
     public int insertOrUpdateSelective(OpeOutWhouseOrder record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int deleteByPrimaryKey(Integer id) {
+        return opeOutWhouseOrderMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int insertSelective(OpeOutWhouseOrder record) {
+        return opeOutWhouseOrderMapper.insertSelective(record);
+    }
+
+    @Override
+    public OpeOutWhouseOrder selectByPrimaryKey(Integer id) {
+        return opeOutWhouseOrderMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(OpeOutWhouseOrder record) {
+        return opeOutWhouseOrderMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public int updateByPrimaryKey(OpeOutWhouseOrder record) {
+        return opeOutWhouseOrderMapper.updateByPrimaryKey(record);
+    }
 }
+
 

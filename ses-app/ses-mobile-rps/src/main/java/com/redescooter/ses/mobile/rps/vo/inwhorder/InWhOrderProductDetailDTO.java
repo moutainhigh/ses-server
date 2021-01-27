@@ -45,9 +45,6 @@ public class InWhOrderProductDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "不合格数量", dataType = "Integer")
     private Integer unqualifiedQty;
 
-    @ApiModelProperty(value = "质检数量", dataType = "Integer")
-    private Integer qcQty;
-
     @ApiModelProperty(value = "颜色名称 - 车辆入库单使用", dataType = "String")
     private String colorName;
 

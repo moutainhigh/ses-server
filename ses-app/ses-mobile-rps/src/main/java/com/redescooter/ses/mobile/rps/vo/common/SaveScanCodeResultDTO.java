@@ -19,9 +19,6 @@ import java.util.Date;
 @ApiModel(value = "保存扫码结果返回对象")
 public class SaveScanCodeResultDTO extends GeneralResult {
 
-    @ApiModelProperty(value = "剩余数量", dataType = "String")
-    private Integer qty;
-
     @ApiModelProperty(value = "名称", dataType = "String")
     private String name;
 
@@ -33,6 +30,15 @@ public class SaveScanCodeResultDTO extends GeneralResult {
 
     @ApiModelProperty(value = "序列号", dataType = "String")
     private String serialNum;
+
+    @ApiModelProperty(value = "蓝牙mac地址(车辆完成组装返回)", dataType = "String")
+    private String bluetoothMacAddress;
+
+    @ApiModelProperty(value = "车载平板序列号(车辆完成组装返回)", dataType = "String")
+    private String tabletSn;
+
+    @ApiModelProperty(value = "剩余数量", dataType = "Integer")
+    private Integer qty;
 
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT_TWO)
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT_TWO, timezone = DateConstant.UTC)

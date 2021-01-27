@@ -77,4 +77,13 @@ public interface OutWarehouseOrderMapper {
     */
     int getOutWhOrderAlreadyOutWhQtyById(Long id);
 
+    /**
+     * 根据id查询出库单信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder
+     * @author assert
+     * @date 2021/1/27
+    */
+    OpeOutWhouseOrder getOutWarehouseById(Long id);
+
 }

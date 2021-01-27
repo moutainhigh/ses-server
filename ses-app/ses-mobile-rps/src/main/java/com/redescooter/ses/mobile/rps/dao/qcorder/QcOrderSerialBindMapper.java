@@ -27,4 +27,13 @@ public interface QcOrderSerialBindMapper {
     */
     int insertQcOrderSerialBind(OpeQcOrderSerialBind opeQcOrderSerialBind);
 
+    /**
+     * 根据serialNum查询质检单产品序列号信息
+     * @param serialNum
+     * @return com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind
+     * @author assert
+     * @date 2021/1/27
+    */
+    OpeQcOrderSerialBind getQcOrderSerialBindBySerialNum(String serialNum);
+
 }

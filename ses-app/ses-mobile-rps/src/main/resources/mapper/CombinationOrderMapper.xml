@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="combin_type" jdbcType="INTEGER" property="combinType" />
+        <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+        <result column="combin_status" jdbcType="INTEGER" property="combinStatus" />
+        <result column="combin_qty" jdbcType="INTEGER" property="combinQty" />
+        <result column="combin_start_date" jdbcType="TIMESTAMP" property="combinStartDate" />
+        <result column="combin_end_date" jdbcType="TIMESTAMP" property="combinEndDate" />
+        <result column="principal_id" jdbcType="BIGINT" property="principalId" />
+        <result column="principal_name" jdbcType="VARCHAR" property="principalName" />
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--组装单列表查询条件-->
+    <sql id="getCombinationOrderListWhere">
+        <if test="orderType != null">and combin_type = #{orderType}</if>
+        <if test="status == 0">and combin_status in(20,30,40,45)</if>
+        <if test="status == 1">and combin_status = 50</if>
+    </sql>
+
+    <!--组装单类型数量统计-->
+    <select id="getCombinationOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select combin_type `status`, count(id) totalCount
+        from ope_combin_order
+        where dr = 0
+        group by combin_type
+    </select>
+
+    <!--组装单数量统计-->
+    <select id="countByCombinationOrder" parameterType="com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from ope_combin_order
+	    where dr = 0
+	    <include refid="getCombinationOrderListWhere" />
+    </select>
+
+    <!--组装单列表查询-->
+    <select id="getCombinationOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderResultDTO">
+        select id, combin_no combinNo, combin_status `status`, combin_qty qty, combin_type `type`
+	    from ope_combin_order
+	    where dr = 0
+        <include refid="getCombinationOrderListWhere" />
+	    order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--根据id查询组装单详情-->
+    <select id="getCombinationOrderDetailById" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationOrderDetailDTO">
+        select id, combin_no combinNo, combin_status `status`, combin_qty qty, combin_type `type`,
+        combin_start_date combinStartDate, combin_end_date combinEndDate
+        from ope_combin_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改组装单信息-->
+    <update id="updateCombinationOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
+        update ope_combin_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="combinType != null">
+                combin_type = #{combinType,jdbcType=INTEGER},
+            </if>
+            <if test="combinNo != null">
+                combin_no = #{combinNo,jdbcType=VARCHAR},
+            </if>
+            <if test="combinStatus != null">
+                combin_status = #{combinStatus,jdbcType=INTEGER},
+            </if>
+            <if test="combinQty != null">
+                combin_qty = #{combinQty,jdbcType=INTEGER},
+            </if>
+            <if test="combinStartDate != null">
+                combin_start_date = #{combinStartDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="combinEndDate != null">
+                combin_end_date = #{combinEndDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="principalId != null">
+                principal_id = #{principalId,jdbcType=BIGINT},
+            </if>
+            <if test="principalName != null">
+                principal_name = #{principalName,jdbcType=VARCHAR},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--根据id查询组装单信息-->
+    <select id="getCombinationOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_combin_order
+	    where dr = 0 and id = #{id}
+    </select>
+
+</mapper>

@@ -1,18 +1,23 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author assert
- * @date 2021/1/15 16:35
+ * @date 2021/1/27 11:54
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhousePartsB")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OpeInWhousePartsB {
     /**
      * 主键id
@@ -23,7 +28,6 @@ public class OpeInWhousePartsB {
     /**
      * 逻辑删除
      */
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除")
     private Integer dr;
 
@@ -52,9 +56,9 @@ public class OpeInWhousePartsB {
     private String partsNo;
 
     /**
-     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination
+     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU
      */
-    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
+    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU")
     private Integer partsType;
 
     /**
@@ -86,12 +90,6 @@ public class OpeInWhousePartsB {
      */
     @ApiModelProperty(value = "不合格数量")
     private Integer unqualifiedQty;
-
-    /**
-     * 已质检数量
-     */
-    @ApiModelProperty(value = "已质检数量")
-    private Integer qcQty;
 
     /**
      * 备注
@@ -152,4 +150,8 @@ public class OpeInWhousePartsB {
      */
     @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
+
+    public static OpeInWhousePartsBBuilder builder() {
+        return new OpeInWhousePartsBBuilder();
+    }
 }

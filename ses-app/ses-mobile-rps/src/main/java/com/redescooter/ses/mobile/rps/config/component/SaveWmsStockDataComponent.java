@@ -260,6 +260,7 @@ public class SaveWmsStockDataComponent {
                                                   Integer qty, Long userId) {
         OpeWmsStockRecord opeWmsStockRecord = new OpeWmsStockRecord();
         opeWmsStockRecord.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+        opeWmsStockRecord.setDr(0);
         opeWmsStockRecord.setRelationId(relationId);
         opeWmsStockRecord.setRelationType(relationType);
         opeWmsStockRecord.setInWhType(inWhType);

@@ -16,7 +16,6 @@
         <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
         <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
         <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
-        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -35,7 +34,6 @@
         <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
         <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
         <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
-        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
         <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
         <!--一对多映射(部件序列号信息)-->
         <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
@@ -98,9 +96,6 @@
             <if test="unqualifiedQty != null">
                 unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
             </if>
-            <if test="qcQty != null">
-                qc_qty = #{qcQty,jdbcType=INTEGER},
-            </if>
             <if test="remark != null">
                 remark = #{remark,jdbcType=VARCHAR},
             </if>
@@ -124,7 +119,7 @@
     <select id="getInWhOrderPartsByInWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
         select iwp.id, iwp.in_wh_id inWhId, pp.id bomId, pp.parts_type partsType, pp.cn_name `name`, pp.parts_no `number`,
-        iwp.in_wh_qty qty, iwp.act_in_wh_qty actInWhQty, iwp.unqualified_qty unqualifiedQty, iwp.qc_qty qcQty, pp.id_calss idClass
+        iwp.in_wh_qty qty, iwp.act_in_wh_qty actInWhQty, iwp.unqualified_qty unqualifiedQty, pp.id_calss idClass
         from ope_in_whouse_parts_b iwp
         left join ope_production_parts pp
         on iwp.parts_id = pp.id and pp.disable = 0 and pp.dr = 0
@@ -134,7 +129,7 @@
     <!--根据id查询入库单部件信息-->
     <select id="getInWhOrderPartsById" parameterType="java.lang.Long" resultMap="InWhOrderPartsResultMap">
         select iwp.id, iwp.in_wh_id, pp.id bom_id, pp.parts_type,pp.cn_name, pp.parts_no `number`,
-        iwp.in_wh_qty, iwp.act_in_wh_qty, iwp.unqualified_qty, iwp.qc_qty, pp.id_calss,osb.id sn_id, osb.lot,
+        iwp.in_wh_qty, iwp.act_in_wh_qty, iwp.unqualified_qty, pp.id_calss,osb.id sn_id, osb.lot,
         osb.serial_num,s.supplier_name
         from ope_in_whouse_parts_b iwp
         left join ope_production_parts pp

@@ -44,7 +44,7 @@
     <!--质检类型数量统计-->
     <select id="getQcTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-        select qc_type `status`, count(1) totalCount
+        select qc_type `status`, count(id) totalCount
         from ope_qc_order
         where dr = 0 and order_type = 1
         <if test="status == 0">and qc_status in(1, 10)</if>

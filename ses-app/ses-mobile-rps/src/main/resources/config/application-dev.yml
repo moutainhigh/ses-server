@@ -204,7 +204,7 @@ spring:                                                                         
         descrtion: 质检单相关接口
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.mobile.rps
-        path-regex: /combin/order/.*
+        path-regex: /combination/order/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.2.1                                                                                                 #Api版本

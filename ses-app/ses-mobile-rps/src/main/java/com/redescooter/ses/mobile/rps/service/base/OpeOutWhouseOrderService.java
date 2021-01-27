@@ -19,5 +19,15 @@ public interface OpeOutWhouseOrderService extends IService<OpeOutWhouseOrder> {
 
     int insertOrUpdateSelective(OpeOutWhouseOrder record);
 
+    int deleteByPrimaryKey(Integer id);
+
+    int insertSelective(OpeOutWhouseOrder record);
+
+    OpeOutWhouseOrder selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(OpeOutWhouseOrder record);
+
+    int updateByPrimaryKey(OpeOutWhouseOrder record);
 }
+
 

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListScooterMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="combin_id" jdbcType="BIGINT" property="combinId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="color_id" jdbcType="BIGINT" property="colorId" />
+        <result column="scooter_bom_id" jdbcType="BIGINT" property="scooterBomId" />
+        <result column="combin_list_status" jdbcType="INTEGER" property="combinListStatus" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--组装单车辆清单详情自定义返回结果-->
+    <resultMap id="CombinationListScooterDetailResultMap" type="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="combin_id" jdbcType="BIGINT" property="combinId" />
+        <result column="combin_list_status" jdbcType="INTEGER" property="status" />
+        <result column="total_qty" jdbcType="INTEGER" property="qty" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <!--车辆清单部件信息-->
+        <collection property="combinationOrderPartsList" ofType="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationOrderPartsDTO">
+            <result column="p_id" jdbcType="BIGINT" property="id" />
+            <result column="cn_name" jdbcType="VARCHAR" property="name" />
+            <result column="parts_no" jdbcType="VARCHAR" property="number" />
+            <result column="qty" jdbcType="INTEGER" property="qty" />
+            <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+            <result column="parts_id" jdbcType="BIGINT" property="bomId" />
+        </collection>
+    </resultMap>
+
+    <!--根据combinId查询组装单车辆清单信息-->
+    <select id="getCombinationListScooterByCombinId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDTO">
+        select scooter.id, scooter.combin_id combinId, scooter.combin_list_status `status`,
+         c.color_name colorName, c.color_value colorValue, g.group_name groupName
+        from ope_combin_list_scooter_b scooter
+        left join ope_specificat_group g
+        on scooter.group_id = g.id and g.dr = 0
+        left join ope_color c
+        on scooter.color_id = c.id and c.dr = 0
+        where scooter.dr = 0 and scooter.combin_id = #{combinId}
+    </select>
+
+    <!--根据id查询组装单车辆清单详情-->
+    <select id="getCombinationListScooterDetailById" parameterType="java.lang.Long" resultMap="CombinationListScooterDetailResultMap">
+        select scooter.id, scooter.combin_id, scooter.combin_list_status, scooter.qty total_qty,1 `type`, c.color_name, c.color_value,
+        g.group_name,parts.id p_id, parts.cn_name, parts.parts_no, parts.qty, parts.id_calss, parts.parts_id
+        from ope_combin_list_scooter_b scooter
+        left join ope_combin_list_relation_parts parts
+        on scooter.id = parts.relation_id and parts.dr = 0
+        left join ope_specificat_group g
+        on scooter.group_id = g.id and g.dr = 0
+        left join ope_color c
+        on scooter.color_id = c.id and c.dr = 0
+        where scooter.dr = 0 and scooter.id = #{id}
+    </select>
+
+    <!--根据id查询组装单车辆清单信息-->
+    <select id="getCombinationListScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_combin_list_scooter_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改组装单车辆清单信息-->
+    <update id="updateCombinationListScooter" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB">
+        update ope_combin_list_scooter_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="combinId != null">
+                combin_id = #{combinId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId,jdbcType=BIGINT},
+            </if>
+            <if test="scooterBomId != null">
+                scooter_bom_id = #{scooterBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinListStatus != null">
+                combin_list_status = #{combinListStatus,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--获取车辆待组装数量-->
+    <select id="getQuantityToBeAssembled" resultType="java.lang.Integer">
+        select count(*) from ope_combin_list_scooter_b
+	    where dr = 0 and combin_list_status = 0
+    </select>
+
+    <!--批量新增组装单车辆清单信息-->
+    <insert id="batchInsertCombinationListScooter" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB">
+        insert ope_combin_list_scooter_b(id, dr, combin_id, group_id, color_id, scooter_bom_id, combin_list_status, qty, remark,
+        created_by, created_time, updated_by, updated_time)
+        <foreach collection="opeCombinListScooterList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.combinId}, #{item.groupId}, #{item.colorId}, #{item.scooterBomId}, #{item.combinListStatus},
+            #{item.qty}, #{item.remark}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+</mapper>

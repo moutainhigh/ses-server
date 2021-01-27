@@ -1,7 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB;
-import java.util.List;
 
 /**
  * @author assert
@@ -9,14 +8,19 @@ import java.util.List;
  */
 public interface OpeInWhouseScooterBService {
 
-    int updateBatch(List<OpeInWhouseScooterB> list);
+    int deleteByPrimaryKey(Long id);
 
-    int batchInsert(List<OpeInWhouseScooterB> list);
+    int insertSelective(OpeInWhouseScooterB record);
 
-    int insertOrUpdate(OpeInWhouseScooterB record);
+    OpeInWhouseScooterB selectByPrimaryKey(Long id);
 
-    int insertOrUpdateSelective(OpeInWhouseScooterB record);
+    int updateByPrimaryKeySelective(OpeInWhouseScooterB record);
+
+    int updateByPrimaryKey(OpeInWhouseScooterB record);
 }
+
+
+
 
 
 

@@ -344,14 +344,17 @@ public class QcOrderServiceImpl implements QcOrderService {
         );
 
         // 避免重复质检
-        String serialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
-        RpsAssert.isNotBlank(serialNum, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
-                ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            String serialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNotBlank(serialNum, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+        }
 
         // 质检条目
         OpeOrderQcItem opeOrderQcItem = new OpeOrderQcItem();
         Long qcItemId = idAppService.getId(SequenceName.OPE_ORDER_QC_ITEM);
         opeOrderQcItem.setId(qcItemId);
+        opeOrderQcItem.setDr(0);
         opeOrderQcItem.setSerialNum(paramDTO.getSerialNum());
         opeOrderQcItem.setLot(paramDTO.getLot());
         opeOrderQcItem.setOrderBId(paramDTO.getProductId());
@@ -370,6 +373,7 @@ public class QcOrderServiceImpl implements QcOrderService {
             // 组装质检记录数据
             OpeOrderQcTrace opeOrderQcTrace = new OpeOrderQcTrace();
             opeOrderQcTrace.setId(idAppService.getId(SequenceName.OPE_ORDER_QC_TRACE));
+            opeOrderQcTrace.setDr(0);
             opeOrderQcTrace.setProductQcTemplateBId(qc.getTemplateResultId());
             opeOrderQcTrace.setProductQcTemplateId(qc.getTemplateId());
             opeOrderQcTrace.setProductQcTemplateName(qcTemplateMap.get(qc.getTemplateId()).getQcItemName());
@@ -452,8 +456,13 @@ public class QcOrderServiceImpl implements QcOrderService {
                 OpeQcPartsB opeQcPartsB = qcPartsMapper.getQcPartsById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-                RpsAssert.isTrue(qcQty > opeQcPartsB.getQty(),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
-                        ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
+                // 限制无码产品重复质检, 并且无码产品质检数量必须和质检数量一致
+                if (StringUtils.isBlank(paramDTO.getSerialNum())) {
+                    RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
+                            ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
+                    RpsAssert.isTrue(opeQcPartsB.getUnqualifiedQty() > 0 || opeQcPartsB.getQualifiedQty() > 0,
+                            ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+                }
 
                 // 更新部件质检合格/不合格数量(部件存在无码质检这里要特殊处理)
                 int qty = 0;
@@ -593,60 +602,6 @@ public class QcOrderServiceImpl implements QcOrderService {
         }
 
         return new GeneralResult(enter.getRequestId());
-    }
-
-
-    /**
-     * 获取产品序列号
-     * @param productType 产品类型 1车辆 2组装件 3部件
-     * @param serialNum 序列号
-     * @return
-     */
-    private String getProductSerialNum(Integer productType, String serialNum) {
-        Calendar cal = Calendar.getInstance();
-        // 年、月、日
-        String year = String.valueOf(cal.get(Calendar.YEAR));
-        int month = cal.get(Calendar.MONTH ) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-
-        String productRange = null;
-        String structureType = null;
-        /**
-         * 获取产品范围和结构类型, 现在组装件和车辆暂时随机生成
-         */
-        switch (productType) {
-            case 1:
-                productRange = "ED";
-                structureType = "D";
-                break;
-            case 2:
-                return StringUtils.isNotBlank(serialNum) ? serialNum : "COMBINATION" + System.currentTimeMillis();
-            default:
-                return StringUtils.isNotBlank(serialNum) ? serialNum : "PARTS" + System.currentTimeMillis();
-        }
-
-        /**
-         * 编号规则：
-         * 1.目标市场(默认法国)
-         * 2.产品范围
-         * 3.结构类型
-         * 4.生产地点(默认中国南通)
-         * 5.年份
-         * 6.月份
-         * 7.生产流水号(生产日 + 工单号 + 流水号)
-         */
-        StringBuilder sb = new StringBuilder();
-        sb.append("FR");
-        sb.append(productRange);
-        sb.append(structureType);
-        sb.append("0");
-        sb.append(year.substring(2, 4));
-        sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
-        // 生产流水号在质检单这边暂时只有 “生产日” + “工单号”组成, 流水号在确认入库时生成
-        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
-        sb.append(number);
-
-        return sb.toString();
     }
 
 }
