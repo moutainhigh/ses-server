@@ -177,11 +177,11 @@ public class OpeCustomerInquiry implements Serializable {
     private String contactFirst;
 
     @TableField(value = "contact_last")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="联系人姓")
     private String contactLast;
 
     @TableField(value = "contant_full_name")
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="全名")
     private String contantFullName;
 
     /**
