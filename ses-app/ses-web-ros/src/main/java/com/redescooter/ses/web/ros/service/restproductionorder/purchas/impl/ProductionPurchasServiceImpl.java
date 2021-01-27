@@ -280,9 +280,12 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Transactional
     @Override
     public GeneralResult save(SaveProductionPurchasEnter enter) {
+        // 产品列表
         List<SavePurchasProductEnter> productList = new ArrayList<>();
-        SavePurchasPaymentEnter paymentEnter = null;
+        // 付款数据
+        SavePurchasPaymentEnter paymentEnter;
         try {
+            // 解析付款数据和产品列表
             paymentEnter = JSON.parseObject(enter.getPaymentDate(), SavePurchasPaymentEnter.class);
             productList.addAll(JSON.parseArray(enter.getSt(), SavePurchasProductEnter.class));
         } catch (Exception e) {
@@ -292,26 +295,27 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        //校验json 数据
-        List<PartDetailDto> PartDetailDtoList = checkJsonDate(productList, paymentEnter);
-
+        //校验json数据
+        List<PartDetailDto> PartDetailDtoList = checkJsonData(productList, paymentEnter);
         Long purchasId = idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_ORDER);
-
-        Long totalPrice = 0L;
+        BigDecimal totalPrice = BigDecimal.ZERO;
 
         //子订单保存
-        List<OpeProductionPurchasePartsB> saveOpeProductionPurchasePartsBList = new ArrayList<>();
+        List<OpeProductionPurchasePartsB> savePartsBList = new ArrayList<>();
         for (SavePurchasProductEnter item : productList) {
-            PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(part -> item.getId().equals(part.getPartId())).findFirst().orElse(null);
+            PartDetailDto dto = PartDetailDtoList.stream().filter(part -> item.getId().equals(part.getPartId())).findFirst().orElse(null);
             //封装子单据
-            OpeProductionPurchasePartsB opeProductionPurchasePartsB = buildOpeProductionPurchasePartsB(enter, (enter.getId() == null || enter.getId() == 0) ? purchasId : enter.getId(), item, partDetailDto);
-            saveOpeProductionPurchasePartsBList.add(opeProductionPurchasePartsB);
-            Long price = partDetailDto.getPrice().multiply(new BigDecimal(item.getQty())).longValue();
-            totalPrice += price;
+            OpeProductionPurchasePartsB partsB = buildOpeProductionPurchasePartsB(enter, (enter.getId() == null || enter.getId() == 0) ? purchasId : enter.getId(), item, dto);
+            savePartsBList.add(partsB);
+            /*Long price = dto.getPrice().multiply(new BigDecimal(item.getQty())).longValue();
+            totalPrice += price;*/
+            BigDecimal price = item.getUnitPrice().multiply(new BigDecimal(item.getQty()));
+            totalPrice = totalPrice.add(price);
         }
 
-        SaveOpTraceEnter saveOpTraceEnter = null;
-        OpeProductionPurchaseOrder opeProductionPurchaseOrder = buildOpeProductionPurchaseOrder(enter, productList, paymentEnter, new BigDecimal(totalPrice));
+        SaveOpTraceEnter saveOpTraceEnter;
+        // 构建生产采购单
+        OpeProductionPurchaseOrder opeProductionPurchaseOrder = buildOpeProductionPurchaseOrder(enter, productList, paymentEnter, totalPrice);
         if (enter.getId() == null || enter.getId() == 0) {
             opeProductionPurchaseOrder.setId(purchasId);
             opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
@@ -335,7 +339,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
-        opeProductionPurchasePartsBService.saveBatch(saveOpeProductionPurchasePartsBList);
+        opeProductionPurchasePartsBService.saveBatch(savePartsBList);
 
         //操作动态
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
@@ -344,25 +348,31 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 构建生产采购单的部件
+     */
     private OpeProductionPurchasePartsB buildOpeProductionPurchasePartsB(SaveProductionPurchasEnter enter, Long purchasId, SavePurchasProductEnter item, PartDetailDto partDetailDto) {
-        OpeProductionPurchasePartsB opeProductionPurchasePartsB = new OpeProductionPurchasePartsB();
-        opeProductionPurchasePartsB.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_PARTS_B));
-        opeProductionPurchasePartsB.setDr(0);
-        opeProductionPurchasePartsB.setProductionPurchaseId(purchasId);
-        opeProductionPurchasePartsB.setPartsId(partDetailDto.getPartId());
-        opeProductionPurchasePartsB.setPartsName(partDetailDto.getPartName());
-        opeProductionPurchasePartsB.setPartsNo(partDetailDto.getPartN());
-        opeProductionPurchasePartsB.setPartsType(Integer.valueOf(partDetailDto.getProductType()));
-        opeProductionPurchasePartsB.setQty(item.getQty());
-        opeProductionPurchasePartsB.setUnitPrice(partDetailDto.getPrice());
-        opeProductionPurchasePartsB.setRemark(enter.getRemark());
-        opeProductionPurchasePartsB.setCreatedBy(enter.getUserId());
-        opeProductionPurchasePartsB.setCreatedTime(new Date());
-        opeProductionPurchasePartsB.setUpdatedBy(enter.getUserId());
-        opeProductionPurchasePartsB.setUpdatedTime(new Date());
-        return opeProductionPurchasePartsB;
+        OpeProductionPurchasePartsB result = new OpeProductionPurchasePartsB();
+        result.setId(idAppService.getId(SequenceName.OPE_PRODUCTION_PURCHASE_PARTS_B));
+        result.setDr(0);
+        result.setProductionPurchaseId(purchasId);
+        result.setPartsId(partDetailDto.getPartId());
+        result.setPartsName(partDetailDto.getPartName());
+        result.setPartsNo(partDetailDto.getPartN());
+        result.setPartsType(Integer.valueOf(partDetailDto.getProductType()));
+        result.setQty(item.getQty());
+        result.setUnitPrice(partDetailDto.getPrice());
+        result.setRemark(enter.getRemark());
+        result.setCreatedBy(enter.getUserId());
+        result.setCreatedTime(new Date());
+        result.setUpdatedBy(enter.getUserId());
+        result.setUpdatedTime(new Date());
+        return result;
     }
 
+    /**
+     * 构建生产采购单
+     */
     private OpeProductionPurchaseOrder buildOpeProductionPurchaseOrder(SaveProductionPurchasEnter enter, List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter, BigDecimal totalPrice) {
         if (StringUtils.isEmpty(enter.getFactoryPrincipalName()) && enter.getFactoryId() != null && enter.getFactoryId() != 0) {
             OpeSupplier opeSupplier = opeSupplierService.getById(enter.getFactoryId());
@@ -386,29 +396,28 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             enter.setConsigneeUserName(opeSysStaff.getFirstName() + " " + opeSysStaff.getLastName());
         }
 
-        OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
-        BeanUtils.copyProperties(enter, opeProductionPurchaseOrder);
-        opeProductionPurchaseOrder.setDr(0);
-        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.DRAFT.getValue());
-        opeProductionPurchaseOrder.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
-        opeProductionPurchaseOrder.setPurchaseContract(enter.getContract());
-        opeProductionPurchaseOrder.setPaymentType(paymentEnter.getPaymentType());
-        opeProductionPurchaseOrder.setPlannedPaymentTime(paymentEnter.getDate());
-        opeProductionPurchaseOrder.setPaymentDay(paymentEnter.getDays());
+        OpeProductionPurchaseOrder result = new OpeProductionPurchaseOrder();
+        BeanUtils.copyProperties(enter, result);
+        result.setDr(0);
+        result.setPurchaseStatus(NewProductionPurchasEnums.DRAFT.getValue());
+        result.setPurchaseQty(productList.stream().mapToInt(SavePurchasProductEnter::getQty).sum());
+        result.setPurchaseContract(enter.getContract());
+        result.setPaymentType(paymentEnter.getPaymentType());
+        result.setPlannedPaymentTime(paymentEnter.getDate());
+        result.setPaymentDay(paymentEnter.getDays());
         if (paymentEnter.getDays() != null && paymentEnter.getDate() != null) {
-            opeProductionPurchaseOrder.setPaymentTime(DateUtil.addDays(paymentEnter.getDate(), paymentEnter.getDays()));
+            result.setPaymentTime(DateUtil.addDays(paymentEnter.getDate(), paymentEnter.getDays()));
         }
-        opeProductionPurchaseOrder.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
-        opeProductionPurchaseOrder.setPurchaseAmount(totalPrice);
-        opeProductionPurchaseOrder.setAmountType(paymentEnter.getAmountType());
-
+        result.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
+        result.setPurchaseAmount(totalPrice);
+        result.setAmountType(paymentEnter.getAmountType());
         if (PaymentTypeEnums.PREPAYMENTS.getValue().equals(paymentEnter.getPaymentType()) && paymentEnter.getAmount() != null) {
             if (totalPrice.subtract(paymentEnter.getAmount()).longValue() < 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(), ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage());
             }
-            opeProductionPurchaseOrder.setPayAmount(paymentEnter.getAmount());
+            result.setPayAmount(paymentEnter.getAmount());
         }
-        return opeProductionPurchaseOrder;
+        return result;
     }
 
     @Override
@@ -428,7 +437,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @Return: List<OpeProductionParts>
      * @desc: 校验json 数据
      */
-    private List<PartDetailDto> checkJsonDate(List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter) {
+    private List<PartDetailDto> checkJsonData(List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter) {
         List<PartDetailDto> PartDetailDtoList = productionPurchasServiceMapper.partDetailList(productList.stream().map(SavePurchasProductEnter::getId).collect(Collectors.toSet()));
         productList.forEach(item -> {
             PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(product -> item.getId().equals(product.getPartId())).findFirst().orElse(null);
