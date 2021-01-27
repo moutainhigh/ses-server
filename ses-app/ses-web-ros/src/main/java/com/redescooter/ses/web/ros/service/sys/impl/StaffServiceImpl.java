@@ -298,14 +298,14 @@ public class StaffServiceImpl implements StaffService {
         if (dept == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        if (dept.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
+        if (dept.getDeptStatus() == DeptStatusEnums.DEPARTMENT.getValue()) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
         OpeSysPosition position = opeSysPositionMapper.selectById(positionId);
         if (position == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
-        if (position.getPositionStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
+        if (position.getPositionStatus() == DeptStatusEnums.DEPARTMENT.getValue()) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_DISABLED.getCode(), ExceptionCodeEnums.POSITION_DISABLED.getMessage());
         }
     }
