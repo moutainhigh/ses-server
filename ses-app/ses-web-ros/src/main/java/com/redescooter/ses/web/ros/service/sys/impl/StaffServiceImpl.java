@@ -232,7 +232,7 @@ public class StaffServiceImpl implements StaffService {
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getId());
         // 员工状态变化  影响到账号
-        if (enter.getStatus() != staff.getStatus()) {
+        if (!enter.getStatus().equals(staff.getStatus())) {
             changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
         }
         BeanUtils.copyProperties(enter, staff);
@@ -265,10 +265,10 @@ public class StaffServiceImpl implements StaffService {
     void changeUserStatus(Integer newStatus, Integer oldStatus, Long id) {
         OpeSysUser user = opeSysUserService.getById(id);
         if (user != null) {
-            if (newStatus == DeptStatusEnums.COMPANY.getValue() && oldStatus == DeptStatusEnums.DEPARTMENT.getValue()) {
+            if (newStatus.equals(DeptStatusEnums.COMPANY.getValue()) && oldStatus.equals(DeptStatusEnums.DEPARTMENT.getValue())) {
                 // 员工状态从禁用变为正常 user也要正常
                 user.setStatus(UserStatusEnum.NORMAL.getCode());
-            } else if (newStatus == DeptStatusEnums.DEPARTMENT.getValue() && oldStatus == DeptStatusEnums.COMPANY.getValue()) {
+            } else if (newStatus.equals(DeptStatusEnums.DEPARTMENT.getValue()) && oldStatus.equals(DeptStatusEnums.COMPANY.getValue())) {
                 // 员工状态从正常变为禁用 user也要禁用
                 user.setStatus(UserStatusEnum.LOCK.getCode());
             }
@@ -298,14 +298,14 @@ public class StaffServiceImpl implements StaffService {
         if (dept == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        if (dept.getDeptStatus() == DeptStatusEnums.DEPARTMENT.getValue()) {
+        if (dept.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
         OpeSysPosition position = opeSysPositionMapper.selectById(positionId);
         if (position == null) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
-        if (position.getPositionStatus() == DeptStatusEnums.DEPARTMENT.getValue()) {
+        if (position.getPositionStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_DISABLED.getCode(), ExceptionCodeEnums.POSITION_DISABLED.getMessage());
         }
     }
@@ -590,7 +590,7 @@ public class StaffServiceImpl implements StaffService {
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getUserId());
         // 员工状态变化  影响到账号
-        if (enter.getStatus() != staff.getStatus()) {
+        if (!enter.getStatus().equals(staff.getStatus())) {
             changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
         }
         BeanUtils.copyProperties(enter, staff);
