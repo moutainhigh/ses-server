@@ -43,6 +43,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrStockCountResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrTodayInOrOutStockCountResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -254,18 +255,19 @@ public class FrWhServiceImpl implements FrWhService {
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
         // 入库记录
         List<WmsStockRecordResult> record = wmsFinishStockMapper.inStockRecord(enter.getId());
-
-        LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeWmsStockSerialNumber::getStockType, 2);
-        wrapper.eq(OpeWmsStockSerialNumber::getRelationType, 3);
-        wrapper.eq(OpeWmsStockSerialNumber::getRelationId, enter.getId());
-        List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberMapper.selectList(wrapper);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (OpeWmsStockSerialNumber obj : list) {
-                if (CollectionUtils.isNotEmpty(record)) {
-                    for (WmsStockRecordResult o : record) {
-                        o.setLotNum(obj.getLotNum());
+        if (CollectionUtils.isNotEmpty(record)) {
+            for (WmsStockRecordResult r : record) {
+                LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
+                wrapper.eq(OpeWmsStockSerialNumber::getStockType, 2);
+                wrapper.eq(OpeWmsStockSerialNumber::getRelationType, 3);
+                wrapper.eq(OpeWmsStockSerialNumber::getRelationId, r.getRelationId());
+                List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberMapper.selectList(wrapper);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    OpeWmsStockSerialNumber number = list.get(0);
+                    String lotNum = number.getLotNum();
+                    if (StringUtils.isNotBlank(lotNum)) {
+                        r.setLotNum(lotNum);
                     }
                 }
             }
