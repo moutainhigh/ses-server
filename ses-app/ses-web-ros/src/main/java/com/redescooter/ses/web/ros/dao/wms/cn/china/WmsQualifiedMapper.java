@@ -1,8 +1,14 @@
 package com.redescooter.ses.web.ros.dao.wms.cn.china;
 
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
-import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
-import com.redescooter.ses.web.ros.vo.wms.cn.china.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsFinishScooterListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedScooterListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -96,10 +102,10 @@ public interface WmsQualifiedMapper {
     /**
      * 中国仓库不合格品库车辆,组装件和部件详情count
      */
-    int getDetailCount(@Param("enter") WmsQualifiedDetailEnter enter);
+    //int getDetailCount(@Param("enter") WmsQualifiedDetailEnter enter);
 
     /**
      * 中国仓库不合格品库车辆,组装件和部件详情
      */
-    List<WmsDetailResult> getDetail(@Param("enter") WmsQualifiedDetailEnter enter);
+    //List<WmsDetailResult> getDetail(@Param("enter") WmsQualifiedDetailEnter enter);
 }
