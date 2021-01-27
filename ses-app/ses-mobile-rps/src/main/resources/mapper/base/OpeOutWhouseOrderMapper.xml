@@ -4,12 +4,12 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
     <!--@mbg.generated-->
     <!--@Table ope_out_whouse_order-->
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
-    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+    <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+    <result column="dept_id" jdbcType="BIGINT" property="deptId" />
     <result column="country_type" jdbcType="INTEGER" property="countryType" />
-    <result column="relation_id" jdbcType="BIGINT" property="relationId" />
+    <result column="relation_id" jdbcType="INTEGER" property="relationId" />
     <result column="relation_no" jdbcType="VARCHAR" property="relationNo" />
     <result column="relation_type" jdbcType="INTEGER" property="relationType" />
     <result column="wh_type" jdbcType="INTEGER" property="whType" />
@@ -43,17 +43,17 @@
     out_stock_time, country_code, telephone, mail, `source`, if_wh, remark, created_by, 
     created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
     select 
     <include refid="Base_Column_List" />
     from ope_out_whouse_order
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--@mbg.generated-->
     delete from ope_out_whouse_order
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insertSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
     <!--@mbg.generated-->
@@ -155,22 +155,22 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        #{tenantId,jdbcType=INTEGER},
+        #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="deptId != null">
-        #{deptId,jdbcType=INTEGER},
+        #{deptId,jdbcType=BIGINT},
       </if>
       <if test="countryType != null">
         #{countryType,jdbcType=INTEGER},
       </if>
       <if test="relationId != null">
-        #{relationId,jdbcType=BIGINT},
+        #{relationId,jdbcType=INTEGER},
       </if>
       <if test="relationNo != null">
         #{relationNo,jdbcType=VARCHAR},
@@ -257,16 +257,16 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=INTEGER},
+        tenant_id = #{tenantId,jdbcType=BIGINT},
       </if>
       <if test="deptId != null">
-        dept_id = #{deptId,jdbcType=INTEGER},
+        dept_id = #{deptId,jdbcType=BIGINT},
       </if>
       <if test="countryType != null">
         country_type = #{countryType,jdbcType=INTEGER},
       </if>
       <if test="relationId != null">
-        relation_id = #{relationId,jdbcType=BIGINT},
+        relation_id = #{relationId,jdbcType=INTEGER},
       </if>
       <if test="relationNo != null">
         relation_no = #{relationNo,jdbcType=VARCHAR},
@@ -344,16 +344,16 @@
         def5 = #{def5,jdbcType=DECIMAL},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
     <!--@mbg.generated-->
     update ope_out_whouse_order
     set dr = #{dr,jdbcType=INTEGER},
-      tenant_id = #{tenantId,jdbcType=INTEGER},
-      dept_id = #{deptId,jdbcType=INTEGER},
+      tenant_id = #{tenantId,jdbcType=BIGINT},
+      dept_id = #{deptId,jdbcType=BIGINT},
       country_type = #{countryType,jdbcType=INTEGER},
-      relation_id = #{relationId,jdbcType=BIGINT},
+      relation_id = #{relationId,jdbcType=INTEGER},
       relation_no = #{relationNo,jdbcType=VARCHAR},
       relation_type = #{relationType,jdbcType=INTEGER},
       wh_type = #{whType,jdbcType=INTEGER},
@@ -379,6 +379,6 @@
       def3 = #{def3,jdbcType=VARCHAR},
       def4 = #{def4,jdbcType=VARCHAR},
       def5 = #{def5,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

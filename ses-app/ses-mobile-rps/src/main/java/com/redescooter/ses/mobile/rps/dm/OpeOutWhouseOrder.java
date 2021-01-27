@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author assert
- * @date 2021/1/27 20:54
+ * @date 2021/1/27 22:52
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeOutWhouseOrder")
 @Data
@@ -50,7 +50,7 @@ public class OpeOutWhouseOrder {
      * 主键id
      */
     @ApiModelProperty(value = "主键id")
-    private Integer id;
+    private Long id;
 
     /**
      * 逻辑删除
@@ -62,13 +62,13 @@ public class OpeOutWhouseOrder {
      * 租户ID
      */
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 部门id（做数据权限用）
      */
     @ApiModelProperty(value = "部门id（做数据权限用）")
-    private Integer deptId;
+    private Long deptId;
 
     /**
      * 国家类型，1:中国，2:法国

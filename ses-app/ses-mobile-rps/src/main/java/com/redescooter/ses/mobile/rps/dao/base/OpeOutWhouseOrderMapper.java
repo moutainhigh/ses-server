@@ -1,11 +1,11 @@
 package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;import org.apache.ibatis.annotations.Param;import java.util.List;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;
 
 /**
  * @author assert
- * @date 2021/1/27 20:54
+ * @date 2021/1/27 22:52
  */
 public interface OpeOutWhouseOrderMapper extends BaseMapper<OpeOutWhouseOrder> {
     /**
@@ -14,7 +14,7 @@ public interface OpeOutWhouseOrderMapper extends BaseMapper<OpeOutWhouseOrder> {
      * @param id primaryKey
      * @return deleteCount
      */
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     /**
      * insert record to table selective
@@ -30,7 +30,7 @@ public interface OpeOutWhouseOrderMapper extends BaseMapper<OpeOutWhouseOrder> {
      * @param id primary key
      * @return object by primary key
      */
-    OpeOutWhouseOrder selectByPrimaryKey(Integer id);
+    OpeOutWhouseOrder selectByPrimaryKey(Long id);
 
     /**
      * update record
@@ -47,5 +47,4 @@ public interface OpeOutWhouseOrderMapper extends BaseMapper<OpeOutWhouseOrder> {
      * @return update count
      */
     int updateByPrimaryKey(OpeOutWhouseOrder record);
-
 }

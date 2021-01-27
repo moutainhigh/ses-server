@@ -173,28 +173,28 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      */
     @Override
     public GeneralResult startQc(IdEnter enter) {
-        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (opeOutWhouseOrder==null){
-            throw  new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
-        }
-        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())){
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
-        }
-        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue());
-        opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
-        opeOutWhouseOrder.setUpdatedTime(new Date());
-        opeOutWhouseOrderService.updateById(opeOutWhouseOrder);
-        //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeOutWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.START_QC.getValue(),
-                opeOutWhouseOrder.getRemark());
-        saveOpTraceEnter.setUserId(enter.getUserId());
-        productionOrderTraceService.save(saveOpTraceEnter);
-
-        //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(),
-                opeOutWhouseOrder.getRemark());
-        orderStatusFlowEnter.setUserId(enter.getUserId());
-        orderStatusFlowService.save(orderStatusFlowEnter);
+//        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+//        if (opeOutWhouseOrder==null){
+//            throw  new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+//        }
+//        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())){
+//            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+//        }
+//        opeOutWhouseOrder.setOutWhStatus(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue());
+//        opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
+//        opeOutWhouseOrder.setUpdatedTime(new Date());
+//        opeOutWhouseOrderService.updateById(opeOutWhouseOrder);
+//        //操作动态
+//        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeOutWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.START_QC.getValue(),
+//                opeOutWhouseOrder.getRemark());
+//        saveOpTraceEnter.setUserId(enter.getUserId());
+//        productionOrderTraceService.save(saveOpTraceEnter);
+//
+//        //订单节点
+//        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(),
+//                opeOutWhouseOrder.getRemark());
+//        orderStatusFlowEnter.setUserId(enter.getUserId());
+//        orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -229,23 +229,23 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      */
     @Override
     public List<OutboundDetailProductResult> detailProductList(IdEnter enter) {
-        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (opeOutWhouseOrder==null){
-            throw  new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
-        }
-        List<OutboundDetailProductResult> result = new ArrayList<>();
-        switch (opeOutWhouseOrder.getOutWhType()){
-            case 1:
-                result=outBoundOrderSrviceMapper.detailProductListByScooter(enter);
-                break;
-            case 2 :
-                result=outBoundOrderSrviceMapper.detailProductListByCombin(enter);
-                break;
-            default:
-                result=outBoundOrderSrviceMapper.detailProductListByPart(enter);
-                break;
-        }
-        return result;
+//        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+//        if (opeOutWhouseOrder==null){
+//            throw  new SesMobileRpsException(ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+//        }
+//        List<OutboundDetailProductResult> result = new ArrayList<>();
+//        switch (opeOutWhouseOrder.getOutWhType()){
+//            case 1:
+//                result=outBoundOrderSrviceMapper.detailProductListByScooter(enter);
+//                break;
+//            case 2 :
+//                result=outBoundOrderSrviceMapper.detailProductListByCombin(enter);
+//                break;
+//            default:
+//                result=outBoundOrderSrviceMapper.detailProductListByPart(enter);
+//                break;
+//        }
+        return null;
     }
 
     /**
@@ -536,26 +536,26 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
             }
             //更新
             //查询主单据
-            OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(orderId);
-            //部分出库单据更新
-            if (opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())){
-                OutboundUpdateStatusEnter outboundUpdateStatusEnter = new OutboundUpdateStatusEnter(orderId, OutBoundOrderStatusEnums.PARTIAL_DELIVERY.getValue(), null,enter.getQty());
-                outboundUpdateStatusEnter.setUserId(enter.getUserId());
-                this.updateStatus(outboundUpdateStatusEnter);
-            }else {
-                //订单出库
-                if (updateOrderStatus){
-                    OutboundUpdateStatusEnter outboundUpdateStatusEnter = new OutboundUpdateStatusEnter(orderId, OutBoundOrderStatusEnums.OUT_STOCK.getValue(), OrderOperationTypeEnums.OUT_STOCK.getValue(),enter.getQty());
-                    outboundUpdateStatusEnter.setUserId(enter.getUserId());
-                    this.updateStatus(outboundUpdateStatusEnter);
-
-                    //发货单装车
-                    InvoiceUpdateStatusEnter invoiceUpdateStatusEnter = new InvoiceUpdateStatusEnter(opeOutWhouseOrder.getInvoiceId(), InvoiceOrderStatusEnums.BE_LOADED.getValue(),
-                            OrderOperationTypeEnums.LOADING.getValue());
-                    invoiceUpdateStatusEnter.setUserId(enter.getUserId());
-                    invoiceOrderService.updateStatus(invoiceUpdateStatusEnter);
-                }
-            }
+//            OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(orderId);
+//            //部分出库单据更新
+//            if (opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.BE_OUTBOUND.getValue())){
+//                OutboundUpdateStatusEnter outboundUpdateStatusEnter = new OutboundUpdateStatusEnter(orderId, OutBoundOrderStatusEnums.PARTIAL_DELIVERY.getValue(), null,enter.getQty());
+//                outboundUpdateStatusEnter.setUserId(enter.getUserId());
+//                this.updateStatus(outboundUpdateStatusEnter);
+//            }else {
+//                //订单出库
+//                if (updateOrderStatus){
+//                    OutboundUpdateStatusEnter outboundUpdateStatusEnter = new OutboundUpdateStatusEnter(orderId, OutBoundOrderStatusEnums.OUT_STOCK.getValue(), OrderOperationTypeEnums.OUT_STOCK.getValue(),enter.getQty());
+//                    outboundUpdateStatusEnter.setUserId(enter.getUserId());
+//                    this.updateStatus(outboundUpdateStatusEnter);
+//
+//                    //发货单装车
+//                    InvoiceUpdateStatusEnter invoiceUpdateStatusEnter = new InvoiceUpdateStatusEnter(opeOutWhouseOrder.getInvoiceId(), InvoiceOrderStatusEnums.BE_LOADED.getValue(),
+//                            OrderOperationTypeEnums.LOADING.getValue());
+//                    invoiceUpdateStatusEnter.setUserId(enter.getUserId());
+//                    invoiceOrderService.updateStatus(invoiceUpdateStatusEnter);
+//                }
+//            }
         }
         //保存质检记录
         SaveProductQcTraceEnter saveProductQcTraceEnter = new SaveProductQcTraceEnter(opeInvoiceProductSerialNumId,enter.getSerialNum(), enter.getLot(),qcResult?1:0,enter.getImageUrl(),
@@ -578,31 +578,31 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
     @Transactional
     @Override
     public GeneralResult updateStatus(OutboundUpdateStatusEnter enter) {
-        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (opeOutWhouseOrder==null){
-            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
-        }
-        if (enter.getQty()!=null && enter.getQty()!=0){
-            opeOutWhouseOrder.setAlreadyOutWhQty(opeOutWhouseOrder.getAlreadyOutWhQty()+enter.getQty());
-        }
-        opeOutWhouseOrder.setOutWhStatus(enter.getStatus());
-        opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
-        opeOutWhouseOrder.setUpdatedTime(new Date());
-        opeOutWhouseOrderService.updateById(opeOutWhouseOrder);
-
-        if (enter.getOperatingDynamics()!=null && enter.getOperatingDynamics()!=0){
-            //操作动态
-            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeOutWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), enter.getOperatingDynamics(),
-                    opeOutWhouseOrder.getRemark());
-            saveOpTraceEnter.setUserId(enter.getUserId());
-            productionOrderTraceService.save(saveOpTraceEnter);
-        }
-
-        //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, enter.getStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(),
-                opeOutWhouseOrder.getRemark());
-        orderStatusFlowEnter.setUserId(enter.getUserId());
-        orderStatusFlowService.save(orderStatusFlowEnter);
+//        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
+//        if (opeOutWhouseOrder==null){
+//            throw new SesMobileRpsException(ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(),ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+//        }
+//        if (enter.getQty()!=null && enter.getQty()!=0){
+//            opeOutWhouseOrder.setAlreadyOutWhQty(opeOutWhouseOrder.getAlreadyOutWhQty()+enter.getQty());
+//        }
+//        opeOutWhouseOrder.setOutWhStatus(enter.getStatus());
+//        opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
+//        opeOutWhouseOrder.setUpdatedTime(new Date());
+//        opeOutWhouseOrderService.updateById(opeOutWhouseOrder);
+//
+//        if (enter.getOperatingDynamics()!=null && enter.getOperatingDynamics()!=0){
+//            //操作动态
+//            SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeOutWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), enter.getOperatingDynamics(),
+//                    opeOutWhouseOrder.getRemark());
+//            saveOpTraceEnter.setUserId(enter.getUserId());
+//            productionOrderTraceService.save(saveOpTraceEnter);
+//        }
+//
+//        //订单节点
+//        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, enter.getStatus(), OrderTypeEnums.OUTBOUND.getValue(), opeOutWhouseOrder.getId(),
+//                opeOutWhouseOrder.getRemark());
+//        orderStatusFlowEnter.setUserId(enter.getUserId());
+//        orderStatusFlowService.save(orderStatusFlowEnter);
         return new GeneralResult(enter.getRequestId());
     }
 }

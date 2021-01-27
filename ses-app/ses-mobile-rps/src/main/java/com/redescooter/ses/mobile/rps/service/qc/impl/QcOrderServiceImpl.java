@@ -1,8 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
-import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
-import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
@@ -42,7 +40,6 @@ import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
@@ -591,7 +588,7 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
             opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
             opeOutWhouseOrder.setUpdatedTime(new Date());
-            opeOutWhouseOrderMapper.insertOrUpdateSelective(opeOutWhouseOrder);
+            opeOutWhouseOrderMapper.insertSelective(opeOutWhouseOrder);
         } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
             opeCombinOrder.setId(opeQcOrder.getRelationOrderId());
