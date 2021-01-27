@@ -409,6 +409,9 @@ public class StaffServiceImpl implements StaffService {
         if (!Strings.isNullOrEmpty(staff.getOpenAccount()) && staff.getOpenAccount().equals("1")) {
             throw new SesWebRosException(ExceptionCodeEnums.ALREADY_OPEN.getCode(), ExceptionCodeEnums.ALREADY_OPEN.getMessage());
         }
+        if(2 == staff.getStatus()){
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
+        }
         staff.setOpenAccount("1");
         opeSysStaffService.updateById(staff);
         // 判断邮箱在user表里面是否已经存在过
