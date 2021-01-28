@@ -338,7 +338,9 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         }
         opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
+        // 新增生产采购单
         opeProductionPurchaseOrderService.saveOrUpdate(opeProductionPurchaseOrder);
+        // 新增生产采购单子表
         opeProductionPurchasePartsBService.saveBatch(savePartsBList);
 
         //操作动态
@@ -440,8 +442,8 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     private List<PartDetailDto> checkJsonData(List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter) {
         List<PartDetailDto> PartDetailDtoList = productionPurchasServiceMapper.partDetailList(productList.stream().map(SavePurchasProductEnter::getId).collect(Collectors.toSet()));
         productList.forEach(item -> {
-            PartDetailDto partDetailDto = PartDetailDtoList.stream().filter(product -> item.getId().equals(product.getPartId())).findFirst().orElse(null);
-            if (Objects.isNull(partDetailDto)) {
+            PartDetailDto dto = PartDetailDtoList.stream().filter(product -> item.getId().equals(product.getPartId())).findFirst().orElse(null);
+            if (Objects.isNull(dto)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
             if (Objects.isNull(item.getQty()) || item.getQty().equals(0)) {
