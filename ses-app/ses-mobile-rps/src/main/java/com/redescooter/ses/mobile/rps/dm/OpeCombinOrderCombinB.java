@@ -23,7 +23,7 @@ public class OpeCombinOrderCombinB {
     * 主键id
     */
     @ApiModelProperty(value="主键id")
-    private Integer id;
+    private Long id;
 
     /**
     * 逻辑删除

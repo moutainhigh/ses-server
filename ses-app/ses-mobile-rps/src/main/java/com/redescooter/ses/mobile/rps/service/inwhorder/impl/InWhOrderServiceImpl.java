@@ -26,6 +26,7 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
@@ -37,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -59,40 +61,50 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     private IdAppService idAppService;
     @DubboReference
     private ScooterService scooterService;
-    @Resource
+    @Autowired
     private InWhOrderMapper inWhOrderMapper;
-    @Resource
+    @Autowired
     private InWhouseScooterBMapper inWhouseScooterBMapper;
-    @Resource
+    @Autowired
     private InWhouseCombinBMapper inWhouseCombinBMapper;
-    @Resource
+    @Autowired
     private InWhousePartsBMapper inWhousePartsBMapper;
-    @Resource
+    @Autowired
     private WmsScooterStockMapper wmsScooterStockMapper;
-    @Resource
+    @Autowired
     private WmsCombinStockMapper wmsCombinStockMapper;
-    @Resource
+    @Autowired
     private WmsPartsStockMapper wmsPartsStockMapper;
-    @Resource
+    @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
-    @Resource
+    @Autowired
     private ProductionCombinBomMapper combinBomMapper;
-    @Resource
+    @Autowired
     private ProductionPartsMapper partsMapper;
-    @Resource
+    @Autowired
     private CombinationOrderMapper combinationOrderMapper;
-    @Resource
+    @Autowired
     private PurchaseOrderMapper purchaseOrderMapper;
-    @Resource
+    @Autowired
     private InWhouseOrderSerialBindMapper inWhouseOrderSerialBindMapper;
-    @Resource
+    @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
-    @Resource
+    @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
-    @Resource
+    @Autowired
     private TransactionTemplate transactionTemplate;
-    @Resource
+    @Autowired
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
+    @Autowired
+    private OpeProductionCombinBomService opeProductionCombinBomService;
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+    @Autowired
+    private OpeWmsScooterStockService opeWmsScooterStockService;
+    @Autowired
+    private OpeWmsCombinStockService opeWmsCombinStockService;
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
 
 
     @Override
@@ -232,6 +244,22 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
                 OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper.getWmsScooterStockByGroupIdAndColorId(scooterBom.getGroupId(),
                         scooterBom.getColorId());
+                if(opeWmsScooterStock == null){
+                    opeWmsScooterStock = new OpeWmsScooterStock();
+                    opeWmsScooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                    opeWmsScooterStock.setGroupId(scooterBom.getGroupId());
+                    opeWmsScooterStock.setColorId(scooterBom.getColorId());
+                    opeWmsScooterStock.setAbleStockQty(0);
+                    opeWmsScooterStock.setUsedStockQty(0);
+                    opeWmsScooterStock.setWaitOutStockQty(0);
+                    opeWmsScooterStock.setWaitInStockQty(0);
+                    opeWmsScooterStock.setStockType(1);
+                    opeWmsScooterStock.setCreatedBy(paramDTO.getUserId());
+                    opeWmsScooterStock.setCreatedTime(new Date());
+                    opeWmsScooterStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsScooterStock.setUpdatedTime(new Date());
+                    opeWmsScooterStockService.saveOrUpdate(opeWmsScooterStock);
+                }
                 stockId = opeWmsScooterStock.getId();
                 break;
             case 2:
@@ -250,6 +278,29 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
                 // 成品库组装件id
                 OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(paramDTO.getBomId());
+                if (opeWmsCombinStock == null){
+                    opeWmsCombinStock = new OpeWmsCombinStock();
+                    opeWmsCombinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
+                    opeWmsCombinStock.setStockType(1);
+                    opeWmsCombinStock.setProductionCombinBomId(paramDTO.getBomId());
+                    // 获取组装件的别的信息
+                    OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(paramDTO.getBomId());
+                    if (opeProductionCombinBom != null) {
+                        opeWmsCombinStock.setCombinNo(opeProductionCombinBom.getBomNo());
+                        opeWmsCombinStock.setCnName(opeProductionCombinBom.getCnName());
+                        opeWmsCombinStock.setEnName(opeProductionCombinBom.getEnName());
+                        opeWmsCombinStock.setFrName(opeProductionCombinBom.getFrName());
+                    }
+                    opeWmsCombinStock.setUsedStockQty(0);
+                    opeWmsCombinStock.setAbleStockQty(0);
+                    opeWmsCombinStock.setWaitInStockQty(0);
+                    opeWmsCombinStock.setWaitOutStockQty(0);
+                    opeWmsCombinStock.setCreatedTime(new Date());
+                    opeWmsCombinStock.setCreatedBy(paramDTO.getUserId());
+                    opeWmsCombinStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsCombinStock.setUpdatedTime(new Date());
+                    opeWmsCombinStockService.saveOrUpdate(opeWmsCombinStock);
+                }
                 stockId = opeWmsCombinStock.getId();
                 break;
             default:
@@ -278,6 +329,30 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
                 // 原料库部件id
                 OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(paramDTO.getBomId());
+                if (opeWmsPartsStock == null) {
+                    opeWmsPartsStock = new OpeWmsPartsStock();
+                    opeWmsPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
+                    opeWmsPartsStock.setStockType(1);
+                    opeWmsPartsStock.setPartsId(paramDTO.getBomId());
+                    // 从部件表去数据
+                    OpeProductionParts opeProductionParts = opeProductionPartsService.getById(paramDTO.getBomId());
+                    if (opeProductionParts != null) {
+                        opeWmsPartsStock.setPartsType(opeProductionParts.getPartsType());
+                        opeWmsPartsStock.setPartsNo(opeProductionParts.getPartsNo());
+                        opeWmsPartsStock.setCnName(opeProductionParts.getCnName());
+                        opeWmsPartsStock.setEnName(opeProductionParts.getEnName());
+                        opeWmsPartsStock.setFrName(opeProductionParts.getFrName());
+                    }
+                    opeWmsPartsStock.setWaitInStockQty(0);
+                    opeWmsPartsStock.setAbleStockQty(0);
+                    opeWmsPartsStock.setUsedStockQty(0);
+                    opeWmsPartsStock.setWaitOutStockQty(0);
+                    opeWmsPartsStock.setCreatedBy(paramDTO.getUserId());
+                    opeWmsPartsStock.setCreatedTime(new Date());
+                    opeWmsPartsStock.setUpdatedTime(new Date());
+                    opeWmsPartsStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsPartsStockService.saveOrUpdate(opeWmsPartsStock);
+                }
                 stockId = opeWmsPartsStock.getId();
                 break;
         }
@@ -408,7 +483,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 wmsStockSerialNumberMapper.batchUpdateStockStatusByRsnList(serialNumList, enter.getUserId(), new Date());
 
                 // 修改入库单状态为 【已入库】
-                opeInWhouseOrder.setInWhStatus(InWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+                opeInWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
                 opeInWhouseOrder.setUpdatedBy(enter.getUserId());
                 opeInWhouseOrder.setUpdatedTime(new Date());
                 inWhOrderMapper.updateInWhOrder(opeInWhouseOrder);

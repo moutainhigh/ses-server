@@ -366,7 +366,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                     List<OpeProductionPartsRelation> opeProductionPartsRelationList = opeProductionPartsRelationMapper
                             .selectList(partsRelationQueryWrapper);
 
-                    for (int j = 0; j < opeCombinListScooterList.get(i).getQty(); j++) {
+                    for (int j = 0; j < opeCombinOrderScooterList.get(i).getQty(); j++) {
                         OpeCombinListScooterB opeCombinListScooterB = new OpeCombinListScooterB();
                         Long combinListScooterId = idAppService.getId(SequenceName.OPE_COMBIN_LIST_SCOOTER_B);
                         opeCombinListScooterB.setId(combinListScooterId);

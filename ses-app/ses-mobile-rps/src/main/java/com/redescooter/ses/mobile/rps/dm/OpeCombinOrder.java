@@ -35,7 +35,7 @@ public class OpeCombinOrder {
      * 租户ID
      */
     @ApiModelProperty(value = "租户ID")
-    private Integer tenantId;
+    private Long tenantId;
 
     /**
      * 部门id（做数据权限用）

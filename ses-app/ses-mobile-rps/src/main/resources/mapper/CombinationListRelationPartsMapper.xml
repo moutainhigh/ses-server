@@ -87,7 +87,7 @@
 
     <!--根据relationId查询部件扫码数量-->
     <select id="getScanCodeQtyByRelationId" parameterType="java.lang.Long" resultType="java.lang.Integer">
-        select sum(scan_code_qty) from ope_combin_list_relation_parts
+        select IFNULL(sum(scan_code_qty),0) from ope_combin_list_relation_parts
 	    where dr = 0 and relation_id = #{relationId}
     </select>
 

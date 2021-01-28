@@ -1,39 +1,37 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import java.util.List;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import com.redescooter.ses.mobile.rps.service.base.OpeWmsScooterStockService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 /**
  *@author assert
  *@date 2021/1/14 15:44
  */
 @Service
-public class OpeWmsScooterStockServiceImpl implements OpeWmsScooterStockService{
+public class OpeWmsScooterStockServiceImpl extends ServiceImpl<OpeWmsScooterStockMapper, OpeWmsScooterStock> implements OpeWmsScooterStockService{
 
-    @Resource
-    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
 
     @Override
     public int updateBatch(List<OpeWmsScooterStock> list) {
-        return opeWmsScooterStockMapper.updateBatch(list);
+        return 0;
     }
 
     @Override
     public int batchInsert(List<OpeWmsScooterStock> list) {
-        return opeWmsScooterStockMapper.batchInsert(list);
+        return 0;
     }
 
     @Override
     public int insertOrUpdate(OpeWmsScooterStock record) {
-        return opeWmsScooterStockMapper.insertOrUpdate(record);
+        return 0;
     }
 
     @Override
     public int insertOrUpdateSelective(OpeWmsScooterStock record) {
-        return opeWmsScooterStockMapper.insertOrUpdateSelective(record);
+        return 0;
     }
-
 }

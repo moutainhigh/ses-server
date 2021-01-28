@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
  *@author assert
  *@date 2021/1/14 15:44
  */
-public interface OpeWmsScooterStockMapper extends BaseMapper {
+public interface OpeWmsScooterStockMapper extends BaseMapper<OpeWmsScooterStock> {
     int updateBatch(List<OpeWmsScooterStock> list);
 
     int batchInsert(@Param("list") List<OpeWmsScooterStock> list);

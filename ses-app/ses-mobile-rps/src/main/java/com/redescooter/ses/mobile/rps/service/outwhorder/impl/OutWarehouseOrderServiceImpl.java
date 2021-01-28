@@ -27,6 +27,7 @@ import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -291,13 +292,15 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     }
 
     @Override
+    @Transactional
     public GeneralResult outWarehouse(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
         RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
-
-        RpsAssert.isTrue(opeOutWhouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
-                ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
+        if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
+            RpsAssert.isTrue(opeOutWhouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
+                    ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
+        }
 
         boolean result = transactionTemplate.execute(outWarehouseStatus -> {
             boolean flag = true;
@@ -352,7 +355,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                                 Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
                         );
 
-                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, partsMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+                        saveWmsStockDataComponent.saveWmsPartsStockData(null, partsMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
 
                         /**
                          * 如果是组装单生成的出库单则生成组装单清单信息
@@ -370,7 +373,9 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 /**
                  * 产品出库后将信息从库存产品序列号表中删除
                  */
-                wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+                if (CollectionUtils.isNotEmpty(serialNumList)){
+                    wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+                }
 
                 /**
                  * 调用Aleks提交出库后的状态流转方法
