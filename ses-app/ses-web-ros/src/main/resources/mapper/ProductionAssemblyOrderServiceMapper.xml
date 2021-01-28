@@ -144,7 +144,7 @@
         id as relationOrderId,
         combin_no as relationOrderNo
         from ope_combin_order
-        where dr = 0 and combin_status in (70,80)
+        where dr = 0 and combin_status in (50)
         and combin_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and combin_no like concat('%', #{enter.keyword}, '%')
