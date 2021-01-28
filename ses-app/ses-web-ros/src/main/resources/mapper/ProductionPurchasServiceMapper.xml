@@ -66,18 +66,18 @@
                part.parts_no    as partN,
                part.en_name     as partName,
                part.parts_type  as productType,
-               100              as price,
+               price.price      as price,
                1                as unit,
                part.supplier_id as supplierId
         from ope_production_parts part
-        where  part.dr=0
+        left join ope_product_price price on part.id = price.product_id
+        where part.dr = 0
         <if test="collection != null and collection.size() != 0">
             and part.id in
             <foreach collection="collection" item="item" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
-
     </select>
 
     <select id="purchasPartListCount" resultType="int">
