@@ -233,5 +233,6 @@ public class SiteWebInquiryEnter {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
-
+    @ApiModelProperty("产品型号")
+    private String productModel;
 }
