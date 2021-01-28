@@ -41,7 +41,7 @@ public class OpeQcPartsB {
     * 部件id
     */
     @ApiModelProperty(value="部件id")
-    private Integer partsId;
+    private Long partsId;
 
     /**
     * 部件名称(英文名称)

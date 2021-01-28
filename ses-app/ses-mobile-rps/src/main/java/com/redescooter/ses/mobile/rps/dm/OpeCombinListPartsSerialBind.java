@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.dm;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class OpeCombinListPartsSerialBind {
      * 逻辑删除
      */
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
