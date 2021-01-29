@@ -21,12 +21,31 @@
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     </resultMap>
 
+    <!--OutWhOrderScooterResultMap-->
+    <resultMap id="OutWhOrderScooterResultMap" type="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(车辆序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+        </collection>
+    </resultMap>
+
     <!--根据outWhId查询出库单车辆信息-->
     <select id="getOutWhOrderScooterByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
         select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
-        ows.qty,ows.already_out_wh_qty alreadyOutWhQty, ows.qc_qty qcQty, ows.unqualified_qty unqualifiedQty,
-        true idClass, bom.id bomId
+        ows.qty,ows.already_out_wh_qty alreadyOutWhQty,true idClass, bom.id bomId
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -38,11 +57,9 @@
     </select>
 
     <!--根据productId查询车辆产品详情-->
-    <select id="getScooterProductDetailByProductId" parameterType="java.lang.Long"
-            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
-        select ows.id, ows.out_wh_id outWhId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
-        ows.qty,ows.already_out_wh_qty alreadyOutWhQty, ows.qc_qty qcQty, ows.unqualified_qty unqualifiedQty,
-        true idClass, bom.id bomId
+    <select id="getScooterProductDetailByProductId" parameterType="java.lang.Long" resultMap="OutWhOrderScooterResultMap">
+        select ows.id, ows.out_wh_id,sg.group_name, c.color_name, c.color_value,ows.qty,ows.already_out_wh_qty,
+        true id_class, bom.id bom_id, serial.id sn_id,serial.lot,'奥格工厂' factory_name, serial.serial_num
         from ope_out_wh_scooter_b ows
         left join ope_specificat_group sg
         on ows.group_id = sg.id and sg.dr = 0
@@ -50,6 +67,8 @@
         on ows.color_id = c.id and c.dr = 0
         left join ope_production_scooter_bom bom
         on ows.group_id = bom.group_id and ows.color_id = bom.color_id and bom.dr = 0 and bom.bom_status = 1
+        left join ope_out_whouse_order_serial_bind serial
+        on ows.id = serial.order_b_id and serial.dr = 0
         where ows.dr = 0 and ows.id = #{productId}
     </select>
 

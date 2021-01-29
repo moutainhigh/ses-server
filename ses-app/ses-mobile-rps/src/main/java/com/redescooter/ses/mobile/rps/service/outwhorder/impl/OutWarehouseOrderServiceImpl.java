@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutWhOrderTypeEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.service.RosOutWhOrderService;
@@ -24,7 +23,6 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -173,28 +171,21 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Override
     public OutWhOrderProductDetailDTO getOutWhOrderProductDetailByProductId(QueryProductDetailParamDTO paramDTO) {
         OutWhOrderProductDetailDTO productDetail = null;
-        List<ProductSerialNumberDTO> productSerialNumberList = null;
 
         /**
-         * 查询出库单产品详情 1：车辆 2：组装件 3：部件
+         * 查询出库单产品详情 1：车辆 2：组装件 3：部件(出库单的不合格数量和质检数量字段可以去掉By-assert)
          */
         switch (paramDTO.getProductType()) {
             case 1:
                 productDetail = outWhScooterBMapper.getScooterProductDetailByProductId(paramDTO.getProductId());
-                productSerialNumberList = invoiceProductSerialNumMapper.getOutWhOrderScooterByProductId(productDetail.getId());
                 break;
             case 2:
                 productDetail = outWhCombinBMapper.getCombinProductDetailByProductId(paramDTO.getProductId());
-                // 车辆跟组装件序列号查询返回结果一致,直接用同一个接口了
-                productSerialNumberList = invoiceProductSerialNumMapper.getOutWhOrderScooterByProductId(productDetail.getId());
                 break;
             default:
                 productDetail = outWhPartsBMapper.getPartsProductDetailByProductId(paramDTO.getProductId());
-                productSerialNumberList = invoiceProductSerialNumMapper.getOutWhOrderPartsByProductId(productDetail.getId());
                 break;
         }
-
-        productDetail.setProductSerialNumberList(productSerialNumberList);
         return productDetail;
     }
 

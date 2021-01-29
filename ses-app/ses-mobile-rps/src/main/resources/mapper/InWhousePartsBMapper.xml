@@ -129,13 +129,13 @@
     <!--根据id查询入库单部件信息-->
     <select id="getInWhOrderPartsById" parameterType="java.lang.Long" resultMap="InWhOrderPartsResultMap">
         select iwp.id, iwp.in_wh_id, pp.id bom_id, pp.parts_type,pp.cn_name, pp.parts_no `number`,
-        iwp.in_wh_qty, iwp.act_in_wh_qty, iwp.unqualified_qty, pp.id_calss,osb.id sn_id, osb.lot,
-        osb.serial_num,s.supplier_name
+        iwp.in_wh_qty, iwp.act_in_wh_qty, iwp.unqualified_qty, pp.id_calss,serial.id sn_id, serial.lot,
+        serial.serial_num,s.supplier_name
         from ope_in_whouse_parts_b iwp
         left join ope_production_parts pp
         on iwp.parts_id = pp.id and pp.disable = 0 and pp.dr = 0
-        left join ope_order_serial_bind osb
-        on iwp.parts_id = osb.product_id and osb.dr = 0
+        left join ope_in_whouse_order_serial_bind serial
+        on iwp.id = serial.order_b_id and serial.dr = 0
         left join ope_supplier s
         on pp.supplier_id = s.id and s.dr = 0
         where iwp.dr = 0 and iwp.id = #{id}

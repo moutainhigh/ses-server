@@ -24,12 +24,30 @@
         <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     </resultMap>
 
+    <!--OutWhOrderPartsResultMap-->
+    <resultMap id="OutWhOrderPartsResultMap" type="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="parts_no" jdbcType="VARCHAR" property="number" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(部件序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+        </collection>
+    </resultMap>
+
     <!--根据outWhId查询出库单部件信息-->
     <select id="getOutWhOrderPartsByOutWhId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
         select owp.id, owp.out_wh_id outWhId, pp.cn_name `name`, owp.parts_no number, pp.id bomId,
-        owp.qty,owp.already_out_wh_qty alreadyOutWhQty, owp.qc_qty qcQty,owp.unqualified_qty unqualifiedQty,
-        pp.id_calss idClass
+        owp.qty,owp.already_out_wh_qty alreadyOutWhQty,pp.id_calss idClass
         from ope_out_wh_parts_b owp
         inner join ope_production_parts pp
         on owp.parts_id = pp.id and pp.dr = 0
@@ -37,14 +55,14 @@
     </select>
 
     <!--根据productId查询部件产品详情-->
-    <select id="getPartsProductDetailByProductId" parameterType="java.lang.Long"
-            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
-        select owp.id, owp.out_wh_id outWhId, pp.cn_name `name`, owp.parts_no number,pp.id bomId,
-        owp.qty,owp.already_out_wh_qty alreadyOutWhQty, owp.qc_qty qcQty,owp.unqualified_qty unqualifiedQty,
-        pp.id_calss idClass
+    <select id="getPartsProductDetailByProductId" parameterType="java.lang.Long" resultMap="OutWhOrderPartsResultMap">
+        select owp.id, owp.out_wh_id, pp.cn_name, owp.parts_no,pp.id bom_id,owp.qty,owp.already_out_wh_qty,
+        pp.id_calss, serial.id sn_id,serial.lot, serial.serial_num, '奥格工厂' factory_name
         from ope_out_wh_parts_b owp
         inner join ope_production_parts pp
         on owp.parts_id = pp.id and pp.dr = 0
+        left join ope_out_whouse_order_serial_bind serial
+        on owp.id = serial.order_b_id and serial.dr = 0
         where owp.dr = 0 and owp.id = #{productId}
     </select>
 

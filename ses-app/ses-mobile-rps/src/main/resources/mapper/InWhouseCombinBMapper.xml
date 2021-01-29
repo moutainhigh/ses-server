@@ -111,13 +111,13 @@
     <!--根据id查询入库单组装件信息-->
     <select id="getInWhOrderCombinById" parameterType="java.lang.Long" resultMap="InWhOrderCombinResultMap">
         select iwc.id, iwc.in_wh_id, bom.id bom_id, bom.cn_name, bom.bom_no `number`,
-        iwc.in_wh_qty, iwc.act_in_wh_qty, iwc.unqualified_qty, true id_class, osb.id sn_id,
-        osb.lot, osb.serial_num, '奥格工厂' factory_name
+        iwc.in_wh_qty, iwc.act_in_wh_qty, iwc.unqualified_qty, true id_class, serial.id sn_id,
+        serial.lot, serial.serial_num, '奥格工厂' factory_name
         from ope_in_whouse_combin_b iwc
         left join ope_production_combin_bom bom
         on iwc.production_combin_bom_id = bom.id and bom.bom_status = 1 and bom.dr = 0
-        left join ope_order_serial_bind osb
-        on iwc.production_combin_bom_id = osb.product_id and osb.dr = 0
+        left join ope_in_whouse_order_serial_bind serial
+        on iwc.id = serial.order_b_id and serial.dr = 0
         where iwc.dr = 0 and iwc.id = #{id}
     </select>
 
