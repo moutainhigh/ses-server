@@ -3,10 +3,12 @@ package com.redescooter.ses.web.website.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdResult;
+import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dao.OrderMapper;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +84,9 @@ public class OrderServiceImpl implements OrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private SiteWebInquiryService siteWebInquiryService;
 
     /**
      * 创建订单
@@ -218,8 +224,35 @@ public class OrderServiceImpl implements OrderService {
         IdResult result = new IdResult();
         result.setId(addSiteOrderVO.getId());
         result.setRequestId(enter.getRequestId());
+        try {
+            // 官网的订单数据 要同步到ROS系统中
+            syncdataToRos(addSiteOrderVO);
+        }catch (Exception e) {
+
+        }
         return result;
     }
+
+
+    /**
+     * 这个方法要使用异步请求
+     * @param addSiteOrderVO
+     */
+    @Async
+    void syncdataToRos(SiteOrder addSiteOrderVO){
+        // 构造请求的参数
+        SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
+        BeanUtils.copyProperties(addSiteOrderVO,enter);
+        // 給productModel赋值
+        enter.setProductModel(orderMapper.getProductModelByOrderId(addSiteOrderVO.getId()));
+        // 调方法 同步数据
+        siteWebInquiryService.siteWebOrderToRosInquiry(enter);
+
+        // 同步之后要把同步表示改为已同步
+        addSiteOrderVO.setSynchronizeFlag(true);
+        siteOrderService.updateById(addSiteOrderVO);
+    }
+
 
     /**
      * 创建订单配件

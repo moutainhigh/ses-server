@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
+import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPayEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
@@ -148,6 +149,22 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         mondayGeneralEnter.setT(mondayBookOrderEnter);
         //Monday 同步数据
         mondayService.websiteBookOrder(mondayGeneralEnter);
+    }
+
+
+    /**
+     * 官网订单支付之后调用的 不管支付成功还是失败  都要调用
+     * @param enter
+     */
+    @Override
+    public void siteWebInquiryPay(SiteWebInquiryPayEnter enter) {
+
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (inquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        BeanUtils.copyProperties(enter, inquiry);
+        opeCustomerInquiryService.updateById(inquiry);
     }
 
 

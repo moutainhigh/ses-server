@@ -2,6 +2,7 @@ package com.redescooter.ses.web.website.dao;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author jerry
@@ -17,5 +18,13 @@ public interface OrderMapper {
      * @return
      */
     OrderDetailsResult getOrderDetails(IdEnter enter);
+
+
+    /**
+     * 通过订单的ID获取model
+     * @param orderId
+     * @return
+     */
+    String getProductModelByOrderId(@Param("orderId") Long orderId);
 
 }

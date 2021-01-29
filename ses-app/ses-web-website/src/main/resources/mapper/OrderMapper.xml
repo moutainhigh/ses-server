@@ -58,4 +58,15 @@
         where so.dr = 0
           and so.customer_id = #{id}
     </select>
+
+
+    <select id="getProductModelByOrderId" resultType="java.lang.String">
+        select
+           product_model_name
+        from site_product_model model
+        left join site_product product on product.product_model_id = model.id
+        left join site_order order on order.product_id = product.id
+        where model.dr = 0 and product.dr = 0 and order.dr = 0 and order.id = #{orderId}
+
+    </select>
 </mapper>
