@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Mr.lijiating
  * @version V1.0
@@ -39,9 +41,15 @@ public class OrderController {
         return new Response<>(orderService.AddOrderParts(enter));
     }
 
+    @GetMapping(value = "/list")
+    @ApiOperation(value = "Order List", response = OrderDetailsResult.class)
+    public Response<List<OrderDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(orderService.getOrderList(enter));
+    }
+
     @GetMapping(value = "/details")
     @ApiOperation(value = "Order Details", response = OrderDetailsResult.class)
-    public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
-        return new Response<>(orderService.getOrderDetailsByMyself(enter));
+    public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(orderService.getOrderDetails(enter));
     }
 }

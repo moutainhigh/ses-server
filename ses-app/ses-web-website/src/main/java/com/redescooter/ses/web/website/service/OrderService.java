@@ -8,6 +8,8 @@ import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 
+import java.util.List;
+
 /**
  * @Author jerry
  * @Date 2021/1/6 3:27 上午
@@ -22,7 +24,6 @@ public interface OrderService {
      */
     IdResult addOrder(AddOrderEnter enter);
 
-
     /**
      * 创建订单配件
      *
@@ -32,16 +33,17 @@ public interface OrderService {
     GeneralResult AddOrderParts(AddOrderPartsEnter enter);
 
     /**
-     * 获取订单详情
+     * 客户订单列表
      *
      * @param enter
+     * @return
      */
-    OrderDetailsResult getOrderDetails(IdEnter enter);
+    List<OrderDetailsResult> getOrderList(GeneralEnter enter);
 
     /**
      * @param enter
      * @return
      */
-    OrderDetailsResult getOrderDetailsByMyself(GeneralEnter enter);
+    OrderDetailsResult getOrderDetails(IdEnter enter);
 
 }

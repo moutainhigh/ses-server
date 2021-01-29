@@ -84,6 +84,8 @@ public enum ExceptionCodeEnums {
     PAYMENTTYPE_NOT_EXIST_EXIST(10032, "付款方式不存在"),
 
     BATTERIES_NUM_ERROR(10032, "电池数量匹配"),
+
+    PHONE_NOT_EXIST(10033, "手机号不能为空"),
     ;
 
 
