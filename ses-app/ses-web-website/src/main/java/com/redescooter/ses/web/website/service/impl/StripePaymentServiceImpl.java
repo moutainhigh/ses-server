@@ -104,7 +104,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             PaymentIntent intent = PaymentIntent.create(params);
             String clientSecret = null;
             try {
-                clientSecret = RsaUtils.encryptByPrivateKey(intent.getClientSecret(), requestsKeyProperties.getPrivateKey());
+                clientSecret = RsaUtils.encryptByPrivateKey(intent.getClientSecret(), requestsKeyProperties.getPublicKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.STRIPE_RESPONSE_EXIST.getCode(),
                         ExceptionCodeEnums.STRIPE_RESPONSE_EXIST.getMessage());
