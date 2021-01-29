@@ -142,4 +142,10 @@
         </foreach>
     </select>
 
+    <!--根据orderBId查询入库单产品序列号信息-->
+    <select id="getInWhouseOrderSerialBindByOrderBId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_order_serial_bind
+        where dr = 0 and order_b_id = #{orderBId}
+    </select>
+
 </mapper>

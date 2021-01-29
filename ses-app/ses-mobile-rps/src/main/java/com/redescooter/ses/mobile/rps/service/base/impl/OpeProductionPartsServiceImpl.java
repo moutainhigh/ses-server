@@ -10,7 +10,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
 
 @Service
 public class OpeProductionPartsServiceImpl extends ServiceImpl<OpeProductionPartsMapper, OpeProductionParts>
-    implements OpeProductionPartsService {
+        implements OpeProductionPartsService {
 
     @Override
     public int updateBatch(List<OpeProductionParts> list) {
@@ -31,4 +31,14 @@ public class OpeProductionPartsServiceImpl extends ServiceImpl<OpeProductionPart
     public int insertOrUpdateSelective(OpeProductionParts record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeProductionParts> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
+
+
+
+

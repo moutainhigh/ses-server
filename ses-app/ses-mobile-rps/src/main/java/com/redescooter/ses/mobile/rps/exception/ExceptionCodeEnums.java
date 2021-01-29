@@ -206,7 +206,13 @@ public enum ExceptionCodeEnums {
 
     COMBINATION_ORDER_IS_NOT_EXISTS(10100, "组装单不存在"),
 
-    COMBINATION_ORDER_STATUS_ERROR(10101, "组装单状态有误")
+    COMBINATION_ORDER_STATUS_ERROR(10101, "组装单状态有误"),
+
+    COMBINATION_BOM_IS_NOT_EXISTS(10102, "组装bom不存在"),
+
+    PARTS_BOM_IS_NOT_EXISTS(10103, "部件bom不存在"),
+
+    SCOOTER_BOM_IS_NOT_EXISTS(10104, "车辆bom不存在")
     ;
 
     private int code;

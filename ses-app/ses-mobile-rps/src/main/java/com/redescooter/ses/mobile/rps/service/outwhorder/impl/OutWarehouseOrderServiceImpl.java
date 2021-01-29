@@ -340,7 +340,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                                 Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
                         );
 
-                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, combinationMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, null, combinationMap,
+                                InOutWhEnums.OUT.getValue(), enter.getUserId());
                         break;
                     default:
                         productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
@@ -355,7 +356,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                                 Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
                         );
 
-                        saveWmsStockDataComponent.saveWmsPartsStockData(null, partsMap, InOutWhEnums.OUT.getValue(), enter.getUserId());
+                        saveWmsStockDataComponent.saveWmsPartsStockData(null, null, partsMap,
+                                InOutWhEnums.OUT.getValue(), enter.getUserId());
 
                         /**
                          * 如果是组装单生成的出库单则生成组装单清单信息

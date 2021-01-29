@@ -89,4 +89,24 @@
         </foreach>
     </update>
 
+    <!--批量新增成品库车辆库存信息-->
+    <insert id="batchInsertWmsScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        insert ope_wms_scooter_stock(id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty,
+        wait_out_stock_qty, created_by, created_time, updated_by, updated_time)
+        <foreach collection="opeWmsScooterStockList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.stockType}, #{item.groupId}, #{item.colorId}, #{item.ableStockQty}, #{item.usedStockQty},
+            #{item.waitInStockQty}, #{item.waitOutStockQty}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--根据bomId查询成品库车辆id-->
+    <select id="getWmsScooterStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select scooter.id
+        from ope_wms_scooter_stock scooter
+        left join ope_production_scooter_bom bom
+        on scooter.group_id = bom.group_id and scooter.color_id = bom.color_id
+        and bom.bom_status = 1 and bom.dr = 0
+        where scooter.dr = 0 and bom.id = #{bomId}
+    </select>
+
 </mapper>

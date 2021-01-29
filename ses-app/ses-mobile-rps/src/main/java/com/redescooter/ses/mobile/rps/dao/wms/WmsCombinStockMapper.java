@@ -39,4 +39,22 @@ public interface WmsCombinStockMapper {
     */
     int batchUpdateWmsCombinStock(@Param("opeWmsCombinStockList") List<OpeWmsCombinStock> opeWmsCombinStockList);
 
+    /**
+     * 批量新增成品库组装件库存信息
+     * @param opeWmsCombinStockList
+     * @return int
+     * @author assert
+     * @date 2021/1/29
+    */
+    int batchInsertWmsCombinStock(@Param("opeWmsCombinStockList") List<OpeWmsCombinStock> opeWmsCombinStockList);
+
+    /**
+     * 根据bomId查询成品库组装件库存id
+     * @param bomId
+     * @return java.lang.Long
+     * @author assert
+     * @date 2021/1/29
+    */
+    Long getWmsCombinStockIdByBomId(Long bomId);
+
 }

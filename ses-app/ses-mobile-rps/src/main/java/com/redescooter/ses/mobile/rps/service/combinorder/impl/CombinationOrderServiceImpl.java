@@ -25,6 +25,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.vo.combinorder.*;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,29 +58,29 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     private IdAppService idAppService;
     @DubboReference
     private ScooterService scooterService;
-    @Resource
+    @Autowired
     private CombinationOrderMapper combinationOrderMapper;
-    @Resource
+    @Autowired
     private CombinationListScooterMapper combinationListScooterMapper;
-    @Resource
+    @Autowired
     private CombinationListCombinMapper combinationListCombinMapper;
-    @Resource
+    @Autowired
     private CombinationListRelationPartsMapper combinationListRelationPartsMapper;
-    @Resource
+    @Autowired
     private CombinationListPartsSerialBindMapper combinationListPartsSerialBindMapper;
-    @Resource
+    @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
-    @Resource
+    @Autowired
     private ProductionCombinBomMapper combinBomMapper;
-    @Resource
+    @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
-    @Resource
+    @Autowired
     private OpeCombinOrderScooterBMapper opeCombinOrderScooterBMapper;
-    @Resource
+    @Autowired
     private OpeCombinOrderCombinBMapper opeCombinOrderCombinBMapper;
-    @Resource
+    @Autowired
     private OpeProductionPartsRelationMapper opeProductionPartsRelationMapper;
-    @Resource
+    @Autowired
     private ProductionPartsMapper productionPartsMapper;
 
 
@@ -308,7 +310,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         saveScanCodeResultDTO.setBluetoothMacAddress(bluetoothMacAddress);
         saveScanCodeResultDTO.setTabletSn(tabletSn);
         saveScanCodeResultDTO.setSerialNum(serialNum);
-        saveScanCodeResultDTO.setLot(null);
+        saveScanCodeResultDTO.setLot(System.currentTimeMillis() + "");
         // 生成日期指的就是车辆完成组装时间
         saveScanCodeResultDTO.setProductionDate(new Date());
         saveScanCodeResultDTO.setPrintFlag(true);

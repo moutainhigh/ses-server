@@ -1,17 +1,20 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsQualifiedPartsStockMapper;
 import java.util.List;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedPartsStock;
 import com.redescooter.ses.mobile.rps.service.base.OpeWmsQualifiedPartsStockService;
+
 /**
- *@author assert
- *@date 2021/1/14 15:44
+ * @author assert
+ * @date 2021/1/14 15:44
  */
 @Service
-public class OpeWmsQualifiedPartsStockServiceImpl implements OpeWmsQualifiedPartsStockService{
+public class OpeWmsQualifiedPartsStockServiceImpl extends ServiceImpl<OpeWmsQualifiedPartsStockMapper, OpeWmsQualifiedPartsStock>
+        implements OpeWmsQualifiedPartsStockService {
 
     @Resource
     private OpeWmsQualifiedPartsStockMapper opeWmsQualifiedPartsStockMapper;
@@ -37,3 +40,4 @@ public class OpeWmsQualifiedPartsStockServiceImpl implements OpeWmsQualifiedPart
     }
 
 }
+

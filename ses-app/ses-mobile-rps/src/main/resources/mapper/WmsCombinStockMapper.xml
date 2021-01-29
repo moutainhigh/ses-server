@@ -95,4 +95,21 @@
         </foreach>
     </update>
 
+    <!--批量新增成品库组装件库存信息-->
+    <insert id="batchInsertWmsCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        insert ope_wms_combin_stock(id, dr, stock_type, production_combin_bom_id, combin_no, cn_name, en_name, fr_name,
+        able_stock_qty, used_stock_qty, wait_in_stock_qty, wait_out_stock_qty, created_by,
+        created_time, updated_by, updated_time)
+        <foreach collection="opeWmsCombinStockList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.stockType}, #{item.productionCombinBomId}, #{item.combinNo}, #{item.cnName},
+            #{item.enName}, #{item.frName}, #{item.ableStockQty}, #{item.usedStockQty}, #{item.waitInStockQty}, #{item.waitOutStockQty},
+            #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--根据bomId查询成品库组装件库存id-->
+    <select id="getWmsCombinStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        
+    </select>
+
 </mapper>
