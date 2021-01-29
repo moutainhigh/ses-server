@@ -332,21 +332,21 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 处理子表
         createInWhouseB(inWhouseOrder, enter);
         // 操作记录
-        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.EDIT.getValue(),
-                inWhouseOrder.getRemark());
+        SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, inWhouseOrder.getId(), OrderTypeEnums.FACTORY_INBOUND.getValue(), OrderOperationTypeEnums.EDIT.getValue(), inWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
 
         try {
             // 如果是从仓库新增的入库单 新增就是待入库状态
-            if (1 == enter.getIfWh()) {
+            /*if (1 == enter.getIfWh()) {
                 wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(), inWhouseOrder.getId(), inWhouseOrder.getCountryType(), enter.getUserId());
             } else {
                 // 如果是整车入库单或者是组装件入库单 生成的时候就是待入库状态 这个时候 要处理库存
                 if (inWhouseOrder.getOrderType() == 1 || inWhouseOrder.getOrderType() == 2) {
                     wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(), inWhouseOrder.getId(), inWhouseOrder.getCountryType(), enter.getUserId());
                 }
-            }
+            }*/
+            wmsMaterialStockService.waitInStock(inWhouseOrder.getOrderType(), inWhouseOrder.getId(), inWhouseOrder.getCountryType(), enter.getUserId());
         } catch (Exception e) {
 
         }
