@@ -15,4 +15,10 @@ public interface OpeProductionPartsService extends IService<OpeProductionParts> 
 
     int insertOrUpdateSelective(OpeProductionParts record);
 
+    int updateBatchSelective(List<OpeProductionParts> list);
 }
+
+
+
+
+

@@ -41,4 +41,22 @@ public interface WmsScooterStockMapper {
     */
     int batchUpdateWmsScooterStock(@Param("opeWmsScooterStockList") List<OpeWmsScooterStock> opeWmsScooterStockList);
 
+    /**
+     * 批量新增成品库车辆库存信息
+     * @param opeWmsScooterStockList
+     * @return int
+     * @author assert
+     * @date 2021/1/29
+    */
+    int batchInsertWmsScooterStock(@Param("opeWmsScooterStockList") List<OpeWmsScooterStock> opeWmsScooterStockList);
+
+    /**
+     * 根据bomId查询成品库车辆id
+     * @param bomId
+     * @return java.lang.Long
+     * @author assert
+     * @date 2021/1/29
+    */
+    Long getWmsScooterStockIdByBomId(Long bomId);
+
 }

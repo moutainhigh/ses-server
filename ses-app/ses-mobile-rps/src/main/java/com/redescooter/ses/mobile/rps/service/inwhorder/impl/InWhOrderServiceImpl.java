@@ -212,7 +212,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         Integer remainingQty = 0;
         String name;
         String defaultSerialNum = null;
-        Long stockId;
 
         // 避免重复扫码
         if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
@@ -239,28 +238,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
                 remainingQty = opeInWhouseScooterB.getInWhQty() - opeInWhouseScooterB.getActInWhQty();
                 name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
-
-                // 成品库车辆id
-                OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
-                OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper.getWmsScooterStockByGroupIdAndColorId(scooterBom.getGroupId(),
-                        scooterBom.getColorId());
-                if(opeWmsScooterStock == null){
-                    opeWmsScooterStock = new OpeWmsScooterStock();
-                    opeWmsScooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
-                    opeWmsScooterStock.setGroupId(scooterBom.getGroupId());
-                    opeWmsScooterStock.setColorId(scooterBom.getColorId());
-                    opeWmsScooterStock.setAbleStockQty(0);
-                    opeWmsScooterStock.setUsedStockQty(0);
-                    opeWmsScooterStock.setWaitOutStockQty(0);
-                    opeWmsScooterStock.setWaitInStockQty(0);
-                    opeWmsScooterStock.setStockType(1);
-                    opeWmsScooterStock.setCreatedBy(paramDTO.getUserId());
-                    opeWmsScooterStock.setCreatedTime(new Date());
-                    opeWmsScooterStock.setUpdatedBy(paramDTO.getUserId());
-                    opeWmsScooterStock.setUpdatedTime(new Date());
-                    opeWmsScooterStockService.saveOrUpdate(opeWmsScooterStock);
-                }
-                stockId = opeWmsScooterStock.getId();
                 break;
             case 2:
                 OpeInWhouseCombinB opeInWhouseCombinB = inWhouseCombinBMapper.getInWhouseCombinById(paramDTO.getProductId());
@@ -275,33 +252,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
                 remainingQty = opeInWhouseCombinB.getInWhQty() - opeInWhouseCombinB.getActInWhQty();
                 name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
-
-                // 成品库组装件id
-                OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(paramDTO.getBomId());
-                if (opeWmsCombinStock == null){
-                    opeWmsCombinStock = new OpeWmsCombinStock();
-                    opeWmsCombinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
-                    opeWmsCombinStock.setStockType(1);
-                    opeWmsCombinStock.setProductionCombinBomId(paramDTO.getBomId());
-                    // 获取组装件的别的信息
-                    OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(paramDTO.getBomId());
-                    if (opeProductionCombinBom != null) {
-                        opeWmsCombinStock.setCombinNo(opeProductionCombinBom.getBomNo());
-                        opeWmsCombinStock.setCnName(opeProductionCombinBom.getCnName());
-                        opeWmsCombinStock.setEnName(opeProductionCombinBom.getEnName());
-                        opeWmsCombinStock.setFrName(opeProductionCombinBom.getFrName());
-                    }
-                    opeWmsCombinStock.setUsedStockQty(0);
-                    opeWmsCombinStock.setAbleStockQty(0);
-                    opeWmsCombinStock.setWaitInStockQty(0);
-                    opeWmsCombinStock.setWaitOutStockQty(0);
-                    opeWmsCombinStock.setCreatedTime(new Date());
-                    opeWmsCombinStock.setCreatedBy(paramDTO.getUserId());
-                    opeWmsCombinStock.setUpdatedBy(paramDTO.getUserId());
-                    opeWmsCombinStock.setUpdatedTime(new Date());
-                    opeWmsCombinStockService.saveOrUpdate(opeWmsCombinStock);
-                }
-                stockId = opeWmsCombinStock.getId();
                 break;
             default:
                 OpeInWhousePartsB opeInWhousePartsB = inWhousePartsBMapper.getInWhousePartsById(paramDTO.getProductId());
@@ -326,34 +276,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
                 remainingQty = opeInWhousePartsB.getInWhQty() - opeInWhousePartsB.getActInWhQty();
                 name = partsMapper.getPartsCnNameById(paramDTO.getBomId());
-
-                // 原料库部件id
-                OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(paramDTO.getBomId());
-                if (opeWmsPartsStock == null) {
-                    opeWmsPartsStock = new OpeWmsPartsStock();
-                    opeWmsPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
-                    opeWmsPartsStock.setStockType(1);
-                    opeWmsPartsStock.setPartsId(paramDTO.getBomId());
-                    // 从部件表去数据
-                    OpeProductionParts opeProductionParts = opeProductionPartsService.getById(paramDTO.getBomId());
-                    if (opeProductionParts != null) {
-                        opeWmsPartsStock.setPartsType(opeProductionParts.getPartsType());
-                        opeWmsPartsStock.setPartsNo(opeProductionParts.getPartsNo());
-                        opeWmsPartsStock.setCnName(opeProductionParts.getCnName());
-                        opeWmsPartsStock.setEnName(opeProductionParts.getEnName());
-                        opeWmsPartsStock.setFrName(opeProductionParts.getFrName());
-                    }
-                    opeWmsPartsStock.setWaitInStockQty(0);
-                    opeWmsPartsStock.setAbleStockQty(0);
-                    opeWmsPartsStock.setUsedStockQty(0);
-                    opeWmsPartsStock.setWaitOutStockQty(0);
-                    opeWmsPartsStock.setCreatedBy(paramDTO.getUserId());
-                    opeWmsPartsStock.setCreatedTime(new Date());
-                    opeWmsPartsStock.setUpdatedTime(new Date());
-                    opeWmsPartsStock.setUpdatedBy(paramDTO.getUserId());
-                    opeWmsPartsStockService.saveOrUpdate(opeWmsPartsStock);
-                }
-                stockId = opeWmsPartsStock.getId();
                 break;
         }
 
@@ -378,25 +300,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
             opeInWhouseOrderSerialBindNew.setUpdatedBy(paramDTO.getUserId());
             opeInWhouseOrderSerialBindNew.setUpdatedTime(new Date());
             inWhouseOrderSerialBindMapper.insertInWhouseOrderSerialBind(opeInWhouseOrderSerialBindNew);
-
-            /**
-             * 保存库存产品序列号信息
-             */
-            OpeWmsStockSerialNumber opeWmsStockSerialNumber = new OpeWmsStockSerialNumber();
-            opeWmsStockSerialNumber.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
-            opeWmsStockSerialNumber.setRelationId(stockId);
-            opeWmsStockSerialNumber.setRelationType(paramDTO.getProductType());
-            opeWmsStockSerialNumber.setStockType(WmsStockTypeEnum.CHINA_WAREHOUSE.getType());
-            opeWmsStockSerialNumber.setRsn(paramDTO.getSerialNum());
-            opeWmsStockSerialNumber.setStockStatus(WmsStockStatusEnum.DRAFT.getStatus());
-            opeWmsStockSerialNumber.setLotNum(paramDTO.getLot());
-            opeWmsStockSerialNumber.setSn(defaultSerialNum);
-            opeWmsStockSerialNumber.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
-            opeWmsStockSerialNumber.setCreatedBy(paramDTO.getUserId());
-            opeWmsStockSerialNumber.setCreatedTime(new Date());
-            opeWmsStockSerialNumber.setUpdatedBy(paramDTO.getUserId());
-            opeWmsStockSerialNumber.setUpdatedTime(new Date());
-            wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
         }
 
         /**
@@ -457,7 +360,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                                 Collectors.groupingBy(InWhOrderProductDTO::getBomId)
                         );
 
-                        saveWmsStockDataComponent.saveWmsCombinationStockData(combinationMap, null, InOutWhEnums.IN.getValue(),enter.getUserId());
+                        saveWmsStockDataComponent.saveWmsCombinationStockData(combinationMap, inWhouseOrderSerialBinds,null,
+                                InOutWhEnums.IN.getValue(),enter.getUserId());
                         break;
                     default:
                         inWhOrderProductList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(enter.getId());
@@ -472,7 +376,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                                 Collectors.groupingBy(InWhOrderProductDTO::getBomId)
                         );
 
-                        saveWmsStockDataComponent.saveWmsPartsStockData(partsMap, null, InOutWhEnums.IN.getValue(), enter.getUserId());
+                        saveWmsStockDataComponent.saveWmsPartsStockData(partsMap, inWhouseOrderSerialBinds,null,
+                                InOutWhEnums.IN.getValue(), enter.getUserId());
                         break;
                 }
 

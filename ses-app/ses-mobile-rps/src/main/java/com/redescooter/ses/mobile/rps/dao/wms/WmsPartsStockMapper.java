@@ -39,4 +39,22 @@ public interface WmsPartsStockMapper {
     */
     int batchUpdateWmsPartsStock(@Param("opeWmsPartsStockList") List<OpeWmsPartsStock> opeWmsPartsStockList);
 
+    /**
+     * 批量新增原料库部件库存信息
+     * @param opeWmsPartsStockList
+     * @return int
+     * @author assert
+     * @date 2021/1/29
+    */
+    int batchInsertWmsPartsStock(@Param("opeWmsPartsStockList") List<OpeWmsPartsStock> opeWmsPartsStockList);
+
+    /**
+     * 根据bomId查询原料库部件库存id
+     * @param bomId
+     * @return java.lang.Long
+     * @author assert
+     * @date 2021/1/29
+    */
+    Long getWmsPartsStockIdByBomId(Long bomId);
+
 }

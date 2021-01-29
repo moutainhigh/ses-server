@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
@@ -24,10 +25,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.*;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -46,9 +44,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,28 +89,20 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
     @Autowired
-    private WmsScooterStockMapper wmsScooterStockMapper;
+    private OpeWmsQualifiedScooterStockService opeWmsQualifiedScooterStockService;
     @Autowired
-    private WmsCombinStockMapper wmsCombinStockMapper;
+    private OpeWmsQualifiedCombinStockService opeWmsQualifiedCombinStockService;
     @Autowired
-    private WmsPartsStockMapper wmsPartsStockMapper;
-    @Autowired
-    private TransactionTemplate transactionTemplate;
-
+    private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
-
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
-
     @Autowired
     private OpeWmsScooterStockService opeWmsScooterStockService;
-
     @Autowired
     private OpeWmsCombinStockService opeWmsCombinStockService;
 
-    @Autowired
-    private OpeProductionCombinBomService opeProductionCombinBomService;
 
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
@@ -424,33 +412,43 @@ public class QcOrderServiceImpl implements QcOrderService {
                 OpeQcScooterB opeQcScooterB = qcScooterMapper.getQcScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-                // 更新车辆质检合格/不合格数量
+                // 质检成功合格数量+1,失败不合格数量+1
                 if (qcResultFlag) {
                     opeQcScooterB.setQualifiedQty(opeQcScooterB.getQualifiedQty() + 1);
                 } else {
                     opeQcScooterB.setUnqualifiedQty(opeQcScooterB.getUnqualifiedQty() + 1);
-                    // 成品库车辆id
                     OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
-                    OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper.getWmsScooterStockByGroupIdAndColorId(scooterBom.getGroupId(),
-                            scooterBom.getColorId());
-                    if(opeWmsScooterStock == null){
-                        opeWmsScooterStock = new OpeWmsScooterStock();
-                        opeWmsScooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
-                        opeWmsScooterStock.setGroupId(scooterBom.getGroupId());
-                        opeWmsScooterStock.setColorId(scooterBom.getColorId());
-                        opeWmsScooterStock.setAbleStockQty(0);
-                        opeWmsScooterStock.setUsedStockQty(0);
-                        opeWmsScooterStock.setWaitOutStockQty(0);
-                        opeWmsScooterStock.setWaitInStockQty(0);
-                        opeWmsScooterStock.setStockType(1);
-                        opeWmsScooterStock.setCreatedBy(paramDTO.getUserId());
-                        opeWmsScooterStock.setCreatedTime(new Date());
-                        opeWmsScooterStock.setUpdatedBy(paramDTO.getUserId());
-                        opeWmsScooterStock.setUpdatedTime(new Date());
-                        opeWmsScooterStockService.saveOrUpdate(opeWmsScooterStock);
+                    RpsAssert.isNull(scooterBom, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                            ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                    /**
+                     * 第一次入库仓库中是没有这辆车的,需要把这辆车添加到不合格品库里面去
+                     */
+                    QueryWrapper<OpeWmsQualifiedScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
+                    scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_DR, "0");
+                    scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, scooterBom.getGroupId());
+                    scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterBom.getColorId());
+
+                    OpeWmsQualifiedScooterStock opeWmsQualifiedScooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
+                    if(null == opeWmsQualifiedScooterStock){
+                        opeWmsQualifiedScooterStock = new OpeWmsQualifiedScooterStock();
+                        opeWmsQualifiedScooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_QUALIFIED_SCOOTER_STOCK));
+                        opeWmsQualifiedScooterStock.setDr(0);
+                        opeWmsQualifiedScooterStock.setGroupId(scooterBom.getGroupId());
+                        opeWmsQualifiedScooterStock.setColorId(scooterBom.getColorId());
+                        opeWmsQualifiedScooterStock.setQty(qcQty);
+                        opeWmsQualifiedScooterStock.setCreatedBy(paramDTO.getUserId());
+                        opeWmsQualifiedScooterStock.setCreatedTime(new Date());
+                    } else {
+                        opeWmsQualifiedScooterStock.setQty(opeWmsQualifiedScooterStock.getQty() + qcQty);
                     }
-                    stockId = opeWmsScooterStock.getId();
+                    opeWmsQualifiedScooterStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsQualifiedScooterStock.setUpdatedTime(new Date());
+
+                    opeWmsQualifiedScooterStockService.saveOrUpdate(opeWmsQualifiedScooterStock);
+                    stockId = opeWmsQualifiedScooterStock.getId();
                 }
+                // 更新车辆质检合格/不合格数量
                 opeQcScooterB.setUpdatedBy(paramDTO.getUserId());
                 opeQcScooterB.setUpdatedTime(new Date());
                 qcScooterMapper.updateQcScooter(opeQcScooterB);
@@ -469,32 +467,39 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
                 } else {
                     opeQcCombinB.setUnqualifiedQty(opeQcCombinB.getUnqualifiedQty() + 1);
-                    // 成品库组装件id
-                    OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(paramDTO.getBomId());
-                    if (opeWmsCombinStock == null){
-                        opeWmsCombinStock = new OpeWmsCombinStock();
-                        opeWmsCombinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
-                        opeWmsCombinStock.setStockType(1);
-                        opeWmsCombinStock.setProductionCombinBomId(paramDTO.getBomId());
-                        // 获取组装件的别的信息
-                        OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(paramDTO.getBomId());
-                        if (opeProductionCombinBom != null) {
-                            opeWmsCombinStock.setCombinNo(opeProductionCombinBom.getBomNo());
-                            opeWmsCombinStock.setCnName(opeProductionCombinBom.getCnName());
-                            opeWmsCombinStock.setEnName(opeProductionCombinBom.getEnName());
-                            opeWmsCombinStock.setFrName(opeProductionCombinBom.getFrName());
-                        }
-                        opeWmsCombinStock.setUsedStockQty(0);
-                        opeWmsCombinStock.setAbleStockQty(0);
-                        opeWmsCombinStock.setWaitInStockQty(0);
-                        opeWmsCombinStock.setWaitOutStockQty(0);
-                        opeWmsCombinStock.setCreatedTime(new Date());
-                        opeWmsCombinStock.setCreatedBy(paramDTO.getUserId());
-                        opeWmsCombinStock.setUpdatedBy(paramDTO.getUserId());
-                        opeWmsCombinStock.setUpdatedTime(new Date());
-                        opeWmsCombinStockService.saveOrUpdate(opeWmsCombinStock);
+
+                    /**
+                     * 第一次入库仓库中是没有这个组装件的,需要把这个组装件添加到不合格品库里面去
+                     */
+                    QueryWrapper<OpeWmsQualifiedCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
+                    combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_DR, "0");
+                    combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, paramDTO.getBomId());
+
+                    OpeWmsQualifiedCombinStock opeWmsQualifiedCombinStock = opeWmsQualifiedCombinStockService.getOne(combinStockQueryWrapper);
+                    if (null == opeWmsQualifiedCombinStock) {
+                        opeWmsQualifiedCombinStock = new OpeWmsQualifiedCombinStock();
+                        opeWmsQualifiedCombinStock.setId(idAppService.getId(SequenceName.OPE_WMS_QUALIFIED_COMBIN_STOCK));
+                        opeWmsQualifiedCombinStock.setDr(0);
+
+                        OpeProductionCombinBom opeProductionCombinBom = combinBomMapper.getCombinBomById(paramDTO.getBomId());
+                        RpsAssert.isNull(opeProductionCombinBom, ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getCode(),
+                                ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getMessage());
+                        opeWmsQualifiedCombinStock.setProductionCombinBomId(paramDTO.getBomId());
+                        opeWmsQualifiedCombinStock.setCombinNo(opeProductionCombinBom.getBomNo());
+                        opeWmsQualifiedCombinStock.setCnName(opeProductionCombinBom.getCnName());
+                        opeWmsQualifiedCombinStock.setEnName(opeProductionCombinBom.getEnName());
+                        opeWmsQualifiedCombinStock.setFrName(opeProductionCombinBom.getFrName());
+                        opeWmsQualifiedCombinStock.setQty(qcQty);
+                        opeWmsQualifiedCombinStock.setCreatedBy(paramDTO.getUserId());
+                        opeWmsQualifiedCombinStock.setCreatedTime(new Date());
+                    } else {
+                        opeWmsQualifiedCombinStock.setQty(opeWmsQualifiedCombinStock.getQty() + qcQty);
                     }
-                    stockId = opeWmsCombinStock.getId();
+                    opeWmsQualifiedCombinStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsQualifiedCombinStock.setUpdatedTime(new Date());
+
+                    opeWmsQualifiedCombinStockService.saveOrUpdate(opeWmsQualifiedCombinStock);
+                    stockId = opeWmsQualifiedCombinStock.getId();
                 }
                 opeQcCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeQcCombinB.setUpdatedTime(new Date());
@@ -524,33 +529,39 @@ public class QcOrderServiceImpl implements QcOrderService {
                 } else {
                     qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
-                    // 原料库部件id
-                    OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(paramDTO.getBomId());
-                    if (opeWmsPartsStock == null) {
-                        opeWmsPartsStock = new OpeWmsPartsStock();
-                        opeWmsPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
-                        opeWmsPartsStock.setStockType(1);
-                        opeWmsPartsStock.setPartsId(paramDTO.getBomId());
-                        // 从部件表去数据
-                        OpeProductionParts opeProductionParts = opeProductionPartsService.getById(paramDTO.getBomId());
-                        if (opeProductionParts != null) {
-                            opeWmsPartsStock.setPartsType(opeProductionParts.getPartsType());
-                            opeWmsPartsStock.setPartsNo(opeProductionParts.getPartsNo());
-                            opeWmsPartsStock.setCnName(opeProductionParts.getCnName());
-                            opeWmsPartsStock.setEnName(opeProductionParts.getEnName());
-                            opeWmsPartsStock.setFrName(opeProductionParts.getFrName());
-                        }
-                        opeWmsPartsStock.setWaitInStockQty(0);
-                        opeWmsPartsStock.setAbleStockQty(0);
-                        opeWmsPartsStock.setUsedStockQty(0);
-                        opeWmsPartsStock.setWaitOutStockQty(0);
-                        opeWmsPartsStock.setCreatedBy(paramDTO.getUserId());
-                        opeWmsPartsStock.setCreatedTime(new Date());
-                        opeWmsPartsStock.setUpdatedTime(new Date());
-                        opeWmsPartsStock.setUpdatedBy(paramDTO.getUserId());
-                        opeWmsPartsStockService.saveOrUpdate(opeWmsPartsStock);
+
+                    /**
+                     * 第一次入库仓库中是没有这个部件的,需要把这个部件添加到不合格品库里面去
+                     */
+                    QueryWrapper<OpeWmsQualifiedPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
+                    partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_DR, "0");
+                    partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_PARTS_ID, paramDTO.getBomId());
+                    OpeWmsQualifiedPartsStock opeWmsQualifiedPartsStock = opeWmsQualifiedPartsStockService.getOne(partsStockQueryWrapper);
+                    if (null == opeWmsQualifiedPartsStock) {
+                        opeWmsQualifiedPartsStock = new OpeWmsQualifiedPartsStock();
+                        opeWmsQualifiedPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_QUALIFIED_PARTS_STOCK));
+                        opeWmsQualifiedPartsStock.setDr(0);
+                        opeWmsQualifiedPartsStock.setPartsId(paramDTO.getBomId());
+
+                        OpeProductionParts opeProductionParts = partsMapper.getProductionPartsByBomId(paramDTO.getBomId());
+                        RpsAssert.isNull(opeProductionParts, ExceptionCodeEnums.PARTS_BOM_IS_NOT_EXISTS.getCode(),
+                                ExceptionCodeEnums.PARTS_BOM_IS_NOT_EXISTS.getMessage());
+                        opeWmsQualifiedPartsStock.setPartsNo(opeProductionParts.getPartsNo());
+                        opeWmsQualifiedPartsStock.setPartsType(opeProductionParts.getPartsType());
+                        opeWmsQualifiedPartsStock.setCnName(opeProductionParts.getCnName());
+                        opeWmsQualifiedPartsStock.setEnName(opeProductionParts.getEnName());
+                        opeWmsQualifiedPartsStock.setFrName(opeProductionParts.getFrName());
+                        opeWmsQualifiedPartsStock.setQty(qcQty);
+                        opeWmsQualifiedPartsStock.setCreatedBy(paramDTO.getUserId());
+                        opeWmsQualifiedPartsStock.setCreatedTime(new Date());
+                    } else {
+                        opeWmsQualifiedPartsStock.setQty(opeWmsQualifiedPartsStock.getQty() + qcQty);
                     }
-                    stockId = opeWmsPartsStock.getId();
+                    opeWmsQualifiedPartsStock.setUpdatedBy(paramDTO.getUserId());
+                    opeWmsQualifiedPartsStock.setUpdatedTime(new Date());
+
+                    opeWmsQualifiedPartsStockService.saveOrUpdate(opeWmsQualifiedPartsStock);
+                    stockId = opeWmsQualifiedPartsStock.getId();
                 }
                 opeQcPartsB.setUpdatedBy(paramDTO.getUserId());
                 opeQcPartsB.setUpdatedTime(new Date());
@@ -563,7 +574,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         }
 
         /**
-         * 保存质检产品序列号信息
+         * 保存质检产品序列号信息(无码产品不保存扫码记录)
          */
         OpeQcOrderSerialBind opeQcOrderSerialBind = new OpeQcOrderSerialBind();
         Long serialId = idAppService.getId(SequenceName.OPE_QC_ORDER_SERIAL_BIND);
@@ -610,7 +621,9 @@ public class QcOrderServiceImpl implements QcOrderService {
                 opeWmsStockSerialNumber.setSn(paramDTO.getSerialNum());
             }
         }
+
         qcOrderSerialBindMapper.insertQcOrderSerialBind(opeQcOrderSerialBind);
+        // 质检失败保存库存产品序列号信息,成功在确认入库那边保存
         if (!qcResultFlag) {
             wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
         }

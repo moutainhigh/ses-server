@@ -39,4 +39,13 @@ public interface InWhouseOrderSerialBindMapper {
     */
     List<OpeInWhouseOrderSerialBind> batchGetInWhouseOrderSerialBindByOrderBIds(@Param("orderBIds") List<Long> orderBIds);
 
+    /**
+     * 根据orderBId查询入库单产品序列号信息
+     * @param orderBId
+     * @return java.util.List<com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind>
+     * @author assert
+     * @date 2021/1/29
+    */
+    List<OpeInWhouseOrderSerialBind> getInWhouseOrderSerialBindByOrderBId(Long orderBId);
+
 }

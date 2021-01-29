@@ -52,4 +52,13 @@ public interface WmsStockSerialNumberMapper {
     int batchUpdateStockStatusByRsnList(@Param("serialNums") List<String> serialNums, @Param("userId") Long userId,
                                         @Param("currentTime") Date currentTime);
 
+    /**
+     * 批量新增库存产品序列号信息
+     * @param opeWmsStockSerialNumberList
+     * @return int
+     * @author assert
+     * @date 2021/1/29
+    */
+    int batchInsertWmsStockSerialNumber(@Param("opeWmsStockSerialNumberList") List<OpeWmsStockSerialNumber> opeWmsStockSerialNumberList);
+
 }
