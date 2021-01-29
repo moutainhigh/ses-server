@@ -211,6 +211,11 @@ public class SaveWmsStockDataComponent {
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsCombinStock.getId(), WmsTypeEnum.COMBINATION_WAREHOUSE.getType(),
                         InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, userId));
             }
+
+            /**
+             * 保存库存产品序列号信息
+             */
+            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, userId));
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
@@ -283,6 +288,11 @@ public class SaveWmsStockDataComponent {
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsPartsStock.getId(), WmsTypeEnum.PARTS_WAREHOUSE.getType(),
                         InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, userId));
             }
+
+            /**
+             * 保存库存产品序列号信息
+             */
+            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, userId));
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();

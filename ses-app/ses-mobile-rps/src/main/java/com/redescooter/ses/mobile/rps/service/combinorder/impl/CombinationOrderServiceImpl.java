@@ -40,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -303,6 +302,11 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         }
 
         /**
+         * 保存车辆、组装件序列号绑定信息
+         */
+
+
+        /**
          * 设置完成组装打印二维码参数
          */
         saveScanCodeResultDTO.setName(name);
@@ -545,6 +549,19 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         // 生产流水号在质检单这边暂时只有 “生产日” + “工单号”组成, 流水号在确认入库时生成
         String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
         sb.append(number);
+
+        return sb.toString();
+    }
+
+    /**
+     * 获取产品批次号
+     * @param productType 产品类型 1车辆 2组装件
+     * @param combinationId 组装单id
+     * @return
+     */
+    private String getProductLot(Integer productType, Long combinationId) {
+        StringBuilder sb = new StringBuilder();
+        Calendar calendar = Calendar.getInstance();
 
         return sb.toString();
     }

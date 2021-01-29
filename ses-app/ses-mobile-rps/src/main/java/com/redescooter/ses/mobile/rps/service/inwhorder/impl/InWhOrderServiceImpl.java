@@ -2,8 +2,6 @@ package com.redescooter.ses.mobile.rps.service.inwhorder.impl;
 
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
-import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
-import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -43,7 +41,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -279,28 +276,26 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 break;
         }
 
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
-            /**
-             * 保存入库单产品序列号绑定信息
-             */
-            OpeInWhouseOrderSerialBind opeInWhouseOrderSerialBindNew = new OpeInWhouseOrderSerialBind();
-            opeInWhouseOrderSerialBindNew.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER_SERIAL_BIND));
-            opeInWhouseOrderSerialBindNew.setOrderBId(paramDTO.getProductId());
-            opeInWhouseOrderSerialBindNew.setOrderType(paramDTO.getProductType());
-            opeInWhouseOrderSerialBindNew.setSerialNum(paramDTO.getSerialNum());
-            opeInWhouseOrderSerialBindNew.setDefaultSerialNum(defaultSerialNum);
-            opeInWhouseOrderSerialBindNew.setTabletSn(paramDTO.getTabletSn());
-            opeInWhouseOrderSerialBindNew.setLot(paramDTO.getLot());
-            opeInWhouseOrderSerialBindNew.setProductId(paramDTO.getBomId());
-            opeInWhouseOrderSerialBindNew.setProductType(paramDTO.getProductType());
-            opeInWhouseOrderSerialBindNew.setQty(qty);
-            opeInWhouseOrderSerialBindNew.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
-            opeInWhouseOrderSerialBindNew.setCreatedBy(paramDTO.getUserId());
-            opeInWhouseOrderSerialBindNew.setCreatedTime(new Date());
-            opeInWhouseOrderSerialBindNew.setUpdatedBy(paramDTO.getUserId());
-            opeInWhouseOrderSerialBindNew.setUpdatedTime(new Date());
-            inWhouseOrderSerialBindMapper.insertInWhouseOrderSerialBind(opeInWhouseOrderSerialBindNew);
-        }
+        /**
+         * 保存入库单产品序列号绑定信息
+         */
+        OpeInWhouseOrderSerialBind opeInWhouseOrderSerialBindNew = new OpeInWhouseOrderSerialBind();
+        opeInWhouseOrderSerialBindNew.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER_SERIAL_BIND));
+        opeInWhouseOrderSerialBindNew.setOrderBId(paramDTO.getProductId());
+        opeInWhouseOrderSerialBindNew.setOrderType(paramDTO.getProductType());
+        opeInWhouseOrderSerialBindNew.setSerialNum(paramDTO.getSerialNum());
+        opeInWhouseOrderSerialBindNew.setDefaultSerialNum(defaultSerialNum);
+        opeInWhouseOrderSerialBindNew.setTabletSn(paramDTO.getTabletSn());
+        opeInWhouseOrderSerialBindNew.setLot(paramDTO.getLot());
+        opeInWhouseOrderSerialBindNew.setProductId(paramDTO.getBomId());
+        opeInWhouseOrderSerialBindNew.setProductType(paramDTO.getProductType());
+        opeInWhouseOrderSerialBindNew.setQty(qty);
+        opeInWhouseOrderSerialBindNew.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
+        opeInWhouseOrderSerialBindNew.setCreatedBy(paramDTO.getUserId());
+        opeInWhouseOrderSerialBindNew.setCreatedTime(new Date());
+        opeInWhouseOrderSerialBindNew.setUpdatedBy(paramDTO.getUserId());
+        opeInWhouseOrderSerialBindNew.setUpdatedTime(new Date());
+        inWhouseOrderSerialBindMapper.insertInWhouseOrderSerialBind(opeInWhouseOrderSerialBindNew);
 
         /**
          * 扫码入库返回结果信息
@@ -318,8 +313,11 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     @Override
     public GeneralResult confirmStorage(IdEnter enter) {
         OpeInWhouseOrder opeInWhouseOrder = inWhOrderMapper.getInWhOrderById(enter.getId());
+
         RpsAssert.isNull(opeInWhouseOrder, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
+        RpsAssert.isTrue(!NewInWhouseOrderStatusEnum.DRAFT.getValue().equals(opeInWhouseOrder.getInWhStatus()),
+                ExceptionCodeEnums.IN_WH_ORDER_HAS_BEEN_STORED.getCode(), ExceptionCodeEnums.IN_WH_ORDER_HAS_BEEN_STORED.getMessage());
 
         // 编程式事务
         boolean result = transactionTemplate.execute(confirmStorageStatus -> {
@@ -333,6 +331,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 switch (opeInWhouseOrder.getOrderType()) {
                     case 1:
                         inWhOrderProductList = inWhouseScooterBMapper.getInWhOrderScooterByInWhId(enter.getId());
+                        // 检查是有有实际入库数量
+                        checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhScooterIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
                         inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhScooterIds);
@@ -349,6 +349,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         break;
                     case 2:
                         inWhOrderProductList = inWhouseCombinBMapper.getInWhOrderCombinByInWhId(enter.getId());
+                        // 检查是有有实际入库数量
+                        checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhCombinationIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
                         inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhCombinationIds);
@@ -365,6 +367,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         break;
                     default:
                         inWhOrderProductList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(enter.getId());
+                        // 检查是有有实际入库数量
+                        checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhPartsIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
                         inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhPartsIds);
@@ -408,5 +412,20 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         return new GeneralResult(enter.getRequestId());
     }
 
+
+    /**
+     * 检查是否有实际入库数量
+     * @param inWhOrderProductList
+     */
+    private void checkHasActInWhQty(List<InWhOrderProductDTO> inWhOrderProductList) {
+        int qty = 0;
+        for (int i = 0; i < inWhOrderProductList.size(); i++) {
+            qty += inWhOrderProductList.get(i).getActInWhQty();
+        }
+
+        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+                ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+
+    }
 
 }

@@ -112,7 +112,8 @@
 
     <!--根据bomId查询原料库部件库存id-->
     <select id="getWmsPartsStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
-
+        select id from ope_wms_parts_stock
+        where dr = 0 and stock_type = 1 and parts_id = #{bomId}
     </select>
 
 </mapper>

@@ -212,7 +212,9 @@ public enum ExceptionCodeEnums {
 
     PARTS_BOM_IS_NOT_EXISTS(10103, "部件bom不存在"),
 
-    SCOOTER_BOM_IS_NOT_EXISTS(10104, "车辆bom不存在")
+    SCOOTER_BOM_IS_NOT_EXISTS(10104, "车辆bom不存在"),
+
+    IN_WH_ORDER_HAS_BEEN_STORED(10105, "入库单已入库")
     ;
 
     private int code;

@@ -109,7 +109,8 @@
 
     <!--根据bomId查询成品库组装件库存id-->
     <select id="getWmsCombinStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
-        
+        select id from ope_wms_combin_stock
+        where dr = 0 and stock_type = 1 and production_combin_bom_id = #{bomId}
     </select>
 
 </mapper>
