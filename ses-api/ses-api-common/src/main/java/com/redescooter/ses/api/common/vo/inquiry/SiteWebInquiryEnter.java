@@ -18,12 +18,6 @@ public class SiteWebInquiryEnter {
     private Long id;
 
     /**
-     * 逻辑删除标识 0正常 1删除
-     */
-    @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
-    private Integer dr;
-
-    /**
      * 订单号
      */
     @ApiModelProperty(value = "订单号")

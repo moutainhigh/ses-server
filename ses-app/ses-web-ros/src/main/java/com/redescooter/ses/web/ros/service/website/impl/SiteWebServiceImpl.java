@@ -1,21 +1,33 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
+import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
+import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @description:
@@ -34,12 +46,21 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
+    @DubboReference
+    private IdAppService idAppService;
+
+    @Autowired
+    private MondayService mondayService;
+
+
+    @Autowired
+    private WebsiteInquiryServiceMapper websiteInquiryServiceMapper;
 
     /**
      * 官网的订单数据同步到ROS中
      */
-    @Async
     @Override
+    @Transactional
     public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         BeanUtils.copyProperties(enter, inquiry);
@@ -73,8 +94,61 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiry.setContactLast(customer.getContactLastName());
         inquiry.setContantFullName(customer.getContactFullName());
         inquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
-        // todo 产品型号
-        inquiry.setProductModel("");
+        inquiry.setProductModel(enter.getProductModel());
         opeCustomerInquiryService.saveOrUpdate(inquiry);
+
+        // 同步ROS的询价单的字表
+        OpeCustomerInquiryB inquiryB = new OpeCustomerInquiryB();
+        inquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));
+        inquiryB.setInquiryId(inquiry.getId());
+        inquiryB.setProductId(inquiry.getProductId());
+        inquiryB.setProductPrice(inquiry.getProductPrice());
+        // 这个不知道是啥
+        // inquiryB.setProductType(inquiry.);
+        inquiryB.setProductQty(1);
+        inquiryB.setCreatedTime(new Date());
+        inquiryB.setCreatedBy(0L);
+        inquiryB.setUpdatedTime(new Date());
+        inquiryB.setUpdatedBy(0L);
+        opeCustomerInquiryBService.saveOrUpdate(inquiryB);
+
+        ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
+        if (product == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        //发送数据到Monday
+        mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);
+
     }
+
+
+    /**
+     * 发送数据到Monday
+     *
+     * @param productModel
+     * @param opeCustomerInquiry
+     */
+    private void mondayData(String productColor, int batteryQty, String productModel, OpeCustomerInquiry opeCustomerInquiry) {
+        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
+        mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
+        mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
+        mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
+        mondayGeneralEnter.setCreatedTime(new Date());
+        mondayGeneralEnter.setUpdatedTime(new Date());
+        mondayGeneralEnter.setEmail(opeCustomerInquiry.getEmail());
+        mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
+        mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
+        mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+        mondayGeneralEnter.setAddress(opeCustomerInquiry.getAddress());
+        MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
+        mondayBookOrderEnter.setProductColor(Objects.requireNonNull(ProductColorEnums.getProductColorEnumsByValue(productColor)).getMessage());
+        mondayBookOrderEnter.setBatteryQty(batteryQty);
+        mondayBookOrderEnter.setProducModeltName(Objects.requireNonNull(ProductModelEnums.getProductModelEnumsByValue(productModel)).getMessage());
+        mondayBookOrderEnter.setQty(1);
+        mondayGeneralEnter.setT(mondayBookOrderEnter);
+        //Monday 同步数据
+        mondayService.websiteBookOrder(mondayGeneralEnter);
+    }
+
+
 }
