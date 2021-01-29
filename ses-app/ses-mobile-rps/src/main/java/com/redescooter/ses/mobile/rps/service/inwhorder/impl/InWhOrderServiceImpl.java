@@ -331,7 +331,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 switch (opeInWhouseOrder.getOrderType()) {
                     case 1:
                         inWhOrderProductList = inWhouseScooterBMapper.getInWhOrderScooterByInWhId(enter.getId());
-                        // 检查是有有实际入库数量
+                        // 检查是否有实际入库数量
                         checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhScooterIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
@@ -349,7 +349,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         break;
                     case 2:
                         inWhOrderProductList = inWhouseCombinBMapper.getInWhOrderCombinByInWhId(enter.getId());
-                        // 检查是有有实际入库数量
+                        // 检查是否有实际入库数量
                         checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhCombinationIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
@@ -367,7 +367,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         break;
                     default:
                         inWhOrderProductList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(enter.getId());
-                        // 检查是有有实际入库数量
+                        // 检查是否有实际入库数量
                         checkHasActInWhQty(inWhOrderProductList);
 
                         List<Long> inWhPartsIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());

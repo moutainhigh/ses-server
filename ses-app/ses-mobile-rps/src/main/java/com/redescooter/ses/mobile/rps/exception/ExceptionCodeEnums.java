@@ -214,7 +214,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_BOM_IS_NOT_EXISTS(10104, "车辆bom不存在"),
 
-    IN_WH_ORDER_HAS_BEEN_STORED(10105, "入库单已入库")
+    IN_WH_ORDER_HAS_BEEN_STORED(10105, "入库单已入库"),
+
+    OUT_WH_ORDER_OUT_OF_STOCK(10106, "出库单已出库")
     ;
 
     private int code;

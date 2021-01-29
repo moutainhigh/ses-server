@@ -102,6 +102,8 @@ public class QcOrderServiceImpl implements QcOrderService {
     private OpeWmsScooterStockService opeWmsScooterStockService;
     @Autowired
     private OpeWmsCombinStockService opeWmsCombinStockService;
+    @Autowired
+    private OpeCombinOrderService opeCombinOrderService;
 
 
     @Override
@@ -153,22 +155,35 @@ public class QcOrderServiceImpl implements QcOrderService {
         return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
-        QcOrderDetailDTO qcOrderDetailDTO = qcOrderMapper.getQcOrderDetailById(enter.getId());
-        RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());
+        RpsAssert.isNull(opeQcOrder, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!QcStatusEnum.PENDING_QUALITY_INSPECTION.getStatus().equals(qcOrderDetailDTO.getStatus()),
+        RpsAssert.isTrue(!QcStatusEnum.PENDING_QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
                 ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
 
         // 更新质检单状态为【质检中】
-        OpeQcOrder opeQcOrder = new OpeQcOrder();
-        opeQcOrder.setId(qcOrderDetailDTO.getId());
         opeQcOrder.setQcStatus(QcStatusEnum.QUALITY_INSPECTION.getStatus());
         opeQcOrder.setUpdatedBy(enter.getUserId());
         opeQcOrder.setUpdatedTime(new Date());
         qcOrderMapper.updateQcOrder(opeQcOrder);
+
+        /**
+         * 开始质检修改组装单状态为“质检中”
+         */
+        if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
+            OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(opeQcOrder.getRelationOrderId());
+            RpsAssert.isNull(opeCombinOrder, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
+                    ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getMessage());
+
+            opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.INSPECTING.getValue());
+            opeCombinOrder.setUpdatedBy(enter.getUserId());
+            opeCombinOrder.setUpdatedTime(new Date());
+            opeCombinOrderService.updateById(opeCombinOrder);
+        }
 
         return new GeneralResult(enter.getRequestId());
     }
@@ -260,12 +275,18 @@ public class QcOrderServiceImpl implements QcOrderService {
                 break;
             case 2 :
                 OpeProductionCombinBom opeProductionCombinBom = combinBomMapper.getCombinBomById(paramDTO.getBomId());
+                RpsAssert.isNull(opeProductionCombinBom, ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getCode(),
+                        ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getMessage());
+
                 resultDTO.setName(opeProductionCombinBom.getCnName());
 
                 productType = QcTemplateProductTypeEnum.COMBINATION.getType();
                 break;
             default:
                 OpeProductionParts opeProductionParts = partsMapper.getProductionPartsByBomId(paramDTO.getBomId());
+                RpsAssert.isNull(opeProductionParts, ExceptionCodeEnums.PARTS_BOM_IS_NOT_EXISTS.getCode(),
+                        ExceptionCodeEnums.PARTS_BOM_IS_NOT_EXISTS.getMessage());
+
                 resultDTO.setName(opeProductionParts.getCnName());
 
                 productType = QcTemplateProductTypeEnum.PARTS.getType();
@@ -346,8 +367,8 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         // 避免重复质检
         if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
-            String serialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
-            RpsAssert.isNotBlank(serialNum, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+            int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId());
+            RpsAssert.isTrue(count > 0, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
         }
 
@@ -680,7 +701,7 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
             opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
             opeOutWhouseOrder.setUpdatedTime(new Date());
-            opeOutWhouseOrderMapper.insertSelective(opeOutWhouseOrder);
+            opeOutWhouseOrderMapper.updateByPrimaryKeySelective(opeOutWhouseOrder);
         } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
             opeCombinOrder.setId(opeQcOrder.getRelationOrderId());

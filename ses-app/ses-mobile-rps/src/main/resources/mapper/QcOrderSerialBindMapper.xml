@@ -146,4 +146,10 @@
         where dr = 0 and serial_num = #{serialNum}
     </select>
 
+    <!--检查是否存在序列号-->
+    <select id="isExistsSerialNum" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order_serial_bind
+        where dr = 0 and serial_num = #{serialNum} and order_b_id = #{productId}
+    </select>
+
 </mapper>

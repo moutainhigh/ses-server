@@ -853,7 +853,6 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional
     public void allocateWaitSign(Long allocateId, Long userId) {
         // 调拨单状态变为待签收
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);

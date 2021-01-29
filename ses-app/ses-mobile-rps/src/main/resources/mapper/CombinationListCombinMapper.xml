@@ -42,7 +42,7 @@
     <!--根据combinId查询组装单组装件清单信息-->
     <select id="getCombinationListCombinByCombinId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDTO">
-        select combin.id, combin.combin_id combinId, combin.combin_list_status `status`, bom.cn_name `name`,
+        select combin.id, combin.combin_id combinId, combin.combin_list_status `status`,bom.id bomId, bom.cn_name `name`,
         bom.bom_no `number`
         from ope_combin_list_combin_b combin
         left join ope_production_combin_bom bom
@@ -65,7 +65,7 @@
     <!--根据id查询组装单组装件清单信息-->
     <select id="getCombinationListCombinationById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from ope_combin_list_combin_b
-	    where dr = 0 and combin_id = #{id}
+	    where dr = 0 and id = #{id}
     </select>
 
     <!--修改组装单组装件清单信息-->

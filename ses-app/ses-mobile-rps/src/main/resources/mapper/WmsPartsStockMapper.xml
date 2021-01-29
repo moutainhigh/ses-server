@@ -93,8 +93,26 @@
     <update id="batchUpdateWmsPartsStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock">
         <foreach collection="opeWmsPartsStockList" item="item" separator=";">
             update ope_wms_parts_stock
-            set able_stock_qty = #{item.ableStockQty}, wait_in_stock_qty = #{item.waitInStockQty},
-            updated_by = #{item.updatedBy}, updated_time = #{item.updatedTime}
+            <set>
+                <if test="item.ableStockQty != null">
+                    able_stock_qty = #{item.ableStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.usedStockQty != null">
+                    used_stock_qty = #{item.usedStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitInStockQty != null">
+                    wait_in_stock_qty = #{item.waitInStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitOutStockQty != null">
+                    wait_out_stock_qty = #{item.waitOutStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.updatedBy != null">
+                    updated_by = #{item.updatedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.updatedTime != null">
+                    updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
             where id = #{item.id}
         </foreach>
     </update>

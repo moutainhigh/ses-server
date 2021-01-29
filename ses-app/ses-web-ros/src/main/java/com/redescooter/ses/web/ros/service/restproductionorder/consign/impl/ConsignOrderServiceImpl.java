@@ -633,7 +633,6 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
 
     // 委托单状态变待签收
     @Override
-    @Transactional
     public GeneralResult waitSign(IdEnter enter) {
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
         if (opeEntrustOrder == null) {
@@ -643,7 +642,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
-        opeEntrustOrderService.saveOrUpdate(opeEntrustOrder);
+//        opeEntrustOrderService.saveOrUpdate(opeEntrustOrder);
         //操作动态
         SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeEntrustOrder.getId(), OrderTypeEnums.ORDER.getValue(), OrderOperationTypeEnums.SHIPMENT.getValue(),
                 opeEntrustOrder.getRemark());

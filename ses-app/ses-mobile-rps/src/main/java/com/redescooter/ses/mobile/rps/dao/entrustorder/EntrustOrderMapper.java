@@ -60,4 +60,13 @@ public interface EntrustOrderMapper {
      */
     int updateEntrustOrder(OpeEntrustOrder opeEntrustOrder);
 
+    /**
+     * 根据id查询委托单信息
+     * @param id
+     * @return com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder
+     * @author assert
+     * @date 2021/1/29
+    */
+    OpeEntrustOrder getEntrustOrderById(Long id);
+
 }

@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.service.outwhorder.impl;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutWhOrderTypeEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
@@ -23,6 +24,7 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -128,10 +130,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Override
     public GeneralResult submitQc(IdEnter enter) {
         OutWarehouseOrderDetailDTO outWarehouseOrderDetail = outWarehouseOrderMapper.getOutWarehouseOrderDetailById(enter.getId());
-        RpsAssert.isNull(outWarehouseOrderDetail, ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getCode(),
-                ExceptionCodeEnums.ORDER_IS_NOT_EXIST.getMessage());
+        RpsAssert.isNull(outWarehouseOrderDetail, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
+                ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!OutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(outWarehouseOrderDetail.getStatus()),
+        RpsAssert.isTrue(!NewOutBoundOrderStatusEnums.DRAFT.getValue().equals(outWarehouseOrderDetail.getStatus()),
                 ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         /**
          * 调用Chris生成出库质检单接口
@@ -295,12 +297,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Transactional
     public GeneralResult outWarehouse(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
+
         RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
-        if (opeOutWhouseOrder.getRelationType() != null && opeOutWhouseOrder.getRelationType().equals(OrderTypeEnums.INVOICE.getValue())){
-            RpsAssert.isTrue(opeOutWhouseOrder.getAlreadyOutWhQty() == 0, ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getCode(),
-                    ExceptionCodeEnums.NO_QUALITY_INSPECTION_FIRST_QUALITY_INSPECTION.getMessage());
-        }
+        RpsAssert.isTrue(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
+                ExceptionCodeEnums.OUT_WH_ORDER_OUT_OF_STOCK.getCode(), ExceptionCodeEnums.OUT_WH_ORDER_OUT_OF_STOCK.getMessage());
 
         boolean result = transactionTemplate.execute(outWarehouseStatus -> {
             boolean flag = true;
@@ -313,6 +314,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 switch (opeOutWhouseOrder.getOutWhType()) {
                     case 1:
                         productList = outWhScooterBMapper.getOutWhOrderScooterByOutWhId(enter.getId());
+                        // 检查是否有已出库数量
+                        checkHasAlreadyOutWhQty(productList);
 
                         List<Long> outWhScooterIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
                         serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhScooterIds);
@@ -325,10 +328,12 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                         );
 
                         saveWmsStockDataComponent.saveWmsScooterStockData(null,null, scooterMap,
-                                InOutWhEnums.IN.getValue(), enter.getUserId());
+                                InOutWhEnums.OUT.getValue(), enter.getUserId());
                         break;
                     case 2:
                         productList = outWhCombinBMapper.getOutWhOrderCombinByOutWhId(enter.getId());
+                        // 检查是否有已出库数量
+                        checkHasAlreadyOutWhQty(productList);
 
                         List<Long> outWhCombinIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
                         serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhCombinIds);
@@ -345,6 +350,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                         break;
                     default:
                         productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
+                        // 检查是否有已出库数量
+                        checkHasAlreadyOutWhQty(productList);
 
                         List<Long> outWhPartsIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
                         serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhPartsIds);
@@ -395,6 +402,21 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isFalse(result, ExceptionCodeEnums.DELIVERY_FAILURE.getCode(), ExceptionCodeEnums.DELIVERY_FAILURE.getMessage());
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 检查是否有已出库数量
+     * @param outWarehouseOrderProductList
+     */
+    private void checkHasAlreadyOutWhQty(List<OutWarehouseOrderProductDTO> outWarehouseOrderProductList) {
+        int qty = 0;
+        for (int i = 0; i < outWarehouseOrderProductList.size(); i++) {
+            qty += outWarehouseOrderProductList.get(i).getAlreadyOutWhQty();
+        }
+
+        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
+                ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
+
     }
 
 }

@@ -109,7 +109,7 @@ public class SaveWmsStockDataComponent {
                 }
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsScooterStock.getId(), WmsTypeEnum.SCOOTER_WAREHOUSE.getType(),
-                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
             }
 
             /**
@@ -152,7 +152,7 @@ public class SaveWmsStockDataComponent {
 
                 // 出库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsScooterStock.getId(), WmsTypeEnum.SCOOTER_WAREHOUSE.getType(),
-                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.OUT.getValue(), userId));
             }
         }
 
@@ -209,7 +209,7 @@ public class SaveWmsStockDataComponent {
                 }
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsCombinStock.getId(), WmsTypeEnum.COMBINATION_WAREHOUSE.getType(),
-                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
             }
 
             /**
@@ -221,6 +221,7 @@ public class SaveWmsStockDataComponent {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
                 // 组装件成品库信息
                 OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(map.getKey());
+                opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() - qty);
                 opeWmsCombinStock.setUsedStockQty(opeWmsCombinStock.getUsedStockQty() + qty);
                 opeWmsCombinStock.setWaitOutStockQty(opeWmsCombinStock.getWaitOutStockQty() - qty);
                 opeWmsCombinStock.setUpdatedBy(userId);
@@ -229,7 +230,7 @@ public class SaveWmsStockDataComponent {
 
                 // 出库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsCombinStock.getId(), WmsTypeEnum.COMBINATION_WAREHOUSE.getType(),
-                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.OUT.getValue(),userId));
             }
         }
 
@@ -286,7 +287,7 @@ public class SaveWmsStockDataComponent {
                 }
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsPartsStock.getId(), WmsTypeEnum.PARTS_WAREHOUSE.getType(),
-                        InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
             }
 
             /**
@@ -298,6 +299,7 @@ public class SaveWmsStockDataComponent {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
                 // 部件原料库信息
                 OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(map.getKey());
+                opeWmsPartsStock.setAbleStockQty(opeWmsPartsStock.getAbleStockQty() - qty);
                 opeWmsPartsStock.setUsedStockQty(opeWmsPartsStock.getUsedStockQty() + qty);
                 opeWmsPartsStock.setWaitOutStockQty(opeWmsPartsStock.getWaitOutStockQty() - qty);
                 opeWmsPartsStock.setUpdatedBy(userId);
@@ -306,7 +308,7 @@ public class SaveWmsStockDataComponent {
 
                 // 出库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsPartsStock.getId(), WmsTypeEnum.PARTS_WAREHOUSE.getType(),
-                        InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, userId));
+                        InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, InOutWhEnums.OUT.getValue(), userId));
             }
         }
 
@@ -329,11 +331,12 @@ public class SaveWmsStockDataComponent {
      * @param relationType 关联类型, 可参考：{@link WmsTypeEnum}
      * @param inWhType 入库类型, 可参考：{@link InWhTypeEnums}
      * @param qty 入库数量
+     * @param inOutType 出入库类型 1入库 2出库
      * @param userId 用户id
      * @return
      */
     public OpeWmsStockRecord buildWmsStockRecord(Long relationId, Integer relationType, Integer inWhType,
-                                                  Integer qty, Long userId) {
+                                                  Integer qty, String inOutType, Long userId) {
         OpeWmsStockRecord opeWmsStockRecord = new OpeWmsStockRecord();
         opeWmsStockRecord.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
         opeWmsStockRecord.setDr(0);
@@ -341,7 +344,7 @@ public class SaveWmsStockDataComponent {
         opeWmsStockRecord.setRelationType(relationType);
         opeWmsStockRecord.setInWhType(inWhType);
         opeWmsStockRecord.setInWhQty(qty);
-        opeWmsStockRecord.setRecordType(Integer.valueOf(InOutWhEnums.IN.getValue()));
+        opeWmsStockRecord.setRecordType(Integer.valueOf(inOutType));
         opeWmsStockRecord.setStockType(1); // 默认中国仓库
         opeWmsStockRecord.setCreatedBy(userId);
         opeWmsStockRecord.setCreatedTime(new Date());

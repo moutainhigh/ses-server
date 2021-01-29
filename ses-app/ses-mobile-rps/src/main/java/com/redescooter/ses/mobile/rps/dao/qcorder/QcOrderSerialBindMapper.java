@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.dao.qcorder;
 
 import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 质检单产品序列号绑定 Mapper接口
@@ -35,5 +36,15 @@ public interface QcOrderSerialBindMapper {
      * @date 2021/1/27
     */
     OpeQcOrderSerialBind getQcOrderSerialBindBySerialNum(String serialNum);
+
+    /**
+     * 检查是否存在序列号
+     * @param serialNum
+     * @param productId
+     * @return int
+     * @author assert
+     * @date 2021/1/29
+    */
+    int isExistsSerialNum(@Param("serialNum") String serialNum, @Param("productId") Long productId);
 
 }

@@ -20,6 +20,9 @@ public class CombinationListDTO extends GeneralResult {
     @ApiModelProperty(value = "组装单id", dataType = "Long")
     private Long combinId;
 
+    @ApiModelProperty(value = "bomId", dataType = "Long")
+    private Long bomId;
+
     @ApiModelProperty(value = "产品名称", dataType = "String")
     private String name;
 

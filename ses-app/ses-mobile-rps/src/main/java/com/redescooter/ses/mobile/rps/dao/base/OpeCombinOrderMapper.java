@@ -7,7 +7,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
  * @author assert
  * @date 2021/1/22 10:30
  */
-public interface OpeCombinOrderMapper extends BaseMapper {
+public interface OpeCombinOrderMapper extends BaseMapper<OpeCombinOrder> {
     /**
      * delete by primary key
      *

@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.entrustorder.impl;
 
 import com.redescooter.ses.api.common.enums.entrustorder.EntrustOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.consign.ConsignOrderStatusEnums;
 import com.redescooter.ses.api.common.service.RosEntrustOrderService;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -12,8 +13,6 @@ import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeLogisticsOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.*;
-import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
-import com.redescooter.ses.mobile.rps.dao.order.OrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
@@ -23,7 +22,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -42,9 +41,9 @@ import java.util.stream.Collectors;
 @Service
 public class EntrustOrderServiceImpl implements EntrustOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private RosEntrustOrderService rosEntrustOrderService;
     @Resource
     private EntrustOrderMapper entrustOrderMapper;
@@ -121,21 +120,22 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return entrustOrderDetail;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO) {
         /**
          * 数据完整性校验
          */
-        EntrustOrderDetailDTO entrustOrderDetail = entrustOrderMapper.getEntrustOrderDetailById(paramDTO.getId());
-        RpsAssert.isNull(entrustOrderDetail, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeEntrustOrder opeEntrustOrder = entrustOrderMapper.getEntrustOrderById(paramDTO.getId());
+        RpsAssert.isNull(opeEntrustOrder, ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.ENTRUST_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isFalse(EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(entrustOrderDetail.getStatus()),
+        RpsAssert.isFalse(EntrustOrderStatusEnum.TO_BE_DELIVERED.getStatus().equals(opeEntrustOrder.getEntrustStatus()),
                 ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ENTRUST_ORDER_STATUS_ERROR.getMessage());
 
         // 统计委托单已发货数量
         Integer deliveryQty;
-        switch (entrustOrderDetail.getType()) {
+        switch (opeEntrustOrder.getEntrustType()) {
             case 1:
                 deliveryQty = entrustScooterBMapper.countEntrustScooterConsignorQtyByEntrustId(paramDTO.getId());
                 break;
@@ -147,59 +147,41 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 break;
         }
 
-        RpsAssert.isFalse(deliveryQty > entrustOrderDetail.getAlreadyConsignorQty(),
+        RpsAssert.isFalse(deliveryQty > opeEntrustOrder.getAlreadyConsignorQty(),
                 ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
         /**
-         * 使用编程式事务保证事务的一致性, 这里涉及到服务之间事务操作,现在没有分布式事务暂时只能保证自身服务事务一致
+         * 更新委托单已发货数量
          */
-        boolean result = transactionTemplate.execute(entrustOrderDeliverStatus -> {
-            boolean flag = true;
-            try {
-                /**
-                 * 更新委托单已发货数量
-                 */
-                OpeEntrustOrder opeEntrustOrder = OpeEntrustOrder.builder()
-                        .id(paramDTO.getId())
-                        .actualDeliveryTime(new Date())
-                        .alreadyConsignorQty(deliveryQty)
-                        .updatedBy(paramDTO.getUserId())
-                        .updatedTime(new Date())
-                        .build();
-                entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
+        opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
+        opeEntrustOrder.setActualDeliveryTime(new Date());
+        opeEntrustOrder.setAlreadyConsignorQty(deliveryQty);
+        opeEntrustOrder.setUpdatedBy(paramDTO.getUserId());
+        opeEntrustOrder.setUpdatedTime(new Date());
+        entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
 
-                /**
-                 * 保存物流信息
-                 */
-                OpeLogisticsOrder opeLogisticsOrder = OpeLogisticsOrder.builder()
-                        .id(idAppService.getId(SequenceName.OPE_LOGISTICS_ORDER))
-                        .dr(0)
-                        .entrustId(paramDTO.getId())
-                        .logisticsCompany(paramDTO.getLogisticsCompany())
-                        .logisticsNo(paramDTO.getLogisticsNo())
-                        .remark(paramDTO.getRemark())
-                        .createdBy(paramDTO.getUserId())
-                        .createdTime(new Date())
-                        .updatedBy(paramDTO.getUserId())
-                        .updatedTime(new Date())
-                        .build();
-                opeLogisticsOrderMapper.insert(opeLogisticsOrder);
+        /**
+         * 保存物流信息
+         */
+        OpeLogisticsOrder opeLogisticsOrder = OpeLogisticsOrder.builder()
+                .id(idAppService.getId(SequenceName.OPE_LOGISTICS_ORDER))
+                .dr(0)
+                .entrustId(paramDTO.getId())
+                .logisticsCompany(paramDTO.getLogisticsCompany())
+                .logisticsNo(paramDTO.getLogisticsNo())
+                .remark(paramDTO.getRemark())
+                .createdBy(paramDTO.getUserId())
+                .createdTime(new Date())
+                .updatedBy(paramDTO.getUserId())
+                .updatedTime(new Date())
+                .build();
+        opeLogisticsOrderMapper.insert(opeLogisticsOrder);
 
-                /**
-                 * 调用Aleks委托单发货后状态流转的逻辑
-                 */
-                IdEnter enter = new IdEnter(paramDTO.getId());
-                rosEntrustOrderService.entrustOrderDeliver(enter);
-            } catch (Exception e) {
-                flag = false;
-                log.error("【委托单发货失败】----{}", ExceptionUtils.getStackTrace(e));
-                entrustOrderDeliverStatus.setRollbackOnly();
-            }
-            return flag;
-        });
-
-        RpsAssert.isFalse(result, ExceptionCodeEnums.ENTRUST_ORDER_DELIVER_FAILED.getCode(),
-                ExceptionCodeEnums.ENTRUST_ORDER_DELIVER_FAILED.getMessage());
+        /**
+         * 调用Aleks委托单发货后状态流转的逻辑
+         */
+        IdEnter enter = new IdEnter(paramDTO.getId());
+        rosEntrustOrderService.entrustOrderDeliver(enter);
 
         return new GeneralResult(paramDTO.getRequestId());
     }
@@ -220,41 +202,67 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         /**
          * 更新委托单产品实际发货数量
          */
+        String serialNum = null;
         switch (paramDTO.getProductType()) {
             case 1:
                 OpeEntrustScooterB opeEntrustScooterB = entrustScooterBMapper.getEntrustScooterById(paramDTO.getProductId());
+                RpsAssert.isNull(opeEntrustScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
                 // 保存扫码序列号信息到委托单表中
-                String serialNum = opeEntrustScooterB.getDef1();
+                serialNum = opeEntrustScooterB.getDef1();
                 if (StringUtils.isNotBlank(serialNum)) {
                     serialNum += "," + paramDTO.getSerialNum();
                 } else {
                     serialNum = paramDTO.getSerialNum();
                 }
-                opeEntrustScooterB.setDef1(serialNum);
                 opeEntrustScooterB.setConsignorQty(opeEntrustScooterB.getConsignorQty() + 1); // 扫一下数量+1
                 opeEntrustScooterB.setUpdatedBy(userId);
                 opeEntrustScooterB.setUpdatedTime(new Date());
+                opeEntrustScooterB.setDef1(serialNum);
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
                 break;
             case 2:
                 OpeEntrustCombinB opeEntrustCombinB = entrustCombinBMapper.getEntrustCombinById(paramDTO.getProductId());
+                RpsAssert.isNull(opeEntrustCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                serialNum = opeEntrustCombinB.getDef1();
+                if (StringUtils.isNotBlank(serialNum)) {
+                    serialNum += "," + paramDTO.getSerialNum();
+                } else {
+                    serialNum = paramDTO.getSerialNum();
+                }
                 opeEntrustCombinB.setConsignorQty(opeEntrustCombinB.getConsignorQty() + 1);
                 opeEntrustCombinB.setUpdatedBy(userId);
                 opeEntrustCombinB.setUpdatedTime(new Date());
+                opeEntrustCombinB.setDef1(serialNum);
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
                 break;
             default:
                 OpeEntrustPartsB opeEntrustPartsB = entrustPartsBMapper.getEntrustPartsById(paramDTO.getProductId());
+
+                RpsAssert.isNull(opeEntrustPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 RpsAssert.isTrue(qty > opeEntrustPartsB.getQty(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
                         ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
+                // 有无码调整实际发货数量
                 if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
                     opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty() + qty);
                 } else {
                     opeEntrustPartsB.setConsignorQty(qty);
                 }
+
+                serialNum = opeEntrustPartsB.getDef1();
+                if (StringUtils.isNotBlank(serialNum)) {
+                    serialNum += "," + paramDTO.getSerialNum();
+                } else {
+                    serialNum = paramDTO.getSerialNum();
+                }
                 opeEntrustPartsB.setUpdatedBy(userId);
                 opeEntrustPartsB.setUpdatedTime(new Date());
+                opeEntrustPartsB.setDef1(serialNum);
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
                 break;
         }

@@ -25,6 +25,7 @@
     <!--委托单车辆信息自定义返回结果-->
     <resultMap id="EntrustOrderScooterResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
         <result column="group_name" jdbcType="VARCHAR" property="groupName" />
         <result column="color_name" jdbcType="VARCHAR" property="colorName" />
         <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
@@ -40,7 +41,7 @@
 
     <!--根据entrustId查询委托单车辆信息-->
     <select id="getEntrustOrderScooterByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderScooterResultMap">
-        select es.id, sg.group_name, c.color_name, ifnull(es.consignor_qty, 0) consignor_qty,
+        select es.id, bom.id bom_id,sg.group_name, c.color_name, ifnull(es.consignor_qty, 0) consignor_qty,
         ifnull(es.qty, 0) qty, true id_calss,epsn.id sn_id,epsn.serial_num serialNum, epsn.lot
         from ope_entrust_scooter_b es
         left join ope_entrust_product_serial_num epsn
@@ -49,7 +50,9 @@
         on es.color_id = c.id and c.dr = 0
         left join ope_specificat_group sg
         on es.group_id = sg.id and sg.dr = 0
-        where es.dr = 0 and es.entrust_id = #{entrustId}
+        left join ope_production_scooter_bom bom
+        on es.group_id = bom.group_id and es.color_id = bom.color_id and bom.bom_status = 1 and bom.dr = 0
+        where es.dr = 0  and es.entrust_id = #{entrustId}
     </select>
 
     <!--修改委托单车辆信息-->

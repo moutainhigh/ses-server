@@ -1,12 +1,13 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
 
 /**
  * @author assert
  * @date 2021/1/22 9:50
  */
-public interface OpeCombinOrderService {
+public interface OpeCombinOrderService extends IService<OpeCombinOrder> {
 
 
     int deleteByPrimaryKey(Long id);

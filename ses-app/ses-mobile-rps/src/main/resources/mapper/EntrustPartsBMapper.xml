@@ -23,6 +23,7 @@
     <!--委托单部件信息自定义返回结果-->
     <resultMap id="EntrustOrderCombinResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parts_id" jdbcType="BIGINT" property="bomId" />
         <result column="parts_name" jdbcType="VARCHAR" property="name" />
         <result column="parts_no" jdbcType="VARCHAR" property="number" />
         <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
@@ -38,7 +39,7 @@
 
     <!--根据entrustId查询委托单部件信息-->
     <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
-        select ep.id, ep.parts_name, ep.parts_no,ifnull(ep.consignor_qty, 0) consignor_qty,
+        select ep.id,ep.parts_id, ep.parts_name, ep.parts_no,ifnull(ep.consignor_qty, 0) consignor_qty,
         ifnull(ep.qty, 0) qty, pp.id_calss,epsn.id sn_id,epsn.serial_num, epsn.lot
         from ope_entrust_parts_b ep
         left join ope_entrust_product_serial_num epsn
@@ -96,6 +97,9 @@
             </if>
             <if test="updatedTime != null">
                 updated_time = #{updatedTime},
+            </if>
+            <if test="def1 != null and def1 != ''">
+                def1 = #{def1},
             </if>
         </set>
         where id = #{id}

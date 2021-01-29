@@ -880,7 +880,6 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 发货单状态变待签收
     @Override
-    @Transactional
     public void invoiceWaitSign(Long invoiceId,Long userId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {

@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
@@ -11,7 +12,8 @@ import com.redescooter.ses.mobile.rps.service.base.OpeCombinOrderService;
  * @date 2021/1/22 9:50
  */
 @Service
-public class OpeCombinOrderServiceImpl implements OpeCombinOrderService {
+public class OpeCombinOrderServiceImpl extends ServiceImpl<OpeCombinOrderMapper, OpeCombinOrder>
+        implements OpeCombinOrderService {
 
     @Resource
     private OpeCombinOrderMapper opeCombinOrderMapper;

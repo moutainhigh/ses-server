@@ -43,8 +43,8 @@
     <!--根据combinId查询组装单车辆清单信息-->
     <select id="getCombinationListScooterByCombinId" parameterType="java.lang.Long"
             resultType="com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDTO">
-        select scooter.id, scooter.combin_id combinId, scooter.combin_list_status `status`,
-         c.color_name colorName, c.color_value colorValue, g.group_name groupName
+        select scooter.id, scooter.combin_id combinId, scooter.combin_list_status `status`,scooter.scooter_bom_id bomId,
+        c.color_name colorName, c.color_value colorValue, g.group_name groupName
         from ope_combin_list_scooter_b scooter
         left join ope_specificat_group g
         on scooter.group_id = g.id and g.dr = 0

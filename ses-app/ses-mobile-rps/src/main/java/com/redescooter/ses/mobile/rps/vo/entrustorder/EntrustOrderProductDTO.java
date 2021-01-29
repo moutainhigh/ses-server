@@ -19,6 +19,9 @@ public class EntrustOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "主键id(委托单子单据id)", dataType = "Long")
     private Long id;
 
+    @ApiModelProperty(value = "bomId", dataType = "Long")
+    private Long bomId;
+
     @ApiModelProperty(value = "名称", dataType = "String")
     private String name;
 
