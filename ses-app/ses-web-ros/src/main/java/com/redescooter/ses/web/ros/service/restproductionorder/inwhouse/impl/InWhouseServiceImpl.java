@@ -667,7 +667,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
                     scooterBQueryWrapper.in(OpeInWhouseScooterB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -677,7 +677,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhouseScooterB> scooterBWrapper = new QueryWrapper<>();
                     scooterBWrapper.in(OpeInWhouseScooterB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -726,7 +726,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
                     combinBQueryWrapper.in(OpeInWhouseCombinB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -736,7 +736,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhouseCombinB> combinBWrapper = new QueryWrapper<>();
                     combinBWrapper.in(OpeInWhouseCombinB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -785,7 +785,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
                     partsBQueryWrapper.in(OpeInWhousePartsB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -795,7 +795,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhousePartsB> partsBWrapper = new QueryWrapper<>();
                     partsBWrapper.in(OpeInWhousePartsB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -844,7 +844,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
                     partsBQueryWrapper.in(OpeInWhousePartsB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -854,7 +854,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhousePartsB> partsBWrapper = new QueryWrapper<>();
                     partsBWrapper.in(OpeInWhousePartsB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -931,7 +931,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 法国仓库已经入库的入库单
-                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frInWhouseOrders)) {
                     QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
                     inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID, frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -942,7 +942,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 }
                 // 法国仓库还没有入库的入库单
                 List<OpeInWhouseOrder> frUnWhouseOrders =
-                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
+                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frUnWhouseOrders)) {
                     QueryWrapper<OpeInWhouseScooterB> inscooterQw = new QueryWrapper<>();
                     inscooterQw.in(OpeInWhouseScooterB.COL_IN_WH_ID, frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1037,7 +1037,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 法国仓库已经入库的入库单
-                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frInWhouseOrders)) {
                     QueryWrapper<OpeInWhouseCombinB> incombinQw = new QueryWrapper<>();
                     incombinQw.in(OpeInWhouseCombinB.COL_IN_WH_ID, frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1048,7 +1048,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 }
                 // 法国仓库还没有入库的入库单
                 List<OpeInWhouseOrder> frUnWhouseOrders =
-                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
+                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frUnWhouseOrders)) {
                     QueryWrapper<OpeInWhouseCombinB> incombinQw = new QueryWrapper<>();
                     incombinQw.in(OpeInWhouseCombinB.COL_IN_WH_ID, frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1143,7 +1143,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(inWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 法国仓库已经入库的入库单
-                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> frInWhouseOrders = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frInWhouseOrders)) {
                     QueryWrapper<OpeInWhousePartsB> partsQw = new QueryWrapper<>();
                     partsQw.in(OpeInWhousePartsB.COL_IN_WH_ID, frInWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1154,7 +1154,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                 }
                 // 法国仓库还没有入库的入库单
                 List<OpeInWhouseOrder> frUnWhouseOrders =
-                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
+                        inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10 && !o.getId().equals(inWhouseOrder.getId())).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(frUnWhouseOrders)) {
                     QueryWrapper<OpeInWhousePartsB> inpartsQw = new QueryWrapper<>();
                     inpartsQw.in(OpeInWhousePartsB.COL_IN_WH_ID, frUnWhouseOrders.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1346,7 +1346,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrderList = opeInWhouseOrderService.list(qw);
             if (CollectionUtils.isNotEmpty(inWhouseOrderList)) {
                 // 已入库的入库单的集合
-                List<OpeInWhouseOrder> inList = inWhouseOrderList.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inList = inWhouseOrderList.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 // 已入库入库单的部件的集合
                 List<OpeInWhousePartsB> inPartsBList = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(inList)) {
@@ -1356,7 +1356,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     inPartsBList = opeInWhousePartsBService.list(partsQw);
                 }
                 // 还未入库的入库单的集合
-                List<OpeInWhouseOrder> unInList = inWhouseOrderList.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInList = inWhouseOrderList.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 // 还未入库的入库单的部件的集合
                 List<OpeInWhousePartsB> unPartsBList = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(unInList)) {
@@ -1441,7 +1441,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
                     combinBQueryWrapper.in(OpeInWhouseCombinB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1451,7 +1451,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhouseCombinB> combinBWrapper = new QueryWrapper<>();
                     combinBWrapper.in(OpeInWhouseCombinB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1518,7 +1518,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             List<OpeInWhouseOrder> inWhouseOrders = opeInWhouseOrderService.list(combinInWhouseOrderQw);
             if (CollectionUtils.isNotEmpty(inWhouseOrders)) {
                 // 已经入库的入库单
-                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> inWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() == 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(inWhouses)) {
                     QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
                     scooterBQueryWrapper.in(OpeInWhouseScooterB.COL_IN_WH_ID, inWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));
@@ -1528,7 +1528,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
                 // 还没有入库的入库单
-                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 30).collect(Collectors.toList());
+                List<OpeInWhouseOrder> unInWhouses = inWhouseOrders.stream().filter(o -> o.getInWhStatus() != 10).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(unInWhouses)) {
                     QueryWrapper<OpeInWhouseScooterB> scooterBWrapper = new QueryWrapper<>();
                     scooterBWrapper.in(OpeInWhouseScooterB.COL_IN_WH_ID, unInWhouses.stream().map(OpeInWhouseOrder::getId).collect(Collectors.toList()));

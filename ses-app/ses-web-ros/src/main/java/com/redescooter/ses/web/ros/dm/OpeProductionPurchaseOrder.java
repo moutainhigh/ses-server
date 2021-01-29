@@ -47,10 +47,10 @@ public class OpeProductionPurchaseOrder {
     private String purchaseNo;
 
     /**
-     * 采购状态，1：草稿，10：采购中，20：待入库，30：部分入库，40：已入库，50：已完成，60：已取消
+     * 生产采购单状态 1草稿 10采购中 20已完成
      */
     @TableField(value = "purchase_status")
-    @ApiModelProperty(value = "采购状态，1：草稿，10：采购中，20：待入库，30：部分入库，40：已入库，50：已完成，60：已取消")
+    @ApiModelProperty(value = "生产采购单状态 1草稿 10采购中 20已完成")
     private Integer purchaseStatus;
 
     /**
