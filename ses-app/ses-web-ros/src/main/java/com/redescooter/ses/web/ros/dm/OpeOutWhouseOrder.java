@@ -91,10 +91,10 @@ public class OpeOutWhouseOrder {
     private String outWhNo;
 
     /**
-     * 出库单状态，-1:新建，0：待出库，10：质检中，20：已出库，30：已取消
+     * 出库单状态 -1新建 10待出库 20已出库 30已取消
      */
     @TableField(value = "out_wh_status")
-    @ApiModelProperty(value = "出库单状态，-1:新建，0：待出库，10：质检中，20：已出库，30：已取消")
+    @ApiModelProperty(value = "出库单状态 -1新建 10待出库 20已出库 30已取消")
     private Integer outWhStatus;
 
     /**

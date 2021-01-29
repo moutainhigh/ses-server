@@ -62,10 +62,10 @@ public class OpeInWhouseOrder {
     private String inWhNo;
 
     /**
-     * 入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库
+     * 入库单状态 1草稿 10已入库
      */
     @TableField(value = "in_wh_status")
-    @ApiModelProperty(value = "入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库")
+    @ApiModelProperty(value = "入库单状态 1草稿 10已入库")
     private Integer inWhStatus;
 
     /**
