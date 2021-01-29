@@ -307,6 +307,7 @@ public class MenuServiceImpl implements MenuService {
         }
 //        sysMenuService.updateById(this.buildMenuVo(menuUpdate.getId(), enter));
         BeanUtils.copyProperties(enter,menuUpdate);
+        menuUpdate.setPId(enter.getPid());
         sysMenuService.updateById(menuUpdate);
         return new GeneralResult(enter.getRequestId());
     }
