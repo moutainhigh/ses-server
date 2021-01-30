@@ -145,7 +145,7 @@ ses-server
 
 ### 四、RedE架构体系图
 
-![rede体系图](./ses-doc/images/ROS RedE Office System.png)
+![rede体系图](./ses-doc/images/ROS_RedE_Office_System.png)
 
 ### 五、相关文档
 
