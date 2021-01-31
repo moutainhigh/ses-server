@@ -204,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
         //代付款金额
         addSiteOrderVO.setAmountObligation(addSiteOrderVO.getTotalPrice());
         //预付定金
-        addSiteOrderVO.setPrepaidDeposit(new BigDecimal("690"));
+        addSiteOrderVO.setPrepaidDeposit(new BigDecimal("590"));
         //优惠抵扣金额
         addSiteOrderVO.setAmountDiscount(new BigDecimal("0"));
         //支付类型

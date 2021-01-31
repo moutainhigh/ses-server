@@ -4,25 +4,24 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PublicSecretResult;
-import com.redescooter.ses.api.common.vo.base.StringResult;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.config.StripeConfigProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.SiteOrder;
-import com.redescooter.ses.web.website.dm.SitePaymentRecords;
+import com.redescooter.ses.web.website.dm.*;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentStatusEnums;
 import com.redescooter.ses.web.website.enums.SiteOrderStatusEnums;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.StripePaymentService;
-import com.redescooter.ses.web.website.service.base.SiteOrderService;
-import com.redescooter.ses.web.website.service.base.SitePaymentRecordsService;
+import com.redescooter.ses.web.website.service.base.*;
 import com.redescooter.ses.web.website.vo.stripe.PayResponseBody;
 import com.stripe.Stripe;
 import com.stripe.model.Event;
@@ -64,7 +63,19 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     private SiteOrderService siteOrderService;
 
     @Autowired
+    private SiteCustomerService siteCustomerService;
+
+    @Autowired
     private SitePaymentRecordsService sitePaymentRecordsService;
+
+    @Autowired
+    private SiteProductModelService siteProductModelService;
+
+    @Autowired
+    private SiteProductService siteProductService;
+
+    @DubboReference
+    private MailMultiTaskService mailMultiTaskService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -104,13 +115,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             PaymentIntent intent = PaymentIntent.create(params);
             String clientSecret = intent.getClientSecret();
 
-            /*try {
-               // clientSecret = RsaUtils.encryptByPrivateKey(intent.getClientSecret(), requestsKeyProperties.getPublicKey());
-            } catch (Exception e) {
-                throw new SesWebsiteException(ExceptionCodeEnums.STRIPE_RESPONSE_EXIST.getCode(),
-                        ExceptionCodeEnums.STRIPE_RESPONSE_EXIST.getMessage());
-            }
-*/
             log.info("===========" + clientSecret);
             result.setValue(clientSecret);
 
@@ -273,6 +277,28 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
     private void sendmail(SiteOrder order) {
 
+        SiteCustomer customer = siteCustomerService.getById(order.getCustomerId());
+        SiteProduct product = siteProductService.getById(order.getProductId());
+        SiteProductModel productModel = siteProductModelService.getById(product.getProductModelId());
+
+        String eamil = customer.getEmail();
+        String name = eamil.substring(0, eamil.indexOf("@"));
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setName(name);
+        enter.setEvent(MailTemplateEventEnums.SUBSCRIPTION_PAY_SUCCEED_SEND_EAMIL.getEvent());
+        //todo 这里注意一下，与旧的官网的系统ID和应用ID不一样
+        enter.setMailSystemId(AppIDEnums.SES_WEBSITE.getSystemId());
+        enter.setMailAppId(SystemIDEnums.REDE_SITE.getValue());
+        enter.setToMail(eamil);
+        enter.setCode("0");
+        enter.setRequestId("0");
+        enter.setUserRequestId("0");
+        enter.setToUserId(0L);
+        enter.setUserId(0L);
+        enter.setPrice(order.getAmountObligation().toString());
+        enter.setFullName(customer.getCustomerFullName());
+        enter.setModel(productModel.getProductModelName());
+        mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
     }
 
     private void savePaymentRecords(SiteOrder order, String stripeJson) {

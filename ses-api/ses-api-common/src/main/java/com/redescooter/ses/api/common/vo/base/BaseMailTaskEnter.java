@@ -30,18 +30,12 @@ public class BaseMailTaskEnter extends GeneralEnter {
     private String UserRequestId;
     @ApiModelProperty(value = "邮箱")
     private String email;
-//    @ApiModelProperty(value = "用户id")
-//    private String currentUserId;
-
     @ApiModelProperty(value = "全名")
     private String fullName;
-
     @ApiModelProperty(value = "产品型号")
     private String model;
-
     @ApiModelProperty(value = "剩余支付金额")
     private String price;
-
     @ApiModelProperty("委托单号")
     private String entrustNo;
 }
