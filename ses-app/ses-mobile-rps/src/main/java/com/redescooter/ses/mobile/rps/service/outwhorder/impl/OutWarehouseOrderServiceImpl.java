@@ -235,7 +235,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 RpsAssert.isNull(opeOutWhPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
-                RpsAssert.isTrue(qty > opeOutWhPartsB.getQcQty(), ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
+                RpsAssert.isTrue(qty > opeOutWhPartsB.getQty(), ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
                         ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
 
                 // 更新出库单部件已出库数量
@@ -289,10 +289,16 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     public GeneralResult outWarehouse(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
 
+        /**
+         * 数据完整性校验
+         */
         RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
-        RpsAssert.isTrue(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
-                ExceptionCodeEnums.OUT_WH_ORDER_OUT_OF_STOCK.getCode(), ExceptionCodeEnums.OUT_WH_ORDER_OUT_OF_STOCK.getMessage());
+
+        if (!OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
+            RpsAssert.isFalse(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
+                    ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(), ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
+        }
 
         boolean result = transactionTemplate.execute(outWarehouseStatus -> {
             boolean flag = true;
@@ -341,6 +347,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                         break;
                     default:
                         productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
+
                         // 检查是否有已出库数量
                         checkHasAlreadyOutWhQty(productList);
 

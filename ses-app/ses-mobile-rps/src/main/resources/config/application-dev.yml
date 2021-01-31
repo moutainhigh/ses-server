@@ -200,8 +200,8 @@ spring:                                                                         
       CombinOrder-api:
         #用户组api，可以配置多个组
         group-name: 10.CombinOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: 质检单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
-        descrtion: 质检单相关接口
+        title: 组装单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
+        descrtion: 组装单相关接口
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.mobile.rps
         path-regex: /combination/order/.*

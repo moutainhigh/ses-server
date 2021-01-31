@@ -11,7 +11,6 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
-import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
@@ -29,10 +28,8 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 保存库存信息公共组件
@@ -85,6 +82,11 @@ public class SaveWmsStockDataComponent {
          * 车辆成品库操作 1入库 2出库
          */
         if (InOutWhEnums.IN.getValue().equals(type)) {
+            /**
+             * {bomId, stockId}
+             */
+            Map<Long, Long> stockMap = new HashMap<>();
+
             for (Map.Entry<Long, List<InWhOrderProductDTO>> map : inWhOrderProductMap.entrySet()) {
                 // 这里直接get(0)是因为这里list里面只会有一条数据,ros那边创建入库单的时候就有限制,入库单相同产品不能有重复的
                 qty = map.getValue().get(0).getActInWhQty();
@@ -110,6 +112,8 @@ public class SaveWmsStockDataComponent {
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsScooterStock.getId(), WmsTypeEnum.SCOOTER_WAREHOUSE.getType(),
                         InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
+                // put
+                stockMap.put(map.getKey(), opeWmsScooterStock.getId());
             }
 
             /**
@@ -133,7 +137,7 @@ public class SaveWmsStockDataComponent {
             /**
              * 保存库存产品序列号信息
              */
-            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, userId));
+            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, stockMap, userId));
 
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
@@ -189,6 +193,11 @@ public class SaveWmsStockDataComponent {
          * 组装件成品库操作 1入库 2出库
          */
         if (InOutWhEnums.IN.getValue().equals(type)) {
+            /**
+             * {bomId, stockId}
+             */
+            Map<Long, Long> stockMap = new HashMap<>();
+
             for (Map.Entry<Long, List<InWhOrderProductDTO>> map : inWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getActInWhQty();
                 // 组装件成品库信息
@@ -210,12 +219,14 @@ public class SaveWmsStockDataComponent {
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsCombinStock.getId(), WmsTypeEnum.COMBINATION_WAREHOUSE.getType(),
                         InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
+                // put
+                stockMap.put(map.getKey(), opeWmsCombinStock.getId());
             }
 
             /**
              * 保存库存产品序列号信息
              */
-            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, userId));
+            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, stockMap, userId));
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
@@ -267,6 +278,11 @@ public class SaveWmsStockDataComponent {
          * 部件原料库操作 1入库 2出库
          */
         if (InOutWhEnums.IN.getValue().equals(type)) {
+            /**
+             * {bomId, stockId}
+             */
+            Map<Long, Long> stockMap = new HashMap<>();
+
             for (Map.Entry<Long, List<InWhOrderProductDTO>> map : inWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getActInWhQty();
                 // 部件原料库信息
@@ -288,12 +304,15 @@ public class SaveWmsStockDataComponent {
                 // 入库记录
                 opeWmsStockRecordList.add(buildWmsStockRecord(opeWmsPartsStock.getId(), WmsTypeEnum.PARTS_WAREHOUSE.getType(),
                         InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue(), qty, InOutWhEnums.IN.getValue(),userId));
+
+                // put
+                stockMap.put(map.getKey(), opeWmsPartsStock.getId());
             }
 
             /**
              * 保存库存产品序列号信息
              */
-            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, userId));
+            wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, stockMap, userId));
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
@@ -375,6 +394,8 @@ public class SaveWmsStockDataComponent {
         opeWmsScooterStock.setWaitOutStockQty(0);
         opeWmsScooterStock.setCreatedBy(userId);
         opeWmsScooterStock.setCreatedTime(new Date());
+        opeWmsScooterStock.setUpdatedBy(userId);
+        opeWmsScooterStock.setUpdatedTime(new Date());
 
         return opeWmsScooterStock;
     }
@@ -406,6 +427,8 @@ public class SaveWmsStockDataComponent {
         opeWmsCombinStock.setWaitOutStockQty(0);
         opeWmsCombinStock.setCreatedBy(userId);
         opeWmsCombinStock.setCreatedTime(new Date());
+        opeWmsCombinStock.setUpdatedBy(userId);
+        opeWmsCombinStock.setUpdatedTime(new Date());
 
         return opeWmsCombinStock;
     }
@@ -438,17 +461,22 @@ public class SaveWmsStockDataComponent {
         opeWmsPartsStock.setWaitOutStockQty(0);
         opeWmsPartsStock.setCreatedBy(userId);
         opeWmsPartsStock.setCreatedTime(new Date());
+        opeWmsPartsStock.setUpdatedBy(userId);
+        opeWmsPartsStock.setUpdatedTime(new Date());
 
         return opeWmsPartsStock;
     }
 
     /**
      * 组装库存产品序列号信息
-     * @param opeInWhouseOrderSerialBinds
-     * @param userId
+     * @param opeInWhouseOrderSerialBinds 入库产品序列号集合
+     * @param stockMap 仓库id map集合
+     * @param userId 用户id
      * @return
      */
-    private List<OpeWmsStockSerialNumber> buildOpeWmsStockSerialNumber(List<OpeInWhouseOrderSerialBind> opeInWhouseOrderSerialBinds, Long userId) {
+    private List<OpeWmsStockSerialNumber> buildOpeWmsStockSerialNumber(List<OpeInWhouseOrderSerialBind> opeInWhouseOrderSerialBinds,
+                                                                       Map<Long, Long> stockMap,
+                                                                       Long userId) {
         List<OpeWmsStockSerialNumber> opeWmsStockSerialNumberList = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(opeInWhouseOrderSerialBinds)) {
@@ -456,7 +484,7 @@ public class SaveWmsStockDataComponent {
                 OpeWmsStockSerialNumber opeWmsStockSerialNumber = new OpeWmsStockSerialNumber();
                 opeWmsStockSerialNumber.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
                 opeWmsStockSerialNumber.setDr(0);
-                opeWmsStockSerialNumber.setRelationId(getWmsStockId(serial.getOrderType(), serial.getProductId()));
+                opeWmsStockSerialNumber.setRelationId(stockMap.get(serial.getProductId()));
                 opeWmsStockSerialNumber.setRelationType(serial.getOrderType());
                 opeWmsStockSerialNumber.setStockType(WmsStockTypeEnum.CHINA_WAREHOUSE.getType());
                 opeWmsStockSerialNumber.setRsn(serial.getSerialNum());
@@ -476,6 +504,12 @@ public class SaveWmsStockDataComponent {
         return opeWmsStockSerialNumberList;
     }
 
+    /**
+     * 获取仓库id
+     * @param productType
+     * @param bomId
+     * @return
+     */
     private Long getWmsStockId(Integer productType, Long bomId) {
         Long stockId = null;
 

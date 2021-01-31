@@ -51,13 +51,13 @@ public interface CombinationListScooterMapper {
     int updateCombinationListScooter(OpeCombinListScooterB opeCombinListScooterB);
 
     /**
-     * 获取车辆待组装数量
-     * @param
+     * 根据combinationId获取车辆待组装数量
+     * @param combinationId
      * @return int
      * @author assert
      * @date 2021/1/27
     */
-    int getQuantityToBeAssembled();
+    int getQuantityToBeAssembledByCombinationId(Long combinationId);
 
     /**
      * 批量新增组装单车辆清单信息

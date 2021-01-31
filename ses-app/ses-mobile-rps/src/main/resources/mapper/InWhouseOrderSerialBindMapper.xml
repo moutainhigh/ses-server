@@ -41,6 +41,15 @@
             <if test="serialNum != null">
                 serial_num,
             </if>
+            <if test="defaultSerialNum != null">
+                default_serial_num,
+            </if>
+            <if test="tabletSn != null">
+                tablet_sn,
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address,
+            </if>
             <if test="lot != null">
                 lot,
             </if>
@@ -55,12 +64,6 @@
             </if>
             <if test="remark != null">
                 remark,
-            </if>
-            <if test="bluetoothMacAddress != null">
-                bluetooth_mac_address,
-            </if>
-            <if test="defaultSerialNum != null">
-                default_serial_num,
             </if>
             <if test="createdBy != null">
                 created_by,
@@ -91,6 +94,15 @@
             <if test="serialNum != null">
                 #{serialNum,jdbcType=VARCHAR},
             </if>
+            <if test="defaultSerialNum != null">
+                #{defaultSerialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="tabletSn != null">
+                #{tabletSn,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
             <if test="lot != null">
                 #{lot,jdbcType=VARCHAR},
             </if>
@@ -105,12 +117,6 @@
             </if>
             <if test="remark != null">
                 #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="bluetoothMacAddress != null">
-                #{bluetoothMacAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="defaultSerialNum != null">
-                #{defaultSerialNum,jdbcType=VARCHAR},
             </if>
             <if test="createdBy != null">
                 #{createdBy,jdbcType=BIGINT},

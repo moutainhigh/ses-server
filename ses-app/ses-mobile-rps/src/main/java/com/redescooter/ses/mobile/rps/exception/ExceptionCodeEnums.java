@@ -216,7 +216,15 @@ public enum ExceptionCodeEnums {
 
     IN_WH_ORDER_HAS_BEEN_STORED(10105, "入库单已入库"),
 
-    OUT_WH_ORDER_OUT_OF_STOCK(10106, "出库单已出库")
+    OUT_WH_ORDER_OUT_OF_STOCK(10106, "出库单已出库"),
+
+    SCOOTER_HAS_NO_ECU(10107, "车辆没有ecu仪表"),
+
+    COMBINATION_NOT_COMPLETED(10108, "组装未完成"),
+
+    NOT_COMPLETED_QC(10109, "未完成质检"),
+
+    COMPLETED_COMBINATION(10110, "已完成组装")
     ;
 
     private int code;

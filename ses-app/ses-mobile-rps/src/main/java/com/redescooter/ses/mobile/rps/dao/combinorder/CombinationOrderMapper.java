@@ -69,4 +69,13 @@ public interface CombinationOrderMapper {
     */
     OpeCombinOrder getCombinationOrderById(Long id);
 
+    /**
+     * 获取当天所有组装单id
+     * @param
+     * @return java.util.List<java.lang.Long>
+     * @author assert
+     * @date 2021/1/31
+    */
+    List<Long> getToDayCombinationId();
+
 }

@@ -112,10 +112,10 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <!--获取组装件待组装数量-->
-    <select id="getQuantityToBeAssembled" resultType="java.lang.Integer">
+    <!--根据combinationId获取组装件待组装数量-->
+    <select id="getQuantityToBeAssembledByCombinationId" parameterType="java.lang.Long" resultType="java.lang.Integer">
         select count(*) from ope_combin_list_combin_b
-	    where dr = 0 and combin_list_status = 0
+	    where dr = 0 and combin_id = #{combinationId} and combin_list_status = 0
     </select>
 
     <!--批量新增组装单组装件清单信息-->

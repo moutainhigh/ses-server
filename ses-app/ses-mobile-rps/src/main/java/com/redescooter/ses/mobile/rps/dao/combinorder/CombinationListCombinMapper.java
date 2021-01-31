@@ -51,13 +51,13 @@ public interface CombinationListCombinMapper {
     int updateCombinationListCombination(OpeCombinListCombinB opeCombinListCombinB);
 
     /**
-     * 获取组装件待组装数量
-     * @param
+     * 根据combinationId获取组装件待组装数量
+     * @param combinationId
      * @return int
      * @author assert
      * @date 2021/1/27
      */
-    int getQuantityToBeAssembled();
+    int getQuantityToBeAssembledByCombinationId(Long combinationId);
 
     /**
      * 批量新增组装单组装件清单信息

@@ -25,7 +25,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeOrderSerialBindService;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.vo.combinorder.*;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
@@ -81,6 +81,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     private OpeProductionPartsRelationMapper opeProductionPartsRelationMapper;
     @Autowired
     private ProductionPartsMapper productionPartsMapper;
+    @Autowired
+    private OpeOrderSerialBindService opeOrderSerialBindService;
 
 
     @Override
@@ -181,17 +183,21 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+
+        OpeCombinListRelationParts opeCombinListRelationParts = combinationListRelationPartsMapper
+                .getCombinationListRelationPartsByRIdAndBId(paramDTO.getProductId(), paramDTO.getBomId());
+        RpsAssert.isNull(opeCombinListRelationParts, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
         // 避免重复扫码
         if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
             OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
                     .getCombinListPartsSerialBySerialNum(paramDTO.getSerialNum());
-            RpsAssert.isNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
+            RpsAssert.isNotNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
         }
 
         // 无码部件输入数量必须跟所需数量一致
-        OpeCombinListRelationParts opeCombinListRelationParts = combinationListRelationPartsMapper
-                .getCombinationListRelationPartsByRIdAndBId(paramDTO.getProductId(), paramDTO.getBomId());
         if (StringUtils.isBlank(paramDTO.getSerialNum())) {
             RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
                     ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
@@ -216,6 +222,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
          */
         if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
             OpeQcOrderSerialBind opeQcOrderSerialBind = qcOrderSerialBindMapper.getQcOrderSerialBindBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNull(opeQcOrderSerialBind, ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(),
+                    ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
 
             OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = new OpeCombinListPartsSerialBind();
             opeCombinListPartsSerialBind.setId(idAppService.getId(SequenceName.OPE_COMBIN_LIST_PARTS_SERIAL_BIND));
@@ -243,13 +251,11 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO completeCombination(QueryCombinationPartsListParamDTO paramDTO) {
-        SaveScanCodeResultDTO saveScanCodeResultDTO = new SaveScanCodeResultDTO();
+        SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         // 公共参数
-        String name = null;
-        Integer remainingQty = 0;
-        String bluetoothMacAddress = null;
-        String tabletSn = null;
         String serialNum = null;
+        Long bomId = null;
+        Long combinationId = null;
 
         /**
          * 修改组装单产品信息 1车辆 2组装件
@@ -258,8 +264,15 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         switch (paramDTO.getProductType()) {
             case 1:
                 OpeCombinListScooterB opeCombinListScooterB = combinationListScooterMapper.getCombinationListScooterById(paramDTO.getProductId());
+                RpsAssert.isTrue(CombinListStatusEnum.ASSEMBLED.getStatus().equals(opeCombinListScooterB.getCombinListStatus()),
+                        ExceptionCodeEnums.COMPLETED_COMBINATION.getCode(), ExceptionCodeEnums.COMPLETED_COMBINATION.getMessage());
                 RpsAssert.isTrue(scanCodeQty < opeCombinListScooterB.getQty(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(),
                         ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
+
+                // 车辆bomId
+                bomId = opeCombinListScooterB.getScooterBomId();
+                // 组装件id
+                combinationId = opeCombinListScooterB.getCombinId();
 
                 // 更新组装车辆状态为已组装
                 opeCombinListScooterB.setCombinListStatus(CombinListStatusEnum.ASSEMBLED.getStatus());
@@ -267,26 +280,32 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 opeCombinListScooterB.setUpdatedTime(new Date());
                 combinationListScooterMapper.updateCombinationListScooter(opeCombinListScooterB);
 
-                name = scooterBomMapper.getScooterModelById(opeCombinListScooterB.getScooterBomId());
-                remainingQty = combinationListScooterMapper.getQuantityToBeAssembled();
                 // 获取后台生成车辆序列号
                 serialNum = getProductSerialNum(paramDTO.getProductType());
-//                String serialNumByDb = null;
-//                if (StringUtils.isNotBlank(serialNumByDb)) {
-//                    // 这种方式还是可能会出现重复序列号,不过先暂时这样后面慢慢改
-//                    serialNum = getProductSerialNum(paramDTO.getProductType());
-//                }
+                resultDTO.setSerialNum(serialNum);
                 // 查询ECU仪表部件序列号绑定信息
                 OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
                         .getEcuPartsSerialBindByOrderBId(paramDTO.getProductId());
-                bluetoothMacAddress = opeCombinListPartsSerialBind.getBluetoothMacAddress();
-                tabletSn = opeCombinListPartsSerialBind.getDefaultSerialNum();
+                RpsAssert.isNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.SCOOTER_HAS_NO_ECU.getCode(),
+                        ExceptionCodeEnums.SCOOTER_HAS_NO_ECU.getMessage());
+
+                resultDTO.setName(scooterBomMapper.getScooterModelById(opeCombinListScooterB.getScooterBomId()));
+                resultDTO.setQty(combinationListScooterMapper.getQuantityToBeAssembledByCombinationId(opeCombinListScooterB.getCombinId()));
+                resultDTO.setBluetoothMacAddress(opeCombinListPartsSerialBind.getBluetoothMacAddress());
+                resultDTO.setTabletSn(opeCombinListPartsSerialBind.getDefaultSerialNum());
 
                 break;
             default:
                 OpeCombinListCombinB opeCombinListCombinB = combinationListCombinMapper.getCombinationListCombinationById(paramDTO.getProductId());
+                RpsAssert.isTrue(CombinListStatusEnum.ASSEMBLED.getStatus().equals(opeCombinListCombinB.getCombinListStatus()),
+                        ExceptionCodeEnums.COMPLETED_COMBINATION.getCode(), ExceptionCodeEnums.COMPLETED_COMBINATION.getMessage());
                 RpsAssert.isTrue(scanCodeQty < opeCombinListCombinB.getQty(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(),
                         ExceptionCodeEnums.PART_QTY_IS_WRONG.getMessage());
+
+                // 组装件bomId
+                bomId = opeCombinListCombinB.getProductionCombinBomId();
+                // 组装单id
+                combinationId = opeCombinListCombinB.getCombinId();
 
                 // 更新组装组装件状态为已组装
                 opeCombinListCombinB.setCombinListStatus(CombinListStatusEnum.ASSEMBLED.getStatus());
@@ -294,44 +313,67 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 opeCombinListCombinB.setUpdatedTime(new Date());
                 combinationListCombinMapper.updateCombinationListCombination(opeCombinListCombinB);
 
-                name = combinBomMapper.getCombinCnNameById(opeCombinListCombinB.getProductionCombinBomId());
-                serialNum = getProductSerialNum(paramDTO.getProductType());
-                remainingQty = combinationListCombinMapper.getQuantityToBeAssembled();
+                resultDTO.setName(combinBomMapper.getCombinCnNameById(opeCombinListCombinB.getProductionCombinBomId()));
+                resultDTO.setQty(combinationListCombinMapper.getQuantityToBeAssembledByCombinationId(opeCombinListCombinB.getCombinId()));
+                resultDTO.setSerialNum(getProductSerialNum(paramDTO.getProductType()));
 
                 break;
         }
 
+        // 获取批次号
+        String lot = getProductLot(combinationId);
         /**
          * 保存车辆、组装件序列号绑定信息
          */
-
+        OpeOrderSerialBind opeOrderSerialBind = new OpeOrderSerialBind();
+        opeOrderSerialBind.setId(idAppService.getId(SequenceName.OPE_ORDER_SERIAL_BIND));
+        opeOrderSerialBind.setDr(0);
+        opeOrderSerialBind.setOrderBId(paramDTO.getProductId());
+        opeOrderSerialBind.setOrderType(paramDTO.getProductType() == 1 ? 10 : 11);
+        opeOrderSerialBind.setSerialNum(serialNum);
+        opeOrderSerialBind.setLot(lot);
+        opeOrderSerialBind.setProductId(bomId);
+        opeOrderSerialBind.setProductType(paramDTO.getProductType());
+        opeOrderSerialBind.setQty(1);
+        opeOrderSerialBind.setBluetoothMacAddress(resultDTO.getBluetoothMacAddress());
+        opeOrderSerialBind.setCreatedBy(paramDTO.getUserId());
+        opeOrderSerialBind.setCreatedTime(new Date());
+        opeOrderSerialBind.setUpdatedBy(paramDTO.getUserId());
+        opeOrderSerialBind.setUpdatedTime(new Date());
+        opeOrderSerialBind.setDef1(resultDTO.getTabletSn());
+        opeOrderSerialBindService.insertOrUpdateSelective(opeOrderSerialBind);
 
         /**
          * 设置完成组装打印二维码参数
          */
-        saveScanCodeResultDTO.setName(name);
-        saveScanCodeResultDTO.setQty(remainingQty);
-        saveScanCodeResultDTO.setBluetoothMacAddress(bluetoothMacAddress);
-        saveScanCodeResultDTO.setTabletSn(tabletSn);
-        saveScanCodeResultDTO.setSerialNum(serialNum);
-        saveScanCodeResultDTO.setLot(System.currentTimeMillis() + "");
+        resultDTO.setLot(lot);
         // 生成日期指的就是车辆完成组装时间
-        saveScanCodeResultDTO.setProductionDate(new Date());
-        saveScanCodeResultDTO.setPrintFlag(true);
-        return saveScanCodeResultDTO;
+        resultDTO.setProductionDate(new Date());
+        resultDTO.setPrintFlag(true);
+        return resultDTO;
     }
 
     @Override
     public GeneralResult submitQc(IdEnter enter) {
-        CombinationOrderDetailDTO combinationOrderDetail = combinationOrderMapper.getCombinationOrderDetailById(enter.getId());
-        RpsAssert.isNull(combinationOrderDetail, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeCombinOrder opeCombinOrder = combinationOrderMapper.getCombinationOrderById(enter.getId());
+        RpsAssert.isNull(opeCombinOrder, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getMessage());
 
+        /**
+         * 检查当前组装单车辆、组装件是否已经全部组装完成
+         */
+        int count = 0;
+        if (ProductTypeEnums.SCOOTER.getValue().equals(opeCombinOrder.getCombinType())) {
+            count = combinationListScooterMapper.getQuantityToBeAssembledByCombinationId(opeCombinOrder.getId());
+        } else {
+            count = combinationListCombinMapper.getQuantityToBeAssembledByCombinationId(opeCombinOrder.getId());
+        }
+        RpsAssert.isTrue(count > 0, ExceptionCodeEnums.COMBINATION_NOT_COMPLETED.getCode(),
+                ExceptionCodeEnums.COMBINATION_NOT_COMPLETED.getMessage());
+
         // 更新组装单状态为【组装完成】
-        OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
-        opeCombinOrder.setId(combinationOrderDetail.getId());
         opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.ASSEMBL_FINISH.getValue());
-        opeCombinOrder.setCombinStartDate(new Date());
+        opeCombinOrder.setCombinEndDate(new Date());
         opeCombinOrder.setUpdatedBy(enter.getUserId());
         opeCombinOrder.setUpdatedTime(new Date());
         combinationOrderMapper.updateCombinationOrder(opeCombinOrder);
@@ -535,9 +577,9 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
          * 2.产品范围
          * 3.结构类型
          * 4.生产地点(默认中国南通)
-         * 5.年份
+         * 5.年份,只取后两位(2021年就是21)
          * 6.月份
-         * 7.生产流水号(生产日 + 工单号 + 流水号)
+         * 7.生产流水号(生产日 + 工单号 + 流水号-暂时是随机数)
          */
         StringBuilder sb = new StringBuilder();
         sb.append("FR");
@@ -546,7 +588,6 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         sb.append("0");
         sb.append(year.substring(2, 4));
         sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
-        // 生产流水号在质检单这边暂时只有 “生产日” + “工单号”组成, 流水号在确认入库时生成
         String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
         sb.append(number);
 
@@ -555,15 +596,63 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     /**
      * 获取产品批次号
-     * @param productType 产品类型 1车辆 2组装件
      * @param combinationId 组装单id
      * @return
      */
-    private String getProductLot(Integer productType, Long combinationId) {
+    private String getProductLot(Long combinationId) {
+        Calendar cal = Calendar.getInstance();
+        // 年、月、日
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH ) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        /**
+         * 获取当前组装单是今天的第几个
+         */
+        int index = 0;
+        List<Long> combinationIds = combinationOrderMapper.getToDayCombinationId();
+        for (int i = 0; i < combinationIds.size(); i++) {
+            if (combinationIds.get(i).equals(combinationId)) {
+                index = i;
+                break;
+            }
+        }
+
+        /**
+         * 批次规则：
+         * 1.LOT(固定值)
+         * 2.年份
+         * 3.月份
+         * 4.天数
+         * 5.流水号(001、002...)
+         */
         StringBuilder sb = new StringBuilder();
-        Calendar calendar = Calendar.getInstance();
+        sb.append("LOT");
+        sb.append(year);
+        sb.append(month);
+        sb.append(day);
+        // index + 1,下标是从0开始的
+        sb.append(getNumber(index + 1));
 
         return sb.toString();
+    }
+
+    /**
+     * 获取流水号
+     * @param index
+     * @return
+     */
+    private String getNumber(int index) {
+        String number = null;
+        if (index < 10) {
+            number = "00" + index;
+        } else if (index >= 10 && index < 100) {
+            number = "0" + index;
+        } else {
+            number = String.valueOf(index);
+        }
+
+        return number;
     }
 
 }
