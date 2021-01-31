@@ -148,6 +148,7 @@ public class SaveWmsStockDataComponent {
                         scooterBom.getColorId());
 
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
+                opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() - qty);
                 opeWmsScooterStock.setUsedStockQty(opeWmsScooterStock.getUsedStockQty() + qty);
                 opeWmsScooterStock.setWaitOutStockQty(opeWmsScooterStock.getWaitOutStockQty() - qty);
                 opeWmsScooterStock.setUpdatedBy(userId);
