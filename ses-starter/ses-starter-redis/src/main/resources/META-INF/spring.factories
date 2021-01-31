@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.redescooter.ses.starter.redis.config.RedisConfiguration,\
-com.redescooter.ses.starter.redis.config.RedisClusterConfiguration,\
-com.redescooter.ses.starter.redis.config.RedisJedisPoolConfiguration
+  com.redescooter.ses.starter.redis.config.RedisClusterNodesConfigProperties,\
+  com.redescooter.ses.starter.redis.config.RedisJedisPoolConfigProperties,\
+  com.redescooter.ses.starter.redis.config.RedisClusterConfigProperties

@@ -267,7 +267,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             baseMailTask.setName(enter.getMail().split("@", 2)[0]);
         }
         baseMailTask.setToMail(enter.getMail());
-        baseMailTask.setToUserId(new Long("0"));
+        baseMailTask.setToUserId(user.getId());
         baseMailTask.setUserRequestId(enter.getRequestId());
         baseMailTask.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
         baseMailTask.setMailAppId(AppIDEnums.SES_WEBSITE.getValue());

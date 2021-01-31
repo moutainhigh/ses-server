@@ -6,23 +6,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author Mr.lijiating
- * @version V1.0
- * @Date: 24/12/2019 1:01 上午
- * @ClassName: RedisConfiguration
- * @Function: TODO
- */
+ * @Author jerry
+ * @Date 2021/1/31 10:19 下午
+ * @Description RedisClusterConfigProperties
+ **/
+
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
-public class RedisConfiguration {
+public class RedisClusterConfigProperties {
 
     @Autowired
-    private RedisClusterConfiguration redisClusterConfiguration;
+    private RedisClusterNodesConfigProperties redisClusterNodesConfigProperties;
     @Autowired
-    private RedisJedisPoolConfiguration redisJedisPoolConfiguration;
+    private RedisJedisPoolConfigProperties redisJedisPoolConfigProperties;
 
     private int timeout;
 
-
+    private String password;
 }
