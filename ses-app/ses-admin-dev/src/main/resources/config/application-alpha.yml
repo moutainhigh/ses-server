@@ -1,0 +1,130 @@
+#日志路径
+log:
+  file:
+    path: ${log.path}@profile-active@
+    max-size: 128MB
+    max-history: 180
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://192.168.2.211:2181
+  metadata-report:
+    address: zookeeper://192.168.2.211:2181
+spring:                                                                                                                 #spring config
+  http:                                                                                                                 #上传配置
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 100MB
+      enabled: true
+  datasource:                                                                                                           #数据库连接
+    url: jdbc:mysql://192.168.2.211:3306/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1qaz2wsx
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 192.168.2.211:7000
+        - 192.168.2.211:7001
+        - 192.168.2.211:7002
+        - 192.168.2.211:7003
+        - 192.168.2.211:7004
+        - 192.168.2.211:7005
+
+  # 开启Swagger
+  swagger:                                                                                                              #swagger在线文档配置
+    enabled: true
+    group:
+      sign-api:                                                                                                          #用户组api，可以配置多个组
+        group-name: 1.Login-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: OMS Login相关接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 登陆相关接口                                                                                #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /admin/dev.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact:                                                                                                        #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      AppVersion-api:                                                                                                          #用户组api，可以配置多个组
+        group-name: 2.AppVersion-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 应用版本管理                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 应用版本管理                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /app/version/.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact:                                                                                                        #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      DataCount-api:
+        group-name: 3.DataCount-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 首页dashboard统计                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 首页dashboard统计                                                                                    #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /data/count/.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      scooter-api:                                                                                                          #用户组api，可以配置多个组
+        group-name: 3.Scooter-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 车辆管理                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 车辆管理                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /scooter/.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact:                                                                                                        #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+  #rabbitmq配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    default-requeue-rejected: false
+    # 开启消息发送确认机制（生产者--》交换机）
+    publisher-confirms: true
+    listener:
+      simple:
+        # 开启消息手动确认
+        acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）#消息确认包含 发送确认、接受确认
+
+# 应用更新包文件上传下载路径
+fileUpload:
+    path: /usr/local/nginx/soft/download/
+    download: http://192.168.2.211/download/

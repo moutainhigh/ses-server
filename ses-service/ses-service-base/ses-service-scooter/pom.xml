@@ -52,6 +52,14 @@
             </properties>
         </profile>
         <profile>
+            <id>alpha</id>
+            <properties>
+                <profile-active>alpha</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/alpha</jar.path>
+            </properties>
+        </profile>
+        <profile>
             <id>test</id>
             <properties>
                 <profile-active>test</profile-active>
