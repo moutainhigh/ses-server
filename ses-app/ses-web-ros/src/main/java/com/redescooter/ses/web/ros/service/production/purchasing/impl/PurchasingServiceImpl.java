@@ -593,26 +593,26 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
-
         List<PruchasingItemResult> resultList = new ArrayList<>();
 
-        List<String> productTypeList = new ArrayList<String>();
-        if (StringUtils.isNotBlank(enter.getProductType())){
-            productTypeList = Arrays.asList(enter.getProductType().split(","));
-        }else {
+        List<String> productTypeList = new ArrayList<>();
+        if (StringUtils.isNotBlank(enter.getProductType())) {
+            String[] split = enter.getProductType().split(",");
+            for (String s : split) {
+                productTypeList.add(s);
+            }
+            productTypeList.add("6");
+        } else {
             for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-                if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())
-                        && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+                if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                     productTypeList.add(item.getValue());
                 }
             }
         }
 
-        if (StringUtils.isEmpty(enter.getProductType())
-                || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
+        if (StringUtils.isEmpty(enter.getProductType()) || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
             // 整车产品查询列表
-            List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter,
-                    Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
+            List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
             // 查询产品中包含的所有的部件
             if (CollectionUtils.isNotEmpty(scooterProductList)) {
                 List<Long> productIds = scooterProductList.stream()
@@ -620,8 +620,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                         .map(PruchasingItemResult::getId).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(productIds)) {
                     // 查询产品所有部件
-                    List<PruchasingItemResult> partList =
-                            purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
+                    List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
                     if (CollectionUtils.isNotEmpty(partList)) {
                         for (PruchasingItemResult scooter : scooterProductList) {
                             BigDecimal totalPrice = BigDecimal.ZERO;
@@ -667,9 +666,9 @@ public class PurchasingServiceImpl implements PurchasingService {
             }
         }
 
-        List<PruchasingItemResult> partProductList =
-                purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
-        if (CollectionUtils.isNotEmpty(partProductList)){
+        // 入参的productType不为空
+        List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
+        if (CollectionUtils.isNotEmpty(partProductList)) {
             //查询质检模板
             QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
             opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
@@ -679,25 +678,25 @@ public class PurchasingServiceImpl implements PurchasingService {
                 partProductList.removeIf(item -> {
                     return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
                 });
-            }else {
+            } else {
                 return resultList;
             }
             resultList.addAll(partProductList);
         }
         // 加上库存的数量
-        if (CollectionUtils.isNotEmpty(resultList)){
+        if (CollectionUtils.isNotEmpty(resultList)) {
             List<Long> partsIds = resultList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList());
-            switch (enter.getSource()){
+            switch (enter.getSource()) {
                 case 0:
                     if (CollectionUtils.isNotEmpty(partsIds)) {
                         QueryWrapper<OpeWmsPartsStock> qw = new QueryWrapper<>();
-                        qw.in(OpeWmsPartsStock.COL_PARTS_ID,partsIds);
-                        qw.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
+                        qw.in(OpeWmsPartsStock.COL_PARTS_ID, partsIds);
+                        qw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
                         List<OpeWmsPartsStock> partsList = opeWmsPartsStockService.list(qw);
-                        if (CollectionUtils.isNotEmpty(partsList)){
+                        if (CollectionUtils.isNotEmpty(partsList)) {
                             for (PruchasingItemResult result : resultList) {
                                 for (OpeWmsPartsStock stock : partsList) {
-                                    if (result.getId().equals(stock.getPartsId())){
+                                    if (result.getId().equals(stock.getPartsId())) {
                                         result.setAbleQty(stock.getAbleStockQty());
                                     }
                                 }
@@ -710,12 +709,12 @@ public class PurchasingServiceImpl implements PurchasingService {
                     // 这里表示从不合格品库创建出库 可出库的数量 需要从中国仓库不合格品库部件找数据
                     if (CollectionUtils.isNotEmpty(partsIds)) {
                         QueryWrapper<OpeWmsQualifiedPartsStock> qw = new QueryWrapper<>();
-                        qw.in(OpeWmsQualifiedPartsStock.COL_PARTS_ID,partsIds);
+                        qw.in(OpeWmsQualifiedPartsStock.COL_PARTS_ID, partsIds);
                         List<OpeWmsQualifiedPartsStock> qualifiedPartsStocks = opeWmsQualifiedPartsStockService.list(qw);
-                        if (CollectionUtils.isNotEmpty(qualifiedPartsStocks)){
+                        if (CollectionUtils.isNotEmpty(qualifiedPartsStocks)) {
                             for (PruchasingItemResult result : resultList) {
                                 for (OpeWmsQualifiedPartsStock qualifiedPartsStock : qualifiedPartsStocks) {
-                                    if (result.getId().equals(qualifiedPartsStock.getPartsId())){
+                                    if (result.getId().equals(qualifiedPartsStock.getPartsId())) {
                                         result.setAbleQty(qualifiedPartsStock.getQty());
                                     }
                                 }
@@ -727,14 +726,14 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         }
         List<PruchasingItemResult> result = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource() && (enter.getSource() ==0 || enter.getSource() == 1)){
+        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource() && (enter.getSource() == 0 || enter.getSource() == 1)) {
             for (PruchasingItemResult itemResult : resultList) {
-                if (itemResult.getAbleQty() > 0){
+                if (itemResult.getAbleQty() > 0) {
                     result.add(itemResult);
                 }
             }
             return result;
-        }else {
+        } else {
             return resultList;
         }
     }
