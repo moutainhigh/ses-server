@@ -46,7 +46,7 @@
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select qc_type `status`, count(id) totalCount
         from ope_qc_order
-        where dr = 0 and order_type = 1
+        where dr = 0 and order_type = #{type}
         <if test="status == 0">and qc_status in(1, 10)</if>
         <if test="status == 1">and qc_status = 20</if>
         group by qc_type
