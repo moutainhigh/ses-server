@@ -121,7 +121,11 @@ public interface MenuService {
      */
     List<VueRouter<MenuTreeResult>> vueRouters(GeneralEnter enter);
 
+    /**
+     * 菜单下拉数据
+     * @param enter
+     * @return
+     */
     List<MenuDatasListResult> menuDatas(MenuDatasEnter enter);
-
 
 }

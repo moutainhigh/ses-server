@@ -85,7 +85,6 @@ public class SysMenuController {
         return new Response<>(menuService.findMenuByRoleId(enter));
     }
 
-
     @PostMapping(value = "/menuDatas")
     @ApiOperation(value = "菜单下拉数据", response = MenuTreeResult.class)
     public Response<List<MenuDatasListResult>> menuDatas(@ModelAttribute @ApiParam("请求参数") MenuDatasEnter enter) {

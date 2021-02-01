@@ -15,6 +15,7 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSysMenuMapper;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
@@ -43,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +73,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuServiceMapper menuServiceMapper;
+
+    @Autowired
+    private OpeSysMenuMapper opeSysMenuMapper;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -512,15 +517,37 @@ public class MenuServiceImpl implements MenuService {
         return result;
     }
 
-
+    /**
+     * 菜单下拉数据
+     */
     @Override
     public List<MenuDatasListResult> menuDatas(MenuDatasEnter enter) {
-        if(enter.getType() == null){
+        if (enter.getType() == null) {
             throw new SesWebRosException(ExceptionCodeEnums.TYPE_IS_NULL.getCode(), ExceptionCodeEnums.TYPE_IS_NULL.getMessage());
         }
-        List<MenuDatasListResult> list = new ArrayList<>();
+        /*List<MenuDatasListResult> list = new ArrayList<>();
         list = menuServiceMapper.menuDatas(enter.getType());
-        return list;
+        return list;*/
+
+        // 根据id查询此菜单的level
+        OpeSysMenu menu = opeSysMenuMapper.selectById(enter.getId());
+        if (null == menu) {
+            throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
+        }
+        // level 1目录 2二级菜单 3三级菜单 9按钮
+        Integer level = menu.getLevel();
+        List<MenuDatasListResult> result;
+        if (level == 9) {
+            // 返回二级菜单和三级菜单
+            result = menuServiceMapper.getSecondAndThirdMenu();
+        } else if (level == 2 || level == 3) {
+            // 返回除了自身外的其他所有目录和二级菜单和三级菜单
+            result = menuServiceMapper.getAllCatalogAndMenu(enter.getId());
+        } else {
+            result = Collections.EMPTY_LIST;
+        }
+        result = CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
+        return result;
     }
 
 }
