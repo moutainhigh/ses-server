@@ -235,7 +235,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         if (StringUtils.equals(DigestUtils.md5Hex(enter.getNewPassword() + siteUser.getSalt()), siteUser.getPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
         }
-
         int salt = RandomUtils.nextInt(10000, 99999);
         String newPassword = DigestUtils.md5Hex(enter.getNewPassword() + salt);
         siteUser.setPassword(newPassword);
@@ -281,26 +280,40 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
     @Override
     public GeneralResult resetPassword(SiteResetPassword enter) {
-        //先给两个密码去空格（这个事应该前端就要做的）
-        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
-            String newPassword = null;
-            String oldPsd = "";
+
+        //密码解密
+        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword()) && !Strings.isNullOrEmpty(enter.getCfmPassword())) {
+            String newPsd = null;
+            String oldPsd = null;
+            String cfmPsd = null;
             try {
-                //密码校验
-                newPassword = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
+                //密码解密
+                newPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
                 oldPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
+                cfmPsd = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getCfmPassword()), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
-            enter.setNewPassword(newPassword);
+            //解密保存到VO
+            enter.setNewPassword(newPsd);
             enter.setOldPassword(oldPsd);
+            enter.setCfmPassword(cfmPsd);
         }
-
+        SiteUser user = siteUserService.getById(enter.getUserId());
+        if (user == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        //登录密码
+        String password = DigestUtils.md5Hex(enter.getOldPassword() + user.getSalt());
+        if (!password.equals(user.getPassword())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
         //比较两个密码是否一致
-        if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getCfmPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
-        changeUserPsd(enter, enter.getUserId());
+
+        changeUserPsd(enter, user.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -311,10 +324,8 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     private void adPush(String email) {
         OkHttpClient client = new OkHttpClient();
-
         MediaType mediaType = MediaType.parse(sendinBlueConfig.getMediaType());
 
         Map<String, String> map = new HashMap<>();
@@ -349,7 +360,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
 
         // todo  数据同步Monday
-//        mondayService.websiteSubscriptionEmail(email);
+        //mondayService.websiteSubscriptionEmail(email);
     }
 
 
@@ -367,7 +378,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         user.setSystemId(SystemIDEnums.REDE_SITE.getSystemId());
 
         int salt = RandomUtils.nextInt(10000, 99999);
-
         user.setPassword(DigestUtils.md5Hex(enter.getPassword() + salt));
         user.setSalt(String.valueOf(salt));
         user.setStatus(SiteUserStatusEnum.NORMAL.getValue());
@@ -383,7 +393,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         user.setUpdatedBy(enter.getUserId());
         user.setUpdatedTime(new Date());
         siteUserService.save(user);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -467,7 +476,6 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
             map.remove("deptId");
-
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_30.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
