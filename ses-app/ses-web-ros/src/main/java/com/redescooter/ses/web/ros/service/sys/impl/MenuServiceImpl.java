@@ -15,7 +15,6 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeSysMenuMapper;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
@@ -73,9 +72,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuServiceMapper menuServiceMapper;
-
-    @Autowired
-    private OpeSysMenuMapper opeSysMenuMapper;
 
     @Override
     public GeneralResult save(SaveMenuEnter enter) {
@@ -532,7 +528,7 @@ public class MenuServiceImpl implements MenuService {
         return list;*/
 
         // 根据id查询此菜单的level
-        OpeSysMenu menu = opeSysMenuMapper.selectById(enter.getId());
+        OpeSysMenu menu = sysMenuService.getById(enter.getId());
         if (null == menu) {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
@@ -550,6 +546,46 @@ public class MenuServiceImpl implements MenuService {
         }
         result = CollectionUtils.isEmpty(result) ? Collections.EMPTY_LIST : result;
         return result;
+    }
+
+    /**
+     * 目录列表
+     */
+    @Override
+    public List<MenuTreeResult> getCatalogList(GeneralEnter enter) {
+        // 根据用户id获取用户信息
+        LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(OpeSysUser::getId, enter.getUserId());
+        userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
+        userWrapper.last("limit 1");
+        OpeSysUser admin = sysUserService.getOne(userWrapper);
+
+        // 如果是超管登录
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
+            menuWrapper.orderByAsc(OpeSysMenu::getSort);
+            List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+            // 渲染平行结构菜单集合
+            List<MenuTreeResult> result = this.buildMenuParallel(menuList, null, Boolean.TRUE);
+            return result;
+        } else {
+            // 如果不是超管登录,得到当前登录用户的角色id集合
+            List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
+            if (CollUtil.isNotEmpty(roleIds)) {
+                // 根据角色id集合得到角色拥有的菜单id集合
+                List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
+                if (CollUtil.isNotEmpty(menuIds)) {
+                    LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
+                    menuWrapper.in(OpeSysMenu::getId, menuIds);
+                    menuWrapper.orderByAsc(OpeSysMenu::getSort);
+                    List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+                    // 渲染平行结构菜单集合
+                    List<MenuTreeResult> result = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
+                    return result;
+                }
+            }
+        }
+        return Collections.EMPTY_LIST;
     }
 
 }

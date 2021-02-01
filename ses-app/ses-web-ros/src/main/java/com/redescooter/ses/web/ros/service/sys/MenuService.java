@@ -128,4 +128,9 @@ public interface MenuService {
      */
     List<MenuDatasListResult> menuDatas(MenuDatasEnter enter);
 
+    /**
+     * 目录列表
+     */
+    List<MenuTreeResult> getCatalogList(GeneralEnter enter);
+
 }

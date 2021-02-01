@@ -91,4 +91,10 @@ public class SysMenuController {
         return new Response<>(menuService.menuDatas(enter));
     }
 
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "目录列表", tags = "目录列表")
+    public Response<List<MenuTreeResult>> getCatalogList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(menuService.getCatalogList(enter));
+    }
+
 }
