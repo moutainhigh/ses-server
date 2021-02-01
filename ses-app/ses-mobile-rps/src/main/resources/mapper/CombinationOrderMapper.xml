@@ -139,7 +139,8 @@
     <!--获取当天所有组装单id-->
     <select id="getToDayCombinationId" resultType="java.lang.Long">
         select id from ope_combin_order
-	    where dr = 0 and created_time between concat(CURDATE(), '00:00:00') and concat(CURDATE(), '23:59:59')
+	    where dr = 0 and created_time between concat(CURDATE(), ' ',' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
+	    order by created_time asc
     </select>
     
 </mapper>

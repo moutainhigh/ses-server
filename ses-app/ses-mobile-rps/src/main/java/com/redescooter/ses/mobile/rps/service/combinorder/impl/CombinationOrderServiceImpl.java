@@ -32,6 +32,7 @@ import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -551,6 +552,33 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
      * @return
      */
     private String getProductSerialNum(Integer productType) {
+        boolean scooterNoIsExists = true;
+        String serialNum = generateProductSerialNumber(productType);
+
+        // 检查当前生成车辆序列号是否存在,如果存在重新生成
+        if (ProductTypeEnums.SCOOTER.getValue().equals(productType)) {
+            // 获取当天入库的车辆编号信息(因为编号生成规则所以只需要查询)
+            List<String> scooterNoList = scooterService.getToDayScooterNos();
+            if (CollectionUtils.isNotEmpty(scooterNoList)) {
+                while (scooterNoIsExists) {
+                    // 如果车辆序列号已经存在则重新生成
+                    if (scooterNoList.contains(serialNum)) {
+                        serialNum = generateProductSerialNumber(productType);
+                    } else {
+                        scooterNoIsExists = false;
+                    }
+                }
+            }
+        }
+        return serialNum;
+    }
+
+    /**
+     * 生成产品序列号
+     * @param productType 产品类型 1车辆 2组装件
+     * @return
+     */
+    private String generateProductSerialNumber(Integer productType) {
         Calendar cal = Calendar.getInstance();
         // 年、月、日
         String year = String.valueOf(cal.get(Calendar.YEAR));

@@ -26,7 +26,7 @@
         <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
         <result column="qty" jdbcType="INTEGER" property="qty" />
         <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
-        <!--一对多映射(车辆序列号信息)-->
+        <!--一对多映射(组装件序列号信息)-->
         <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
             <result column="sn_id" jdbcType="BIGINT" property="id" />
             <result column="lot" jdbcType="VARCHAR" property="lot" />

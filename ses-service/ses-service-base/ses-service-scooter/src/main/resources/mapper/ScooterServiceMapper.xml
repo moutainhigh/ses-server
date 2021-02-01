@@ -192,5 +192,11 @@
         select id from sco_scooter
         where dr = 0 and tablet_sn = #{tabletSn}
     </select>
-    
+
+    <!--查询当天生产车辆编号信息-->
+    <select id="getToDayScooterNos" resultType="java.lang.String">
+        select scooter_no from sco_scooter
+		where dr = 0 and created_time between concat(CURDATE(),' ', ' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
+    </select>
+
 </mapper>

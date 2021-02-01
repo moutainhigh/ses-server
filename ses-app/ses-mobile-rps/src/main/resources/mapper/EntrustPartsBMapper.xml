@@ -21,7 +21,7 @@
     </resultMap>
 
     <!--委托单部件信息自定义返回结果-->
-    <resultMap id="EntrustOrderCombinResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+    <resultMap id="EntrustOrderPartsResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="parts_id" jdbcType="BIGINT" property="bomId" />
         <result column="parts_name" jdbcType="VARCHAR" property="name" />
@@ -29,7 +29,7 @@
         <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
         <result column="qty" jdbcType="INTEGER" property="qty" />
         <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
-        <!--一对多映射(车辆序列号信息)-->
+        <!--一对多映射(部件序列号信息)-->
         <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
             <result column="sn_id" jdbcType="BIGINT" property="id" />
             <result column="lot" jdbcType="VARCHAR" property="lot" />
@@ -38,7 +38,7 @@
     </resultMap>
 
     <!--根据entrustId查询委托单部件信息-->
-    <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+    <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderPartsResultMap">
         select ep.id,ep.parts_id, ep.parts_name, ep.parts_no,ifnull(ep.consignor_qty, 0) consignor_qty,
         ifnull(ep.qty, 0) qty, pp.id_calss,epsn.id sn_id,epsn.serial_num, epsn.lot
         from ope_entrust_parts_b ep

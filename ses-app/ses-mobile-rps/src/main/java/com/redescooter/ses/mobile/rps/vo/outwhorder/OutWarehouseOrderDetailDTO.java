@@ -26,7 +26,7 @@ public class OutWarehouseOrderDetailDTO extends GeneralResult {
     @ApiModelProperty(value = "出库单号", dataType = "String")
     private String outWarehouseNo;
 
-    @ApiModelProperty(value = "出库单状态 0：待出库，10：质检中，15：部分出库，20：已出库，30：已取消", dataType = "Integer")
+    @ApiModelProperty(value = "出库单状态 -1新建 10待出库 20已出库 30已取消", dataType = "Integer")
     private Integer status;
 
     @ApiModelProperty(value = "出库单类型 1整车 2组装件 3部件", dataType = "Integer")

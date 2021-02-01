@@ -299,4 +299,9 @@ public class ScooterServiceImpl implements ScooterService {
         }
     }
 
+    @Override
+    public List<String> getToDayScooterNos() {
+        return scooterServiceMapper.getToDayScooterNos();
+    }
+
 }

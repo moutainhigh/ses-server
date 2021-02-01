@@ -141,4 +141,13 @@ public interface ScooterServiceMapper {
      */
     Long getScooterIdByTabletSn(String tabletSn);
 
+    /**
+     * 查询当天生产车辆编号信息
+     * @param
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2021/2/1
+     */
+    List<String> getToDayScooterNos();
+
 }

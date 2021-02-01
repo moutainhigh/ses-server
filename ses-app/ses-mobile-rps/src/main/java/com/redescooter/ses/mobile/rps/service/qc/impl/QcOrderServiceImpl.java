@@ -323,12 +323,16 @@ public class QcOrderServiceImpl implements QcOrderService {
     public SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         resultDTO.setPrintFlag(false);
+
+        // 无码产品不填写质检数量时抛出异常
+        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQcQty(),
+                ExceptionCodeEnums.QC_QTY_ERROR.getCode(), ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
         /**
          * 公共参数
          */
+        Integer qcQty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQcQty();
         Integer remainingQty = 0;
         String name = null;
-        Integer qcQty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQcQty();
         boolean qcResultFlag = true;
 
         // 质检记录集合对象
@@ -595,7 +599,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         }
 
         /**
-         * 保存质检产品序列号信息(无码产品不保存扫码记录)
+         * 保存质检产品序列号信息
          */
         OpeQcOrderSerialBind opeQcOrderSerialBind = new OpeQcOrderSerialBind();
         Long serialId = idAppService.getId(SequenceName.OPE_QC_ORDER_SERIAL_BIND);
@@ -632,12 +636,13 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeWmsStockSerialNumber.setUpdatedTime(new Date());
 
         // 当质检单为【生产采购单】产生时才需要打印二维码
+        String serialNum = "PARTS" + System.currentTimeMillis();
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(qcId);
         if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
             resultDTO.setPrintFlag(true);
+            opeQcOrderSerialBind.setSerialNum(serialNum);
             if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
                 opeQcOrderSerialBind.setDefaultSerialNum(paramDTO.getSerialNum());
-                opeQcOrderSerialBind.setSerialNum("PARTS" + System.currentTimeMillis());
                 // 部件自身序列号
                 opeWmsStockSerialNumber.setSn(paramDTO.getSerialNum());
             }
@@ -662,7 +667,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setName(name);
         resultDTO.setPartsNo(paramDTO.getPartsNo());
         resultDTO.setLot(paramDTO.getLot());
-        resultDTO.setSerialNum(paramDTO.getSerialNum());
+        resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
         resultDTO.setProductionDate(new Date());
 
         return resultDTO;

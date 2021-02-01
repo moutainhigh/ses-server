@@ -131,11 +131,19 @@ public interface ScooterService {
      */
     String getScooterStatusByTabletSn(String tabletSn);
 
-
     /**
      * OMS删除车辆时  需要把对应的车辆数据也删除
      * @param sn
      */
     void deleteScooterData(String sn);
+
+    /**
+     * 查询当天生产车辆编号信息
+     * @param
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2021/2/1
+    */
+    List<String> getToDayScooterNos();
 
 }

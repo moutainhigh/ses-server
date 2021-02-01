@@ -127,12 +127,19 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult submitQc(IdEnter enter) {
-        OutWarehouseOrderDetailDTO outWarehouseOrderDetail = outWarehouseOrderMapper.getOutWarehouseOrderDetailById(enter.getId());
-        RpsAssert.isNull(outWarehouseOrderDetail, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
+        OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
+        RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
-        RpsAssert.isTrue(!NewOutBoundOrderStatusEnums.DRAFT.getValue().equals(outWarehouseOrderDetail.getStatus()),
-                ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        // 如果是组装备料出库对状态判断是 “待出库”,调拨发货创建的出库单则是“新建”
+        if (OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
+            RpsAssert.isFalse(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
+                    ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        } else {
+            RpsAssert.isFalse(NewOutBoundOrderStatusEnums.DRAFT.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
+                    ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
+        }
+
         /**
          * 调用Chris生成出库质检单接口
          */

@@ -115,7 +115,7 @@ public class QcOrderController {
      * @author assert
      * @date 2021/1/6
      */
-    @ApiOperation(value = "出库单质检模板", notes = "根据产品id查询产品质检模板信息")
+    @ApiOperation(value = "质检单质检模板", notes = "根据产品id查询产品质检模板信息")
     @PostMapping(value = "/qcTemplate")
     public Response<QueryQcTemplateResultDTO> getQcTemplateByIdAndType(@ModelAttribute QueryQcTemplateParamDTO paramDTO) {
         return new Response<>(qcOrderService.getQcTemplateByIdAndType(paramDTO));
