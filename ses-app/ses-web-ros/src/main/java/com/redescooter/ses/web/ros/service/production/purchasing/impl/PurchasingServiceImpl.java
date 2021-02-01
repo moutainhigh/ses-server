@@ -598,11 +598,9 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<String> productTypeList = new ArrayList<>();
         if (StringUtils.isNotBlank(enter.getProductType())) {
             String[] split = enter.getProductType().split(",");
-            for (String s : split) {
-                productTypeList.add(s);
+            for (String productType : split) {
+                productTypeList.add(productType);
             }
-            productTypeList.add("6");
-            productTypeList.add("1");
         } else {
             for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
                 if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
@@ -668,6 +666,11 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
 
         // 入参的productType不为空
+        if (CollectionUtils.isNotEmpty(productTypeList)) {
+            if (productTypeList.contains("6")) {
+                productTypeList.add("1");
+            }
+        }
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         if (CollectionUtils.isNotEmpty(partProductList)) {
             //查询质检模板

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PruchasingItemListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "类型")
+    @ApiModelProperty(value = "类型 1Parts 2Accessory 3Battery 6Ecu")
     private String productType;
 
     @ApiModelProperty(value = "供应商")
