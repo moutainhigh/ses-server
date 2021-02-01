@@ -31,14 +31,14 @@ public class RsaUtilsTest extends SesWebsiteApplicationTests {
     @SneakyThrows
     @Test
     public void encrypt() {
-        String email = RsaUtils.encrypt("alex@redelectric.fr", requestsKeyProperties.getPublicKey());
+        String email = RsaUtils.encrypt("jerry@redescooter.com", requestsKeyProperties.getPublicKey());
         System.out.println(email);
         System.out.println("--------------------------------");
         String password = RsaUtils.encrypt("456789", requestsKeyProperties.getPublicKey());
         System.out.println(password);
         System.out.println("--------------------------------");
-//        String password1 = RsaUtils.encrypt("456789", requestsKeyProperties.getPublicKey());
-//        System.out.println(password1);
+        String password1 = RsaUtils.encrypt("123456789", requestsKeyProperties.getPublicKey());
+        System.out.println(password1);
     }
 
 }

@@ -12,7 +12,6 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
-import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -28,9 +27,11 @@ import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
+import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
+import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
 import okhttp3.Response;
+import okhttp3.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -184,23 +185,23 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @return
      */
     @Override
-    public GeneralResult setPassword(ModifyPasswordEnter enter) {
+    public GeneralResult setPassword(SiteSetPasswordEnter enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
-        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
+        if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getCfmPassword())) {
             String decrypt = null;
             String confirmDecrypt = null;
             try {
                 //密码校验
                 decrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getNewPassword()), requestsKeyProperties.getPrivateKey());
-                confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getOldPassword()), requestsKeyProperties.getPrivateKey());
+                confirmDecrypt = RsaUtils.decrypt(SesStringUtils.stringTrim(enter.getCfmPassword()), requestsKeyProperties.getPrivateKey());
             } catch (Exception e) {
                 throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
             enter.setNewPassword(decrypt);
-            enter.setOldPassword(confirmDecrypt);
+            enter.setCfmPassword(confirmDecrypt);
         }
         //比较两个密码是否一致
-        if (!StringUtils.equals(enter.getNewPassword(), enter.getOldPassword())) {
+        if (!StringUtils.equals(enter.getNewPassword(), enter.getCfmPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         //发邮件的时候  把用户的信息放在缓存里了  现在拿出来
@@ -225,7 +226,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
 
     // 修改用户的密码
-    private void changeUserPsd(ModifyPasswordEnter enter, Long userId) {
+    private void changeUserPsd(SiteSetPasswordEnter enter, Long userId) {
         SiteUser siteUser = siteUserService.getById(userId);
         if (siteUser == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -279,7 +280,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
 
     @Override
-    public GeneralResult editPassword(ModifyPasswordEnter enter) {
+    public GeneralResult resetPassword(SiteResetPassword enter) {
         //先给两个密码去空格（这个事应该前端就要做的）
         if (!Strings.isNullOrEmpty(enter.getNewPassword()) && !Strings.isNullOrEmpty(enter.getOldPassword())) {
             String newPassword = null;

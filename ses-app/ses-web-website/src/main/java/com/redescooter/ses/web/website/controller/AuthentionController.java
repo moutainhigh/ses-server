@@ -5,8 +5,9 @@ import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
-import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
+import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
+import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -47,10 +48,10 @@ public class AuthentionController {
      * @return
      */
     @IgnoreLoginCheck
-    @ApiOperation(value = "login", response = TokenResult.class)
-    @PostMapping(value = "/login")
     @LogAnnotation
-    public Response<TokenResult> login(@ModelAttribute @ApiParam("请求参数") LoginEnter enter) {
+    @PostMapping(value = "/login")
+    @ApiOperation(value = "login", response = TokenResult.class)
+    public Response<TokenResult> login(@ModelAttribute @ApiParam("Parameter") LoginEnter enter) {
         return new Response<>(tokenWebsiteService.login(enter));
     }
 
@@ -62,7 +63,7 @@ public class AuthentionController {
      */
     @ApiOperation(value = "logout", response = GeneralResult.class)
     @PostMapping(value = "/logout")
-    public Response<GeneralResult> logout(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<GeneralResult> logout(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(tokenWebsiteService.logout(enter));
     }
 
@@ -73,9 +74,9 @@ public class AuthentionController {
      * @return
      */
     @IgnoreLoginCheck
-    @ApiOperation(value = "Forget the password", response = GeneralResult.class)
+    @ApiOperation(value = "Forget Password Operation", response = GeneralResult.class)
     @PostMapping(value = "/forgetPassword")
-    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
+    public Response<GeneralResult> forgetPassword(@ModelAttribute @ApiParam("Parameter") BaseSendMailEnter enter) {
         return new Response<>(tokenWebsiteService.forgetPasswordEmail(enter));
     }
 
@@ -88,20 +89,20 @@ public class AuthentionController {
     @IgnoreLoginCheck
     @ApiOperation(value = "Set password", response = GeneralResult.class)
     @PostMapping(value = "/setPassword")
-    public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("请求参数") ModifyPasswordEnter enter) {
+    public Response<GeneralResult> setPassword(@ModelAttribute @ApiParam("Parameter") SiteSetPasswordEnter enter) {
         return new Response<>(tokenWebsiteService.setPassword(enter));
     }
 
     /**
-     * 修改密码
+     * 重置密码
      *
      * @param enter
      * @return
      */
     @WebsiteSignIn
-    @PostMapping(value = "/editPassword")
-    @ApiOperation(value = "Edit Password", response = GeneralResult.class)
-    public Response<GeneralResult> editPassword(@ModelAttribute @ApiParam("Parameter") ModifyPasswordEnter enter) {
-        return new Response<>(tokenWebsiteService.editPassword(enter));
+    @PostMapping(value = "/resetPassword")
+    @ApiOperation(value = "Reset Password", response = GeneralResult.class)
+    public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("Parameter") SiteResetPassword enter) {
+        return new Response<>(tokenWebsiteService.resetPassword(enter));
     }
 }

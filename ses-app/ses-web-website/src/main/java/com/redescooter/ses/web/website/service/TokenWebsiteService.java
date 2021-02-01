@@ -2,10 +2,9 @@ package com.redescooter.ses.web.website.service;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
-import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import io.swagger.annotations.ApiParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
+import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 
 /**
  * @author Mr.lijiating
@@ -63,7 +62,7 @@ public interface TokenWebsiteService {
      * @param enter
      * @return
      */
-    GeneralResult setPassword(ModifyPasswordEnter enter);
+    GeneralResult setPassword(SiteSetPasswordEnter enter);
 
     /**
      * 发送重置密码邮件
@@ -80,7 +79,7 @@ public interface TokenWebsiteService {
      * @param enter
      * @return
      */
-    GeneralResult editPassword(ModifyPasswordEnter enter);
+    GeneralResult resetPassword(SiteResetPassword enter);
 
 
     /**
