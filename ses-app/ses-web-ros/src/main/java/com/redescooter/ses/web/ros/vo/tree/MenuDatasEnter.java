@@ -14,9 +14,6 @@ import lombok.Data;
 @Data
 public class MenuDatasEnter extends GeneralEnter {
 
-    @ApiModelProperty("类型，查菜单传2，查目录传1,此参数已被抛弃,因为入参有传id")
-    private Integer type;
-
     @ApiModelProperty(value = "当前要编辑数据的id", required = true)
     private Long id;
 
