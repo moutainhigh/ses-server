@@ -6,7 +6,14 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SaveProductionPurchasEnter;
 
 import java.util.List;
 
@@ -106,7 +113,7 @@ public interface ProductionPurchasService {
      * @Return: GeneralResult
      * @desc: 取消订单
      */
-    GeneralResult cancel(IdEnter enter);
+    GeneralResult cancel(CancelOrderEnter enter);
 
     /**
      * @Description

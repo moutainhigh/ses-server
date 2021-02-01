@@ -75,6 +75,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnte
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
@@ -522,7 +523,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @desc: 取消订单
      */
     @Override
-    public GeneralResult cancel(IdEnter enter) {
+    public GeneralResult cancel(CancelOrderEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
@@ -535,14 +536,13 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
         //操作动态
-        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), null);
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, opeProductionPurchaseOrder.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.CANCEL.getValue(), enter.getRemark());
         BeanUtils.copyProperties(enter, saveOpTraceEnter);
         saveOpTraceEnter.setId(null);
         productionOrderTraceService.save(saveOpTraceEnter);
 
         //订单节点
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(),
-                null);
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, opeProductionPurchaseOrder.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), opeProductionPurchaseOrder.getId(), enter.getRemark());
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
