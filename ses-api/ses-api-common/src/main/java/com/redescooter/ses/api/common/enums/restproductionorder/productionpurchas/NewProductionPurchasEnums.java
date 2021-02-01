@@ -13,6 +13,8 @@ public enum NewProductionPurchasEnums {
 
     PURCHASING("PURCHASING", "采购中", 10),
 
+    ARRIVED("ARRIVED", "已到货", 15),
+
     FINISHED("FINISHED", "已完成", 20);
 
     private String code;

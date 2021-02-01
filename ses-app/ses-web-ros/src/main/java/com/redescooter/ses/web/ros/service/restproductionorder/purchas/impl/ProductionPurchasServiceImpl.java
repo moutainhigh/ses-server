@@ -611,51 +611,6 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         BeanUtils.copyProperties(enter, orderStatusFlowEnter);
         orderStatusFlowEnter.setId(null);
         orderStatusFlowService.save(orderStatusFlowEnter);
-
-        // 生成生产采购单的质检单
-        OpeQcOrder model = new OpeQcOrder();
-        long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
-        model.setId(qcId);
-        model.setDr(DelStatusEnum.VALID.getCode());
-        model.setTenantId(enter.getTenantId());
-        model.setDeptId(enter.getOpeDeptId());
-        model.setCountryType(1);
-        model.setQcNo(null);
-        model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
-        model.setOrderType(ProductTypeEnums.PARTS.getValue());
-        model.setRelationOrderId(opeProductionPurchaseOrder.getId());
-        model.setRelationOrderNo(opeProductionPurchaseOrder.getPurchaseNo());
-        model.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
-        model.setQcType(QcTypeEnums.PURCHASE.getValue());
-        model.setQcQty(opeProductionPurchaseOrder.getPurchaseQty());
-        model.setCreatedBy(enter.getUserId());
-        model.setCreatedTime(new Date());
-        opeQcOrderMapper.insert(model);
-
-        // 根据采购单id获得此次的生产采购部件集合
-        LambdaQueryWrapper<OpeProductionPurchasePartsB> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeProductionPurchasePartsB::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeProductionPurchasePartsB::getProductionPurchaseId, opeProductionPurchaseOrder.getId());
-        List<OpeProductionPurchasePartsB> list = opeProductionPurchasePartsBMapper.selectList(wrapper);
-        if (CollectionUtils.isNotEmpty(list)) {
-            List<OpeQcPartsB> saveList = Lists.newArrayList();
-            for (OpeProductionPurchasePartsB part : list) {
-                // 生成质检单部件子表
-                OpeQcPartsB param = new OpeQcPartsB();
-                param.setId(idAppService.getId(SequenceName.OPE_QC_PARTS_B));
-                param.setDr(DelStatusEnum.VALID.getCode());
-                param.setQcId(qcId);
-                param.setPartsId(part.getPartsId());
-                param.setPartsName(part.getPartsName());
-                param.setPartsNo(part.getPartsNo());
-                param.setPartsType(part.getPartsType());
-                param.setQty(part.getQty());
-                param.setCreatedBy(enter.getUserId());
-                param.setCreatedTime(new Date());
-                saveList.add(param);
-            }
-            opeQcPartsBService.saveBatch(saveList);
-        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -977,6 +932,79 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
                     break;
             }
 
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 确认到货
+     */
+    @Override
+    public GeneralResult arrived(IdEnter enter) {
+        OpeProductionPurchaseOrder order = opeProductionPurchaseOrderService.getById(enter.getId());
+        if (null == order) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+
+        order.setPurchaseStatus(NewProductionPurchasEnums.ARRIVED.getValue());
+        order.setUpdatedBy(enter.getId());
+        order.setUpdatedTime(new Date());
+        opeProductionPurchaseOrderService.updateById(order);
+        //操作动态
+        SaveOpTraceEnter saveOpTraceEnter = new SaveOpTraceEnter(null, order.getId(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), OrderOperationTypeEnums.SIGN_FOR.getValue(), null);
+        BeanUtils.copyProperties(enter, saveOpTraceEnter);
+        saveOpTraceEnter.setId(null);
+        productionOrderTraceService.save(saveOpTraceEnter);
+
+        //订单节点
+        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, order.getPurchaseStatus(), OrderTypeEnums.FACTORY_PURCHAS.getValue(), order.getId(), null);
+        BeanUtils.copyProperties(enter, orderStatusFlowEnter);
+        orderStatusFlowEnter.setId(null);
+        orderStatusFlowService.save(orderStatusFlowEnter);
+
+        // 生成生产采购单的质检单
+        OpeQcOrder model = new OpeQcOrder();
+        long qcId = idAppService.getId(SequenceName.OPE_QC_ORDER);
+        model.setId(qcId);
+        model.setDr(DelStatusEnum.VALID.getCode());
+        model.setTenantId(enter.getTenantId());
+        model.setDeptId(enter.getOpeDeptId());
+        model.setCountryType(1);
+        model.setQcNo(null);
+        model.setQcStatus(QcOrderStatusEnums.TO_BE_QC.getValue());
+        model.setOrderType(ProductTypeEnums.PARTS.getValue());
+        model.setRelationOrderId(order.getId());
+        model.setRelationOrderNo(order.getPurchaseNo());
+        model.setRelationOrderType(OrderTypeEnums.FACTORY_PURCHAS.getValue());
+        model.setQcType(QcTypeEnums.PURCHASE.getValue());
+        model.setQcQty(order.getPurchaseQty());
+        model.setCreatedBy(enter.getUserId());
+        model.setCreatedTime(new Date());
+        opeQcOrderMapper.insert(model);
+
+        // 根据采购单id获得此次的生产采购部件集合
+        LambdaQueryWrapper<OpeProductionPurchasePartsB> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeProductionPurchasePartsB::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeProductionPurchasePartsB::getProductionPurchaseId, order.getId());
+        List<OpeProductionPurchasePartsB> list = opeProductionPurchasePartsBMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            List<OpeQcPartsB> saveList = Lists.newArrayList();
+            for (OpeProductionPurchasePartsB part : list) {
+                // 生成质检单部件子表
+                OpeQcPartsB param = new OpeQcPartsB();
+                param.setId(idAppService.getId(SequenceName.OPE_QC_PARTS_B));
+                param.setDr(DelStatusEnum.VALID.getCode());
+                param.setQcId(qcId);
+                param.setPartsId(part.getPartsId());
+                param.setPartsName(part.getPartsName());
+                param.setPartsNo(part.getPartsNo());
+                param.setPartsType(part.getPartsType());
+                param.setQty(part.getQty());
+                param.setCreatedBy(enter.getUserId());
+                param.setCreatedTime(new Date());
+                saveList.add(param);
+            }
+            opeQcPartsBService.saveBatch(saveList);
         }
         return new GeneralResult(enter.getRequestId());
     }

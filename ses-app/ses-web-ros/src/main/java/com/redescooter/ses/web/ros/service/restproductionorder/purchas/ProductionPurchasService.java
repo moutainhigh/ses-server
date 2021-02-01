@@ -158,4 +158,9 @@ public interface ProductionPurchasService {
      */
     GeneralResult generatorQcOrderByOutBound(IdEnter enter);
 
+    /**
+     * 确认到货
+     */
+    GeneralResult arrived(IdEnter enter);
+
 }

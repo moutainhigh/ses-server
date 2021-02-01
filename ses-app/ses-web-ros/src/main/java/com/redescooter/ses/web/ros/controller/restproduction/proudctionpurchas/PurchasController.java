@@ -102,4 +102,13 @@ public class PurchasController {
         return new Response<>(productionPurchasService.generatorQcOrderByOutBound(enter));
     }
 
+    /**
+     * 确认到货
+     */
+    @PostMapping(value = "/arrived")
+    @ApiOperation(value = "确认到货", tags = "确认到货")
+    public Response<GeneralResult> arrived(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(productionPurchasService.arrived(enter));
+    }
+
 }
