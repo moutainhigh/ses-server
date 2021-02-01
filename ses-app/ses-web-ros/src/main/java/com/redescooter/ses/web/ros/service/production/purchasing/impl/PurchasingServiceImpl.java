@@ -666,17 +666,17 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
 
         // 入参的productType不为空
-        if (CollectionUtils.isNotEmpty(productTypeList)) {
+        /*if (CollectionUtils.isNotEmpty(productTypeList)) {
             if (productTypeList.contains("6")) {
                 productTypeList.add("1");
             }
-        }
+        }*/
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         if (CollectionUtils.isNotEmpty(partProductList)) {
             //查询质检模板
             QueryWrapper<OpeProductionQualityTempate> wrapper = new QueryWrapper<>();
             wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-            wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
+            //wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
             List<OpeProductionQualityTempate> list = opeProductionQualityTempateService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 partProductList.removeIf(item -> {
