@@ -85,16 +85,31 @@ public class SysMenuController {
         return new Response<>(menuService.findMenuByRoleId(enter));
     }
 
+    /**
+     * 菜单下拉数据
+     */
     @PostMapping(value = "/menuDatas")
     @ApiOperation(value = "菜单下拉数据", response = MenuTreeResult.class)
     public Response<List<MenuDatasListResult>> menuDatas(@ModelAttribute @ApiParam("请求参数") MenuDatasEnter enter) {
         return new Response<>(menuService.menuDatas(enter));
     }
 
+    /**
+     * 目录列表
+     */
     @PostMapping(value = "/list")
     @ApiOperation(value = "目录列表", tags = "目录列表")
     public Response<List<MenuTreeResult>> getCatalogList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(menuService.getCatalogList(enter));
+    }
+
+    /**
+     * 根据父级id得到下级信息
+     */
+    @PostMapping(value = "/subList")
+    @ApiOperation(value = "根据父级id得到下级信息", tags = "根据父级id得到下级信息")
+    public Response<List<MenuTreeResult>> getSubListById(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(menuService.getSubListById(enter));
     }
 
 }

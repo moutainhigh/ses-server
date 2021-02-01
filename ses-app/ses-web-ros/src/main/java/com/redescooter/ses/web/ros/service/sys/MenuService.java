@@ -133,4 +133,9 @@ public interface MenuService {
      */
     List<MenuTreeResult> getCatalogList(GeneralEnter enter);
 
+    /**
+     * 根据父级id得到下级信息
+     */
+    List<MenuTreeResult> getSubListById(IdEnter enter);
+
 }

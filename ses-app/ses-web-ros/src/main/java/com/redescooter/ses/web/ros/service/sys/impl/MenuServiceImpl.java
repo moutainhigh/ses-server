@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
@@ -559,8 +560,11 @@ public class MenuServiceImpl implements MenuService {
         userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
         userWrapper.last("limit 1");
         OpeSysUser admin = sysUserService.getOne(userWrapper);
+        if (null == admin) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
 
-        // 如果是超管登录
+        // 如果是超管登录,得到所有权限
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
             menuWrapper.orderByAsc(OpeSysMenu::getSort);
@@ -586,6 +590,23 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return Collections.EMPTY_LIST;
+    }
+
+    /**
+     * 根据父级id得到下级信息
+     */
+    @Override
+    public List<MenuTreeResult> getSubListById(IdEnter enter) {
+        LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+        wrapper.eq(OpeSysMenu::getMenuStatus, 1);
+        wrapper.eq(OpeSysMenu::getPId, enter.getId());
+        List<OpeSysMenu> list = sysMenuService.list(wrapper);
+
+
+
+
+        return null;
     }
 
 }
