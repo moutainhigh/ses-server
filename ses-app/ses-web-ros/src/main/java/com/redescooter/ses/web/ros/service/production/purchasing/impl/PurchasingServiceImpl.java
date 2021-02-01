@@ -601,6 +601,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             for (String s : split) {
                 productTypeList.add(s);
             }
+            productTypeList.add("6");
         } else {
             for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
                 if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {

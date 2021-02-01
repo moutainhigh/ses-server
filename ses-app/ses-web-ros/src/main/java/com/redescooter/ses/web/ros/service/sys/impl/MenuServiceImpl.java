@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.sys.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
@@ -597,16 +598,15 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuTreeResult> getSubListById(IdEnter enter) {
+        List<MenuTreeResult> result;
         LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeSysMenu::getMenuStatus, 1);
         wrapper.eq(OpeSysMenu::getPId, enter.getId());
-        List<OpeSysMenu> list = sysMenuService.list(wrapper);
-
-
-
-
-        return null;
+        List<OpeSysMenu> menuList = sysMenuService.list(wrapper);
+        String str = JSON.toJSONString(menuList);
+        result = JSON.parseArray(str, MenuTreeResult.class);
+        return result;
     }
 
 }
