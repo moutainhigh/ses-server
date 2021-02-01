@@ -11,7 +11,6 @@ import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.base.AdmScooterService;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
 import com.redescooter.ses.admin.dev.vo.scooter.*;
-import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -33,7 +32,7 @@ import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,23 +56,22 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     private AdminScooterMapper adminScooterMapper;
     @Resource
     private AdminScooterPartsMapper adminScooterPartsMapper;
-    @Reference
+    @DubboReference
     private ColorService colorService;
-    @Reference
+    @DubboReference
     private SpecificService specificService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private ScooterEcuService scooterEcuService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private SysUserService sysUserService;
     @Resource
     private TransactionTemplate transactionTemplate;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-
     @Autowired
     private AdmScooterService admScooterService;
 
@@ -236,6 +234,10 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         }
 
         Integer scooterModel = ScooterModelEnum.getScooterModelType(specificType.getSpecificatName());
+        if (0 == scooterModel) {
+            throw new SesAdminDevException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(),
+                    ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
+        }
 
         /**
          * 如果设置的型号与当前车辆的型号一致则不做操作
@@ -256,7 +258,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         scooter.setUpdatedTime(new Date());
 
         adminScooterMapper.updateAdminScooter(scooter);
-        scooterService.syncScooterModel(paramDTO.getId(), scooterModel);
+        scooterService.syncScooterModel(adminScooter.getSn(), scooterModel);
 
         List<SpecificDefGroupPublishDTO> specificDefGroupPublishList = buildSetScooterModelData(specificType.getId());
         if (!CollectionUtils.isEmpty(specificDefGroupPublishList)) {
@@ -359,6 +361,13 @@ public class AdminScooterServiceImpl implements AdminScooterService {
          */
         List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificTypeId);
         if (!CollectionUtils.isEmpty(specificDefList)) {
+            // 旧数据ope_specificat_def表里面def_group_id字段值是空的,这里会导致stream分组的时候报错
+            specificDefList.forEach(def -> {
+                if (null == def.getSpecificDefGroupId()) {
+                    throw new SesAdminDevException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+
             /**
              * {specificDefGroupId, List<SpecificDefDTO>}
              */

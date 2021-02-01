@@ -165,11 +165,11 @@
 	    where dr = 0
     </select>
 
-    <!--根据id修改车辆型号-->
-    <update id="updateScooterModelById">
+    <!--根据tabletSn修改车辆型号-->
+    <update id="updateScooterModelByTabletSn">
         update sco_scooter
 	    set model = #{scooterModel}, updated_time = #{updateTime}
-	    where id = #{id}
+	    where tablet_sn = #{tabletSn}
     </update>
 
     <!--根据tabletSn查询车辆信息-->

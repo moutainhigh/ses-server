@@ -30,8 +30,8 @@ import com.redescooter.ses.tool.utils.MapUtil;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * @Version：1.3
  * @create: 2019/12/27 15:04
  */
-@Service
+@DubboService
 @Log4j
 public class ScooterServiceImpl implements ScooterService {
 
@@ -66,7 +66,7 @@ public class ScooterServiceImpl implements ScooterService {
     @Autowired
     private ScooterEcuMapper scooterEcuMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 
@@ -262,8 +262,8 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int syncScooterModel(Long id, Integer scooterModel) {
-        return scooterServiceMapper.updateScooterModelById(id, scooterModel, new Date());
+    public int syncScooterModel(String tabletSn, Integer scooterModel) {
+        return scooterServiceMapper.updateScooterModelByTabletSn(tabletSn, scooterModel, new Date());
     }
 
     @Override

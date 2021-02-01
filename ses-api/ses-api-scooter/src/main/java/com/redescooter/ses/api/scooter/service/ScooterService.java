@@ -96,13 +96,13 @@ public interface ScooterService {
 
     /**
      * 同步车辆型号
-     * @param id
+     * @param tabletSn
      * @param scooterModel
      * @return int
      * @author assert
      * @date 2020/12/16
     */
-    int syncScooterModel(Long id, Integer scooterModel);
+    int syncScooterModel(String tabletSn, Integer scooterModel);
 
     /**
      * 根据tabletSn查询车辆信息

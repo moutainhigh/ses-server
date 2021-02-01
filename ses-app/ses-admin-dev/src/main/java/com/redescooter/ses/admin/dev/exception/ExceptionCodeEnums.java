@@ -77,7 +77,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_NOT_CLOSED(10039, "车辆未关闭"),
 
-    CREATE_SCOOTER_ERROR(10040, "创建车辆信息失败")
+    CREATE_SCOOTER_ERROR(10040, "创建车辆信息失败"),
+
+    SELECT_SCOOTER_MODEL_ERROR(10041, "选择的车辆型号有误"),
     ;
 
     private int code;

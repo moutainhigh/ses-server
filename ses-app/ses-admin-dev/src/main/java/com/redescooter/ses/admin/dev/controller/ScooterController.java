@@ -11,7 +11,7 @@ import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +29,12 @@ import java.util.List;
 @RequestMapping(value = "/scooter", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ScooterController {
 
+    @DubboReference
+    private ColorService colorService;
+    @DubboReference
+    private SpecificService specificService;
     @Resource
     private AdminScooterService adminScooterService;
-    @Reference
-    private ColorService colorService;
-    @Reference
-    private SpecificService specificService;
 
 
     /**

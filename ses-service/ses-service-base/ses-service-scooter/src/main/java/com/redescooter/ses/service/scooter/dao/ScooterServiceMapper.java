@@ -112,15 +112,16 @@ public interface ScooterServiceMapper {
     int countByScooter();
 
     /**
-     * 根据id修改车辆型号
-     * @param id
+     * 根据tabletSn修改车辆型号
+     * @param tabletSn
      * @param scooterModel
      * @param updateTime
      * @return int
      * @author assert
      * @date 2020/12/16
      */
-    int updateScooterModelById(@Param("id") Long id, @Param("scooterModel") Integer scooterModel, @Param("updateTime") Date updateTime);
+    int updateScooterModelByTabletSn(@Param("tabletSn") String tabletSn, @Param("scooterModel") Integer scooterModel,
+                               @Param("updateTime") Date updateTime);
 
     /**
      * 根据tabletSn查询车辆信息
