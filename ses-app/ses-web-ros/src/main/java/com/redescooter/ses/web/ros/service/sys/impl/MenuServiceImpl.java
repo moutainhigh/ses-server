@@ -108,7 +108,8 @@ public class MenuServiceImpl implements MenuService {
             List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
             // 渲染平行结构菜单集合
             List<MenuTreeResult> result = this.buildMenuParallel(menuList, null, Boolean.TRUE);
-            return TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
+            List<MenuTreeResult> list = TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
+            return list;
         } else {
             // 如果不是超管登录,得到当前登录用户的角色id集合
             List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
@@ -122,7 +123,8 @@ public class MenuServiceImpl implements MenuService {
                     List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
                     // 渲染平行结构菜单集合
                     List<MenuTreeResult> result = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
-                    return TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
+                    List<MenuTreeResult> list = TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
+                    return list;
                 }
             }
         }
