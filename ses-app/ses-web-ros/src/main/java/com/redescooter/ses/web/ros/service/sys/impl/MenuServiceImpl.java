@@ -19,7 +19,6 @@ import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
@@ -38,15 +37,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.dubbo.config.annotation.Service;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName MenuServiceImpl
@@ -89,19 +87,37 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuTreeResult> trees(GeneralEnter enter) {
 //        return this.buildMenuTree(sysMenuService.list(), this.getRoleIds(new IdEnter(enter.getUserId())), Constant.MENU_TREE_ROOT_ID,Boolean.FALSE);
-        OpeSysUser admin = sysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getId, enter.getUserId()).eq(OpeSysUser::getDef1,SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
 
+        // 根据用户id获取用户信息
+        LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(OpeSysUser::getId, enter.getUserId());
+        userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
+        userWrapper.last("limit 1");
+        OpeSysUser admin = sysUserService.getOne(userWrapper);
+
+        // 如果是超管登录
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
-            List<MenuTreeResult> menuTreeResults = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().orderByAsc(OpeSysMenu::getSort)), null, Boolean.TRUE);
-            return TreeUtil.build(menuTreeResults, Constant.MENU_TREE_ROOT_ID);
+            // 菜单权重排序
+            LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
+            menuWrapper.orderByAsc(OpeSysMenu::getSort);
+            List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+            // 渲染平行结构菜单集合
+            List<MenuTreeResult> result = this.buildMenuParallel(menuList, null, Boolean.TRUE);
+            return TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
         } else {
+            // 如果不是超管登录,得到当前登录用户的角色id集合
             List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
             if (CollUtil.isNotEmpty(roleIds)) {
+                // 根据角色id集合得到角色拥有的菜单id集合
                 List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
                 if (CollUtil.isNotEmpty(menuIds)) {
-                    List<MenuTreeResult> results = this.buildMenuParallel(sysMenuService.list(new LambdaQueryWrapper<OpeSysMenu>().in(OpeSysMenu::getId, menuIds).orderByAsc(OpeSysMenu::getSort)), roleIds,Boolean.FALSE);
-                    List<MenuTreeResult> treeResult = TreeUtil.build(results, Constant.MENU_TREE_ROOT_ID);
-                    return treeResult;
+                    LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
+                    menuWrapper.in(OpeSysMenu::getId, menuIds);
+                    menuWrapper.orderByAsc(OpeSysMenu::getSort);
+                    List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+                    // 渲染平行结构菜单集合
+                    List<MenuTreeResult> result = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
+                    return TreeUtil.build(result, Constant.MENU_TREE_ROOT_ID);
                 }
             }
         }
