@@ -602,6 +602,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 productTypeList.add(s);
             }
             productTypeList.add("6");
+            productTypeList.add("1");
         } else {
             for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
                 if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
@@ -670,13 +671,13 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
         if (CollectionUtils.isNotEmpty(partProductList)) {
             //查询质检模板
-            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
-            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
-            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-            if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)) {
+            QueryWrapper<OpeProductionQualityTempate> wrapper = new QueryWrapper<>();
+            wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+            wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
+            List<OpeProductionQualityTempate> list = opeProductionQualityTempateService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(list)) {
                 partProductList.removeIf(item -> {
-                    return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
+                    return list.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
                 });
             } else {
                 return resultList;
