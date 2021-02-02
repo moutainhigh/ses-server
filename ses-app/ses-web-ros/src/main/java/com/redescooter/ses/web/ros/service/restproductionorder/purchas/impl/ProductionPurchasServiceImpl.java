@@ -531,7 +531,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         if (!opeProductionPurchaseOrder.getPurchaseStatus().equals(NewProductionPurchasEnums.PURCHASING.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
-        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.FINISHED.getValue());
+        opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.CANCEL.getValue());
         opeProductionPurchaseOrder.setUpdatedBy(enter.getId());
         opeProductionPurchaseOrder.setUpdatedTime(new Date());
         opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);

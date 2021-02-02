@@ -15,7 +15,9 @@ public enum NewProductionPurchasEnums {
 
     ARRIVED("ARRIVED", "已到货", 15),
 
-    FINISHED("FINISHED", "已完成", 20);
+    FINISHED("FINISHED", "已完成", 20),
+
+    CANCEL("CANCEL", "已取消", 30);
 
     private String code;
 
