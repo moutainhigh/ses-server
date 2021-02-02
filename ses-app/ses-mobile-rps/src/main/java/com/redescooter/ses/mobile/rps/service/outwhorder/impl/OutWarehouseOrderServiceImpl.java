@@ -16,6 +16,7 @@ import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
+import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -66,6 +67,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
     @Resource
     private CombinationOrderService combinationOrderService;
+    @Resource
+    private ProductionPartsMapper partsMapper;
     @Resource
     private TransactionTemplate transactionTemplate;
 
@@ -199,6 +202,8 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         // 无码产品不填写扫码数量时抛出异常
         RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+        RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
+                ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
 
         Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
         // 避免产品重复扫码出库
@@ -214,6 +219,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
          */
         switch (paramDTO.getProductType()) {
             case 1:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeOutWhScooterB opeOutWhScooterB = outWhScooterBMapper.getOutWhOrderScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeOutWhScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -226,6 +235,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
                 break;
             case 2:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeOutWhCombinB opeOutWhCombinB = outWhCombinBMapper.getOutWhOrderCombinById(paramDTO.getProductId());
                 RpsAssert.isNull(opeOutWhCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -238,6 +251,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
                 break;
             default:
+                // 校验部件是否有序列号标识跟入参传递的是否一致
+                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeOutWhPartsB opeOutWhPartsB = outWhPartsBMapper.getOutWhOrderPartsById(paramDTO.getProductId());
                 RpsAssert.isNull(opeOutWhPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());

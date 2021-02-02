@@ -46,6 +46,7 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "蓝牙mac地址(仪表质检时传递)", dataType = "String")
     private String bluetoothMacAddress;
 
+    @NotNull(code = ValidationExceptionCode.ID_CLASS_IS_EMPTY, message = "有无码标识不能为空")
     @ApiModelProperty(value = "是否有序列号 true/false", dataType = "Boolean", required = true)
     private Boolean idClass;
 

@@ -323,9 +323,8 @@ public class QcOrderServiceImpl implements QcOrderService {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         resultDTO.setPrintFlag(false);
 
-        // 无码产品不填写质检数量时抛出异常
-        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQcQty(),
-                ExceptionCodeEnums.QC_QTY_ERROR.getCode(), ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
+        RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
+                ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
         /**
          * 公共参数
          */
@@ -435,6 +434,10 @@ public class QcOrderServiceImpl implements QcOrderService {
         Long stockId = null;
         switch (paramDTO.getProductType()) {
             case 1:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeQcScooterB opeQcScooterB = qcScooterMapper.getQcScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -487,6 +490,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                 qcId = opeQcScooterB.getQcId();
                 break;
             case 2:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeQcCombinB opeQcCombinB = qcCombinMapper.getQcCombinById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -542,6 +549,14 @@ public class QcOrderServiceImpl implements QcOrderService {
                 qcId = opeQcCombinB.getQcId();
                 break;
             default:
+                // 校验部件是否有序列号标识跟入参传递的是否一致
+                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+                // 无码产品不填写质检数量时抛出异常
+                RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQcQty(),
+                        ExceptionCodeEnums.QC_QTY_ERROR.getCode(), ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
+
                 OpeQcPartsB opeQcPartsB = qcPartsMapper.getQcPartsById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());

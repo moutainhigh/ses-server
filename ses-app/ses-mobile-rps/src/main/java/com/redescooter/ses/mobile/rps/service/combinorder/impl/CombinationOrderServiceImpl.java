@@ -84,6 +84,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     private ProductionPartsMapper productionPartsMapper;
     @Autowired
     private OpeOrderSerialBindService opeOrderSerialBindService;
+    @Autowired
+    private ProductionPartsMapper partsMapper;
 
 
     @Override
@@ -186,6 +188,13 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         // 无码产品不填写扫码数量时抛出异常
         RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+        RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
+                ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
+
+        // 校验部件是否有序列号标识跟入参传递的是否一致
+        boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+        RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
 
         Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
 
@@ -269,6 +278,9 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         switch (paramDTO.getProductType()) {
             case 1:
                 OpeCombinListScooterB opeCombinListScooterB = combinationListScooterMapper.getCombinationListScooterById(paramDTO.getProductId());
+                // 数据完整性校验
+                RpsAssert.isNull(opeCombinListScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 RpsAssert.isTrue(CombinListStatusEnum.ASSEMBLED.getStatus().equals(opeCombinListScooterB.getCombinListStatus()),
                         ExceptionCodeEnums.COMPLETED_COMBINATION.getCode(), ExceptionCodeEnums.COMPLETED_COMBINATION.getMessage());
                 RpsAssert.isTrue(scanCodeQty < opeCombinListScooterB.getQty(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(),
@@ -302,6 +314,9 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 break;
             default:
                 OpeCombinListCombinB opeCombinListCombinB = combinationListCombinMapper.getCombinationListCombinationById(paramDTO.getProductId());
+                // 数据完整性校验
+                RpsAssert.isNull(opeCombinListCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 RpsAssert.isTrue(CombinListStatusEnum.ASSEMBLED.getStatus().equals(opeCombinListCombinB.getCombinListStatus()),
                         ExceptionCodeEnums.COMPLETED_COMBINATION.getCode(), ExceptionCodeEnums.COMPLETED_COMBINATION.getMessage());
                 RpsAssert.isTrue(scanCodeQty < opeCombinListCombinB.getQty(), ExceptionCodeEnums.PART_QTY_IS_WRONG.getCode(),

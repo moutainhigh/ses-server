@@ -181,6 +181,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         // 无码产品不填写扫码数量时抛出异常
         RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+        RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
+                ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
 
         // 公共参数
         Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
@@ -201,6 +203,10 @@ public class InWhOrderServiceImpl implements InWhOrderService {
          */
         switch (paramDTO.getProductType()) {
             case 1:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeInWhouseScooterB opeInWhouseScooterB = inWhouseScooterBMapper.getInWhouseScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeInWhouseScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -215,6 +221,10 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 name = scooterBomMapper.getScooterModelById(paramDTO.getBomId());
                 break;
             case 2:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeInWhouseCombinB opeInWhouseCombinB = inWhouseCombinBMapper.getInWhouseCombinById(paramDTO.getProductId());
                 RpsAssert.isNull(opeInWhouseCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -229,6 +239,11 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 name = combinBomMapper.getCombinCnNameById(paramDTO.getBomId());
                 break;
             default:
+                // 校验部件是否有序列号标识跟入参传递的是否一致
+                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeInWhousePartsB opeInWhousePartsB = inWhousePartsBMapper.getInWhousePartsById(paramDTO.getProductId());
                 // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
                 if (StringUtils.isBlank(paramDTO.getSerialNum())) {

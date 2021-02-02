@@ -27,4 +27,13 @@ public interface ProductionPartsMapper {
     */
     String getPartsCnNameById(Long id);
 
+    /**
+     * 根据id查询部件是否有序列号标识
+     * @param id
+     * @return boolean
+     * @author assert
+     * @date 2021/2/2
+    */
+    boolean getPartsIdClassById(Long id);
+
 }

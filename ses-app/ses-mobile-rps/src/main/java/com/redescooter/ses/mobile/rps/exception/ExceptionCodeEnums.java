@@ -226,7 +226,11 @@ public enum ExceptionCodeEnums {
 
     COMPLETED_COMBINATION(10110, "已完成组装"),
 
-    SCAN_CODE_QTY_ERROR(10111, "扫码数量有误")
+    SCAN_CODE_QTY_ERROR(10111, "扫码数量有误"),
+
+    SERIAL_NUM_IS_EMPTY(10112, "序列号为空"),
+
+    PRODUCT_ID_CLASS_ERROR(10113, "产品序列号标识有误")
     ;
 
     private int code;

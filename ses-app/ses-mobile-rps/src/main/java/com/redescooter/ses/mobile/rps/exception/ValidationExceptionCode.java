@@ -65,5 +65,7 @@ public interface ValidationExceptionCode {
     int QC_ORDER_TYPE_IS_EMPTY = 10051;
     // 组装单类型为空
     int COMBINATION_ORDER_TYPE_IS_EMPTY = 10052;
+    // 有无码标识不能为空
+    int ID_CLASS_IS_EMPTY = 10053;
 
 }

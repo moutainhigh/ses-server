@@ -53,4 +53,10 @@
         where dr = 0 and id = #{id}
     </select>
 
+    <!--根据id查询部件是否有序列号标识(结果映射会自动把0,1转换成true,false)-->
+    <select id="getPartsIdClassById" parameterType="java.lang.Long" resultType="java.lang.Boolean">
+        select id_calss from ope_production_parts
+        where dr = 0 and id = #{id}
+    </select>
+
 </mapper>

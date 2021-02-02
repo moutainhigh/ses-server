@@ -2,7 +2,6 @@ package com.redescooter.ses.mobile.rps.service.entrustorder.impl;
 
 import com.redescooter.ses.api.common.enums.entrustorder.EntrustOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.consign.ConsignOrderStatusEnums;
 import com.redescooter.ses.api.common.service.RosEntrustOrderService;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -13,6 +12,7 @@ import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeLogisticsOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.entrustorder.*;
+import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
@@ -21,11 +21,9 @@ import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -57,6 +55,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private EntrustProductSerialNumMapper entrustProductSerialNumMapper;
     @Resource
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
+    @Resource
+    private ProductionPartsMapper partsMapper;
 
 
     @Override
@@ -190,6 +190,8 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         // 无码产品不填写扫码数量时抛出异常
         RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+        RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
+                ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
 
         Long userId = paramDTO.getUserId();
         Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
@@ -207,6 +209,10 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         String serialNum = null;
         switch (paramDTO.getProductType()) {
             case 1:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeEntrustScooterB opeEntrustScooterB = entrustScooterBMapper.getEntrustScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeEntrustScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -225,6 +231,10 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
                 break;
             case 2:
+                // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
+                RpsAssert.isFalse(paramDTO.getIdClass(), ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeEntrustCombinB opeEntrustCombinB = entrustCombinBMapper.getEntrustCombinById(paramDTO.getProductId());
                 RpsAssert.isNull(opeEntrustCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
@@ -242,6 +252,11 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
                 break;
             default:
+                // 校验部件是否有序列号标识跟入参传递的是否一致
+                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
+                        ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
+
                 OpeEntrustPartsB opeEntrustPartsB = entrustPartsBMapper.getEntrustPartsById(paramDTO.getProductId());
 
                 RpsAssert.isNull(opeEntrustPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
