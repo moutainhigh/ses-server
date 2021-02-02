@@ -15,7 +15,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.invoice.InvoiceProductSerialNumMapper;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
@@ -59,8 +58,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     private OutWhCombinBMapper outWhCombinBMapper;
     @Resource
     private OutWhPartsBMapper outWhPartsBMapper;
-    @Resource
-    private InvoiceProductSerialNumMapper invoiceProductSerialNumMapper;
     @Resource
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
     @Resource

@@ -1,21 +1,24 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeQcOrder;
-    /**
- *@author assert
- *@date 2021/1/26 10:56
+import java.util.List;
+
+/**
+ * @author assert
+ * @date 2021/1/26 10:56
  */
-public interface OpeQcOrderService{
+public interface OpeQcOrderService extends IService<OpeQcOrder> {
 
+    int updateBatch(List<OpeQcOrder> list);
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatchSelective(List<OpeQcOrder> list);
 
-    int insertSelective(OpeQcOrder record);
+    int batchInsert(List<OpeQcOrder> list);
 
-    OpeQcOrder selectByPrimaryKey(Long id);
+    int insertOrUpdate(OpeQcOrder record);
 
-    int updateByPrimaryKeySelective(OpeQcOrder record);
-
-    int updateByPrimaryKey(OpeQcOrder record);
-
+    int insertOrUpdateSelective(OpeQcOrder record);
 }
+
+

@@ -1,24 +1,25 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
-import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;import java.util.List;
 
 /**
  * @author assert
  * @date 2021/1/22 17:47
  */
-public interface OpeInWhouseOrderSerialBindService {
+public interface OpeInWhouseOrderSerialBindService extends IService<OpeInWhouseOrderSerialBind> {
 
+    int updateBatch(List<OpeInWhouseOrderSerialBind> list);
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatchSelective(List<OpeInWhouseOrderSerialBind> list);
 
-    int insertSelective(OpeInWhouseOrderSerialBind record);
+    int batchInsert(List<OpeInWhouseOrderSerialBind> list);
 
-    OpeInWhouseOrderSerialBind selectByPrimaryKey(Long id);
+    int insertOrUpdate(OpeInWhouseOrderSerialBind record);
 
-    int updateByPrimaryKeySelective(OpeInWhouseOrderSerialBind record);
-
-    int updateByPrimaryKey(OpeInWhouseOrderSerialBind record);
-
+    int insertOrUpdateSelective(OpeInWhouseOrderSerialBind record);
 }
+
+
 
 

@@ -1,43 +1,44 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import com.redescooter.ses.mobile.rps.dm.OpeQcPartsB;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeQcPartsBMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeQcPartsB;
+import org.springframework.stereotype.Service;
 import com.redescooter.ses.mobile.rps.service.base.OpeQcPartsBService;
+import java.util.List;
+
 /**
- *@author assert
- *@date 2021/1/26 15:38
+ * @author assert
+ * @date 2021/1/26 15:38
  */
 @Service
-public class OpeQcPartsBServiceImpl implements OpeQcPartsBService{
-
-    @Resource
-    private OpeQcPartsBMapper opeQcPartsBMapper;
+public class OpeQcPartsBServiceImpl extends ServiceImpl<OpeQcPartsBMapper, OpeQcPartsB>
+        implements OpeQcPartsBService {
 
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return opeQcPartsBMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeQcPartsB> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insertSelective(OpeQcPartsB record) {
-        return opeQcPartsBMapper.insertSelective(record);
+    public int updateBatchSelective(List<OpeQcPartsB> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public OpeQcPartsB selectByPrimaryKey(Long id) {
-        return opeQcPartsBMapper.selectByPrimaryKey(id);
+    public int batchInsert(List<OpeQcPartsB> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeQcPartsB record) {
-        return opeQcPartsBMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdate(OpeQcPartsB record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKey(OpeQcPartsB record) {
-        return opeQcPartsBMapper.updateByPrimaryKey(record);
+    public int insertOrUpdateSelective(OpeQcPartsB record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
 }
+
+

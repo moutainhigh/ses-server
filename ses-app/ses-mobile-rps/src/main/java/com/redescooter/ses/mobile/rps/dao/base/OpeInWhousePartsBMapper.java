@@ -2,49 +2,21 @@ package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author assert
- * @date 2021/1/27 11:54
+ * @date 2021/2/2 10:22
  */
 public interface OpeInWhousePartsBMapper extends BaseMapper<OpeInWhousePartsB> {
-    /**
-     * delete by primary key
-     *
-     * @param id primaryKey
-     * @return deleteCount
-     */
-    int deleteByPrimaryKey(Long id);
+    int updateBatch(List<OpeInWhousePartsB> list);
 
-    /**
-     * insert record to table selective
-     *
-     * @param record the record
-     * @return insert count
-     */
-    int insertSelective(OpeInWhousePartsB record);
+    int updateBatchSelective(List<OpeInWhousePartsB> list);
 
-    /**
-     * select by primary key
-     *
-     * @param id primary key
-     * @return object by primary key
-     */
-    OpeInWhousePartsB selectByPrimaryKey(Long id);
+    int batchInsert(@Param("list") List<OpeInWhousePartsB> list);
 
-    /**
-     * update record
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKeySelective(OpeInWhousePartsB record);
+    int insertOrUpdate(OpeInWhousePartsB record);
 
-    /**
-     * update record selective
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKey(OpeInWhousePartsB record);
+    int insertOrUpdateSelective(OpeInWhousePartsB record);
 }

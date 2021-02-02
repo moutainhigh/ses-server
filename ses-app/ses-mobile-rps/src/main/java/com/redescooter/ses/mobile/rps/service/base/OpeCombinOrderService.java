@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
+import java.util.List;
 
 /**
  * @author assert
@@ -9,19 +10,17 @@ import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
  */
 public interface OpeCombinOrderService extends IService<OpeCombinOrder> {
 
+    int updateBatch(List<OpeCombinOrder> list);
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatchSelective(List<OpeCombinOrder> list);
 
-    int insert(OpeCombinOrder record);
+    int batchInsert(List<OpeCombinOrder> list);
 
-    int insertSelective(OpeCombinOrder record);
+    int insertOrUpdate(OpeCombinOrder record);
 
-    OpeCombinOrder selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(OpeCombinOrder record);
-
-    int updateByPrimaryKey(OpeCombinOrder record);
-
+    int insertOrUpdateSelective(OpeCombinOrder record);
 }
+
+
 
 

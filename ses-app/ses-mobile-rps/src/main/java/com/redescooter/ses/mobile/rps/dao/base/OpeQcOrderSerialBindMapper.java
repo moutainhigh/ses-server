@@ -2,49 +2,21 @@ package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author assert
- * @date 2021/1/25 15:08
+ * @date 2021/2/2 11:23
  */
 public interface OpeQcOrderSerialBindMapper extends BaseMapper<OpeQcOrderSerialBind> {
-    /**
-     * delete by primary key
-     *
-     * @param id primaryKey
-     * @return deleteCount
-     */
-    int deleteByPrimaryKey(Long id);
+    int updateBatch(List<OpeQcOrderSerialBind> list);
 
-    /**
-     * insert record to table selective
-     *
-     * @param record the record
-     * @return insert count
-     */
-    int insertSelective(OpeQcOrderSerialBind record);
+    int updateBatchSelective(List<OpeQcOrderSerialBind> list);
 
-    /**
-     * select by primary key
-     *
-     * @param id primary key
-     * @return object by primary key
-     */
-    OpeQcOrderSerialBind selectByPrimaryKey(Long id);
+    int batchInsert(@Param("list") List<OpeQcOrderSerialBind> list);
 
-    /**
-     * update record
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKeySelective(OpeQcOrderSerialBind record);
+    int insertOrUpdate(OpeQcOrderSerialBind record);
 
-    /**
-     * update record selective
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKey(OpeQcOrderSerialBind record);
+    int insertOrUpdateSelective(OpeQcOrderSerialBind record);
 }

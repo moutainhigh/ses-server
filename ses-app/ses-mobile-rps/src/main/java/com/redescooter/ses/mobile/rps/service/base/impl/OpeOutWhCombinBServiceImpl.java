@@ -33,6 +33,12 @@ public class OpeOutWhCombinBServiceImpl extends ServiceImpl<OpeOutWhCombinBMappe
     public int insertOrUpdateSelective(OpeOutWhCombinB record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeOutWhCombinB> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
 

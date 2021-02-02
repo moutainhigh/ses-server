@@ -1,23 +1,25 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
+import java.util.List;
 
 /**
  * @author assert
  * @date 2021/1/22 20:10
  */
-public interface OpeWmsStockSerialNumberService {
+public interface OpeWmsStockSerialNumberService extends IService<OpeWmsStockSerialNumber> {
 
+    int updateBatch(List<OpeWmsStockSerialNumber> list);
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatchSelective(List<OpeWmsStockSerialNumber> list);
 
-    int insertSelective(OpeWmsStockSerialNumber record);
+    int batchInsert(List<OpeWmsStockSerialNumber> list);
 
-    OpeWmsStockSerialNumber selectByPrimaryKey(Long id);
+    int insertOrUpdate(OpeWmsStockSerialNumber record);
 
-    int updateByPrimaryKeySelective(OpeWmsStockSerialNumber record);
-
-    int updateByPrimaryKey(OpeWmsStockSerialNumber record);
-
+    int insertOrUpdateSelective(OpeWmsStockSerialNumber record);
 }
+
+
 

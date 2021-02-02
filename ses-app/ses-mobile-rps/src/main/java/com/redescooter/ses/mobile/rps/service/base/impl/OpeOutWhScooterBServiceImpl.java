@@ -33,6 +33,12 @@ public class OpeOutWhScooterBServiceImpl extends ServiceImpl<OpeOutWhScooterBMap
     public int insertOrUpdateSelective(OpeOutWhScooterB record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeOutWhScooterB> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
 

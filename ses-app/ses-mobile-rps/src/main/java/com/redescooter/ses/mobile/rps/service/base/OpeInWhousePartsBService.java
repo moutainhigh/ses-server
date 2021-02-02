@@ -1,23 +1,28 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
+import java.util.List;
 
 /**
  * @author assert
  * @date 2021/1/13 16:13
  */
-public interface OpeInWhousePartsBService {
+public interface OpeInWhousePartsBService extends IService<OpeInWhousePartsB> {
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatch(List<OpeInWhousePartsB> list);
 
-    int insertSelective(OpeInWhousePartsB record);
+    int updateBatchSelective(List<OpeInWhousePartsB> list);
 
-    OpeInWhousePartsB selectByPrimaryKey(Long id);
+    int batchInsert(List<OpeInWhousePartsB> list);
 
-    int updateByPrimaryKeySelective(OpeInWhousePartsB record);
+    int insertOrUpdate(OpeInWhousePartsB record);
 
-    int updateByPrimaryKey(OpeInWhousePartsB record);
+    int insertOrUpdateSelective(OpeInWhousePartsB record);
 }
+
+
 
 
 

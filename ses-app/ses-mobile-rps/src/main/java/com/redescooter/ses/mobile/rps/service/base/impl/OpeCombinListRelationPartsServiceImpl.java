@@ -1,43 +1,44 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeCombinListRelationPartsMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts;
+import org.springframework.stereotype.Service;
 import com.redescooter.ses.mobile.rps.service.base.OpeCombinListRelationPartsService;
+import java.util.List;
+
 /**
- *@author assert
- *@date 2021/1/27 17:36
+ * @author assert
+ * @date 2021/1/27 17:36
  */
 @Service
-public class OpeCombinListRelationPartsServiceImpl implements OpeCombinListRelationPartsService{
-
-    @Resource
-    private OpeCombinListRelationPartsMapper opeCombinListRelationPartsMapper;
+public class OpeCombinListRelationPartsServiceImpl extends ServiceImpl<OpeCombinListRelationPartsMapper, OpeCombinListRelationParts>
+        implements OpeCombinListRelationPartsService {
 
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return opeCombinListRelationPartsMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeCombinListRelationParts> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insertSelective(OpeCombinListRelationParts record) {
-        return opeCombinListRelationPartsMapper.insertSelective(record);
+    public int updateBatchSelective(List<OpeCombinListRelationParts> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public OpeCombinListRelationParts selectByPrimaryKey(Long id) {
-        return opeCombinListRelationPartsMapper.selectByPrimaryKey(id);
+    public int batchInsert(List<OpeCombinListRelationParts> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeCombinListRelationParts record) {
-        return opeCombinListRelationPartsMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdate(OpeCombinListRelationParts record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKey(OpeCombinListRelationParts record) {
-        return opeCombinListRelationPartsMapper.updateByPrimaryKey(record);
+    public int insertOrUpdateSelective(OpeCombinListRelationParts record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
 }
+
+

@@ -2,50 +2,21 @@ package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionPurchaseOrder;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author assert
- * @date 2021/1/22 10:28
+ * @date 2021/2/2 11:34
  */
 public interface OpeProductionPurchaseOrderMapper extends BaseMapper<OpeProductionPurchaseOrder> {
-    /**
-     * delete by primary key
-     *
-     * @param id primaryKey
-     * @return deleteCount
-     */
-    int deleteByPrimaryKey(Long id);
+    int updateBatch(List<OpeProductionPurchaseOrder> list);
 
-    /**
-     * insert record to table selective
-     *
-     * @param record the record
-     * @return insert count
-     */
-    int insertSelective(OpeProductionPurchaseOrder record);
+    int updateBatchSelective(List<OpeProductionPurchaseOrder> list);
 
-    /**
-     * select by primary key
-     *
-     * @param id primary key
-     * @return object by primary key
-     */
-    OpeProductionPurchaseOrder selectByPrimaryKey(Long id);
+    int batchInsert(@Param("list") List<OpeProductionPurchaseOrder> list);
 
-    /**
-     * update record
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKeySelective(OpeProductionPurchaseOrder record);
+    int insertOrUpdate(OpeProductionPurchaseOrder record);
 
-    /**
-     * update record selective
-     *
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKey(OpeProductionPurchaseOrder record);
-
+    int insertOrUpdateSelective(OpeProductionPurchaseOrder record);
 }

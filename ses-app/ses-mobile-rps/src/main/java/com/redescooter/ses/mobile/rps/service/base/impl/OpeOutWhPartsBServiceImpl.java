@@ -33,6 +33,12 @@ public class OpeOutWhPartsBServiceImpl extends ServiceImpl<OpeOutWhPartsBMapper,
     public int insertOrUpdateSelective(OpeOutWhPartsB record) {
         return baseMapper.insertOrUpdateSelective(record);
     }
+
+    @Override
+    public int updateBatchSelective(List<OpeOutWhPartsB> list) {
+        return baseMapper.updateBatchSelective(list);
+    }
 }
+
 
 

@@ -19,6 +19,8 @@ public interface OpeOutWhScooterBService extends IService<OpeOutWhScooterB> {
 
     int insertOrUpdateSelective(OpeOutWhScooterB record);
 
+    int updateBatchSelective(List<OpeOutWhScooterB> list);
 }
+
 
 

@@ -11,20 +11,14 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.inwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
-import com.redescooter.ses.mobile.rps.dao.purchaseorder.PurchaseOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
-import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
@@ -67,21 +61,11 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     @Autowired
     private InWhousePartsBMapper inWhousePartsBMapper;
     @Autowired
-    private WmsScooterStockMapper wmsScooterStockMapper;
-    @Autowired
-    private WmsCombinStockMapper wmsCombinStockMapper;
-    @Autowired
-    private WmsPartsStockMapper wmsPartsStockMapper;
-    @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
     @Autowired
     private ProductionCombinBomMapper combinBomMapper;
     @Autowired
     private ProductionPartsMapper partsMapper;
-    @Autowired
-    private CombinationOrderMapper combinationOrderMapper;
-    @Autowired
-    private PurchaseOrderMapper purchaseOrderMapper;
     @Autowired
     private InWhouseOrderSerialBindMapper inWhouseOrderSerialBindMapper;
     @Autowired
@@ -92,16 +76,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     private TransactionTemplate transactionTemplate;
     @Autowired
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
-    @Autowired
-    private OpeProductionCombinBomService opeProductionCombinBomService;
-    @Autowired
-    private OpeProductionPartsService opeProductionPartsService;
-    @Autowired
-    private OpeWmsScooterStockService opeWmsScooterStockService;
-    @Autowired
-    private OpeWmsCombinStockService opeWmsCombinStockService;
-    @Autowired
-    private OpeWmsPartsStockService opeWmsPartsStockService;
 
 
     @Override

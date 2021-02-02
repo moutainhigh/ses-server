@@ -2,10 +2,10 @@ package com.redescooter.ses.mobile.rps.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
 import com.redescooter.ses.mobile.rps.dao.base.OpeCombinOrderMapper;
 import com.redescooter.ses.mobile.rps.service.base.OpeCombinOrderService;
+import java.util.List;
 
 /**
  * @author assert
@@ -15,39 +15,32 @@ import com.redescooter.ses.mobile.rps.service.base.OpeCombinOrderService;
 public class OpeCombinOrderServiceImpl extends ServiceImpl<OpeCombinOrderMapper, OpeCombinOrder>
         implements OpeCombinOrderService {
 
-    @Resource
-    private OpeCombinOrderMapper opeCombinOrderMapper;
-
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return opeCombinOrderMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeCombinOrder> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insert(OpeCombinOrder record) {
-        return opeCombinOrderMapper.insert(record);
+    public int updateBatchSelective(List<OpeCombinOrder> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public int insertSelective(OpeCombinOrder record) {
-        return opeCombinOrderMapper.insertSelective(record);
+    public int batchInsert(List<OpeCombinOrder> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public OpeCombinOrder selectByPrimaryKey(Long id) {
-        return opeCombinOrderMapper.selectByPrimaryKey(id);
+    public int insertOrUpdate(OpeCombinOrder record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeCombinOrder record) {
-        return opeCombinOrderMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdateSelective(OpeCombinOrder record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
-    @Override
-    public int updateByPrimaryKey(OpeCombinOrder record) {
-        return opeCombinOrderMapper.updateByPrimaryKey(record);
-    }
-
 }
+
+
 
 

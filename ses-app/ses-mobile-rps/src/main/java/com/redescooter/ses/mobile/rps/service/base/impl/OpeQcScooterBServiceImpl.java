@@ -1,43 +1,44 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeQcScooterBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeQcScooterB;
+import org.springframework.stereotype.Service;
 import com.redescooter.ses.mobile.rps.service.base.OpeQcScooterBService;
+import java.util.List;
+
 /**
- *@author assert
- *@date 2021/1/26 15:38
+ * @author assert
+ * @date 2021/1/26 15:38
  */
 @Service
-public class OpeQcScooterBServiceImpl implements OpeQcScooterBService{
-
-    @Resource
-    private OpeQcScooterBMapper opeQcScooterBMapper;
+public class OpeQcScooterBServiceImpl extends ServiceImpl<OpeQcScooterBMapper, OpeQcScooterB>
+        implements OpeQcScooterBService {
 
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return opeQcScooterBMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeQcScooterB> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insertSelective(OpeQcScooterB record) {
-        return opeQcScooterBMapper.insertSelective(record);
+    public int updateBatchSelective(List<OpeQcScooterB> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public OpeQcScooterB selectByPrimaryKey(Long id) {
-        return opeQcScooterBMapper.selectByPrimaryKey(id);
+    public int batchInsert(List<OpeQcScooterB> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeQcScooterB record) {
-        return opeQcScooterBMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdate(OpeQcScooterB record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKey(OpeQcScooterB record) {
-        return opeQcScooterBMapper.updateByPrimaryKey(record);
+    public int insertOrUpdateSelective(OpeQcScooterB record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
 }
+
+

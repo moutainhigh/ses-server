@@ -12,8 +12,6 @@
         <result column="qty" jdbcType="INTEGER" property="qty" />
         <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
         <result column="total_qty" jdbcType="INTEGER" property="totalQty" />
-        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
-        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
         <result column="created_by" jdbcType="BIGINT" property="createdBy" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -108,12 +106,6 @@
             </if>
             <if test="totalQty != null">
                 total_qty = #{totalQty,jdbcType=INTEGER},
-            </if>
-            <if test="qcQty != null">
-                qc_qty = #{qcQty,jdbcType=INTEGER},
-            </if>
-            <if test="unqualifiedQty != null">
-                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
             </if>
             <if test="remark != null">
                 remark = #{remark,jdbcType=VARCHAR},

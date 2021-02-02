@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.*;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
@@ -81,11 +82,11 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
     @Autowired
-    private OpeProductionPurchaseOrderMapper opeProductionPurchaseOrderMapper;
+    private OpeProductionPurchaseOrderService opeProductionPurchaseOrderService;
     @Autowired
-    private OpeOutWhouseOrderMapper opeOutWhouseOrderMapper;
+    private OpeOutWhouseOrderService opeOutWhouseOrderService;
     @Autowired
-    private OpeCombinOrderMapper opeCombinOrderMapper;
+    private CombinationOrderMapper combinationOrderMapper;
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
     @Autowired
@@ -94,14 +95,6 @@ public class QcOrderServiceImpl implements QcOrderService {
     private OpeWmsQualifiedCombinStockService opeWmsQualifiedCombinStockService;
     @Autowired
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
-    @Autowired
-    private OpeWmsPartsStockService opeWmsPartsStockService;
-    @Autowired
-    private OpeProductionPartsService opeProductionPartsService;
-    @Autowired
-    private OpeWmsScooterStockService opeWmsScooterStockService;
-    @Autowired
-    private OpeWmsCombinStockService opeWmsCombinStockService;
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
 
@@ -668,6 +661,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setPartsNo(paramDTO.getPartsNo());
         resultDTO.setLot(paramDTO.getLot());
         resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
+        resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
 
         return resultDTO;
@@ -699,21 +693,21 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeProductionPurchaseOrder.setPurchaseStatus(NewProductionPurchasEnums.FINISHED.getValue());
             opeProductionPurchaseOrder.setUpdatedBy(enter.getUserId());
             opeProductionPurchaseOrder.setUpdatedTime(new Date());
-            opeProductionPurchaseOrderMapper.updateByPrimaryKeySelective(opeProductionPurchaseOrder);
+            opeProductionPurchaseOrderService.updateById(opeProductionPurchaseOrder);
         } else if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeOutWhouseOrder opeOutWhouseOrder = new OpeOutWhouseOrder();
             opeOutWhouseOrder.setId(opeQcOrder.getRelationOrderId());
             opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue());
             opeOutWhouseOrder.setUpdatedBy(enter.getUserId());
             opeOutWhouseOrder.setUpdatedTime(new Date());
-            opeOutWhouseOrderMapper.updateByPrimaryKeySelective(opeOutWhouseOrder);
+            opeOutWhouseOrderService.updateById(opeOutWhouseOrder);
         } else if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeCombinOrder opeCombinOrder = new OpeCombinOrder();
             opeCombinOrder.setId(opeQcOrder.getRelationOrderId());
             opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.QC_FINISH.getValue());
             opeCombinOrder.setUpdatedBy(enter.getUserId());
             opeCombinOrder.setUpdatedTime(new Date());
-            opeCombinOrderMapper.updateByPrimaryKeySelective(opeCombinOrder);
+            combinationOrderMapper.updateCombinationOrder(opeCombinOrder);
         }
 
         return new GeneralResult(enter.getRequestId());

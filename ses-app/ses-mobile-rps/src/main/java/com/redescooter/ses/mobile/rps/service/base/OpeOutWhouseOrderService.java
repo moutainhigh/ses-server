@@ -1,21 +1,26 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;
-    /**
- *@author assert
- *@date 2021/1/27 22:52
+
+import java.util.List;
+
+/**
+ * @author assert
+ * @date 2021/1/27 22:52
  */
-public interface OpeOutWhouseOrderService{
+public interface OpeOutWhouseOrderService extends IService<OpeOutWhouseOrder> {
 
+    int updateBatch(List<OpeOutWhouseOrder> list);
 
-    int deleteByPrimaryKey(Long id);
+    int updateBatchSelective(List<OpeOutWhouseOrder> list);
 
-    int insertSelective(OpeOutWhouseOrder record);
+    int batchInsert(List<OpeOutWhouseOrder> list);
 
-    OpeOutWhouseOrder selectByPrimaryKey(Long id);
+    int insertOrUpdate(OpeOutWhouseOrder record);
 
-    int updateByPrimaryKeySelective(OpeOutWhouseOrder record);
-
-    int updateByPrimaryKey(OpeOutWhouseOrder record);
-
+    int insertOrUpdateSelective(OpeOutWhouseOrder record);
 }
+
+

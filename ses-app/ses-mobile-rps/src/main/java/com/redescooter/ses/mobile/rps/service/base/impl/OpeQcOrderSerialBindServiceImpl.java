@@ -1,46 +1,46 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeQcOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
+import org.springframework.stereotype.Service;
 import com.redescooter.ses.mobile.rps.service.base.OpeQcOrderSerialBindService;
+import java.util.List;
 
 /**
  * @author assert
  * @date 2021/1/25 10:02
  */
 @Service
-public class OpeQcOrderSerialBindServiceImpl implements OpeQcOrderSerialBindService {
-
-    @Resource
-    private OpeQcOrderSerialBindMapper opeQcOrderSerialBindMapper;
+public class OpeQcOrderSerialBindServiceImpl extends ServiceImpl<OpeQcOrderSerialBindMapper, OpeQcOrderSerialBind>
+        implements OpeQcOrderSerialBindService {
 
     @Override
-    public int deleteByPrimaryKey(Long id) {
-        return opeQcOrderSerialBindMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeQcOrderSerialBind> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insertSelective(OpeQcOrderSerialBind record) {
-        return opeQcOrderSerialBindMapper.insertSelective(record);
+    public int updateBatchSelective(List<OpeQcOrderSerialBind> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public OpeQcOrderSerialBind selectByPrimaryKey(Long id) {
-        return opeQcOrderSerialBindMapper.selectByPrimaryKey(id);
+    public int batchInsert(List<OpeQcOrderSerialBind> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeQcOrderSerialBind record) {
-        return opeQcOrderSerialBindMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdate(OpeQcOrderSerialBind record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKey(OpeQcOrderSerialBind record) {
-        return opeQcOrderSerialBindMapper.updateByPrimaryKey(record);
+    public int insertOrUpdateSelective(OpeQcOrderSerialBind record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
 }
+
+
 
 

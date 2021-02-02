@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeQcOrderMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
     <!--@mbg.generated-->
-    <!--@Table ope_qc_order-->
+    <!--@Table operation.ope_qc_order-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -21,7 +21,7 @@
     <result column="qc_completion_time" jdbcType="TIMESTAMP" property="qcCompletionTime" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     <result column="def1" jdbcType="VARCHAR" property="def1" />
     <result column="def2" jdbcType="VARCHAR" property="def2" />
@@ -35,21 +35,367 @@
     relation_order_no, relation_order_type, qc_type, qc_qty, remark, qc_completion_time, 
     created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    from ope_qc_order
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    update operation.ope_qc_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="country_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.countryType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="qc_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="qc_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcStatus,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.orderType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderNo,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="qc_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="qc_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcQty,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="qc_completion_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.qcCompletionTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    delete from ope_qc_order
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insertSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
+    update operation.ope_qc_order
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.tenantId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="dept_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.deptId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.deptId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="country_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.countryType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.countryType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="qc_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qcNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qcNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="qc_status = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qcStatus != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qcStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.orderType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.orderType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.relationOrderId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_no = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.relationOrderNo != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="relation_order_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.relationOrderType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.relationOrderType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="qc_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qcType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qcType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="qc_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qcQty != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qcQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="qc_completion_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.qcCompletionTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.qcCompletionTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def4 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_qc_order
+    insert into operation.ope_qc_order
+    (id, dr, tenant_id, dept_id, country_type, qc_no, qc_status, order_type, relation_order_id, 
+      relation_order_no, relation_order_type, qc_type, qc_qty, remark, qc_completion_time, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
+        #{item.deptId,jdbcType=BIGINT}, #{item.countryType,jdbcType=INTEGER}, #{item.qcNo,jdbcType=VARCHAR}, 
+        #{item.qcStatus,jdbcType=INTEGER}, #{item.orderType,jdbcType=INTEGER}, #{item.relationOrderId,jdbcType=BIGINT}, 
+        #{item.relationOrderNo,jdbcType=VARCHAR}, #{item.relationOrderType,jdbcType=INTEGER}, 
+        #{item.qcType,jdbcType=INTEGER}, #{item.qcQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
+        #{item.qcCompletionTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=BIGINT}, 
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
+    <!--@mbg.generated-->
+    insert into operation.ope_qc_order
+    (id, dr, tenant_id, dept_id, country_type, qc_no, qc_status, order_type, relation_order_id, 
+      relation_order_no, relation_order_type, qc_type, qc_qty, remark, qc_completion_time, 
+      created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+      )
+    values
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
+      #{countryType,jdbcType=INTEGER}, #{qcNo,jdbcType=VARCHAR}, #{qcStatus,jdbcType=INTEGER}, 
+      #{orderType,jdbcType=INTEGER}, #{relationOrderId,jdbcType=BIGINT}, #{relationOrderNo,jdbcType=VARCHAR}, 
+      #{relationOrderType,jdbcType=INTEGER}, #{qcType,jdbcType=INTEGER}, #{qcQty,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{qcCompletionTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+      #{def5,jdbcType=DECIMAL})
+    on duplicate key update 
+    id = #{id,jdbcType=BIGINT}, 
+    dr = #{dr,jdbcType=INTEGER}, 
+    tenant_id = #{tenantId,jdbcType=BIGINT}, 
+    dept_id = #{deptId,jdbcType=BIGINT}, 
+    country_type = #{countryType,jdbcType=INTEGER}, 
+    qc_no = #{qcNo,jdbcType=VARCHAR}, 
+    qc_status = #{qcStatus,jdbcType=INTEGER}, 
+    order_type = #{orderType,jdbcType=INTEGER}, 
+    relation_order_id = #{relationOrderId,jdbcType=BIGINT}, 
+    relation_order_no = #{relationOrderNo,jdbcType=VARCHAR}, 
+    relation_order_type = #{relationOrderType,jdbcType=INTEGER}, 
+    qc_type = #{qcType,jdbcType=INTEGER}, 
+    qc_qty = #{qcQty,jdbcType=INTEGER}, 
+    remark = #{remark,jdbcType=VARCHAR}, 
+    qc_completion_time = #{qcCompletionTime,jdbcType=TIMESTAMP}, 
+    created_by = #{createdBy,jdbcType=BIGINT}, 
+    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
+    updated_by = #{updatedBy,jdbcType=BIGINT}, 
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
+    def1 = #{def1,jdbcType=VARCHAR}, 
+    def2 = #{def2,jdbcType=VARCHAR}, 
+    def3 = #{def3,jdbcType=VARCHAR}, 
+    def4 = #{def4,jdbcType=VARCHAR}, 
+    def5 = #{def5,jdbcType=DECIMAL}
+  </insert>
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
+    <!--@mbg.generated-->
+    insert into operation.ope_qc_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -124,7 +470,8 @@
         def5,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
@@ -177,7 +524,7 @@
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=INTEGER},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         #{updatedTime,jdbcType=TIMESTAMP},
@@ -198,11 +545,11 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
-    <!--@mbg.generated-->
-    update ope_qc_order
-    <set>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
@@ -252,7 +599,7 @@
         created_time = #{createdTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=INTEGER},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
@@ -272,35 +619,6 @@
       <if test="def5 != null">
         def5 = #{def5,jdbcType=DECIMAL},
       </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
-    <!--@mbg.generated-->
-    update ope_qc_order
-    set dr = #{dr,jdbcType=INTEGER},
-      tenant_id = #{tenantId,jdbcType=BIGINT},
-      dept_id = #{deptId,jdbcType=BIGINT},
-      country_type = #{countryType,jdbcType=INTEGER},
-      qc_no = #{qcNo,jdbcType=VARCHAR},
-      qc_status = #{qcStatus,jdbcType=INTEGER},
-      order_type = #{orderType,jdbcType=INTEGER},
-      relation_order_id = #{relationOrderId,jdbcType=BIGINT},
-      relation_order_no = #{relationOrderNo,jdbcType=VARCHAR},
-      relation_order_type = #{relationOrderType,jdbcType=INTEGER},
-      qc_type = #{qcType,jdbcType=INTEGER},
-      qc_qty = #{qcQty,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR},
-      qc_completion_time = #{qcCompletionTime,jdbcType=TIMESTAMP},
-      created_by = #{createdBy,jdbcType=BIGINT},
-      created_time = #{createdTime,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=INTEGER},
-      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      def1 = #{def1,jdbcType=VARCHAR},
-      def2 = #{def2,jdbcType=VARCHAR},
-      def3 = #{def3,jdbcType=VARCHAR},
-      def4 = #{def4,jdbcType=VARCHAR},
-      def5 = #{def5,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+    </trim>
+  </insert>
 </mapper>
