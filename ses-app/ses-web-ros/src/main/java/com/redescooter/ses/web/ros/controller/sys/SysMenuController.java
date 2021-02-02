@@ -98,7 +98,7 @@ public class SysMenuController {
      * 目录列表
      */
     @PostMapping(value = "/list")
-    @ApiOperation(value = "目录列表", tags = "目录列表")
+    @ApiOperation(value = "目录列表", tags = "目录列表", response = MenuTreeResult.class)
     public Response<List<MenuTreeResult>> getCatalogList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(menuService.getCatalogList(enter));
     }
@@ -107,7 +107,7 @@ public class SysMenuController {
      * 根据父级id得到下级信息
      */
     @PostMapping(value = "/subList")
-    @ApiOperation(value = "根据父级id得到下级信息", tags = "根据父级id得到下级信息")
+    @ApiOperation(value = "根据父级id得到下级信息", tags = "根据父级id得到下级信息", response = MenuTreeResult.class)
     public Response<List<MenuTreeResult>> getSubListById(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(menuService.getSubListById(enter));
     }

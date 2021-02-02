@@ -565,11 +565,14 @@ public class MenuServiceImpl implements MenuService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
-        // 如果是超管登录,得到所有权限
+        // 如果是超管登录,得到所有的目录
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
-            LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
-            menuWrapper.orderByAsc(OpeSysMenu::getSort);
-            List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+            LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+            qw.eq(OpeSysMenu::getMenuStatus, 1);
+            qw.eq(OpeSysMenu::getLevel, 1);
+            qw.orderByAsc(OpeSysMenu::getSort);
+            List<OpeSysMenu> menuList = sysMenuService.list(qw);
             // 渲染平行结构菜单集合
             List<MenuTreeResult> result = this.buildMenuParallel(menuList, null, Boolean.TRUE);
             return result;
@@ -580,10 +583,13 @@ public class MenuServiceImpl implements MenuService {
                 // 根据角色id集合得到角色拥有的菜单id集合
                 List<Long> menuIds = this.getMenuIdsByRoleIds(roleIds);
                 if (CollUtil.isNotEmpty(menuIds)) {
-                    LambdaQueryWrapper<OpeSysMenu> menuWrapper = new LambdaQueryWrapper<>();
-                    menuWrapper.in(OpeSysMenu::getId, menuIds);
-                    menuWrapper.orderByAsc(OpeSysMenu::getSort);
-                    List<OpeSysMenu> menuList = sysMenuService.list(menuWrapper);
+                    LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
+                    qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+                    qw.eq(OpeSysMenu::getMenuStatus, 1);
+                    qw.eq(OpeSysMenu::getLevel, 1);
+                    qw.in(OpeSysMenu::getId, menuIds);
+                    qw.orderByAsc(OpeSysMenu::getSort);
+                    List<OpeSysMenu> menuList = sysMenuService.list(qw);
                     // 渲染平行结构菜单集合
                     List<MenuTreeResult> result = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
                     return result;
