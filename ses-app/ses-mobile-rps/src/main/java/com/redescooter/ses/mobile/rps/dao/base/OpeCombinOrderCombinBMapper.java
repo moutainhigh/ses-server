@@ -2,44 +2,21 @@ package com.redescooter.ses.mobile.rps.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderCombinB;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
- *@author assert
- *@date 2021/1/27 21:09
+ * @author assert
+ * @date 2021/2/2 15:58
  */
 public interface OpeCombinOrderCombinBMapper extends BaseMapper<OpeCombinOrderCombinB> {
-    /**
-     * delete by primary key
-     * @param id primaryKey
-     * @return deleteCount
-     */
-    int deleteByPrimaryKey(Integer id);
+    int updateBatch(List<OpeCombinOrderCombinB> list);
 
-    /**
-     * insert record to table selective
-     * @param record the record
-     * @return insert count
-     */
-    int insertSelective(OpeCombinOrderCombinB record);
+    int updateBatchSelective(List<OpeCombinOrderCombinB> list);
 
-    /**
-     * select by primary key
-     * @param id primary key
-     * @return object by primary key
-     */
-    OpeCombinOrderCombinB selectByPrimaryKey(Integer id);
+    int batchInsert(@Param("list") List<OpeCombinOrderCombinB> list);
 
-    /**
-     * update record
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKeySelective(OpeCombinOrderCombinB record);
+    int insertOrUpdate(OpeCombinOrderCombinB record);
 
-    /**
-     * update record selective
-     * @param record the updated record
-     * @return update count
-     */
-    int updateByPrimaryKey(OpeCombinOrderCombinB record);
+    int insertOrUpdateSelective(OpeCombinOrderCombinB record);
 }

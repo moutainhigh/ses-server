@@ -196,8 +196,11 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
-        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+        // 无码产品不填写扫码数量时抛出异常
+        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+                ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
 
+        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
         // 避免产品重复扫码出库
         if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
             OpeOutWhouseOrderSerialBind opeOutWhouseOrderSerialBind = outWhouseOrderSerialBindMapper

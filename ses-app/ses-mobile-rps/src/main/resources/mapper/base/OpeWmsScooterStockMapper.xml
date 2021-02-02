@@ -3,8 +3,8 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeWmsScooterStockMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    <!--@Table ope_wms_scooter_stock-->
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <!--@Table operation.ope_wms_scooter_stock-->
+    <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="stock_type" jdbcType="INTEGER" property="stockType" />
     <result column="group_id" jdbcType="BIGINT" property="groupId" />
@@ -32,113 +32,249 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update ope_wms_scooter_stock
+    update operation.ope_wms_scooter_stock
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="stock_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.stockType,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.stockType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="group_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.groupId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.groupId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="color_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.colorId,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.colorId,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="able_stock_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.ableStockQty,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.ableStockQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="used_stock_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.usedStockQty,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.usedStockQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="wait_in_stock_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.waitInStockQty,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.waitInStockQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="wait_out_stock_qty = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.waitOutStockQty,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.waitOutStockQty,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.remark,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="created_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createdTime,jdbcType=TIMESTAMP}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="updated_by = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedBy,jdbcType=BIGINT}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
         </foreach>
       </trim>
       <trim prefix="updated_time = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
         </foreach>
       </trim>
       <trim prefix="def1 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def1,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def2 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def2,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def3 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def3,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def4 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def4,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.def4,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="def5 = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.def5,jdbcType=DOUBLE}
+          when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=DOUBLE}
         </foreach>
       </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
-      #{item.id,jdbcType=BIGINT}
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update operation.ope_wms_scooter_stock
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="dr = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.dr != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.dr,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="stock_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.stockType != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.stockType,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="group_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.groupId != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.groupId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="color_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.colorId != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.colorId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="able_stock_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.ableStockQty != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.ableStockQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="used_stock_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.usedStockQty != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.usedStockQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="wait_in_stock_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.waitInStockQty != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.waitInStockQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="wait_out_stock_qty = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.waitOutStockQty != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.waitOutStockQty,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="remark = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.remark != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.remark,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdBy != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.createdBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="created_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createdTime != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedBy != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.updatedBy,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="updated_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updatedTime != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.updatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def1 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def1 != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.def1,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def2 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def2 != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.def2,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def3 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def3 != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.def3,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def4 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def4 != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.def4,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="def5 = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.def5 != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.def5,jdbcType=DOUBLE}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=INTEGER}
     </foreach>
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into ope_wms_scooter_stock
+    insert into operation.ope_wms_scooter_stock
     (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
       wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.stockType,jdbcType=INTEGER}, 
+      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.stockType,jdbcType=INTEGER}, 
         #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.ableStockQty,jdbcType=INTEGER}, 
         #{item.usedStockQty,jdbcType=INTEGER}, #{item.waitInStockQty,jdbcType=INTEGER}, 
         #{item.waitOutStockQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -149,19 +285,19 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    insert into ope_wms_scooter_stock
+    insert into operation.ope_wms_scooter_stock
     (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
       wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{stockType,jdbcType=INTEGER}, #{groupId,jdbcType=BIGINT}, 
+    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{stockType,jdbcType=INTEGER}, #{groupId,jdbcType=BIGINT}, 
       #{colorId,jdbcType=BIGINT}, #{ableStockQty,jdbcType=INTEGER}, #{usedStockQty,jdbcType=INTEGER}, 
       #{waitInStockQty,jdbcType=INTEGER}, #{waitOutStockQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
       #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DOUBLE})
     on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
+    id = #{id,jdbcType=INTEGER}, 
     dr = #{dr,jdbcType=INTEGER}, 
     stock_type = #{stockType,jdbcType=INTEGER}, 
     group_id = #{groupId,jdbcType=BIGINT}, 
@@ -183,7 +319,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    insert into ope_wms_scooter_stock
+    insert into operation.ope_wms_scooter_stock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -246,7 +382,7 @@
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=BIGINT},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
@@ -306,7 +442,7 @@
     on duplicate key update 
     <trim suffixOverrides=",">
       <if test="id != null">
-        id = #{id,jdbcType=BIGINT},
+        id = #{id,jdbcType=INTEGER},
       </if>
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},

@@ -1,43 +1,44 @@
 package com.redescooter.ses.mobile.rps.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderCombinB;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeCombinOrderCombinBMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderCombinB;
+import org.springframework.stereotype.Service;
 import com.redescooter.ses.mobile.rps.service.base.OpeCombinOrderCombinBService;
+import java.util.List;
+
 /**
- *@author assert
- *@date 2021/1/27 21:09
+ * @author assert
+ * @date 2021/1/27 21:09
  */
 @Service
-public class OpeCombinOrderCombinBServiceImpl implements OpeCombinOrderCombinBService{
-
-    @Resource
-    private OpeCombinOrderCombinBMapper opeCombinOrderCombinBMapper;
+public class OpeCombinOrderCombinBServiceImpl extends ServiceImpl<OpeCombinOrderCombinBMapper, OpeCombinOrderCombinB>
+        implements OpeCombinOrderCombinBService {
 
     @Override
-    public int deleteByPrimaryKey(Integer id) {
-        return opeCombinOrderCombinBMapper.deleteByPrimaryKey(id);
+    public int updateBatch(List<OpeCombinOrderCombinB> list) {
+        return baseMapper.updateBatch(list);
     }
 
     @Override
-    public int insertSelective(OpeCombinOrderCombinB record) {
-        return opeCombinOrderCombinBMapper.insertSelective(record);
+    public int updateBatchSelective(List<OpeCombinOrderCombinB> list) {
+        return baseMapper.updateBatchSelective(list);
     }
 
     @Override
-    public OpeCombinOrderCombinB selectByPrimaryKey(Integer id) {
-        return opeCombinOrderCombinBMapper.selectByPrimaryKey(id);
+    public int batchInsert(List<OpeCombinOrderCombinB> list) {
+        return baseMapper.batchInsert(list);
     }
 
     @Override
-    public int updateByPrimaryKeySelective(OpeCombinOrderCombinB record) {
-        return opeCombinOrderCombinBMapper.updateByPrimaryKeySelective(record);
+    public int insertOrUpdate(OpeCombinOrderCombinB record) {
+        return baseMapper.insertOrUpdate(record);
     }
 
     @Override
-    public int updateByPrimaryKey(OpeCombinOrderCombinB record) {
-        return opeCombinOrderCombinBMapper.updateByPrimaryKey(record);
+    public int insertOrUpdateSelective(OpeCombinOrderCombinB record) {
+        return baseMapper.insertOrUpdateSelective(record);
     }
-
 }
+
+

@@ -185,6 +185,10 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
 
+        // 无码产品不填写扫码数量时抛出异常
+        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+                ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+
         OpeCombinListRelationParts opeCombinListRelationParts = combinationListRelationPartsMapper
                 .getCombinationListRelationPartsByRIdAndBId(paramDTO.getProductId(), paramDTO.getBomId());
         RpsAssert.isNull(opeCombinListRelationParts, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
@@ -399,8 +403,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         switch (opeCombinOrder.getCombinType()) {
             case 1:
                 QueryWrapper<OpeCombinOrderScooterB> scooterQueryWrapper = new QueryWrapper<>();
-                scooterQueryWrapper.eq("dr", "0");
-                scooterQueryWrapper.eq("combin_id", opeCombinOrder.getId());
+                scooterQueryWrapper.eq(OpeCombinOrderScooterB.COL_DR, "0");
+                scooterQueryWrapper.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, opeCombinOrder.getId());
 
                 List<OpeCombinOrderScooterB> opeCombinOrderScooterList = opeCombinOrderScooterBMapper.selectList(scooterQueryWrapper);
                 List<OpeCombinListScooterB> opeCombinListScooterList = new ArrayList<>();
@@ -410,8 +414,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                  */
                 for (int i = 0; i < opeCombinOrderScooterList.size(); i++) {
                     QueryWrapper<OpeProductionPartsRelation> partsRelationQueryWrapper = new QueryWrapper<>();
-                    partsRelationQueryWrapper.eq("dr", "0");
-                    partsRelationQueryWrapper.eq("production_id", opeCombinOrderScooterList.get(i).getScooterBomId());
+                    partsRelationQueryWrapper.eq(OpeProductionPartsRelation.COL_DR, "0");
+                    partsRelationQueryWrapper.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID, opeCombinOrderScooterList.get(i).getScooterBomId());
                     List<OpeProductionPartsRelation> opeProductionPartsRelationList = opeProductionPartsRelationMapper
                             .selectList(partsRelationQueryWrapper);
 
@@ -443,8 +447,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 break;
             default:
                 QueryWrapper<OpeCombinOrderCombinB> combinQueryWrapper = new QueryWrapper<>();
-                combinQueryWrapper.eq("dr", "0");
-                combinQueryWrapper.eq("combin_id", opeCombinOrder.getId());
+                combinQueryWrapper.eq(OpeCombinOrderCombinB.COL_DR, "0");
+                combinQueryWrapper.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, opeCombinOrder.getId());
 
                 List<OpeCombinOrderCombinB> opeCombinOrderCombinList = opeCombinOrderCombinBMapper.selectList(combinQueryWrapper);
                 List<OpeCombinListCombinB> opeCombinListCombinList = new ArrayList<>();
@@ -454,8 +458,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                  */
                 for (int i = 0; i < opeCombinOrderCombinList.size(); i++) {
                     QueryWrapper<OpeProductionPartsRelation> partsRelationQueryWrapper = new QueryWrapper<>();
-                    partsRelationQueryWrapper.eq("dr", "0");
-                    partsRelationQueryWrapper.eq("production_id", opeCombinOrderCombinList.get(i).getProductionCombinBomId());
+                    partsRelationQueryWrapper.eq(OpeProductionPartsRelation.COL_DR, "0");
+                    partsRelationQueryWrapper.eq(OpeProductionPartsRelation.COL_PRODUCTION_ID, opeCombinOrderCombinList.get(i).getProductionCombinBomId());
                     List<OpeProductionPartsRelation> opeProductionPartsRelationList = opeProductionPartsRelationMapper
                             .selectList(partsRelationQueryWrapper);
 

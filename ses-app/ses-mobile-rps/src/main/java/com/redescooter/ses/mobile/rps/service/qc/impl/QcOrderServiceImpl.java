@@ -645,6 +645,9 @@ public class QcOrderServiceImpl implements QcOrderService {
         // 质检失败保存库存产品序列号信息,成功在确认入库那边保存
         if (!qcResultFlag) {
             wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
+            // 保存不合格品库入库记录
+            
+
         }
 
         /**

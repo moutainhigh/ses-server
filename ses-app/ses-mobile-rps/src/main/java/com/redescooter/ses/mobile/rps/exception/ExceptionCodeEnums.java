@@ -224,7 +224,9 @@ public enum ExceptionCodeEnums {
 
     NOT_COMPLETED_QC(10109, "未完成质检"),
 
-    COMPLETED_COMBINATION(10110, "已完成组装")
+    COMPLETED_COMBINATION(10110, "已完成组装"),
+
+    SCAN_CODE_QTY_ERROR(10111, "扫码数量有误")
     ;
 
     private int code;

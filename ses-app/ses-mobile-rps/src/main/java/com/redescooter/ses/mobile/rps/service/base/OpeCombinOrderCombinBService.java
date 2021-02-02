@@ -1,21 +1,24 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderCombinB;
-    /**
- *@author assert
- *@date 2021/1/27 21:09
+import java.util.List;
+
+/**
+ * @author assert
+ * @date 2021/1/27 21:09
  */
-public interface OpeCombinOrderCombinBService{
+public interface OpeCombinOrderCombinBService extends IService<OpeCombinOrderCombinB> {
 
+    int updateBatch(List<OpeCombinOrderCombinB> list);
 
-    int deleteByPrimaryKey(Integer id);
+    int updateBatchSelective(List<OpeCombinOrderCombinB> list);
 
-    int insertSelective(OpeCombinOrderCombinB record);
+    int batchInsert(List<OpeCombinOrderCombinB> list);
 
-    OpeCombinOrderCombinB selectByPrimaryKey(Integer id);
+    int insertOrUpdate(OpeCombinOrderCombinB record);
 
-    int updateByPrimaryKeySelective(OpeCombinOrderCombinB record);
-
-    int updateByPrimaryKey(OpeCombinOrderCombinB record);
-
+    int insertOrUpdateSelective(OpeCombinOrderCombinB record);
 }
+
+

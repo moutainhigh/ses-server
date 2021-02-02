@@ -57,8 +57,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     private EntrustProductSerialNumMapper entrustProductSerialNumMapper;
     @Resource
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
-    @Resource
-    private TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -153,12 +151,12 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         /**
          * 更新委托单已发货数量
          */
-        opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
-        opeEntrustOrder.setActualDeliveryTime(new Date());
-        opeEntrustOrder.setAlreadyConsignorQty(deliveryQty);
-        opeEntrustOrder.setUpdatedBy(paramDTO.getUserId());
-        opeEntrustOrder.setUpdatedTime(new Date());
-        entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
+//        opeEntrustOrder.setEntrustStatus(ConsignOrderStatusEnums.BE_SIGNED.getValue());
+//        opeEntrustOrder.setActualDeliveryTime(new Date());
+//        opeEntrustOrder.setAlreadyConsignorQty(deliveryQty);
+//        opeEntrustOrder.setUpdatedBy(paramDTO.getUserId());
+//        opeEntrustOrder.setUpdatedTime(new Date());
+//        entrustOrderMapper.updateEntrustOrder(opeEntrustOrder);
 
         /**
          * 保存物流信息
@@ -189,6 +187,10 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
+        // 无码产品不填写扫码数量时抛出异常
+        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+                ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+
         Long userId = paramDTO.getUserId();
         Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
 
