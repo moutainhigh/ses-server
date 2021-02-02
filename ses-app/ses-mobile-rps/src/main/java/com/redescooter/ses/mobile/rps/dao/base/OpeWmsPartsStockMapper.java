@@ -6,11 +6,13 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
- *@author assert
- *@date 2021/1/14 15:44
+ * @author assert
+ * @date 2021/2/2 17:15
  */
 public interface OpeWmsPartsStockMapper extends BaseMapper<OpeWmsPartsStock> {
     int updateBatch(List<OpeWmsPartsStock> list);
+
+    int updateBatchSelective(List<OpeWmsPartsStock> list);
 
     int batchInsert(@Param("list") List<OpeWmsPartsStock> list);
 

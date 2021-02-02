@@ -188,14 +188,14 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         // 无码产品不填写扫码数量时抛出异常
-        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
 
         Long userId = paramDTO.getUserId();
-        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+        Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
 
         // 避免重复扫码发货
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeEntrustProductSerialNum opeEntrustProductSerialNum = entrustProductSerialNumMapper.getEntrustProductSerialNumBySerialNum(paramDTO.getSerialNum());
             RpsAssert.isNotNull(opeEntrustProductSerialNum, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
@@ -273,7 +273,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         /**
          * 保存委托单产品序列号信息(有码产品时保存)
          */
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeEntrustProductSerialNum entrustProductSerialNum = new OpeEntrustProductSerialNum();
             entrustProductSerialNum.setId(idAppService.getId(SequenceName.OPE_ENTRUST_PRODUCT_SERIAL_NUM));
             entrustProductSerialNum.setRelationId(paramDTO.getProductId());

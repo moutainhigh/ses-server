@@ -197,12 +197,12 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         // 无码产品不填写扫码数量时抛出异常
-        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
 
-        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+        Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
         // 避免产品重复扫码出库
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeOutWhouseOrderSerialBind opeOutWhouseOrderSerialBind = outWhouseOrderSerialBindMapper
                     .getOutWhouseOrderSerialBindBySerialNum(paramDTO.getSerialNum());
             RpsAssert.isNotNull(opeOutWhouseOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
@@ -258,7 +258,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 break;
         }
 
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             /**
              * 修改库存产品序列号绑定信息
              */

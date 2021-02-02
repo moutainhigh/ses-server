@@ -46,4 +46,7 @@ public class SaveScanCodeResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "蓝牙mac地址(仪表部件、车辆时传递)", dataType = "String")
     private String bluetoothMacAddress;
 
+    @ApiModelProperty(value = "是否有序列号 true/false", dataType = "Boolean", required = true)
+    private Boolean idClass;
+
 }

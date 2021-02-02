@@ -2,9 +2,11 @@ package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTypeEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.NewCombinOrderStatusEnums;
@@ -12,6 +14,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.outbound.NewOutB
 import com.redescooter.ses.api.common.enums.restproductionorder.productionpurchas.NewProductionPurchasEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
+import com.redescooter.ses.api.common.enums.wms.WmsTypeEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -46,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,6 +101,8 @@ public class QcOrderServiceImpl implements QcOrderService {
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
+    @Autowired
+    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
 
 
     @Override
@@ -318,15 +324,17 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setPrintFlag(false);
 
         // 无码产品不填写质检数量时抛出异常
-        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQcQty(),
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQcQty(),
                 ExceptionCodeEnums.QC_QTY_ERROR.getCode(), ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
         /**
          * 公共参数
          */
-        Integer qcQty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQcQty();
+        Integer qcQty = paramDTO.getIdClass() ? 1 : paramDTO.getQcQty();
         Integer remainingQty = 0;
         String name = null;
         boolean qcResultFlag = true;
+        Integer stockRelationType = null;
+        Integer inWhType = null;
 
         // 质检记录集合对象
         List<OpeOrderQcTrace> opeOrderQcTraceList = new ArrayList<>();
@@ -363,7 +371,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         );
 
         // 避免重复质检
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId());
             RpsAssert.isTrue(count > 0, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
@@ -464,7 +472,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeWmsQualifiedScooterStock.setUpdatedTime(new Date());
 
                     opeWmsQualifiedScooterStockService.saveOrUpdate(opeWmsQualifiedScooterStock);
+                    // 仓库相关参数设置
                     stockId = opeWmsQualifiedScooterStock.getId();
+                    stockRelationType = WmsTypeEnum.SCOOTER_UNQUALIFIED_WAREHOUSE.getType();
+                    inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
                 }
                 // 更新车辆质检合格/不合格数量
                 opeQcScooterB.setUpdatedBy(paramDTO.getUserId());
@@ -517,7 +528,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeWmsQualifiedCombinStock.setUpdatedTime(new Date());
 
                     opeWmsQualifiedCombinStockService.saveOrUpdate(opeWmsQualifiedCombinStock);
+                    // 仓库相关参数设置
                     stockId = opeWmsQualifiedCombinStock.getId();
+                    stockRelationType = WmsTypeEnum.COMBINATION_UNQUALIFIED_WAREHOUSE.getType();
+                    inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
                 }
                 opeQcCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeQcCombinB.setUpdatedTime(new Date());
@@ -579,7 +593,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                     opeWmsQualifiedPartsStock.setUpdatedTime(new Date());
 
                     opeWmsQualifiedPartsStockService.saveOrUpdate(opeWmsQualifiedPartsStock);
+                    // 仓库相关参数设置
                     stockId = opeWmsQualifiedPartsStock.getId();
+                    stockRelationType = WmsTypeEnum.PARTS_UNQUALIFIED_WAREHOUSE.getType();
+                    inWhType = InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue();
                 }
                 opeQcPartsB.setUpdatedBy(paramDTO.getUserId());
                 opeQcPartsB.setUpdatedTime(new Date());
@@ -634,7 +651,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
             resultDTO.setPrintFlag(true);
             opeQcOrderSerialBind.setSerialNum(serialNum);
-            if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+            if (paramDTO.getIdClass()) {
                 opeQcOrderSerialBind.setDefaultSerialNum(paramDTO.getSerialNum());
                 // 部件自身序列号
                 opeWmsStockSerialNumber.setSn(paramDTO.getSerialNum());
@@ -646,8 +663,20 @@ public class QcOrderServiceImpl implements QcOrderService {
         if (!qcResultFlag) {
             wmsStockSerialNumberMapper.insertWmsStockSerialNumber(opeWmsStockSerialNumber);
             // 保存不合格品库入库记录
-            
-
+            OpeWmsStockRecord opeWmsStockRecord = new OpeWmsStockRecord();
+            opeWmsStockRecord.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+            opeWmsStockRecord.setDr(0);
+            opeWmsStockRecord.setRelationId(stockId);
+            opeWmsStockRecord.setRelationType(stockRelationType);
+            opeWmsStockRecord.setInWhType(inWhType);
+            opeWmsStockRecord.setInWhQty(qcQty);
+            opeWmsStockRecord.setRecordType(Integer.valueOf(InOutWhEnums.IN.getValue()));
+            opeWmsStockRecord.setStockType(1); // 默认中国仓库
+            opeWmsStockRecord.setCreatedBy(paramDTO.getUserId());
+            opeWmsStockRecord.setCreatedTime(new Date());
+            opeWmsStockRecord.setUpdatedBy(paramDTO.getUserId());
+            opeWmsStockRecord.setUpdatedTime(new Date());
+            opeWmsStockRecordMapper.insertOrUpdateSelective(opeWmsStockRecord);
         }
 
         /**

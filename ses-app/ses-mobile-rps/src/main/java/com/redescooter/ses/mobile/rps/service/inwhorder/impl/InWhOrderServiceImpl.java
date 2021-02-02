@@ -179,17 +179,17 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     public SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         // 无码产品不填写扫码数量时抛出异常
-        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
 
         // 公共参数
-        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
+        Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
         Integer remainingQty = 0;
         String name;
         String defaultSerialNum = null;
 
         // 避免重复扫码
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeInWhouseOrderSerialBind opeInWhouseOrderSerialBind = inWhouseOrderSerialBindMapper
                     .getInWhouseOrderSerialBindBySerialNum(paramDTO.getSerialNum());
             RpsAssert.isNotNull(opeInWhouseOrderSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),

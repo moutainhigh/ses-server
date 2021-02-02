@@ -183,11 +183,11 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
-        Integer qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? 1 : paramDTO.getQty();
-
         // 无码产品不填写扫码数量时抛出异常
-        RpsAssert.isTrue(StringUtils.isBlank(paramDTO.getSerialNum()) && null == paramDTO.getQty(),
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQty(),
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
+
+        Integer qty = paramDTO.getIdClass() ? 1 : paramDTO.getQty();
 
         OpeCombinListRelationParts opeCombinListRelationParts = combinationListRelationPartsMapper
                 .getCombinationListRelationPartsByRIdAndBId(paramDTO.getProductId(), paramDTO.getBomId());
@@ -195,7 +195,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
         // 避免重复扫码
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
                     .getCombinListPartsSerialBySerialNum(paramDTO.getSerialNum());
             RpsAssert.isNotNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
@@ -203,7 +203,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         }
 
         // 无码部件输入数量必须跟所需数量一致
-        if (StringUtils.isBlank(paramDTO.getSerialNum())) {
+        if (!paramDTO.getIdClass()) {
             RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
                     ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
             RpsAssert.isTrue(opeCombinListRelationParts.getScanCodeQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
@@ -213,7 +213,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         /**
          * 更新组装单清单关联部件扫码数量
          */
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             opeCombinListRelationParts.setScanCodeQty(opeCombinListRelationParts.getScanCodeQty() + qty);
         } else {
             opeCombinListRelationParts.setScanCodeQty(qty);
@@ -225,7 +225,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         /**
          * 保存组装单清单部件序列号信息
          */
-        if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+        if (paramDTO.getIdClass()) {
             OpeQcOrderSerialBind opeQcOrderSerialBind = qcOrderSerialBindMapper.getQcOrderSerialBindBySerialNum(paramDTO.getSerialNum());
             RpsAssert.isNull(opeQcOrderSerialBind, ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(),
                     ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
