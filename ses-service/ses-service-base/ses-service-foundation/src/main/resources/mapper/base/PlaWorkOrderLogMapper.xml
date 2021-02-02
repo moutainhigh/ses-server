@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaWorkOrderMapper">
-  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
+<mapper namespace="com.redescooter.ses.service.foundation.dao.base.PlaWorkOrderLogMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrderLog">
     <!--@mbg.generated-->
-    <!--@Table pla_work_order-->
+    <!--@Table pla_work_order_log-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
-    <result column="source" jdbcType="INTEGER" property="source" />
-    <result column="work_order_status" jdbcType="INTEGER" property="workOrderStatus" />
-    <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="contact_email" jdbcType="VARCHAR" property="contactEmail" />
+    <result column="work_order_id" jdbcType="BIGINT" property="workOrderId" />
+    <result column="message_type" jdbcType="INTEGER" property="messageType" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="annex_picture_1" jdbcType="VARCHAR" property="annexPicture1" />
-    <result column="annex_picture_2" jdbcType="VARCHAR" property="annexPicture2" />
-    <result column="annex_picture_3" jdbcType="VARCHAR" property="annexPicture3" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
@@ -27,62 +21,31 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
-    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
-    def1, def2, def3, def4, def5
+    id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
+    updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update pla_work_order
+    update pla_work_order_log
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.dr,jdbcType=INTEGER}
         </foreach>
       </trim>
-      <trim prefix="order_no = case" suffix="end,">
+      <trim prefix="work_order_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderId,jdbcType=BIGINT}
         </foreach>
       </trim>
-      <trim prefix="`source` = case" suffix="end,">
+      <trim prefix="message_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="work_order_status = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderStatus,jdbcType=INTEGER}
-        </foreach>
-      </trim>
-      <trim prefix="title = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="contact_email = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.contactEmail,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.messageType,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="remark = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture1,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture2,jdbcType=VARCHAR}
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture3,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="created_by = case" suffix="end,">
@@ -138,7 +101,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update pla_work_order
+    update pla_work_order_log
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -147,38 +110,17 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="order_no = case" suffix="end,">
+      <trim prefix="work_order_id = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.orderNo != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.orderNo,jdbcType=VARCHAR}
+          <if test="item.workOrderId != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderId,jdbcType=BIGINT}
           </if>
         </foreach>
       </trim>
-      <trim prefix="`source` = case" suffix="end,">
+      <trim prefix="message_type = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          <if test="item.source != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.source,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="work_order_status = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.workOrderStatus != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.workOrderStatus,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="title = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.title != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.title,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="contact_email = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.contactEmail != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.contactEmail,jdbcType=VARCHAR}
+          <if test="item.messageType != null">
+            when id = #{item.id,jdbcType=BIGINT} then #{item.messageType,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -186,27 +128,6 @@
         <foreach collection="list" index="index" item="item">
           <if test="item.remark != null">
             when id = #{item.id,jdbcType=BIGINT} then #{item.remark,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_1 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.annexPicture1 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture1,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_2 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.annexPicture2 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture2,jdbcType=VARCHAR}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="annex_picture_3 = case" suffix="end,">
-        <foreach collection="list" index="index" item="item">
-          <if test="item.annexPicture3 != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.annexPicture3,jdbcType=VARCHAR}
           </if>
         </foreach>
       </trim>
@@ -281,48 +202,35 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into pla_work_order
-    (id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
-    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
-    def1, def2, def3, def4, def5)
+    insert into pla_work_order_log
+    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
+    updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.orderNo,jdbcType=VARCHAR},
-      #{item.source,jdbcType=INTEGER}, #{item.workOrderStatus,jdbcType=INTEGER}, #{item.title,jdbcType=VARCHAR},
-      #{item.contactEmail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.annexPicture1,jdbcType=VARCHAR},
-      #{item.annexPicture2,jdbcType=VARCHAR}, #{item.annexPicture3,jdbcType=VARCHAR},
-      #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
-      #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
-      #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
-      )
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.workOrderId,jdbcType=BIGINT},
+      #{item.messageType,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+      #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+      #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
+  <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrderLog">
     <!--@mbg.generated-->
-    insert into pla_work_order
-    (id, dr, order_no, `source`, work_order_status, title, contact_email, remark, annex_picture_1,
-    annex_picture_2, annex_picture_3, created_by, created_time, updated_by, updated_time,
-    def1, def2, def3, def4, def5)
+    insert into pla_work_order_log
+    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
+    updated_time, def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{orderNo,jdbcType=VARCHAR}, #{source,jdbcType=INTEGER},
-    #{workOrderStatus,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR},
-    #{remark,jdbcType=VARCHAR}, #{annexPicture1,jdbcType=VARCHAR}, #{annexPicture2,jdbcType=VARCHAR},
-    #{annexPicture3,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{workOrderId,jdbcType=BIGINT}, #{messageType,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
     #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
     #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
     )
     on duplicate key update
     id = #{id,jdbcType=BIGINT},
     dr = #{dr,jdbcType=INTEGER},
-    order_no = #{orderNo,jdbcType=VARCHAR},
-    `source` = #{source,jdbcType=INTEGER},
-    work_order_status = #{workOrderStatus,jdbcType=INTEGER},
-    title = #{title,jdbcType=VARCHAR},
-    contact_email = #{contactEmail,jdbcType=VARCHAR},
+    work_order_id = #{workOrderId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=INTEGER},
     remark = #{remark,jdbcType=VARCHAR},
-    annex_picture_1 = #{annexPicture1,jdbcType=VARCHAR},
-    annex_picture_2 = #{annexPicture2,jdbcType=VARCHAR},
-    annex_picture_3 = #{annexPicture3,jdbcType=VARCHAR},
     created_by = #{createdBy,jdbcType=BIGINT},
     created_time = #{createdTime,jdbcType=TIMESTAMP},
     updated_by = #{updatedBy,jdbcType=BIGINT},
@@ -333,9 +241,9 @@
     def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
-  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrder">
+  <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrderLog">
     <!--@mbg.generated-->
-    insert into pla_work_order
+    insert into pla_work_order_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -343,32 +251,14 @@
       <if test="dr != null">
         dr,
       </if>
-      <if test="orderNo != null">
-        order_no,
+      <if test="workOrderId != null">
+        work_order_id,
       </if>
-      <if test="source != null">
-        `source`,
-      </if>
-      <if test="workOrderStatus != null">
-        work_order_status,
-      </if>
-      <if test="title != null">
-        title,
-      </if>
-      <if test="contactEmail != null">
-        contact_email,
+      <if test="messageType != null">
+        message_type,
       </if>
       <if test="remark != null">
         remark,
-      </if>
-      <if test="annexPicture1 != null">
-        annex_picture_1,
-      </if>
-      <if test="annexPicture2 != null">
-        annex_picture_2,
-      </if>
-      <if test="annexPicture3 != null">
-        annex_picture_3,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -406,32 +296,14 @@
       <if test="dr != null">
         #{dr,jdbcType=INTEGER},
       </if>
-      <if test="orderNo != null">
-        #{orderNo,jdbcType=VARCHAR},
+      <if test="workOrderId != null">
+        #{workOrderId,jdbcType=BIGINT},
       </if>
-      <if test="source != null">
-        #{source,jdbcType=INTEGER},
-      </if>
-      <if test="workOrderStatus != null">
-        #{workOrderStatus,jdbcType=INTEGER},
-      </if>
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="contactEmail != null">
-        #{contactEmail,jdbcType=VARCHAR},
+      <if test="messageType != null">
+        #{messageType,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture1 != null">
-        #{annexPicture1,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture2 != null">
-        #{annexPicture2,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture3 != null">
-        #{annexPicture3,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -469,32 +341,14 @@
       <if test="dr != null">
         dr = #{dr,jdbcType=INTEGER},
       </if>
-      <if test="orderNo != null">
-        order_no = #{orderNo,jdbcType=VARCHAR},
+      <if test="workOrderId != null">
+        work_order_id = #{workOrderId,jdbcType=BIGINT},
       </if>
-      <if test="source != null">
-        `source` = #{source,jdbcType=INTEGER},
-      </if>
-      <if test="workOrderStatus != null">
-        work_order_status = #{workOrderStatus,jdbcType=INTEGER},
-      </if>
-      <if test="title != null">
-        title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="contactEmail != null">
-        contact_email = #{contactEmail,jdbcType=VARCHAR},
+      <if test="messageType != null">
+        message_type = #{messageType,jdbcType=INTEGER},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture1 != null">
-        annex_picture_1 = #{annexPicture1,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture2 != null">
-        annex_picture_2 = #{annexPicture2,jdbcType=VARCHAR},
-      </if>
-      <if test="annexPicture3 != null">
-        annex_picture_3 = #{annexPicture3,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
