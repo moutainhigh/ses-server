@@ -19,6 +19,7 @@
     <result column="out_type" jdbcType="INTEGER" property="outType" />
     <result column="out_wh_qty" jdbcType="INTEGER" property="outWhQty" />
     <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+    <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime" />
     <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
     <result column="telephone" jdbcType="VARCHAR" property="telephone" />
     <result column="mail" jdbcType="VARCHAR" property="mail" />
@@ -37,8 +38,8 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, tenant_id, dept_id, country_type, relation_id, relation_no, relation_type, 
-    wh_type, out_wh_no, out_wh_status, out_wh_type, out_type, out_wh_qty, already_out_wh_qty, 
-    country_code, telephone, mail, `source`, remark, created_by, created_time, updated_by, 
+    wh_type, out_wh_no, out_wh_status, out_wh_type, out_type, out_wh_qty, already_out_wh_qty,
+    out_stock_time,country_code, telephone, mail, `source`, remark, created_by, created_time, updated_by,
     updated_time, def1, def2, def3, def4, def5
   </sql>
 </mapper>

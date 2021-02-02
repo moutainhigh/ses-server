@@ -1291,6 +1291,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
+        opeOutWhouseOrder.setOutStockTime(new Date());
         opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(opeOutWhouseOrder);
         // 出库单出库  处理字表的数据
