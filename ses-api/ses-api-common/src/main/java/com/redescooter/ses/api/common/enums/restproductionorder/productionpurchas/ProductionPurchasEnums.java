@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:ProductionPurchasEnums
- * @description: ProductionPurchasEnums
+ * @description: ProductionPurchasEnums 生产采购单状态
  * @author: Alex
  * @Version：1.3
  * @create: 2020/11/11 11:46 

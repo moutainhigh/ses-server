@@ -48,6 +48,13 @@ public class OpeInWhouseOrder {
     private Long deptId;
 
     /**
+     * 国家类型，1:中国，2:法国
+     */
+    @TableField(value = "country_type")
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
+
+    /**
      * 入库单号
      */
     @TableField(value = "in_wh_no")
@@ -55,11 +62,18 @@ public class OpeInWhouseOrder {
     private String inWhNo;
 
     /**
-     * 入库单状态， 1： 草稿，:10：待质检，20：质检中，30：已入库
+     * 入库单状态 1草稿 10已入库
      */
     @TableField(value = "in_wh_status")
-    @ApiModelProperty(value = "入库单状态， 1： 草稿，:10：待质检，20：质检中，25：待入库，30：已入库")
+    @ApiModelProperty(value = "入库单状态 1草稿 10已入库")
     private Integer inWhStatus;
+
+    /**
+     * 入库仓库。1:成品库，2:原料库，3:不合格品库
+     */
+    @TableField(value = "wh_type")
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     /**
      * 入库单据类型,1:车辆，2:组装件，3:部件
@@ -83,17 +97,17 @@ public class OpeInWhouseOrder {
     private String relationOrderNo;
 
     /**
-     * 关联的单据类型，1：生产采购单，2：组装单
+     * 关联的单据类型，7：生产采购单，9：组装单
      */
     @TableField(value = "relation_order_type")
-    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单``")
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单")
     private Integer relationOrderType;
 
     /**
-     * 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * 入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库
      */
     @TableField(value = "in_wh_type")
-    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
+    @ApiModelProperty(value = "入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他，6:报废入库，7:调拨入库")
     private Integer inWhType;
 
     /**
@@ -102,6 +116,20 @@ public class OpeInWhouseOrder {
     @TableField(value = "in_wh_qty")
     @ApiModelProperty(value = "入库数量")
     private Integer inWhQty;
+
+    /**
+     * 是否是不合格品库产生，0:否，1:是
+     */
+    @TableField(value = "`source`")
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
+
+    /**
+     * 是否是仓库新增 0否 1是
+     */
+    @TableField(value = "if_wh")
+    @ApiModelProperty(value = "是否是仓库新增 0否 1是")
+    private Integer ifWh = 0;
 
     /**
      * 备注
@@ -181,9 +209,13 @@ public class OpeInWhouseOrder {
 
     public static final String COL_DEPT_ID = "dept_id";
 
+    public static final String COL_COUNTRY_TYPE = "country_type";
+
     public static final String COL_IN_WH_NO = "in_wh_no";
 
     public static final String COL_IN_WH_STATUS = "in_wh_status";
+
+    public static final String COL_WH_TYPE = "wh_type";
 
     public static final String COL_ORDER_TYPE = "order_type";
 
@@ -196,6 +228,10 @@ public class OpeInWhouseOrder {
     public static final String COL_IN_WH_TYPE = "in_wh_type";
 
     public static final String COL_IN_WH_QTY = "in_wh_qty";
+
+    public static final String COL_SOURCE = "source";
+
+    public static final String COL_IF_WH = "if_wh";
 
     public static final String COL_REMARK = "remark";
 

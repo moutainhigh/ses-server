@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="stock_type" jdbcType="INTEGER" property="stockType" />
+        <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+        <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="able_stock_qty" jdbcType="INTEGER" property="ableStockQty" />
+        <result column="used_stock_qty" jdbcType="INTEGER" property="usedStockQty" />
+        <result column="wait_in_stock_qty" jdbcType="INTEGER" property="waitInStockQty" />
+        <result column="wait_out_stock_qty" jdbcType="INTEGER" property="waitOutStockQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--修改成品库组装件库存信息-->
+    <update id="updateWmsCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        update ope_wms_combin_stock
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="stockType != null">
+                stock_type = #{stockType,jdbcType=INTEGER},
+            </if>
+            <if test="productionCombinBomId != null">
+                production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinNo != null">
+                combin_no = #{combinNo,jdbcType=VARCHAR},
+            </if>
+            <if test="cnName != null">
+                cn_name = #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="frName != null">
+                fr_name = #{frName,jdbcType=VARCHAR},
+            </if>
+            <if test="ableStockQty != null">
+                able_stock_qty = #{ableStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="usedStockQty != null">
+                used_stock_qty = #{usedStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitInStockQty != null">
+                wait_in_stock_qty = #{waitInStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitOutStockQty != null">
+                wait_out_stock_qty = #{waitOutStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据bomId查询成品库组装件库存信息-->
+    <select id="getWmsCombinStockByBomId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_wms_combin_stock
+	    where dr = 0 and stock_type = 1 and production_combin_bom_id = #{bomId}
+    </select>
+
+    <!--批量修改成品库组装件库存信息-->
+    <update id="batchUpdateWmsCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        <foreach collection="opeWmsCombinStockList" item="item" separator=";">
+            update ope_wms_combin_stock
+            <set>
+                <if test="item.ableStockQty != null">
+                    able_stock_qty = #{item.ableStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.usedStockQty != null">
+                    used_stock_qty = #{item.usedStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitInStockQty != null">
+                    wait_in_stock_qty = #{item.waitInStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitOutStockQty != null">
+                    wait_out_stock_qty = #{item.waitOutStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.updatedBy != null">
+                    updated_by = #{item.updatedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.updatedTime != null">
+                    updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <!--批量新增成品库组装件库存信息-->
+    <insert id="batchInsertWmsCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock">
+        insert ope_wms_combin_stock(id, dr, stock_type, production_combin_bom_id, combin_no, cn_name, en_name, fr_name,
+        able_stock_qty, used_stock_qty, wait_in_stock_qty, wait_out_stock_qty, created_by,
+        created_time, updated_by, updated_time)
+        <foreach collection="opeWmsCombinStockList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.stockType}, #{item.productionCombinBomId}, #{item.combinNo}, #{item.cnName},
+            #{item.enName}, #{item.frName}, #{item.ableStockQty}, #{item.usedStockQty}, #{item.waitInStockQty}, #{item.waitOutStockQty},
+            #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--根据bomId查询成品库组装件库存id-->
+    <select id="getWmsCombinStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select id from ope_wms_combin_stock
+        where dr = 0 and stock_type = 1 and production_combin_bom_id = #{bomId}
+    </select>
+
+</mapper>

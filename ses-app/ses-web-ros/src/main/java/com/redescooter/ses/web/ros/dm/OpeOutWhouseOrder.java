@@ -49,6 +49,13 @@ public class OpeOutWhouseOrder {
     private Long deptId;
 
     /**
+     * 国家类型，1:中国，2:法国
+     */
+    @TableField(value = "country_type")
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType;
+
+    /**
      * 关联的单据id
      */
     @TableField(value = "relation_id")
@@ -63,11 +70,18 @@ public class OpeOutWhouseOrder {
     private String relationNo;
 
     /**
-     * 关联的单据类型，3：发货单，9：组装单
+     * 关联的单据类型，3：发货单，9：组装单，10:退换单
      */
     @TableField(value = "relation_type")
-    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单")
+    @ApiModelProperty(value = "关联的单据类型，3：发货单，9：组装单，10:退换单")
     private Integer relationType;
+
+    /**
+     * 出库仓库。1:成品库，2:原料库，3:不合格品库
+     */
+    @TableField(value = "wh_type")
+    @ApiModelProperty(value = "出库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     /**
      * 出库单号
@@ -77,10 +91,10 @@ public class OpeOutWhouseOrder {
     private String outWhNo;
 
     /**
-     * 出库单状态，0：待出库，10：质检中，20：已出库，30：已取消
+     * 出库单状态 -1新建 10待出库 20已出库 30已取消
      */
     @TableField(value = "out_wh_status")
-    @ApiModelProperty(value = "出库单状态，0：待出库，10：质检中，20：已出库，30：已取消")
+    @ApiModelProperty(value = "出库单状态 -1新建 10待出库 20已出库 30已取消")
     private Integer outWhStatus;
 
     /**
@@ -91,10 +105,10 @@ public class OpeOutWhouseOrder {
     private Integer outWhType;
 
     /**
-     * 出库类型，1：销售调拨,2：生产组装
+     * 出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库
      */
     @TableField(value = "out_type")
-    @ApiModelProperty(value = "出库类型，1：销售调拨,2：生产组装")
+    @ApiModelProperty(value = "出库类型，1：调拨出库，2：组装备料出库，3：退换出库，4：其它，5:返修出库，6:退货出库，7:销售出库")
     private Integer outType;
 
     /**
@@ -110,6 +124,13 @@ public class OpeOutWhouseOrder {
     @TableField(value = "already_out_wh_qty")
     @ApiModelProperty(value = "已出库数量")
     private Integer alreadyOutWhQty;
+
+    /**
+     * 出库时间
+     */
+    @TableField(value = "out_stock_time")
+    @ApiModelProperty(value = "出库时间")
+    private Date outStockTime;
 
     /**
      * 国家编码如+86
@@ -131,6 +152,20 @@ public class OpeOutWhouseOrder {
     @TableField(value = "mail")
     @ApiModelProperty(value = "邮箱")
     private String mail;
+
+    /**
+     * 是否是不合格品库产生，0:否，1:是
+     */
+    @TableField(value = "`source`")
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
+
+    /**
+     * 是否是仓库新增 0否 1是
+     */
+    @TableField(value = "if_wh")
+    @ApiModelProperty(value = "是否是仓库新增 0否 1是")
+    private Integer ifWh = 0;
 
     /**
      * 备注
@@ -210,11 +245,15 @@ public class OpeOutWhouseOrder {
 
     public static final String COL_DEPT_ID = "dept_id";
 
+    public static final String COL_COUNTRY_TYPE = "country_type";
+
     public static final String COL_RELATION_ID = "relation_id";
 
     public static final String COL_RELATION_NO = "relation_no";
 
     public static final String COL_RELATION_TYPE = "relation_type";
+
+    public static final String COL_WH_TYPE = "wh_type";
 
     public static final String COL_OUT_WH_NO = "out_wh_no";
 
@@ -228,11 +267,17 @@ public class OpeOutWhouseOrder {
 
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
 
+    public static final String COL_OUT_STOCK_TIME = "out_stock_time";
+
     public static final String COL_COUNTRY_CODE = "country_code";
 
     public static final String COL_TELEPHONE = "telephone";
 
     public static final String COL_MAIL = "mail";
+
+    public static final String COL_SOURCE = "source";
+
+    public static final String COL_IF_WH = "if_wh";
 
     public static final String COL_REMARK = "remark";
 

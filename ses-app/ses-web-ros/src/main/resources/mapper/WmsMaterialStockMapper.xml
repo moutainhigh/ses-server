@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper">
+
+    <select id="partsCotalRows" resultType="int">
+        select count(*)
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="listCondition"/>
+    </select>
+
+    <select id="materialPartsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult">
+       select
+         id,
+         parts_no,
+         parts_id,
+         parts_type,
+         cn_name,
+         en_name,
+         fr_name,
+         able_stock_qty,
+         used_stock_qty,
+         wait_in_stock_qty,
+         wait_out_stock_qty
+       from ope_wms_parts_stock
+       where dr = 0
+        <include refid="listCondition"/>
+        order by able_stock_qty,created_time desc
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="listCondition">
+        and stock_type = 1
+        <if test="enter.partsType != null">
+            and parts_type = #{enter.partsType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="materialStockPartsDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult">
+        select
+          id,
+          parts_no,
+          parts_type,
+          en_name,
+          cn_name
+        from ope_wms_parts_stock
+        where dr = 0 and id = #{id}
+    </select>
+
+    <select id="materialTodayStockCount" resultType="java.lang.Integer">
+        select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
+        where dr = 0 and record_type = #{recordType} and relation_type in (3)
+            and created_time like concat('%',#{date},'%') and stock_type = 1
+    </select>
+
+    <select id="frTodayPartsInOrOutStockCount" resultType="java.lang.Integer">
+        select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
+        where dr = 0 and record_type = #{recordType} and relation_type in (9)
+        and created_time like concat('%',#{date},'%') and stock_type = 2
+    </select>
+
+
+    <select id="frPartsCotalRows" resultType="int">
+        select count(*)
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="frListCondition"/>
+    </select>
+
+    <select id="frPartsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult">
+        select
+        id,
+        parts_no,
+        parts_id,
+        cn_name,
+        en_name,
+        fr_name,
+        able_stock_qty,
+        used_stock_qty,
+        wait_in_stock_qty,
+        wait_out_stock_qty,
+        parts_type
+        from ope_wms_parts_stock
+        where dr = 0
+        <include refid="frListCondition"/>
+        order by able_stock_qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="frListCondition">
+        and stock_type = 2
+        <if test="enter.partsType != null">
+            and parts_type = #{enter.partsType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
+</mapper>

@@ -144,7 +144,7 @@
         id as relationOrderId,
         combin_no as relationOrderNo
         from ope_combin_order
-        where dr = 0 and combin_status in (70,80)
+        where dr = 0 and combin_status in (50)
         and combin_type = #{enter.classType}
         <if test="enter.keyword != null and enter.keyword != ''">
             and combin_no like concat('%', #{enter.keyword}, '%')
@@ -156,8 +156,7 @@
            combin_name,
            combin_no,
            production_combin_bom_id,
-           qty as combinQty,
-           qty as ableInWhQty
+           qty as combinQty
         from ope_combin_order_combin_b
         where dr = 0 and combin_id = #{enter.id}
     </select>
@@ -233,5 +232,16 @@
           combin.qty
        from ope_combin_order_combin_b combin
        where combin.dr = 0 and combin.combin_id = #{combinId}
+    </select>
+
+    <select id="relationCombineOrderData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+        id as relationOrderId,
+        combin_no as relationOrderNo
+        from ope_combin_order
+        where dr = 0 and combin_status in (1)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and combin_no like concat('%', #{enter.keyword}, '%')
+        </if>
     </select>
 </mapper>

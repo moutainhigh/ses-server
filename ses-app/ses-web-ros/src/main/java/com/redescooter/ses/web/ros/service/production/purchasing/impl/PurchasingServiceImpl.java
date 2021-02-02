@@ -82,61 +82,69 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class PurchasingServiceImpl implements PurchasingService {
-    
+
     @Autowired
     private PurchasingServiceMapper purchasingServiceMapper;
-    
+
     @Autowired
     private OpeSysUserProfileService opeSysUserProfileService;
-    
+
     @Autowired
     private OpeFactoryService opeFactoryService;
-    
+
     @Autowired
     private OpeSupplierService opeSupplierService;
-    
+
     @Autowired
     private OpePartsService opePartsService;
-    
+
     @Autowired
     private OpePurchasService opePurchasService;
-    
+
     @Autowired
     private OpePurchasBService opePurchasBService;
-    
+
     @Autowired
     private OpePurchasTraceService opePurchasTraceService;
-    
+
     @Autowired
     private OpePurchasPaymentService opePurchasPaymentService;
-    
+
     @Autowired
     private OpePurchasProductService opePurchasProductService;
-    
+
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
-    
+
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
-    
+
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
-    
+
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
-    
+
     @Reference
     private IdAppService idAppService;
-    
+
     @Autowired
     private OpeWhseService opeWhseService;
-    
+
     @Autowired
     private OpeStockService opeStockService;
-    
+
     @Autowired
     private OpeStockBillService opeStockBillService;
-    
+
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
+
+    @Autowired
+    private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
+
+
+
     /**
      * 采购单状态统计
      *
@@ -146,7 +154,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
         Map<String, Integer> map = new HashMap<>();
-        
+
         List<CountByStatusResult> typeResultList = purchasingServiceMapper.countByType(enter);
         if (CollectionUtils.isNotEmpty(typeResultList)) {
             typeResultList.forEach(item -> {
@@ -160,7 +168,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return map;
     }
-    
+
     /**
      * 状态集合
      *
@@ -175,7 +183,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return map;
     }
-    
+
     /**
      * 采购单列表
      *
@@ -199,13 +207,13 @@ public class PurchasingServiceImpl implements PurchasingService {
             statusList.add(PurchasingStatusEnums.IN_PURCHASING_WH.getValue());
             statusList.add(PurchasingStatusEnums.CANCELLED.getValue());
         }
-        
+
         int count = purchasingServiceMapper.purchasingListCount(enter, statusList);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         List<PurchasingResult> purchasingResultList = purchasingServiceMapper.purchasingList(enter, statusList);
-        
+
         List<Long> ids = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(purchasingResultList)) {
             purchasingResultList.forEach(item -> {
@@ -221,7 +229,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return PageResult.create(enter, count, purchasingResultList);
     }
-    
+
     /**
      * 付款方式
      *
@@ -236,7 +244,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return map;
     }
-    
+
     /**
      * 保存采购单 1 收货人过滤 2、代工程过滤 3、配件过滤 4、支付信息过滤
      *
@@ -264,7 +272,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        
+
         Long purchasId = idAppService.getId(SequenceName.OPE_PURCHAS);
         // 子表保存集合
         List<OpePurchasB> opePurchasBList = Lists.newArrayList();
@@ -274,7 +282,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         OpePurchas opePurchas = null;
         // 支付信息保存结合
         List<OpePurchasPayment> opePurchasPaymentList = Lists.newArrayList();
-        
+
         // 收货人过滤
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
@@ -299,7 +307,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchas = buildPurchas(enter, productsList, purchasId, opePurchasBList, opePurchasProductList);
         // 采购单 付款信息 数据封装
         buildSavePurchasPaymentInfo(enter, paymentList, purchasId, opePurchasPaymentList);
-        
+
         // 订单节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -308,7 +316,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         saveNodeEnter.setEvent(PurchasingEventEnums.PENDING.getValue());
         saveNodeEnter.setMemo(null);
         this.savePurchasingNode(saveNodeEnter);
-        
+
         // 数据保存
         if (CollectionUtils.isNotEmpty(opePurchasBList)) {
             opePurchasBService.batchInsert(opePurchasBList);
@@ -324,7 +332,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 收件人列表
      *
@@ -345,7 +353,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         });
         return consigneeResultlist;
     }
-    
+
     /**
      * 工厂列表
      *
@@ -365,7 +373,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         });
         return result;
     }
-    
+
     /**
      * 采购单详情
      *
@@ -381,7 +389,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return result;
     }
-    
+
     /**
      * 采购单节点
      *
@@ -401,7 +409,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return resultList;
     }
-    
+
     @Override
     public GeneralResult purchasingExport(Long id, HttpServletResponse response) {
         IdEnter enter = new IdEnter();
@@ -426,7 +434,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return new GeneralResult();
     }
-    
+
     /**
      * @param enter
      * @return
@@ -469,7 +477,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     //
     // return new GeneralResult();
     // }
-    
+
     /**
      * 付款详情
      *
@@ -491,7 +499,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         resullt.setPaymentItemList(paymentItemList);
         return resullt;
     }
-    
+
     /**
      * 支付入参
      *
@@ -526,7 +534,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(),
                     (ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage()));
         }
-        
+
         opePurchasPayment.setPaymentStatus(PayStatusEnums.PAID.getValue());
         opePurchasPayment.setInvoiceNum(enter.getInvoiceNum());
         opePurchasPayment.setInvoicePicture(enter.getInvoicePicture());
@@ -536,7 +544,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchasPaymentService.updateById(opePurchasPayment);
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 供应商列表
      *
@@ -546,7 +554,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<FactoryCommonResult> supplierList(GeneralEnter enter) {
         List<FactoryCommonResult> list = new ArrayList<>();
-        
+
         QueryWrapper<OpeSupplier> opeSupplierQueryWrapper = new QueryWrapper<>();
         opeSupplierQueryWrapper.eq(OpeSupplier.COL_DR, 0);
         List<OpeSupplier> opeSupplierList = opeSupplierService.list(opeSupplierQueryWrapper);
@@ -560,7 +568,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         });
         return list;
     }
-    
+
     /**
      * 产品类型
      *
@@ -576,7 +584,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
-    
+
     /**
      * 查询可采购的商品列表
      *
@@ -585,26 +593,25 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
-        
         List<PruchasingItemResult> resultList = new ArrayList<>();
-        
-        List<String> productTypeList = new ArrayList<String>();
-        if (StringUtils.isNotBlank(enter.getProductType())){
-            productTypeList = Arrays.asList(enter.getProductType().split(","));
-        }else {
+
+        List<String> productTypeList = new ArrayList<>();
+        if (StringUtils.isNotBlank(enter.getProductType())) {
+            String[] split = enter.getProductType().split(",");
+            for (String productType : split) {
+                productTypeList.add(productType);
+            }
+        } else {
             for (BomCommonTypeEnums item : BomCommonTypeEnums.values()) {
-                if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue())
-                        && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
+                if (!item.getValue().equals(BomCommonTypeEnums.COMBINATION.getValue()) && !item.getValue().equals(BomCommonTypeEnums.SCOOTER.getValue())) {
                     productTypeList.add(item.getValue());
                 }
             }
         }
-        
-        if (StringUtils.isEmpty(enter.getProductType())
-                || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
+
+        if (StringUtils.isEmpty(enter.getProductType()) || StringUtils.equals(enter.getProductType(), BomCommonTypeEnums.SCOOTER.getValue())) {
             // 整车产品查询列表
-            List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter,
-                    Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
+            List<PruchasingItemResult> scooterProductList = purchasingServiceMapper.queryPurchasScooter(enter, Lists.newArrayList(BomCommonTypeEnums.SCOOTER.getValue()));
             // 查询产品中包含的所有的部件
             if (CollectionUtils.isNotEmpty(scooterProductList)) {
                 List<Long> productIds = scooterProductList.stream()
@@ -612,13 +619,12 @@ public class PurchasingServiceImpl implements PurchasingService {
                         .map(PruchasingItemResult::getId).collect(Collectors.toList());
                 if (CollectionUtils.isNotEmpty(productIds)) {
                     // 查询产品所有部件
-                    List<PruchasingItemResult> partList =
-                            purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
+                    List<PruchasingItemResult> partList = purchasingServiceMapper.queryProductPartItemByProductIds(productIds);
                     if (CollectionUtils.isNotEmpty(partList)) {
                         for (PruchasingItemResult scooter : scooterProductList) {
                             BigDecimal totalPrice = BigDecimal.ZERO;
                             List<PruchasingItemResult> scooterPartList = Lists.newArrayList();
-                            
+
                             for (PruchasingItemResult item : partList) {
                                 if (item.getId().equals(scooter.getId())) {
                                     item.setProductType(Objects.requireNonNull(BomCommonTypeEnums.getEnumsByValue(item.getProductType())).getCode());
@@ -643,7 +649,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID,
                         scooterProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
                 List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-                
+
                 if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)) {
                     scooterProductList.removeIf(item -> {
                         for (OpeProductionQualityTempate tempate : opeProductionQualityTempateList) {
@@ -658,27 +664,84 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-        
-        List<PruchasingItemResult> partProductList =
-                purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
-        if (CollectionUtils.isNotEmpty(partProductList)){
+
+        // 入参的productType不为空
+        /*if (CollectionUtils.isNotEmpty(productTypeList)) {
+            if (productTypeList.contains("6")) {
+                productTypeList.add("1");
+            }
+        }*/
+        List<PruchasingItemResult> partProductList = purchasingServiceMapper.queryPurchasProductList(enter, productTypeList);
+        if (CollectionUtils.isNotEmpty(partProductList)) {
             //查询质检模板
-            QueryWrapper<OpeProductionQualityTempate> opeProductionQualityTempateQueryWrapper = new QueryWrapper<>();
-            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
-            opeProductionQualityTempateQueryWrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
-            List<OpeProductionQualityTempate> opeProductionQualityTempateList = opeProductionQualityTempateService.list(opeProductionQualityTempateQueryWrapper);
-            if (CollectionUtils.isNotEmpty(opeProductionQualityTempateList)) {
+            QueryWrapper<OpeProductionQualityTempate> wrapper = new QueryWrapper<>();
+            wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_ID, partProductList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList()));
+            //wrapper.in(OpeProductionQualityTempate.COL_PRODUCTION_TYPE, productTypeList);
+            List<OpeProductionQualityTempate> list = opeProductionQualityTempateService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(list)) {
                 partProductList.removeIf(item -> {
-                    return opeProductionQualityTempateList.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
+                    return list.stream().noneMatch(templete -> item.getId().equals(templete.getProductionId()));
                 });
-            }else {
+            } else {
                 return resultList;
             }
             resultList.addAll(partProductList);
         }
-        return resultList;
+        // 加上库存的数量
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            List<Long> partsIds = resultList.stream().map(PruchasingItemResult::getId).collect(Collectors.toList());
+            switch (enter.getSource()) {
+                case 0:
+                    if (CollectionUtils.isNotEmpty(partsIds)) {
+                        QueryWrapper<OpeWmsPartsStock> qw = new QueryWrapper<>();
+                        qw.in(OpeWmsPartsStock.COL_PARTS_ID, partsIds);
+                        qw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
+                        List<OpeWmsPartsStock> partsList = opeWmsPartsStockService.list(qw);
+                        if (CollectionUtils.isNotEmpty(partsList)) {
+                            for (PruchasingItemResult result : resultList) {
+                                for (OpeWmsPartsStock stock : partsList) {
+                                    if (result.getId().equals(stock.getPartsId())) {
+                                        result.setAbleQty(stock.getAbleStockQty());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                default:
+                    break;
+                case 1:
+                    // 这里表示从不合格品库创建出库 可出库的数量 需要从中国仓库不合格品库部件找数据
+                    if (CollectionUtils.isNotEmpty(partsIds)) {
+                        QueryWrapper<OpeWmsQualifiedPartsStock> qw = new QueryWrapper<>();
+                        qw.in(OpeWmsQualifiedPartsStock.COL_PARTS_ID, partsIds);
+                        List<OpeWmsQualifiedPartsStock> qualifiedPartsStocks = opeWmsQualifiedPartsStockService.list(qw);
+                        if (CollectionUtils.isNotEmpty(qualifiedPartsStocks)) {
+                            for (PruchasingItemResult result : resultList) {
+                                for (OpeWmsQualifiedPartsStock qualifiedPartsStock : qualifiedPartsStocks) {
+                                    if (result.getId().equals(qualifiedPartsStock.getPartsId())) {
+                                        result.setAbleQty(qualifiedPartsStock.getQty());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+        }
+        List<PruchasingItemResult> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource() && (enter.getSource() == 0 || enter.getSource() == 1)) {
+            for (PruchasingItemResult itemResult : resultList) {
+                if (itemResult.getAbleQty() > 0) {
+                    result.add(itemResult);
+                }
+            }
+            return result;
+        } else {
+            return resultList;
+        }
     }
-    
+
     /**
      * 采购单详情商品列表
      *
@@ -697,7 +760,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         // 采购单商品列表
         List<PruchasingItemResult> result = purchasingServiceMapper.pruchasingDetailProductList(enter);
-        
+
         // 查询来料质检节点 计算应交货时间
         QueryWrapper<OpePurchasTrace> opePurchasTraceQueryWrapper = new QueryWrapper<>();
         opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_DR, 0);
@@ -714,7 +777,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         });
         return result;
     }
-    
+
     /**
      * 查询采购单代工厂供应商
      *
@@ -727,13 +790,13 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (result == null) {
             return new QueryFactorySupplierResult();
         }
-        
+
         List<PurchasSupplierResult> purchasSupplierResultList =
                 purchasingServiceMapper.purchasSupplierListByPurchasId(enter);
         result.setPurchasSupplierResultList(purchasSupplierResultList);
         return result;
     }
-    
+
     /**
      * 保存 工厂附件
      *
@@ -765,15 +828,15 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
         opePurchasService.updateById(opePurchas);
-        
+
         // 供应商 附件上传
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
-        
+
         if (CollectionUtils.isNotEmpty(purchasBList)) {
-            
+
             List<Long> supplierIds = Lists.newArrayList();
             purchasBList.forEach(item -> {
                 supplierIds.add(item.getSupplierId());
@@ -785,7 +848,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                             ExceptionCodeEnums.SUPPLIER_IS_NOT_PART_OF_THE_CURRENT_DOCUMENT.getMessage());
                 }
             });
-            
+
             for (OpePurchasB item : purchasBList) {
                 for (SaveSupplierAnnexEnter supplier : saveSupplierAnnexList) {
                     if (item.getPartId().equals(supplier.getPartsId())
@@ -798,7 +861,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             }
         }
         opePurchasBService.updateBatchById(purchasBList);
-        
+
         // 开始qc质检
         IdEnter idEnter = new IdEnter();
         BeanUtils.copyProperties(enter, idEnter);
@@ -806,7 +869,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         this.startQc(idEnter);
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 开始qc 质检
      *
@@ -838,7 +901,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         opePurchas.setUpdatedTime(new Date());
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchasService.updateById(opePurchas);
-        
+
         // 节点保存
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -847,7 +910,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         saveNodeEnter.setEvent(PurchasingEventEnums.MATERIALS_QC.getValue());
         saveNodeEnter.setMemo(null);
         this.savePurchasingNode(saveNodeEnter);
-        
+
         // 采购条目qc 状态修改
         purchasBList.forEach(item -> {
             item.setQcStatus(QcStatusEnums.QUALITY_INSPECTION.getValue());
@@ -855,12 +918,12 @@ public class PurchasingServiceImpl implements PurchasingService {
             item.setUpdatedTime(new Date());
         });
         opePurchasBService.updateBatchById(purchasBList);
-        
+
         // 待生产 库存埋点
         stockToBeProduced(purchasBList);
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * qc 状态
      *
@@ -885,7 +948,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             map.put(QcStatusEnums.PASS.getValue(), passTotal);
             map.put(QcStatusEnums.FAIL.getValue(), failTotal);
         }
-        
+
         for (QcStatusEnums item : QcStatusEnums.values()) {
             if (!map.containsKey(item.getValue())) {
                 map.put(item.getValue(), 0);
@@ -894,7 +957,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         map.remove(QcStatusEnums.QUALITY_INSPECTION.getValue());
         return map;
     }
-    
+
     /**
      * QC 条目list
      *
@@ -905,11 +968,11 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<QcInfoResult> qcList(QcItemListEnter enter) {
         checkPurchasRepeatedly(enter.getId(), null);
         List<QcInfoResult> qcPartList = purchasingServiceMapper.qcPartListByPurchasId(enter);
-        
+
         if (CollectionUtils.isEmpty(qcPartList)) {
             return null;
         }
-        
+
         List<Long> purshasBIds = Lists.newArrayList();
         qcPartList.forEach(item -> {
             purshasBIds.add(item.getId());
@@ -919,13 +982,13 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (CollectionUtils.isEmpty(qcItemList)) {
             return null;
         }
-        
+
         for (QcInfoResult item : qcPartList) {
-            
+
             List<QcItemDetailResult> qcItemResultList = Lists.newArrayList();
-            
+
             for (QcItemDetailResult qc : qcItemList) {
-                
+
                 if (item.getId().equals(qc.getPruchasBId())) {
                     if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() != 0) {
                         qcItemResultList.add(qc);
@@ -939,10 +1002,10 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         // todo 需修改
         qcPartList.removeIf(item -> CollectionUtils.isEmpty(item.getQcItemDetailResultList()));
-        
+
         return qcPartList;
     }
-    
+
     /**
      * QC 未通过数据导出
      *
@@ -953,7 +1016,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public GeneralResult qcFailExport(IdEnter enter) {
         return null;
     }
-    
+
     /**
      * 保存采购单节点
      *
@@ -970,7 +1033,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .createTime(new Date()).updateBy(enter.getUserId()).updateTime(new Date()).build());
         return new GeneralResult(enter.getRequestId());
     }
-    
+
     /**
      * 取消 采购单
      *
@@ -981,12 +1044,12 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.PENDING);
-        
+
         opePurchas.setStatus(PurchasingStatusEnums.CANCELLED.getValue());
         opePurchas.setUpdatedBy(enter.getUserId());
         opePurchas.setUpdatedTime(new Date());
         opePurchasService.updateById(opePurchas);
-        
+
         // 节点
         SaveNodeEnter saveNodeEnter = new SaveNodeEnter();
         BeanUtils.copyProperties(enter, saveNodeEnter);
@@ -997,7 +1060,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         this.savePurchasingNode(saveNodeEnter);
         return null;
     }
-    
+
     /**
      * //采购单 付款信息 数据封装
      *
@@ -1036,7 +1099,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                     throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(),
                             ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
                 }
-                
+
                 opePurchasPaymentList.add(OpePurchasPayment.builder()
                         .id(idAppService.getId(SequenceName.OPE_PURCHAS_PAYMENT)).dr(0).tenantId(0L)
                         .userId(enter.getUserId()).purchasId(purchasId).paymentType(enter.getPaymentType())
@@ -1058,7 +1121,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                     ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
         }
     }
-    
+
     /**
      * 采购单 过滤 数据封装
      *
@@ -1070,12 +1133,12 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     private OpePurchas buildPurchas(SavePurchasingEnter enter, List<ProductionPartsEnter> productsList, Long purchasId,
                                     List<OpePurchasB> opePurchasBList, List<OpePurchasProduct> opePurchasProductList) {
-        
+
         Map<Long, String> productMap = null;
-        
+
         // 整车集合
         List<OpeProductionScooterBom> opeProductionScooterBomList = null;
-        
+
         // 部件集合
         List<OpeProductionParts> partsProductList = null;
         // 部件校验
@@ -1084,7 +1147,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .filter(item -> !StringUtils.equalsAny(item.getProductionProductType(),
                         BomCommonTypeEnums.COMBINATION.getValue(), BomCommonTypeEnums.SCOOTER.getValue()))
                 .map(ProductionPartsEnter::getId).collect(Collectors.toSet());
-        
+
         Set<Long> scooterIdList = productsList.stream()
                 .filter(
                         item -> StringUtils.equalsAny(item.getProductionProductType(), BomCommonTypeEnums.SCOOTER.getValue()))
@@ -1135,7 +1198,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                             .build()
             );
         });
-        
+
         //进行部品归类
         HashMap<Long, Integer> partMap = new HashMap<>();
         if (CollectionUtils.isNotEmpty(partsProductList)) {
@@ -1172,7 +1235,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                         .filter(product -> (StringUtils.equalsAny(product.getProductionProductType(),
                                 BomCommonTypeEnums.SCOOTER.getValue()) && product.getId().equals(item.getProductionId())))
                         .findFirst().orElse(null).getQty();
-                
+
                 if (!partMap.containsKey(item.getPartsId())) {
                     // 不存在部品id 就重新放入
                     partMap.put(item.getPartsId(), item.getPartsQty() * scooterQty);
@@ -1181,18 +1244,18 @@ public class PurchasingServiceImpl implements PurchasingService {
                     partMap.put(item.getPartsId(), partMap.get(item.getPartsId()) + item.getPartsQty() * scooterQty);
                 }
             });
-            
+
         }
-        
+
         List<Long> partsIds = new ArrayList<>();
         partMap.forEach((k, v) -> {
             partsIds.add(k);
         });
         List<PartDetailDto> partDetailDtoList = purchasingServiceMapper.partDetailById(partsIds);
-        
+
         BigDecimal totalPrice = BigDecimal.ZERO;
         Integer totalCount = 0;
-        
+
         for (Map.Entry<Long, Integer> entry : partMap.entrySet()) {
             Long k = entry.getKey();
             Integer v = entry.getValue();
@@ -1244,7 +1307,7 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .updatedBy(enter.getUserId())
                 .build();
     }
-    
+
     private OpePurchas checkPurchasRepeatedly(Long id, PurchasingStatusEnums status) {
         OpePurchas opePurchas = opePurchasService.getById(id);
         if (opePurchas == null) {
@@ -1259,7 +1322,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         return opePurchas;
     }
-    
+
     /**
      * 待生产 库存埋点
      *
@@ -1273,7 +1336,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
-        
+
         // 查询部件
         List<OpeProductionParts> opeProductionPartsList =
                 opeProductionPartsService.list(new LambdaQueryWrapper<OpeProductionParts>().in(OpeProductionParts::getId,
@@ -1282,18 +1345,18 @@ public class PurchasingServiceImpl implements PurchasingService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
-        
+
         List<Long> partIds =
                 opeProductionPartsList.stream().map(OpeProductionParts::getId).collect(Collectors.toList());
-        
+
         List<OpeStock> opeStockList =
                 opeStockService.list(new LambdaQueryWrapper<OpeStock>().in(OpeStock::getMaterielProductId, partIds)
                         .in(OpeStock::getMaterielProductType, BomCommonTypeEnums.ACCESSORY.getValue(),
                                 BomCommonTypeEnums.PARTS.getValue(), BomCommonTypeEnums.BATTERY.getValue())
                         .eq(OpeStock::getWhseId, whse.getId()));
-        
+
         List<OpeStock> saveOpeStockList = new ArrayList<>();
-        
+
         if (CollectionUtils.isEmpty(opeStockList)) {
             for (OpePurchasB item : purchasBList) {
                 OpeProductionParts parts = opeProductionPartsList.stream()
@@ -1317,13 +1380,13 @@ public class PurchasingServiceImpl implements PurchasingService {
                 }
             }
         }
-        
+
         // 更新库存
         if (CollectionUtils.isNotEmpty(saveOpeStockList)) {
             opeStockService.saveOrUpdateBatch(saveOpeStockList);
         }
     }
-    
+
     /**
      * 构建 stock 对象
      *
@@ -1341,5 +1404,5 @@ public class PurchasingServiceImpl implements PurchasingService {
                 .updatedBy(0L).updatedTime(new Date()).createdBy(0L).createdTime(new Date()).build();
         return opeStock;
     }
-    
+
 }

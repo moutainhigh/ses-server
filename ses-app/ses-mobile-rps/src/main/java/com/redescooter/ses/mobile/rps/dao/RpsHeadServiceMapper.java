@@ -49,6 +49,26 @@ public interface RpsHeadServiceMapper {
      * @return
      */
     int rpsHeadProductQc(GeneralEnter enter);
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/2 11:50 上午
+    * @Param:  enter
+    * @Return: int
+    * @desc: 出库单数量
+    */
+    int rpsHeadOutboundTotal(GeneralEnter enter);
+
+    /**
+    * @Description
+    * @Author: alex
+    * @Date:   2020/11/2 11:51 上午
+    * @Param:  enter
+    * @Return: int
+    * @desc: 委托单
+    */
+    int rpsHeadConsignTotal(GeneralEnter enter);
+
 
 //    /**
 //     * 生产入库

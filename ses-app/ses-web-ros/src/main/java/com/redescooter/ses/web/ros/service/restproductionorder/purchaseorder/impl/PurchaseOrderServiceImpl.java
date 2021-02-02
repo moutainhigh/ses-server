@@ -762,7 +762,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);

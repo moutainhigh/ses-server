@@ -13,8 +13,8 @@ import com.redescooter.ses.mobile.client.config.UserComponent;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.ScooterService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -23,12 +23,12 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 15:29
  */
-@Service
+@DubboService
 public class ScooterServiceImpl implements ScooterService {
 
-    @Reference
+    @DubboReference
     private ScooterMobileBService scooterMobileBService;
-    @Reference
+    @DubboReference
     private ScooterMobileCService scooterMobileCService;
     @Resource
     private UserComponent userComponent;
@@ -38,12 +38,12 @@ public class ScooterServiceImpl implements ScooterService {
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
         BaseScooterResult scooterResult = null;
         /**
-         * 判断用户类型,根据用户类型进行业务分发
+         * 判断用户类型,根据用户类型进行业务分发(维修端忽略不处理)
          */
         Integer userServiceType = userComponent.getUserServiceTypeById(enter);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             scooterResult = scooterMobileBService.getScooterInfo(enter);
-        } else {
+        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             scooterResult = scooterMobileCService.getScooterInfo(enter);
         }
 
@@ -65,7 +65,7 @@ public class ScooterServiceImpl implements ScooterService {
         Integer userServiceType = userComponent.getUserServiceTypeById(scooterLockDTO);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             result = scooterMobileBService.lock(scooterLockDTO);
-        } else {
+        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             result = scooterMobileCService.lock(scooterLockDTO);
         }
 
@@ -87,7 +87,7 @@ public class ScooterServiceImpl implements ScooterService {
         Integer userServiceType = userComponent.getUserServiceTypeById(scooterNavigation);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             result = scooterMobileBService.scooterNavigation(scooterNavigation);
-        } else {
+        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)){
             result = scooterMobileCService.scooterNavigation(scooterNavigation);
         }
 

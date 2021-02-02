@@ -153,6 +153,78 @@ public enum ExceptionCodeEnums {
     PURCHAS_ORDER_HAS_EXIST_PART_NOT_QC(10073, "采购单存在其他部件未进行质检，不可退货并完成"),
 
     STOCK_IS_NOT_EXIST(10074, "库存不存在"),
+
+    ORDER_TRACE_IS_NOT_EXIST (10075,"订单节点不存在"),
+
+    EMPLOYEE_IS_NOT_EXIST(10076,"员工不存在"),
+
+    ORDER_IS_NOT_EXIST(10077,"单据不存在"),
+
+    TRACE_IS_NOT_EXIST(10078,"单据记录不存在"),
+
+    OUT_WH_ORDER_START_QC_ERROR(10079, "出库单开始质检失败"),
+
+    OUT_WH_ORDER_IS_NOT_EXISTS(10080, "出库单不存在"),
+
+    PRODUCT_IS_EMPTY(10081, "产品为空"),
+
+    QC_QTY_GREATER_THAN_QTY(10082, "质检数量大于应出库数量"),
+
+    ENTRUST_ORDER_IS_NOT_EXISTS(10083, "委托单不存在"),
+
+    DELIVERY_QTY_ERROR(10084, "发货数量有误"),
+
+    NO_NEED_TO_SCAN_CODE(10085, "无需再扫码"),
+
+    ENTRUST_ORDER_STATUS_ERROR(10086, "委托单状态有误"),
+
+    QC_QTY_ERROR(10087, "质检数量有误"),
+
+    QC_ERROR(10088, "质检失败"),
+
+    OUT_WAREHOUSE_ORDER_STATUS_ERROR(10089, "出库单状态有误"),
+
+    ENTRUST_ORDER_DELIVER_FAILED(10090, "委托单发货失败"),
+
+    IN_WH_ORDER_IS_NOT_EXISTS(10091, "入库单不存在"),
+
+    QC_QTY_GREATER_THAN_INBOUND_QTY(10092, "质检数量大于应入库数量"),
+
+    QC_IS_NOT_COMPLETED(10093, "质检未完成"),
+
+    IN_WH_QTY_ERROR(10094, "入库数量有误"),
+
+    WAREHOUSING_FAILED(10095, "入库失败"),
+
+    OUT_WH_QTY_ERROR(10096, "出库数量有误"),
+
+    DELIVERY_FAILURE(10097, "出库失败"),
+
+    QC_ORDER_IS_NOT_EXISTS(10098, "质检单不存在"),
+
+    QC_ORDER_STATUS_ERROR(10099, "质检单状态有误"),
+
+    COMBINATION_ORDER_IS_NOT_EXISTS(10100, "组装单不存在"),
+
+    COMBINATION_ORDER_STATUS_ERROR(10101, "组装单状态有误"),
+
+    COMBINATION_BOM_IS_NOT_EXISTS(10102, "组装bom不存在"),
+
+    PARTS_BOM_IS_NOT_EXISTS(10103, "部件bom不存在"),
+
+    SCOOTER_BOM_IS_NOT_EXISTS(10104, "车辆bom不存在"),
+
+    IN_WH_ORDER_HAS_BEEN_STORED(10105, "入库单已入库"),
+
+    OUT_WH_ORDER_OUT_OF_STOCK(10106, "出库单已出库"),
+
+    SCOOTER_HAS_NO_ECU(10107, "车辆没有ecu仪表"),
+
+    COMBINATION_NOT_COMPLETED(10108, "组装未完成"),
+
+    NOT_COMPLETED_QC(10109, "未完成质检"),
+
+    COMPLETED_COMBINATION(10110, "已完成组装")
     ;
 
     private int code;

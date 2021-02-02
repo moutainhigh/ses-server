@@ -70,6 +70,13 @@ public class OpeOutWhScooterB {
     private Integer alreadyOutWhQty;
 
     /**
+     * 总数量
+     */
+    @TableField(value = "total_qty")
+    @ApiModelProperty(value = "总数量")
+    private Integer totalQty;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
@@ -152,6 +159,8 @@ public class OpeOutWhScooterB {
     public static final String COL_QTY = "qty";
 
     public static final String COL_ALREADY_OUT_WH_QTY = "already_out_wh_qty";
+
+    public static final String COL_TOTAL_QTY = "total_qty";
 
     public static final String COL_REMARK = "remark";
 

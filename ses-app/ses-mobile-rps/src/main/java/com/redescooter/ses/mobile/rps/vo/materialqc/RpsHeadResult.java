@@ -41,4 +41,10 @@ public class RpsHeadResult extends GeneralResult {
 
     @ApiModelProperty(value = "生产入库数量")
     private int productionInWhTotal;
+
+    @ApiModelProperty(value = "出库单数量")
+    private int outboundTotal;
+
+    @ApiModelProperty(value = "委托单数量")
+    private int consignTotal;
 }

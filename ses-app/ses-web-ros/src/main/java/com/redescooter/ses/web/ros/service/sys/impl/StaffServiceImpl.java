@@ -232,7 +232,7 @@ public class StaffServiceImpl implements StaffService {
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getId());
         // 员工状态变化  影响到账号
-        if (enter.getStatus() != staff.getStatus()) {
+        if (!enter.getStatus().equals(staff.getStatus())) {
             changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
         }
         BeanUtils.copyProperties(enter, staff);
@@ -265,10 +265,10 @@ public class StaffServiceImpl implements StaffService {
     void changeUserStatus(Integer newStatus, Integer oldStatus, Long id) {
         OpeSysUser user = opeSysUserService.getById(id);
         if (user != null) {
-            if (newStatus == DeptStatusEnums.COMPANY.getValue() && oldStatus == DeptStatusEnums.DEPARTMENT.getValue()) {
+            if (newStatus.equals(DeptStatusEnums.COMPANY.getValue()) && oldStatus.equals(DeptStatusEnums.DEPARTMENT.getValue())) {
                 // 员工状态从禁用变为正常 user也要正常
                 user.setStatus(UserStatusEnum.NORMAL.getCode());
-            } else if (newStatus == DeptStatusEnums.DEPARTMENT.getValue() && oldStatus == DeptStatusEnums.COMPANY.getValue()) {
+            } else if (newStatus.equals(DeptStatusEnums.DEPARTMENT.getValue()) && oldStatus.equals(DeptStatusEnums.COMPANY.getValue())) {
                 // 员工状态从正常变为禁用 user也要禁用
                 user.setStatus(UserStatusEnum.LOCK.getCode());
             }
@@ -408,6 +408,9 @@ public class StaffServiceImpl implements StaffService {
         }
         if (!Strings.isNullOrEmpty(staff.getOpenAccount()) && staff.getOpenAccount().equals("1")) {
             throw new SesWebRosException(ExceptionCodeEnums.ALREADY_OPEN.getCode(), ExceptionCodeEnums.ALREADY_OPEN.getMessage());
+        }
+        if(2 == staff.getStatus()){
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
         }
         staff.setOpenAccount("1");
         opeSysStaffService.updateById(staff);
@@ -587,7 +590,7 @@ public class StaffServiceImpl implements StaffService {
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getUserId());
         // 员工状态变化  影响到账号
-        if (enter.getStatus() != staff.getStatus()) {
+        if (!enter.getStatus().equals(staff.getStatus())) {
             changeUserStatus(enter.getStatus(), staff.getStatus(), staff.getId());
         }
         BeanUtils.copyProperties(enter, staff);

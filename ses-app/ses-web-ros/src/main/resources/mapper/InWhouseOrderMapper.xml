@@ -4,6 +4,7 @@
     <select id="totalNum" resultType="int">
         select count(*)
         from ope_in_whouse_order inwh
+        left join ope_sys_staff staff on staff.id = inwh.created_by
         <include refid="listCondition"></include>
     </select>
 
@@ -27,11 +28,26 @@
         <if test="enter.inWhStatus != null">
             and inwh.in_wh_status = #{enter.inWhStatus}
         </if>
+        <if test="enter.countryType != null">
+            and inwh.country_type = #{enter.countryType}
+        </if>
         <if test="enter.inWhType != null">
             and inwh.in_wh_type = #{enter.inWhType}
         </if>
+        <choose>
+            <when test="enter.source == null">
+               and inwh.source = 0
+            </when>
+            <otherwise>
+               and inwh.source = #{enter.source}
+            </otherwise>
+        </choose>
+
         <if test="enter.keyword != null and enter.keyword != ''">
-            and inwh.in_wh_no like concat('%', #{enter.keyword}, '%')
+            and (inwh.in_wh_no like concat('%', #{enter.keyword}, '%') or
+                 staff.full_name like concat('%', #{enter.keyword}, '%') or
+                 inwh.relation_order_no like concat('%', #{enter.keyword}, '%')
+            )
         </if>
     </sql>
 
@@ -57,5 +73,15 @@
         left join ope_in_whouse_order inwhouse on inwhouse.id = scooter.in_wh_id
         left join ope_combin_order purchase on purchase.id = inwhouse.relation_order_id
         where scooter.dr = 0 and purchase.id = #{combinId}
+    </select>
+
+    <select id="outOrderByAllocateId" resultType="com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder">
+        select
+          *
+        from ope_out_whouse_order outOrder
+        left join  ope_invoice_order invoice on invoice.id = outOrder.relation_id
+        left join ope_purchase_order purchase on purchase.id = invoice.purchase_id
+        left join ope_allocate_order allocate on allocate.id = purchase.allocate_id
+        where outOrder.dr = 0 and allocate.id = #{allocateId}
     </select>
 </mapper>

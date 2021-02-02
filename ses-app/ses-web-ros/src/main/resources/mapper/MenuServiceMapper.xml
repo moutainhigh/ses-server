@@ -34,8 +34,7 @@
     </select>
 
     <select id="menuDatas" resultType="com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult">
-        select
-           id,name
+        select id, name
         from ope_sys_menu  where
         dr = 0
         <if test="type == 1">
@@ -75,6 +74,20 @@
         LEFT JOIN ope_sys_role_menu rm on rm.menu_id = menu.id
         LEFT JOIN ope_sys_user_role ru on ru.role_id = rm.role_id
         where menu.dr = 0 and ru.user_id = #{userId}
+    </select>
+
+    <!-- 返回二级菜单和三级菜单 -->
+    <select id="getSecondAndThirdMenu" resultType="com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult">
+        select id, name
+        from ope_sys_menu
+        where dr = 0 and menu_status = 1 and level in (2, 3)
+    </select>
+
+    <!-- 得到除了自身外的其他所有目录和二级菜单和三级菜单 -->
+    <select id="getAllCatalogAndMenu" resultType="com.redescooter.ses.web.ros.vo.tree.MenuDatasListResult">
+        select id, name
+        from ope_sys_menu
+        where dr = 0 and menu_status = 1 and level in (1, 2, 3) and id != #{id}
     </select>
 
 </mapper>

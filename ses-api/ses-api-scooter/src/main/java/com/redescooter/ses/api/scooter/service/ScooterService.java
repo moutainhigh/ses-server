@@ -78,12 +78,12 @@ public interface ScooterService {
 
     /**
      * 同步车辆数据
-     * @param syncScooterData
+     * @param syncScooterDataList
      * @return int
      * @author assert
      * @date 2020/12/10
     */
-    int syncScooterData(SyncScooterDataDTO syncScooterData);
+    int syncScooterData(List<SyncScooterDataDTO> syncScooterDataList);
 
     /**
      * 查询车辆数量
@@ -96,13 +96,13 @@ public interface ScooterService {
 
     /**
      * 同步车辆型号
-     * @param id
+     * @param tabletSn
      * @param scooterModel
      * @return int
      * @author assert
      * @date 2020/12/16
     */
-    int syncScooterModel(Long id, Integer scooterModel);
+    int syncScooterModel(String tabletSn, Integer scooterModel);
 
     /**
      * 根据tabletSn查询车辆信息
@@ -131,11 +131,19 @@ public interface ScooterService {
      */
     String getScooterStatusByTabletSn(String tabletSn);
 
-
     /**
      * OMS删除车辆时  需要把对应的车辆数据也删除
      * @param sn
      */
     void deleteScooterData(String sn);
+
+    /**
+     * 查询当天生产车辆编号信息
+     * @param
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2021/2/1
+    */
+    List<String> getToDayScooterNos();
 
 }

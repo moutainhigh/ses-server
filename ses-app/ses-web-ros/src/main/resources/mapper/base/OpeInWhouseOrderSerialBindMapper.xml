@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="order_b_id" property="orderBId"/>
+        <result column="order_type" property="orderType"/>
+        <result column="serial_num" property="serialNum"/>
+        <result column="default_serial_num" property="defaultSerialNum"/>
+        <result column="bluetooth_mac_address" property="bluetoothMacAddress"/>
+        <result column="lot" property="lot"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_type" property="productType"/>
+        <result column="qty" property="qty"/>
+        <result column="remark" property="remark"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, order_b_id, order_type, serial_num, default_serial_num, bluetooth_mac_address, lot, product_id, product_type, qty, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    </sql>
+
+</mapper>

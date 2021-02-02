@@ -76,4 +76,7 @@ public class PruchasingItemResult extends GeneralResult {
 
     @ApiModelProperty(value = "部品列表")
     private List<PruchasingItemResult> pruchasingItemResultList;
+
+    @ApiModelProperty("可用数量")
+    private Integer ableQty = 0;
 }
