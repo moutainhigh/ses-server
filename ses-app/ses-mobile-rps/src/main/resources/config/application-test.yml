@@ -45,7 +45,7 @@ spring:                                                                         
     enabled: true                                                                                                       #是否启用swagger
     group:
       sign-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 1.Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
         description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses.mobile.rps
@@ -59,9 +59,10 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+
       EntrustOrder-api:
         #用户组api，可以配置多个组
-        group-name: EntrustOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        group-name: 2.EntrustOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
         title: 委托单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
         descrtion: 委托单相关接口
         #api组的描述，会在swagger-ui的描述中显示
@@ -78,62 +79,81 @@ spring:                                                                         
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 
-      OutWhOrder-api:
-        #用户组api，可以配置多个组
-        group-name: OutWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: 出库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
-        descrtion: 出库单相关接口
-        #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.mobile.rps
-        path-regex: /out/wh/order/.*
-        #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli
+        OutWhOrder-api:
+          #用户组api，可以配置多个组
+          group-name: 3.OutWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+          title: 出库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
+          descrtion: 出库单相关接口
+          #api组的描述，会在swagger-ui的描述中显示
+          base-package: com.redescooter.ses.mobile.rps
+          path-regex: /out/wh/order/.*
+          #匹配到本组的api接口，匹配uri，可以用用正则表达式
+          path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+          version: v1.2.1                                                                                                 #Api版本
+          license: RedE 公司内部传阅                                                                                        #授权协议
+          license-url: '#'                                                                                                #授权协议地址
+          terms-of-service-url:                                                                                           #服务条款地址
+          contact:                                                                                                        #文档联系人
+            name: 李加廷                                                                                                   #联系人名字
+            email: jerry@redescooter.com                                                                                  #联系人邮箱
+            url: https://github.com/mrjerryli
 
-      QcTemplate-api:
-        #用户组api，可以配置多个组
-        group-name: QcTemplate-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: 质检模板管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
-        descrtion: 质检模板相关接口
-        #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.mobile.rps
-        path-regex: /qc/.*
-        #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli
+        QcTemplate-api:
+          #用户组api，可以配置多个组
+          group-name: 4.QcOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+          title: 质检单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
+          descrtion: 质检单相关接口
+          #api组的描述，会在swagger-ui的描述中显示
+          base-package: com.redescooter.ses.mobile.rps
+          path-regex: /qc/order/.*
+          #匹配到本组的api接口，匹配uri，可以用用正则表达式
+          path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+          version: v1.2.1                                                                                                 #Api版本
+          license: RedE 公司内部传阅                                                                                        #授权协议
+          license-url: '#'                                                                                                #授权协议地址
+          terms-of-service-url:                                                                                           #服务条款地址
+          contact:                                                                                                        #文档联系人
+            name: 李加廷                                                                                                   #联系人名字
+            email: jerry@redescooter.com                                                                                  #联系人邮箱
+            url: https://github.com/mrjerryli
 
-      InWhOrder-api:
-        #用户组api，可以配置多个组
-        group-name: InWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: 入库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
-        descrtion: 入库单相关接口
-        #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.mobile.rps
-        path-regex: /in/wh/order/.*
-        #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli
+        InWhOrder-api:
+          #用户组api，可以配置多个组
+          group-name: 5.InWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+          title: 入库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
+          descrtion: 入库单相关接口
+          #api组的描述，会在swagger-ui的描述中显示
+          base-package: com.redescooter.ses.mobile.rps
+          path-regex: /in/wh/order/.*
+          #匹配到本组的api接口，匹配uri，可以用用正则表达式
+          path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+          version: v1.2.1                                                                                                 #Api版本
+          license: RedE 公司内部传阅                                                                                        #授权协议
+          license-url: '#'                                                                                                #授权协议地址
+          terms-of-service-url:                                                                                           #服务条款地址
+          contact:                                                                                                        #文档联系人
+            name: 李加廷                                                                                                   #联系人名字
+            email: jerry@redescooter.com                                                                                  #联系人邮箱
+            url: https://github.com/mrjerryli
+
+        CombinOrder-api:
+          #用户组api，可以配置多个组
+          group-name: 6.CombinOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+          title: 组装单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
+          descrtion: 组装单相关接口
+          #api组的描述，会在swagger-ui的描述中显示
+          base-package: com.redescooter.ses.mobile.rps
+          path-regex: /combination/order/.*
+          #匹配到本组的api接口，匹配uri，可以用用正则表达式
+          path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+          version: v1.2.1                                                                                                 #Api版本
+          license: RedE 公司内部传阅                                                                                        #授权协议
+          license-url: '#'                                                                                                #授权协议地址
+          terms-of-service-url:                                                                                           #服务条款地址
+          contact:                                                                                                        #文档联系人
+            name: 李加廷                                                                                                   #联系人名字
+            email: jerry@redescooter.com                                                                                  #联系人邮箱
+            url: https://github.com/mrjerryli
 
 
 oss:                                                                                                                    #阿里oss上传

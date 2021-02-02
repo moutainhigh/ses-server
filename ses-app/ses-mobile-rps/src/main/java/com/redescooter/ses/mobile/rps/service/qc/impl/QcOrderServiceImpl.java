@@ -354,6 +354,8 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         QueryQcTemplateResultDTO qcTemplateResult = getQcTemplateByIdAndType(queryParam);
         List<ProductQcTemplateDTO> productQcTemplateList = qcTemplateResult.getProductQcTemplateList();
+        RpsAssert.isEmpty(productQcTemplateList, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
 
         /**
          * {templateId, List<ProductQcTemplateResultDTO>}
@@ -402,7 +404,11 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeOrderQcTrace.setDr(0);
             opeOrderQcTrace.setProductQcTemplateBId(qc.getTemplateResultId());
             opeOrderQcTrace.setProductQcTemplateId(qc.getTemplateId());
-            opeOrderQcTrace.setProductQcTemplateName(qcTemplateMap.get(qc.getTemplateId()).getQcItemName());
+            ProductQcTemplateDTO productQcTemplateDTO = qcTemplateMap.get(qc.getTemplateId());
+            // 防止接口参数传递有误导致npe
+            RpsAssert.isNull(productQcTemplateDTO, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
+                    ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
+            opeOrderQcTrace.setProductQcTemplateName(productQcTemplateDTO.getQcItemName());
             opeOrderQcTrace.setQcItemId(qcItemId);
             opeOrderQcTrace.setPicture(qc.getImageUrls());
             opeOrderQcTrace.setRevision(1);
