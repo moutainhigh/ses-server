@@ -449,24 +449,26 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         }
 
         // 新增库存产品序列号表
-        List<OpeWmsStockSerialNumber> saveList = Lists.newArrayList();
-        String[] split = rsn.split(",");
-        for (String s : split) {
-            OpeWmsStockSerialNumber param = new OpeWmsStockSerialNumber();
-            param.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
-            param.setDr(DelStatusEnum.VALID.getCode());
-            param.setTenantId(enter.getTenantId());
-            param.setDeptId(enter.getOpeDeptId());
-            param.setRelationType(relationType);
-            param.setRelationId(id);
-            param.setStockType(1);
-            param.setRsn(s);
-            param.setStockStatus(1);
-            param.setCreatedBy(enter.getUserId());
-            param.setCreatedTime(new Date());
-            saveList.add(param);
+        if (null != rsn && null != id && null != relationType) {
+            List<OpeWmsStockSerialNumber> saveList = Lists.newArrayList();
+            String[] split = rsn.split(",");
+            for (String s : split) {
+                OpeWmsStockSerialNumber param = new OpeWmsStockSerialNumber();
+                param.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
+                param.setDr(DelStatusEnum.VALID.getCode());
+                param.setTenantId(enter.getTenantId());
+                param.setDeptId(enter.getOpeDeptId());
+                param.setRelationType(relationType);
+                param.setRelationId(id);
+                param.setStockType(1);
+                param.setRsn(s);
+                param.setStockStatus(1);
+                param.setCreatedBy(enter.getUserId());
+                param.setCreatedTime(new Date());
+                saveList.add(param);
+            }
+            opeWmsStockSerialNumberService.saveBatch(saveList);
         }
-        opeWmsStockSerialNumberService.saveBatch(saveList);
         return new GeneralResult(enter.getRequestId());
     }
 
