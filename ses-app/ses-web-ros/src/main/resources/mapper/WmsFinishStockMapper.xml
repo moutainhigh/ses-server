@@ -260,7 +260,7 @@
     <select id="getDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
         select *
         from ope_wms_stock_serial_number
-        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
+        where dr = 0 and relation_id = #{enter.id}
         <include refid="frDetailCondition"/>
         order by created_time desc
         limit #{enter.startRow}, #{enter.pageSize}
@@ -270,7 +270,7 @@
     <select id="getDetailCount" resultType="java.lang.Integer">
         select count(*)
         from ope_wms_stock_serial_number
-        where dr = 0 and stock_type = 2 and relation_id = #{enter.id}
+        where dr = 0 and relation_id = #{enter.id}
         <include refid="frDetailCondition"/>
     </select>
 
