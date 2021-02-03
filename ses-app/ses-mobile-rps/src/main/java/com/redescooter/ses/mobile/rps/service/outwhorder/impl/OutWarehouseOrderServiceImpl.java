@@ -251,10 +251,13 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
                 break;
             default:
+                RpsAssert.isBlank(paramDTO.getPartsNo(), ExceptionCodeEnums.PARTS_NO_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PARTS_NO_IS_EMPTY.getMessage());
                 // 校验部件是否有序列号标识跟入参传递的是否一致
-                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
-                RpsAssert.isNull(flag, ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getCode(),
-                        ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getMessage());
+                Integer idClass = partsMapper.getPartsIdClassById(paramDTO.getBomId(), paramDTO.getPartsNo());
+                RpsAssert.isNull(idClass, ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
+                        ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+                boolean flag = 0 == idClass ? false : true;
                 RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
 
