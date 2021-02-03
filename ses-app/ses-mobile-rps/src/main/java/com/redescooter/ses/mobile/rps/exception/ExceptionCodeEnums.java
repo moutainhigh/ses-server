@@ -230,7 +230,11 @@ public enum ExceptionCodeEnums {
 
     SERIAL_NUM_IS_EMPTY(10112, "序列号为空"),
 
-    PRODUCT_ID_CLASS_ERROR(10113, "产品序列号标识有误")
+    PRODUCT_ID_CLASS_ERROR(10113, "产品序列号标识有误"),
+
+    BOM_IS_NOT_EXISTS(10114, "bom不存在"),
+
+    PRODUCT_NAME_IS_EMPTY(10115, "产品名称为空")
     ;
 
     private int code;

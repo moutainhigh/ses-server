@@ -35,7 +35,7 @@ public class OutWarehouseOrderController {
      * @author assert
      * @date 2021/1/4
     */
-    @ApiOperation(value = "出库单类型数量统计")
+    @ApiOperation(value = "出库单类型数量统计", notes = "出库单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getOutWarehouseOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(outWarehouseOrderService.getOutWarehouseOrderTypeCount(enter));
@@ -48,7 +48,7 @@ public class OutWarehouseOrderController {
      * @author assert
      * @date 2021/1/4
     */
-    @ApiOperation(value = "出库类型数量统计")
+    @ApiOperation(value = "出库类型数量统计", notes = "出库类型说明：1发货 2组装 3补料 4其它")
     @PostMapping(value = "/countByType")
     public Response<Map<Integer, Integer>> getOutWarehouseTypeCount(@ModelAttribute CountByOrderTypeParamDTO paramDTO) {
         return new Response<>(outWarehouseOrderService.getOutWarehouseTypeCount(paramDTO));

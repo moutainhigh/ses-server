@@ -37,7 +37,7 @@ public class QcOrderController {
      * @author assert
      * @date 2021/1/15
      */
-    @ApiOperation(value = "质检单类型数量统计")
+    @ApiOperation(value = "质检单类型数量统计", notes = "质检单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getQcOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(qcOrderService.getQcOrderTypeCount(enter));
@@ -50,7 +50,7 @@ public class QcOrderController {
      * @author assert
      * @date 2021/1/15
      */
-    @ApiOperation(value = "质检类型数量统计")
+    @ApiOperation(value = "质检类型数量统计", notes = "质检类型说明：1采购 2退料 3生产 4发货 5返修 6其他")
     @PostMapping(value = "/countByType")
     public Response<Map<Integer, Integer>> getQcTypeCount(@ModelAttribute CountByOrderTypeParamDTO paramDTO) {
         return new Response<>(qcOrderService.getQcTypeCount(paramDTO));

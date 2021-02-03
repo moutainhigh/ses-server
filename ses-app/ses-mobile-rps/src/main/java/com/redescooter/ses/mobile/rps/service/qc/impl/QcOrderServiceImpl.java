@@ -557,6 +557,8 @@ public class QcOrderServiceImpl implements QcOrderService {
             default:
                 // 校验部件是否有序列号标识跟入参传递的是否一致
                 boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isNull(flag, ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getCode(),
+                        ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getMessage());
                 RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
                 // 无码产品不填写质检数量时抛出异常
@@ -567,7 +569,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 RpsAssert.isNull(opeQcPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 // 限制无码产品重复质检, 并且无码产品质检数量必须和质检数量一致
-                if (StringUtils.isBlank(paramDTO.getSerialNum())) {
+                if (!paramDTO.getIdClass()) {
                     RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
                             ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
                     RpsAssert.isTrue(opeQcPartsB.getUnqualifiedQty() > 0 || opeQcPartsB.getQualifiedQty() > 0,
