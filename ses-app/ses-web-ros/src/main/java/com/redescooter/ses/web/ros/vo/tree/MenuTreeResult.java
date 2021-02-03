@@ -1,10 +1,16 @@
 package com.redescooter.ses.web.ros.vo.tree;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -14,7 +20,6 @@ import java.util.Date;
  * author: jerry.li
  * create: 2019-05-30 14:34
  */
-
 @ApiModel(value = "菜单树")
 @Data
 @AllArgsConstructor
@@ -85,6 +90,7 @@ public class MenuTreeResult extends TreeNode {
     /**
      * true无下级  false有下级
      */
+    @JsonInclude(value = Include.NON_NULL)
     private Boolean _loading = Boolean.FALSE;
 
 }
