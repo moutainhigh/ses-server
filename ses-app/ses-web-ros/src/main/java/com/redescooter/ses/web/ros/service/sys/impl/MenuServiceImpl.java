@@ -620,6 +620,7 @@ public class MenuServiceImpl implements MenuService {
         wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeSysMenu::getMenuStatus, 1);
         wrapper.eq(OpeSysMenu::getPId, enter.getId());
+        wrapper.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
         List<OpeSysMenu> list = sysMenuService.list(wrapper);
         // list相同属性的复制
         String str = JSON.toJSONString(list);
