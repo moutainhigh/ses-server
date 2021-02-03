@@ -327,104 +327,91 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                     ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(), ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
         }
 
-        boolean result = transactionTemplate.execute(outWarehouseStatus -> {
-            boolean flag = true;
-            try {
+        /**
+         * 出库操作(仓库库存操作) 1车辆 2组装件 3部件
+         */
+        List<OutWarehouseOrderProductDTO> productList = null;
+        List<String> serialNumList = null;
+        switch (opeOutWhouseOrder.getOutWhType()) {
+            case 1:
+                productList = outWhScooterBMapper.getOutWhOrderScooterByOutWhId(enter.getId());
+                // 检查是否有已出库数量
+                checkHasAlreadyOutWhQty(productList);
+
+                List<Long> outWhScooterIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhScooterIds);
+
                 /**
-                 * 出库操作(仓库库存操作) 1车辆 2组装件 3部件
+                 * {bomId, List<OutWarehouseOrderProductDTO>}
                  */
-                List<OutWarehouseOrderProductDTO> productList = null;
-                List<String> serialNumList = null;
-                switch (opeOutWhouseOrder.getOutWhType()) {
-                    case 1:
-                        productList = outWhScooterBMapper.getOutWhOrderScooterByOutWhId(enter.getId());
-                        // 检查是否有已出库数量
-                        checkHasAlreadyOutWhQty(productList);
+                Map<Long, List<OutWarehouseOrderProductDTO>> scooterMap = productList.stream().collect(
+                        Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                );
 
-                        List<Long> outWhScooterIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
-                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhScooterIds);
+                saveWmsStockDataComponent.saveWmsScooterStockData(null,null, scooterMap,
+                        InOutWhEnums.OUT.getValue(), enter.getUserId());
+                break;
+            case 2:
+                productList = outWhCombinBMapper.getOutWhOrderCombinByOutWhId(enter.getId());
+                // 检查是否有已出库数量
+                checkHasAlreadyOutWhQty(productList);
 
-                        /**
-                         * {bomId, List<OutWarehouseOrderProductDTO>}
-                         */
-                        Map<Long, List<OutWarehouseOrderProductDTO>> scooterMap = productList.stream().collect(
-                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
-                        );
+                List<Long> outWhCombinIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhCombinIds);
 
-                        saveWmsStockDataComponent.saveWmsScooterStockData(null,null, scooterMap,
-                                InOutWhEnums.OUT.getValue(), enter.getUserId());
-                        break;
-                    case 2:
-                        productList = outWhCombinBMapper.getOutWhOrderCombinByOutWhId(enter.getId());
-                        // 检查是否有已出库数量
-                        checkHasAlreadyOutWhQty(productList);
+                /**
+                 * {bomId, List<OutWarehouseOrderProductDTO>}
+                 */
+                Map<Long, List<OutWarehouseOrderProductDTO>> combinationMap = productList.stream().collect(
+                        Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                );
 
-                        List<Long> outWhCombinIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
-                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhCombinIds);
+                saveWmsStockDataComponent.saveWmsCombinationStockData(null, null, combinationMap,
+                        InOutWhEnums.OUT.getValue(), enter.getUserId());
+                break;
+            default:
+                productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
 
-                        /**
-                         * {bomId, List<OutWarehouseOrderProductDTO>}
-                         */
-                        Map<Long, List<OutWarehouseOrderProductDTO>> combinationMap = productList.stream().collect(
-                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
-                        );
+                // 检查是否有已出库数量
+                checkHasAlreadyOutWhQty(productList);
 
-                        saveWmsStockDataComponent.saveWmsCombinationStockData(null, null, combinationMap,
-                                InOutWhEnums.OUT.getValue(), enter.getUserId());
-                        break;
-                    default:
-                        productList = outWhPartsBMapper.getOutWhOrderPartsByOutWhId(enter.getId());
+                List<Long> outWhPartsIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
+                serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhPartsIds);
 
-                        // 检查是否有已出库数量
-                        checkHasAlreadyOutWhQty(productList);
+                /**
+                 * {bomId, List<OutWarehouseOrderProductDTO>}
+                 */
+                Map<Long, List<OutWarehouseOrderProductDTO>> partsMap = productList.stream().collect(
+                        Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
+                );
 
-                        List<Long> outWhPartsIds = productList.stream().map(OutWarehouseOrderProductDTO::getId).collect(Collectors.toList());
-                        serialNumList = outWhouseOrderSerialBindMapper.batchGetSerialNumByOrderBIds(outWhPartsIds);
+                saveWmsStockDataComponent.saveWmsPartsStockData(null, null, partsMap,
+                        InOutWhEnums.OUT.getValue(), enter.getUserId());
 
-                        /**
-                         * {bomId, List<OutWarehouseOrderProductDTO>}
-                         */
-                        Map<Long, List<OutWarehouseOrderProductDTO>> partsMap = productList.stream().collect(
-                                Collectors.groupingBy(OutWarehouseOrderProductDTO::getBomId)
-                        );
-
-                        saveWmsStockDataComponent.saveWmsPartsStockData(null, null, partsMap,
-                                InOutWhEnums.OUT.getValue(), enter.getUserId());
-
-                        /**
-                         * 如果是组装单生成的出库单则生成组装单清单信息
-                         */
-                        if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeOutWhouseOrder.getRelationType())) {
-                            IdEnter idEnter = new IdEnter();
-                            idEnter.setId(opeOutWhouseOrder.getRelationId());
-                            idEnter.setUserId(enter.getUserId());
-                            combinationOrderService.generateCombinationOrderList(idEnter);
-                        }
-
-                        break;
+                /**
+                 * 如果是组装单生成的出库单则生成组装单清单信息
+                 */
+                if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeOutWhouseOrder.getRelationType())) {
+                    IdEnter idEnter = new IdEnter();
+                    idEnter.setId(opeOutWhouseOrder.getRelationId());
+                    idEnter.setUserId(enter.getUserId());
+                    combinationOrderService.generateCombinationOrderList(idEnter);
                 }
 
-                /**
-                 * 产品出库后将信息从库存产品序列号表中删除
-                 */
-                if (CollectionUtils.isNotEmpty(serialNumList)){
-                    wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
-                }
+                break;
+        }
 
-                /**
-                 * 调用Aleks提交出库后的状态流转方法
-                 */
-                rosOutWhOrderService.outWarehouse(enter);
-            } catch (Exception e) {
-                flag = false;
-                log.error("【确认出库失败】----{}", ExceptionUtils.getStackTrace(e));
-                outWarehouseStatus.setRollbackOnly();
-            }
-            return flag;
-        });
+        /**
+         * 产品出库后将信息从库存产品序列号表中删除
+         */
+        if (CollectionUtils.isNotEmpty(serialNumList)){
+            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+        }
 
-        // 手动抛出异常
-        RpsAssert.isFalse(result, ExceptionCodeEnums.DELIVERY_FAILURE.getCode(), ExceptionCodeEnums.DELIVERY_FAILURE.getMessage());
+        /**
+         * 调用Aleks提交出库后的状态流转方法
+         */
+        rosOutWhOrderService.outWarehouse(enter);
 
         return new GeneralResult(enter.getRequestId());
     }
