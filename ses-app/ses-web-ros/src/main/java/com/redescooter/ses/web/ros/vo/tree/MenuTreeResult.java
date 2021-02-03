@@ -82,4 +82,9 @@ public class MenuTreeResult extends TreeNode {
     @ApiModelProperty(value = "是否外链。0：否，1：是")
     private String ifToLink;
 
+    /**
+     * true无下级  false有下级
+     */
+    private Boolean _loading = Boolean.FALSE;
+
 }
