@@ -236,7 +236,11 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_NAME_IS_EMPTY(10115, "产品名称为空"),
 
-    PARTS_NO_IS_EMPTY(10116, "部件号不能为空")
+    PARTS_NO_IS_EMPTY(10116, "部件号不能为空"),
+
+    INVENTORY_SHORTAGE(10117, "库存不足"),
+
+    QC_TEMPLATE_RESULT_IS_NOT_EXISTS(10118, "质检模板结果不存在")
     ;
 
     private int code;

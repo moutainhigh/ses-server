@@ -149,7 +149,9 @@
     <!--检查是否存在序列号-->
     <select id="isExistsSerialNum" resultType="java.lang.Integer">
         select count(*) from ope_qc_order_serial_bind
-        where dr = 0 and serial_num = #{serialNum} and order_b_id = #{productId}
+        where dr = 0 and order_b_id = #{productId}
+        <if test="relationOrderType != 7">and serial_num = #{serialNum}</if>
+        <if test="relationOrderType == 7">and default_serial_num = #{serialNum}</if>
     </select>
 
 </mapper>
