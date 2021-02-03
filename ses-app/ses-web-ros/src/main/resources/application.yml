@@ -10,8 +10,6 @@ server:
   tomcat:
     uri-encoding: UTF-8
   shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
-  autoconfigure:
-    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 #基本信息配置
 spring:
   application:
@@ -22,6 +20,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
