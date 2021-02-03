@@ -34,6 +34,6 @@ public interface ProductionPartsMapper {
      * @author assert
      * @date 2021/2/2
     */
-    boolean getPartsIdClassById(Long id);
+    Integer getPartsIdClassById(Long id);
 
 }

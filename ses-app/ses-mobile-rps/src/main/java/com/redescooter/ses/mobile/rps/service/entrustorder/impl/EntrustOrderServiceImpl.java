@@ -253,9 +253,10 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 break;
             default:
                 // 校验部件是否有序列号标识跟入参传递的是否一致
-                boolean flag = partsMapper.getPartsIdClassById(paramDTO.getBomId());
-                RpsAssert.isNull(flag, ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getCode(),
+                Integer idClass = partsMapper.getPartsIdClassById(paramDTO.getBomId());
+                RpsAssert.isNull(idClass, ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getCode(),
                         ExceptionCodeEnums.BOM_IS_NOT_EXISTS.getMessage());
+                boolean flag = 0 == idClass ? false : true;
                 RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
 
