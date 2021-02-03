@@ -2,9 +2,9 @@ package com.redescooter.ses.web.ros.service.email.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
-import com.redescooter.ses.api.foundation.vo.mail.QueryMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.web.ros.service.email.EmailService;
@@ -71,7 +71,7 @@ public class EmailServiceImpl implements EmailService {
      * @return
      */
     @Override
-    public List<MailTemplateResult> getList(QueryMailTemplateEnter enter) {
+    public List<MailTemplateResult> getList(StringEnter enter) {
         return mailTemplateManageService.getMailTemplateList(enter);
     }
 }
