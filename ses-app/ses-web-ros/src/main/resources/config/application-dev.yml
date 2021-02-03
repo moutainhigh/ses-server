@@ -570,6 +570,27 @@ spring:                                                                         
           name: 李加廷                                                                                                   #联系人名字
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
+      Email-API:
+        #用户组api，可以配置多个组
+        group-name: Email-API
+        #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: 邮件API
+        #api组的标题，会在swagger-ui的标题处显示
+        description: 邮件API
+        #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses
+        path-regex: /email/.*
+        #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.8.2                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
 
 
 
