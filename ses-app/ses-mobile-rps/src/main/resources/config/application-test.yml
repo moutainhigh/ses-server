@@ -79,7 +79,7 @@ spring:                                                                         
           email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 
-        OutWhOrder-api:
+      OutWhOrder-api:
           #用户组api，可以配置多个组
           group-name: 3.OutWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
           title: 出库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
@@ -98,7 +98,7 @@ spring:                                                                         
             email: jerry@redescooter.com                                                                                  #联系人邮箱
             url: https://github.com/mrjerryli
 
-        QcTemplate-api:
+      QcTemplate-api:
           #用户组api，可以配置多个组
           group-name: 4.QcOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
           title: 质检单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
@@ -117,7 +117,7 @@ spring:                                                                         
             email: jerry@redescooter.com                                                                                  #联系人邮箱
             url: https://github.com/mrjerryli
 
-        InWhOrder-api:
+      InWhOrder-api:
           #用户组api，可以配置多个组
           group-name: 5.InWhOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
           title: 入库单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
@@ -136,7 +136,7 @@ spring:                                                                         
             email: jerry@redescooter.com                                                                                  #联系人邮箱
             url: https://github.com/mrjerryli
 
-        CombinOrder-api:
+      CombinOrder-api:
           #用户组api，可以配置多个组
           group-name: 6.CombinOrder-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
           title: 组装单管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
@@ -155,7 +155,7 @@ spring:                                                                         
             email: jerry@redescooter.com                                                                                  #联系人邮箱
             url: https://github.com/mrjerryli
 
-        RpsHome-api:
+      RpsHome-api:
           #用户组api，可以配置多个组
           group-name: 7.RpsHome-api                                                                                         #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
           title: RPS首页管理                                                                                             #api组的标题，会在swagger-ui的标题处显示
