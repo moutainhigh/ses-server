@@ -596,7 +596,7 @@ public class MenuServiceImpl implements MenuService {
                     wrapper.eq(OpeSysMenu::getPId, id);
                     List<OpeSysMenu> list = sysMenuService.list(wrapper);
                     if (CollectionUtils.isEmpty(list)) {
-                        child.set_loading(Boolean.TRUE);
+                        child.set_loading(null);
                     }
                 }
             }
@@ -626,7 +626,7 @@ public class MenuServiceImpl implements MenuService {
                             wrapper.eq(OpeSysMenu::getPId, id);
                             List<OpeSysMenu> list = sysMenuService.list(wrapper);
                             if (CollectionUtils.isEmpty(list)) {
-                                child.set_loading(Boolean.TRUE);
+                                child.set_loading(null);
                             }
                         }
                     }
@@ -661,7 +661,7 @@ public class MenuServiceImpl implements MenuService {
                 qw.eq(OpeSysMenu::getPId, id);
                 List<OpeSysMenu> subList = sysMenuService.list(qw);
                 if (CollectionUtils.isEmpty(subList)) {
-                    model.set_loading(Boolean.TRUE);
+                    model.set_loading(null);
                 }
             }
         }
