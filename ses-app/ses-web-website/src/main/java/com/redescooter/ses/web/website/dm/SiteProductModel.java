@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -18,7 +15,6 @@ import lombok.Data;
 @Data
 @TableName(value = "site_product_model")
 public class SiteProductModel implements Serializable {
-
     /**
      * 主键 主键
      */
@@ -31,6 +27,7 @@ public class SiteProductModel implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -38,7 +35,7 @@ public class SiteProductModel implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态,1正常，-1失效")
-    private String status;
+    private Integer status;
 
     /**
      * 产品种类主建

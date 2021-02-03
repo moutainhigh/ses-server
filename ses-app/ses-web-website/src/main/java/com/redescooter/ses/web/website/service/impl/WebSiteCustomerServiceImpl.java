@@ -2,11 +2,14 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.code.MainCode;
+import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
 import com.redescooter.ses.web.website.dm.SiteUser;
@@ -22,6 +25,7 @@ import com.redescooter.ses.web.website.service.base.SiteCustomerService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
+import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -50,6 +54,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Autowired
     private TokenWebsiteService tokenWebsiteService;
 
+    @Autowired
+    private RequestsKeyProperties requestsKeyProperties;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -59,11 +66,44 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
-
-        if (!enter.getConfirmPassword().trim().equals(enter.getPassword().trim())) {
+        SesStringUtils.objStringTrim(enter);
+        String decryptEamil = null;
+        String psd = null;
+        String confirmPsd = null;
+        String phone = null;
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                //邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getEmail(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setEmail(decryptEamil);
+        }
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                //手机号解密
+                phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setTelephone(phone);
+        }
+        if (StringUtils.isNotEmpty(enter.getPassword())) {
+            try {
+                //密码解密
+                psd = RsaUtils.decrypt(enter.getPassword(), requestsKeyProperties.getPrivateKey());
+                confirmPsd = RsaUtils.decrypt(enter.getCfmPassword(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setPassword(psd);
+            enter.setCfmPassword(confirmPsd);
+        }
+        if (!enter.getCfmPassword().equals(enter.getPassword())) {
             throw new SesWebsiteException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(),
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
@@ -73,7 +113,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
-        signUp.setPassword(enter.getConfirmPassword().trim());
+        signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
     }
@@ -84,8 +124,22 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      */
     @Override
-    public CustomerDetailsResult getCustomerDetails(IdEnter enter) {
-        SiteCustomer customer = siteCustomerService.getById(enter.getId());
+    public CustomerDetailsResult getCustomerDetails(GeneralEnter enter) {
+
+        /*用户ID*/
+        Long userId = enter.getUserId();
+
+        if (userId == 0L) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        SiteUser siteUser = siteUserService.getById(enter.getUserId());
+        if (siteUser == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        SiteCustomer customer = siteCustomerService.getById(siteUser.getCustomerId());
         CustomerDetailsResult result = new CustomerDetailsResult();
 
         if (customer != null) {
@@ -93,6 +147,23 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             result.setRequestId(enter.getRequestId());
         }
         return result;
+    }
+
+    /**
+     * 客户编辑
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
+
+        SiteCustomer edit = new SiteCustomer();
+        BeanUtils.copyProperties(enter, edit);
+        siteCustomerService.updateById(edit);
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     private void checkEmail(String email) {
@@ -122,10 +193,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setId(idAppService.getId(SequenceName.SITE_CUSTOMER));
         addCustomer.setDr(Constant.DR_FALSE);
         addCustomer.setStatus(WebSiteCustomerStatusEnums.INTENTION.getValue());
-        addCustomer.setCountryCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
+        addCustomer.setCustomerCode(new StringBuffer().append("CR_").append(MainCode.generateByShuffle()).toString());
         addCustomer.setCustomerSource(WebSiteCustomerSourceEnums.OFFICIAL.getValue());
         addCustomer.setCustomerType(CustomerTypeEnums.PERSONAL.getValue());
-        addCustomer.setCustomerHeadPicture(enter.getCustomerHeadPicture());
         addCustomer.setCustomerFirstName(enter.getCustomerFirstName());
         addCustomer.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
@@ -138,13 +208,12 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setPlaceId(enter.getPlaceId());
         addCustomer.setLongitude(enter.getLongitude());
         addCustomer.setLatitude(enter.getLatitude());
+        addCustomer.setCountryCode(enter.getCountryCode());
         addCustomer.setTelephone(enter.getTelephone());
         addCustomer.setEmail(enter.getEmail());
         addCustomer.setPurchasedScooterQty(1);
         addCustomer.setAssignationScooterQty(0);
         addCustomer.setAccountFlag(AccountFlagEnums.INACTIVATED.getValue());
-        addCustomer.setCvv(enter.getCvv());
-        addCustomer.setCardNum(enter.getCardNum());
         addCustomer.setSynchronizeFlag(false);
         addCustomer.setRevision(0);
         addCustomer.setCreatedBy(0L);

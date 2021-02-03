@@ -1,0 +1,32 @@
+package com.redescooter.ses.tool.utils.json.dateJson;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+public class DateConvertDeserializer extends JsonDeserializer<Date> {
+
+	private static final String pattern = "yyyy-MM-dd";
+
+	@Override
+	public Date deserialize(JsonParser jsonParser, DeserializationContext dc) throws JsonProcessingException {
+		Date date = null;
+		try {
+			DateFormat dateFormat = new SimpleDateFormat(pattern);
+			String val = jsonParser.getText();
+			date = dateFormat.parse(val);
+		} catch (ParseException | IOException pex) {
+			throw new RuntimeException("json转换Date异常，格式：" + pattern);
+		}
+		return date;
+	}
+
+}

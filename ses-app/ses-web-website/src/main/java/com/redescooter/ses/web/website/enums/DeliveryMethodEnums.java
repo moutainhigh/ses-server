@@ -39,4 +39,13 @@ public enum DeliveryMethodEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (DeliveryMethodEnums item : DeliveryMethodEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

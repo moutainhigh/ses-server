@@ -1,6 +1,6 @@
 <h1 align="center">
  
- [![RedEScooter](https://rede-other.oss-cn-beijing.aliyuncs.com/RED.png)](https://github.com/mrjerryli/ses-server)
+ [![RedEScooter](./ses-doc/images/redescooter.png)](https://github.com/mrjerryli/ses-server)
 </h1> 
      
 ###### <div align=right>2019~2020
@@ -145,7 +145,7 @@ ses-server
 
 ### 四、RedE架构体系图
 
-![rede体系图]()
+![rede体系图](./ses-doc/images/ROS_RedE_Office_System.png)
 
 ### 五、相关文档
 
@@ -189,7 +189,7 @@ develop 为开发分支，始终保持最新完成以及bug修复后的代码
 
 ```
 
-* release分支
+* release 分支
 ```text
 release 为预上线分支，发布提测阶段，会release分支代码为基准提测
 

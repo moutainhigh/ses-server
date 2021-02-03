@@ -33,4 +33,13 @@ public enum WebSiteCustomerSourceEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (WebSiteCustomerSourceEnums item : WebSiteCustomerSourceEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

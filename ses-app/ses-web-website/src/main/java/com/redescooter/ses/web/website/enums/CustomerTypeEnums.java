@@ -31,4 +31,13 @@ public enum CustomerTypeEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (CustomerTypeEnums item : CustomerTypeEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

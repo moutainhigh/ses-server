@@ -53,7 +53,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         SitePaymentType addPaymentType = new SitePaymentType();
         addPaymentType.setId(idAppService.getId(SequenceName.SITE_PAYMENT_TYPE));
         addPaymentType.setDr(Constant.DR_FALSE);
-        addPaymentType.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addPaymentType.setStatus(CommonStatusEnums.NORMAL.getValue());
         addPaymentType.setPaymentName(enter.getPaymentName());
         addPaymentType.setPaymentCode(new StringBuffer().append("PT_").append(MainCode.generateByShuffle()).toString());
         if (StringUtils.isNotBlank(enter.getRemark())) {
@@ -104,7 +104,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         if (list.size() > 0) {
             list.forEach(p -> {
                 PaymentTypeDetailsResult result = new PaymentTypeDetailsResult();
-                result.setId(p.getId());
+                result.setPaymentTypeId(p.getId());
                 result.setPaymentCode(p.getPaymentCode());
                 result.setPaymentName(p.getPaymentName());
                 result.setOtherParam(p.getOtherParam());

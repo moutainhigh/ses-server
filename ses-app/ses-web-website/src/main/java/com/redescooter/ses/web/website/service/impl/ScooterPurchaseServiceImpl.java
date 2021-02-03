@@ -5,8 +5,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +44,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @param enter
      * @return
      */
+
     @Override
     public List<ProductsResult> getProductDetailByModel(IdEnter enter) {
         return scooterPurchaseMapper.getProductDetailByModel(enter);
@@ -70,6 +71,5 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
     public List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter) {
         return scooterPurchaseMapper.getScooterConfigList(enter);
     }
-
 
 }

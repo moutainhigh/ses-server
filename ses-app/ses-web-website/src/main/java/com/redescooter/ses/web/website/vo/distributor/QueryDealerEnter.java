@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  * @Date 2021/1/6 3:43 上午
  * @Description 新增经销商入参
  **/
-@ApiModel(value = "New dealers join", description = "新增经销商入参")
+@ApiModel(value = "query dealer", description = "query dealer")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QueryDealerEnter extends GeneralEnter {

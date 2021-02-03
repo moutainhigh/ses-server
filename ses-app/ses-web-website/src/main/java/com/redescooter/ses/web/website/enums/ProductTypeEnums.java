@@ -31,4 +31,13 @@ public enum ProductTypeEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (ProductTypeEnums item : ProductTypeEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

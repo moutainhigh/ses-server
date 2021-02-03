@@ -1,8 +1,5 @@
 package com.redescooter.ses.web.website.vo.parts;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +20,7 @@ import java.math.BigDecimal;
 public class AddPartsEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "类型,全部类型AllType，1电池Battery，2配件Accessory")
-    private String partsType;
+    private int partsType;
 
     @ApiModelProperty(value = "部品号")
     private String partsNumber;

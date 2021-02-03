@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.website.vo.product;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,5 +20,6 @@ public class ProductsResult extends ProductDetailsResult {
     /**
      * 颜色集合
      */
+    @ApiModelProperty(value = "colour list")
     private List<ColourDetailsResult> colourDetailslist;
 }

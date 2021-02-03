@@ -53,11 +53,11 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         SiteProductPrice addProductPriceVO = new SiteProductPrice();
         addProductPriceVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PRICE));
         addProductPriceVO.setDr(Constant.DR_FALSE);
-        addProductPriceVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addProductPriceVO.setStatus(CommonStatusEnums.NORMAL.getValue());
         addProductPriceVO.setProductModelId(enter.getProductModelId());
         addProductPriceVO.setStartPrice(enter.getStartPrice());
-        addProductPriceVO.setPriceType(enter.getPriceType());
-        if (enter.getPriceType().endsWith(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()))) {
+        addProductPriceVO.setPriceType(PaymentTypeEnums.checkValue(enter.getPriceType()));
+        if (enter.getPriceType() == PaymentTypeEnums.BY_STAGES.getValue()) {
             addProductPriceVO.setInstallmentTime(enter.getInstallmentTime());
         } else {
             addProductPriceVO.setInstallmentTime("0");

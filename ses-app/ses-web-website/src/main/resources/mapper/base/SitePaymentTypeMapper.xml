@@ -6,7 +6,7 @@
     <!--@Table site_payment_type-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
     <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
     <result column="other_param" jdbcType="VARCHAR" property="otherParam" />
@@ -40,7 +40,7 @@
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="payment_name = case" suffix="end,">
@@ -138,7 +138,7 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -261,7 +261,7 @@
       def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
         #{item.paymentName,jdbcType=VARCHAR}, #{item.paymentCode,jdbcType=VARCHAR}, #{item.otherParam,jdbcType=VARCHAR}, 
         #{item.remark,jdbcType=VARCHAR}, #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, 
         #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
@@ -277,7 +277,7 @@
       revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
       def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{paymentName,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{paymentName,jdbcType=VARCHAR}, 
       #{paymentCode,jdbcType=VARCHAR}, #{otherParam,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{synchronizeFlag,jdbcType=BOOLEAN}, #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
@@ -286,7 +286,7 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=INTEGER}, 
     payment_name = #{paymentName,jdbcType=VARCHAR}, 
     payment_code = #{paymentCode,jdbcType=VARCHAR}, 
     other_param = #{otherParam,jdbcType=VARCHAR}, 
@@ -371,7 +371,7 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="paymentName != null">
         #{paymentName,jdbcType=VARCHAR},
@@ -428,7 +428,7 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="paymentName != null">
         payment_name = #{paymentName,jdbcType=VARCHAR},

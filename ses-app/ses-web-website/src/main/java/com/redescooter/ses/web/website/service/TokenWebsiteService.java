@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.website.service;
 
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
-import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
+import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 
 /**
  * @author Mr.lijiating
@@ -23,6 +21,16 @@ public interface TokenWebsiteService {
      * @return
      */
     GeneralResult signUp(LoginEnter enter);
+
+
+    /**
+     * 获取账号公钥
+     *
+     * @param enter
+     * @return
+     */
+    GetAccountKeyResult getAccountKey(GeneralEnter enter);
+
 
     /**
      * 用户登录
@@ -49,14 +57,12 @@ public interface TokenWebsiteService {
     UserToken checkToken(GeneralEnter enter);
 
     /**
-     * @desc: 修改密码
-     * @param: enter
-     * @return: generresult
-     * @auther: alex
-     * @date: 2019/7/24 16:52
-     * @Version: 1.1
+     * 设置密码
+     *
+     * @param enter
+     * @return
      */
-    GeneralResult modifyPassword(ModifyPasswordEnter enter);
+    GeneralResult setPassword(SiteSetPasswordEnter enter);
 
     /**
      * 发送重置密码邮件
@@ -64,5 +70,23 @@ public interface TokenWebsiteService {
      * @param enter
      * @return
      */
-    GeneralResult sendCode(BaseSendMailEnter enter);
+    GeneralResult forgetPasswordEmail(BaseSendMailEnter enter);
+
+
+    /**
+     * 修改密码
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult resetPassword(SiteResetPassword enter);
+
+
+    /**
+     * 邮件订阅
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult emailSubscribe(CheckEmailEnter enter);
 }

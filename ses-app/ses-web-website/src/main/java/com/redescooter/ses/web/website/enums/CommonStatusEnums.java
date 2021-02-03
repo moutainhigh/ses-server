@@ -32,4 +32,13 @@ public enum CommonStatusEnums {
         }
         return null;
     }
+
+    public static Integer checkValue(int value) {
+        for (CommonStatusEnums item : CommonStatusEnums.values()) {
+            if (value == item.value) {
+                return item.getValue();
+            }
+        }
+        return null;
+    }
 }

@@ -26,16 +26,16 @@ public class LoginEnter extends GeneralEnter {
     private int loginType = 1;
 
     @ApiModelProperty(value = "Login name")
-    @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "用户名为空")
+    @NotNull(code = ValidationExceptionBaseCode.NAME_ILLEAGE, message = "用户名为空")
     private String loginName;
 
     @ApiModelProperty(value = "password")
     private String password;
 
-    @ApiModelProperty(value = "Verification Code")
+    @ApiModelProperty(value = "Verification Code",hidden = true)
     private String code;
 
-    @ApiModelProperty(value = "Customer Id")
+    @ApiModelProperty(value = "Customer Id",hidden = true)
     private Long customerId;
 
 }

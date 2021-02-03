@@ -16,7 +16,7 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.CountryEnums;
 import com.redescooter.ses.api.common.vo.base.ReqHeader;
 import com.redescooter.ses.app.common.exception.HttpHeaderException;
-import com.redescooter.ses.tool.utils.IpUtils;
+import com.redescooter.ses.tool.utils.ip.IpUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,6 @@ public abstract class AbstractRequestFilter implements Filter {
     public void init(FilterConfig filterConfig) {
 
         log.info("服务启动,调用过滤器Filter初始化方法init()..........");
-
     }
 
     protected abstract AppIDEnums getAppId();

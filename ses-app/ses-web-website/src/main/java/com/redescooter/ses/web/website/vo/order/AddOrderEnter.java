@@ -1,12 +1,14 @@
 package com.redescooter.ses.web.website.vo.order;
 
+import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.hub.exception.ValidationExceptionCode;
+import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
 
 /**
  * @Author jerry
@@ -19,28 +21,24 @@ import java.util.Date;
 public class AddOrderEnter extends GeneralEnter {
 
     /**
-     * 客户id
-     */
-    @ApiModelProperty(value = "customer_id")
-    private Long customerId;
-
-    /**
-     * 销售员id
-     */
-    @ApiModelProperty(value = "sales_id")
-    private Long salesId;
-
-    /**
      * 订单类型，1销售，2租赁
      */
     @ApiModelProperty(value = "Order type, 1 sales, 2 lease")
-    private String orderType;
+    @NotNull(code = SiteValidationExceptionCode.TYPE_IS_EMPTY,message = "类型为空")
+    private int orderType;
 
     /**
      * 产品Id
      */
-    @ApiModelProperty(value = "product_id ")
+    @ApiModelProperty(value = "product_id",notes = "According to the vehicle model list, call the ID in the response result of vehicle product details")
+    @NotNull(code = SiteValidationExceptionCode.PRODUCT_ID_IS_EMPTY,message = "产品ID为空")
     private Long productId;
+
+    /**
+     *
+     */
+    @ApiModelProperty(value = "productPartsId",notes = "Call to get the list of battery accessories according to the vehicle ID，142822372544512")
+    private Long productPartsId;
 
     /**
      * 颜色主建
@@ -49,35 +47,23 @@ public class AddOrderEnter extends GeneralEnter {
     private Long colourId;
 
     /**
-     * 产品颜色
-     */
-    @ApiModelProperty(value = "product_colour_name ")
-    private String productColour;
-
-    /**
      * 提货方式
      */
-    @ApiModelProperty(value = "delivery_type")
-    private String deliveryType;
-
+    @ApiModelProperty(value = "delivery type: 1SELF_LIFT,-1DELIVER_HOME")
+    private int deliveryType;
 
     /**
      * 支付方式
      */
-    @ApiModelProperty(value = "payment_type_id")
+    @ApiModelProperty(value = "payment_type_id",notes = "The ID in the response result of the interface calling the payment type")
+    @NotNull(code = SiteValidationExceptionCode.PAY_TYPE_IS_EMPTY,message = "支付方式为空")
     private Long paymentTypeId;
 
     /**
      * 需求车辆数
      */
-    @ApiModelProperty(value = "Number of vehicles required")
+    @ApiModelProperty(value = "Number of vehicles required",example = "1")
     private Integer scooterQuantity;
-
-    /**
-     * 预计交货时间
-     */
-    @ApiModelProperty(value = "Estimated delivery time")
-    private Date etdDeliveryTime;
 
     /**
      * 备注

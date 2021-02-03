@@ -37,7 +37,6 @@ public class TokenController {
         return new Response<>(tokenRosService.getAccountKey(enter));
     }
 
-
     @IgnoreLoginCheck
     @ApiOperation(value = "登录", response = TokenResult.class)
     @PostMapping(value = "/login")
@@ -98,5 +97,6 @@ public class TokenController {
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
       return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
     }
+
 
 }

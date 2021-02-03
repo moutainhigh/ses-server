@@ -28,4 +28,14 @@ public interface SequenceName {
     String SITE_CUSTOMER = "SITE_CUSTOMER";
 
     String SITE_USER = "SITE_USER";
+
+    String SITE_ORDER = "SITE_ORDER";
+
+    String SITE_ORDER_B = "SITE_ORDER_B";
+
+    String SITE_PAYMENT_RECORDS = "SITE_PAYMENT_RECORDS";
+
+    String SITE_CONTACT_US = "SITE_CONTACT_US";
+
+    String SITE_DISTRIBUTOR = "SITE_DISTRIBUTOR";
 }

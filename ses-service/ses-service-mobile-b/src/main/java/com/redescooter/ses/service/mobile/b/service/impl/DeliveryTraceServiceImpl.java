@@ -12,7 +12,7 @@ import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;

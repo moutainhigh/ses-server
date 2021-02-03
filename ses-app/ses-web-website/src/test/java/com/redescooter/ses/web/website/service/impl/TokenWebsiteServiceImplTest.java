@@ -20,7 +20,7 @@ class TokenWebsiteServiceImplTest extends SesWebsiteApplicationTests {
 
         LoginEnter enter = new LoginEnter();
         enter.setLoginType(0);
-        enter.setLoginName("jerry@redescooter.com");
+        enter.setLoginName("alex@redescooter.com");
         enter.setPassword("123456");
         System.out.println(JSON.toJSONString(tokenWebsiteService.login(enter)));
     }

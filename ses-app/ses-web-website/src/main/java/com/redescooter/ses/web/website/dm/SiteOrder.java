@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -30,6 +27,7 @@ public class SiteOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -61,18 +59,18 @@ public class SiteOrder implements Serializable {
     private Long salesId;
 
     /**
-     * 状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭
+     * 1新建，2待支付，3进行中，4取消，5已完成，6关闭
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态,1新建，2定金支付成功，3待支付尾款，4取消退款，5已完成，6关闭")
-    private String status;
+    @ApiModelProperty(value = "1新建，2待支付，3进行中，4取消，5已完成，6关闭")
+    private Integer status;
 
     /**
      * 订单类型，1销售，2租赁
      */
     @TableField(value = "order_type")
     @ApiModelProperty(value = "订单类型，1销售，2租赁")
-    private String orderType;
+    private Integer orderType;
 
     /**
      * 产品Id
@@ -142,7 +140,14 @@ public class SiteOrder implements Serializable {
      */
     @TableField(value = "delivery_type")
     @ApiModelProperty(value = "提货方式")
-    private String deliveryType;
+    private Integer deliveryType;
+
+    /**
+     * 购买电池数
+     */
+    @TableField(value = "battery_qty")
+    @ApiModelProperty(value = "购买电池数")
+    private Integer batteryQty;
 
     /**
      * 运费
@@ -201,11 +206,11 @@ public class SiteOrder implements Serializable {
     private Long paymentTypeId;
 
     /**
-     * 支付状态
+     * 支付状态,1待支付，2部分支付，3已支付
      */
     @TableField(value = "pay_status")
-    @ApiModelProperty(value = "支付状态")
-    private String payStatus;
+    @ApiModelProperty(value = "支付状态,1待支付，2部分支付，3已支付")
+    private Integer payStatus;
 
     /**
      * 需求车辆数
@@ -220,6 +225,13 @@ public class SiteOrder implements Serializable {
     @TableField(value = "etd_delivery_time")
     @ApiModelProperty(value = "预计交货时间")
     private Date etdDeliveryTime;
+
+    /**
+     * 是否同步
+     */
+    @TableField(value = "synchronize_flag")
+    @ApiModelProperty(value = "是否同步")
+    private Boolean synchronizeFlag;
 
     /**
      * 备注
@@ -336,6 +348,8 @@ public class SiteOrder implements Serializable {
 
     public static final String COL_DELIVERY_TYPE = "delivery_type";
 
+    public static final String COL_BATTERY_QTY = "battery_qty";
+
     public static final String COL_FREIGHT = "freight";
 
     public static final String COL_PRODUCT_PRICE = "product_price";
@@ -357,6 +371,8 @@ public class SiteOrder implements Serializable {
     public static final String COL_SCOOTER_QUANTITY = "scooter_quantity";
 
     public static final String COL_ETD_DELIVERY_TIME = "etd_delivery_time";
+
+    public static final String COL_SYNCHRONIZE_FLAG = "synchronize_flag";
 
     public static final String COL_REMARKS = "remarks";
 

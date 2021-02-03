@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
-import com.redescooter.ses.api.mobile.c.vo.ScooterChartResult;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -39,7 +38,7 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 
 /**
  * @ClassName:StatisticalDataServiceImpl

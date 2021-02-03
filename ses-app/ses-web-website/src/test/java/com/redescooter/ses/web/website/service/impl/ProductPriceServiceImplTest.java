@@ -22,7 +22,7 @@ public class ProductPriceServiceImplTest extends SesWebsiteApplicationTests {
 
         AddProductPriceEnter e50Enter = new AddProductPriceEnter();
         e50Enter.setProductModelId(122680341434368l);
-        e50Enter.setPriceType(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()));
+        e50Enter.setPriceType(PaymentTypeEnums.BY_STAGES.getValue());
         e50Enter.setInstallmentTime(String.valueOf(LnstallmentMonthEnums.DOWN_PAYMENTS.getValue()));
         e50Enter.setPrice(new BigDecimal("899"));
         e50Enter.setStartPrice(new BigDecimal(""));
@@ -34,7 +34,7 @@ public class ProductPriceServiceImplTest extends SesWebsiteApplicationTests {
 
         AddProductPriceEnter E100Enter = new AddProductPriceEnter();
         E100Enter.setProductModelId(122680341434368l);
-        E100Enter.setPriceType(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()));
+        E100Enter.setPriceType(PaymentTypeEnums.BY_STAGES.getValue());
         E100Enter.setInstallmentTime(String.valueOf(LnstallmentMonthEnums.DOWN_PAYMENTS.getValue()));
         E100Enter.setPrice(new BigDecimal("899"));
         E100Enter.setPrepaidDeposit(new BigDecimal("690"));
@@ -44,7 +44,7 @@ public class ProductPriceServiceImplTest extends SesWebsiteApplicationTests {
 
         AddProductPriceEnter E125Enter = new AddProductPriceEnter();
         E125Enter.setProductModelId(122680341434368l);
-        E125Enter.setPriceType(String.valueOf(PaymentTypeEnums.BY_STAGES.getValue()));
+        E125Enter.setPriceType(PaymentTypeEnums.BY_STAGES.getValue());
         E125Enter.setInstallmentTime(String.valueOf(LnstallmentMonthEnums.DOWN_PAYMENTS.getValue()));
         E125Enter.setPrice(new BigDecimal("899"));
         E125Enter.setPrepaidDeposit(new BigDecimal("690"));

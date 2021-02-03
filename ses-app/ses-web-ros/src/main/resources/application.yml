@@ -124,6 +124,7 @@ mybatis-plus:
     banner: true
     db-config:
       id-type: uuid
+      logic-delete-field: dr
       logic-delete-value: 1
       logic-not-delete-value: 0
       table-underline: true

@@ -5,6 +5,8 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -14,7 +16,9 @@ import java.util.TimeZone;
  */
 @Slf4j
 @EnableDubbo
+@EnableCaching
 @EnableDubboConfig(multiple = true)
+@EnableTransactionManagement
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
 public class SesWebWebsiteApplication {
 

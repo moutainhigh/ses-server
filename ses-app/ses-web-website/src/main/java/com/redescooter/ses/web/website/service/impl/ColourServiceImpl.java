@@ -65,7 +65,7 @@ public class ColourServiceImpl implements ColourService {
         SiteColour addSiteColourVO = new SiteColour();
         addSiteColourVO.setId(idAppService.getId(SequenceName.SITE_COLOUR));
         addSiteColourVO.setDr(Constant.DR_FALSE);
-        addSiteColourVO.setStatus(String.valueOf(CommonStatusEnums.NORMAL.getValue()));
+        addSiteColourVO.setStatus(CommonStatusEnums.NORMAL.getValue());
         addSiteColourVO.setColourName(enter.getColourName());
         addSiteColourVO.setColourCode(new StringBuffer().append("CE_").append(MainCode.generateByShuffle()).toString());
         addSiteColourVO.setColour16(enter.getColour16());

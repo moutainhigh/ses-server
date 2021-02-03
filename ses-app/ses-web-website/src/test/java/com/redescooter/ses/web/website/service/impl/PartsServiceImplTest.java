@@ -20,7 +20,7 @@ public class PartsServiceImplTest extends SesWebsiteApplicationTests {
     void addParts() {
 
         AddPartsEnter enter = new AddPartsEnter();
-        enter.setPartsType(String.valueOf(PartsTypeEnums.BATTERY.getValue()));
+        enter.setPartsType(PartsTypeEnums.BATTERY.getValue());
         enter.setPartsNumber("3770018097152");
         enter.setCnName("电池");
         enter.setFrName("Batt Model E H Capa");

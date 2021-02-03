@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -29,7 +26,15 @@ public class SiteUser implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
+    @TableLogic
     private Integer dr;
+
+    /**
+     * 状态 1:Normal，2:Lock,Cancel，3:Expired
+     */
+    @TableField(value = "`status`")
+    @ApiModelProperty(value = "状态 1:Normal，2:Lock,Cancel，3:Expired")
+    private Integer status;
 
     /**
      * 应用ID
@@ -58,13 +63,6 @@ public class SiteUser implements Serializable {
     @TableField(value = "salt")
     @ApiModelProperty(value = "盐")
     private String salt;
-
-    /**
-     * 状态 1:Normal，2:Lock,Cancel，3:Expired
-     */
-    @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态 1:Normal，2:Lock,Cancel，3:Expired")
-    private String status;
 
     /**
      * 登录名
@@ -198,6 +196,8 @@ public class SiteUser implements Serializable {
 
     public static final String COL_DR = "dr";
 
+    public static final String COL_STATUS = "status";
+
     public static final String COL_APP_ID = "app_id";
 
     public static final String COL_SYSTEM_ID = "system_id";
@@ -205,8 +205,6 @@ public class SiteUser implements Serializable {
     public static final String COL_PASSWORD = "password";
 
     public static final String COL_SALT = "salt";
-
-    public static final String COL_STATUS = "status";
 
     public static final String COL_LOGIN_NAME = "login_name";
 

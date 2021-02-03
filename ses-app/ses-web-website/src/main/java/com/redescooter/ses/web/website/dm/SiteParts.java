@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -30,6 +27,7 @@ public class SiteParts implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -37,14 +35,14 @@ public class SiteParts implements Serializable {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value = "状态")
-    private String status;
+    private Integer status;
 
     /**
      * 类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery
      */
     @TableField(value = "parts_type")
     @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
-    private String partsType;
+    private Integer partsType;
 
     /**
      * 部品号

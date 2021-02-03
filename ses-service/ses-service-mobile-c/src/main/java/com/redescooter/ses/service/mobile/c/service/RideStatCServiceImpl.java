@@ -12,7 +12,7 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConDriverRideStatDetail;
 import com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStat;
 import com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
+import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.Service;

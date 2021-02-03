@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.1.100:2181
+    address: zookeeper://192.168.2.211:2181
   metadata-report:
-    address: zookeeper://192.168.1.100:2181
+    address: zookeeper://192.168.2.211:2181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -34,12 +34,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.1.100:7000
-        - 192.168.1.100:7001
-        - 192.168.1.100:7002
-        - 192.168.1.100:7003
-        - 192.168.1.100:7004
-        - 192.168.1.100:7005
+        - 192.168.2.211:7000
+        - 192.168.2.211:7001
+        - 192.168.2.211:7002
+        - 192.168.2.211:7003
+        - 192.168.2.211:7004
+        - 192.168.2.211:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -54,7 +54,6 @@ spring:                                                                         
       simple:
         # 开启消息手动确认
         acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）#消息确认包含 发送确认、接受确认
-
   swagger:
     enabled: true
     group:
@@ -62,8 +61,8 @@ spring:                                                                         
         group-name: Auth API
         title: LogIn/LogOut
         description: LogIn/LogOut Service
-        base-package: com.redescooter.ses.web.website.controller.LoginController
-        path-regex: /auth/.*
+        base-package: com.redescooter.ses.web.website.controller.AuthentionController
+        path-regex: /token/auth/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company
@@ -104,19 +103,19 @@ spring:                                                                         
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
 ## stripe pay
-stripe:
-  currency: eur
-  payment_method_types: card
-  payment_event: accept_a_payment
-  publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
-  secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
-  receipt_email: etienne@redescooter.fr
+rede:
+  stripe-config:
+    currency: eur
+    payment_method_types: card
+    payment_event: accept_a_payment
+    publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+    secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+    receipt_email: etienne@redescooter.fr
 
 excel:
   folder: ${log.path}@profile-active@/projectExcel
 sendinblue:
   listIds: 119
-
 monday:
   url: https://api.monday.com/v2
   authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
@@ -145,5 +144,3 @@ monday:
 constant-us-email:
   sale-principal:
     - test@redescooter.com
-
-

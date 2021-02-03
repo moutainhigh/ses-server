@@ -6,7 +6,7 @@
     <!--@Table site_colour-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="colour_range" jdbcType="VARCHAR" property="colourRange" />
     <result column="colour_name" jdbcType="VARCHAR" property="colourName" />
     <result column="colour_code" jdbcType="VARCHAR" property="colourCode" />
@@ -42,7 +42,7 @@
       </trim>
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
         </foreach>
       </trim>
       <trim prefix="colour_range = case" suffix="end,">
@@ -150,7 +150,7 @@
       <trim prefix="`status` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.status != null">
-            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=VARCHAR}
+            when id = #{item.id,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -287,7 +287,7 @@
       def1, def2, def3, def5, def6)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, 
         #{item.colourRange,jdbcType=VARCHAR}, #{item.colourName,jdbcType=VARCHAR}, #{item.colourCode,jdbcType=VARCHAR}, 
         #{item.colourRgb,jdbcType=VARCHAR}, #{item.colour16,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, 
         #{item.synchronizeFlag,jdbcType=BOOLEAN}, #{item.revision,jdbcType=INTEGER}, #{item.createdBy,jdbcType=BIGINT}, 
@@ -303,7 +303,7 @@
       remark, synchronize_flag, revision, created_by, created_time, updated_by, updated_time, 
       def1, def2, def3, def5, def6)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{colourRange,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{colourRange,jdbcType=VARCHAR}, 
       #{colourName,jdbcType=VARCHAR}, #{colourCode,jdbcType=VARCHAR}, #{colourRgb,jdbcType=VARCHAR}, 
       #{colour16,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{synchronizeFlag,jdbcType=BOOLEAN}, 
       #{revision,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
@@ -313,7 +313,7 @@
     on duplicate key update 
     id = #{id,jdbcType=BIGINT}, 
     dr = #{dr,jdbcType=INTEGER}, 
-    `status` = #{status,jdbcType=VARCHAR}, 
+    `status` = #{status,jdbcType=INTEGER}, 
     colour_range = #{colourRange,jdbcType=VARCHAR}, 
     colour_name = #{colourName,jdbcType=VARCHAR}, 
     colour_code = #{colourCode,jdbcType=VARCHAR}, 
@@ -406,7 +406,7 @@
         #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        #{status,jdbcType=VARCHAR},
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="colourRange != null">
         #{colourRange,jdbcType=VARCHAR},
@@ -469,7 +469,7 @@
         dr = #{dr,jdbcType=INTEGER},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
+        `status` = #{status,jdbcType=INTEGER},
       </if>
       <if test="colourRange != null">
         colour_range = #{colourRange,jdbcType=VARCHAR},

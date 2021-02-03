@@ -21,7 +21,7 @@ import com.redescooter.ses.service.mobile.c.service.base.ConDriverRideStatServic
 import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatDetailService;
 import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
+import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 
 /**
  * @ClassName:RideScooterDateServiceImpl

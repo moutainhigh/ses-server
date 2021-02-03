@@ -1,9 +1,14 @@
 package com.redescooter.ses.web.website.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
+import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
+
+import java.util.List;
 
 /**
  * @Author jerry
@@ -17,20 +22,27 @@ public interface OrderService {
      * @param enter
      * @return
      */
-    GeneralResult addOrder(AddOrderEnter enter);
+    IdResult addOrder(AddOrderEnter enter);
 
     /**
-     * 修改订单
+     * 创建订单配件
      *
      * @param enter
      * @return
      */
-    GeneralResult modifyOrder(AddOrderEnter enter);
+    GeneralResult AddOrderParts(AddOrderPartsEnter enter);
 
     /**
-     * 获取订单详情
+     * 客户订单列表
      *
      * @param enter
+     * @return
+     */
+    List<OrderDetailsResult> getOrderList(GeneralEnter enter);
+
+    /**
+     * @param enter
+     * @return
      */
     OrderDetailsResult getOrderDetails(IdEnter enter);
 
