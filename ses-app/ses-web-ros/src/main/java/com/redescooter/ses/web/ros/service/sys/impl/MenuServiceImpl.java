@@ -568,6 +568,7 @@ public class MenuServiceImpl implements MenuService {
 
         List<MenuTreeResult> result = Lists.newArrayList();
         MenuTreeResult root = new MenuTreeResult();
+
         // 查询root根目录
         LambdaQueryWrapper<OpeSysMenu> rootWrapper = new LambdaQueryWrapper<>();
         rootWrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
@@ -582,10 +583,23 @@ public class MenuServiceImpl implements MenuService {
             qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
             qw.eq(OpeSysMenu::getMenuStatus, 1);
             qw.eq(OpeSysMenu::getLevel, 1);
-            qw.orderByAsc(OpeSysMenu::getSort);
+            qw.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
             List<OpeSysMenu> menuList = sysMenuService.list(qw);
             // 渲染平行结构菜单集合
             List<MenuTreeResult> children = this.buildMenuParallel(menuList, null, Boolean.TRUE);
+            if (CollectionUtils.isNotEmpty(children)) {
+                for (MenuTreeResult child : children) {
+                    long id = child.getId();
+                    LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+                    wrapper.eq(OpeSysMenu::getMenuStatus, 1);
+                    wrapper.eq(OpeSysMenu::getPId, id);
+                    List<OpeSysMenu> list = sysMenuService.list(wrapper);
+                    if (CollectionUtils.isEmpty(list)) {
+                        child.set_loading(Boolean.TRUE);
+                    }
+                }
+            }
             root.setChildren(children);
         } else {
             // 如果不是超管登录,得到当前登录用户的角色id集合
@@ -599,10 +613,23 @@ public class MenuServiceImpl implements MenuService {
                     qw.eq(OpeSysMenu::getMenuStatus, 1);
                     qw.eq(OpeSysMenu::getLevel, 1);
                     qw.in(OpeSysMenu::getId, menuIds);
-                    qw.orderByAsc(OpeSysMenu::getSort);
+                    qw.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
                     List<OpeSysMenu> menuList = sysMenuService.list(qw);
                     // 渲染平行结构菜单集合
                     List<MenuTreeResult> children = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
+                    if (CollectionUtils.isNotEmpty(children)) {
+                        for (MenuTreeResult child : children) {
+                            long id = child.getId();
+                            LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
+                            wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+                            wrapper.eq(OpeSysMenu::getMenuStatus, 1);
+                            wrapper.eq(OpeSysMenu::getPId, id);
+                            List<OpeSysMenu> list = sysMenuService.list(wrapper);
+                            if (CollectionUtils.isEmpty(list)) {
+                                child.set_loading(Boolean.TRUE);
+                            }
+                        }
+                    }
                     root.setChildren(children);
                 }
             }
@@ -620,10 +647,24 @@ public class MenuServiceImpl implements MenuService {
         wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
         wrapper.eq(OpeSysMenu::getMenuStatus, 1);
         wrapper.eq(OpeSysMenu::getPId, enter.getId());
+        wrapper.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
         List<OpeSysMenu> list = sysMenuService.list(wrapper);
         // list相同属性的复制
         String str = JSON.toJSONString(list);
         List<MenuTreeResult> result = JSON.parseArray(str, MenuTreeResult.class);
+        if (CollectionUtils.isNotEmpty(result)) {
+            for (MenuTreeResult model : result) {
+                long id = model.getId();
+                LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+                qw.eq(OpeSysMenu::getMenuStatus, 1);
+                qw.eq(OpeSysMenu::getPId, id);
+                List<OpeSysMenu> subList = sysMenuService.list(qw);
+                if (CollectionUtils.isEmpty(subList)) {
+                    model.set_loading(Boolean.TRUE);
+                }
+            }
+        }
         return result;
     }
 
