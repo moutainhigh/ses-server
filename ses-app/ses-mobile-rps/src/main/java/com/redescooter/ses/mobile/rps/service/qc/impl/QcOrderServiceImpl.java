@@ -323,6 +323,9 @@ public class QcOrderServiceImpl implements QcOrderService {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
         resultDTO.setPrintFlag(false);
 
+        // 无码产品不填写扫码数量时抛出异常
+        RpsAssert.isTrue(!paramDTO.getIdClass() && null == paramDTO.getQcQty(),
+                ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
         RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
                 ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
         /**
@@ -371,9 +374,9 @@ public class QcOrderServiceImpl implements QcOrderService {
                 Collectors.toMap(ProductQcTemplateDTO::getId, t -> t)
         );
 
-        // 避免重复质检
-        if (paramDTO.getIdClass()) {
-            int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId());
+        // 避免重复质检, 这里只对车辆、组装件做重复扫码校验,部件的在下面处理,因为部件会比较特殊
+        if (paramDTO.getIdClass() && !ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType())) {
+            int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId(), 1);
             RpsAssert.isTrue(count > 0, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
         }
@@ -397,6 +400,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         /**
          * 检查质检结果是否通过
          */
+        boolean qcResultIdIsExists = false;
         for (QcProductResultDTO qc : qcProductResultList) {
             // 组装质检记录数据
             OpeOrderQcTrace opeOrderQcTrace = new OpeOrderQcTrace();
@@ -421,12 +425,19 @@ public class QcOrderServiceImpl implements QcOrderService {
             // 质检结果校验
             for (ProductQcTemplateResultDTO result : qcResultMap.get(qc.getTemplateId())) {
                 if (qc.getTemplateResultId().equals(result.getId())) {
+                    qcResultIdIsExists = true;
                     opeOrderQcTrace.setProductQcTemplateBName(result.getQcResult());
                     if (!result.getPassFlag()) {
                         qcResultFlag = false;
                     }
                 }
             }
+            // 质检模板结果不存在
+            RpsAssert.isFalse(qcResultIdIsExists, ExceptionCodeEnums.QC_TEMPLATE_RESULT_IS_NOT_EXISTS.getCode(),
+                    ExceptionCodeEnums.QC_TEMPLATE_RESULT_IS_NOT_EXISTS.getMessage());
+            // 重新调整为false,保证下一次遍历没有问题
+            qcResultIdIsExists = false;
+
             opeOrderQcTraceList.add(opeOrderQcTrace);
         }
 
@@ -577,6 +588,18 @@ public class QcOrderServiceImpl implements QcOrderService {
                             ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
                     RpsAssert.isTrue(opeQcPartsB.getUnqualifiedQty() > 0 || opeQcPartsB.getQualifiedQty() > 0,
                             ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+                } else {
+                    /**
+                     * 如果是质检单是由“工厂采购单”所生成对于重复扫码校验的逻辑就要修改, 因为工厂采购生成的质检单扫码时,扫的码是部件本身的,
+                     * 其它例如,组装、出库生成的质检单扫码时，扫的是后台生成的码, 这里比较特殊所以需要这样处理
+                     */
+                    OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(qcId);
+                    if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
+                        int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId(),
+                                OrderTypeEnums.FACTORY_PURCHAS.getValue());
+                        RpsAssert.isTrue(count > 0, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                                ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+                    }
                 }
 
                 // 更新部件质检合格/不合格数量(部件存在无码质检这里要特殊处理)
@@ -732,9 +755,26 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         RpsAssert.isNull(opeQcOrder, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
-
         RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
                 ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
+
+        /**
+         * 完成质检时检查产品是否全部质检完 1车辆 2组装件 3部件
+         */
+        List<QcOrderProductDTO> productList = null;
+        switch (opeQcOrder.getOrderType()) {
+            case 1:
+                productList = qcScooterMapper.getQcScooterByQcId(enter.getId());
+                break;
+            case 2:
+                productList = qcCombinMapper.getQcCombinByQcId(enter.getId());
+                break;
+            default:
+                productList = qcPartsMapper.getQcPartsByQcId(enter.getId());
+                break;
+        }
+        // 检查产品是否质检完成
+        checkQcQty(productList);
 
         opeQcOrder.setId(opeQcOrder.getId());
         opeQcOrder.setQcStatus(QcStatusEnum.QUALITY_INSPECTION_COMPLETED.getStatus());
@@ -769,6 +809,18 @@ public class QcOrderServiceImpl implements QcOrderService {
         }
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    /**
+     * 检查产品是否质检完成
+     * @param productList
+     */
+    private void checkQcQty(List<QcOrderProductDTO> productList) {
+        productList.forEach(product -> {
+            RpsAssert.isTrue((product.getQualifiedQty() + product.getUnqualifiedQty()) < product.getQty(),
+                    ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(), ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
+        });
     }
 
 }

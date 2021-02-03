@@ -41,10 +41,12 @@ public interface QcOrderSerialBindMapper {
      * 检查是否存在序列号
      * @param serialNum
      * @param productId
+     * @param relationOrderType
      * @return int
      * @author assert
      * @date 2021/1/29
     */
-    int isExistsSerialNum(@Param("serialNum") String serialNum, @Param("productId") Long productId);
+    int isExistsSerialNum(@Param("serialNum") String serialNum, @Param("productId") Long productId,
+                          @Param("relationOrderType") Integer relationOrderType);
 
 }

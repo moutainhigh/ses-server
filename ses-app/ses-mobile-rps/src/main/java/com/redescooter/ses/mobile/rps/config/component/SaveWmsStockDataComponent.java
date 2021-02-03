@@ -147,6 +147,10 @@ public class SaveWmsStockDataComponent {
                         scooterBom.getColorId());
 
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
+                // 库存校验,检查库存是否足够
+                RpsAssert.isTrue(qty > opeWmsScooterStock.getAbleStockQty(), ExceptionCodeEnums.INVENTORY_SHORTAGE.getCode(),
+                        ExceptionCodeEnums.INVENTORY_SHORTAGE.getMessage());
+
                 opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() - qty);
                 opeWmsScooterStock.setUsedStockQty(opeWmsScooterStock.getUsedStockQty() + qty);
                 opeWmsScooterStock.setWaitOutStockQty(opeWmsScooterStock.getWaitOutStockQty() - qty);
@@ -232,6 +236,10 @@ public class SaveWmsStockDataComponent {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
                 // 组装件成品库信息
                 OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(map.getKey());
+                // 库存校验,检查库存是否足够
+                RpsAssert.isTrue(qty > opeWmsCombinStock.getAbleStockQty(), ExceptionCodeEnums.INVENTORY_SHORTAGE.getCode(),
+                        ExceptionCodeEnums.INVENTORY_SHORTAGE.getMessage());
+
                 opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() - qty);
                 opeWmsCombinStock.setUsedStockQty(opeWmsCombinStock.getUsedStockQty() + qty);
                 opeWmsCombinStock.setWaitOutStockQty(opeWmsCombinStock.getWaitOutStockQty() - qty);
@@ -318,6 +326,10 @@ public class SaveWmsStockDataComponent {
                 qty = map.getValue().get(0).getAlreadyOutWhQty();
                 // 部件原料库信息
                 OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(map.getKey());
+                // 库存校验,检查库存是否足够
+                RpsAssert.isTrue(qty > opeWmsPartsStock.getAbleStockQty(), ExceptionCodeEnums.INVENTORY_SHORTAGE.getCode(),
+                        ExceptionCodeEnums.INVENTORY_SHORTAGE.getMessage());
+
                 opeWmsPartsStock.setAbleStockQty(opeWmsPartsStock.getAbleStockQty() - qty);
                 opeWmsPartsStock.setUsedStockQty(opeWmsPartsStock.getUsedStockQty() + qty);
                 opeWmsPartsStock.setWaitOutStockQty(opeWmsPartsStock.getWaitOutStockQty() - qty);
