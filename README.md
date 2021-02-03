@@ -232,3 +232,4 @@ Type的类别说明：
 > - test: 增加测试用例
 > - chore: 改变构建流程、或者增加依赖库、工具等
 
+grant all privileges on *.* to 'root'@'localhost';

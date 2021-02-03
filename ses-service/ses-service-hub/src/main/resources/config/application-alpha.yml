@@ -19,17 +19,17 @@ spring:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://192.168.2.211:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
+          username: dev
           password: 1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://192.168.2.211:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
+          username: dev
           password: 1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://192.168.2.211:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
+          username: dev
           password: 1qaz2wsx
   #REDIS集群配置
   redis:
