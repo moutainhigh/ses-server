@@ -16,7 +16,7 @@ import java.util.Date;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 11/10/2019 3:19 下午
- * @ClassName: MailTemplateOfTermResult
+ * @ClassName: MailTemplateResult
  * @Function: TODO
  */
 @Data //生成getter,setter等函数
@@ -24,18 +24,12 @@ import java.util.Date;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MailTemplateOfTermResult extends GeneralResult {
+public class MailTemplateResult extends GeneralResult {
     /**
      * 主键
      */
     @ApiModelProperty(value = "主键")
     private Long id;
-
-    /**
-     * 模板名称
-     */
-    @ApiModelProperty(value = "name")
-    private String name;
 
     /**
      * Normal正常的，Disabled失效的
@@ -44,16 +38,22 @@ public class MailTemplateOfTermResult extends GeneralResult {
     private String status;
 
     /**
-     * 邮件发送事件
-     */
-    @ApiModelProperty(value = "邮件发送事件")
-    private String event;
-
-    /**
      * 模板编号
      */
     @ApiModelProperty(value = "模板编号")
     private Integer mailTemplateNo;
+
+    /**
+     * 模板名称
+     */
+    @ApiModelProperty(value = "name")
+    private String name;
+
+    /**
+     * 邮件发送事件
+     */
+    @ApiModelProperty(value = "邮件发送事件")
+    private String event;
 
     /**
      * 主题
@@ -61,6 +61,17 @@ public class MailTemplateOfTermResult extends GeneralResult {
     @ApiModelProperty(value = "主题")
     private String subject;
 
+    /**
+     * 邮件模板内容
+     */
+    @ApiModelProperty(value = "内容")
+    private String content;
+
+    /**
+     * 邮箱模板备注
+     */
+    @ApiModelProperty(value = "邮件模板备注")
+    private String memo;
     /**
      * 邮件有效期，单位秒
      */
@@ -77,8 +88,8 @@ public class MailTemplateOfTermResult extends GeneralResult {
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="UTC")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createdTime;
 
 }

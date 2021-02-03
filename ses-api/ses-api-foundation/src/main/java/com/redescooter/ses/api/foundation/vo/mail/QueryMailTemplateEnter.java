@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * @author Mr.lijiating
  * @version V1.0
  * @Date: 11/10/2019 3:22 下午
- * @ClassName: MailTemplateOfTermEnter
+ * @ClassName: QueryMailTemplateEnter
  * @Function: TODO
  */
 @Data //生成getter,setter等函数
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class MailTemplateOfTermEnter extends GeneralEnter {
+public class QueryMailTemplateEnter extends GeneralEnter {
 
     /**
      * 模板名称

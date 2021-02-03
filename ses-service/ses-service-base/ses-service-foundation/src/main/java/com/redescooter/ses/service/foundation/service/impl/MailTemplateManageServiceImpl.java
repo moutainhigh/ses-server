@@ -3,19 +3,21 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
-import com.redescooter.ses.api.foundation.vo.mail.MailTemplateOfTermEnter;
-import com.redescooter.ses.api.foundation.vo.mail.MailTemplateOfTermResult;
-import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
+import com.redescooter.ses.api.foundation.vo.mail.QueryMailTemplateEnter;
+import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,15 +31,17 @@ import java.util.List;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class MailTemplateManageServiceImpl implements MailTemplateManageService {
+
     @Autowired
     private PlaMailTemplateMapper mailTemplateMapper;
     @Autowired
     private IdAppService idSerService;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult save(SaveMailTemplateEnter enter) {
+    public GeneralResult save(UpdateMailTemplateEnter enter) {
 
         PlaMailTemplate mailTemplate = new PlaMailTemplate();
 
@@ -55,8 +59,23 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 删除邮件模板
+     *
+     * @param enter
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<MailTemplateOfTermResult> getMailTemplateOfTerm(MailTemplateOfTermEnter enter) {
+    public GeneralResult delete(IdEnter enter) {
+
+        mailTemplateMapper.deleteById(enter.getId());
+
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public List<MailTemplateResult> getMailTemplateList(QueryMailTemplateEnter enter) {
 
         QueryWrapper<PlaMailTemplate> wrapper = new QueryWrapper<>();
 
@@ -78,10 +97,10 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         }
 
         List<PlaMailTemplate> mailTemplates = mailTemplateMapper.selectList(wrapper);
-        MailTemplateOfTermResult result = null;
-        List<MailTemplateOfTermResult> resultList = new ArrayList<>();
+        MailTemplateResult result = null;
+        List<MailTemplateResult> resultList = new ArrayList<>();
         for (PlaMailTemplate mailTemplate : mailTemplates) {
-            result = new MailTemplateOfTermResult();
+            result = new MailTemplateResult();
             BeanUtils.copyProperties(mailTemplate, result);
             resultList.add(result);
         }
