@@ -69,4 +69,13 @@ public interface EntrustOrderMapper {
     */
     OpeEntrustOrder getEntrustOrderById(Long id);
 
+    /**
+     * 获取委托单所有数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2021/2/3
+    */
+    int allCountByEntrustOrder();
+
 }

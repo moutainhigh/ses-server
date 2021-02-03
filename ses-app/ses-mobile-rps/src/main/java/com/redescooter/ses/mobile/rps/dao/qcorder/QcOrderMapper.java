@@ -79,4 +79,13 @@ public interface QcOrderMapper {
     */
     OpeQcOrder getQcOrderById(Long id);
 
+    /**
+     * 获取质检单所有数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2021/2/3
+    */
+    int allCountByQcOrder();
+
 }

@@ -86,4 +86,13 @@ public interface OutWarehouseOrderMapper {
     */
     OpeOutWhouseOrder getOutWarehouseById(Long id);
 
+    /**
+     * 获取出库单所有数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2021/2/3
+    */
+    int allCountByOutWhOrder();
+
 }

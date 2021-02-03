@@ -146,4 +146,10 @@
 	    where dr = 0 and id = #{id}
     </select>
 
+    <!--获取质检单所有数量-->
+    <select id="allCountByQcOrder" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0
+    </select>
+
 </mapper>

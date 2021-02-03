@@ -183,4 +183,10 @@
         where dr = 0 and id = #{id}
     </select>
 
+    <!--获取出库单所有数量-->
+    <select id="allCountByOutWhOrder" resultType="java.lang.Integer">
+        select count(*) from ope_out_whouse_order
+	    where dr = 0
+    </select>
+
 </mapper>

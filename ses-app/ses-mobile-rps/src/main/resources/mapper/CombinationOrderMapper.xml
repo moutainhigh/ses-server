@@ -142,5 +142,11 @@
 	    where dr = 0 and created_time between concat(CURDATE(), ' ',' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
 	    order by created_time asc
     </select>
-    
+
+    <!--获取组装单所有数量-->
+    <select id="allCountByCombinationOrder" resultType="java.lang.Integer">
+        select count(*) from ope_combin_order
+	    where dr = 0
+    </select>
+
 </mapper>

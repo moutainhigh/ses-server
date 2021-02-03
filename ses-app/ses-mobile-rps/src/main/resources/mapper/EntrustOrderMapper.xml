@@ -191,4 +191,10 @@
         where dr = 0 and id = #{id}
     </select>
 
+    <!--获取委托单所有数量-->
+    <select id="allCountByEntrustOrder" resultType="java.lang.Integer">
+        select count(*) from ope_entrust_order
+	    where dr = 0
+    </select>
+
 </mapper>

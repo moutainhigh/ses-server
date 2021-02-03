@@ -79,4 +79,13 @@ public interface InWhOrderMapper {
      */
     OpeInWhouseOrder getInWhOrderById(Long id);
 
+    /**
+     * 获取入库单所有数量
+     * @param
+     * @return int
+     * @author assert
+     * @date 2021/2/3
+    */
+    int allCountByInWhOrder();
+
 }
