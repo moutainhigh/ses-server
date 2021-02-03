@@ -593,7 +593,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                      * 如果是质检单是由“工厂采购单”所生成对于重复扫码校验的逻辑就要修改, 因为工厂采购生成的质检单扫码时,扫的码是部件本身的,
                      * 其它例如,组装、出库生成的质检单扫码时，扫的是后台生成的码, 这里比较特殊所以需要这样处理
                      */
-                    OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(qcId);
+                    OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(opeQcPartsB.getQcId());
                     if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
                         int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId(),
                                 OrderTypeEnums.FACTORY_PURCHAS.getValue());

@@ -19,7 +19,7 @@
         select id, production_id bomId, production_type bomType,import_excel_batch_no importExcelBatchNo,
         source_type sourceType, production_type productType,qc_item_name qcItemName
         from ope_production_quality_tempate
-        where dr = 0 and production_id = #{productId}
+        where dr = 0 and production_id = #{productId} and production_type = #{productType}
     </select>
 
 </mapper>
