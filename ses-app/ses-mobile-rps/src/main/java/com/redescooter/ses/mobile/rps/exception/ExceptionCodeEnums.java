@@ -234,7 +234,9 @@ public enum ExceptionCodeEnums {
 
     BOM_IS_NOT_EXISTS(10114, "bom不存在"),
 
-    PRODUCT_NAME_IS_EMPTY(10115, "产品名称为空")
+    PRODUCT_NAME_IS_EMPTY(10115, "产品名称为空"),
+
+    PARTS_NO_IS_EMPTY(10116, "部件号不能为空")
     ;
 
     private int code;

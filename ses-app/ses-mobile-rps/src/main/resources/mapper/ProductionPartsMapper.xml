@@ -54,9 +54,9 @@
     </select>
 
     <!--根据id查询部件是否有序列号标识-->
-    <select id="getPartsIdClassById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    <select id="getPartsIdClassById" resultType="java.lang.Integer">
         select id_calss from ope_production_parts
-        where dr = 0 and id = #{id}
+        where dr = 0 and id = #{id} and parts_no = #{partsNo}
     </select>
 
 </mapper>
