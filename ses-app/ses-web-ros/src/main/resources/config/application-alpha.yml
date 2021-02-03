@@ -18,7 +18,7 @@ spring: #spring config
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  datasource: #数据库连接
+  datasource:
     url: jdbc:mysql://192.168.2.211:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
@@ -27,7 +27,7 @@ spring: #spring config
       min-idle: 1
       max-active: 20
       max-wait: 60000
-      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
         login-username: rede
         login-password: admin
         enabled: true
