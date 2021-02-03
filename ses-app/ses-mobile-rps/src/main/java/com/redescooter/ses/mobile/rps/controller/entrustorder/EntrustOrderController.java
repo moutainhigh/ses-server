@@ -34,7 +34,7 @@ public class EntrustOrderController {
      * @author assert
      * @date 2020/12/30
     */
-    @ApiOperation(value = "委托单类型数量统计", notes = "委托单类型数量统计")
+    @ApiOperation(value = "委托单类型数量统计", notes = "委托单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByType")
     public Response<Map<Integer, Integer>> getEntrustOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(entrustOrderService.getEntrustOrderTypeCount(enter));

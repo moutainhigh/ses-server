@@ -37,7 +37,7 @@ public class InWarehouseOrderController {
      * @author assert
      * @date 2021/1/15
     */
-    @ApiOperation(value = "入库单类型数量统计")
+    @ApiOperation(value = "入库单类型数量统计", notes = "入库单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getInWarehouseOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(inWhOrderService.getInWarehouseOrderTypeCount(enter));
@@ -50,7 +50,7 @@ public class InWarehouseOrderController {
      * @author assert
      * @date 2021/1/15
     */
-    @ApiOperation(value = "入库类型数量统计")
+    @ApiOperation(value = "入库类型数量统计", notes = "入库类型说明：1生产入库 2返修入库 3采购入库 4退料入库 5其他 6报废入库 7调拨入库")
     @PostMapping(value = "/countByType")
     public Response<Map<Integer, Integer>> getInWarehouseTypeCount(@ModelAttribute CountByOrderTypeParamDTO paramDTO) {
         return new Response<>(inWhOrderService.getInWarehouseTypeCount(paramDTO));

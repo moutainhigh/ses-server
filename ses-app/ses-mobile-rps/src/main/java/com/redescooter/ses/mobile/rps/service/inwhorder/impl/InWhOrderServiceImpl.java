@@ -269,6 +269,8 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 break;
         }
 
+        RpsAssert.isBlank(name, ExceptionCodeEnums.PRODUCT_NAME_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.PRODUCT_NAME_IS_EMPTY.getMessage());
         /**
          * 保存入库单产品序列号绑定信息
          */

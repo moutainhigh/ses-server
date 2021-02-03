@@ -35,7 +35,7 @@ public class CombinationOrderController {
      * @author assert
      * @date 2021/1/27
     */
-    @ApiOperation(value = "组装单类型数量统计")
+    @ApiOperation(value = "组装单类型数量统计", notes = "组装单类型说明：1车辆 2组装件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getCombinationOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(combinationOrderService.getCombinationOrderTypeCount(enter));
