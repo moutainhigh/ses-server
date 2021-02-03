@@ -1,12 +1,12 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
-import com.redescooter.ses.api.foundation.vo.mail.QueryMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper;
@@ -75,25 +75,14 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     }
 
     @Override
-    public List<MailTemplateResult> getMailTemplateList(QueryMailTemplateEnter enter) {
-
-        QueryWrapper<PlaMailTemplate> wrapper = new QueryWrapper<>();
-
-        String event = enter.getEvent();
-        Integer mailTemplateNo = enter.getMailTemplateNo();
-        String status = enter.getStatus();
-        String name = enter.getName();
-        if (StringUtils.isNotBlank(event)) {
-            wrapper.eq(PlaMailTemplate.COL_EVENT, event);
-        }
-        if (StringUtils.isNotBlank(status)) {
-            wrapper.eq(PlaMailTemplate.COL_STATUS, status);
-        }
-        if (StringUtils.isNotBlank(name)) {
-            wrapper.eq(PlaMailTemplate.COL_NAME, name);
-        }
-        if (mailTemplateNo != null) {
-            wrapper.eq(PlaMailTemplate.COL_MAIL_TEMPLATE_NO, mailTemplateNo);
+    public List<MailTemplateResult> getMailTemplateList(StringEnter enter) {
+        LambdaQueryWrapper<PlaMailTemplate> wrapper = new LambdaQueryWrapper<>();
+        String keyword = enter.getKeyword();
+        if (StringUtils.isNotBlank(keyword)) {
+            wrapper.like(PlaMailTemplate::getEvent, keyword);
+            wrapper.like(PlaMailTemplate::getStatus, keyword);
+            wrapper.like(PlaMailTemplate::getName, keyword);
+            wrapper.like(PlaMailTemplate::getMailTemplateNo, keyword);
         }
 
         List<PlaMailTemplate> mailTemplates = mailTemplateMapper.selectList(wrapper);
