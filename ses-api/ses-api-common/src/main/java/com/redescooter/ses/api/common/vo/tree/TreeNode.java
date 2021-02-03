@@ -24,7 +24,7 @@ public class TreeNode extends GeneralResult {
     protected long pId;
 
     @ApiModelProperty(value = "子节点列表")
-    protected List<TreeNode> children = new ArrayList<TreeNode>();
+    protected List children = new ArrayList();
 
     public void add(TreeNode node) {
         children.add(node);

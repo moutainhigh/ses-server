@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.menu.MenuTypeEnums;
@@ -565,6 +566,16 @@ public class MenuServiceImpl implements MenuService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
+        List<MenuTreeResult> result = Lists.newArrayList();
+        MenuTreeResult root = new MenuTreeResult();
+        // 查询root根目录
+        LambdaQueryWrapper<OpeSysMenu> rootWrapper = new LambdaQueryWrapper<>();
+        rootWrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
+        rootWrapper.eq(OpeSysMenu::getLevel, 0);
+        rootWrapper.last("limit 1");
+        OpeSysMenu rootMenu = sysMenuService.getOne(rootWrapper);
+        BeanUtils.copyProperties(rootMenu, root);
+
         // 如果是超管登录,得到所有的目录
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
@@ -574,8 +585,8 @@ public class MenuServiceImpl implements MenuService {
             qw.orderByAsc(OpeSysMenu::getSort);
             List<OpeSysMenu> menuList = sysMenuService.list(qw);
             // 渲染平行结构菜单集合
-            List<MenuTreeResult> result = this.buildMenuParallel(menuList, null, Boolean.TRUE);
-            return result;
+            List<MenuTreeResult> children = this.buildMenuParallel(menuList, null, Boolean.TRUE);
+            root.setChildren(children);
         } else {
             // 如果不是超管登录,得到当前登录用户的角色id集合
             List<Long> roleIds = this.getRoleIds(new IdEnter(enter.getUserId()));
@@ -591,12 +602,13 @@ public class MenuServiceImpl implements MenuService {
                     qw.orderByAsc(OpeSysMenu::getSort);
                     List<OpeSysMenu> menuList = sysMenuService.list(qw);
                     // 渲染平行结构菜单集合
-                    List<MenuTreeResult> result = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
-                    return result;
+                    List<MenuTreeResult> children = this.buildMenuParallel(menuList, roleIds, Boolean.FALSE);
+                    root.setChildren(children);
                 }
             }
         }
-        return Collections.EMPTY_LIST;
+        result.add(root);
+        return result;
     }
 
     /**
