@@ -1,6 +1,5 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -13,7 +12,6 @@ import com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +34,14 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
     @Autowired
     private PlaMailTemplateMapper mailTemplateMapper;
+
     @Autowired
     private IdAppService idSerService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(UpdateMailTemplateEnter enter) {
-
         PlaMailTemplate mailTemplate = new PlaMailTemplate();
-
         BeanUtils.copyProperties(enter, mailTemplate);
         if (enter.getId() == null || enter.getId() == 0) {
             mailTemplate.setId(idSerService.getId(SequenceName.PLA_MAIL_TEMPLATE));
@@ -54,7 +51,6 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         mailTemplate.setCreatedTime(new Date());
         mailTemplate.setUpdatedBy(enter.getUserId());
         mailTemplate.setUpdatedTime(new Date());
-
         mailTemplateMapper.insertOrUpdateSelective(mailTemplate);
         return new GeneralResult(enter.getRequestId());
     }
@@ -68,29 +64,18 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
-
         mailTemplateMapper.deleteById(enter.getId());
-
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public List<MailTemplateResult> getMailTemplateList(StringEnter enter) {
-        LambdaQueryWrapper<PlaMailTemplate> wrapper = new LambdaQueryWrapper<>();
-        String keyword = enter.getKeyword();
-        if (StringUtils.isNotBlank(keyword)) {
-            wrapper.like(PlaMailTemplate::getEvent, keyword);
-            wrapper.like(PlaMailTemplate::getStatus, keyword);
-            wrapper.like(PlaMailTemplate::getName, keyword);
-            wrapper.like(PlaMailTemplate::getMailTemplateNo, keyword);
-        }
-
-        List<PlaMailTemplate> mailTemplates = mailTemplateMapper.selectList(wrapper);
+        List<PlaMailTemplate> list = mailTemplateMapper.getList(enter);
         MailTemplateResult result = null;
         List<MailTemplateResult> resultList = new ArrayList<>();
-        for (PlaMailTemplate mailTemplate : mailTemplates) {
+        for (PlaMailTemplate o : list) {
             result = new MailTemplateResult();
-            BeanUtils.copyProperties(mailTemplate, result);
+            BeanUtils.copyProperties(o, result);
             resultList.add(result);
         }
         return resultList;
