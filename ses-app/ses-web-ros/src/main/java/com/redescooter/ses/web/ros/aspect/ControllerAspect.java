@@ -115,8 +115,7 @@ public class ControllerAspect {
             argTypes[i] = point.getArgs()[i].getClass();
         }
         try {
-            method = point.getTarget().getClass()
-                    .getMethod(point.getSignature().getName(), argTypes);
+            method = point.getTarget().getClass().getMethod(point.getSignature().getName(), argTypes);
         } catch (NoSuchMethodException e) {
             log.error("get method failure:", e);
         }
@@ -144,25 +143,35 @@ public class ControllerAspect {
      * @param point
      */
     private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
-        // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接retrue出去就行
+        // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接return出去就行
+        /*LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(OpeSysUser::getId, enter.getUserId());
+        userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
+        userWrapper.last("limit 1");
+        OpeSysUser admin = opeSysUserService.getOne(userWrapper);
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            return;
+        }*/
+
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
+        // 得到该用户拥有的权限path
         List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
         // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
-        if(!CollectionUtils.isNotEmpty(permsList)){
-//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        if (CollectionUtils.isEmpty(permsList)) {
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
         boolean flag = false;
         for (String perm : permsList) {
-            if(perm.contains(requestPath)){
+            if (perm.contains(requestPath)) {
                 flag = true;
                 break;
             }
         }
-        if(!flag){
-//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        if (!flag) {
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
     }
 

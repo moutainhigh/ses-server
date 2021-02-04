@@ -27,4 +27,7 @@ public class CombinationListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字搜索",required = false)
     private String keyword;
+
+    @ApiModelProperty("库存类型,1:中国，2：法国")
+    private Integer stockType;
 }

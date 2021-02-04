@@ -1,0 +1,105 @@
+#日志路径
+log:
+  file:
+    path: ${log.path}@profile-active@
+    max-size: 128MB
+    max-history: 180
+## DUBBO 配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://192.168.2.211:2181
+  metadata-report:
+    address: zookeeper://192.168.2.211:2181
+spring:                                                                                                                 #spring config
+  http:                                                                                                                 #上传配置
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  datasource:                                                                                                           #数据库连接
+    url: jdbc:mysql://192.168.2.211:3306/website?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: dev
+    password: 1qaz2wsx
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 192.168.2.211:7000
+        - 192.168.2.211:7001
+        - 192.168.2.211:7002
+        - 192.168.2.211:7003
+        - 192.168.2.211:7004
+        - 192.168.2.211:7005
+
+  swagger:                                                                                                              #swagger在线文档配置
+    enabled: true                                                                                                       #是否启用swagger
+    group:
+      sign-api:                                                                                                         #用户组api，可以配置多个组
+        group-name: Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.ros
+        path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact:                                                                                                        #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli                                                                             #联系地址
+
+## stripe pay
+stripe:
+  currency: eur
+  payment_method_types: card
+  payment_event: payment_intent.succeeded
+  publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+  secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+  receipt_email: etienne@redescooter.fr
+
+excel:
+  folder: ${log.path}@profile-active@/projectExcel
+sendinblue:
+  listIds: 119
+
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: Test Website Order
+  orderFormBoardBackName: Pré-vente
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: Test Website AboutUs
+  contactUsBoardBackName: laisser un message
+  contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: Test Website Email
+  subEmailBoardBackName: abonnement
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 21182
+  #模板Id
+  templeteId: 581923336
+  load-template: false
+
+constant-us-email:
+  sale-principal:
+    - support@redelectric.fr

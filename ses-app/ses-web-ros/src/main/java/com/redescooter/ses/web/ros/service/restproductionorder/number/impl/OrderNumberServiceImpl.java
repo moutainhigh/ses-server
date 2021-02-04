@@ -76,7 +76,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.STOCK.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
                         OrderNumberTypeEnums.STOCK.getValue()));
             case 5:
-                //调拨单
+                //委托单
                 OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().orderByDesc(OpeEntrustOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opeEntrustOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.CONSIGN.getValue()) : generalOrderNum(opeEntrustOrder.getEntrustNo(),
                         OrderNumberTypeEnums.CONSIGN.getValue()));

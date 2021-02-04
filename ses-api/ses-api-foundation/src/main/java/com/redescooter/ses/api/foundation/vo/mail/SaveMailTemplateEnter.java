@@ -21,36 +21,53 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(callSuper = false)
 public class SaveMailTemplateEnter extends GeneralEnter {
-    /**
-     * 主键
-     */
-    @ApiModelProperty(value="主键")
-    private Long id;
 
-    @ApiModelProperty(value="name")
+    /**
+     * 模板编号
+     */
+    @ApiModelProperty(value = "模板编号")
+    private Integer mailTemplateNo;
+
+    /**
+     * 邮件模板名称
+     */
+    @ApiModelProperty(value = "name")
     private String name;
 
     /**
      * 邮件发送事件
      */
-    @ApiModelProperty(value="邮件发送事件")
+    @ApiModelProperty(value = "邮件发送事件")
     private String event;
-
-    /**
-     * 模板编号
-     */
-    @ApiModelProperty(value="模板编号")
-    private Integer mailTemplateNo;
 
     /**
      * 主题
      */
-    @ApiModelProperty(value="主题")
+    @ApiModelProperty(value = "主题")
     private String subject;
+
+    /**
+     * 邮件模板内容
+     */
+    @ApiModelProperty(value = "内容")
+    private String content;
+
+    /**
+     * 邮件模板备注
+     */
+    @ApiModelProperty(value = "备注")
+    private String memo;
 
     /**
      * 邮件有效期，单位秒
      */
-    @ApiModelProperty(value="邮件有效期，单位秒")
+    @ApiModelProperty(value = "邮件有效期，单位秒")
     private Integer expire;
+
+    /**
+     * 邮件模板上传地址
+     */
+    @ApiModelProperty(value = "邮件模板上传地址")
+    private String url;
+
 }

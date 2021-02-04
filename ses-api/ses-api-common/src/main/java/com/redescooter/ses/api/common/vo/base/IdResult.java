@@ -12,10 +12,8 @@ import lombok.*;
  * @create: 2019/12/18 16:32
  */
 @ApiModel(value = "Primary key parameters", description = "Primary key parameters")
-@Data //生成getter,setter等函数
-@AllArgsConstructor //生成全参数构造函数
-@NoArgsConstructor//生成无参构造函数
-@Builder
+@Data
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 public class IdResult extends GeneralResult {
 

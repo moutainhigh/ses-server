@@ -7,12 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.service.WebDistributorService;
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.distributor.SavaOrUpdateDistributorEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -30,12 +25,7 @@ import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.distributor.DistributorService;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorAddEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorCityAndCPSelectorEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorEnableOrDisableEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorListEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorNameEnter;
-import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorUpdateEnter;
+import com.redescooter.ses.web.ros.vo.distributor.enter.*;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorCityAndCPSelectorResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorDetailResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult;
@@ -54,14 +44,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -164,8 +147,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
                 }
             }
         }
-        if(!flag){
+        if(!flag && CollectionUtils.isNotEmpty(deptIds)){
             wrapper.in(OpeDistributor::getDeptId,deptIds);
+        }else if (!flag && CollectionUtils.isEmpty(deptIds)){
+            wrapper.eq(OpeDistributor::getCreatedBy,enter.getUserId());
         }
         List<OpeDistributor> list = opeDistributorMapper.selectList(wrapper);
         List<String> collect = Lists.newArrayList();

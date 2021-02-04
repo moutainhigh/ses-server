@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @ClassName:CombinOrderStatusEnums
- * @description: CombinOrderStatusEnums
+ * @description: CombinOrderStatusEnums 组装单状态
  * @author: Alex
  * @Version：1.3
  * @create: 2020/11/12 14:04 

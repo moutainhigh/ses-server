@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
+        <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+        <result column="country_type" jdbcType="INTEGER" property="countryType" />
+        <result column="relation_id" jdbcType="BIGINT" property="relationId" />
+        <result column="relation_no" jdbcType="VARCHAR" property="relationNo" />
+        <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+        <result column="wh_type" jdbcType="INTEGER" property="whType" />
+        <result column="out_wh_no" jdbcType="VARCHAR" property="outWhNo" />
+        <result column="out_wh_status" jdbcType="INTEGER" property="outWhStatus" />
+        <result column="out_wh_type" jdbcType="INTEGER" property="outWhType" />
+        <result column="out_type" jdbcType="INTEGER" property="outType" />
+        <result column="out_wh_qty" jdbcType="INTEGER" property="outWhQty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime" />
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+        <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+        <result column="mail" jdbcType="VARCHAR" property="mail" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="if_wh" jdbcType="INTEGER" property="ifWh" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--出库单列表查询条件sql-->
+    <sql id="getOutWarehouseOrderListWhere">
+        <if test="status == 0">and out_wh_status in (-1, 10)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
+        <if test="orderType != null">and out_wh_type = #{orderType}</if>
+        <if test="type != null">and out_type = #{type}</if>
+    </sql>
+
+    <!--查询所有出库单类型数量-->
+    <select id="getOutWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_wh_type `status`, count(id) totalCount
+        from ope_out_whouse_order whorder
+        where whorder.dr = 0
+        group by out_wh_type
+    </select>
+
+    <!--查询所有出库类型数量-->
+    <select id="getOutWarehouseTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select out_type `status`, count(id) totalCount
+        from ope_out_whouse_order
+        where dr = 0 and out_wh_type = #{type}
+        <if test="status == 0">and out_wh_status in (-1, 10)</if>
+        <if test="status == 1">and out_wh_status = 20</if>
+        group by out_type
+    </select>
+
+    <!--查询出库单数量-->
+    <select id="countByOutWarehouseOrder" parameterType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from ope_out_whouse_order
+	    where dr = 0
+	    <include refid="getOutWarehouseOrderListWhere" />
+    </select>
+
+    <!--出库单列表查询-->
+    <select id="getOutWarehouseOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderResultDTO">
+        select id,out_wh_no outWarehouseNo,out_wh_status `status`,out_wh_type orderType,
+        out_type `type`,out_wh_qty qty
+        from ope_out_whouse_order
+        where dr = 0
+        <include refid="getOutWarehouseOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--根据id查询出库单详情-->
+    <select id="getOutWarehouseOrderDetailById" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderDetailDTO">
+        select id,out_wh_no outWarehouseNo,out_wh_status `status`, out_wh_type orderType,out_wh_qty qty
+        ,ifnull(already_out_wh_qty, 0) alreadyOutWhQty, out_stock_time outStockTime,remark
+        from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改出库单信息-->
+    <update id="updateOutWarehouseOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder">
+        update ope_out_whouse_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="countryType != null">
+                country_type = #{countryType,jdbcType=INTEGER},
+            </if>
+            <if test="relationId != null">
+                relation_id = #{relationId,jdbcType=BIGINT},
+            </if>
+            <if test="relationNo != null">
+                relation_no = #{relationNo,jdbcType=VARCHAR},
+            </if>
+            <if test="relationType != null">
+                relation_type = #{relationType,jdbcType=INTEGER},
+            </if>
+            <if test="whType != null">
+                wh_type = #{whType,jdbcType=INTEGER},
+            </if>
+            <if test="outWhNo != null">
+                out_wh_no = #{outWhNo,jdbcType=VARCHAR},
+            </if>
+            <if test="outWhStatus != null">
+                out_wh_status = #{outWhStatus,jdbcType=INTEGER},
+            </if>
+            <if test="outWhType != null">
+                out_wh_type = #{outWhType,jdbcType=INTEGER},
+            </if>
+            <if test="outType != null">
+                out_type = #{outType,jdbcType=INTEGER},
+            </if>
+            <if test="outWhQty != null">
+                out_wh_qty = #{outWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="alreadyOutWhQty != null">
+                already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="outStockTime != null">
+                out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="mail != null">
+                mail = #{mail,jdbcType=VARCHAR},
+            </if>
+            <if test="source != null">
+                `source` = #{source,jdbcType=INTEGER},
+            </if>
+            <if test="ifWh != null">
+                if_wh = #{ifWh,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据id查询出库单已出库总数-->
+    <select id="getOutWhOrderAlreadyOutWhQtyById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select qc_qty from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据id查询出库单信息-->
+    <select id="getOutWarehouseById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_out_whouse_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--获取出库单所有数量-->
+    <select id="allCountByOutWhOrder" resultType="java.lang.Integer">
+        select count(*) from ope_out_whouse_order
+	    where dr = 0
+    </select>
+
+</mapper>

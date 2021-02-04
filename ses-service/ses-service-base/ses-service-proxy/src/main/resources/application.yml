@@ -1,7 +1,6 @@
 #Springboot 基础配置
 server:
-  ##port: ${random.int[10000,19999]}
-  port: 28090
+  port: 8802
   servlet:
     encoding:
       force: true
@@ -44,6 +43,9 @@ spring:
         login-password: admin
         enabled: false
         url-pattern: /druid/*
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
   #REDIS集群配置
   redis:
     cluster:
@@ -55,12 +57,25 @@ spring:
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: UTC
   # swagger配置
   swagger:
     enabled: false                                       # 是否启用swagger
+#Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+management:
+  server:
+    port: 8101
+    base-path: "/management"
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: "/monitor"
+      #设置暴露所有端点
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      #设置单个端点（/shutdown）可用
+      enabled: true
 #DUBBO 配置
 dubbo:
   application:
@@ -150,8 +165,4 @@ jg-push: #自定义的属性和值
       appkey: 290d5c75db9db0d1a5fab8bf
       secret: 3cfdadb8f0dedbcc4c2b04e5
       apns: false
-      # consumer consumer 极光配置
-#  - name: SES-APP_C_DELIVERY
-#    appkey: a51450edc74192b2a7b13e4e
-#    secret: 674c7b2b8740f489a465c011
-#    apns: false
+

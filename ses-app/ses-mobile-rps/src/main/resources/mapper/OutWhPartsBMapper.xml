@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_name" jdbcType="VARCHAR" property="partsName" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="total_qty" jdbcType="INTEGER" property="totalQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="picture" jdbcType="VARCHAR" property="picture" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--OutWhOrderPartsResultMap-->
+    <resultMap id="OutWhOrderPartsResultMap" type="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="parts_no" jdbcType="VARCHAR" property="number" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="already_out_wh_qty" jdbcType="INTEGER" property="alreadyOutWhQty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(部件序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+        </collection>
+    </resultMap>
+
+    <!--根据outWhId查询出库单部件信息-->
+    <select id="getOutWhOrderPartsByOutWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO">
+        select owp.id, owp.out_wh_id outWhId, pp.cn_name `name`, owp.parts_no number, pp.id bomId,
+        owp.qty,owp.already_out_wh_qty alreadyOutWhQty,pp.id_calss idClass
+        from ope_out_wh_parts_b owp
+        inner join ope_production_parts pp
+        on owp.parts_id = pp.id and pp.dr = 0
+        where owp.dr = 0 and owp.out_wh_id = #{outWhId}
+    </select>
+
+    <!--根据productId查询部件产品详情-->
+    <select id="getPartsProductDetailByProductId" parameterType="java.lang.Long" resultMap="OutWhOrderPartsResultMap">
+        select owp.id, owp.out_wh_id, pp.cn_name, owp.parts_no,pp.id bom_id,owp.qty,owp.already_out_wh_qty,
+        pp.id_calss, serial.id sn_id,serial.lot, serial.serial_num, '奥格工厂' factory_name
+        from ope_out_wh_parts_b owp
+        inner join ope_production_parts pp
+        on owp.parts_id = pp.id and pp.dr = 0
+        left join ope_out_whouse_order_serial_bind serial
+        on owp.id = serial.order_b_id and serial.dr = 0
+        where owp.dr = 0 and owp.id = #{productId}
+    </select>
+
+    <!--修改出库单部件信息-->
+    <update id="updateOutWhPartsB" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
+        update ope_out_wh_parts_b
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="outWhId != null">
+                out_wh_id = #{outWhId,jdbcType=BIGINT},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId,jdbcType=BIGINT},
+            </if>
+            <if test="partsName != null">
+                parts_name = #{partsName,jdbcType=VARCHAR},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="alreadyOutWhQty != null">
+                already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="totalQty != null">
+                total_qty = #{totalQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="picture != null">
+                picture = #{picture,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询部件名称-->
+    <select id="getPartsNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select parts_name from ope_out_wh_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据id查询出库单部件信息-->
+    <select id="getOutWhOrderPartsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_out_wh_parts_b
+        where dr = 0 and id = #{id}
+    </select>
+
+</mapper>

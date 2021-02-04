@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 58090
+  port: 8806
   servlet:
     encoding:
       force: true
@@ -60,6 +60,22 @@ spring:
   # swagger配置
   swagger:
     enabled: false                                       # 是否启用swagger
+#Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+management:
+  server:
+    port: 8105
+    base-path: "/management"
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: "/monitor"
+      #设置暴露所有端点
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      #设置单个端点（/shutdown）可用
+      enabled: true
 #DUBBO 配置
 dubbo:
   application:

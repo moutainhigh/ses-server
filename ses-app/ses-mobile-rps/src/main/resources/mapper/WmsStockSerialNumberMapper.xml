@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper">
+
+    <!--新增库存产品序列号信息-->
+    <insert id="insertWmsStockSerialNumber" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber">
+        insert into ope_wms_stock_serial_number
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="tenantId != null">
+                tenant_id,
+            </if>
+            <if test="deptId != null">
+                dept_id,
+            </if>
+            <if test="relationType != null">
+                relation_type,
+            </if>
+            <if test="relationId != null">
+                relation_id,
+            </if>
+            <if test="stockType != null">
+                stock_type,
+            </if>
+            <if test="rsn != null">
+                rsn,
+            </if>
+            <if test="stockStatus != null">
+                stock_status,
+            </if>
+            <if test="lotNum != null">
+                lot_num,
+            </if>
+            <if test="sn != null">
+                sn,
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="relationType != null">
+                #{relationType,jdbcType=INTEGER},
+            </if>
+            <if test="relationId != null">
+                #{relationId,jdbcType=BIGINT},
+            </if>
+            <if test="stockType != null">
+                #{stockType,jdbcType=INTEGER},
+            </if>
+            <if test="rsn != null">
+                #{rsn,jdbcType=VARCHAR},
+            </if>
+            <if test="stockStatus != null">
+                #{stockStatus,jdbcType=INTEGER},
+            </if>
+            <if test="lotNum != null">
+                #{lotNum,jdbcType=VARCHAR},
+            </if>
+            <if test="sn != null">
+                #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据rsn修改库存产品序列号信息-->
+    <update id="updateWmsStockSerialNumberByRSn" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber">
+        update ope_wms_stock_serial_number
+        set stock_status = #{stockStatus}, updated_by = #{updatedBy}, updated_time = #{updatedTime}
+        where rsn = #{rsn}
+    </update>
+
+    <!--批量根据serialNum删除库存产品序列号信息-->
+    <update id="batchDeleteWmsStockSerialNumberBySerialNum" parameterType="java.lang.String">
+        update ope_wms_stock_serial_number
+        set dr = 1
+        <foreach collection="serialNums" item="serialNum" open="where rsn in(" separator="," close=")">
+            #{serialNum}
+        </foreach>
+    </update>
+
+    <!--批量根据serialNum修改库存产品状态-->
+    <update id="batchUpdateStockStatusByRsnList">
+        update ope_wms_stock_serial_number
+        set stock_status = 1, updated_by = #{userId}, updated_time = #{currentTime}
+        <foreach collection="serialNums" item="serialNum" open="where rsn in(" separator="," close=")">
+            #{serialNum}
+        </foreach>
+    </update>
+
+    <!--批量新增库存产品序列号信息-->
+    <insert id="batchInsertWmsStockSerialNumber" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber">
+        insert ope_wms_stock_serial_number(id, dr, relation_type, relation_id, stock_type, rsn,stock_status,lot_num,
+        sn, bluetooth_mac_address, created_by, created_time, updated_by,updated_time)
+        <foreach collection="opeWmsStockSerialNumberList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.relationType}, #{item.relationId}, #{item.stockType}, #{item.rsn}, #{item.stockStatus},
+            #{item.lotNum}, #{item.sn}, #{item.bluetoothMacAddress}, #{item.createdBy}, #{item.createdTime},
+            #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+</mapper>

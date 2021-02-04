@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.mobile.b.vo.CorDriver;
+import com.redescooter.ses.api.mobile.b.vo.CorDriverScooter;
 
 /**
  * 车辆B端相关业务接口
@@ -39,5 +41,15 @@ public interface ScooterMobileBService {
      * @date: 2020/11/17
      */
     GeneralResult scooterNavigation(ScooterNavigationDTO enter);
+
+    /**
+     * 新增cor_driver表
+     */
+    GeneralResult addCorDriver(CorDriver corDriver);
+
+    /**
+     * 新增cor_driver_scooter表
+     */
+    GeneralResult addCorDriverScooter(CorDriverScooter corDriverScooter);
 
 }

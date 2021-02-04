@@ -18,11 +18,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!--邮件发送模板需要的依赖-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
-        <!--        </dependency>-->
         <!--密码加密-->
         <!--http客户端协议-->
         <dependency>
@@ -57,6 +52,14 @@
                 <profile-active>dev</profile-active>
                 <log.path>/data/java_service/logs/</log.path>
                 <jar.path>/root/java_service/dev</jar.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>alpha</id>
+            <properties>
+                <profile-active>alpha</profile-active>
+                <log.path>/data/java_service/logs/</log.path>
+                <jar.path>/root/java_service/alpha</jar.path>
             </properties>
         </profile>
         <profile>
@@ -118,14 +121,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

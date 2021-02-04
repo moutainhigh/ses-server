@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
  * @Date2020/11/11 11:42
  * @Version V1.0
  **/
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,8 +34,26 @@ public class InWhouseSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty("关联的单据号")
     private String relationOrderNo;
 
+    @ApiModelProperty(value = "关联的单据类型，7：生产采购单，9：组装单")
+    private Integer relationOrderType;
+
     @ApiModelProperty("入库单据类型,1:车辆，2:组装件，3:部件")
     private Integer orderType;
+
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
+
+    @ApiModelProperty(value = "国家类型，1:中国，2:法国")
+    private Integer countryType = 1;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source = 0;
+
+    @ApiModelProperty("是否是仓库新增，0：否，1：是")
+    private Integer ifWh = 0;
 
     @ApiModelProperty("入库明细")
     private String st;

@@ -150,8 +150,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/qcTempleteDetail")
     @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
-    public Response<List<QcTemplateDetailResult>>
-        qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
+    public Response<List<QcTemplateDetailResult>> qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
         return new Response<>(productionQcTmepleteService.detail(enter));
     }
 

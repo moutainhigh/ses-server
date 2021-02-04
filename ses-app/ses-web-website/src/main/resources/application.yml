@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 58190
+  port: 8900
   servlet:
     context-path: /ses/t/website/w/api
     encoding:
@@ -10,8 +10,6 @@ server:
   tomcat:
     uri-encoding: UTF-8
   shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
-  autoconfigure:
-    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 #jasypt加密的密匙（写到启动参数里面）
 jasypt:
   encryptor:
@@ -31,6 +29,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -67,7 +67,7 @@ spring:
 #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
-    port: 8188
+    port: 8108
     base-path: "/management"
   endpoints:
     enabled-by-default: true
@@ -168,5 +168,3 @@ sendinblue:
   apiKey: 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
   url: https://api.sendinblue.com/v3/contacts
   mediaType: application/json
-
-

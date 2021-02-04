@@ -292,7 +292,7 @@ public enum ExceptionCodeEnums {
 
     INVOICE_NUM_IS_NOT_ILLEGAL(10137, "发票号不合法"),
 
-    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138, "发票编号不合法"),
+    BUSSINESS_NUM_IS_NOT_ILLEGAL(10138, "营业执照编号不合法"),
 
     SCOOTER_QTY_IS_NOT_ILLEGAL(10139, "车辆数量不合法"),
 
@@ -390,7 +390,7 @@ public enum ExceptionCodeEnums {
 
     BOM_HAS_REACHED_EFFECTIVE_TIME(10186, "Bom未到生效时间"),
 
-    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少又一个部件"),
+    BOM_PART_HAVE_LAST_ONE(10187, "BOM 至少有一个部件"),
 
     PRODUCTION_PART_IS_NOT_EXIST(10188, "部件不存在"),
 
@@ -496,9 +496,30 @@ public enum ExceptionCodeEnums {
 
     DEF_GROUP_NAME_NOT_NULL(10239, "自定义分组名称不能为空"),
 
-    DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法")
-    ;
+    DEF_GROUP_NAME_ILLEGAL(10240, "自定义分组名称非法"),
 
+    SEAT_NOT_EMPTY(10241, "座位数不能为空"),
+
+    LICENSE_PLATE_NOT_EMPTY(10242, "车牌不能为空"),
+
+    RSN_NOT_EMPTY(10243, "R.SN不能为空"),
+
+    SPECIFICAT_ID_NOT_EMPTY(10244, "型号id不能为空"),
+
+    COLOR_ID_NOT_EMPTY(10245, "颜色id不能为空"),
+
+    ASSIGN_INFO_NOT_EXIST(10246, "不存在此客户的分配信息"),
+
+    SCOOTER_STOCK_IS_EMPTY(10247, "车辆库存为空"),
+
+    SCOOTER_STOCK_IS_NOT_ENOUGH(10248, "车辆库存不足"),
+
+    PART_STOCK_IS_EMPTY(10249, "该部件库存为空")
+
+
+
+
+    ;
 
     private int code;
 

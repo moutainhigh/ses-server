@@ -79,4 +79,12 @@ public interface AdminScooterMapper {
     */
     int updateAdminScooter(AdminScooterDTO scooter);
 
+
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
+    int deleteScooterById(@Param("id") Long id);
+
 }

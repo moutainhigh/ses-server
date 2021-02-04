@@ -47,4 +47,5 @@ public class SavePurchasPaymentEnter {
 
     @ApiModelProperty("实际付款时间")
     private Date paymentTime;
+
 }

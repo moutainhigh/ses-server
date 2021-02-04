@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+        <id column="id" property="id" />
+        <result column="dr" property="dr" />
+        <result column="tenant_id" property="tenantId" />
+        <result column="dept_id" property="deptId" />
+        <result column="invoice_id" property="invoiceId" />
+        <result column="invoice_no" property="invoiceNo" />
+        <result column="entrust_no" property="entrustNo" />
+        <result column="entrust_status" property="entrustStatus" />
+        <result column="entrust_type" property="entrustType" />
+        <result column="consignor_qty" property="consignorQty" />
+        <result column="delivery_date" property="deliveryDate" />
+        <result column="trans_type" property="transType" />
+        <result column="consignee_user" property="consigneeUser" />
+        <result column="consignee_country_code" property="consigneeCountryCode" />
+        <result column="consignee_user_telephone" property="consigneeUserTelephone" />
+        <result column="consignee_user_mail" property="consigneeUserMail" />
+        <result column="consignee_address" property="consigneeAddress" />
+        <result column="consignee_post_code" property="consigneePostCode" />
+        <result column="consignor_user" property="consignorUser" />
+        <result column="consignor_country_code" property="consignorCountryCode" />
+        <result column="consignor_telephone" property="consignorTelephone" />
+        <result column="consignor_mail" property="consignorMail" />
+        <result column="notify_user" property="notifyUser" />
+        <result column="notify_user_name" property="notifyUserName" />
+        <result column="notify_country_code" property="notifyCountryCode" />
+        <result column="notify_user_telephone" property="notifyUserTelephone" />
+        <result column="notify_user_mail" property="notifyUserMail" />
+        <result column="remark" property="remark" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_time" property="createdTime" />
+        <result column="updated_by" property="updatedBy" />
+        <result column="updated_time" property="updatedTime" />
+    </resultMap>
+
+    <!--委托单列表查询条件sql-->
+    <sql id="queryEntrustOrderListWhere">
+        <if test="type != null">and entrust_type = #{type}</if>
+        <if test="status == 0">and entrust_status = 0</if>
+        <if test="status == 1">and entrust_status in(10, 20)</if>
+    </sql>
+
+    <!--委托单类型数量统计-->
+    <select id="getEntrustOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select entrust_type `status`, count(id) totalCount
+	    from ope_entrust_order
+	    where dr = 0
+	    group by entrust_type
+    </select>
+
+    <!--委托单列表查询-->
+    <select id="getEntrustOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO">
+        select id, entrust_no entrustNo, consignor_qty qty, entrust_status `status`,entrust_type `type`
+        from ope_entrust_order
+        where dr = 0
+        <include refid="queryEntrustOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--查询委托单数量-->
+    <select id="countByEntrustOrder" parameterType="com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*)
+        from ope_entrust_order
+        where dr = 0
+        <include refid="queryEntrustOrderListWhere" />
+    </select>
+
+    <!--根据id查询委托单详情-->
+    <select id="getEntrustOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO">
+        select id, entrust_no entrustNo, entrust_status `status`, entrust_type `type`,delivery_date deliveryDate,
+        actual_delivery_time actualDeliveryTime, trans_type transType, consignor_qty qty, already_consignor_qty alreadyConsignorQty
+        from ope_entrust_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改委托单信息-->
+    <update id="updateEntrustOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder">
+        update ope_entrust_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="invoiceId != null">
+                invoice_id = #{invoiceId},
+            </if>
+            <if test="invoiceNo != null">
+                invoice_no = #{invoiceNo},
+            </if>
+            <if test="entrustNo != null">
+                entrust_no = #{entrustNo},
+            </if>
+            <if test="entrustStatus != null">
+                entrust_status = #{entrustStatus},
+            </if>
+            <if test="entrustType != null">
+                entrust_type = #{entrustType},
+            </if>
+            <if test="consignorQty != null">
+                consignor_qty = #{consignorQty},
+            </if>
+            <if test="deliveryDate != null">
+                delivery_date = #{deliveryDate},
+            </if>
+            <if test="actualDeliveryTime != null">
+                actual_delivery_time = #{actualDeliveryTime},
+            </if>
+            <if test="transType != null">
+                trans_type = #{transType},
+            </if>
+            <if test="consigneeUser != null">
+                consignee_user = #{consigneeUser},
+            </if>
+            <if test="consigneeCountryCode != null">
+                consignee_country_code = #{consigneeCountryCode},
+            </if>
+            <if test="consigneeUserTelephone != null">
+                consignee_user_telephone = #{consigneeUserTelephone},
+            </if>
+            <if test="consigneeUserMail != null">
+                consignee_user_mail = #{consigneeUserMail},
+            </if>
+            <if test="consigneeAddress != null">
+                consignee_address = #{consigneeAddress},
+            </if>
+            <if test="consigneePostCode != null">
+                consignee_post_code = #{consigneePostCode},
+            </if>
+            <if test="consignorUser != null">
+                consignor_user = #{consignorUser},
+            </if>
+            <if test="consignorCountryCode != null">
+                consignor_country_code = #{consignorCountryCode},
+            </if>
+            <if test="consignorTelephone != null">
+                consignor_telephone = #{consignorTelephone},
+            </if>
+            <if test="consignorMail != null">
+                consignor_mail = #{consignorMail},
+            </if>
+            <if test="notifyUser != null">
+                notify_user = #{notifyUser},
+            </if>
+            <if test="notifyUserName != null">
+                notify_user_name = #{notifyUserName},
+            </if>
+            <if test="notifyCountryCode != null">
+                notify_country_code = #{notifyCountryCode},
+            </if>
+            <if test="notifyUserTelephone != null">
+                notify_user_telephone = #{notifyUserTelephone},
+            </if>
+            <if test="notifyUserMail != null">
+                notify_user_mail = #{notifyUserMail},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询委托单信息-->
+    <select id="getEntrustOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_entrust_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--获取委托单所有数量-->
+    <select id="allCountByEntrustOrder" resultType="java.lang.Integer">
+        select count(*) from ope_entrust_order
+	    where dr = 0
+    </select>
+
+</mapper>

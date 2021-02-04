@@ -6,7 +6,7 @@ import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserComponent {
 
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
 
     /**
@@ -39,11 +39,14 @@ public class UserComponent {
         /**
          * 根据用户类型判断是2C还是2B用户
          */
-        if (AccountTypeEnums.APP_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())
-                || AccountTypeEnums.APP_EXPRESS.getAccountType().equals(queryUserResult.getUserType())) {
+        if (!AccountTypeEnums.WEB_REPAIR.getAccountType().equals(queryUserResult.getUserType())
+                || !AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
             userServiceType = 1;
-        } else {
+        } else if (AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
             userServiceType = 2;
+        } else {
+            // 维修端
+            userServiceType = 3;
         }
 
         return userServiceType;

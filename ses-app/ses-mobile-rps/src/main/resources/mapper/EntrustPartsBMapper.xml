@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustPartsBMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeEntrustPartsB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="entrust_id" jdbcType="BIGINT" property="entrustId" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_name" jdbcType="VARCHAR" property="partsName" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--委托单部件信息自定义返回结果-->
+    <resultMap id="EntrustOrderPartsResultMap" type="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parts_id" jdbcType="BIGINT" property="bomId" />
+        <result column="parts_name" jdbcType="VARCHAR" property="name" />
+        <result column="parts_no" jdbcType="VARCHAR" property="number" />
+        <result column="consignor_qty" jdbcType="INTEGER" property="consignorQty" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(部件序列号信息)-->
+        <collection property="productSerialNumList" ofType="com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustProductSerialNumDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+        </collection>
+    </resultMap>
+
+    <!--根据entrustId查询委托单部件信息-->
+    <select id="getEntrustOrderPartsByEntrustId" parameterType="java.lang.Long" resultMap="EntrustOrderPartsResultMap">
+        select ep.id,ep.parts_id, ep.parts_name, ep.parts_no,ifnull(ep.consignor_qty, 0) consignor_qty,
+        ifnull(ep.qty, 0) qty, pp.id_calss,epsn.id sn_id,epsn.serial_num, epsn.lot
+        from ope_entrust_parts_b ep
+        left join ope_entrust_product_serial_num epsn
+        on ep.id = epsn.relation_id and epsn.dr = 0
+        left join ope_production_parts pp
+        on ep.parts_id = pp.id and pp.dr = 0
+        where ep.dr = 0 and ep.entrust_id = #{entrustId}
+    </select>
+
+    <!--根据id查询委托单部件信息-->
+    <select id="getEntrustPartsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_entrust_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改委托单部件信息-->
+    <update id="updateEntrustPartsB" parameterType="com.redescooter.ses.mobile.rps.dm.OpeEntrustPartsB">
+        update ope_entrust_parts_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr},
+            </if>
+            <if test="entrustId != null">
+                entrust_id = #{entrustId},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId},
+            </if>
+            <if test="partsName != null and partsName != ''">
+                parts_name = #{partsName},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType},
+            </if>
+            <if test="qty != null">
+                qty = #{qty},
+            </if>
+            <if test="consignorQty != null">
+                consignor_qty = #{consignorQty},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+            <if test="def1 != null and def1 != ''">
+                def1 = #{def1},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据entrustId统计委托单部件实际发货数量-->
+    <select id="countEntrustPartsConsignorQtyByEntrustId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select ifnull(sum(consignor_qty), 0) from ope_entrust_parts_b
+	    where dr = 0 and entrust_id = #{entrustId}
+    </select>
+
+</mapper>

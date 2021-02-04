@@ -12,9 +12,14 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeOutWhCombinBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeOutWhPartsBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeOutWhScooterBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeOutWhouseOrderMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -115,6 +120,27 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     @Autowired
     private OpeEntrustOrderService opeEntrustOrderService;
+
+    @Autowired
+    private OpeWmsScooterStockService opeWmsScooterStockService;
+
+    @Autowired
+    private OpeWmsCombinStockService opeWmsCombinStockService;
+
+    @Autowired
+    private OpeWmsPartsStockService opeWmsPartsStockService;
+
+    @Autowired
+    private OpeOutWhouseOrderMapper opeOutWhouseOrderMapper;
+
+    @Autowired
+    private OpeOutWhCombinBMapper opeOutWhCombinBMapper;
+
+    @Autowired
+    private OpeOutWhPartsBMapper opeOutWhPartsBMapper;
+
+    @Autowired
+    private OpeOutWhScooterBMapper opeOutWhScooterBMapper;
 
     @Reference
     private IdAppService idAppService;
@@ -320,6 +346,8 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opeInvoiceOrder.getInvoiceType() == 1){
             checkProtion(opeInvoiceOrder);
         }
+        // 追加 校验中国仓库的库存是否充足
+        checkStockNum(opeInvoiceOrder);
         //创建出库单
         saveOutbound(enter, opeInvoiceOrder);
 
@@ -345,6 +373,161 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         purchaseOrderService.purchaseStocking(opeInvoiceOrder.getPurchaseId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 发货单点击备货  校验中国库存是否足够
+    public void checkStockNum(OpeInvoiceOrder invoiceOrder) {
+        switch (invoiceOrder.getInvoiceType()) {
+            case 1:
+                // scooter
+                QueryWrapper<OpeInvoiceScooterB> scooterBQueryWrapper = new QueryWrapper<>();
+                scooterBQueryWrapper.eq(OpeInvoiceScooterB.COL_INVOICE_ID, invoiceOrder.getId());
+                List<OpeInvoiceScooterB> scooterBList = opeInvoiceScooterBService.list(scooterBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(scooterBList)) {
+                    for (OpeInvoiceScooterB scooterB : scooterBList) {
+                        QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getGroupId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID, scooterB.getColorId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, 1);
+                        scooterStockQueryWrapper.last("limit 1");
+                        OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
+                        if (scooterStock == null) {
+                            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                        }
+                        if (scooterStock.getAbleStockQty() < scooterB.getQty()) {
+                            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                        }
+
+                        // 到出库单里看是否有已生成但未出库的发货单,如果有,将数量+此次的数量,如果大于库存数量,抛异常提示库存不足
+                        LambdaQueryWrapper<OpeOutWhouseOrder> outWrapper = new LambdaQueryWrapper<>();
+                        outWrapper.eq(OpeOutWhouseOrder::getDr, DelStatusEnum.VALID.getCode());
+                        outWrapper.eq(OpeOutWhouseOrder::getRelationType, 3);
+                        outWrapper.eq(OpeOutWhouseOrder::getRelationId, scooterB.getInvoiceId());
+                        outWrapper.last("limit 1");
+                        OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
+                        if (null != outOrder) {
+                            LambdaQueryWrapper<OpeOutWhScooterB> qw = new LambdaQueryWrapper<>();
+                            qw.eq(OpeOutWhScooterB::getDr, DelStatusEnum.VALID.getCode());
+                            qw.eq(OpeOutWhScooterB::getOutWhId, outOrder.getId());
+                            qw.eq(OpeOutWhScooterB::getAlreadyOutWhQty, 0);
+                            qw.last("limit 1");
+                            OpeOutWhScooterB outScooterB = opeOutWhScooterBMapper.selectOne(qw);
+                            if (null != outScooterB) {
+                                Integer outQty = outScooterB.getQty();
+                                Integer invoiceQty = scooterB.getQty();
+                                int total = invoiceQty + outQty;
+                                if (total < scooterStock.getAbleStockQty()) {
+                                    throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+            default:
+                break;
+            case 2:
+                // combin
+                QueryWrapper<OpeInvoiceCombinB> combinBQueryWrapper = new QueryWrapper<>();
+                combinBQueryWrapper.eq(OpeInvoiceCombinB.COL_INVOICE_ID, invoiceOrder.getId());
+                List<OpeInvoiceCombinB> combinBList = opeInvoiceCombinBService.list(combinBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(combinBList)) {
+                    // 找到中国仓库的组装件的库存
+                    QueryWrapper<OpeWmsCombinStock> wmsCombinStockQueryWrapper = new QueryWrapper<>();
+                    wmsCombinStockQueryWrapper.in(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, combinBList.stream().map(OpeInvoiceCombinB::getProductionCombinBomId).collect(Collectors.toList()));
+                    wmsCombinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, 1);
+                    List<OpeWmsCombinStock> combinStockList = opeWmsCombinStockService.list(wmsCombinStockQueryWrapper);
+                    if (CollectionUtils.isEmpty(combinStockList)) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                    }
+                    if (combinBList.size() > combinStockList.size()) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                    }
+                    for (OpeInvoiceCombinB combinB : combinBList) {
+                        for (OpeWmsCombinStock combinStock : combinStockList) {
+                            if (combinB.getProductionCombinBomId().equals(combinStock.getProductionCombinBomId()) && combinB.getQty() > combinStock.getAbleStockQty()) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
+
+                            // 到出库单里看是否有已生成但未出库的发货单,如果有,将数量+此次的数量,如果大于库存数量,抛异常提示库存不足
+                            LambdaQueryWrapper<OpeOutWhouseOrder> outWrapper = new LambdaQueryWrapper<>();
+                            outWrapper.eq(OpeOutWhouseOrder::getDr, DelStatusEnum.VALID.getCode());
+                            outWrapper.eq(OpeOutWhouseOrder::getRelationType, 3);
+                            outWrapper.eq(OpeOutWhouseOrder::getRelationId, combinB.getInvoiceId());
+                            outWrapper.last("limit 1");
+                            OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
+                            if (null != outOrder) {
+                                LambdaQueryWrapper<OpeOutWhCombinB> qw = new LambdaQueryWrapper<>();
+                                qw.eq(OpeOutWhCombinB::getDr, DelStatusEnum.VALID.getCode());
+                                qw.eq(OpeOutWhCombinB::getOutWhId, outOrder.getId());
+                                qw.eq(OpeOutWhCombinB::getAlreadyOutWhQty, 0);
+                                qw.last("limit 1");
+                                OpeOutWhCombinB outCombinB = opeOutWhCombinBMapper.selectOne(qw);
+                                if (null != outCombinB) {
+                                    Integer outQty = outCombinB.getQty();
+                                    Integer invoiceQty = combinB.getQty();
+                                    int total = invoiceQty + outQty;
+                                    if (total < combinStock.getAbleStockQty()) {
+                                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case 3:
+                // parts
+                QueryWrapper<OpeInvoicePartsB> partsBQueryWrapper = new QueryWrapper<>();
+                partsBQueryWrapper.eq(OpeInvoicePartsB.COL_INVOICE_ID, invoiceOrder.getId());
+                List<OpeInvoicePartsB> partsBList = opeInvoicePartsBService.list(partsBQueryWrapper);
+                if (CollectionUtils.isNotEmpty(partsBList)) {
+                    // 找到中国仓库的原料库存
+                    QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
+                    partsStockQueryWrapper.in(OpeWmsPartsStock.COL_PARTS_ID, partsBList.stream().map(OpeInvoicePartsB::getPartsId).collect(Collectors.toList()));
+                    partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 1);
+                    List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockService.list(partsStockQueryWrapper);
+                    if (CollectionUtils.isEmpty(partsStockList)) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                    }
+                    if (partsBList.size() > partsStockList.size()) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                    }
+                    for (OpeInvoicePartsB partsB : partsBList) {
+                        for (OpeWmsPartsStock partsStock : partsStockList) {
+                            if (partsB.getPartsId().equals(partsStock.getPartsId()) && partsB.getQty() > partsStock.getAbleStockQty()) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            }
+
+                            // 到出库单里看是否有已生成但未出库的发货单,如果有,将数量+此次的数量,如果大于库存数量,抛异常提示库存不足
+                            LambdaQueryWrapper<OpeOutWhouseOrder> outWrapper = new LambdaQueryWrapper<>();
+                            outWrapper.eq(OpeOutWhouseOrder::getDr, DelStatusEnum.VALID.getCode());
+                            outWrapper.eq(OpeOutWhouseOrder::getRelationType, 3);
+                            outWrapper.eq(OpeOutWhouseOrder::getRelationId, partsB.getInvoiceId());
+                            outWrapper.last("limit 1");
+                            OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
+                            if (null != outOrder) {
+                                LambdaQueryWrapper<OpeOutWhPartsB> qw = new LambdaQueryWrapper<>();
+                                qw.eq(OpeOutWhPartsB::getDr, DelStatusEnum.VALID.getCode());
+                                qw.eq(OpeOutWhPartsB::getOutWhId, outOrder.getId());
+                                qw.eq(OpeOutWhPartsB::getAlreadyOutWhQty, 0);
+                                qw.last("limit 1");
+                                OpeOutWhPartsB outPartsB = opeOutWhPartsBMapper.selectOne(qw);
+                                if (null != outPartsB) {
+                                    Integer outQty = outPartsB.getQty();
+                                    Integer invoiceQty = partsB.getQty();
+                                    int total = invoiceQty + outQty;
+                                    if (total < partsStock.getAbleStockQty()) {
+                                        throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
 
 
     // 如果是整车的话 判断是否有符合颜色和车型的产品
@@ -582,7 +765,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(opeInvoiceScooterBList)) {
                     productEnterList =
-                            opeInvoiceScooterBList.stream().map(item -> new ProductEnter(null, item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            opeInvoiceScooterBList.stream().map(item -> new ProductEnter(null, item.getColorId(), item.getGroupId(), item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
 
@@ -590,7 +773,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 List<OpeInvoiceCombinB> invoiceCombinBList = opeInvoiceCombinBService.list(new LambdaQueryWrapper<OpeInvoiceCombinB>().eq(OpeInvoiceCombinB::getInvoiceId, opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(invoiceCombinBList)) {
                     productEnterList =
-                            invoiceCombinBList.stream().map(item -> new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            invoiceCombinBList.stream().map(item -> new ProductEnter(item.getProductionCombinBomId(), null, null, item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
 
@@ -598,11 +781,11 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 List<OpeInvoicePartsB> opeInvoicePartsBList = opeInvoicePartsBService.list(new LambdaQueryWrapper<OpeInvoicePartsB>().eq(OpeInvoicePartsB::getInvoiceId, opeInvoiceOrder.getId()));
                 if (CollectionUtils.isNotEmpty(opeInvoicePartsBList)) {
                     productEnterList =
-                            opeInvoicePartsBList.stream().map(item -> new ProductEnter(item.getPartsId(), null, null, item.getQty(), item.getRemark())).collect(Collectors.toList());
+                            opeInvoicePartsBList.stream().map(item -> new ProductEnter(item.getPartsId(), null, null, item.getQty(), item.getRemark(),item.getQty())).collect(Collectors.toList());
                 }
                 break;
         }
-        //发货单
+        //出库单
         SaveOutboundOrderEnter saveOutboundOrderEnter = new SaveOutboundOrderEnter();
         BeanUtils.copyProperties(enter, saveOutboundOrderEnter);
         saveOutboundOrderEnter.setId(null);
@@ -774,20 +957,18 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         if (opeInvoiceOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.STOCKING.getValue())) {
-            throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+        if (opeInvoiceOrder.getInvoiceStatus() < InvoiceOrderStatusEnums.BE_LOADED.getValue()) {
+            opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
+            opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
+            // 状态流转
+            OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
+            orderStatusFlowService.save(orderStatusFlowEnter);
         }
-        opeInvoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.BE_LOADED.getValue());
-        opeInvoiceOrderService.saveOrUpdate(opeInvoiceOrder);
-        // 状态流转
-        OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null,opeInvoiceOrder.getInvoiceStatus(),OrderTypeEnums.INVOICE.getValue(),opeInvoiceOrder.getId(),"");
-        orderStatusFlowService.save(orderStatusFlowEnter);
     }
 
 
     // 发货单状态变待签收
     @Override
-    @Transactional
     public void invoiceWaitSign(Long invoiceId,Long userId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {

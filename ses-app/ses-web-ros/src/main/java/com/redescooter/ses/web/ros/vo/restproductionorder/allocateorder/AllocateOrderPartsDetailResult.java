@@ -35,6 +35,9 @@ public class AllocateOrderPartsDetailResult {
     @ApiModelProperty(value = "调拨数量")
     private Integer qty;
 
+    @ApiModelProperty("上限数量")
+    private Integer ableQty;
+
     @ApiModelProperty(value = "期望发货日期")
     private Date expectDeliveryDate;
 

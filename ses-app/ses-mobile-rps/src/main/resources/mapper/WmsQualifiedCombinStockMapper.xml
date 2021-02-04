@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsQualifiedCombinStockMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedCombinStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+        <result column="combin_no" jdbcType="VARCHAR" property="combinNo" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--修改不合格品库组装件库存信息-->
+   <update id="updateWmsQualifiedCombinStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedCombinStock">
+        update ope_wms_qualified_combin_stock
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=BIGINT},
+            </if>
+            <if test="productionCombinBomId != null">
+                production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinNo != null">
+                combin_no = #{combinNo,jdbcType=VARCHAR},
+            </if>
+            <if test="cnName != null">
+                cn_name = #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="frName != null">
+                fr_name = #{frName,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+       where id = #{id}
+   </update>
+
+    <!--根据bomId查询不合格品库组装件库存信息-->
+    <select id="getWmsQualifiedCombinStockByBomId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_wms_qualified_combin_stock
+	    where dr = 0 and production_combin_bom_id = #{bomId}
+    </select>
+
+</mapper>

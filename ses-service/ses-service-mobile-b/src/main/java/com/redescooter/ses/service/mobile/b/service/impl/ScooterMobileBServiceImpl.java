@@ -9,13 +9,18 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
+import com.redescooter.ses.api.mobile.b.vo.CorDriver;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.b.dao.ScooterMobileServiceMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
+import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
@@ -33,6 +38,11 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
     @Reference
     private ScooterEmqXService scooterEmqXService;
 
+    @Autowired
+    private CorDriverMapper corDriverMapper;
+
+    @Autowired
+    private CorDriverScooterMapper corDriverScooterMapper;
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
@@ -91,6 +101,32 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
          * 开始/结束导航
          */
         return scooterEmqXService.scooterNavigation(scooterNavigation, scooter.getScooterId(), UserServiceTypeEnum.B.getType());
+    }
+
+    /**
+     * 新增cor_driver表
+     *
+     * @param corDriver
+     */
+    @Override
+    public GeneralResult addCorDriver(CorDriver corDriver) {
+        com.redescooter.ses.service.mobile.b.dm.base.CorDriver model = new com.redescooter.ses.service.mobile.b.dm.base.CorDriver();
+        BeanUtils.copyProperties(corDriver, model);
+        corDriverMapper.insert(model);
+        return new GeneralResult();
+    }
+
+    /**
+     * 新增cor_driver_scooter表
+     *
+     * @param corDriverScooter
+     */
+    @Override
+    public GeneralResult addCorDriverScooter(com.redescooter.ses.api.mobile.b.vo.CorDriverScooter corDriverScooter) {
+        CorDriverScooter model = new CorDriverScooter();
+        BeanUtils.copyProperties(corDriverScooter, model);
+        corDriverScooterMapper.insert(model);
+        return new GeneralResult();
     }
 
 }

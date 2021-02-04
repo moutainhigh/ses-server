@@ -20,3 +20,4 @@ public interface OpeOutWhScooterBService extends IService<OpeOutWhScooterB> {
 
 }
 
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="order_b_id" jdbcType="BIGINT" property="orderBId" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+        <result column="default_serial_num" jdbcType="VARCHAR" property="defaultSerialNum" />
+        <result column="tablet_sn" jdbcType="VARCHAR" property="tabletSn" />
+        <result column="lot" jdbcType="VARCHAR" property="lot" />
+        <result column="product_id" jdbcType="BIGINT" property="productId" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+        <result column="created_by" jdbcType="INTEGER" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--根据serialNum查询部件本身序列号-->
+    <select id="getDefaultSerialNumBySerialNum" parameterType="java.lang.String" resultType="java.lang.String">
+        select default_serial_num from ope_qc_order_serial_bind
+	    where dr = 0 and serial_num = #{serialNum}
+    </select>
+
+    <!--新增质检单产品序列号信息-->
+    <insert id="insertQcOrderSerialBind" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind">
+        insert into ope_qc_order_serial_bind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dr != null">
+                dr,
+            </if>
+            <if test="orderBId != null">
+                order_b_id,
+            </if>
+            <if test="orderType != null">
+                order_type,
+            </if>
+            <if test="serialNum != null">
+                serial_num,
+            </if>
+            <if test="defaultSerialNum != null">
+                default_serial_num,
+            </if>
+            <if test="tabletSn != null">
+                tablet_sn,
+            </if>
+            <if test="lot != null">
+                lot,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productType != null">
+                product_type,
+            </if>
+            <if test="qty != null">
+                qty,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dr != null">
+                #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="orderBId != null">
+                #{orderBId,jdbcType=BIGINT},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="serialNum != null">
+                #{serialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultSerialNum != null">
+                #{defaultSerialNum,jdbcType=VARCHAR},
+            </if>
+            <if test="tabletSn != null">
+                #{tabletSn,jdbcType=VARCHAR},
+            </if>
+            <if test="lot != null">
+                #{lot,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=INTEGER},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据serialNum查询质检单产品序列号信息-->
+    <select id="getQcOrderSerialBindBySerialNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from ope_qc_order_serial_bind
+        where dr = 0 and serial_num = #{serialNum}
+    </select>
+
+    <!--检查是否存在序列号-->
+    <select id="isExistsSerialNum" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order_serial_bind
+        where dr = 0 and order_b_id = #{productId}
+        <if test="relationOrderType != 7">and serial_num = #{serialNum}</if>
+        <if test="relationOrderType == 7">and default_serial_num = #{serialNum}</if>
+    </select>
+
+</mapper>

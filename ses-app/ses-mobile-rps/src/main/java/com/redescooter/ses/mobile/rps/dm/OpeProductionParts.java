@@ -6,18 +6,24 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 部件表
+ * @author assert
+ * @date 2021/1/29 11:29
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeProductionParts")
 @Data
-@TableName(value = "ope_production_parts")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName(value = "operation.ope_production_parts")
 public class OpeProductionParts implements Serializable {
     /**
      * 主键id
@@ -55,10 +61,10 @@ public class OpeProductionParts implements Serializable {
     private String partsNo;
 
     /**
-     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination
+     * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU
      */
     @TableField(value = "parts_type")
-    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
+    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU")
     private Integer partsType;
 
     /**
@@ -71,7 +77,7 @@ public class OpeProductionParts implements Serializable {
     /**
      * 是否禁用，0：否，1：是
      */
-    @TableField(value = "`disable`")
+    @TableField(value = "disable")
     @ApiModelProperty(value = "是否禁用，0：否，1：是")
     private Integer disable;
 
@@ -115,7 +121,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "supplier_id")
     @ApiModelProperty(value = "供应商id")
-    private Long supplierId;
+    private Integer supplierId;
 
     /**
      * 采购周期
@@ -130,6 +136,13 @@ public class OpeProductionParts implements Serializable {
     @TableField(value = "dwg")
     @ApiModelProperty(value = "图纸")
     private String dwg;
+
+    /**
+     * 是否有质检模板，0：否，1：是
+     */
+    @TableField(value = "qc_flag")
+    @ApiModelProperty(value = "是否有质检模板，0：否，1：是")
+    private Boolean qcFlag;
 
     /**
      * 备注
@@ -176,7 +189,7 @@ public class OpeProductionParts implements Serializable {
     /**
      * 级别
      */
-    @TableField(value = "`level`")
+    @TableField(value = "level")
     @ApiModelProperty(value = "级别")
     private Integer level;
 
@@ -333,6 +346,8 @@ public class OpeProductionParts implements Serializable {
 
     public static final String COL_DWG = "dwg";
 
+    public static final String COL_QC_FLAG = "qc_flag";
+
     public static final String COL_REMARK = "remark";
 
     public static final String COL_ANNOUN_USER_ID = "announ_user_id";
@@ -380,4 +395,8 @@ public class OpeProductionParts implements Serializable {
     public static final String COL_DEF4 = "def4";
 
     public static final String COL_DEF5 = "def5";
+
+    public static OpeProductionPartsBuilder builder() {
+        return new OpeProductionPartsBuilder();
+    }
 }

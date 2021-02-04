@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 public enum SysUserSourceEnum {
 
     SYSTEM("SYSTEM","ROS系统添加","1"),
+
     WEBSITE("WEBSITE","官网注册","2");
+
     private String code;
 
     private String message;

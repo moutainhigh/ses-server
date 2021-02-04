@@ -13,6 +13,7 @@
     <result column="combin_qty" jdbcType="INTEGER" property="combinQty" />
     <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
     <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+    <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -26,9 +27,9 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty, 
-    in_wh_qty, remark, created_by, created_time, updated_by, updated_time, def1, def2, 
-    def3, def4, def5
+    id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty,
+    in_wh_qty, act_in_wh_qty, remark, created_by, created_time, updated_by, updated_time,
+    def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -133,52 +134,52 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into ope_in_whouse_scooter_b
-    (id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty, 
-      in_wh_qty, remark, created_by, created_time, updated_by, updated_time, def1, def2, 
+    (id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty,
+      in_wh_qty, remark, created_by, created_time, updated_by, updated_time, def1, def2,
       def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT}, 
-        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.scooterBomId,jdbcType=BIGINT}, 
-        #{item.combinQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, #{item.inWhQty,jdbcType=INTEGER}, 
-        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT},
+        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.scooterBomId,jdbcType=BIGINT},
+        #{item.combinQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, #{item.inWhQty,jdbcType=INTEGER},
+        #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR},
         #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB">
     <!--@mbg.generated-->
     insert into ope_in_whouse_scooter_b
-    (id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty, 
-      in_wh_qty, remark, created_by, created_time, updated_by, updated_time, def1, def2, 
+    (id, dr, in_wh_id, group_id, color_id, scooter_bom_id, combin_qty, able_in_wh_qty,
+      in_wh_qty, remark, created_by, created_time, updated_by, updated_time, def1, def2,
       def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT}, 
-      #{colorId,jdbcType=BIGINT}, #{scooterBomId,jdbcType=BIGINT}, #{combinQty,jdbcType=INTEGER}, 
-      #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT},
+      #{colorId,jdbcType=BIGINT}, #{scooterBomId,jdbcType=BIGINT}, #{combinQty,jdbcType=INTEGER},
+      #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
       #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    in_wh_id = #{inWhId,jdbcType=BIGINT}, 
-    group_id = #{groupId,jdbcType=BIGINT}, 
-    color_id = #{colorId,jdbcType=BIGINT}, 
-    scooter_bom_id = #{scooterBomId,jdbcType=BIGINT}, 
-    combin_qty = #{combinQty,jdbcType=INTEGER}, 
-    able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER}, 
-    in_wh_qty = #{inWhQty,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    in_wh_id = #{inWhId,jdbcType=BIGINT},
+    group_id = #{groupId,jdbcType=BIGINT},
+    color_id = #{colorId,jdbcType=BIGINT},
+    scooter_bom_id = #{scooterBomId,jdbcType=BIGINT},
+    combin_qty = #{combinQty,jdbcType=INTEGER},
+    able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+    in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB">
@@ -303,7 +304,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

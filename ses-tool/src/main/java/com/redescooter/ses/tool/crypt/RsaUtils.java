@@ -160,7 +160,6 @@ public class RsaUtils {
             KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
             PublicKey key = keyFactory.generatePublic(x509EncodedKeySpec);
             Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
-            //Cipher cipher = Cipher.getInstance(RSA_PADDING_KEY);
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] b = data.getBytes(UTF8);
             byte[] decrypt = cipher.doFinal(Base64.decodeBase64(b));

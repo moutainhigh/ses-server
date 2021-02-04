@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.restproductionorder;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
 import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
 import org.apache.ibatis.annotations.Param;
@@ -56,4 +57,12 @@ public interface InWhouseOrderServiceMapper {
      * @return
      **/
     List<OpeInWhouseScooterB>  inWhouseScooterList(@Param("combinId")Long combinId);
+
+
+    /**
+     * 通过调拨单ID 找到调拨单产生的出库单
+     * @param allocateId
+     * @return
+     */
+    List<OpeOutWhouseOrder> outOrderByAllocateId(@Param("allocateId") Long allocateId);
 }

@@ -94,13 +94,13 @@ public interface ScooterServiceMapper {
     List<String> getAllScooterTabletSn();
 
     /**
-     * 新增车辆信息
-     * @param scooter
+     * 批量新增车辆信息
+     * @param scooterList
      * @return int
      * @author assert
      * @date 2020/12/10
     */
-    int insertScooter(ScoScooter scooter);
+    int batchInsertScooter(@Param("scooterList") List<ScoScooter> scooterList);
 
     /**
      * 查询车辆数量
@@ -112,15 +112,16 @@ public interface ScooterServiceMapper {
     int countByScooter();
 
     /**
-     * 根据id修改车辆型号
-     * @param id
+     * 根据tabletSn修改车辆型号
+     * @param tabletSn
      * @param scooterModel
      * @param updateTime
      * @return int
      * @author assert
      * @date 2020/12/16
      */
-    int updateScooterModelById(@Param("id") Long id, @Param("scooterModel") Integer scooterModel, @Param("updateTime") Date updateTime);
+    int updateScooterModelByTabletSn(@Param("tabletSn") String tabletSn, @Param("scooterModel") Integer scooterModel,
+                               @Param("updateTime") Date updateTime);
 
     /**
      * 根据tabletSn查询车辆信息
@@ -139,5 +140,14 @@ public interface ScooterServiceMapper {
      * @date 2020/12/21
      */
     Long getScooterIdByTabletSn(String tabletSn);
+
+    /**
+     * 查询当天生产车辆编号信息
+     * @param
+     * @return java.util.List<java.lang.String>
+     * @author assert
+     * @date 2021/2/1
+     */
+    List<String> getToDayScooterNos();
 
 }

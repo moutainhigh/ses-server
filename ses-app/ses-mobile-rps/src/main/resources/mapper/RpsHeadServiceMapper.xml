@@ -40,4 +40,17 @@
         and  status=5
     </select>
 
+    <select id="rpsHeadOutboundTotal" resultType="int">
+        select count(*)
+        from ope_out_whouse_order whOrder
+        where whOrder.dr = 0
+          and whOrder.out_wh_status in (0,10,15)
+    </select>
+
+    <select id="rpsHeadConsignTotal" resultType="int">
+        select count(*)
+        from ope_entrust_order enorder
+        where enorder.dr = 0
+          and enorder.entrust_status = 0
+    </select>
 </mapper>

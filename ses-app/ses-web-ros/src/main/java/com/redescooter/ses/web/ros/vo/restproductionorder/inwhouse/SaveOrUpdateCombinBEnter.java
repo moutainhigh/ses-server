@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@ApiModel("关联的组装单的组装件产品信息")
 public class SaveOrUpdateCombinBEnter {
 
     @ApiModelProperty(value="组装件名称(中文名称)")

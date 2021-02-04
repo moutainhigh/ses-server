@@ -1,9 +1,10 @@
 package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.foundation.vo.mail.MailTemplateOfTermEnter;
-import com.redescooter.ses.api.foundation.vo.mail.MailTemplateOfTermResult;
-import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.email.EmailListEnter;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
+import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 
 import java.util.List;
 
@@ -16,7 +17,27 @@ import java.util.List;
  */
 public interface MailTemplateManageService {
 
-    GeneralResult save(SaveMailTemplateEnter enter);
+    /**
+     * 保存更新邮件模板
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult save(UpdateMailTemplateEnter enter);
 
-    List<MailTemplateOfTermResult> getMailTemplateOfTerm(MailTemplateOfTermEnter enter);
+    /**
+     * 删除邮件模板
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult delete(IdEnter enter);
+
+    /**
+     * 邮件模板列表
+     *
+     * @param enter
+     * @return
+     */
+    List<MailTemplateResult> getMailTemplateList(EmailListEnter enter);
 }

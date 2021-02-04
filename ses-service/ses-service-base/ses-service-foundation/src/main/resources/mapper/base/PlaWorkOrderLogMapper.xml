@@ -21,7 +21,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by, 
+    id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
     updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
@@ -203,42 +203,42 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
     insert into pla_work_order_log
-    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def4, def5)
+    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
+    updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.workOrderId,jdbcType=BIGINT}, 
-        #{item.messageType,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
-        #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.workOrderId,jdbcType=BIGINT},
+      #{item.messageType,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+      #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
+      #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrderLog">
     <!--@mbg.generated-->
     insert into pla_work_order_log
-    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by, 
-      updated_time, def1, def2, def3, def4, def5)
+    (id, dr, work_order_id, message_type, remark, created_by, created_time, updated_by,
+    updated_time, def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{workOrderId,jdbcType=BIGINT}, #{messageType,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
-      #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
-      )
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    work_order_id = #{workOrderId,jdbcType=BIGINT}, 
-    message_type = #{messageType,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{workOrderId,jdbcType=BIGINT}, #{messageType,jdbcType=INTEGER},
+    #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+    #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
+    #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
+    )
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    work_order_id = #{workOrderId,jdbcType=BIGINT},
+    message_type = #{messageType,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.service.foundation.dm.base.PlaWorkOrderLog">
@@ -333,7 +333,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

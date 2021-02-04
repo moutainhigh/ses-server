@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
-    * 委托单部件产品概览表
-    */
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeEntrustPartsB")
+ * 委托单部件产品概览表
+ */
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeEntrustPartsB")
 @Data
 @TableName(value = "ope_entrust_parts_b")
 public class OpeEntrustPartsB {
@@ -22,14 +22,14 @@ public class OpeEntrustPartsB {
      * 主键id
      */
     @TableId(value = "id")
-    @ApiModelProperty(value="主键id")
+    @ApiModelProperty(value = "主键id")
     private Long id;
 
     /**
      * 逻辑删除
      */
     @TableField(value = "dr")
-    @ApiModelProperty(value="逻辑删除")
+    @ApiModelProperty(value = "逻辑删除")
     @TableLogic
     private Integer dr;
 
@@ -37,119 +37,119 @@ public class OpeEntrustPartsB {
      * 委托单id
      */
     @TableField(value = "entrust_id")
-    @ApiModelProperty(value="委托单id")
+    @ApiModelProperty(value = "委托单id")
     private Long entrustId;
 
     /**
      * 部件id
      */
     @TableField(value = "parts_id")
-    @ApiModelProperty(value="部件id")
+    @ApiModelProperty(value = "部件id")
     private Long partsId;
 
     /**
      * 部件名称(英文名称)
      */
     @TableField(value = "parts_name")
-    @ApiModelProperty(value="部件名称(英文名称)")
+    @ApiModelProperty(value = "部件名称(英文名称)")
     private String partsName;
 
     /**
      * 部件编号
      */
     @TableField(value = "parts_no")
-    @ApiModelProperty(value="部件编号")
+    @ApiModelProperty(value = "部件编号")
     private String partsNo;
 
     /**
      * 部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination
      */
     @TableField(value = "parts_type")
-    @ApiModelProperty(value="部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
+    @ApiModelProperty(value = "部件类型，1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination")
     private Integer partsType;
 
     /**
      * 数量
      */
     @TableField(value = "qty")
-    @ApiModelProperty(value="数量")
+    @ApiModelProperty(value = "数量")
     private Integer qty;
 
     /**
      * 实际发货数量
      */
     @TableField(value = "consignor_qty")
-    @ApiModelProperty(value="实际发货数量")
+    @ApiModelProperty(value = "实际发货数量")
     private Integer consignorQty;
 
     /**
      * 备注
      */
     @TableField(value = "remark")
-    @ApiModelProperty(value="备注")
+    @ApiModelProperty(value = "备注")
     private String remark;
 
     /**
      * 创建人
      */
     @TableField(value = "created_by")
-    @ApiModelProperty(value="创建人")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
     private Date createdTime;
 
     /**
      * 更新人
      */
     @TableField(value = "updated_by")
-    @ApiModelProperty(value="更新人")
+    @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
     /**
      * 更新时间
      */
     @TableField(value = "updated_time")
-    @ApiModelProperty(value="更新时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def1")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段(存放车辆序列号,通过逗号分隔)")
     private String def1;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def2")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def2;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def3")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def3;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def4")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private String def4;
 
     /**
      * 冗余字段
      */
     @TableField(value = "def5")
-    @ApiModelProperty(value="冗余字段")
+    @ApiModelProperty(value = "冗余字段")
     private BigDecimal def5;
 
     public static final String COL_ID = "id";

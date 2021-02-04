@@ -81,7 +81,7 @@
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
         <include refid="where_ExpressOrder_List"/>
-        order by a.created_time desc
+        order by a.created_time desc,a.id
         limit #{startRow},#{pageSize}
 
     </select>
