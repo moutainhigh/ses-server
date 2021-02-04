@@ -1,16 +1,13 @@
 package com.redescooter.ses.web.ros.aspect;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.tool.aspect.ValidationUtil;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
@@ -147,14 +144,14 @@ public class ControllerAspect {
      */
     private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
         // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接return出去就行
-        LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
         userWrapper.eq(OpeSysUser::getId, enter.getUserId());
         userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
         userWrapper.last("limit 1");
         OpeSysUser admin = opeSysUserService.getOne(userWrapper);
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             return;
-        }
+        }*/
 
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
@@ -164,7 +161,7 @@ public class ControllerAspect {
         List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
         // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
         if (CollectionUtils.isEmpty(permsList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
         boolean flag = false;
         for (String perm : permsList) {
@@ -174,7 +171,7 @@ public class ControllerAspect {
             }
         }
         if (!flag) {
-            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
     }
 
