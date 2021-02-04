@@ -103,6 +103,12 @@ public class QcOrderServiceImpl implements QcOrderService {
     private OpeCombinOrderService opeCombinOrderService;
     @Autowired
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+    @Autowired
+    private WmsScooterStockMapper wmsScooterStockMapper;
+    @Autowired
+    private WmsCombinStockMapper wmsCombinStockMapper;
+    @Autowired
+    private WmsPartsStockMapper wmsPartsStockMapper;
 
 
     @Override
@@ -449,6 +455,7 @@ public class QcOrderServiceImpl implements QcOrderService {
          */
         Long qcId = null;
         Long stockId = null;
+        OpeQcOrder opeQcOrder = null;
         switch (paramDTO.getProductType()) {
             case 1:
                 // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
@@ -458,6 +465,8 @@ public class QcOrderServiceImpl implements QcOrderService {
                 OpeQcScooterB opeQcScooterB = qcScooterMapper.getQcScooterById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcScooterB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                opeQcOrder = qcOrderMapper.getQcOrderById(opeQcScooterB.getQcId());
                 // 质检成功合格数量+1,失败不合格数量+1
                 if (qcResultFlag) {
                     opeQcScooterB.setQualifiedQty(opeQcScooterB.getQualifiedQty() + 1);
@@ -496,6 +505,31 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockId = opeWmsQualifiedScooterStock.getId();
                     stockRelationType = WmsTypeEnum.SCOOTER_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
+
+                    /**
+                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
+                     */
+                    if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
+                            && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
+                        OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper
+                                .getWmsScooterStockByGroupIdAndColorId(opeQcScooterB.getGroupId(), opeQcScooterB.getColorId());
+                        // 这种情况应该是不会有的,出库质检说明库存中肯定有该产品信息
+                        RpsAssert.isNull(opeWmsScooterStock, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                        opeWmsScooterStock.setAbleStockQty(opeWmsScooterStock.getAbleStockQty() - qcQty);
+                        // 待出库同时也要扣减,因为此时相当于是从成品库出到不合格品库里面去了
+                        opeWmsScooterStock.setWaitOutStockQty(opeWmsScooterStock.getWaitOutStockQty() - qcQty);
+                        opeWmsScooterStock.setUpdatedBy(paramDTO.getUserId());
+                        opeWmsScooterStock.setUpdatedTime(new Date());
+                        wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
+
+                        // 把产品从仓库详情中删除(有码产品)
+                        if (paramDTO.getIdClass()) {
+                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                        }
+                    }
+
                 }
                 // 更新车辆质检合格/不合格数量
                 opeQcScooterB.setUpdatedBy(paramDTO.getUserId());
@@ -515,6 +549,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 RpsAssert.isNull(opeQcCombinB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
+                opeQcOrder = qcOrderMapper.getQcOrderById(opeQcCombinB.getQcId());
                 // 更新组装件质检合格/不合格数量
                 if (qcResultFlag) {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
@@ -556,6 +591,29 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockId = opeWmsQualifiedCombinStock.getId();
                     stockRelationType = WmsTypeEnum.COMBINATION_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
+
+                    /**
+                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
+                     */
+                    if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
+                            && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
+                        OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(opeQcCombinB.getProductionCombinBomId());
+                        // 这种情况应该是不会有的,出库质检说明库存中肯定有该产品信息
+                        RpsAssert.isNull(opeWmsCombinStock, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                        opeWmsCombinStock.setAbleStockQty(opeWmsCombinStock.getAbleStockQty() - qcQty);
+                        // 待出库同时也要扣减,因为此时相当于是从成品库出到不合格品库里面去了
+                        opeWmsCombinStock.setWaitOutStockQty(opeWmsCombinStock.getWaitOutStockQty() - qcQty);
+                        opeWmsCombinStock.setUpdatedBy(paramDTO.getUserId());
+                        opeWmsCombinStock.setUpdatedTime(new Date());
+                        wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
+
+                        // 把产品从仓库详情中删除(有码产品)
+                        if (paramDTO.getIdClass()) {
+                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                        }
+                    }
                 }
                 opeQcCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeQcCombinB.setUpdatedTime(new Date());
@@ -586,6 +644,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeQcPartsB.getPartsType()) && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()),
                         ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
+                opeQcOrder = qcOrderMapper.getQcOrderById(opeQcPartsB.getQcId());
                 // 限制无码产品重复质检, 并且无码产品质检数量必须和质检数量一致
                 if (!paramDTO.getIdClass()) {
                     RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
@@ -597,7 +656,6 @@ public class QcOrderServiceImpl implements QcOrderService {
                      * 如果是质检单是由“工厂采购单”所生成对于重复扫码校验的逻辑就要修改, 因为工厂采购生成的质检单扫码时,扫的码是部件本身的,
                      * 其它例如,组装、出库生成的质检单扫码时，扫的是后台生成的码, 这里比较特殊所以需要这样处理
                      */
-                    OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(opeQcPartsB.getQcId());
                     if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
                         int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId(),
                                 OrderTypeEnums.FACTORY_PURCHAS.getValue());
@@ -609,10 +667,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                 // 更新部件质检合格/不合格数量(部件存在无码质检这里要特殊处理)
                 int qty = 0;
                 if (qcResultFlag) {
-                    qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? opeQcPartsB.getQualifiedQty() + 1 : qcQty;
+                    qty = paramDTO.getIdClass() ? opeQcPartsB.getQualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setQualifiedQty(qty);
                 } else {
-                    qty = StringUtils.isNotBlank(paramDTO.getSerialNum()) ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
+                    qty = paramDTO.getIdClass() ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
 
                     /**
@@ -650,6 +708,29 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockId = opeWmsQualifiedPartsStock.getId();
                     stockRelationType = WmsTypeEnum.PARTS_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue();
+
+                    /**
+                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
+                     */
+                    if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
+                            && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
+                        OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(opeQcPartsB.getPartsId());
+                        // 这种情况应该是不会有的,出库质检说明库存中肯定有该产品信息
+                        RpsAssert.isNull(opeWmsPartsStock, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                                ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+
+                        opeWmsPartsStock.setAbleStockQty(opeWmsPartsStock.getAbleStockQty() - qcQty);
+                        // 待出库同时也要扣减,因为此时相当于是从成品库出到不合格品库里面去了
+                        opeWmsPartsStock.setWaitOutStockQty(opeWmsPartsStock.getWaitOutStockQty() - qcQty);
+                        opeWmsPartsStock.setUpdatedBy(paramDTO.getUserId());
+                        opeWmsPartsStock.setUpdatedTime(new Date());
+                        wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
+
+                        // 把产品从仓库详情中删除(有码产品)
+                        if (paramDTO.getIdClass()) {
+                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                        }
+                    }
                 }
                 opeQcPartsB.setUpdatedBy(paramDTO.getUserId());
                 opeQcPartsB.setUpdatedTime(new Date());
@@ -700,7 +781,6 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         // 当质检单为【生产采购单】产生时才需要打印二维码
         String serialNum = "PARTS" + System.currentTimeMillis();
-        OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(qcId);
         if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
             resultDTO.setPrintFlag(true);
             opeQcOrderSerialBind.setSerialNum(serialNum);
