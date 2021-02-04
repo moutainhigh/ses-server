@@ -31,7 +31,9 @@
                 <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>${project.build.directory}</jar.path>
             </properties>
-
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>dev</id>
@@ -45,12 +47,9 @@
             <id>alpha</id>
             <properties>
                 <profile-active>alpha</profile-active>
-                <log.path>${project.build.directory}/logs/</log.path>
+                <log.path>/data/java_service/logs/</log.path>
                 <jar.path>/root/java_service/alpha</jar.path>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>test</id>
