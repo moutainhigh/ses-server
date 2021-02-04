@@ -47,15 +47,15 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @DubboReference
-    private IdAppService idAppService;
 
     @Autowired
     private MondayService mondayService;
 
-
     @Autowired
     private WebsiteInquiryServiceMapper websiteInquiryServiceMapper;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     /**
      * 官网的订单数据同步到ROS中
@@ -119,7 +119,6 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         }
         //发送数据到Monday
         mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);
-
     }
 
 

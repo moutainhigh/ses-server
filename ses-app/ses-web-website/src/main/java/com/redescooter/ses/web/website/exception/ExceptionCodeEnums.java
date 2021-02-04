@@ -86,6 +86,8 @@ public enum ExceptionCodeEnums {
     BATTERIES_NUM_ERROR(10032, "电池数量匹配"),
 
     PHONE_NOT_EXIST(10033, "手机号不能为空"),
+
+    WRONG_ORDER_STATUS(10034, "订单状态不对"),
     ;
 
 
