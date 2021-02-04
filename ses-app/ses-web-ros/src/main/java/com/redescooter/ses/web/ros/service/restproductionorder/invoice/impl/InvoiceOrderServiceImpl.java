@@ -399,36 +399,28 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         }
 
                         // 到出库单里看是否有已生成但未出库的发货单,如果有,将数量+此次的数量,如果大于库存数量,抛异常提示库存不足
-
-
-
-
-
-
-                        /*LambdaQueryWrapper<OpeOutWhouseOrder> outWrapper = new LambdaQueryWrapper<>();
+                        LambdaQueryWrapper<OpeOutWhouseOrder> outWrapper = new LambdaQueryWrapper<>();
                         outWrapper.eq(OpeOutWhouseOrder::getDr, DelStatusEnum.VALID.getCode());
                         outWrapper.eq(OpeOutWhouseOrder::getRelationType, 3);
-                        outWrapper.eq(OpeOutWhouseOrder::getRelationId, combinB.getInvoiceId());
+                        outWrapper.eq(OpeOutWhouseOrder::getRelationId, scooterB.getInvoiceId());
                         outWrapper.last("limit 1");
                         OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
                         if (null != outOrder) {
-                            LambdaQueryWrapper<OpeOutWhCombinB> qw = new LambdaQueryWrapper<>();
-                            qw.eq(OpeOutWhCombinB::getDr, DelStatusEnum.VALID.getCode());
-                            qw.eq(OpeOutWhCombinB::getOutWhId, outOrder.getId());
-                            qw.eq(OpeOutWhCombinB::getAlreadyOutWhQty, 0);
+                            LambdaQueryWrapper<OpeOutWhScooterB> qw = new LambdaQueryWrapper<>();
+                            qw.eq(OpeOutWhScooterB::getDr, DelStatusEnum.VALID.getCode());
+                            qw.eq(OpeOutWhScooterB::getOutWhId, outOrder.getId());
+                            qw.eq(OpeOutWhScooterB::getAlreadyOutWhQty, 0);
                             qw.last("limit 1");
-                            OpeOutWhCombinB outCombinB = opeOutWhCombinBMapper.selectOne(qw);
-                            if (null != outCombinB) {
-                                Integer outQty = outCombinB.getQty();
-                                Integer invoiceQty = combinB.getQty();
+                            OpeOutWhScooterB outScooterB = opeOutWhScooterBMapper.selectOne(qw);
+                            if (null != outScooterB) {
+                                Integer outQty = outScooterB.getQty();
+                                Integer invoiceQty = scooterB.getQty();
                                 int total = invoiceQty + outQty;
-                                if (total < combinStock.getAbleStockQty()) {
+                                if (total < scooterStock.getAbleStockQty()) {
                                     throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                                 }
                             }
-                        }*/
-
-
+                        }
                     }
                 }
             default:
