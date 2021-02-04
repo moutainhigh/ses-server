@@ -146,6 +146,8 @@ public class OrderServiceImpl implements OrderService {
                 throw new SesWebsiteException(ExceptionCodeEnums.WRONG_ORDER_STATUS.getCode(),
                         ExceptionCodeEnums.WRONG_ORDER_STATUS.getMessage());
             }
+            //先删除订单下的主订单,为了方便下步创建新的配件列表
+            siteOrderBService.remove(new QueryWrapper<SiteOrderB>().eq(SiteOrderB.COL_ORDER_ID, addSiteOrderVO.getId()));
         }
 
         SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());
