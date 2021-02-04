@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdResult;
-import com.redescooter.ses.web.website.vo.order.AddOrderEnter;
+import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 
@@ -22,7 +22,7 @@ public interface OrderService {
      * @param enter
      * @return
      */
-    IdResult addOrder(AddOrderEnter enter);
+    IdResult addOrder(AddUpdateOrderEnter enter);
 
     /**
      * 创建订单配件
