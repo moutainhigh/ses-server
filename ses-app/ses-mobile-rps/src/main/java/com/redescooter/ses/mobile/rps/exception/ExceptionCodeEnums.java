@@ -240,7 +240,9 @@ public enum ExceptionCodeEnums {
 
     INVENTORY_SHORTAGE(10117, "库存不足"),
 
-    QC_TEMPLATE_RESULT_IS_NOT_EXISTS(10118, "质检模板结果不存在")
+    QC_TEMPLATE_RESULT_IS_NOT_EXISTS(10118, "质检模板结果不存在"),
+
+    QC_SUBMITTED(10119, "已提交质检")
     ;
 
     private int code;

@@ -17,6 +17,7 @@ import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -70,7 +71,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     @Resource
     private ProductionPartsMapper partsMapper;
     @Resource
-    private TransactionTemplate transactionTemplate;
+    private QcOrderMapper qcOrderMapper;
 
 
     @Override
@@ -139,6 +140,14 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
             RpsAssert.isFalse(NewOutBoundOrderStatusEnums.DRAFT.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
                     ExceptionCodeEnums.STATUS_IS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_IS_ILLEGAL.getMessage());
         }
+
+        /**
+         * 检查当前出库单是否已经生成质检单,避免质检单重复生成
+         */
+        int isExistsQcOrder = qcOrderMapper.isExistsQcOrderByRelationIdByType(opeOutWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue());
+        RpsAssert.isTrue(isExistsQcOrder > 0, ExceptionCodeEnums.QC_SUBMITTED.getCode(),
+                ExceptionCodeEnums.QC_SUBMITTED.getMessage());
+
 
         /**
          * 调用Chris生成出库质检单接口
