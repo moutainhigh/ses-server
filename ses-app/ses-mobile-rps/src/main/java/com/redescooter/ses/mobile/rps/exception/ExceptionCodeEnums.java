@@ -242,7 +242,9 @@ public enum ExceptionCodeEnums {
 
     QC_TEMPLATE_RESULT_IS_NOT_EXISTS(10118, "质检模板结果不存在"),
 
-    QC_SUBMITTED(10119, "已提交质检")
+    QC_SUBMITTED(10119, "已提交质检"),
+
+    BLUETOOTH_MAC_ADDRESS_IS_EMPTY(10120, "蓝牙mac地址为空")
     ;
 
     private int code;

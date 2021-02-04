@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.combinorder.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
@@ -212,29 +213,28 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 .getCombinationListRelationPartsByRIdAndBId(paramDTO.getProductId(), paramDTO.getBomId());
         RpsAssert.isNull(opeCombinListRelationParts, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-
-        // 避免重复扫码
-        if (paramDTO.getIdClass()) {
-            OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
-                    .getCombinListPartsSerialBySerialNum(paramDTO.getSerialNum());
-            RpsAssert.isNotNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
-                    ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
-        }
-
-        // 无码部件输入数量必须跟所需数量一致
-        if (!paramDTO.getIdClass()) {
-            RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
-                    ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
-            RpsAssert.isTrue(opeCombinListRelationParts.getScanCodeQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
-                    ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
-        }
+        // ECU仪表必须要传递蓝牙mac地址
+        RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeCombinListRelationParts.getPartsType())
+                && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
+                ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
         /**
          * 更新组装单清单关联部件扫码数量
          */
         if (paramDTO.getIdClass()) {
+            OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
+                    .getCombinListPartsSerialBySerialNum(paramDTO.getSerialNum());
+            RpsAssert.isNotNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_SCAN_CODE.getMessage());
+
             opeCombinListRelationParts.setScanCodeQty(opeCombinListRelationParts.getScanCodeQty() + qty);
         } else {
+            // 无码部件输入数量必须跟所需数量一致
+            RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+                    ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+            RpsAssert.isTrue(opeCombinListRelationParts.getScanCodeQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                    ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+
             opeCombinListRelationParts.setScanCodeQty(qty);
         }
         opeCombinListRelationParts.setUpdatedBy(paramDTO.getUserId());

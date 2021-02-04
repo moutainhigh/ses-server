@@ -274,13 +274,15 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 RpsAssert.isNull(opeOutWhPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
-                RpsAssert.isTrue(qty > opeOutWhPartsB.getQty(), ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
-                        ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
-
                 // 更新出库单部件已出库数量
-                if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
+                if (paramDTO.getIdClass()) {
                     opeOutWhPartsB.setAlreadyOutWhQty(opeOutWhPartsB.getAlreadyOutWhQty() + qty);
                 } else {
+                    // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
+                    RpsAssert.isTrue(!qty.equals(opeOutWhPartsB.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+                            ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+                    RpsAssert.isTrue(opeOutWhPartsB.getAlreadyOutWhQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                            ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
                     opeOutWhPartsB.setAlreadyOutWhQty(qty);
                 }
                 opeOutWhPartsB.setUpdatedBy(paramDTO.getUserId());

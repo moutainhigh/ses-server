@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.inwhorder.impl;
 
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.*;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -250,19 +251,24 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
 
                 OpeInWhousePartsB opeInWhousePartsB = inWhousePartsBMapper.getInWhousePartsById(paramDTO.getProductId());
-                // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
-                if (StringUtils.isBlank(paramDTO.getSerialNum())) {
+                RpsAssert.isNull(opeInWhousePartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+                // ECU仪表必须要传递蓝牙mac地址
+                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeInWhousePartsB.getPartsType())
+                        && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
+                        ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
+
+                // 更新入库单部件实际入库数量
+                if (paramDTO.getIdClass()) {
+                    opeInWhousePartsB.setActInWhQty(opeInWhousePartsB.getActInWhQty() + qty);
+                    defaultSerialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
+                } else {
+                    // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
                     RpsAssert.isTrue(!qty.equals(opeInWhousePartsB.getInWhQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
                             ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
                     RpsAssert.isTrue(opeInWhousePartsB.getActInWhQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                             ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
-                }
 
-                // 更新入库单部件实际入库数量
-                if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
-                    opeInWhousePartsB.setActInWhQty(opeInWhousePartsB.getActInWhQty() + qty);
-                    defaultSerialNum = qcOrderSerialBindMapper.getDefaultSerialNumBySerialNum(paramDTO.getSerialNum());
-                } else {
                     opeInWhousePartsB.setActInWhQty(qty);
                 }
                 opeInWhousePartsB.setUpdatedBy(paramDTO.getUserId());

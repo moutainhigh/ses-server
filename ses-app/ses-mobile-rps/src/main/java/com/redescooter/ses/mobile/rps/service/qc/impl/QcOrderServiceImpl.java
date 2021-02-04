@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
 import com.redescooter.ses.api.common.enums.qc.QcTemplateProductTypeEnum;
@@ -49,7 +50,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -582,6 +582,10 @@ public class QcOrderServiceImpl implements QcOrderService {
                 OpeQcPartsB opeQcPartsB = qcPartsMapper.getQcPartsById(paramDTO.getProductId());
                 RpsAssert.isNull(opeQcPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
+                // ECU仪表必须要传递蓝牙mac地址
+                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeQcPartsB.getPartsType()) && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()),
+                        ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
+
                 // 限制无码产品重复质检, 并且无码产品质检数量必须和质检数量一致
                 if (!paramDTO.getIdClass()) {
                     RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),

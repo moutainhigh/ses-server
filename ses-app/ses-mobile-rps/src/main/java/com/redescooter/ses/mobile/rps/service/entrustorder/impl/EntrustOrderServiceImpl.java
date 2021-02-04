@@ -263,16 +263,19 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
 
                 OpeEntrustPartsB opeEntrustPartsB = entrustPartsBMapper.getEntrustPartsById(paramDTO.getProductId());
-
                 RpsAssert.isNull(opeEntrustPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
-                RpsAssert.isTrue(qty > opeEntrustPartsB.getQty(), ExceptionCodeEnums.DELIVERY_QTY_ERROR.getCode(),
-                        ExceptionCodeEnums.DELIVERY_QTY_ERROR.getMessage());
 
                 // 有无码调整实际发货数量
                 if (StringUtils.isNotBlank(paramDTO.getSerialNum())) {
                     opeEntrustPartsB.setConsignorQty(opeEntrustPartsB.getConsignorQty() + qty);
                 } else {
+                    // 限制无码产品重复质检, 并且无码产品输入的入库数量必须和入库数量一致
+                    RpsAssert.isTrue(!qty.equals(opeEntrustPartsB.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+                            ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
+                    RpsAssert.isTrue(opeEntrustPartsB.getConsignorQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+                            ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
+
                     opeEntrustPartsB.setConsignorQty(qty);
                 }
 
