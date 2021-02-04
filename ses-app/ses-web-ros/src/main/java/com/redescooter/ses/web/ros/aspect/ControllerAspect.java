@@ -160,7 +160,7 @@ public class ControllerAspect {
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
-        // 得到该用户拥有的
+        // 得到该用户拥有的权限path
         List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
         // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
         if (CollectionUtils.isEmpty(permsList)) {
