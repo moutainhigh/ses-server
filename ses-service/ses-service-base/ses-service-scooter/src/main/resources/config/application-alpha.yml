@@ -45,7 +45,3 @@ spring: #spring config
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
-
-#35.180.46.199:7332;35.180.46.199:7332
-iot:
-  address: 106.14.206.178:7332

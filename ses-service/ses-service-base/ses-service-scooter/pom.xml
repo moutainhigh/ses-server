@@ -11,24 +11,6 @@
     <version>1.2.1</version>
     <name>ses-service-scooter</name>
     <description>Base Scooter Application Service</description>
-    <!--	暂时注释掉iot服务-->
-    <!--	<dependencies>-->
-    <!--		<dependency>-->
-    <!--			<groupId>com.redescooter.ses</groupId>-->
-    <!--			<artifactId>ses-iot-admin</artifactId>-->
-    <!--			<version>1.0.0</version>-->
-    <!--			<exclusions>-->
-    <!--				<exclusion>-->
-    <!--					<artifactId>guava</artifactId>-->
-    <!--					<groupId>com.google.guava</groupId>-->
-    <!--				</exclusion>-->
-    <!--				<exclusion>-->
-    <!--					<artifactId>okio</artifactId>-->
-    <!--					<groupId>com.squareup.okio</groupId>-->
-    <!--				</exclusion>-->
-    <!--			</exclusions>-->
-    <!--		</dependency>-->
-    <!--	</dependencies>-->
 
     <!--环境配置-->
     <profiles>
@@ -36,12 +18,10 @@
             <id>local</id>
             <properties>
                 <profile-active>local</profile-active>
-                <log.path>logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>${project.build.directory}</jar.path>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+
         </profile>
         <profile>
             <id>dev</id>
@@ -55,9 +35,12 @@
             <id>alpha</id>
             <properties>
                 <profile-active>alpha</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>/root/java_service/alpha</jar.path>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>test</id>
