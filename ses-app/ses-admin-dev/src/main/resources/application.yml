@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 8899
+  port: 8888
   servlet:
     context-path: /ses/t/admin/w/dev/api
     encoding:
@@ -49,7 +49,7 @@ spring:
     timeout: 6000  # 连接超时时长（毫秒）
     jedis:
       pool:
-        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-active: -1  # 连接池最大连接数（使用负值表示没有限制）
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
@@ -58,7 +58,7 @@ spring:
 #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
-    port: 58188
+    port: 1111
     base-path: "/management"
   endpoints:
     enabled-by-default: true

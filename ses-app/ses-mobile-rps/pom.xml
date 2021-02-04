@@ -34,9 +34,7 @@
                 <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>${project.build.directory}</jar.path>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+
         </profile>
         <profile>
             <id>dev</id>
@@ -50,9 +48,12 @@
             <id>alpha</id>
             <properties>
                 <profile-active>alpha</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
+                <log.path>${project.build.directory}/logs/</log.path>
                 <jar.path>/root/java_service/alpha</jar.path>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>test</id>
@@ -113,40 +114,32 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <artifactId>maven-antrun-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy-lib-src-webapps</id>-->
-<!--                        &lt;!&ndash; 执行打包操作时执行的任务 &ndash;&gt;-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>run</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <target>-->
-<!--                                <delete dir="${project.build.directory}"/>-->
-<!--                            </target>-->
-<!--                            <tasks>-->
-<!--                                <copy todir="${jar.path}/libs">-->
-<!--                                    <fileset dir="${project.build.directory}">-->
-<!--                                        <include name="${project.name}.jar"/>-->
-<!--                                    </fileset>-->
-<!--                                </copy>-->
-<!--                            </tasks>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-lib-src-webapps</id>
+                        <!-- 执行打包操作时执行的任务 -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.build.directory}"/>
+                            </target>
+                            <tasks>
+                                <copy todir="${jar.path}/libs">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="${project.name}.jar"/>
+                                    </fileset>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

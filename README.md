@@ -159,17 +159,36 @@ ses-server
 | [Spring Security](https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/)|https://docs.spring.io/spring-security/site/docs/5.2.2.BUILD-SNAPSHOT/reference/htmlsingle/|
 | [Spring Security Oauth](https://projects.spring.io/spring-security-oauth/docs/oauth2.html)|https://projects.spring.io/spring-security-oauth/docs/oauth2.html|
 
+### 六、服务端口规范
 
-### 六、打包
+| Server Name            | Server Tomcat | Management |
+| ---------------------- | :-------------: | :----------: |
+| ses-service-foundation | 8801          | 8100       |
+| ses-service-proxy      | 8802          | 8101       |
+| ses-service-scooter    | 8803          | 8102       |
+| ses-service-hub        | 8804          | 8103       |
+| ses-service-mobile-c   | 8805          | 8104       |
+| ses-service-mobile-b   | 8806          | 8105       |
+| ses-mobile-client      | 8903          | 8106       |
+| ses-mobile-rps         | 8904          | 8107       |
+| ses-web-website        | 8900          | 8108       |
+| ses-web-ros            | 8901          | 8109       |
+| ses-web-delivery       | 8902          | 8110       |
+| ses-admin-dev          | 8888          | 1111       |
+
+### 七、打包
 
 1. maven 多环境打包命令
 ```shell script
+
+## init maven project
 mvn help:system
 
 mvn clean package -Dmaven.test.skip=true -Pprod
 ```
-### 七、Git分支规范
-分支命名
+### 八、Git分支规范
+
+分支命名规范
 * master 分支
 ```text
 master 为主分支，也是用于部署生产环境的分支，确保master分支稳定性
@@ -204,7 +223,8 @@ release 为预上线分支，发布提测阶段，会release分支代码为基�
 线上出现紧急问题时，需要及时修复，以master分支为基线，创建hotfix分支，修复完成后，需要合并到master分支和develop分支
 ```
 
-* Commit messages的基本语法
+### 九、Commit messages的规范
+
 当前业界应用的比较广泛的是 Angular Git Commit Guidelines  
 具体格式为:
 ```git
@@ -231,5 +251,3 @@ Type的类别说明：
 > - perf: 增加代码进行性能测试
 > - test: 增加测试用例
 > - chore: 改变构建流程、或者增加依赖库、工具等
-
-grant all privileges on *.* to 'root'@'localhost';
