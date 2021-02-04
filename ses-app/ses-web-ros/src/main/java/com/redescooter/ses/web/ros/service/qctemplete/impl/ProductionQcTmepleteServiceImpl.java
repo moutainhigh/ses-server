@@ -393,29 +393,24 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     private void checkOpeProductionProduction(Long id, Integer productionProductType) {
         // 产品校验验证
         // 部件校验
-        if (StringUtils.equalsAny(String.valueOf(productionProductType), BomCommonTypeEnums.PARTS.getValue(),
-                BomCommonTypeEnums.ACCESSORY.getValue(), BomCommonTypeEnums.BATTERY.getValue())) {
+        if (StringUtils.equalsAny(String.valueOf(productionProductType), BomCommonTypeEnums.PARTS.getValue(), BomCommonTypeEnums.ACCESSORY.getValue(), BomCommonTypeEnums.BATTERY.getValue())) {
             OpeProductionParts opeProductionPart = opeProductionPartsService.getById(id);
             if (opeProductionPart == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
         }
         // 车辆校验
         if (productionProductType.equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
             OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(id);
             if (productionScooterBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
         }
         // 组合校验
         if (productionProductType.equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
             OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(id);
             if (productionCombinBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
-
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
         }
     }
