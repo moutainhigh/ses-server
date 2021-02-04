@@ -542,11 +542,11 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
      */
     private List<OpeCombinListRelationParts> buildCombinListRelationParts(List<OpeProductionPartsRelation> opeProductionPartsRelationList,
                                                                           Long userId, Long relationId, Integer relationType) {
-        OpeProductionParts opeProductionParts = productionPartsMapper
-                .getProductionPartsByBomId(opeProductionPartsRelationList.get(0).getPartsId());
-
         List<OpeCombinListRelationParts> opeCombinListRelationPartsList = new ArrayList<>();
         for (int i = 0; i < opeProductionPartsRelationList.size(); i++) {
+            OpeProductionParts opeProductionParts = productionPartsMapper
+                    .getProductionPartsByBomId(opeProductionPartsRelationList.get(i).getPartsId());
+
             OpeCombinListRelationParts opeCombinListRelationParts = new OpeCombinListRelationParts();
             BeanUtils.copyProperties(opeProductionPartsRelationList.get(i), opeCombinListRelationParts);
 
