@@ -51,22 +51,19 @@ public class RosScooterController {
 
     @PostMapping(value = "/scooterList")
     @ApiOperation(value = "车辆列表", response = RosProductionScooterListResult.class)
-    public Response<PageResult<RosProductionScooterListResult>>
-        scooterList(@ModelAttribute @ApiParam("请求参数") RosProductionScooterListEnter enter) {
+    public Response<PageResult<RosProductionScooterListResult>> scooterList(@ModelAttribute @ApiParam("请求参数") RosProductionScooterListEnter enter) {
         return new Response<>(rosServProductionProductService.scooterList(enter));
     }
 
     @PostMapping(value = "/checkEffectiveDate")
     @ApiOperation(value = "校验生效时间", response = BooleanResult.class)
-    public Response<BooleanResult>
-        checkEffectiveDate(@ModelAttribute @ApiParam("请求参数") RosProductionTimeParmEnter enter) {
+    public Response<BooleanResult> checkEffectiveDate(@ModelAttribute @ApiParam("请求参数") RosProductionTimeParmEnter enter) {
         return new Response<>(rosServProductionProductService.checkEffectiveDate(enter));
     }
 
     @PostMapping(value = "/saveScooterImportExcel")
     @ApiOperation(value = "导入部件列表", response = ImportProductionProductResult.class)
-    public Response<ImportProductionProductResult>
-        saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
+    public Response<ImportProductionProductResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
         return new Response<>(rosServProductionProductService.importProductionProduct(enter));
     }
 
@@ -78,23 +75,20 @@ public class RosScooterController {
 
     @PostMapping(value = "/productionProductPartList")
     @ApiOperation(value = "保存车辆部件列表", response = RosProductionProductPartListResult.class)
-    public Response<PageResult<RosProductionProductPartListResult>>
-        productionProductPartList(@ModelAttribute @ApiParam("请求参数") RosProductionProductPartListEnter enter) {
+    public Response<PageResult<RosProductionProductPartListResult>> productionProductPartList(@ModelAttribute @ApiParam("请求参数") RosProductionProductPartListEnter enter) {
         return new Response<>(rosServProductionProductService.productionProductPartList(enter));
     }
 
     @PostMapping(value = "/rosSaveProductionProduct")
     @ApiOperation(value = "车辆保存", response = BaseNameResult.class)
     @AvoidDuplicateSubmit
-    public Response<GeneralResult>
-        rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
+    public Response<GeneralResult> rosSaveProductionProduct(@ModelAttribute @ApiParam("请求参数") RosSaveProductionProductEnter enter) {
         return new Response<>(rosServProductionProductService.rosSaveProductionProduct(enter));
     }
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = RosProductionProductDetailResult.class)
-    public Response<RosProductionProductDetailResult>
-        detail(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+    public Response<RosProductionProductDetailResult> detail(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.detail(enter));
     }
 
@@ -106,8 +100,7 @@ public class RosScooterController {
 
     @PostMapping(value = "/productionProductDisable")
     @ApiOperation(value = "产品禁用", response = GeneralResult.class)
-    public Response<GeneralResult>
-        productionProductDisable(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+    public Response<GeneralResult> productionProductDisable(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.productionProductDisable(enter));
     }
 
@@ -131,15 +124,13 @@ public class RosScooterController {
 
     @PostMapping(value = "/checkProductionInfo")
     @ApiOperation(value = "产品信息校验", response = GeneralResult.class)
-    public Response<GeneralResult>
-        checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
+    public Response<GeneralResult> checkProductionInfo(@ModelAttribute @ApiParam("请求参数") RosProuductionTypeEnter enter) {
         return new Response<>(rosServProductionProductService.checkProductionInfo(enter));
     }
 
     @PostMapping(value = "/qcTempleteDetail")
     @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
-    public Response<List<QcTemplateDetailResult>>
-        qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
+    public Response<List<QcTemplateDetailResult>> qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
         return new Response<>(productionQcTmepleteService.detail(enter));
     }
 
