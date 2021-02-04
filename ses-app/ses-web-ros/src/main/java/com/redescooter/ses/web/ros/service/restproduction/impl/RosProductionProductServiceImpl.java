@@ -158,26 +158,23 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public PageResult<RosProductionScooterListResult> scooterList(RosProductionScooterListEnter enter) {
-
-        List<RosProductionScooterListResult> rosProductionScooterListResults = new ArrayList<>();
+        List<RosProductionScooterListResult> result = new ArrayList<>();
         int count = 0;
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
             count = rosProductionProductServiceMapper.scooterDraftListCount(enter);
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            rosProductionScooterListResults = rosProductionProductServiceMapper.scooterDraftList(enter);
+            result = rosProductionProductServiceMapper.scooterDraftList(enter);
         }
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
-            count = rosProductionProductServiceMapper.scooterBomListCount(enter,
-                    ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+            count = rosProductionProductServiceMapper.scooterBomListCount(enter, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            rosProductionScooterListResults = rosProductionProductServiceMapper.scooterBomList(enter,
-                    ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+            result = rosProductionProductServiceMapper.scooterBomList(enter, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
         }
-        return PageResult.create(enter, count, rosProductionScooterListResults);
+        return PageResult.create(enter, count, result);
     }
 
     /**

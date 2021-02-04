@@ -156,7 +156,6 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
      */
     @Override
     public List<QcTemplateDetailResult> detail(QcTempleteDetailEnter enter) {
-        enter.setProductionProductType(1);
         // 产品校验
         checkOpeProductionProduction(enter.getId(), enter.getProductionProductType());
 
