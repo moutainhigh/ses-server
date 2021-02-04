@@ -152,4 +152,10 @@
 	    where dr = 0
     </select>
 
+    <!--根据relationId、relationType检查质检单是否存在-->
+    <select id="isExistsQcOrderByRelationIdByType" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0 and relation_order_id = #{relationId} and relation_order_type = #{relationType}
+    </select>
+
 </mapper>

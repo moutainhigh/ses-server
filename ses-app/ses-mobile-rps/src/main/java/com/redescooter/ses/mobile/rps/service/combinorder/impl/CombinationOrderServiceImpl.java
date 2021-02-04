@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.service.combinorder.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.CombinListStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.assembly.NewCombinOrderStatusEnums;
@@ -22,6 +23,7 @@ import com.redescooter.ses.mobile.rps.dao.combinorder.*;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
@@ -86,6 +88,8 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     private OpeOrderSerialBindService opeOrderSerialBindService;
     @Autowired
     private ProductionPartsMapper partsMapper;
+    @Autowired
+    private QcOrderMapper qcOrderMapper;
 
 
     @Override
@@ -396,6 +400,13 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         }
         RpsAssert.isTrue(count > 0, ExceptionCodeEnums.COMBINATION_NOT_COMPLETED.getCode(),
                 ExceptionCodeEnums.COMBINATION_NOT_COMPLETED.getMessage());
+
+        /**
+         * 检查当前组装单是否已经生成质检单,避免重复生成
+         */
+        int isExistsQcOrder = qcOrderMapper.isExistsQcOrderByRelationIdByType(opeCombinOrder.getId(), OrderTypeEnums.COMBIN_ORDER.getValue());
+        RpsAssert.isTrue(isExistsQcOrder > 0, ExceptionCodeEnums.QC_SUBMITTED.getCode(),
+                ExceptionCodeEnums.QC_SUBMITTED.getMessage());
 
         // 更新组装单状态为【组装完成】
         opeCombinOrder.setCombinStatus(NewCombinOrderStatusEnums.ASSEMBL_FINISH.getValue());

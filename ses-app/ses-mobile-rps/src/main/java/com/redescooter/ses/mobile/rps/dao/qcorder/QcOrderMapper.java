@@ -6,6 +6,7 @@ import com.redescooter.ses.mobile.rps.vo.qc.QcOrderDetailDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -87,5 +88,14 @@ public interface QcOrderMapper {
      * @date 2021/2/3
     */
     int allCountByQcOrder();
+
+    /**
+     * 根据relationId、relationType检查质检单是否存在
+     * @param relationId, relationType
+     * @return int
+     * @author assert
+     * @date 2021/2/4
+    */
+    int isExistsQcOrderByRelationIdByType(@Param("relationId") Long relationId, @Param("relationType") Integer relationType);
 
 }
