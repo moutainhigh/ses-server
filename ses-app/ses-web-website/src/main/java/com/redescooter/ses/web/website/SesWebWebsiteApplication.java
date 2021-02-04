@@ -16,7 +16,6 @@ import java.util.TimeZone;
  */
 @Slf4j
 @EnableDubbo
-@EnableCaching
 @EnableDubboConfig(multiple = true)
 @EnableTransactionManagement
 @SpringBootApplication(scanBasePackages = {"com.redescooter.ses"})
