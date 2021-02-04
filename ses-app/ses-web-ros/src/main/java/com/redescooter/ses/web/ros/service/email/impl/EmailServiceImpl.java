@@ -9,7 +9,7 @@ import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.web.ros.service.email.EmailService;
 import com.redescooter.ses.web.ros.vo.email.EmailListEnter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @DubboReference
+    @Reference
     private MailTemplateManageService mailTemplateManageService;
 
     /**
