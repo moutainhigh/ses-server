@@ -2,12 +2,12 @@ package com.redescooter.ses.web.ros.service.email.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.web.ros.service.email.EmailService;
+import com.redescooter.ses.web.ros.vo.email.EmailListEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
@@ -71,7 +71,10 @@ public class EmailServiceImpl implements EmailService {
      * @return
      */
     @Override
-    public List<MailTemplateResult> getList(StringEnter enter) {
-        return mailTemplateManageService.getMailTemplateList(enter);
+    public List<MailTemplateResult> getList(EmailListEnter enter) {
+        log.info("邮件模板列表的入参是:[{}]", enter);
+        com.redescooter.ses.api.common.vo.email.EmailListEnter param = new com.redescooter.ses.api.common.vo.email.EmailListEnter();
+        BeanUtils.copyProperties(enter, param);
+        return mailTemplateManageService.getMailTemplateList(param);
     }
 }

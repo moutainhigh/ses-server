@@ -4,11 +4,11 @@ import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.web.ros.service.email.EmailService;
+import com.redescooter.ses.web.ros.vo.email.EmailListEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -57,7 +57,7 @@ public class EmailController {
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "邮件模板列表", response = MailTemplateResult.class)
-    public Response<List<MailTemplateResult>> list(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    public Response<List<MailTemplateResult>> list(@ModelAttribute @ApiParam("请求参数") EmailListEnter enter) {
         return new Response<>(emailService.getList(enter));
     }
 

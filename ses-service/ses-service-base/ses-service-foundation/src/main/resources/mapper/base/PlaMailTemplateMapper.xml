@@ -309,10 +309,12 @@
         select *
         from pla_mail_template
         where dr = 0
+        <if test="enter.status != null">
+            and status = #{enter.status}
+        </if>
         <if test="enter.keyword != null">
             and (
                     event like concat('%', #{enter.keyword}, '%') or
-                    status like concat('%', #{enter.keyword}, '%') or
                     name like concat('%', #{enter.keyword}, '%') or
                     mail_template_no like concat('%', #{enter.keyword}, '%')
             )

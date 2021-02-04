@@ -3,7 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
@@ -69,7 +69,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     }
 
     @Override
-    public List<MailTemplateResult> getMailTemplateList(StringEnter enter) {
+    public List<MailTemplateResult> getMailTemplateList(EmailListEnter enter) {
         List<PlaMailTemplate> list = mailTemplateMapper.getList(enter);
         MailTemplateResult result = null;
         List<MailTemplateResult> resultList = new ArrayList<>();

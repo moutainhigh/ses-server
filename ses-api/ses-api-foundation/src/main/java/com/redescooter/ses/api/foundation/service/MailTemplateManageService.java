@@ -2,7 +2,7 @@ package com.redescooter.ses.api.foundation.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 
@@ -39,5 +39,5 @@ public interface MailTemplateManageService {
      * @param enter
      * @return
      */
-    List<MailTemplateResult> getMailTemplateList(StringEnter enter);
+    List<MailTemplateResult> getMailTemplateList(EmailListEnter enter);
 }

@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.foundation.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,6 +19,6 @@ public interface PlaMailTemplateMapper extends BaseMapper<PlaMailTemplate> {
     /**
      * 列表模糊查询
      */
-    List<PlaMailTemplate> getList(@Param("enter") StringEnter enter);
+    List<PlaMailTemplate> getList(@Param("enter") EmailListEnter enter);
 
 }
