@@ -10,12 +10,12 @@ public enum QcTemplateProductTypeEnum {
     /**
      * 质检模板产品类型
      */
-    PARTS_DRAFT(0, "部件草稿"),
     PARTS(1, "部件"),
-    SCOOTER_DRAFT(2, "整车草稿"),
-    SCOOTER(3, "整车"),
-    COMBINATION_DRAFT(4, "组装件草稿"),
-    COMBINATION(5, "组装件");
+    COMPONENTS(2, "零件"),
+    BATTERY(3, "电池"),
+    SCOOTER(4, "整车"),
+    COMBINATION(5, "组装件"),
+    ECU(6, "ECU仪表");
 
     private Integer type;
     private String desc;
