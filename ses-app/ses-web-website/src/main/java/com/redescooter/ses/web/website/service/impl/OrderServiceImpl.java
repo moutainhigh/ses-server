@@ -194,7 +194,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         addSiteOrderVO.setOrderType(SiteOrderTypeEnums.checkValue(enter.getOrderType()));
+        //配送方式
         addSiteOrderVO.setDeliveryType(DeliveryMethodEnums.checkValue(enter.getDeliveryType()));
+        addSiteOrderVO.setDealerId(enter.getDealerId());
+
         addSiteOrderVO.setProductId(productColour.getProductId());
         addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         addSiteOrderVO.setColourId(productColour.getColourId());

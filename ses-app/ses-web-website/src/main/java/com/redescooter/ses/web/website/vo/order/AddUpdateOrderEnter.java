@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.vo.order;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -54,6 +55,13 @@ public class AddUpdateOrderEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "delivery type: 1SELF_LIFT,-1DELIVER_HOME")
     private int deliveryType;
+
+    /**
+     * 取货门店，如果取货类型是到门店取货，那么id是门店ID
+     */
+    @TableField(value = "dealer_id")
+    @ApiModelProperty(value = "Pick up store. If the pick-up type is pick-up to store, then ID is the store ID")
+    private Long dealerId;
 
     /**
      * 支付方式
