@@ -16,12 +16,6 @@
         <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-app-common</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-collections4</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.redescooter.ses</groupId>

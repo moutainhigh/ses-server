@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.DealerService;
 import com.redescooter.ses.web.website.vo.distributor.AddDealerEnter;
 import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.MapDealerDetailsResult;
 import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +41,8 @@ public class DealerController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "Dealer list", response = DealerDetailsResult.class)
-    public Response<List<DealerDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") QueryDealerEnter enter) {
+    @ApiOperation(value = "Dealer list", response = MapDealerDetailsResult.class)
+    public Response<List<MapDealerDetailsResult>> list(@ModelAttribute @ApiParam("请求参数") QueryDealerEnter enter) {
         return new Response<>(dealerService.getDistributorList(enter));
     }
 
