@@ -80,8 +80,6 @@ public class DealerDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "latitude")
     private BigDecimal latitude;
 
-    private  String distance;
-
     /**
      * 邮编
      */
