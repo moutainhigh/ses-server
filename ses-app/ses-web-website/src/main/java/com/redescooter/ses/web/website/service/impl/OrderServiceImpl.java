@@ -101,17 +101,13 @@ public class OrderServiceImpl implements OrderService {
         //获取当前登录用户
         SiteUser user = siteUserService.getById(enter.getUserId());
 
-        if (user == null || enter.getColourId() == null || enter.getProductId() == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-        }
         //获取客户
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         if (customer == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (enter.getOrderId() == null && enter.getOrderId() == 0L) {
+        if (enter.getOrderId() == null || enter.getOrderId() == 0L) {
             //创建订单
             //查询该用户是否有订单
             List<SiteOrder> orderSize = siteOrderService.list(new QueryWrapper<SiteOrder>()
@@ -148,6 +144,11 @@ public class OrderServiceImpl implements OrderService {
             }
             //先删除订单下的主订单,为了方便下步创建新的配件列表
             siteOrderBService.remove(new QueryWrapper<SiteOrderB>().eq(SiteOrderB.COL_ORDER_ID, addSiteOrderVO.getId()));
+        }
+
+        if (user == null || enter.getColourId() == null || enter.getProductId() == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());

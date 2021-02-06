@@ -311,8 +311,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 serialNum = getProductSerialNum(paramDTO.getProductType());
                 resultDTO.setSerialNum(serialNum);
                 // 查询ECU仪表部件序列号绑定信息
-                OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper
-                        .getEcuPartsSerialBindByOrderBId(paramDTO.getProductId());
+                OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper.getEcuPartsSerialBindByOrderBId(paramDTO.getProductId());
                 RpsAssert.isNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.SCOOTER_HAS_NO_ECU.getCode(),
                         ExceptionCodeEnums.SCOOTER_HAS_NO_ECU.getMessage());
 

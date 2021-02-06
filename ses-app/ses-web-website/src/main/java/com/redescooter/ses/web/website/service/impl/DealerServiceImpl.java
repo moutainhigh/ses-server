@@ -13,6 +13,7 @@ import com.redescooter.ses.web.website.service.DealerService;
 import com.redescooter.ses.web.website.service.base.SiteDistributorService;
 import com.redescooter.ses.web.website.vo.distributor.AddDealerEnter;
 import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.MapDealerDetailsResult;
 import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -74,14 +75,12 @@ public class DealerServiceImpl implements DealerService {
         addDistributorVO.setType(enter.getType());
         addDistributorVO.setSynchronizeFlag(false);
         addDistributorVO.setRevision(0);
-        addDistributorVO.setCreatedBy(enter.getUserId());
-        addDistributorVO.setCreatedTime(new Date());
-        addDistributorVO.setUpdatedBy(enter.getUserId());
-        addDistributorVO.setUpdatedTime(new Date());
         addDistributorVO.setSynchronizeFlag(false);
         addDistributorVO.setCreatedBy(enter.getUserId());
         addDistributorVO.setCreatedTime(new Date());
         addDistributorVO.setUpdatedBy(enter.getUserId());
+        addDistributorVO.setUpdatedTime(new Date());
+
         siteDistributorService.save(addDistributorVO);
 
         return new GeneralResult(enter.getRequestId());
@@ -99,6 +98,8 @@ public class DealerServiceImpl implements DealerService {
 
         if (distributor != null) {
             BeanUtils.copyProperties(distributor, result);
+            result.setLongitude(distributor.getLongitude());
+            result.setLatitude(distributor.getLatitude());
             result.setRequestId(enter.getRequestId());
         }
         return result;
@@ -111,7 +112,7 @@ public class DealerServiceImpl implements DealerService {
      * @return
      */
     @Override
-    public List<DealerDetailsResult> getDistributorList(QueryDealerEnter enter) {
+    public List<MapDealerDetailsResult> getDistributorList(QueryDealerEnter enter) {
         return distributorMapper.getlistOrderByDistance(enter);
     }
 }

@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.vo.distributor;
 
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,7 +29,7 @@ public class DealerDetailsResult extends GeneralResult {
     /**
      * 门店编码
      */
-    @ApiModelProperty(value="Store code")
+    @ApiModelProperty(value = "Store code")
     private String code;
 
     /**
@@ -78,7 +79,6 @@ public class DealerDetailsResult extends GeneralResult {
      */
     @ApiModelProperty(value = "latitude")
     private BigDecimal latitude;
-
 
     /**
      * 邮编

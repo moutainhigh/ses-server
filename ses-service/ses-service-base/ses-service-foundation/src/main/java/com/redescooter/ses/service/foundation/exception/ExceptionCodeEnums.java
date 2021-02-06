@@ -129,6 +129,9 @@ public enum ExceptionCodeEnums {
     TITLE_LENGTH_ERROR(10058, "标题长度错误"),
 
     CONTENT_LENGTH_ERROR(10059, "描述内容长度过长"),
+
+    NUMBER_NOT_REPEAT(10060, "编号不能重复")
+
     ;
 
     private int code;

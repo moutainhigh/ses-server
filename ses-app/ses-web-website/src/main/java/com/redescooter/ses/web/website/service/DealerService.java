@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.distributor.AddDealerEnter;
 import com.redescooter.ses.web.website.vo.distributor.DealerDetailsResult;
+import com.redescooter.ses.web.website.vo.distributor.MapDealerDetailsResult;
 import com.redescooter.ses.web.website.vo.distributor.QueryDealerEnter;
 
 import java.util.List;
@@ -35,5 +36,5 @@ public interface DealerService {
      * @param enter
      * @return getDistributorList
      */
-    List<DealerDetailsResult> getDistributorList(QueryDealerEnter enter);
+    List<MapDealerDetailsResult> getDistributorList(QueryDealerEnter enter);
 }

@@ -140,6 +140,8 @@
         on serial.product_id = bom.id and bom.disable = 0 and bom.dr = 0
         and bom.parts_type = 6
         where serial.dr = 0 and serial.order_b_id = #{orderBId}
+        order by created_time desc
+        limit 1
     </select>
 
 </mapper>
