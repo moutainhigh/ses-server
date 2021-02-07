@@ -122,31 +122,31 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-lib-src-webapps</id>
-                        <!-- 执行打包操作时执行的任务 -->
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${project.build.directory}"/>
-                            </target>
-                            <tasks>
-                                <copy todir="${jar.path}/libs">
-                                    <fileset dir="${project.build.directory}">
-                                        <include name="${project.name}.jar"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-antrun-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-lib-src-webapps</id>-->
+<!--                        &lt;!&ndash; 执行打包操作时执行的任务 &ndash;&gt;-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>run</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <target>-->
+<!--                                <delete dir="${project.build.directory}"/>-->
+<!--                            </target>-->
+<!--                            <tasks>-->
+<!--                                <copy todir="${jar.path}/libs">-->
+<!--                                    <fileset dir="${project.build.directory}">-->
+<!--                                        <include name="${project.name}.jar"/>-->
+<!--                                    </fileset>-->
+<!--                                </copy>-->
+<!--                            </tasks>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
