@@ -581,7 +581,6 @@ public class MenuServiceImpl implements MenuService {
         if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
             qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-            qw.eq(OpeSysMenu::getMenuStatus, 1);
             qw.eq(OpeSysMenu::getLevel, 1);
             qw.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
             List<OpeSysMenu> menuList = sysMenuService.list(qw);
@@ -592,7 +591,6 @@ public class MenuServiceImpl implements MenuService {
                     long id = child.getId();
                     LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
                     wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-                    wrapper.eq(OpeSysMenu::getMenuStatus, 1);
                     wrapper.eq(OpeSysMenu::getPId, id);
                     List<OpeSysMenu> list = sysMenuService.list(wrapper);
                     if (CollectionUtils.isEmpty(list)) {
@@ -610,7 +608,6 @@ public class MenuServiceImpl implements MenuService {
                 if (CollUtil.isNotEmpty(menuIds)) {
                     LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
                     qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-                    qw.eq(OpeSysMenu::getMenuStatus, 1);
                     qw.eq(OpeSysMenu::getLevel, 1);
                     qw.in(OpeSysMenu::getId, menuIds);
                     qw.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
@@ -622,7 +619,6 @@ public class MenuServiceImpl implements MenuService {
                             long id = child.getId();
                             LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
                             wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-                            wrapper.eq(OpeSysMenu::getMenuStatus, 1);
                             wrapper.eq(OpeSysMenu::getPId, id);
                             List<OpeSysMenu> list = sysMenuService.list(wrapper);
                             if (CollectionUtils.isEmpty(list)) {
@@ -645,7 +641,6 @@ public class MenuServiceImpl implements MenuService {
     public List<MenuTreeResult> getSubListById(IdEnter enter) {
         LambdaQueryWrapper<OpeSysMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-        wrapper.eq(OpeSysMenu::getMenuStatus, 1);
         wrapper.eq(OpeSysMenu::getPId, enter.getId());
         wrapper.orderByAsc(OpeSysMenu::getSort, OpeSysMenu::getCreatedTime);
         List<OpeSysMenu> list = sysMenuService.list(wrapper);
@@ -657,7 +652,6 @@ public class MenuServiceImpl implements MenuService {
                 long id = model.getId();
                 LambdaQueryWrapper<OpeSysMenu> qw = new LambdaQueryWrapper<>();
                 qw.eq(OpeSysMenu::getDr, DelStatusEnum.VALID.getCode());
-                qw.eq(OpeSysMenu::getMenuStatus, 1);
                 qw.eq(OpeSysMenu::getPId, id);
                 List<OpeSysMenu> subList = sysMenuService.list(qw);
                 if (CollectionUtils.isEmpty(subList)) {
