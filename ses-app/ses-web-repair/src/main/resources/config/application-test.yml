@@ -66,12 +66,16 @@ spring:                                                                         
           name: 李加廷                                   # 联系人名字
           email: jerry@redescooter.com                     # 联系人邮箱
           url: https://github.com/mrjerryli             # 联系地址
-# DUBBO 配置
+# DUBBO 集群配置
+#dubbo:                                                                                                                  ##DUBBO配置
+#  registry:                                                                                                             #注册中心
+#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
+## DUBBO 单节点配置
 dubbo:
-  registries:
-    ses:
-      group: ses
-      address: zookeeper://192.168.2.200:2181?backup=192.168.2.200:2182,192.168.2.200:2183
+  registry: #注册中心
+    address: zookeeper://172.31.8.126:2181
+  metadata-report:
+    address: zookeeper://172.31.8.126:2181
 # 多注册中心配置
 #    reg2:
 #      group: hdg2

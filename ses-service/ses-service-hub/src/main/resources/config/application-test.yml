@@ -4,11 +4,16 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
-
+# DUBBO 集群配置
+#dubbo:                                                                                                                  ##DUBBO配置
+#  registry:                                                                                                             #注册中心
+#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
+## DUBBO 单节点配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://172.31.8.126:2181
+  metadata-report:
+    address: zookeeper://172.31.8.126:2181
 spring:
   datasource:
     dynamic:
