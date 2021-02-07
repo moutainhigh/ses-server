@@ -353,7 +353,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         try {
             // 发邮件不能影响主流程，且发邮件的方法必须是异步的
             entrustSignToEmail(opeEntrustOrder,enter.getRequestId());
-            // 委托单签收时 对于法国仓库时入库操作
+            // 委托单签收时 对于法国仓库是入库操作
 //            wmsMaterialStockService.inStock(opeEntrustOrder.getEntrustType(),opeEntrustOrder.getId(),2,enter.getUserId(),1);
             wmsMaterialStockService.frInStock(opeEntrustOrder.getEntrustType(),opeEntrustOrder.getId(),2,enter.getUserId(),1);
         }catch (Exception e){
