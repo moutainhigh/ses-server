@@ -150,14 +150,14 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         checkOpeProductionProduction(enter.getId(), enter.getProductionProductType());
 
         List<QcTemplateDetailResult> result = productionQcTmepleteServiceMapper.detail(enter);
-
         if (CollectionUtils.isEmpty(result)) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
         List<QcResultResult> qcResultResultList = productionQcTmepleteServiceMapper.detailQcResultList(result.stream().map(QcTemplateDetailResult::getId).collect(Collectors.toList()));
         if (CollectionUtils.isEmpty(qcResultResultList)) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
+
         result.forEach(item -> {
             item.setQcResultResultList(qcResultResultList.stream().filter(qcResult -> item.getId().equals(qcResult.getQualityTempateId())).collect(Collectors.toList()));
         });

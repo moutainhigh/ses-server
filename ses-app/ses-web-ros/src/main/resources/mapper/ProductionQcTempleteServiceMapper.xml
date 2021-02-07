@@ -8,9 +8,7 @@
         qc_item_name    as qcItemName,
         created_time as createTime
         from ope_production_quality_tempate
-        where dr = 0
-          and production_type = #{productionProductType}
-          and production_id=#{id}
+        where dr = 0 and production_id = #{id}
     </select>
 
     <select id="detailQcResultList" resultType="com.redescooter.ses.web.ros.vo.bom.QcResultResult">
