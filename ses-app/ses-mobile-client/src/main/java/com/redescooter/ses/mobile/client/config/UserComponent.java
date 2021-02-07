@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 查询用户类型组件(用于区分2C/2B用户进行不同业务分发)
+ *
  * @author assert
  * @date 2020/11/18 16:18
  */
@@ -22,6 +23,7 @@ public class UserComponent {
 
     /**
      * 查询用户类型
+     *
      * @param enter
      * @return
      */
@@ -39,13 +41,17 @@ public class UserComponent {
         /**
          * 根据用户类型判断是2C还是2B用户
          */
-        if (!AccountTypeEnums.WEB_REPAIR.getAccountType().equals(queryUserResult.getUserType())
-                || !AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
+        if (AccountTypeEnums.APP_EXPRESS.getAccountType().equals(queryUserResult.getUserType())) {
+            //2B -- APP
+            userServiceType = 1;
+        } else if (AccountTypeEnums.APP_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
+            //2B -- APP
             userServiceType = 1;
         } else if (AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
+            //2C --APP
             userServiceType = 2;
         } else {
-            // 维修端
+            //维修端
             userServiceType = 3;
         }
 

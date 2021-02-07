@@ -14,8 +14,8 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -23,16 +23,15 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 17:50
  */
-@Service
+@DubboService
 public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @Resource
     private UserScooterMapper userScooterMapper;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {

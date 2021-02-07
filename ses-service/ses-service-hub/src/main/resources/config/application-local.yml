@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.1.100:2181
+    address: zookeeper://192.168.2.211:2182
   metadata-report:
-    address: zookeeper://192.168.1.100:2181
+    address: zookeeper://192.168.2.211:2182
 spring:
   datasource:
     dynamic:
@@ -17,29 +17,29 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://47.105.215.239:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://47.105.215.239:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://47.105.215.239:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: root
-          password: 1qaz2wsx
+          password: rede,1qaz2wsx
   #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 192.168.1.100:7000
-        - 192.168.1.100:7001
-        - 192.168.1.100:7002
-        - 192.168.1.100:7003
-        - 192.168.1.100:7004
-        - 192.168.1.100:7005
+        - 192.168.2.211:7000
+        - 192.168.2.211:7001
+        - 192.168.2.211:7002
+        - 192.168.2.211:7003
+        - 192.168.2.211:7004
+        - 192.168.2.211:7005
 
 # 多注册中心配置
 #    reg2:
