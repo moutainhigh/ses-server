@@ -55,11 +55,12 @@ public class ScooterDataReportedComponent {
             // all
             ScooterAllReportedDTO scooterAll = JSONObject.parseObject(data, ScooterAllReportedDTO.class);
             scooterAllReportedService.insertScooterAllInfo(scooterAll);
-        } else if (EmqXTopicConstant.SCOOTER_LOCK_REPORTED_TOPIC.equals(topic)) {
-            // lock 已废弃,车辆锁状态直接从ecu中拿
+        }
+//        else if (EmqXTopicConstant.SCOOTER_LOCK_REPORTED_TOPIC.equals(topic)) {
+//             //lock 已废弃,车辆锁状态直接从ecu中拿
 //            ScooterLockReportedDTO scooterLock = JSONObject.parseObject(data, ScooterLockReportedDTO.class);
 //            scooterService.updateScooterStatusByJson(scooterLock);
-        }
+//        }
     }
 
 }
