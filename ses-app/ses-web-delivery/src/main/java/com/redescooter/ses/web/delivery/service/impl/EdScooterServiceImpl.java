@@ -151,7 +151,7 @@ public class EdScooterServiceImpl implements EdScooterService {
             });
         }
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        if(baseScooterResults.size()>0){
+        if (baseScooterResults.size() > 0) {
             result.setBattery(baseScooterResults.get(0).getBattery());
             result.setMobilePicture(baseScooterResults.get(0).getPictures());
         }
@@ -174,7 +174,7 @@ public class EdScooterServiceImpl implements EdScooterService {
         List<Long> scooterIdList = new ArrayList<>();
         scooterIdList.add(result.getId());
         List<BaseScooterResult> baseScooterResults = scooterService.scooterInfor(scooterIdList);
-        if(baseScooterResults.size()>0){
+        if (baseScooterResults.size() > 0) {
             result.setBattery(baseScooterResults.get(0).getBattery());
             result.setMileage(baseScooterResults.get(0).getTotalmileage().toString());
             result.setNextMaintenanceKm(baseScooterResults.get(0).getNextMaintenanceKm().toString());
@@ -252,7 +252,7 @@ public class EdScooterServiceImpl implements EdScooterService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult chanageScooterStatus(ChanageStatusEnter enter) {
         QueryWrapper<CorTenantScooter> corTenantScooterQueryWrapper = new QueryWrapper<>();

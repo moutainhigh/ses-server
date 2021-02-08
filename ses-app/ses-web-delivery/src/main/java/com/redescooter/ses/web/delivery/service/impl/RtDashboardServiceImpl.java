@@ -228,8 +228,8 @@ public class RtDashboardServiceImpl implements RtDashboardService {
                     map.put(str, result);
                 }
             }
-        }else{
-            map=null;
+        } else {
+            map = null;
         }
 
         DeliveryChartListResult result = new DeliveryChartListResult();
@@ -243,9 +243,7 @@ public class RtDashboardServiceImpl implements RtDashboardService {
 
     @Override
     public Map<String, Integer> deliveryCountByStatus(GeneralEnter enter) {
-
         List<CountByStatusResult> countByStatusResultList = orderStatisticsServiceMapper.deliveryCountByStatus(enter);
-
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResultList) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -255,7 +253,6 @@ public class RtDashboardServiceImpl implements RtDashboardService {
                 map.put(status.getValue(), 0);
             }
         }
-
         return map;
     }
 }

@@ -3,11 +3,17 @@ package com.redescooter.ses.web.delivery.controller.restaurant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.RtDashboardService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
+import com.redescooter.ses.web.delivery.vo.MapRsesult;
+import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
+import com.redescooter.ses.web.delivery.vo.TopTenEnter;
+import com.redescooter.ses.web.delivery.vo.TopTenResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +37,7 @@ import java.util.Map;
 @RequestMapping(value = "/rt/dashboard", method = RequestMethod.POST)
 public class RtDashboardController {
 
-    @DubboReference
+    @Autowired
     private RtDashboardService rtDashboardService;
 
     @PostMapping(value = "/countByStatus")

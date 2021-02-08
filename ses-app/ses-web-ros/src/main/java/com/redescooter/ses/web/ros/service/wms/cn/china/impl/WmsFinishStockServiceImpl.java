@@ -81,7 +81,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

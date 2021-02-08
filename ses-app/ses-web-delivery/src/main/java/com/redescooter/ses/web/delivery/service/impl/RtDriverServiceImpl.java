@@ -72,7 +72,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,41 +98,57 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class RtDriverServiceImpl implements RtDriverService {
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @Autowired
     private CorDriverService driverService;
+
     @Autowired
     private CorTenantScooterMapper corTenantScooterMapper;
+
     @Autowired
     private CorUserProfileService userProfileService;
+
     @Autowired
     private CorDriverScooterService driverScooterService;
+
     @Autowired
     private CorTenantScooterService tenantScooterService;
+
     @Autowired
     private CorDeliveryService deliveryService;
+
     @Autowired
     private CorDeliveryTraceService deliveryTraceService;
+
     @Autowired
     private CorDriverScooterHistoryService driverScooterHistoryService;
+
     @Autowired
     private CorScooterRideStatService scooterRideStatService;
+
     @Autowired
     private DriverServiceMapper driverServiceMapper;
+
     @Autowired
     private EdScooterServiceMapper scooterServiceMapper;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private AccountBaseService accountBaseService;
+
     @DubboReference
     private UserBaseService userBaseService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private TenantBaseService tenantBaseService;
-
 
     /**
      * 再次发生激活邮件2B
@@ -144,7 +159,6 @@ public class RtDriverServiceImpl implements RtDriverService {
     @Override
     public GeneralResult againSendEmail(IdEnter enter) {
         CorDriver driver = driverService.getById(enter.getId());
-
         if (driver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
@@ -165,10 +179,9 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
-
         //邮箱去空格
         if (StringUtils.isNotEmpty(enter.getEmail())) {
             enter.setEmail(SesStringUtils.stringTrim(enter.getEmail()));
@@ -330,8 +343,7 @@ public class RtDriverServiceImpl implements RtDriverService {
             profile.setLastName(enter.getDriverLastName());
             profile.setFullName(new StringBuffer().append(enter.getDriverFirstName()).append(" ").append(enter.getDriverLastName()).toString());
             profile.setBirthday(DateUtil.timaConversion(enter.getBirthday()));
-            if (enter.getCertificateType() != null &&
-                    enter.getDriverLicenseUpAnnex() != null) {
+            if (enter.getCertificateType() != null && enter.getDriverLicenseUpAnnex() != null) {
                 profile.setCertificateType(enter.getCertificateType());
                 profile.setCertificateNegativeAnnex(enter.getDriverLicenseUpAnnex());
             }
@@ -435,9 +447,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      */
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-
         List<CountByStatusResult> countByStatusResults = driverServiceMapper.countStatus(enter);
-
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResults) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -457,12 +467,10 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult leave(IdEnter enter) {
-
         CorDriver driver = driverService.getById(enter.getId());
-
         if (driver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
@@ -562,7 +570,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
@@ -661,12 +669,10 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeScooter(IdEnter enter) {
-
         CorDriver driver = driverService.getById(enter.getId());
-
         if (driver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
@@ -973,8 +979,6 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setAvg(avg);
         result.setMax(max);
         result.setMin(min);
-
-
         return result;
     }
 

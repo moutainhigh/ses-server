@@ -91,27 +91,37 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
     @Autowired
     private OrderDeliveryServiceMapper orderDeliveryServiceMapper;
+
     @Autowired
     private CorDeliveryService deliveryService;
+
     @Autowired
     private CorDriverScooterService driverScooterService;
+
     @Autowired
     private CorDeliveryTraceService deliveryTraceService;
+
     @Autowired
     private CorDriverService driverService;
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
     @DubboReference
     private TenantBaseService tenantBaseService;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private GenerateService generateService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private PushService pushService;
 
@@ -121,7 +131,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOrderDeliveryEnter enter) {
         //系统默认30分钟
@@ -163,7 +173,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             }
             // 获取店铺配置
             TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
-
 
             CorDelivery deliverySave = new CorDelivery();
             BeanUtils.copyProperties(enter, deliverySave);
@@ -241,9 +250,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-
         List<CountByStatusResult> countByStatusResults = orderDeliveryServiceMapper.countStatus(enter);
-
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResults) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -269,7 +276,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             return PageResult.createZeroRowResult(page);
         }
         return PageResult.create(page, totalRows, orderDeliveryServiceMapper.list(page));
-
     }
 
     /**
@@ -280,7 +286,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public DeliveryDetailsResult details(IdEnter enter) {
-
         if (enter.getId() == null || enter.getId() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
@@ -298,7 +303,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(details.getTenantId()));
         details.setTenantLat(queryTenantResult.getLatitude().toString());
         details.setTenantLng(queryTenantResult.getLongitude().toString());
-        if(scooter.size()>0){
+        if (scooter.size() > 0) {
             details.setBattery(String.valueOf(scooter.get(0).getBattery()));
         }
         return details;
@@ -319,7 +324,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult closed(ClosedEnter enter) {
         if (enter.getId() == null || enter.getId() == 0) {
@@ -431,7 +436,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public DriverDeliveryInfoResult driverDeliveryInfor(IdEnter enter) {
-
         DriverDeliveryInfoResult result = orderDeliveryServiceMapper.driverDeliveryInfor(enter);
 
         if (result == null) {
@@ -494,7 +498,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         ScooterMapResult scooterMapResult = orderDeliveryServiceMapper.driverInfo(enter);
         if (scooterMapResult != null) {
-            if(scooterResultList.size()>0){
+            if (scooterResultList.size() > 0) {
                 scooterMapResult.setId(scooterResultList.get(0).getId());
                 scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
                 scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
@@ -526,7 +530,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
@@ -554,7 +558,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateConstant.DEFAULT_DATETIME_FORMAT));
         corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
         corDelivery.setDelivererId(corDriver.getUserId());
-        corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()/60));
+        corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue() / 60));
         corDelivery.setLabel(null);
         corDelivery.setUpdatedBy(enter.getUserId());
         corDelivery.setUpdatedTime(new Date());

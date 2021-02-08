@@ -1,19 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.driver.DriverLicenseLevelEnum;
 import com.redescooter.ses.api.common.enums.driver.DriverStatusEnum;
@@ -25,8 +11,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.EdDriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
@@ -49,6 +35,19 @@ import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EdDriverServiceImpl implements EdDriverService {
@@ -118,7 +117,6 @@ public class EdDriverServiceImpl implements EdDriverService {
                 dateTimeParmToday.setDateTime(enter.getDateTimes());
                 deliveryChartResults = orderStatisticsServiceMapper.eDDliveryChartToday(dateTimeParmToday);
                 break;
-
             case 7:
                 //近七日<7Day（单位为日，显示近7天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
                 Date start7 = DateUtil.addDays(enter.getDateTimes(), -7);
@@ -130,7 +128,6 @@ public class EdDriverServiceImpl implements EdDriverService {
 
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart7Day(dateTimeParm7);
                 break;
-
             case 30:
                 //近30日<30Day（单位为日，显示近30天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
                 Date start30 = DateUtil.addDays(enter.getDateTimes(), -30);
@@ -141,7 +138,6 @@ public class EdDriverServiceImpl implements EdDriverService {
                 dateTimeParm30.setStartDateTime(start30);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart30Day(dateTimeParm30);
                 break;
-
             case 365:
                 //年Year（单位为月，显示截止至今所有数据，点击某一月可查看该月数据，点击某一日可查看该日数据
                 Date start365 = DateUtil.addDays(enter.getDateTimes(), -365);
@@ -152,10 +148,8 @@ public class EdDriverServiceImpl implements EdDriverService {
                 dateTimeParm365.setStartDateTime(start365);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart365Day(dateTimeParm365);
                 break;
-
             default:
                 throw new SesWebDeliveryException(ExceptionCodeEnums.OPERATION_ERROR.getCode(), ExceptionCodeEnums.OPERATION_ERROR.getMessage());
-
         }
 
         List<String> dateList = new LinkedList();
@@ -187,13 +181,11 @@ public class EdDriverServiceImpl implements EdDriverService {
         } else {
             map = null;
         }
-
         DeliveryChartListResult result = new DeliveryChartListResult();
         result.setMap(map);
         result.setAvg(avg);
         result.setMax(max);
         result.setMin(min);
-
         return result;
     }
 
@@ -203,7 +195,7 @@ public class EdDriverServiceImpl implements EdDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
@@ -304,12 +296,10 @@ public class EdDriverServiceImpl implements EdDriverService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeScooter(IdEnter enter) {
-
         CorDriver driver = driverService.getById(enter.getId());
-
         if (driver == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DRIVER_IS_NOT_EXIST.getMessage());
         }
@@ -350,7 +340,6 @@ public class EdDriverServiceImpl implements EdDriverService {
         driverScooterHistory.setUpdatedTime(new Date());
         driverScooterHistoryService.save(driverScooterHistory);
 
-
         QueryWrapper<CorTenantScooter> tenantScooterQueryWrapper = new QueryWrapper<>();
         tenantScooterQueryWrapper.eq(CorTenantScooter.COL_SCOOTER_ID, driverScooterOne.getScooterId());
         tenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
@@ -361,7 +350,6 @@ public class EdDriverServiceImpl implements EdDriverService {
         updateTenantScooter.setUpdatedBy(enter.getUserId());
         updateTenantScooter.setUpdatedTime(new Date());
         tenantScooterService.update(updateTenantScooter, tenantScooterQueryWrapper);
-
 
         driver.setStatus(DriverStatusEnum.OFFWORK.getValue());
         driver.setUpdatedBy(enter.getUserId());
@@ -375,7 +363,6 @@ public class EdDriverServiceImpl implements EdDriverService {
         driverScooterOne.setUpdatedBy(enter.getUserId());
         driverScooterOne.setUpdatedTime(new Date());
         driverScooterService.updateById(driverScooterOne);
-
         return new GeneralResult(enter.getRequestId());
     }
 

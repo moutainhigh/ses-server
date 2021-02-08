@@ -7,7 +7,7 @@ import com.redescooter.ses.service.common.utils.SnowflakeIdWorker;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 
 /**

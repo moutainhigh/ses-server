@@ -23,7 +23,7 @@ import com.redescooter.ses.web.ros.vo.setting.RosGroupExportResult;
 import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;

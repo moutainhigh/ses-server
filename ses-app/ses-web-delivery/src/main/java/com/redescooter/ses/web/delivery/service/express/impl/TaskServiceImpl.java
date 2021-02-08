@@ -59,7 +59,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -149,13 +148,10 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public Map<String, Integer> taskTimeCount(GeneralEnter enter) {
-
         TaskTimeCountDto taskTimeCountDto = taskServiceMapper.taskTimeCount(enter);
-
         Map<String, Integer> resultMap = new HashMap<>();
         resultMap.put(TaskTimeCountEnums.TODAY_NUM.getValue(), taskTimeCountDto.getTnum());
         resultMap.put(TaskTimeCountEnums.HISTORY_NUM.getValue(), taskTimeCountDto.getHnum());
-
         return resultMap;
     }
 
@@ -167,7 +163,6 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public PageResult<TaskResult> list(TaskListEnter enter) {
-
         int count = taskServiceMapper.taskCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -196,7 +191,6 @@ public class TaskServiceImpl implements TaskService {
                 });
             });
         }
-
         return result;
     }
 
@@ -248,7 +242,6 @@ public class TaskServiceImpl implements TaskService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-
         List<OrderResult> orderResultList = taskServiceMapper.orderList(enter);
         return PageResult.create(enter, count, orderResultList);
     }
@@ -259,10 +252,9 @@ public class TaskServiceImpl implements TaskService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveTaskEnter enter) {
-
         List<DriverTaskEnter> driverTaskEnters = null;
         try {
             driverTaskEnters = JSONArray.parseArray(enter.getDriverTaskListJson(), DriverTaskEnter.class);
@@ -380,7 +372,6 @@ public class TaskServiceImpl implements TaskService {
                         .build();
                 pushMsg(pushApp);
             });
-
         } else {
             throw new SesWebDeliveryException(ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getCode(), ExceptionCodeEnums.ORDER_IS_NOT_ALLOCATED.getMessage());
         }
@@ -465,7 +456,6 @@ public class TaskServiceImpl implements TaskService {
 
 
     private void pushMsg(PushMsgBo pushMsg) {
-
         String generalEnter = JSON.toJSONString(pushMsg.getEnter());
         Map<String, String> pushParameter = new HashMap<>();
 

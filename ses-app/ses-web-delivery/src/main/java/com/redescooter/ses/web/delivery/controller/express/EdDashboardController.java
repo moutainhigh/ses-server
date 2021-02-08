@@ -13,7 +13,7 @@ import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +37,7 @@ import java.util.Map;
 @RequestMapping(value = "/ed/dashboard", method = RequestMethod.POST)
 public class EdDashboardController {
 
-    @DubboReference
+    @Autowired
     private EdDasboardService edDasboardService;
 
     @PostMapping(value = "/todayCountByStatus")

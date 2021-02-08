@@ -1,7 +1,11 @@
 package com.redescooter.ses.web.delivery.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.common.vo.workorder.WorkOrderSaveOrUpdateEnter;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
@@ -11,8 +15,13 @@ import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Mr.lijiating
@@ -68,7 +77,6 @@ public class TokenController {
         return new Response<>(userTokenService.loginSendCode(enter));
     }
 
-
     @IgnoreLoginCheck
     @ApiOperation(value = "忘记密码", response = GeneralResult.class)
     @PostMapping(value = "/forgotPassword")
@@ -81,7 +89,6 @@ public class TokenController {
     public Response<GeneralResult> chanagePassword(@ModelAttribute ChanagePasswordEnter enter) {
         return new Response<>(userTokenService.chanagePassword(enter));
     }
-
 
     @PostMapping(value = "/workOrderSave")
     @ApiOperation(value = "工单新增", response = GeneralResult.class)

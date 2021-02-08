@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.jiguang.JobResult;
 import com.redescooter.ses.api.foundation.job.RunSendMailTaskExecutorServiceJob;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.stereotype.Component;
 

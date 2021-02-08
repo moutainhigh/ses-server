@@ -10,7 +10,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.*;
+import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
@@ -18,13 +22,16 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

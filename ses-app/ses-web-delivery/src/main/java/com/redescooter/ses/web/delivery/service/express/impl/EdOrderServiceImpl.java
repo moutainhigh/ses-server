@@ -59,10 +59,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -86,37 +86,44 @@ public class EdOrderServiceImpl implements EdOrderService {
 
     @Autowired
     private ExcelService excelService;
+
     @Autowired
     private CorExpressOrderService expressOrderService;
+
     @Autowired
     private CorExpressOrderTraceService expressOrderTraceService;
+
     @Autowired
     private ExpressOrderServiceMapper expressOrderServiceMapper;
 
     @Autowired
     private CorExpressDeliveryService corExpressDeliveryService;
+
     @Autowired
     private EdOrderTraceService edOrderTraceService;
+
     @Autowired
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
+
     @Autowired
     private CorDriverScooterService corDriverScooterService;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private GenerateService generateService;
+
     @DubboReference
     private TenantBaseService tenantBaseService;
+
     @DubboReference
     private ScooterService scooterService;
 
-
     @Override
     public void download(HttpServletResponse response) {
-
         String fileName = "expressOrder.xls";
         String path = "src/main/resources/template/";
-
         excelService.download(fileName, path, response);
     }
 
@@ -138,6 +145,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @param orderExcleDataList
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveOrders(List<ExpressOrderExcleData> orderExcleDataList, GeneralEnter enter) {
         //批量插入
         List<CorExpressOrder> saveOrdersList = new ArrayList<>();
@@ -182,7 +190,6 @@ public class EdOrderServiceImpl implements EdOrderService {
                 map.put(item.getStatus(), item.getTotalCount());
             }
         }
-
         for (ExpressOrderStatusEnums status : ExpressOrderStatusEnums.values()) {
             if (!map.containsKey(status.getValue())) {
                 map.put(status.getValue(), 0);
@@ -199,7 +206,6 @@ public class EdOrderServiceImpl implements EdOrderService {
      */
     @Override
     public PageResult<QueryExpressOrderByPageResult> list(QueryExpressOrderByPageEnter enter) {
-
         int totalRows = expressOrderServiceMapper.listCount(enter);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -215,9 +221,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      */
     @Override
     public QueryOrderDetailResult details(IdEnter enter) {
-
         QueryOrderDetailResult detail = expressOrderServiceMapper.detail(enter);
-
         Optional.ofNullable(detail).ifPresent(d -> {
             IdEnter tenantIdEnter = new IdEnter();
             BeanUtils.copyProperties(enter, tenantIdEnter);
@@ -248,7 +252,6 @@ public class EdOrderServiceImpl implements EdOrderService {
         detail.setLicensePlate(corTenantScooter.getLicensePlate());
         detail.setDriverLatitude(corTenantScooter.getLatitude().toString());
         detail.setDriverLongitule(corTenantScooter.getLongitule().toString());
-
         return detail;
     }
 
@@ -312,7 +315,6 @@ public class EdOrderServiceImpl implements EdOrderService {
     @Override
     public DiverOrderInforResult diverOrderlistById(IdEnter enter) {
         DiverOrderInforResult result = expressOrderServiceMapper.diverInfor(enter);
-
         if (result == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getCode(), ExceptionCodeEnums.DRIVER_HAS_NOT_AVAILABLE_SCOOTER.getMessage());
         }
@@ -329,9 +331,7 @@ public class EdOrderServiceImpl implements EdOrderService {
             result.setLicensePlate(scooterListResult.get(0).getLicensePlate());
             result.setBattery(scooterListResult.get(0).getBattery());
         }
-
         result.setOrderList(orderList);
-
         return result;
     }
 
@@ -357,7 +357,6 @@ public class EdOrderServiceImpl implements EdOrderService {
         return expressOrderServiceMapper.refuseOrderDetail(enter);
     }
 
-
     /**
      * @param enter
      * @Description
@@ -368,6 +367,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 修改订单状态
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter) {
         // 订单验证
         CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
@@ -408,10 +408,9 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(IdEnter enter) {
-
         CorExpressOrder expressOrder = expressOrderService.getById(enter.getId());
-
         if (expressOrder == null) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EXPRESS_ORDER_IS_NOT_EXIST.getMessage());
         }
@@ -420,14 +419,11 @@ public class EdOrderServiceImpl implements EdOrderService {
         }
         expressOrder.setStatus(ExpressOrderStatusEnums.CANCEL.getValue());
         expressOrder.setUpdatedTime(new Date());
-
         expressOrderService.updateById(expressOrder);
-
         //加入记录
         createExpressOrderLogSingle(enter.getTenantId(), enter.getUserId(), expressOrder.getId(),
                 0, 0, 0, ExpressOrderStatusEnums.CANCEL.getValue(),
                 ExpressOrderEventEnums.UNASGN.getValue(), null, null, Boolean.TRUE);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -582,7 +578,6 @@ public class EdOrderServiceImpl implements EdOrderService {
         save.setCreatedTime(new Date());
         save.setUpdatedBy(userId);
         save.setUpdatedTime(new Date());
-
         if (saveDB) {
             expressOrderTraceService.save(save);
         }
@@ -615,8 +610,8 @@ public class EdOrderServiceImpl implements EdOrderService {
             //excel 如果经纬度 写反了 会出现geo算法越界
             try {
                 saverOrder.setRecipientGeohash(MapUtil.geoHash(order.getRecipientLongitude().toString(), order.getRecipientLatitude().toString()));
-            }catch (Exception e){
-                throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            } catch (Exception e) {
+                throw new SesWebDeliveryException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
         }
         if (order.getSenderLatitude() == null || order.getSenderLongitude() == null) {

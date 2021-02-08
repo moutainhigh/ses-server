@@ -6,13 +6,15 @@ import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.FactoryServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeFactoryMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeFactoryTrace;
 import com.redescooter.ses.web.ros.dm.OpeSysRpsUser;
@@ -27,17 +29,20 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class FactoryRosServiceImpl implements FactoryRosService {

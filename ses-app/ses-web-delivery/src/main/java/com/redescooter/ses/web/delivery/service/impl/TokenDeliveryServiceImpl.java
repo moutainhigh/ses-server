@@ -16,7 +16,7 @@ import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.TokenDeliveryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Mr.lijiating
@@ -28,12 +28,16 @@ import org.apache.dubbo.config.annotation.Service;
 @Slf4j
 @Service
 public class TokenDeliveryServiceImpl implements TokenDeliveryService {
+
     @DubboReference
     private UserTokenService userTokenService;
+
     @DubboReference
     private MailMultiBaseTaskService mailMultiBaseTaskService;
+
     @DubboReference
     private AccountBaseService accountBaseService;
+
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 

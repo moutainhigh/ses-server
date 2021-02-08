@@ -36,7 +36,7 @@ import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;

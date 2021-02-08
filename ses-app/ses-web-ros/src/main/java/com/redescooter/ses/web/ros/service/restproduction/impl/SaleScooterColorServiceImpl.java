@@ -2,7 +2,7 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterColorService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
 /**
