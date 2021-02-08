@@ -336,8 +336,8 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         return result;
     }
 
-
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult modifyPassword(ModifyPasswordEnter enter) {
         //密码去空格
         if (StringUtils.isNotEmpty(enter.getOldPassword())) {

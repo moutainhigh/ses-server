@@ -17,6 +17,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Value("${fileUpload.path}")
     private String updatePackageUploadPath;
+
     @Value("${fileUpload.download}")
     private String downloadPath;
 
@@ -36,7 +37,6 @@ public class FileUploadServiceImpl implements FileUploadService {
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             FileUtil.uploadFile(file, path);
         });
-
         return result;
     }
 

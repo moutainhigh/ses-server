@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * 车辆相关接口管理
+ *
  * @author assert
  * @date 2020/12/4 11:34
  */
@@ -31,19 +32,21 @@ public class ScooterController {
 
     @DubboReference
     private ColorService colorService;
+
     @DubboReference
     private SpecificService specificService;
+
     @Resource
     private AdminScooterService adminScooterService;
 
-
     /**
      * 查询车辆列表
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
      * @author assert
      * @date 2020/12/9
-    */
+     */
     @ApiOperation(value = "查询车辆列表")
     @GetMapping(value = "/query")
     public Response<PageResult<AdminScooterDTO>> queryAdminScooter(@ModelAttribute QueryAdminScooterParamDTO paramDTO) {
@@ -52,11 +55,12 @@ public class ScooterController {
 
     /**
      * 创建车辆信息
+     *
      * @param adminScooterDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<java.lang.Integer>
      * @author assert
      * @date 2020/12/8
-    */
+     */
     @ApiOperation(value = "创建车辆信息")
     @PostMapping(value = "/insert")
     public Response<Integer> insertAdminScooter(@ModelAttribute InsertAdminScooterDTO adminScooterDTO) {
@@ -65,11 +69,12 @@ public class ScooterController {
 
     /**
      * 查询颜色信息列表(下拉列表使用)
+     *
      * @param
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
      * @author assert
      * @date 2020/12/9
-    */
+     */
     @ApiOperation(value = "查询颜色信息列表", notes = "查询颜色信息列表(下拉列表使用)")
     @GetMapping(value = "/colors")
     public Response<List<SelectBaseResultDTO>> getScooterColorList() {
@@ -78,11 +83,12 @@ public class ScooterController {
 
     /**
      * 查询车辆型号分组列表(下拉列表使用)
+     *
      * @param
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>
      * @author assert
      * @date 2020/12/9
-    */
+     */
     @ApiOperation(value = "查询车辆型号分组列表", notes = "查询车辆型号分组列表(下拉列表使用)")
     @GetMapping(value = "/groups")
     public Response<List<SelectBaseResultDTO>> getScooterGroupList() {
@@ -91,11 +97,12 @@ public class ScooterController {
 
     /**
      * 查询车辆型号列表(下拉框列表使用)
+     *
      * @param groupId
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List<com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.List < com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO>>
      * @author assert
      * @date 2020/12/15
-    */
+     */
     @ApiOperation(value = "查询车辆型号列表", notes = "查询车辆型号列表(下拉框列表使用)")
     @GetMapping(value = "/models/{groupId}")
     public Response<List<SelectBaseResultDTO>> getScooterModelList(@PathVariable("groupId") Long groupId) {
@@ -104,11 +111,12 @@ public class ScooterController {
 
     /**
      * 根据id查询车辆详情
+     *
      * @param id
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO>
      * @author assert
      * @date 2020/12/10
-    */
+     */
     @ApiOperation(value = "查询车辆详情", notes = "根据id查询车辆详情")
     @GetMapping(value = "/detail/{id}")
     public Response<AdminScooterDTO> getAdminScooterDetailById(@PathVariable("id") Long id) {
@@ -117,11 +125,12 @@ public class ScooterController {
 
     /**
      * 设置车辆软体模式(车辆型号)
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2020/12/14
-    */
+     */
     @ApiOperation(value = "设置车辆软体模式", notes = "设置车辆软体模式(车辆型号E50、E100等..)")
     @PostMapping(value = "/setScooterModel")
     public Response<GeneralResult> setScooterModel(@ModelAttribute SetScooterModelParamDTO paramDTO) {
@@ -131,11 +140,12 @@ public class ScooterController {
 
     /**
      * 重置车辆软体(将车辆重置成E50)
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2020/12/15
-    */
+     */
     @ApiOperation(value = "重置车辆软体", notes = "重置车辆软体(将车辆重置成E50)")
     @PostMapping(value = "/resetScooterModel")
     public Response<GeneralResult> resetScooterModel(@ModelAttribute IdEnter enter) {
@@ -152,11 +162,11 @@ public class ScooterController {
         return new Response<>(adminScooterService.setScooterModel(paramDTO));
     }
 
-
     @ApiOperation(value = "删除车辆", notes = "删除车辆")
     @PostMapping(value = "/delete")
     @IgnoreLoginCheck
     public Response<GeneralResult> deleteScooter(@ModelAttribute IdEnter enter) {
         return new Response<>(adminScooterService.deleteScooter(enter));
     }
+
 }
