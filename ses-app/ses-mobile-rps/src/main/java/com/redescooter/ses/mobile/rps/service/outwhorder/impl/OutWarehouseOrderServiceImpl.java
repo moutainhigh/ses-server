@@ -324,7 +324,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outWarehouse(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
 
@@ -437,10 +437,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         for (int i = 0; i < outWarehouseOrderProductList.size(); i++) {
             qty += outWarehouseOrderProductList.get(i).getAlreadyOutWhQty();
         }
-
-        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(),
-                ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
-
+        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.OUT_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.OUT_WH_QTY_ERROR.getMessage());
     }
 
 }
