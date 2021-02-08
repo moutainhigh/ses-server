@@ -136,9 +136,7 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcOrderTypeCount();
-        /**
-         * {orderType, totalCount}
-         */
+        //TODO: {orderType, totalCount}
         Map<Integer, Integer> map = countByStatusResultList.stream().collect(
                 Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
         );

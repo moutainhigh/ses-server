@@ -38,7 +38,7 @@ public class QcOrderController {
      * @author assert
      * @date 2021/1/15
      */
-    @ApiOperation(value = "质检单类型数量统计", notes = "质检单类型说明：1车辆 2组装件 3部件")
+    @ApiOperation(value = "质检单首页展示", notes = "质检单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getQcOrderTypeCount(@ModelAttribute GeneralEnter enter) {
         return new Response<>(qcOrderService.getQcOrderTypeCount(enter));

@@ -15,7 +15,7 @@ import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -23,7 +23,7 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 17:50
  */
-@Service
+@DubboService
 public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @Resource
@@ -32,7 +32,6 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
     private ScooterService scooterService;
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
-
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {

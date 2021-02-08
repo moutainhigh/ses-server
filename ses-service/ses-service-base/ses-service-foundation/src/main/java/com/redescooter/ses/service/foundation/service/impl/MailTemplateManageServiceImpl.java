@@ -4,15 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
+import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
+import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper;
+import com.redescooter.ses.service.foundation.dm.base.PlaMailConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaMailConfigService;
+import com.redescooter.ses.service.foundation.service.base.PlaMessageService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,6 +46,9 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
     @Autowired
     private PlaMailTemplateMapper mailTemplateMapper;
+
+    @Autowired
+    private PlaMailConfigService plaMailConfigService;
 
     @Autowired
     private IdAppService idSerService;
@@ -102,4 +111,32 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         }
         return resultList;
     }
+
+    /**
+     * 保存或更新邮件模板参数
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult saveParameter(SaveMailConfigEnter enter) {
+
+        List<PlaMailConfig> list = new ArrayList<>();
+        plaMailConfigService.batchInsert(list);
+
+
+        return null;
+    }
+
+    /**
+     * 邮件模板参数列表
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public List<MailConfigOfTermResult> list(IntEnter enter) {
+        return null;
+    }
+
 }
