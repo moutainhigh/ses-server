@@ -17,6 +17,7 @@ import java.util.Date;
  * @Function: TODO
  */
 public class BaseController {
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         // String类型转换，将所有传递进来的String进行HTML编码，防止XSS攻击
@@ -25,6 +26,7 @@ public class BaseController {
             public void setAsText(String text) {
                 setValue(text == null ? null : StringEscapeUtils.escapeHtml4(text.trim()));
             }
+
             @Override
             public String getAsText() {
                 Object value = getValue();
@@ -45,7 +47,7 @@ public class BaseController {
             @Override
             public void setAsText(String text) {
                 Date date = DateUtil.parseDate(text);
-                setValue(date==null?null:new Timestamp(date.getTime()));
+                setValue(date == null ? null : new Timestamp(date.getTime()));
             }
         });
     }
