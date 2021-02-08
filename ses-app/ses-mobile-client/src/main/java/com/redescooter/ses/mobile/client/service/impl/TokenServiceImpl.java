@@ -19,7 +19,7 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,17 +40,17 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private JedisCluster jedisCluster;
-    
-    @Reference
+
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private UserTokenService userTokenService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
 
     @Override
@@ -60,7 +60,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public GeneralResult sendCode(BaseSendMailEnter enter) {
-
         //1. 确定邮件是否存在
         Boolean aBoolean = accountBaseService.chectMail(enter.getMail());
         if (!aBoolean) {
@@ -86,13 +85,11 @@ public class TokenServiceImpl implements TokenService {
         baseMailTask.setMailAppId(AppIDEnums.SAAS_APP.getValue());
         baseMailTask.setMailSystemId(AppIDEnums.SAAS_APP.getSystemId());
         mailMultiTaskService.addSetPasswordMobileUserTask(baseMailTask);
-
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
     public GeneralResult setPassword(SetPasswordEnter enter) {
-
         //密码去空格
         enter.setNewPassword(SesStringUtils.stringTrim(enter.getNewPassword()));
         enter.setConfirmPassword(SesStringUtils.stringTrim(enter.getConfirmPassword()));

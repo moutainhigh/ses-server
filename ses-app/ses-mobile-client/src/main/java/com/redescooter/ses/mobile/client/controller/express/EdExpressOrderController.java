@@ -14,8 +14,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,7 +31,7 @@ import java.util.List;
 @RequestMapping(value = "/ed/order", method = RequestMethod.POST)
 public class EdExpressOrderController {
 
-    @Reference
+    @DubboReference
     private EdOrderService edOrderService;
 
     @PostMapping(value = "/list")
@@ -40,7 +45,6 @@ public class EdExpressOrderController {
     public Response<OrderResult> orderDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(edOrderService.orderDetail(enter));
     }
-
 
     @PostMapping(value = "/start")
     @ApiOperation(value = "开始订单", response = GeneralResult.class)

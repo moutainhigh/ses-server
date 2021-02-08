@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 
 /**
  * 车辆相关业务接口实现类
+ *
  * @author assert
  * @date 2020/11/18 15:29
  */
@@ -28,11 +29,12 @@ public class ScooterServiceImpl implements ScooterService {
 
     @DubboReference
     private ScooterMobileBService scooterMobileBService;
+
     @DubboReference
     private ScooterMobileCService scooterMobileCService;
+
     @Resource
     private UserComponent userComponent;
-
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
@@ -46,7 +48,6 @@ public class ScooterServiceImpl implements ScooterService {
         } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             scooterResult = scooterMobileCService.getScooterInfo(enter);
         }
-
         return scooterResult;
     }
 
@@ -68,7 +69,6 @@ public class ScooterServiceImpl implements ScooterService {
         } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             result = scooterMobileCService.lock(scooterLockDTO);
         }
-
         return result;
     }
 
@@ -87,10 +87,9 @@ public class ScooterServiceImpl implements ScooterService {
         Integer userServiceType = userComponent.getUserServiceTypeById(scooterNavigation);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             result = scooterMobileBService.scooterNavigation(scooterNavigation);
-        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)){
+        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             result = scooterMobileCService.scooterNavigation(scooterNavigation);
         }
-
         return result;
     }
 

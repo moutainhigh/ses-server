@@ -1,25 +1,32 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
-
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.foundation.service.MessageService;
 import com.redescooter.ses.api.foundation.vo.message.MessageListEnter;
 import com.redescooter.ses.api.foundation.vo.message.MessageResult;
 import com.redescooter.ses.api.foundation.vo.message.ReadMessageEnter;
 import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- *  @author: alex
- *  @Date: 2020/2/11 14:05
- *  @version：V 1.2
- *  @Description: 消息模块
+ * @author: alex
+ * @Date: 2020/2/11 14:05
+ * @version：V 1.2
+ * @Description: 消息模块
  */
 @Slf4j
 @Api(tags = {"消息模块"})
@@ -27,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(value = "/common/message", method = RequestMethod.POST)
 public class MessageController {
-    @Reference
+
+    @DubboReference
     private MessageService messageService;
 
     @PostMapping(value = "/list")
