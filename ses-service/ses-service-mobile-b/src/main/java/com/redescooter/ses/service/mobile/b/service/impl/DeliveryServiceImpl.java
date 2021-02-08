@@ -43,10 +43,11 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
+import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
-import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -92,16 +93,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
 
-    @Reference
+    @DubboReference
     private PushService pushService;
 
     // 创建 开始订单锁

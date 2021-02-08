@@ -37,7 +37,7 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
     private PlaUserService userService;
     @Autowired
     private PlaUserMapper userMapper;
-    @Reference
+    @DubboReference
     private CorporateDriverService corporateDriverService;
 
     /**

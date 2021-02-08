@@ -25,9 +25,9 @@ import com.redescooter.ses.api.foundation.vo.account.SaveDriverAccountDto;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.DriverServiceMapper;
 import com.redescooter.ses.web.delivery.dao.EdScooterServiceMapper;
@@ -71,6 +71,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterModelListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,15 +123,15 @@ public class RtDriverServiceImpl implements RtDriverService {
     private DriverServiceMapper driverServiceMapper;
     @Autowired
     private EdScooterServiceMapper scooterServiceMapper;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
 

@@ -54,7 +54,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     @Autowired
     private ProductionQcTempleteServiceMapper productionQcTmepleteServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

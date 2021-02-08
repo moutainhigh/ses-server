@@ -80,7 +80,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     @DubboReference
     private WebDistributorService webDistributorService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

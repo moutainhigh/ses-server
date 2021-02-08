@@ -23,7 +23,7 @@ import java.util.Calendar;
 @Component
 public class RunSendMailTaskExecutorServiceJobImpl implements RunSendMailTaskExecutorServiceJob {
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     /**

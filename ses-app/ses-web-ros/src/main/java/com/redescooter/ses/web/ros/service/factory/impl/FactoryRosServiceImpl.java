@@ -57,7 +57,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Autowired
     private OpeSysRpsUserService opeSysRpsUserService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override

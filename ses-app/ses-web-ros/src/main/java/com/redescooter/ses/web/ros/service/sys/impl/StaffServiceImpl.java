@@ -100,10 +100,10 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSaleAreaService opeSaleAreaService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Value("${Request.privateKey}")

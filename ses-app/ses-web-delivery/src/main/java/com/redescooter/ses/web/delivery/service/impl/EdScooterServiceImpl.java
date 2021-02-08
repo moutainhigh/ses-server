@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.delivery.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.tenant.TenantScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
@@ -26,10 +25,10 @@ import com.redescooter.ses.web.delivery.vo.edscooter.EdScooterResult;
 import com.redescooter.ses.web.delivery.vo.task.DriverListResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public class EdScooterServiceImpl implements EdScooterService {
     @Autowired
     private DriverServiceMapper driverServiceMapper;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
     /**

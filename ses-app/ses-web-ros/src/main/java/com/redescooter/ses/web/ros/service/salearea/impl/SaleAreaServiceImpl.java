@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 public class SaleAreaServiceImpl implements SaleAreaService {
 
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

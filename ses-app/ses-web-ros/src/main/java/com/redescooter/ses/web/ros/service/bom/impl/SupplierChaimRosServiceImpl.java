@@ -84,7 +84,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     private OpeProductPriceHistoryService opeProductPriceHistoryService;
 
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

@@ -1,24 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
-import com.redescooter.ses.web.delivery.vo.task.TaskDriverLsitEnter;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -29,6 +10,7 @@ import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums
 import com.redescooter.ses.api.common.enums.mesage.MesageBizTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MesageTypeEnum;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
+import com.redescooter.ses.api.common.enums.proxy.jiguang.PlatformTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskStatusEnums;
 import com.redescooter.ses.api.common.enums.task.TaskTimeCountEnums;
@@ -68,11 +50,28 @@ import com.redescooter.ses.web.delivery.vo.task.DriverTaskEnter;
 import com.redescooter.ses.web.delivery.vo.task.OrderListEnter;
 import com.redescooter.ses.web.delivery.vo.task.OrderResult;
 import com.redescooter.ses.web.delivery.vo.task.SaveTaskEnter;
+import com.redescooter.ses.web.delivery.vo.task.TaskDriverLsitEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskResult;
 import com.redescooter.ses.web.delivery.vo.task.TaskTimeCountDto;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName:TaskServiceImpl
@@ -106,19 +105,19 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private CorDriverScooterService corDriverScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
-    @Reference
+    @DubboReference
     private PushService pushService;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
     /**

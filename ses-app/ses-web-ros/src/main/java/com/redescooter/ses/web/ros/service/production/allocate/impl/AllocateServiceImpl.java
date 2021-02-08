@@ -92,7 +92,7 @@ public class AllocateServiceImpl implements AllocateService {
     @Autowired
     private OpeStockService opeStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

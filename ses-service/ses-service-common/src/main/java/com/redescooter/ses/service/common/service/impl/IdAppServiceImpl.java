@@ -19,7 +19,7 @@ import org.apache.dubbo.config.annotation.Service;
 @Service
 public class IdAppServiceImpl implements IdAppService {
 
-    @Reference
+    @DubboReference
     private SequenceService sequenceService;
 
     @Override

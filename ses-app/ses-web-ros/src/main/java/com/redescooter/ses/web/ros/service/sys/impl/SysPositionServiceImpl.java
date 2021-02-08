@@ -5,7 +5,10 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
@@ -20,17 +23,29 @@ import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
-import com.redescooter.ses.web.ros.vo.sys.position.*;
+import com.redescooter.ses.web.ros.vo.sys.position.EditPositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,18 +58,25 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SysPositionServiceImpl implements SysPositionService {
+
     @Autowired
     private PositionServiceMapper positionServiceMapper;
+
     @Autowired
     private OpeSysPositionService opeSysPositionService;
+
     @Autowired
     private RoleService roleService;
+
     @Autowired
     private StaffService staffService;
+
     @Autowired
     private OpeSysStaffService opeSysStaffService;
-    @Reference
+
+    @DubboReference
     private IdAppService idAppService;
+
     @Autowired
     private SysDeptService sysDeptService;
 

@@ -13,7 +13,14 @@ import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserEventEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
@@ -36,7 +43,13 @@ import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPermissionMapper;
-import com.redescooter.ses.service.foundation.dm.base.*;
+import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
+import com.redescooter.ses.service.foundation.dm.base.PlaTenantConfig;
+import com.redescooter.ses.service.foundation.dm.base.PlaTenantNode;
+import com.redescooter.ses.service.foundation.dm.base.PlaUser;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaTenantConfigService;
 import com.redescooter.ses.service.foundation.service.base.PlaTenantNodeService;
@@ -44,13 +57,14 @@ import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -58,7 +72,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -105,16 +125,16 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Autowired
     private UserBaseService userBaseService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private UserProfileService userProfileService;
 
     @Autowired
     private PlaUserNodeService plaUserNodeService;
 
-    @Reference
+    @DubboReference
     private CustomerService customerService;
 
     @Autowired

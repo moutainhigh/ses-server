@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SaleScooterColorServiceImpl implements SaleScooterColorService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 }

@@ -12,33 +12,84 @@ import com.redescooter.ses.api.common.enums.bom.BomSnClassEnums;
 import com.redescooter.ses.api.common.enums.bom.BomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.PartsEventEnums;
 import com.redescooter.ses.api.common.enums.product.PartsProductEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.MapResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dao.bom.PartsServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeExcleImport;
+import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplateB;
+import com.redescooter.ses.web.ros.dm.OpePartQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpePartQcTemplateB;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpePartsDraft;
+import com.redescooter.ses.web.ros.dm.OpePartsDraftHistoryRecord;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpePartsProductB;
+import com.redescooter.ses.web.ros.dm.OpePartsType;
+import com.redescooter.ses.web.ros.dm.OpeProductQcTemplate;
+import com.redescooter.ses.web.ros.dm.OpeProductQcTemplateB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeExcleImportService;
+import com.redescooter.ses.web.ros.service.base.OpePartDraftQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpePartDraftQcTemplateService;
+import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpePartQcTemplateService;
+import com.redescooter.ses.web.ros.service.base.OpePartsDraftHistoryRecordService;
+import com.redescooter.ses.web.ros.service.base.OpePartsDraftService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductBService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.base.OpePartsTypeService;
+import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateService;
 import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.*;
+import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.DeletePartBindProductResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.DeletePartResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.DetailsPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.EditSavePartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.ExpressPartsExcleData;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsDto;
+import com.redescooter.ses.web.ros.vo.bom.parts.HistoryPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartUnbindEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -108,10 +159,10 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Autowired
     private OpePartDraftQcTemplateBService opePartDraftQcTemplateBService;
     
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     
-    @Reference
+    @DubboReference
     private GenerateService generateService;
     
     @Override

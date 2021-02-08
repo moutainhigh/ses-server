@@ -126,7 +126,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Autowired
     private OpeEntrustPartsBService opeEntrustPartsBService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

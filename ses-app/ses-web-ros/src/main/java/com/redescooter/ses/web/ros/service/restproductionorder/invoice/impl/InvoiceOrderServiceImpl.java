@@ -142,7 +142,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Autowired
     private OpeOutWhScooterBMapper opeOutWhScooterBMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

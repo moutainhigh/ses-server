@@ -51,7 +51,7 @@ public class SalePartsServiceImpl implements SalePartsService {
     @Autowired
     private JedisService jedisService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override

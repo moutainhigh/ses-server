@@ -1,18 +1,10 @@
 package com.redescooter.ses.service.mobile.c.service;
 
-import java.math.BigDecimal;
-
-import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.IdScooterService;
@@ -22,6 +14,13 @@ import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 /**
  * @ClassName:IdScooterServiceImpl
@@ -36,10 +35,10 @@ public class IdScooterServiceImpl implements IdScooterService {
     @Autowired
     private RideScooterDateService rideScooterDateService;
 
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
 
-    @Reference
+    @DubboReference
     private CusotmerScooterService cusotmerScooterService;
 
     /**

@@ -52,7 +52,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     @Autowired
     private JedisService jedisService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override

@@ -88,7 +88,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Autowired
     private OpeFrStockBillService opeFrStockBillService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

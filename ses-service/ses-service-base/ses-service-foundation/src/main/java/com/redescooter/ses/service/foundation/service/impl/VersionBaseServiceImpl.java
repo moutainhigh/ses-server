@@ -14,8 +14,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.file.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +28,13 @@ import org.springframework.web.multipart.MultipartFile;
  * @Version V1.0
  **/
 @Slf4j
-@Service
+@DubboService
 public class VersionBaseServiceImpl implements VersionBaseService {
 
   @Autowired
   private PlaAppVersionService plaAppVersionService;
 
-  @Reference
+  @DubboReference
   private IdAppService idAppService;
 
 //  @Value("${fileUpload.path}")

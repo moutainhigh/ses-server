@@ -7,30 +7,63 @@ import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyEventEnums;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.productwaitinwh.ProductWaitInWhServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
+import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
+import com.redescooter.ses.mobile.rps.dm.OpeAllocateBTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpeParts;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
+import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
+import com.redescooter.ses.mobile.rps.dm.OpeStock;
+import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
+import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
+import com.redescooter.ses.mobile.rps.dm.OpeStockProdProduct;
+import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
+import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBQcService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyQcItemService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsProductService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockProdPartService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockProdProductService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
 import com.redescooter.ses.mobile.rps.service.productwaitinwh.ProductWaitInWhService;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.AllocateAndProductResult;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductDetailEnter;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhIdItemEnter;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhInfoResult;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -49,7 +82,6 @@ import java.util.stream.Collectors;
  **/
 @Service
 public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
-
 
     @Autowired
     private ProductWaitInWhServiceMapper productWaitInWhServiceMapper;
@@ -105,9 +137,8 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
     @Autowired
     private OpeStockPurchasService opeStockPurchasService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-
 
     /**
      * @param enter
@@ -117,7 +148,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:51
      * @Param [enter]
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter) {
         int count = productWaitInWhServiceMapper.proWaitInWHListCount();
@@ -164,7 +195,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/26 13:41
      * @Param [enter]
      **/
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<AllocateAndProductResult> allocateWaitInWHList(PageEnter enter, List<AllocateAndProductResult> allocateAndProductResultList) {
         QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
         opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
@@ -202,7 +233,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:49
      * @Param [enter]
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ProductWaitInWhItemResult> productWaitWhItemList(ProductDetailEnter enter) {
 
@@ -315,7 +346,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:52
      * @Param [enter]
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductWaitInWhInfoResult setProductWaitInWhInfo(ProductWaitInWhIdItemEnter enter) {
 

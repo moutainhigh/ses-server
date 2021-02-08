@@ -16,9 +16,8 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStat
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *  @author: alex
- *  @Date: 2020/10/27 19:00
- *  @version：V ROS 1.8.3
- *  @Description:
+ * @author: alex
+ * @Date: 2020/10/27 19:00
+ * @version：V ROS 1.8.3
+ * @Description:
  */
 @Service
 @Slf4j
@@ -39,24 +38,27 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
 
     @Resource
     private OpeOrderStatusFlowService opeOrderStatusFlowService;
+
     @Resource
     private OrderStatusFlowServiceMapper orderStatusFlowServiceMapper;
+
     @Resource
     private OpeSysStaffService opeSysStaffService;
+
     @Resource
     private OrderStatusFlowMapper orderStatusFlowMapper;
-    @Reference
+
+    @DubboReference
     private IdAppService idAppService;
 
-
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:05
      * @Param: enter
      * @Return: OrderStatusFlowResult
      * @desc: 订单节点
-     * @param enter
      */
     @Override
     public List<OrderStatusFlowResult> listBybussId(IdEnter enter) {
@@ -137,18 +139,17 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:07
      * @Param: enter
      * @Return: 订单节点详情
      * @desc: 订单节点详情
-     * @param enter
      */
     @Override
     public OrderStatusFlowResult detail(IdEnter enter) {
         OrderStatusFlowResult opeOrderStatusFlow = orderStatusFlowServiceMapper.detail(enter);
-
         if (opeOrderStatusFlow != null) {
             //创建人
             OpeSysStaff createSysStaff = opeSysStaffService.getById(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getId, opeOrderStatusFlow.getCreateById()));
@@ -165,15 +166,15 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:10
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 保存节点
-     * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(OrderStatusFlowEnter enter) {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();
@@ -204,7 +205,6 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
                 .updatedBy(userId)
                 .updatedTime(new Date())
                 .build();
-
         return orderStatusFlowMapper.insertOrderStatusFlow(orderStatusFlow);
     }
 

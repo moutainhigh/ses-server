@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/sign/token", method = RequestMethod.POST)
 public class TokenController {
 
-    @Reference
+    @DubboReference
     private UserTokenService userTokenService;
 
-    @Reference
+    @DubboReference
     private WorkOrderService workOrderService;
 
     @IgnoreLoginCheck

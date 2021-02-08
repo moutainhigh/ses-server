@@ -26,11 +26,10 @@ import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverScooterService;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Objects;
 
 /**
  * @ClassName:MeterServiceImpl
@@ -42,11 +41,11 @@ import java.util.Objects;
 @Service
 public class MeterServiceImpl implements MeterService {
 
-    @Reference
+    @DubboReference
     private ScooterService  scooterService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;

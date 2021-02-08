@@ -22,7 +22,6 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.proxy.service.PushProxyService;
 import com.redescooter.ses.api.proxy.vo.jiguang.PushProxyEnter;
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
-import com.redescooter.ses.service.foundation.SesServiceFoundationApplication;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaPushResultMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaJpushUser;
@@ -33,13 +32,20 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * description: PushServiceImpl 根据业务不同进行调用
@@ -48,7 +54,7 @@ import java.util.*;
  */
 
 @Slf4j
-@Service
+@DubboService
 public class PushServiceImpl implements PushService {
 
     /**
@@ -66,7 +72,7 @@ public class PushServiceImpl implements PushService {
     @Autowired
     private PlaJpushUserService plaJpushUserService;
     //调用极光底层推送
-    @Reference
+    @DubboReference
     private PushProxyService pushProxyService;
     @Autowired
     private I18nServiceMessage i18nServiceMessage;

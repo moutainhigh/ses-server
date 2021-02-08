@@ -64,7 +64,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,15 +104,15 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private GenerateService generateService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private PushService pushService;
 
     /**

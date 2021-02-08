@@ -7,22 +7,36 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
 import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.RtDashboardService;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
-import com.redescooter.ses.web.delivery.vo.*;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartDto;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
+import com.redescooter.ses.web.delivery.vo.MapRsesult;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
+import com.redescooter.ses.web.delivery.vo.TopTenEnter;
+import com.redescooter.ses.web.delivery.vo.TopTenResult;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:OrderStatisticsServiceImpl
@@ -40,7 +54,7 @@ public class RtDashboardServiceImpl implements RtDashboardService {
     @Autowired
     private CorTenantScooterService tenantScooterService;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
     /**

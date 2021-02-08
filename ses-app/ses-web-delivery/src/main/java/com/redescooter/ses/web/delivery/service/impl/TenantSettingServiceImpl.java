@@ -25,6 +25,7 @@ import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -48,13 +49,13 @@ public class TenantSettingServiceImpl implements TenantSettingService {
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
-    @Reference
+    @DubboReference
     private CustomerService customerService;
 
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
 
     /**

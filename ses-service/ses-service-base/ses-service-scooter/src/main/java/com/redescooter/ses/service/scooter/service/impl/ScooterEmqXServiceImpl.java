@@ -3,7 +3,11 @@ package com.redescooter.ses.service.scooter.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
 import com.redescooter.ses.api.common.enums.base.BizType;
-import com.redescooter.ses.api.common.enums.scooter.*;
+import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
+import com.redescooter.ses.api.common.enums.scooter.NavigationStatus;
+import com.redescooter.ses.api.common.enums.scooter.ScooterActionResult;
+import com.redescooter.ses.api.common.enums.scooter.ScooterActionTypeEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -19,7 +23,11 @@ import com.redescooter.ses.api.mobile.b.service.RideStatBService;
 import com.redescooter.ses.api.mobile.c.service.RideStatCService;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
-import com.redescooter.ses.api.scooter.vo.emqx.*;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterNavigationPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
@@ -35,6 +43,7 @@ import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -55,13 +64,13 @@ import java.util.List;
 @Service
 public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
-    @Reference
+    @DubboReference
     private RideStatBService rideStatBService;
-    @Reference
+    @DubboReference
     private RideStatCService rideStatCService;
-    @Reference
+    @DubboReference
     private AppVersionService appVersionService;
-    @Reference
+    @DubboReference
     private AppVersionUpdateLogService appVersionUpdateLogService;
     @Resource
     private ScooterServiceMapper scooterMapper;

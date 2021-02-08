@@ -90,7 +90,7 @@ public class BomRosServiceImpl implements BomRosService {
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

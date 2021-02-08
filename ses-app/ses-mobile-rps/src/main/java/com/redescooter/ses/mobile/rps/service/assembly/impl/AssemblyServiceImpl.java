@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.assembly.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.production.assembly.AssemblyStatusEnums;
@@ -11,26 +10,48 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.assembly.AssemblyServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProductB;
+import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
+import com.redescooter.ses.mobile.rps.dm.OpeProductAssemblyB;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.assembly.AssemblyService;
-import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
-import com.redescooter.ses.mobile.rps.vo.assembly.*;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsProductBService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsProductService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyBService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
+import com.redescooter.ses.mobile.rps.vo.assembly.AssemblyDetailEnter;
+import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeEnter;
+import com.redescooter.ses.mobile.rps.vo.assembly.PrintCodeResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.ProductFormulaResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.QueryProductCodeResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateEnter;
+import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaDateResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.SaveFormulaPartListEnter;
+import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyDetailResult;
+import com.redescooter.ses.mobile.rps.vo.assembly.WaitAssemblyListResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:AssemblyServiceImpl
@@ -69,7 +90,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Autowired
     private BussinessNumberService bussinessNumberService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -100,9 +121,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         if (opeAssemblyOrder == null) {
             throw new SesMobileRpsException(ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getCode(), ExceptionCodeEnums.ASSEMNLY_ORDER_IS_EXIST.getMessage());
         }
-
-        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId, opeAssemblyOrder.getId()).ne(OpeAssemblyBOrder::getWaitAssemblyQty,
-                0));
+        int count = opeAssemblyBOrderService.count(new LambdaQueryWrapper<OpeAssemblyBOrder>().eq(OpeAssemblyBOrder::getAssemblyId, opeAssemblyOrder.getId()).ne(OpeAssemblyBOrder::getWaitAssemblyQty, 0));
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -130,7 +149,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public SaveFormulaDateResult save(SaveFormulaDateEnter enter) {
         //商品组装部件
@@ -296,7 +315,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PrintCodeResult printCode(PrintCodeEnter enter) {
         OpeProductAssembly opeProductAssembly = opeProductAssemblyService.getById(enter.getId());
@@ -341,7 +360,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()

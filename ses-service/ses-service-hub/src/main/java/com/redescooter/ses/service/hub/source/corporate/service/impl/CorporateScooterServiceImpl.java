@@ -8,7 +8,7 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorTenantScooter;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorTenantScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +29,7 @@ public class CorporateScooterServiceImpl implements CorporateScooterService {
     @Autowired
     private CorTenantScooterService corTenantScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

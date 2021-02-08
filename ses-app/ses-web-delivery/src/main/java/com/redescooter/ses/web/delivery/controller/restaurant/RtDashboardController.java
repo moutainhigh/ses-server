@@ -31,7 +31,7 @@ import java.util.Map;
 @RequestMapping(value = "/rt/dashboard", method = RequestMethod.POST)
 public class RtDashboardController {
 
-    @Reference
+    @DubboReference
     private RtDashboardService rtDashboardService;
 
     @PostMapping(value = "/countByStatus")

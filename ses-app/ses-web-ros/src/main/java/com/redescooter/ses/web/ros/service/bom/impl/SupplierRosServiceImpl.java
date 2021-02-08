@@ -51,7 +51,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     private OpeSupplierTraceService supplierTraceService;
     @Autowired
     private SupplierServiceMapper supplierServiceMapper;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

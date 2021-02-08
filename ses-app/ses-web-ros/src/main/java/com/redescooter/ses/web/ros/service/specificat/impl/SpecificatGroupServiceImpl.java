@@ -22,7 +22,7 @@ import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
     @Autowired
     private OpeSpecificatGroupService opeSpecificatGroupService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

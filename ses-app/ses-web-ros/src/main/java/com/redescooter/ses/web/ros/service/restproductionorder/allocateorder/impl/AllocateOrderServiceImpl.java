@@ -120,7 +120,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Autowired
     private OpePurchasePartsBService opePurchasePartsBService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

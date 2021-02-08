@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * 入库单接口管理
+ *
  * @author assert
  * @date 2021/1/15 16:17
  */
@@ -29,14 +30,14 @@ public class InWarehouseOrderController {
     @Resource
     private InWhOrderService inWhOrderService;
 
-
     /**
      * 入库单类型数量统计
+     *
      * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map<java.lang.Integer,java.lang.Integer>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map < java.lang.Integer, java.lang.Integer>>
      * @author assert
      * @date 2021/1/15
-    */
+     */
     @ApiOperation(value = "入库单类型数量统计", notes = "入库单类型说明：1车辆 2组装件 3部件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getInWarehouseOrderTypeCount(@ModelAttribute GeneralEnter enter) {
@@ -45,11 +46,12 @@ public class InWarehouseOrderController {
 
     /**
      * 入库类型数量统计
+     *
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map<java.lang.Integer,java.lang.Integer>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map < java.lang.Integer, java.lang.Integer>>
      * @author assert
      * @date 2021/1/15
-    */
+     */
     @ApiOperation(value = "入库类型数量统计", notes = "入库类型说明：1生产入库 2返修入库 3采购入库 4退料入库 5其他 6报废入库 7调拨入库")
     @PostMapping(value = "/countByType")
     public Response<Map<Integer, Integer>> getInWarehouseTypeCount(@ModelAttribute CountByOrderTypeParamDTO paramDTO) {
@@ -58,11 +60,12 @@ public class InWarehouseOrderController {
 
     /**
      * 入库单列表查询
+     *
      * @param paramDTO
-     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.PageResult<com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.PageResult < com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO>>
      * @author assert
      * @date 2021/1/15
-    */
+     */
     @ApiOperation(value = "入库单列表查询")
     @PostMapping(value = "/list")
     public Response<PageResult<QueryInWhOrderResultDTO>> getInWarehouseOrderList(@ModelAttribute QueryInWhOrderParamDTO paramDTO) {
@@ -71,11 +74,12 @@ public class InWarehouseOrderController {
 
     /**
      * 根据id查询入库单详情
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO>
      * @author assert
      * @date 2021/1/15
-    */
+     */
     @ApiOperation(value = "入库单详情", notes = "根据id查询入库单详情")
     @PostMapping(value = "/detail")
     public Response<InWhOrderDetailDTO> getInWarehouseOrderDetailById(@ModelAttribute IdEnter enter) {
@@ -84,6 +88,7 @@ public class InWarehouseOrderController {
 
     /**
      * 根据productId查询入库单产品详情
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO>
      * @author assert
@@ -97,11 +102,12 @@ public class InWarehouseOrderController {
 
     /**
      * 保存入库单产品扫码结果
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
      * @author assert
      * @date 2021/1/21
-    */
+     */
     @ApiOperation(value = "保存扫码结果", notes = "保存入库单产品扫码结果")
     @PostMapping(value = "/saveScanCodeResult")
     public Response<SaveScanCodeResultDTO> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
@@ -110,11 +116,12 @@ public class InWarehouseOrderController {
 
     /**
      * 确认入库
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/19
-    */
+     */
     @ApiOperation(value = "确认入库")
     @PostMapping(value = "/confirmStorage")
     public Response<GeneralResult> confirmStorage(@ModelAttribute IdEnter enter) {

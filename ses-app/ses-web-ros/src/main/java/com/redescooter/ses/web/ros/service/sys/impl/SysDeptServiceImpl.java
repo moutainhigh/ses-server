@@ -66,7 +66,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     private OpeSysDeptService opeSysDeptService;
     @Autowired
     private DeptServiceMapper deptServiceMapper;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     @Autowired
     private OpeSysStaffService opeSysStaffService;

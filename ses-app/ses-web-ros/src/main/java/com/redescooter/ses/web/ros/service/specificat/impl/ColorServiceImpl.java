@@ -38,7 +38,7 @@ public class ColorServiceImpl implements ColorService {
     @Autowired
     private OpeColorService opeColorService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

@@ -15,7 +15,7 @@ import com.redescooter.ses.service.hub.source.corporate.service.base.CorDelivery
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,7 +39,7 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
     @Autowired
     private CorDeliveryTraceService corDeliveryTraceService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

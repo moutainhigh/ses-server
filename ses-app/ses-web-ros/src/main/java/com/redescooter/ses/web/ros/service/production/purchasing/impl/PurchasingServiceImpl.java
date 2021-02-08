@@ -125,7 +125,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

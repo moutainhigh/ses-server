@@ -12,8 +12,8 @@ import com.redescooter.ses.api.foundation.vo.message.JpushUserEnter;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Slf4j
-@Service
+@DubboService
 public class LoginJPushProProServiceImpl implements LoginJPushProService {
 
-    @Reference
+    @DubboReference
     private JpushUserService jpushUserService;
 
     /**

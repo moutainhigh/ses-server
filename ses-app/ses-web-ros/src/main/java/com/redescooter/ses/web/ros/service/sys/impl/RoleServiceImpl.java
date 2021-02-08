@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
-import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -17,26 +16,56 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
 import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.sys.*;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleDataService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.sys.EmployeeService;
+import com.redescooter.ses.web.ros.service.sys.MenuService;
+import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import com.redescooter.ses.web.ros.service.sys.RoleService;
+import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
-import com.redescooter.ses.web.ros.vo.sys.role.*;
+import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleCityEditEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleDataResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleDetailResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleListResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleMenuEditEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleOpEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleQueryListEnter;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
+import com.redescooter.ses.web.ros.vo.sys.role.RoleSaveOrEditEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -67,9 +96,9 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private CityBaseService ctiyBaseService;
 
     @Autowired

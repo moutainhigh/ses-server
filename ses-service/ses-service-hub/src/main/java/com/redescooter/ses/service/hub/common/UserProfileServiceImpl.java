@@ -1,11 +1,13 @@
 package com.redescooter.ses.service.hub.common;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
-import com.redescooter.ses.api.hub.vo.*;
+import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailEnter;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
@@ -14,17 +16,14 @@ import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorUserProfileService;
-import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
-import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,7 @@ import java.util.List;
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
 
-    @Reference
+    @DubboReference
     private UserProfileProService userProfileProService;
 
     @Autowired

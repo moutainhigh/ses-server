@@ -141,7 +141,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Autowired
     private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

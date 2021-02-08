@@ -175,7 +175,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     @Autowired
     private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

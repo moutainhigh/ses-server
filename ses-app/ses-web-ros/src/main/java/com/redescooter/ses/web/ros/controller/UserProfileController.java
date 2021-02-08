@@ -31,7 +31,7 @@ public class UserProfileController{
     @Autowired
     private SysUserProfileService sysUserProfileService;
 
-    @Reference
+    @DubboReference
     private WorkOrderService workOrderService;
 
     @ApiOperation(value = "获取用户个人信息", response = UserInfoResult.class)

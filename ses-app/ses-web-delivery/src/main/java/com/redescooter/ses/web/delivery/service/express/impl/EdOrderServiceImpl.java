@@ -1,25 +1,5 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletResponse;
-
-import com.redescooter.ses.api.common.vo.base.IdsEnter;
-import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
@@ -30,6 +10,7 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -39,6 +20,7 @@ import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
 import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
@@ -64,6 +46,7 @@ import com.redescooter.ses.web.delivery.vo.QueryExpressOrderByPageResult;
 import com.redescooter.ses.web.delivery.vo.QueryExpressOrderTraceResult;
 import com.redescooter.ses.web.delivery.vo.QueryOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ChanageExpressOrderEnter;
 import com.redescooter.ses.web.delivery.vo.edorder.DiverOrderInforResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapEnter;
@@ -72,8 +55,23 @@ import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Mr.lijiating
@@ -103,13 +101,13 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
     @Autowired
     private CorDriverScooterService corDriverScooterService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private GenerateService generateService;
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
 

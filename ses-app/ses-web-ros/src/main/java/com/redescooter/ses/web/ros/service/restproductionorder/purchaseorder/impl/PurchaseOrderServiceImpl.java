@@ -98,7 +98,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

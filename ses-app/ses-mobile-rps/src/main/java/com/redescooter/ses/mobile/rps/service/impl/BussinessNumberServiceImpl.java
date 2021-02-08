@@ -42,7 +42,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      */
     @Override
     public String materialQcBatchNo(IdEnter enter) {
-
         OpePurchasLotTrace opePurchasLotTrace = opePurchasLotTraceService.getOne(new LambdaQueryWrapper<OpePurchasLotTrace>().eq(OpePurchasLotTrace::getPurchasId, enter.getId()));
 
         //如果是同一天 批次号 后三位累加
@@ -98,11 +97,6 @@ public class BussinessNumberServiceImpl implements BussinessNumberService {
      */
     @Override
     public String productSerialN(IdEnter enter) {
-        return new StringBuilder().append(enter.getId()).append(RandomUtils.nextInt(10000,999999)).toString();
-
-
-
-
-//        return null;
+        return new StringBuilder().append(enter.getId()).append(RandomUtils.nextInt(10000, 999999)).toString();
     }
 }

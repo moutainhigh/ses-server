@@ -13,15 +13,19 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.config.OssConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.date.DateUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -37,11 +41,12 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +59,12 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -80,13 +90,13 @@ public class InquiryServiceImpl implements InquiryService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Value("${Request.privateKey}")

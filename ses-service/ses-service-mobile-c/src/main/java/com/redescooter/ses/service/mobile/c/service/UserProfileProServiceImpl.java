@@ -1,19 +1,9 @@
 package com.redescooter.ses.service.mobile.c.service;
 
-import java.util.Date;
-import java.util.List;
-
-import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
-import com.redescooter.ses.api.hub.service.operation.CustomerService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
@@ -24,6 +14,15 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:test
@@ -41,9 +40,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     @Autowired
     private ConUserProfileService userProfileService;
 
-    @Reference
+    @DubboReference
     private CustomerService customerService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

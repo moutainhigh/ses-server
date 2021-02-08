@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerService opeCustomerService;
-    @Reference
+    @DubboReference
     private CityAppService cityAppService;
 
     /**

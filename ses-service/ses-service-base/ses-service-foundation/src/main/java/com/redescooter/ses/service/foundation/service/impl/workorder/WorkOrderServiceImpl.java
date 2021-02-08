@@ -8,7 +8,13 @@ import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.workorder.*;
+import com.redescooter.ses.api.common.vo.workorder.StatusFlowEnter;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderDetailResult;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderListEnter;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderListResult;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderLogResult;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderSaveOrUpdateEnter;
+import com.redescooter.ses.api.common.vo.workorder.workOrderReplyEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
@@ -24,8 +30,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +46,7 @@ import java.util.List;
  * @Date2020/12/4 15:43
  * @Version V1.0
  **/
-@Service
+@DubboService
 public class WorkOrderServiceImpl implements WorkOrderService {
 
     @Autowired
@@ -55,7 +61,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Autowired
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

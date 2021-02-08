@@ -48,29 +48,39 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private RosOutWhOrderService rosOutWhOrderService;
+
     @Resource
     private OutWarehouseOrderMapper outWarehouseOrderMapper;
+
     @Resource
     private OutWhScooterBMapper outWhScooterBMapper;
+
     @Resource
     private OutWhCombinBMapper outWhCombinBMapper;
+
     @Resource
     private OutWhPartsBMapper outWhPartsBMapper;
+
     @Resource
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+
     @Resource
     private OutWhouseOrderSerialBindMapper outWhouseOrderSerialBindMapper;
+
     @Resource
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
+
     @Resource
     private CombinationOrderService combinationOrderService;
+
     @Resource
     private ProductionPartsMapper partsMapper;
+
     @Resource
     private QcOrderMapper qcOrderMapper;
-
 
     @Override
     public Map<Integer, Integer> getOutWarehouseOrderTypeCount(GeneralEnter enter) {
@@ -87,7 +97,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 map.put(item.getValue(), 0);
             }
         }
-
         return map;
     }
 
@@ -108,7 +117,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 map.put(item.getType(), 0);
             }
         }
-
         return map;
     }
 
@@ -119,7 +127,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, outWarehouseOrderMapper.getOutWarehouseOrderList(paramDTO));
     }
 
@@ -146,12 +153,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isTrue(isExistsQcOrder > 0, ExceptionCodeEnums.QC_SUBMITTED.getCode(),
                 ExceptionCodeEnums.QC_SUBMITTED.getMessage());
 
-
         /**
          * 调用Chris生成出库质检单接口
          */
         rosOutWhOrderService.generatorQcOrderByOutBound(enter);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -239,7 +244,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 opeOutWhScooterB.setUpdatedBy(paramDTO.getUserId());
                 opeOutWhScooterB.setUpdatedTime(new Date());
                 outWhScooterBMapper.updateOutWhScooterB(opeOutWhScooterB);
-
                 break;
             case 2:
                 // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
@@ -255,7 +259,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 opeOutWhCombinB.setUpdatedBy(paramDTO.getUserId());
                 opeOutWhCombinB.setUpdatedTime(new Date());
                 outWhCombinBMapper.updateOutWhCombinB(opeOutWhCombinB);
-
                 break;
             default:
                 RpsAssert.isBlank(paramDTO.getPartsNo(), ExceptionCodeEnums.PARTS_NO_IS_EMPTY.getCode(),
@@ -286,7 +289,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                 opeOutWhPartsB.setUpdatedBy(paramDTO.getUserId());
                 opeOutWhPartsB.setUpdatedTime(new Date());
                 outWhPartsBMapper.updateOutWhPartsB(opeOutWhPartsB);
-
                 break;
         }
 
@@ -319,7 +321,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
             opeOutWhouseOrderSerialBind.setUpdatedTime(new Date());
             outWhouseOrderSerialBindMapper.insertOutWhouseOrderSerialBind(opeOutWhouseOrderSerialBind);
         }
-
         return new GeneralResult(paramDTO.getRequestId());
     }
 
@@ -409,7 +410,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
                     idEnter.setUserId(enter.getUserId());
                     combinationOrderService.generateCombinationOrderList(idEnter);
                 }
-
                 break;
         }
 
@@ -424,7 +424,6 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
          * 调用Aleks提交出库后的状态流转方法
          */
         rosOutWhOrderService.outWarehouse(enter);
-
         return new GeneralResult(enter.getRequestId());
     }
 

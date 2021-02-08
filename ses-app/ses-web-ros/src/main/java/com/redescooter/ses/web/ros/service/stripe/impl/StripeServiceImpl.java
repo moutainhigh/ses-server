@@ -9,7 +9,11 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PublicSecretResult;
+import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
@@ -19,7 +23,13 @@ import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePayOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpePayMchNotifyService;
+import com.redescooter.ses.web.ros.service.base.OpePayOrderService;
+import com.redescooter.ses.web.ros.service.base.OpePayReceiptService;
+import com.redescooter.ses.web.ros.service.base.OpeRefundOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeTradePayRecordService;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import com.stripe.Stripe;
 import com.stripe.model.Event;
@@ -31,7 +41,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -82,13 +92,13 @@ public class StripeServiceImpl implements StripeService {
     @Autowired
     private OpeTradePayRecordService opeTradePayRecordService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     @Value("${Request.privateKey}")
     private String privatekey;

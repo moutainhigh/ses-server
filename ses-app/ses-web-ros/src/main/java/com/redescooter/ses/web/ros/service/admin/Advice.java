@@ -51,7 +51,7 @@ public class Advice {
     @Autowired
     private StaffServiceMapper staffServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

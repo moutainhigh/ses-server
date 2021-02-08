@@ -1,11 +1,18 @@
 package com.redescooter.ses.service.scooter.config.emqx;
 
 import com.alibaba.fastjson.JSONObject;
-import com.redescooter.ses.api.scooter.service.*;
-import com.redescooter.ses.api.scooter.vo.emqx.*;
+import com.redescooter.ses.api.scooter.service.ScooterAllReportedService;
+import com.redescooter.ses.api.scooter.service.ScooterBbiService;
+import com.redescooter.ses.api.scooter.service.ScooterEcuService;
+import com.redescooter.ses.api.scooter.service.ScooterMcuService;
+import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterAllReportedDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterBbiReportedDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuReportedDTO;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 
@@ -18,15 +25,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScooterDataReportedComponent {
 
-    @Reference
+    @DubboReference
     private ScooterEcuService scooterEcuService;
-    @Reference
+    @DubboReference
     private ScooterBbiService scooterBbiService;
-    @Reference
+    @DubboReference
     private ScooterMcuService scooterMcuService;
-    @Reference
+    @DubboReference
     private ScooterAllReportedService scooterAllReportedService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
 

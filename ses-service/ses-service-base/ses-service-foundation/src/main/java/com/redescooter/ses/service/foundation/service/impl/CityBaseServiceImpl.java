@@ -40,7 +40,7 @@ public class CityBaseServiceImpl implements CityBaseService {
     @Autowired
     private PlaCityMapper cityMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

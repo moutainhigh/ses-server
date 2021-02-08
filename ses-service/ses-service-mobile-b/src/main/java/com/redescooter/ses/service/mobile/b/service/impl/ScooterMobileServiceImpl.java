@@ -21,7 +21,7 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,19 +47,19 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
     @Autowired
     private ScooterMobileServiceMapper scooterMobileServiceMapper;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private CusotmerScooterService cusotmerScooterService;
 
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
 
     /**

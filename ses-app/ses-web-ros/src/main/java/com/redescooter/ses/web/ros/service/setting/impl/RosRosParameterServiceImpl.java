@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @Service
 public class RosRosParameterServiceImpl implements RosParameterService {
 
-    @Reference
+    @DubboReference
     private ParameterSettingService parameterSettingService;
 
     @Autowired

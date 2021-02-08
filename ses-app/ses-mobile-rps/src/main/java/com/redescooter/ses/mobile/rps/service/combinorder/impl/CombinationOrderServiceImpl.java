@@ -57,41 +57,57 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     @DubboReference
     private RosCombinOrderService rosCombinOrderService;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @Autowired
     private CombinationOrderMapper combinationOrderMapper;
+
     @Autowired
     private CombinationListScooterMapper combinationListScooterMapper;
+
     @Autowired
     private CombinationListCombinMapper combinationListCombinMapper;
+
     @Autowired
     private CombinationListRelationPartsMapper combinationListRelationPartsMapper;
+
     @Autowired
     private CombinationListPartsSerialBindMapper combinationListPartsSerialBindMapper;
+
     @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
+
     @Autowired
     private ProductionCombinBomMapper combinBomMapper;
+
     @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
+
     @Autowired
     private OpeCombinOrderScooterBMapper opeCombinOrderScooterBMapper;
+
     @Autowired
     private OpeCombinOrderCombinBMapper opeCombinOrderCombinBMapper;
+
     @Autowired
     private OpeProductionPartsRelationMapper opeProductionPartsRelationMapper;
+
     @Autowired
     private ProductionPartsMapper productionPartsMapper;
+
     @Autowired
     private OpeOrderSerialBindService opeOrderSerialBindService;
+
     @Autowired
     private ProductionPartsMapper partsMapper;
+
     @Autowired
     private QcOrderMapper qcOrderMapper;
-
 
     @Override
     public Map<Integer, Integer> getCombinationOrderTypeCount(GeneralEnter enter) {
@@ -119,7 +135,6 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, combinationOrderMapper.getCombinationOrderList(paramDTO));
     }
 
@@ -215,7 +230,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
         // ECU仪表必须要传递蓝牙mac地址
         RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeCombinListRelationParts.getPartsType())
-                && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
+                        && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
         /**
@@ -230,9 +245,9 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
             opeCombinListRelationParts.setScanCodeQty(opeCombinListRelationParts.getScanCodeQty() + qty);
         } else {
             // 无码部件输入数量必须跟所需数量一致
-            RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()),ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
+            RpsAssert.isTrue(!qty.equals(opeCombinListRelationParts.getQty()), ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
                     ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
-            RpsAssert.isTrue(opeCombinListRelationParts.getScanCodeQty() > 0,ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
+            RpsAssert.isTrue(opeCombinListRelationParts.getScanCodeQty() > 0, ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(),
                     ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
 
             opeCombinListRelationParts.setScanCodeQty(qty);
@@ -383,6 +398,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult submitQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = combinationOrderMapper.getCombinationOrderById(enter.getId());
         RpsAssert.isNull(opeCombinOrder, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
@@ -494,7 +510,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                     List<OpeProductionPartsRelation> opeProductionPartsRelationList = opeProductionPartsRelationMapper
                             .selectList(partsRelationQueryWrapper);
 
-                    for (int j = 0; j < opeCombinOrderCombinList.get(i).getQty(); j ++) {
+                    for (int j = 0; j < opeCombinOrderCombinList.get(i).getQty(); j++) {
                         OpeCombinListCombinB opeCombinListCombinB = new OpeCombinListCombinB();
                         Long combinListCombinId = idAppService.getId(SequenceName.OPE_COMBIN_LIST_COMBIN_B);
                         opeCombinListCombinB.setId(combinListCombinId);
@@ -533,10 +549,11 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     /**
      * 组装组装单清单关联部件信息
+     *
      * @param opeProductionPartsRelationList
-     * @param userId 用户id
-     * @param relationId 组装清单表id
-     * @param relationType 组装清单表类型 1车辆 2组装件
+     * @param userId                         用户id
+     * @param relationId                     组装清单表id
+     * @param relationType                   组装清单表类型 1车辆 2组装件
      * @return
      */
     private List<OpeCombinListRelationParts> buildCombinListRelationParts(List<OpeProductionPartsRelation> opeProductionPartsRelationList,
@@ -564,12 +581,12 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
             opeCombinListRelationParts.setUpdatedTime(new Date());
             opeCombinListRelationPartsList.add(opeCombinListRelationParts);
         }
-
         return opeCombinListRelationPartsList;
     }
 
     /**
      * 获取车辆、组装件组装所需部件总数
+     *
      * @param opeProductionPartsRelationList
      * @return
      */
@@ -583,6 +600,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     /**
      * 获取产品序列号
+     *
      * @param productType 产品类型 1车辆 2组装件
      * @return
      */
@@ -610,6 +628,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     /**
      * 生成产品序列号
+     *
      * @param productType 产品类型 1车辆 2组装件
      * @return
      */
@@ -617,7 +636,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         Calendar cal = Calendar.getInstance();
         // 年、月、日
         String year = String.valueOf(cal.get(Calendar.YEAR));
-        int month = cal.get(Calendar.MONTH ) + 1;
+        int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         String productRange = null;
@@ -653,12 +672,12 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
         String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
         sb.append(number);
-
         return sb.toString();
     }
 
     /**
      * 获取产品批次号
+     *
      * @param combinationId 组装单id
      * @return
      */
@@ -666,7 +685,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         Calendar cal = Calendar.getInstance();
         // 年、月、日
         int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH ) + 1;
+        int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
         /**
@@ -696,12 +715,12 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         sb.append(day);
         // index + 1,下标是从0开始的
         sb.append(getNumber(index + 1));
-
         return sb.toString();
     }
 
     /**
      * 获取流水号
+     *
      * @param index
      * @return
      */
@@ -714,7 +733,6 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         } else {
             number = String.valueOf(index);
         }
-
         return number;
     }
 

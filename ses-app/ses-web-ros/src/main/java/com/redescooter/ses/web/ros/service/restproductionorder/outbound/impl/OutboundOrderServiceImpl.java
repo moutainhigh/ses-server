@@ -170,7 +170,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

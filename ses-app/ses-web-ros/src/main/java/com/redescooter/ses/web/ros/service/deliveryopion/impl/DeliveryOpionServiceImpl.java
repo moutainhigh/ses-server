@@ -32,7 +32,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
     @Autowired
     private OpeDeliveryOptionService deliveryOptionService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

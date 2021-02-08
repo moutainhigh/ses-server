@@ -14,8 +14,8 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -29,14 +29,16 @@ import java.util.List;
  * @Version：1.3
  * @create: 2019/12/29 16:15
  */
-@Service
+@DubboService
 public class DeliveryTraceServiceImpl implements DeliveryTraceService {
 
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
+
     @Autowired
     private IdAppService idAppService;
-    @Reference
+
+    @DubboReference
     private ScooterService scooterService;
 
     /**

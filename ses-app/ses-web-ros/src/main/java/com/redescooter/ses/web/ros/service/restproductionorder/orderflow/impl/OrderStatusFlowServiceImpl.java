@@ -44,7 +44,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     @Autowired
     private OpeSysStaffService opeSysStaffService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

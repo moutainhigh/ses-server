@@ -50,7 +50,7 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Autowired
     private OpeRegionalPriceSheetHistoryService opeRegionalPriceSheetHistoryService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

@@ -61,7 +61,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
     @Resource
     private OpeSpecificatTypeService opeSpecificatTypeService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     @Autowired
     private SpecificatDefService specificatDefService;

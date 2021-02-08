@@ -6,7 +6,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeOpTrace;
 import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +21,11 @@ import java.util.Date;
 @Service
 public class OpTraceServiceImpl implements OpTraceService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
+
     @Resource
     private OpTraceMapper opTraceMapper;
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -42,7 +42,6 @@ public class OpTraceServiceImpl implements OpTraceService {
                 .updatedBy(userId)
                 .updatedTime(new Date())
                 .build();
-
         return opTraceMapper.insertOpTrace(opeOpTrace);
     }
 }

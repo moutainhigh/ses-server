@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 @Service
 public class RosGroupServiceImpl implements RosGroupService {
 
-    @Reference
+    @DubboReference
     private GroupSettingService groupSettingService;
 
     @Autowired

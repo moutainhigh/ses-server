@@ -41,28 +41,34 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private RosEntrustOrderService rosEntrustOrderService;
+
     @Resource
     private EntrustOrderMapper entrustOrderMapper;
+
     @Resource
     private EntrustScooterBMapper entrustScooterBMapper;
+
     @Resource
     private EntrustCombinBMapper entrustCombinBMapper;
+
     @Resource
     private EntrustPartsBMapper entrustPartsBMapper;
+
     @Resource
     private EntrustProductSerialNumMapper entrustProductSerialNumMapper;
+
     @Resource
     private OpeLogisticsOrderMapper opeLogisticsOrderMapper;
+
     @Resource
     private ProductionPartsMapper partsMapper;
-
 
     @Override
     public Map<Integer, Integer> getEntrustOrderTypeCount(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResults = entrustOrderMapper.getEntrustOrderTypeCount();
-
         /**
          * {entrustType, totalCount}
          */
@@ -75,7 +81,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 resultMap.put(item.getValue(), 0);
             }
         }
-
         return resultMap;
     }
 
@@ -86,7 +91,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, entrustOrderMapper.getEntrustOrderList(paramDTO));
     }
 
@@ -114,7 +118,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         }
 
         entrustOrderDetail.setProductList(productList);
-
         return entrustOrderDetail;
     }
 
@@ -313,7 +316,6 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
             entrustProductSerialNum.setUpdatedTime(new Date());
             entrustProductSerialNumMapper.insertEntrustProductSerialNum(entrustProductSerialNum);
         }
-
         return new GeneralResult(paramDTO.getRequestId());
     }
 

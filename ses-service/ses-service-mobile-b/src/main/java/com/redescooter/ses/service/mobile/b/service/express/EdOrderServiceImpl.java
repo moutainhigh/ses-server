@@ -49,13 +49,14 @@ import com.redescooter.ses.service.mobile.b.service.base.CorTenantScooterService
 import com.redescooter.ses.service.mobile.b.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
@@ -71,15 +72,15 @@ import java.util.Map;
 @Service
 public class EdOrderServiceImpl implements EdOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
-    @Reference
+    @DubboReference
     private PushService pushService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
     @Resource
     private EdOrderServiceMapper edOrderServiceMapper;

@@ -129,7 +129,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

@@ -36,7 +36,7 @@ public class EdDasboardServiceImpl implements EdDasboardService {
     @Autowired
     private OrderStatisticsServiceMapper orderStatisticsServiceMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
     /**

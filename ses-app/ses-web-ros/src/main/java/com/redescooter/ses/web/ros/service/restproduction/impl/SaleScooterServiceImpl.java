@@ -24,15 +24,12 @@ import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.statement.select.Wait;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +52,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Autowired
     private OpeSaleScooterService opeSaleScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -69,9 +66,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
     @Autowired
     private OpeSalePartsService opeSalePartsService;
-
-
-
 
     @Override
     public GeneralResult saveSaleScooter(SaleScooterSaveOrUpdateEnter enter) {

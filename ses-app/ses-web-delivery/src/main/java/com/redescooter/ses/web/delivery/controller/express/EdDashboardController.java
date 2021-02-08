@@ -3,13 +3,23 @@ package com.redescooter.ses.web.delivery.controller.express;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.delivery.service.express.EdDasboardService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
+import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
+import com.redescooter.ses.web.delivery.vo.TopTenEnter;
+import com.redescooter.ses.web.delivery.vo.TopTenResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +37,7 @@ import java.util.Map;
 @RequestMapping(value = "/ed/dashboard", method = RequestMethod.POST)
 public class EdDashboardController {
 
-    @Reference
+    @DubboReference
     private EdDasboardService edDasboardService;
 
     @PostMapping(value = "/todayCountByStatus")

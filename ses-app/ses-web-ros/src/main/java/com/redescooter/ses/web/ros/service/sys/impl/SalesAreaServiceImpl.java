@@ -32,7 +32,7 @@ public class SalesAreaServiceImpl implements SalesAreaService {
     @Autowired
     private OpeSysRoleSalesCidyService sysRoleSalesCidyService;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
     @Override

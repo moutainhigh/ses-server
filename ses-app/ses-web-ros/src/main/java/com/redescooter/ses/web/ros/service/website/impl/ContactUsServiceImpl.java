@@ -29,11 +29,18 @@ import com.redescooter.ses.web.ros.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsDetailResult;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsEnter;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryReplyResult;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryResult;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsListEnter;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsListResult;
+import com.redescooter.ses.web.ros.vo.customer.ContactUsMessageEnter;
 import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.BeanUtils;
@@ -49,7 +56,12 @@ import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassNameContactUsServiceImpl
@@ -71,16 +83,16 @@ public class ContactUsServiceImpl implements ContactUsService {
     @Autowired
     private ContactUsMapper contactUsMapper;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
     private ContactUsTraceService contactUsTraceService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     @Autowired

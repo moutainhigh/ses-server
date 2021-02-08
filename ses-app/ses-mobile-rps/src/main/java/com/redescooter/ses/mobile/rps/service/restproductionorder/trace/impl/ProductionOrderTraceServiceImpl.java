@@ -34,6 +34,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
 
     @Autowired
     private OpeOpTraceService opeOpTraceService;
+
     @Autowired
     private OpeSysStaffService opeSysStaffService;
 
@@ -41,13 +42,13 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     private IdAppService idAppService;
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 14:25
      * @Param: enter
      * @Return:
      * @desc:
-     * @param enter
      */
     @Override
     public List<OpTraceResult> list(GeneralEnter enter) {
@@ -73,13 +74,13 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 14:48
      * @Param: enter
      * @Return: OpeOpTrace
      * @desc: 根据业务查询操作记录
-     * @param enter
      */
     @Override
     public List<OpTraceResult> listByBussId(ListByBussIdEnter enter) {
@@ -106,13 +107,13 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 14:49
      * @Param: enter
      * @Return: OpeOpTrace
      * @desc: 详情
-     * @param enter
      */
     @Override
     public OpTraceResult detail(IdEnter enter) {
@@ -131,15 +132,15 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 14:49
      * @Param: enter
      * @Return: OpeOpTrace
      * @desc: 保存操作记录
-     * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOpTraceEnter enter) {
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();

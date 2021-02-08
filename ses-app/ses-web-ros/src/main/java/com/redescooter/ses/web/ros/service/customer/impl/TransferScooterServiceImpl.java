@@ -41,18 +41,28 @@ import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
+import com.redescooter.ses.web.ros.vo.customer.TransferScooterListEnter;
 import com.redescooter.ses.web.ros.vo.transferscooter.ChooseScooterListResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +83,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
     @Autowired
@@ -82,16 +92,16 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockService opeStockService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private CorporateScooterService corporateScooterService;
 
-    @Reference
+    @DubboReference
     private CusotmerScooterService cusotmerScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

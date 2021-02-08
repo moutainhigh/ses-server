@@ -6,8 +6,8 @@ import com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDetailDTO;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionUpdateLogMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -18,12 +18,12 @@ import java.util.List;
  * @author assert
  * @date 2020/12/27 17:27
  */
-@Service
+@DubboService
 public class AppVersionUpdateLogServiceImpl implements AppVersionUpdateLogService {
 
     @Resource
     private AppVersionUpdateLogMapper appVersionUpdateLogMapper;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

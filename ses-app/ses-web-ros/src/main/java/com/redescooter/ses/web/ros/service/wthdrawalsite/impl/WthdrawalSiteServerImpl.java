@@ -16,7 +16,7 @@ import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteSaveEnter;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.isSwitchEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
     @Autowired
     private OpeWithdrawalSiteService withdrawalSiteService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

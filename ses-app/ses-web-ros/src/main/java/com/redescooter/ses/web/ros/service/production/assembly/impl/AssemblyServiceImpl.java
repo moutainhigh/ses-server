@@ -147,7 +147,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Autowired
     private OpeAssemblyQcItemService opeAssemblyQcItemService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

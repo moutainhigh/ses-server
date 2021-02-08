@@ -9,14 +9,19 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
-import com.redescooter.ses.api.scooter.service.*;
+import com.redescooter.ses.api.scooter.service.ScooterAllReportedService;
+import com.redescooter.ses.api.scooter.service.ScooterBbiService;
+import com.redescooter.ses.api.scooter.service.ScooterEcuService;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
+import com.redescooter.ses.api.scooter.service.ScooterMcuService;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterAllReportedDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -26,22 +31,22 @@ import javax.annotation.Resource;
  * @date 2020/11/23 14:57
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterAllReportedServiceImpl implements ScooterAllReportedService {
 
-    @Reference
+    @DubboReference
     private ScooterEcuService scooterEcuService;
-    @Reference
+    @DubboReference
     private ScooterBbiService scooterBbiService;
-    @Reference
+    @DubboReference
     private ScooterMcuService scooterMcuService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private MeterService meterService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
     @Resource
     private TransactionTemplate transactionTemplate;

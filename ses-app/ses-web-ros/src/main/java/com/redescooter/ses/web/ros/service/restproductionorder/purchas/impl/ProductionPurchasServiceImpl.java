@@ -185,7 +185,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Autowired
     private OpeProductionCombinBomService opeProductionCombinBomService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

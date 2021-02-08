@@ -90,7 +90,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     @Autowired
     private OpeProductionPartsDraftService opeProductionPartsDraftService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired

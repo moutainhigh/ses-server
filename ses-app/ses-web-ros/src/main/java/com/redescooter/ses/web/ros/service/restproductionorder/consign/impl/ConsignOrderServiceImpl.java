@@ -77,7 +77,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnt
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -155,7 +155,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Autowired
     private OpeSysStaffService opeSysStaffService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     @Autowired
@@ -182,7 +182,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Autowired
     private OpeWmsPartsStockMapper opeWmsPartsStockMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
