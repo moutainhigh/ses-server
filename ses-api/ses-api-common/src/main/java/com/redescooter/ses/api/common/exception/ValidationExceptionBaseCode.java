@@ -51,5 +51,7 @@ public interface ValidationExceptionBaseCode {
     int RELEASE_TYPE_IS_EMPTY = 10031;
     // 应用类型为空
     int APP_TYPE_IS_EMPTY = 10032;
+    //邮件模板编号不能为空
+    int MAIL_TEMPLATE_NUMBER_IS_EMPTY = 10034;
 
 }

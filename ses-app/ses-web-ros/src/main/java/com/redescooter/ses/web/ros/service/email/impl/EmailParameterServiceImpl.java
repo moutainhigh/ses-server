@@ -1,9 +1,12 @@
 package com.redescooter.ses.web.ros.service.email.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
 import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
+import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
 import com.redescooter.ses.web.ros.service.email.EmailParameterService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jerry
@@ -38,13 +42,24 @@ public class EmailParameterServiceImpl implements EmailParameterService {
     }
 
     /**
+     * 删除邮件参数
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public GeneralResult delete(IdEnter enter) {
+        return mailTemplateManageService.deleteParameter(enter);
+    }
+
+    /**
      * 邮件模板参数列表
      *
      * @param enter
      * @return
      */
     @Override
-    public List<MailConfigOfTermResult> list(IntEnter enter) {
-        return mailTemplateManageService.list(enter);
+    public MailTemplateConfigResult list(QueryMailConfigEnter enter) {
+        return mailTemplateManageService.listParameter(enter);
     }
 }

@@ -1,10 +1,12 @@
 package com.redescooter.ses.web.ros.controller.email;
 
-import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
+import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
 import com.redescooter.ses.web.ros.service.email.EmailParameterService;
 import io.swagger.annotations.Api;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jerry
@@ -31,14 +34,21 @@ public class EmailParameterController {
 
     @ApiOperation(value = "保存邮件参数", response = GeneralResult.class)
     @PostMapping(value = "/save")
-    @AvoidDuplicateSubmit
     public Response<GeneralResult> save(@RequestBody @ApiParam("请求参数") SaveMailConfigEnter enter) {
         return new Response<>(emailParameterService.save(enter));
     }
 
+    @ApiOperation(value = "删除邮件参数", response = GeneralResult.class)
+    @PostMapping(value = "/delete")
+    public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(emailParameterService.delete(enter));
+    }
+
     @PostMapping(value = "/list")
-    @ApiOperation(value = "邮件参数列表", response = MailConfigOfTermResult.class)
-    public Response<List<MailConfigOfTermResult>> list(@ModelAttribute @ApiParam("请求参数") IntEnter enter) {
+    @ApiOperation(value = "邮件参数列表", response = MailTemplateConfigResult.class)
+    public Response<MailTemplateConfigResult> list(@ModelAttribute @ApiParam("请求参数") QueryMailConfigEnter enter) {
         return new Response<>(emailParameterService.list(enter));
     }
+
+
 }

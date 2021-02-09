@@ -4,12 +4,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.common.vo.email.EmailListEnter;
-import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
-import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
-import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
-import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
+import com.redescooter.ses.api.foundation.vo.mail.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mr.lijiating
@@ -53,10 +51,18 @@ public interface MailTemplateManageService {
     GeneralResult saveParameter(SaveMailConfigEnter enter);
 
     /**
+     * 删除邮件参数
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteParameter(IdEnter enter);
+
+    /**
      * 邮件模板参数列表
      *
      * @param enter
      * @return
      */
-    List<MailConfigOfTermResult> list(IntEnter enter);
+    MailTemplateConfigResult listParameter(QueryMailConfigEnter enter);
+
 }
