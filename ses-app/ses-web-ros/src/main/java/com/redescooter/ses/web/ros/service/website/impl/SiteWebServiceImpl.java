@@ -47,7 +47,6 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-
     @Autowired
     private MondayService mondayService;
 
@@ -61,7 +60,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
      * 官网的订单数据同步到ROS中
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         BeanUtils.copyProperties(enter, inquiry);
@@ -153,11 +152,11 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
 
     /**
      * 官网订单支付之后调用的 不管支付成功还是失败  都要调用
+     *
      * @param enter
      */
     @Override
     public void siteWebInquiryPay(SiteWebInquiryPayEnter enter) {
-
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
         if (inquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());

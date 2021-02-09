@@ -74,6 +74,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TransferScooterServiceImpl implements TransferScooterService {
+
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
 
@@ -104,7 +105,6 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @DubboReference
     private IdAppService idAppService;
 
-
     /**
      * 车辆用户分配信息
      *
@@ -120,17 +120,16 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         // 查询是否有库存
         List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().eq(OpeStockProdProduct::getStatus,
-                StockProductPartStatusEnums.AVAILABLE.getValue()).eq(OpeStockProdProduct::getDr,0));
-        if (CollectionUtils.isEmpty(opeStockProdProductList)){
-            scooterCustomerResults.forEach(item->{
+                StockProductPartStatusEnums.AVAILABLE.getValue()).eq(OpeStockProdProduct::getDr, 0));
+        if (CollectionUtils.isEmpty(opeStockProdProductList)) {
+            scooterCustomerResults.forEach(item -> {
                 item.setHasProductStock(Boolean.FALSE);
             });
-        }else {
-            scooterCustomerResults.forEach(item->{
+        } else {
+            scooterCustomerResults.forEach(item -> {
                 item.setHasProductStock(Boolean.TRUE);
             });
         }
-
         return PageResult.create(enter, count, scooterCustomerResults);
     }
 
@@ -184,7 +183,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult transferScooter(TransferScooterEnter enter) {
 
@@ -209,7 +208,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             numberPlate
                     .append(transferScooterListEnter.getNumberPlate().substring(0, 2)).
                     append("-").
-                    append(transferScooterListEnter.getNumberPlate().substring(2,transferScooterListEnter.getNumberPlate().length() - 2))
+                    append(transferScooterListEnter.getNumberPlate().substring(2, transferScooterListEnter.getNumberPlate().length() - 2))
                     .append("-")
                     .append(transferScooterListEnter.getNumberPlate().substring(transferScooterListEnter.getNumberPlate().length() - 2));
             transferScooterListEnter.setNumberPlate(numberPlate.toString());
@@ -229,7 +228,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //验证前端输入的车辆数量
         if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
-            if ((opeCustomer.getScooterQuantity()-opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
+            if ((opeCustomer.getScooterQuantity() - opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
         }
@@ -283,7 +282,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //查询库存
         Collection<OpeStock> opeStockList =
                 opeStockService.listByIds(opeStockProdProductList.stream().map(OpeStockProdProduct::getStockId).collect(Collectors.toList()));
-        if(CollectionUtils.isEmpty(opeStockList)){
+        if (CollectionUtils.isEmpty(opeStockList)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -384,7 +383,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         HubSaveScooterEnter scooterEnter = HubSaveScooterEnter.builder()
                 .scooterId(item.getId())
                 .model(ScooterModelEnums.SCOOTER_125_CC.getValue())
-            .longitude(MapUtil.randomLonLat(Constant.lng)).latitude(MapUtil.randomLonLat(Constant.lng))
+                .longitude(MapUtil.randomLonLat(Constant.lng)).latitude(MapUtil.randomLonLat(Constant.lng))
                 .licensePlate(item.getNumberPlate())
                 .licensePlatePicture(null)
                 .status(ScooterStatusEnums.AVAILABLE.getValue())

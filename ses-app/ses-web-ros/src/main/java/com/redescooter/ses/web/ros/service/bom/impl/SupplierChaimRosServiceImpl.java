@@ -37,8 +37,8 @@ import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -82,7 +82,6 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
 
     @Autowired
     private OpeProductPriceHistoryService opeProductPriceHistoryService;
-
 
     @DubboReference
     private IdAppService idAppService;
@@ -131,9 +130,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<SupplierChaimListResult> supplierChaimListResultList =
-            supplierChaimRosServiceMapper.supplierChaimList(enter);
-
+        List<SupplierChaimListResult> supplierChaimListResultList = supplierChaimRosServiceMapper.supplierChaimList(enter);
         supplierChaimListResultList.forEach(item -> {
             // 产品类型
             item.setType(BomCommonTypeEnums.getEnumsByValue(item.getTypeId()).getCode());
@@ -152,7 +149,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      * @date: 2020/2/25 15:42
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editProductPrice(EditProductPriceEnter enter) {
         OpeProductionParts opeProductionParts = opeProductionPartsService.getById(enter.getId());

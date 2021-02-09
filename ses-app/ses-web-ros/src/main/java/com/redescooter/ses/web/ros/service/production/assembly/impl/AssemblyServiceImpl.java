@@ -93,10 +93,10 @@ import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -309,9 +309,9 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
-        
+
         //剔除掉可用库存为0的库存数据
-        opeStockList.removeIf(item->item.getAvailableTotal()==0);
+        opeStockList.removeIf(item -> item.getAvailableTotal() == 0);
 
         flag1:
         for (Map.Entry<Long, List<OpePartsProductB>> entry : productMap.entrySet()) {
@@ -335,7 +335,7 @@ public class AssemblyServiceImpl implements AssemblyService {
                             if (canAss < maxTotal) {
                                 maxTotal = canAss;
                             }
-                            if (canAss!=0){
+                            if (canAss != 0) {
                                 total++;
                                 continue flag2;
                             }
@@ -442,7 +442,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAssembly(SaveAssemblyEnter enter) {
         // 出库单信息保存
@@ -468,7 +468,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
         if (CollectionUtils.isEmpty(productList)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_PRODUCT_IS_EMPTY.getCode(),
-                ExceptionCodeEnums.ASSEMBLY_PRODUCT_IS_EMPTY.getMessage());
+                    ExceptionCodeEnums.ASSEMBLY_PRODUCT_IS_EMPTY.getMessage());
         }
         //收货人、代工厂校验
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
@@ -838,26 +838,26 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public void export(IdEnter enter) {
         AssemblyResult assemblyResult = assemblyServiceMapper.detail(enter);
-        if(assemblyResult == null){
+        if (assemblyResult == null) {
             throw new SesWebRosException(0, "");
         }
-        AssemblyExportResult  assemblyExportResult = new AssemblyExportResult();
-        BeanUtil.copyProperties(assemblyResult,assemblyExportResult);
-        if(assemblyResult.getCreatedTime() != null){
+        AssemblyExportResult assemblyExportResult = new AssemblyExportResult();
+        BeanUtil.copyProperties(assemblyResult, assemblyExportResult);
+        if (assemblyResult.getCreatedTime() != null) {
             assemblyExportResult.setCreatedTime(DateUtil.getYmdhm(assemblyResult.getCreatedTime()));
-        }else {
+        } else {
             assemblyExportResult.setCreatedTime("--");
         }
-        if(assemblyResult.getStatementDate() != null){
+        if (assemblyResult.getStatementDate() != null) {
             assemblyExportResult.setStatementDate(DateUtil.getYmdhm(assemblyResult.getStatementDate()));
-        }else {
+        } else {
             assemblyExportResult.setStatementDate("--");
         }
         List<AssemblyExportResult> list = new ArrayList<>();
         list.add(assemblyExportResult);
-        try{
+        try {
             response.setHeader("content-Type", "application/vnd.ms-excel");
-            response.setHeader("Content-Disposition", "attachment;filename="+System.currentTimeMillis()+".xls");
+            response.setHeader("Content-Disposition", "attachment;filename=" + System.currentTimeMillis() + ".xls");
             ExportParams exportParams = new ExportParams();
             exportParams.setSheetName("组装单信息");
             Workbook workbook = ExcelExportUtil.exportExcel(exportParams, AssemblyExportResult.class, list);
@@ -873,7 +873,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setPaymentAssembly(SetPaymentAssemblyEnter enter) {
 
@@ -1022,7 +1022,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancle(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
@@ -1055,7 +1055,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startPrepare(StartPrepareEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
@@ -1083,7 +1083,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startAssembly(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
@@ -1110,7 +1110,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.ASSEMBLING.getValue());
@@ -1137,7 +1137,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult completeQc(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
@@ -1164,7 +1164,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC_PASSED.getValue());
@@ -1291,7 +1291,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
@@ -1353,7 +1353,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpeAssemblyOrderPayment opeAssemblyOrderPayment = opeAssemblyOrderPaymentService.getById(enter.getId());

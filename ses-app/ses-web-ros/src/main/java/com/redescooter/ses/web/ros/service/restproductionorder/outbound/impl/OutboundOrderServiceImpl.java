@@ -266,6 +266,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         opeOutWhouseOrderService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -381,7 +382,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @Return: GeneralResult
      * @desc: 保存
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOutboundOrderEnter enter) {
         OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getUserId());
@@ -724,7 +725,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outOrderSave(SaveOrUpdateOutOrderEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -771,7 +772,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outOrderEdit(SaveOrUpdateOutOrderEnter enter) {
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (outWhouseOrder == null) {
@@ -942,7 +943,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outWhConfirm(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -1261,7 +1262,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * 模拟ROS开始质检
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult startQc(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -1282,7 +1283,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * 模拟ROS结束质检
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult endQc(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -1323,7 +1324,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @param combinId
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createOutWhByCombin(Long combinId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinId);
         if (opeCombinOrder == null) {

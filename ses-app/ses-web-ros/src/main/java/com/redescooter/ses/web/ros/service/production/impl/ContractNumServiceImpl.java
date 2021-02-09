@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.service.production.impl;
 
 import com.redescooter.ses.web.ros.service.production.ContractNumService;
-import org.apache.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 /**
  * @ClassName:ContractNumServiceImpl

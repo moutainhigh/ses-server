@@ -95,10 +95,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -182,7 +182,6 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
-
 
 
     /**
@@ -291,7 +290,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param savePurchasingEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SavePurchasingEnter savePurchasingEnter) {
         // savePurchasingEnter参数值去空格
@@ -546,7 +545,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpePurchasPayment opePurchasPayment = opePurchasPaymentService.getById(enter.getId());
@@ -843,7 +842,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter) {
         List<SaveSupplierAnnexEnter> saveSupplierAnnexList = null;
@@ -916,7 +915,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.PENDING);
@@ -1063,7 +1062,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePurchasingNode(SaveNodeEnter enter) {
         opePurchasTraceService.save(OpePurchasTrace.builder().id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
@@ -1080,7 +1079,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.PENDING);

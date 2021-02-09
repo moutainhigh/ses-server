@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SaleAreaServiceImpl implements SaleAreaService {
 
-
     @DubboReference
     private IdAppService idAppService;
 
@@ -57,10 +56,11 @@ public class SaleAreaServiceImpl implements SaleAreaService {
     private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saleAreaSave(SaleAreaSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeSaleArea saleArea = new OpeSaleArea();
-        BeanUtils.copyProperties(enter,saleArea);
+        BeanUtils.copyProperties(enter, saleArea);
         saleArea.setId(idAppService.getId(SequenceName.OPE_SALE_AREA));
         saleArea.setUpdatedBy(enter.getUserId());
         saleArea.setUpdateTime(new Date());
@@ -70,32 +70,32 @@ public class SaleAreaServiceImpl implements SaleAreaService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saleAreaDetele(SaleAreaOpEnter enter) {
         opeSaleAreaService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
-
     @Override
     public List<SaleCityTreeResult> roleAreaAuthShow(RoleOpEnter enter) {
         List<SaleCityTreeResult> list = new ArrayList<>();
         List<OpeSaleArea> areaList = opeSaleAreaService.list();
-        if(CollectionUtils.isNotEmpty(areaList)){
+        if (CollectionUtils.isNotEmpty(areaList)) {
             for (OpeSaleArea area : areaList) {
                 SaleCityTreeResult result = new SaleCityTreeResult();
-                BeanUtils.copyProperties(area,result);
+                BeanUtils.copyProperties(area, result);
                 result.setSaleCityId(area.getId());
                 result.setPId(area.getPId());
                 list.add(result);
             }
             // 查找当前角色已经有的区域权限
             QueryWrapper<OpeSysRoleSalesCidy> qw = new QueryWrapper<>();
-            qw.eq(OpeSysRoleSalesCidy.COL_ROLE_ID,enter.getId());
-            List<OpeSysRoleSalesCidy>  roleSalesCidyList = opeSysRoleSalesCidyService.list(qw);
-            if(CollectionUtils.isNotEmpty(roleSalesCidyList)){
+            qw.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, enter.getId());
+            List<OpeSysRoleSalesCidy> roleSalesCidyList = opeSysRoleSalesCidyService.list(qw);
+            if (CollectionUtils.isNotEmpty(roleSalesCidyList)) {
                 List<Long> cityIds = roleSalesCidyList.stream().map(OpeSysRoleSalesCidy::getCityId).collect(Collectors.toList());
                 for (SaleCityTreeResult result : list) {
-                    if(cityIds.contains(result.getSaleCityId())){
+                    if (cityIds.contains(result.getSaleCityId())) {
                         result.setChecked(true);
                     }
                 }
@@ -106,15 +106,15 @@ public class SaleAreaServiceImpl implements SaleAreaService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult roleAreaAuth(RoleAreaEnter enter) {
         // 销售区域  先删除当前角色下面的已经有的区域
         QueryWrapper<OpeSysRoleSalesCidy> qw = new QueryWrapper<>();
-        qw.eq(OpeSysRoleSalesCidy.COL_ROLE_ID,enter.getRoleId());
+        qw.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, enter.getRoleId());
         opeSysRoleSalesCidyService.remove(qw);
         // 再保存新的区域
-        if(!Strings.isNullOrEmpty(enter.getSaleCityIds())){
-           List<OpeSysRoleSalesCidy>  update = new ArrayList<>();
+        if (!Strings.isNullOrEmpty(enter.getSaleCityIds())) {
+            List<OpeSysRoleSalesCidy> update = new ArrayList<>();
             for (String s : enter.getSaleCityIds().split(",")) {
                 OpeSysRoleSalesCidy salesCidy = new OpeSysRoleSalesCidy();
                 salesCidy.setCityId(Long.valueOf(s));

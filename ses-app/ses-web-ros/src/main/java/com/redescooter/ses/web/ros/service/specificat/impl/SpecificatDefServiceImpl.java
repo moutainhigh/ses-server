@@ -35,6 +35,7 @@ public class SpecificatDefServiceImpl implements SpecificatDefService {
     private IdAppService idAppService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveSpecificatDef(List<SpecificatDefEnter> defEnterList,Long userId) {
         List<OpeSpecificatDef> list = new ArrayList<>();
         for (SpecificatDefEnter defEnter : defEnterList) {
@@ -55,7 +56,7 @@ public class SpecificatDefServiceImpl implements SpecificatDefService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleSpecificatDef(Long specificatId) {
         QueryWrapper<OpeSpecificatDef> qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatDef.COL_SPECIFICAT_ID,specificatId);

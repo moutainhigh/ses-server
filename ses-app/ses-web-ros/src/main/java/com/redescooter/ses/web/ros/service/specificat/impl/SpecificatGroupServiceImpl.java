@@ -25,6 +25,7 @@ import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupSaveOrEditEnter;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +57,7 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
     private OpeSaleScooterService opeSaleScooterService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult specificatGroupSave(SpecificatGroupSaveOrEditEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -72,8 +74,8 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult specificatGroupEdit(SpecificatGroupSaveOrEditEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -89,7 +91,6 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         return new GeneralResult(enter.getRequestId());
     }
 
-
     @Override
     public PageResult<SpecificatGroupListResult> specificatGroupList(SpecificatGroupListEnter enter) {
         // 去空格
@@ -102,8 +103,8 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         return PageResult.create(enter, num, list);
     }
 
-
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult specificatGroupDelete(IdEnter enter) {
         // 删除分组 需要检验当前分组有没有被使用过
         QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();

@@ -29,6 +29,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -36,14 +37,13 @@ import java.util.List;
 /**
  * @Author Aleks
  * @Description
- * @Date  2020/10/20 10:28
+ * @Date 2020/10/20 10:28
  * @Param
  * @return
  **/
 @Service
 @Slf4j
 public class SaleCombinServiceImpl implements SaleCombinService {
-
 
     @Autowired
     private OpeSaleCombinService opeSaleCombinService;
@@ -61,13 +61,14 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     private IdAppService idAppService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleCombin(SaleCombinSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
         // 新增的校验
         check(enter);
         OpeSaleCombin combin = new OpeSaleCombin();
-        BeanUtils.copyProperties(enter,combin);
+        BeanUtils.copyProperties(enter, combin);
         combin.setCreatedBy(enter.getUserId());
         combin.setCreatedTime(new Date());
         combin.setUpdatedBy(enter.getUserId());
@@ -78,17 +79,17 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     }
 
 
-    public void check(SaleCombinSaveOrUpdateEnter enter){
-        if (Strings.isNullOrEmpty(enter.getProductName())){
+    public void check(SaleCombinSaveOrUpdateEnter enter) {
+        if (Strings.isNullOrEmpty(enter.getProductName())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_CODE_NOT_NULL.getCode(), ExceptionCodeEnums.PRODUCT_CODE_NOT_NULL.getMessage());
         }
         QueryWrapper<OpeSaleCombin> qw = new QueryWrapper<>();
-        qw.eq(OpeSaleCombin.COL_PRODUCT_NAME,enter.getProductName());
-        if(enter.getId() != null){
-            qw.ne(OpeSaleCombin.COL_ID,enter.getId());
+        qw.eq(OpeSaleCombin.COL_PRODUCT_NAME, enter.getProductName());
+        if (enter.getId() != null) {
+            qw.ne(OpeSaleCombin.COL_ID, enter.getId());
         }
         int count = opeSaleCombinService.count(qw);
-        if(count > 0){
+        if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
         }
     }
@@ -107,13 +108,14 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editSaleCombin(SaleCombinSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
         // 新增的校验
         check(enter);
-        OpeSaleCombin  combin = opeSaleCombinService.getById(enter.getId());
-        if(combin == null){
+        OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
+        if (combin == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         combin.setProductName(enter.getProductName());
@@ -137,15 +139,15 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
         if (!Boolean.valueOf(checkResut)) {
-            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(), ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
-        OpeSaleCombin  combin = opeSaleCombinService.getById(enter.getId());
-        if(combin == null){
+        OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
+        if (combin == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         Integer saleStatus = combin.getSaleStutas();
-        combin.setSaleStutas(saleStatus==0?1:0);
+        combin.setSaleStutas(saleStatus == 0 ? 1 : 0);
         opeSaleCombinService.updateById(combin);
         return new GeneralResult(enter.getRequestId());
     }
@@ -160,7 +162,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
     @Override
     public List<BomNameData> bomNoData(BomNoEnter enter) {
-        if (Strings.isNullOrEmpty(enter.getCombinName())){
+        if (Strings.isNullOrEmpty(enter.getCombinName())) {
             throw new SesWebRosException(ExceptionCodeEnums.SELECT_COMBIN_NAME.getCode(), ExceptionCodeEnums.SELECT_COMBIN_NAME.getMessage());
         }
         List<BomNameData> list = rosProductionProductServiceMapper.bomNoData(enter);
@@ -176,7 +178,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
     @Override
     public List<BomNameData> cnBomNoData(BomNoEnter enter) {
-        if (Strings.isNullOrEmpty(enter.getCombinName())){
+        if (Strings.isNullOrEmpty(enter.getCombinName())) {
             throw new SesWebRosException(ExceptionCodeEnums.SELECT_COMBIN_NAME.getCode(), ExceptionCodeEnums.SELECT_COMBIN_NAME.getMessage());
         }
         List<BomNameData> list = rosProductionProductServiceMapper.cnBomNoData(enter);

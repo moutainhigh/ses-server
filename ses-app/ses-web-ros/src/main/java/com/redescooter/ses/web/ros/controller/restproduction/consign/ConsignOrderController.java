@@ -1,16 +1,23 @@
 package com.redescooter.ses.web.ros.controller.restproduction.consign;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -19,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/restproduction/consign")
 public class ConsignOrderController {
+
     @Autowired
     private ConsignOrderService consignOrderService;
 
@@ -34,13 +42,11 @@ public class ConsignOrderController {
         return new Response<>(consignOrderService.statusList(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表", response = ConsignOrderListResult.class)
     public Response<PageResult<ConsignOrderListResult>> list(@ModelAttribute @ApiParam("请求参数") ConsignOrderListEnter enter) {
         return new Response<>(consignOrderService.list(enter));
     }
-
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = ConsignOrderDetailResult.class)
@@ -60,10 +66,10 @@ public class ConsignOrderController {
 //        return new Response<>(consignOrderService.save(enter));
 //    }
 
-
     @PostMapping(value = "/waitSign")
     @ApiOperation(value = "模拟RPS发货流程", response = GeneralResult.class)
     public Response<GeneralResult> waitSign(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(consignOrderService.waitSign(enter));
     }
+
 }

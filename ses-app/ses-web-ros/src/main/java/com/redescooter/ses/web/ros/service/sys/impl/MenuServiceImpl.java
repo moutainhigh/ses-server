@@ -43,6 +43,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class MenuServiceImpl implements MenuService {
     private MenuServiceMapper menuServiceMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMenuEnter enter) {
         sysMenuService.save(this.buildMenuVo(null, enter));
         return new GeneralResult(enter.getRequestId());
@@ -275,6 +277,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
 //        QueryWrapper<OpeSysMenu> wrapper = new QueryWrapper<>();
 //        wrapper.eq(OpeSysMenu.COL_P_ID, enter.getId());
@@ -323,6 +326,7 @@ public class MenuServiceImpl implements MenuService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult edit(EditMenuEnter enter) {
         OpeSysMenu menuUpdate = sysMenuService.getById(enter.getId());
         if (menuUpdate == null) {

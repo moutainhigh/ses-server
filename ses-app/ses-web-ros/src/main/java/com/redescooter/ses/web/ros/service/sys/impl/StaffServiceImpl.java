@@ -10,35 +10,63 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeSaleArea;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysPosition;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeSaleAreaService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.*;
+import com.redescooter.ses.web.ros.vo.sys.staff.InitUserMsgResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.SafeCodeResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffDeleteEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffListEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffListResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffOpEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffRoleResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaleAreaResult;
+import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaveOrEditEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.UserMsgEditEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.UserPsdEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +75,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -114,7 +151,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
         if (Strings.isNullOrEmpty(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
@@ -221,7 +258,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult staffEdit(StaffSaveOrEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
@@ -247,7 +284,7 @@ public class StaffServiceImpl implements StaffService {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
         }
         // 编辑的时候  如果是第一次开启验证码  则需要随机生成
-        if(Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1){
+        if (Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1) {
             String code = null;
             try {
                 code = RsaUtils.encrypt(getRundom(), publicKey);
@@ -279,16 +316,16 @@ public class StaffServiceImpl implements StaffService {
 
 
     // 校验部门 选择的部门只能是当前操作人的部门及其子部门
-    public void checkDept(StaffSaveOrEditEnter enter){
+    public void checkDept(StaffSaveOrEditEnter enter) {
         // 先找到当前操作人的部门
         OpeSysStaff opUser = opeSysStaffService.getById(enter.getUserId());
-        if (opUser == null){
+        if (opUser == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 递归找操作人部门及其子部门
         List<Long> deptIds = deptServiceMapper.getChildDeptIds(opUser.getDeptId());
         deptIds.add(opUser.getDeptId());
-        if (!deptIds.contains(enter.getDeptId())){
+        if (!deptIds.contains(enter.getDeptId())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
         }
     }
@@ -313,6 +350,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
         if (Strings.isNullOrEmpty(enter.getIds())) {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
@@ -364,11 +402,11 @@ public class StaffServiceImpl implements StaffService {
                 return PageResult.createZeroRowResult(enter);
             }
         }
-        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
+        int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds, Constant.SYSTEM_ROOT);
         if (totalRows == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds,Constant.SYSTEM_ROOT);
+        List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds, Constant.SYSTEM_ROOT);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
             if (staffRoleResult != null) {
@@ -401,7 +439,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult openAccount(StaffOpEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
         if (staff == null) {
@@ -410,7 +448,7 @@ public class StaffServiceImpl implements StaffService {
         if (!Strings.isNullOrEmpty(staff.getOpenAccount()) && staff.getOpenAccount().equals("1")) {
             throw new SesWebRosException(ExceptionCodeEnums.ALREADY_OPEN.getCode(), ExceptionCodeEnums.ALREADY_OPEN.getMessage());
         }
-        if(2 == staff.getStatus()){
+        if (2 == staff.getStatus()) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
         }
         staff.setOpenAccount("1");
@@ -483,6 +521,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editSafeCode(UserPsdEnter enter) {
         // 安全码解密 进行长度校验
         String safeCode = "";
@@ -505,6 +544,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editUserPsd(WebResetPasswordEnter enter) {
         // 前端传过来的密码 都是经过加密的 需要解密
         String newPassword = null;
@@ -552,6 +592,7 @@ public class StaffServiceImpl implements StaffService {
      * @return
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
         String psd = "";
         // 后端接受到的是加密之后的密码 需要解密
@@ -571,6 +612,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult userMsgEdit(UserMsgEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
         if (staff == null) {
@@ -719,6 +761,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void disAbleStaff(List<Long> deptIds) {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.in(OpeSysStaff.COL_DEPT_ID, deptIds);

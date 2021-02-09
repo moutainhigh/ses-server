@@ -188,7 +188,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveByCopyId(SaveByCopyIdEnter enter) {
         List<OpeProductionQualityTempate> opeProductionQualityTempateList =
@@ -290,24 +290,24 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             case 4:
                 OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(enter.getId());
 //                if (Objects.isNull(productionScooterBom.getQcFlag()) || !productionScooterBom.getQcFlag()) {
-                    productionScooterBom.setQcFlag(Boolean.TRUE);
-                    opeProductionScooterBomService.updateById(productionScooterBom);
+                productionScooterBom.setQcFlag(Boolean.TRUE);
+                opeProductionScooterBomService.updateById(productionScooterBom);
 //                }
                 break;
             case 5:
                 OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(enter.getId());
                 //更改质检模版标示
 //                if (Objects.isNull(productionCombinBom.getQcFlag() || !productionCombinBom.getQcFlag())) {
-                    productionCombinBom.setQcFlag(Boolean.TRUE);
-                    opeProductionCombinBomService.updateById(productionCombinBom);
+                productionCombinBom.setQcFlag(Boolean.TRUE);
+                opeProductionCombinBomService.updateById(productionCombinBom);
 //                }
                 break;
             default:
                 OpeProductionParts opeProductionPart = opeProductionPartsService.getById(enter.getId());
                 //更改质检模版标示
 //                if (Objects.isNull(opeProductionPart.getQcFlag()) || !opeProductionPart.getQcFlag()) {
-                    opeProductionPart.setQcFlag(Boolean.TRUE);
-                    opeProductionPartsService.updateById(opeProductionPart);
+                opeProductionPart.setQcFlag(Boolean.TRUE);
+                opeProductionPartsService.updateById(opeProductionPart);
 //                }
                 break;
         }

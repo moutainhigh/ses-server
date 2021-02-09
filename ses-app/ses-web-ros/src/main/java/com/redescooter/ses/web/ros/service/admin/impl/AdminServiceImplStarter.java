@@ -41,8 +41,8 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -121,7 +121,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAdmin() {
         if (checkAdmin()) {
@@ -209,7 +209,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     @PostConstruct
     public GeneralResult checkAdminDate() {
@@ -222,15 +222,15 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         }
 
         OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME).eq(OpeSysUser::getDef1,
-        SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
+                SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
         if (sysUserServiceOne == null) {
             //账号信息创建
             saveAdmin();
             return new GeneralResult();
         }
         log.info("---------------------开始验证admin管理员完整性--------------------------");
-        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()).last("limit 1"));
-        if(position == null){
+        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId, dept.getId()).last("limit 1"));
+        if (position == null) {
             position = createOpeSysPosition(dept, sysUserServiceOne);
         }
         //查询是否有admin Role 没有的话
@@ -240,7 +240,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             sysRole = saveRole(position.getId());
         }
         //查询员工 是否
-        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()).last("limit 1"));
+        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId, sysUserServiceOne.getId()).last("limit 1"));
         if (opeSysStaff == null) {
             OpeSysStaff saveOpeSysStaff = buildOpeSysStaff(sysUserServiceOne.getId());
             opeSysStaffService.save(saveOpeSysStaff);

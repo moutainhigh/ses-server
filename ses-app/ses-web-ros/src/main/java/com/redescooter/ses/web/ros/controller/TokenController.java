@@ -91,11 +91,12 @@ public class TokenController {
     public Response<GeneralResult> sendCode(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
         return new Response<>(tokenRosService.sendCode(enter));
     }
+
     @IgnoreLoginCheck
     @ApiOperation(value = "发送邮箱", response = BooleanResult.class)
     @PostMapping(value = "/sendForgetPasswordEmail")
     public Response<GeneralResult> sendForgetPasswordEmail(@ModelAttribute @ApiParam("请求参数") BaseSendMailEnter enter) {
-      return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
+        return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
     }
 
 

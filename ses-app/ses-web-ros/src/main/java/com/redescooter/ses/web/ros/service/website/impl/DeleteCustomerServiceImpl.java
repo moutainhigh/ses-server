@@ -4,20 +4,24 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.web.ros.dm.*;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.website.DeleteService;
 import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:DeleteCustomerServiceImpl
@@ -51,7 +55,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
      * @param email
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteCustomer(StorageEamilEnter email) {
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>()
@@ -102,7 +106,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteInquiry(StorageEamilEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry =
@@ -116,6 +120,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     private void deleteOrder(OpeCustomerInquiry inquiry) {
         /**先删除自订单，在删除主订单**/
         List<OpeCustomerInquiryB> list = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>()

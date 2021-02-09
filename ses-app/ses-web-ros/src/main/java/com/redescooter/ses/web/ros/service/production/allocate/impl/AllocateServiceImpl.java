@@ -155,9 +155,9 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         List<String> statusList = new ArrayList();
         if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getClassType())) {
             for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
@@ -232,7 +232,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startPrepare(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
@@ -259,7 +259,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startAllocate(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PREPARE.getValue());
@@ -286,7 +286,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancelAllocate(IdEnter enter) {
         List<OpeStock> updateOpeStock = Lists.newArrayList();
@@ -392,7 +392,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWhAllocate(IdEnter enter) {
         //入库单
@@ -519,11 +519,11 @@ public class AllocateServiceImpl implements AllocateService {
      * @param saveAllocateEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAllocate(SaveAllocateEnter saveAllocateEnter) {
-      //SaveAllocateEnter参数值去空格
-      SaveAllocateEnter enter = SesStringUtils.objStringTrim(saveAllocateEnter);
+        //SaveAllocateEnter参数值去空格
+        SaveAllocateEnter enter = SesStringUtils.objStringTrim(saveAllocateEnter);
         //配件、付款信息转换
         List<ProductionPartsEnter> productionPartsEnterList = null;
         // 出库单集合
@@ -536,7 +536,7 @@ public class AllocateServiceImpl implements AllocateService {
         List<OpeStock> opeStockList = null;
 
         try {
-              productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
+            productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }

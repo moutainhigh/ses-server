@@ -53,7 +53,6 @@ public class ScooterController {
         return new Response<>(bomRosService.scooterList(enter));
     }
 
-
     @PostMapping(value = "/saveScooter")
     @ApiOperation(value = "整车保存", response = GeneralResult.class)
     public Response<GeneralResult> saveScooter(@ModelAttribute @ApiParam("请求参数") SaveScooterEnter enter) {
@@ -78,7 +77,6 @@ public class ScooterController {
         return new Response<>(partsRosService.saveProductPartList(enter));
     }
 
-
     @PostMapping(value = "/scooterDetail")
     @ApiOperation(value = "整车详情", response = ScooterDetailResult.class)
     public Response<ScooterDetailResult> scooterDetail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -92,7 +90,7 @@ public class ScooterController {
     }
 
     @PostMapping(value = "/deleteScooter")
-    @ApiOperation(value ="整车删除", response = GeneralResult.class)
+    @ApiOperation(value = "整车删除", response = GeneralResult.class)
     public Response<GeneralResult> deleteScooter(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(bomRosService.deleteScooter(enter));
     }

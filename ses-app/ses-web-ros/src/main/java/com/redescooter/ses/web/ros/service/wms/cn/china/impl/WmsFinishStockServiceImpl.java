@@ -179,9 +179,9 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     private IdAppService idAppService;
 
 
-
     /**
      * 成品库车辆库存列表
+     *
      * @param enter
      * @return
      */
@@ -199,13 +199,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 成品库车辆库存详情
+     *
      * @param enter
      * @return
      */
     @Override
     public WmsfinishScooterDetailResult finishScooterDetail(IdEnter enter) {
         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getById(enter.getId());
-        if (scooterStock == null){
+        if (scooterStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishScooterDetailResult result = wmsFinishStockMapper.finishScooterDetail(enter.getId());
@@ -217,13 +218,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 库存统计
+     *
      * @param enter
      * @return
      */
     @Override
     public WmsStockCountResult wmsStockCount(WmsStockCountEnter enter) {
         WmsStockCountResult result = new WmsStockCountResult();
-        switch (enter.getProductType()){
+        switch (enter.getProductType()) {
             case 1:
                 //车辆
                 result = wmsFinishStockMapper.wmsScooterStockCount(enter.getStockType());
@@ -238,7 +240,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 result = wmsFinishStockMapper.wmsPartsStockCount(enter.getStockType());
                 break;
         }
-        if (result == null){
+        if (result == null) {
             result = new WmsStockCountResult();
         }
         return result;
@@ -247,6 +249,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 成品库tab的数量统计（只有车辆和组装件）
+     *
      * @param enter
      * @return
      */
@@ -255,19 +258,20 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         Map<String, Integer> map = new HashMap<>();
         // 车辆
         QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
-        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("1",opeWmsScooterStockService.count(scooter));
+        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
+        map.put("1", opeWmsScooterStockService.count(scooter));
 
         // 组装件
         QueryWrapper<OpeWmsCombinStock> combin = new QueryWrapper<>();
-        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("2",opeWmsCombinStockService.count(combin));
+        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
+        map.put("2", opeWmsCombinStockService.count(combin));
         return map;
     }
 
 
     /**
      * 剩下的原料（部件）还可生产多少车
+     *
      * @param enter
      * @return
      */
@@ -341,6 +345,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 成品库组装件list
+     *
      * @param enter
      * @return
      */
@@ -358,13 +363,14 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 成品库组装件详情
+     *
      * @param enter
      * @return
      */
     @Override
     public WmsfinishCombinDetailResult finishCombinDetail(IdEnter enter) {
         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getById(enter.getId());
-        if (combinStock == null){
+        if (combinStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
@@ -405,6 +411,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
     /**
      * 出库单和入库单的数量统计，按国家区分（从库存点击出入库管理进入的）
+     *
      * @param enter
      * @return
      */
@@ -414,27 +421,27 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
         // 入库单
         QueryWrapper<OpeInWhouseOrder> in = new QueryWrapper<>();
-        in.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
-        if (enter.getSource() == null){
-            in.eq(OpeInWhouseOrder.COL_SOURCE,0);
-        }else {
-            in.eq(OpeInWhouseOrder.COL_SOURCE,enter.getSource());
+        in.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE, enter.getStockType());
+        if (enter.getSource() == null) {
+            in.eq(OpeInWhouseOrder.COL_SOURCE, 0);
+        } else {
+            in.eq(OpeInWhouseOrder.COL_SOURCE, enter.getSource());
         }
-        if (enter.getOrderType() != null){
-            in.eq(OpeInWhouseOrder.COL_ORDER_TYPE,enter.getOrderType());
+        if (enter.getOrderType() != null) {
+            in.eq(OpeInWhouseOrder.COL_ORDER_TYPE, enter.getOrderType());
         }
-        map.put("1",opeInWhouseOrderService.count(in));
+        map.put("1", opeInWhouseOrderService.count(in));
 
         // 出库单
         QueryWrapper<OpeOutWhouseOrder> out = new QueryWrapper<>();
-        out.eq(OpeOutWhouseOrder.COL_COUNTRY_TYPE,enter.getStockType());
-        if (enter.getSource() == null){
-            out.eq(OpeOutWhouseOrder.COL_SOURCE,0);
-        }else {
-            out.eq(OpeOutWhouseOrder.COL_SOURCE,enter.getSource());
+        out.eq(OpeOutWhouseOrder.COL_COUNTRY_TYPE, enter.getStockType());
+        if (enter.getSource() == null) {
+            out.eq(OpeOutWhouseOrder.COL_SOURCE, 0);
+        } else {
+            out.eq(OpeOutWhouseOrder.COL_SOURCE, enter.getSource());
         }
-        if (enter.getOrderType() != null){
-            out.eq(OpeOutWhouseOrder.COL_OUT_WH_TYPE,enter.getOrderType());
+        if (enter.getOrderType() != null) {
+            out.eq(OpeOutWhouseOrder.COL_OUT_WH_TYPE, enter.getOrderType());
         }
         map.put("2", opeOutWhouseOrderService.count(out));
         return map;
@@ -449,7 +456,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     @Override
     public IntResult getAbleStockQtyByProductionCombinBomId(WmsQualifiedCombinEnter enter) {
         IntResult result = new IntResult();
-        switch (enter.getSource()){
+        switch (enter.getSource()) {
             case 0:
                 LambdaQueryWrapper<OpeWmsCombinStock> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(OpeWmsCombinStock::getDr, DelStatusEnum.VALID.getCode());
@@ -470,12 +477,12 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             case 1:
                 // 说明是中国不合格品库车辆库 创建出库单 需要从不合格品库找可出库的数据
                 QueryWrapper<OpeWmsQualifiedCombinStock> qw = new QueryWrapper<>();
-                qw.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,enter.getId());
+                qw.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, enter.getId());
                 qw.last("limit 1");
                 OpeWmsQualifiedCombinStock qualifiedCombinStock = opeWmsQualifiedCombinStockService.getOne(qw);
                 if (qualifiedCombinStock != null) {
                     result.setValue(qualifiedCombinStock.getQty());
-                }else {
+                } else {
                     result.setValue(0);
                 }
                 break;
@@ -486,36 +493,35 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     }
 
 
-
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到入库单
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null){
+        if (inWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
         opeInWhouseOrderService.saveOrUpdate(inWhouseOrder);
 
-        switch (inWhouseOrder.getOrderType()){
+        switch (inWhouseOrder.getOrderType()) {
             case 1:
                 QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
                 scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, inWhouseOrder.getId());
                 List<OpeInWhouseScooterB> scooterBS = opeInWhouseScooterBService.list(scooterBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(scooterBS)){
+                if (CollectionUtils.isNotEmpty(scooterBS)) {
                     for (OpeInWhouseScooterB scooterB : scooterBS) {
                         scooterB.setActInWhQty(scooterB.getInWhQty());
                     }
                     opeInWhouseScooterBService.saveOrUpdateBatch(scooterBS);
                 }
-            default :
+            default:
                 break;
             case 2:
                 QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
                 combinBQueryWrapper.eq(OpeInWhouseCombinB.COL_IN_WH_ID, inWhouseOrder.getId());
                 List<OpeInWhouseCombinB> combinBS = opeInWhouseCombinBService.list(combinBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(combinBS)){
+                if (CollectionUtils.isNotEmpty(combinBS)) {
                     for (OpeInWhouseCombinB combinB : combinBS) {
                         combinB.setActInWhQty(combinB.getInWhQty());
                     }
@@ -526,7 +532,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
                 partsBQueryWrapper.eq(OpeInWhousePartsB.COL_IN_WH_ID, inWhouseOrder.getId());
                 List<OpeInWhousePartsB> partsBS = opeInWhousePartsBService.list(partsBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(partsBS)){
+                if (CollectionUtils.isNotEmpty(partsBS)) {
                     for (OpeInWhousePartsB partsB : partsBS) {
                         partsB.setActInWhQty(partsB.getInWhQty());
                     }
@@ -534,12 +540,12 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
         }
 
-        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())){
+        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
             // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
-            productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
-        }else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())){
+            productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
+        } else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
-            productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(),inWhouseOrder.getId(),enter.getUserId());
+            productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
         }
 
         // 操作记录
@@ -549,20 +555,20 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         productionOrderTraceService.save(opTraceEnter);
 
         List<WmsInStockRecordEnter> records = new ArrayList<>();
-        switch (inWhouseOrder.getOrderType()){
+        switch (inWhouseOrder.getOrderType()) {
             case 1:
                 // scooter
                 QueryWrapper<OpeInWhouseScooterB> scooterBQueryWrapper = new QueryWrapper<>();
-                scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID,enter.getId());
+                scooterBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, enter.getId());
                 List<OpeInWhouseScooterB> scooterBList = opeInWhouseScooterBService.list(scooterBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(scooterBList)){
+                if (CollectionUtils.isNotEmpty(scooterBList)) {
                     List<OpeWmsScooterStock> scooterStocks = new ArrayList<>();
                     for (OpeInWhouseScooterB scooterB : scooterBList) {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getGroupId());
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID, scooterB.getColorId());
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {
@@ -573,10 +579,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
-                            if(2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(7);
-                            }else {
+                            } else {
                                 scooterRecord.setRelationType(1);
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                             }
@@ -593,15 +599,15 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             case 2:
                 // combin
                 QueryWrapper<OpeInWhouseCombinB> combinBQueryWrapper = new QueryWrapper<>();
-                combinBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID,enter.getId());
+                combinBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, enter.getId());
                 List<OpeInWhouseCombinB> combinBList = opeInWhouseCombinBService.list(combinBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(combinBList)){
+                if (CollectionUtils.isNotEmpty(combinBList)) {
                     List<OpeWmsCombinStock> combinStocks = new ArrayList<>();
                     for (OpeInWhouseCombinB combinB : combinBList) {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
-                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
-                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, combinB.getProductionCombinBomId());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
@@ -612,10 +618,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
-                            if(2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(8);
-                            }else {
+                            } else {
                                 scooterRecord.setRelationType(2);
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                             }
@@ -631,15 +637,15 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             case 3:
                 // parts
                 QueryWrapper<OpeInWhousePartsB> partsBQueryWrapper = new QueryWrapper<>();
-                partsBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID,enter.getId());
+                partsBQueryWrapper.eq(OpeInWhouseScooterB.COL_IN_WH_ID, enter.getId());
                 List<OpeInWhousePartsB> partsBList = opeInWhousePartsBService.list(partsBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(partsBList)){
+                if (CollectionUtils.isNotEmpty(partsBList)) {
                     List<OpeWmsPartsStock> partsStocks = new ArrayList<>();
                     for (OpeInWhousePartsB partsB : partsBList) {
                         // 在库存里面增加可用数量 待入库数量减少
                         QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
-                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
-                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID, partsB.getPartsId());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
@@ -650,10 +656,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
-                            if(2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                                 scooterRecord.setRelationType(9);
-                            }else {
+                            } else {
                                 scooterRecord.setRelationType(3);
                                 scooterRecord.setInWhType(inWhouseOrder.getInWhType());
                             }
@@ -667,7 +673,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getUserId());
+        createInStockRecord(records, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -691,24 +697,24 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (outWhouseOrder == null){
+        if (outWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         outWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
         opeOutWhouseOrderService.saveOrUpdate(outWhouseOrder);
 
         // 处理字表的数据
-        switch (outWhouseOrder.getOutWhType()){
+        switch (outWhouseOrder.getOutWhType()) {
             case 1:
                 // scooter
                 QueryWrapper<OpeOutWhScooterB> scooter = new QueryWrapper<>();
                 scooter.eq(OpeOutWhScooterB.COL_OUT_WH_ID, outWhouseOrder.getId());
                 List<OpeOutWhScooterB> scooterBS = opeOutWhScooterBService.list(scooter);
-                if (CollectionUtils.isNotEmpty(scooterBS)){
+                if (CollectionUtils.isNotEmpty(scooterBS)) {
                     for (OpeOutWhScooterB scooterB : scooterBS) {
                         scooterB.setAlreadyOutWhQty(scooterB.getQty());
                     }
@@ -721,7 +727,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 QueryWrapper<OpeOutWhCombinB> combin = new QueryWrapper<>();
                 combin.eq(OpeOutWhCombinB.COL_OUT_WH_ID, outWhouseOrder.getId());
                 List<OpeOutWhCombinB> combinBs = opeOutWhCombinBService.list(combin);
-                if (CollectionUtils.isNotEmpty(combinBs)){
+                if (CollectionUtils.isNotEmpty(combinBs)) {
                     for (OpeOutWhCombinB combinB : combinBs) {
                         combinB.setAlreadyOutWhQty(combinB.getQty());
                     }
@@ -733,7 +739,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 QueryWrapper<OpeOutWhPartsB> parts = new QueryWrapper<>();
                 parts.eq(OpeOutWhPartsB.COL_OUT_WH_ID, outWhouseOrder.getId());
                 List<OpeOutWhPartsB> partsBs = opeOutWhPartsBService.list(parts);
-                if (CollectionUtils.isNotEmpty(partsBs)){
+                if (CollectionUtils.isNotEmpty(partsBs)) {
                     for (OpeOutWhPartsB partsB : partsBs) {
                         partsB.setAlreadyOutWhQty(partsB.getQty());
                     }
@@ -753,24 +759,24 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
         List<WmsInStockRecordEnter> records = new ArrayList<>();
-        switch (outWhouseOrder.getOutWhType()){
+        switch (outWhouseOrder.getOutWhType()) {
             case 1:
                 // scooter
                 QueryWrapper<OpeOutWhScooterB> scooterBQueryWrapper = new QueryWrapper<>();
-                scooterBQueryWrapper.eq(OpeOutWhScooterB.COL_OUT_WH_ID,enter.getId());
+                scooterBQueryWrapper.eq(OpeOutWhScooterB.COL_OUT_WH_ID, enter.getId());
                 List<OpeOutWhScooterB> scooterBList = opeOutWhScooterBService.list(scooterBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(scooterBList)){
+                if (CollectionUtils.isNotEmpty(scooterBList)) {
                     List<OpeWmsScooterStock> scooterStocks = new ArrayList<>();
                     for (OpeOutWhScooterB scooterB : scooterBList) {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID,scooterB.getGroupId());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_GROUP_ID, scooterB.getGroupId());
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_COLOR_ID, scooterB.getColorId());
-                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
+                        scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
                         if (scooterStock != null) {
-                            if (scooterStock.getAbleStockQty() - scooterB.getQty() < 0){
+                            if (scooterStock.getAbleStockQty() - scooterB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             scooterStock.setAbleStockQty(scooterStock.getAbleStockQty() - scooterB.getQty());
@@ -780,10 +786,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(scooterStock.getId());
-                            if (2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setRelationType(7);
                                 scooterRecord.setInWhType(7);
-                            }else {
+                            } else {
                                 scooterRecord.setInWhType(outWhouseOrder.getOutType());
                                 scooterRecord.setRelationType(1);
                             }
@@ -800,19 +806,19 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             case 2:
                 // combin
                 QueryWrapper<OpeOutWhCombinB> combinBQueryWrapper = new QueryWrapper<>();
-                combinBQueryWrapper.eq(OpeOutWhCombinB.COL_OUT_WH_ID,enter.getId());
+                combinBQueryWrapper.eq(OpeOutWhCombinB.COL_OUT_WH_ID, enter.getId());
                 List<OpeOutWhCombinB> combinBList = opeOutWhCombinBService.list(combinBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(combinBList)){
+                if (CollectionUtils.isNotEmpty(combinBList)) {
                     List<OpeWmsCombinStock> combinStocks = new ArrayList<>();
                     for (OpeOutWhCombinB combinB : combinBList) {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
-                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID,combinB.getProductionCombinBomId());
-                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, combinB.getProductionCombinBomId());
+                        combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
                         if (combinStock != null) {
-                            if (combinStock.getAbleStockQty() - combinB.getQty() < 0){
+                            if (combinStock.getAbleStockQty() - combinB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             combinStock.setAbleStockQty(combinStock.getAbleStockQty() - combinB.getQty());
@@ -822,10 +828,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(combinStock.getId());
-                            if (2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setInWhType(7);
                                 scooterRecord.setRelationType(8);
-                            }else {
+                            } else {
                                 scooterRecord.setInWhType(outWhouseOrder.getOutType());
                                 scooterRecord.setRelationType(2);
                             }
@@ -841,19 +847,19 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
             case 3:
                 // parts
                 QueryWrapper<OpeOutWhPartsB> partsBQueryWrapper = new QueryWrapper<>();
-                partsBQueryWrapper.eq(OpeOutWhPartsB.COL_OUT_WH_ID,enter.getId());
+                partsBQueryWrapper.eq(OpeOutWhPartsB.COL_OUT_WH_ID, enter.getId());
                 List<OpeOutWhPartsB> partsBList = opeOutWhPartsBService.list(partsBQueryWrapper);
-                if (CollectionUtils.isNotEmpty(partsBList)){
+                if (CollectionUtils.isNotEmpty(partsBList)) {
                     List<OpeWmsPartsStock> partsStocks = new ArrayList<>();
                     for (OpeOutWhPartsB partsB : partsBList) {
                         // 在库存里面增加可用数量
                         QueryWrapper<OpeWmsPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
-                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID,partsB.getPartsId());
-                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_PARTS_ID, partsB.getPartsId());
+                        partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
                         if (partsStock != null) {
-                            if (partsStock.getAbleStockQty() - partsB.getQty() < 0){
+                            if (partsStock.getAbleStockQty() - partsB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             partsStock.setAbleStockQty(partsStock.getAbleStockQty() - partsB.getQty());
@@ -863,10 +869,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                             // 构建入库记录对象
                             WmsInStockRecordEnter scooterRecord = new WmsInStockRecordEnter();
                             scooterRecord.setRelationId(partsStock.getId());
-                            if (2 == enter.getStockType()){
+                            if (2 == enter.getStockType()) {
                                 scooterRecord.setInWhType(7);
                                 scooterRecord.setRelationType(9);
-                            }else {
+                            } else {
                                 scooterRecord.setInWhType(outWhouseOrder.getOutType());
                                 scooterRecord.setRelationType(3);
                             }
@@ -880,7 +886,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
                 break;
         }
-        createInStockRecord(records,enter.getUserId());
+        createInStockRecord(records, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -47,8 +47,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -193,7 +193,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param saveEmployeeEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveEmployee(SaveEmployeeEnter saveEmployeeEnter) {
 
@@ -357,6 +357,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param enter
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult trushEmployee(IdEnter enter) {
         // 验证员工是否存在
@@ -494,7 +495,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         mailMultiTaskService.addCreateEmployeeMailTask(enter);
     }
 
-
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void disAbleUser(List<Long> userIds) {
         if(CollectionUtils.isNotEmpty(userIds)){

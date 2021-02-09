@@ -31,9 +31,9 @@ import com.redescooter.ses.web.ros.vo.bom.sales.SubentryProductResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -163,9 +163,7 @@ public class SalseRosServiceImpl implements SalseRosService {
 
     @Override
     public List<SubentryProductResult> items(IdEnter enter) {
-
         List<SubentryProductResult> results = salseRosServiceMapper.productItems(enter);
-
         return results;
     }
 
@@ -298,7 +296,7 @@ public class SalseRosServiceImpl implements SalseRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editSalesProductPrice(SccPriceEnter enter) {
         // 查询当前Id 的报价 确定是否为第一次插入
@@ -365,7 +363,7 @@ public class SalseRosServiceImpl implements SalseRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editAfterProductPrice(SccPriceEnter enter) {
         // 查询当前Id 的报价 确定是否为第一次插入
@@ -431,7 +429,7 @@ public class SalseRosServiceImpl implements SalseRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editServiceProductPrice(SccPriceEnter enter) {
         // 查询当前Id 的报价 确定是否为第一次插入

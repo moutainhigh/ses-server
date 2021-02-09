@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/Info")
-public class UserProfileController{
+public class UserProfileController {
 
     @Autowired
     private SysUserProfileService sysUserProfileService;
@@ -43,7 +43,6 @@ public class UserProfileController{
     public Response<UserInfoResult> userInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysUserProfileService.userInfo(enter));
     }
-
 
     @PostMapping(value = "/workOrderSave")
     @ApiOperation(value = "工单新增", response = GeneralResult.class)

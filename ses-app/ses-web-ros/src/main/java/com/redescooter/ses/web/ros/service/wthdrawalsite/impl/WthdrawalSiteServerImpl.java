@@ -43,10 +43,9 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(WthdrawalSiteSaveEnter enter) {
-
         OpeWithdrawalSite saveVO = new OpeWithdrawalSite();
         saveVO.setId(idAppService.getId(SequenceName.OPE_WITHDRAWAL_SITE));
         saveVO.setDr(Constant.DR_FALSE);
@@ -78,9 +77,7 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
         saveVO.setUpdatedBy(enter.getUserId());
         saveVO.setUpdatedTime(new Date());
         saveVO.setDef1(enter.getDef1());
-
         withdrawalSiteService.save(saveVO);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -91,10 +88,9 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @param id
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(WthdrawalSiteEditEnter enter, Long id) {
-
         OpeWithdrawalSite editVO = new OpeWithdrawalSite();
         editVO.setBusinessStatus(enter.getBusinessStatus());
         editVO.setType(enter.getType());
@@ -180,7 +176,7 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @param id
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult isSwitch(isSwitchEnter enter, Long id) {
 

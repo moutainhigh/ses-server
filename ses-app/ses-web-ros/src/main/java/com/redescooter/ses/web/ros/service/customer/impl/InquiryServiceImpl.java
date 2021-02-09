@@ -47,7 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,7 +75,6 @@ import java.util.Map;
 @Slf4j
 @Service
 public class InquiryServiceImpl implements InquiryService {
-
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
@@ -141,7 +139,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @date: 2020/3/5 15:03
      * @Version: Ros 1.3
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAboutUs(SaveAboutUsEnter saveAboutUsEnter) {
         //入参去空格
@@ -359,7 +357,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult acceptInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -392,7 +390,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult declineInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -419,7 +417,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
@@ -431,10 +429,10 @@ public class InquiryServiceImpl implements InquiryService {
             for (InquiryExportResult inquiry : list) {
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
                 dataMap.add(toMap(inquiry, i));
-                i ++;
+                i++;
             }
             String sheetName = "Inquiry";
-            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation","amountPaid", "totalPrice", "time"};
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation", "amountPaid", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
@@ -471,17 +469,17 @@ public class InquiryServiceImpl implements InquiryService {
     private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry, Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("ID", i);
-        map.put("fullName", opeCustomerInquiry.getCustomerFullName()==null?"--":opeCustomerInquiry.getCustomerFullName());
-        map.put("email", opeCustomerInquiry.getEmail()==null?"--":opeCustomerInquiry.getEmail());
-        map.put("bankCardname", opeCustomerInquiry.getBankCardName()==null?"--":opeCustomerInquiry.getBankCardName());
-        map.put("district", opeCustomerInquiry.getPostcode()==null?"--":opeCustomerInquiry.getPostcode());
-        map.put("address", opeCustomerInquiry.getAddress()==null?"--":opeCustomerInquiry.getAddress());
-        map.put("productName", opeCustomerInquiry.getProductName()==null?"--":opeCustomerInquiry.getProductName());
-        map.put("color", opeCustomerInquiry.getColorName()==null?"--":opeCustomerInquiry.getColorName());
-        map.put("batteryQty", opeCustomerInquiry.getBatteryQty()==null?0:opeCustomerInquiry.getBatteryQty());
-        map.put("amountObligation", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
-        map.put("amountPaid", opeCustomerInquiry.getAmountPaid()==null?0.00:opeCustomerInquiry.getAmountPaid());
-        map.put("totalPrice", opeCustomerInquiry.getTotalPrice()==null?0.00:opeCustomerInquiry.getTotalPrice());
+        map.put("fullName", opeCustomerInquiry.getCustomerFullName() == null ? "--" : opeCustomerInquiry.getCustomerFullName());
+        map.put("email", opeCustomerInquiry.getEmail() == null ? "--" : opeCustomerInquiry.getEmail());
+        map.put("bankCardname", opeCustomerInquiry.getBankCardName() == null ? "--" : opeCustomerInquiry.getBankCardName());
+        map.put("district", opeCustomerInquiry.getPostcode() == null ? "--" : opeCustomerInquiry.getPostcode());
+        map.put("address", opeCustomerInquiry.getAddress() == null ? "--" : opeCustomerInquiry.getAddress());
+        map.put("productName", opeCustomerInquiry.getProductName() == null ? "--" : opeCustomerInquiry.getProductName());
+        map.put("color", opeCustomerInquiry.getColorName() == null ? "--" : opeCustomerInquiry.getColorName());
+        map.put("batteryQty", opeCustomerInquiry.getBatteryQty() == null ? 0 : opeCustomerInquiry.getBatteryQty());
+        map.put("amountObligation", opeCustomerInquiry.getBalance() == null ? 0.00 : opeCustomerInquiry.getBalance());
+        map.put("amountPaid", opeCustomerInquiry.getAmountPaid() == null ? 0.00 : opeCustomerInquiry.getAmountPaid());
+        map.put("totalPrice", opeCustomerInquiry.getTotalPrice() == null ? 0.00 : opeCustomerInquiry.getTotalPrice());
         map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }

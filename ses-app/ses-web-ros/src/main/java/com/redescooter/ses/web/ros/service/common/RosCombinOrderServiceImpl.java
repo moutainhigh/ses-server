@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -14,12 +14,11 @@ import javax.annotation.Resource;
  * @date 2021/1/26 14:54
  */
 @Slf4j
-@Service
+@DubboService
 public class RosCombinOrderServiceImpl implements RosCombinOrderService {
 
     @Resource
     private ProductionPurchasService productionPurchasService;
-
 
     @Override
     public GeneralResult generatorQcOrderByCombin(IdEnter enter) {

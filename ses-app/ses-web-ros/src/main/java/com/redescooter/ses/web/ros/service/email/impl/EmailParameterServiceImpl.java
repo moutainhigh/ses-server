@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.service.email.EmailParameterService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class EmailParameterServiceImpl implements EmailParameterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMailConfigEnter enter) {
         return mailTemplateManageService.saveParameter(enter);
     }

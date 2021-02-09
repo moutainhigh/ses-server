@@ -373,7 +373,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 备货
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult stockUp(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -627,7 +627,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc:
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveInvoiceEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
@@ -722,7 +722,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 装车
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult loading(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -766,7 +766,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 签收
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signFor(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -970,6 +970,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @return
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelInvoice(Long purchaseId,Long userId,String remark) {
         QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();
         qw.eq(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseId);
@@ -992,7 +993,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 发货单状态变待装车
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void invoiceWaitLoading(Long invoiceId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {
@@ -1010,6 +1011,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 发货单状态变待签收
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void invoiceWaitSign(Long invoiceId,Long userId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {

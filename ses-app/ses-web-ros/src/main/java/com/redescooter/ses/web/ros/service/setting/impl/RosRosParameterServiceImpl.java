@@ -34,10 +34,10 @@ import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +63,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 参数名称
+     *
      * @param enter
      * @return
      */
@@ -115,6 +116,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 详情
+     *
      * @param enter
      * @return
      */
@@ -137,16 +139,19 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 删除
+     *
      * @param enter
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         return parameterSettingService.delete(enter);
     }
 
     /**
      * 导出参数列表
+     *
      * @param ids
      * @param response
      * @return
@@ -191,6 +196,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 导出参数列表
+     *
      * @param enter
      * @return
      */
@@ -201,6 +207,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 参数保存编辑
+     *
      * @param enter
      * @return
      */
@@ -214,6 +221,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 下载模版
+     *
      * @param enter
      * @return
      */
@@ -224,6 +232,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 分组列表
+     *
      * @param enter
      * @return
      */
@@ -233,7 +242,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
         return parameterSettingService.groupList(enter);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveParameterBatch(ImportParameterEnter enter, List<ImportParameterExcleData> successList) {
         //分组校验
@@ -261,6 +270,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
     /**
      * 导出参数 完善员工信息
+     *
      * @param parameterResultList
      */
     private void exportStaffUserName(List<ParameterResult> parameterResultList) {

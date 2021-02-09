@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *  @author: alex
- *  @Date: 2020/10/27 19:00
- *  @version：V ROS 1.8.3
- *  @Description:
+ * @author: alex
+ * @Date: 2020/10/27 19:00
+ * @version：V ROS 1.8.3
+ * @Description:
  */
 @Service
 @Slf4j
@@ -48,13 +48,13 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     private IdAppService idAppService;
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:05
      * @Param: enter
      * @Return: OrderStatusFlowResult
      * @desc: 订单节点
-     * @param enter
      */
     @Override
     public List<OrderStatusFlowResult> listBybussId(IdEnter enter) {
@@ -135,13 +135,13 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:07
      * @Param: enter
      * @Return: 订单节点详情
      * @desc: 订单节点详情
-     * @param enter
      */
     @Override
     public OrderStatusFlowResult detail(IdEnter enter) {
@@ -163,15 +163,15 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/27 19:10
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 保存节点
-     * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(OrderStatusFlowEnter enter) {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();

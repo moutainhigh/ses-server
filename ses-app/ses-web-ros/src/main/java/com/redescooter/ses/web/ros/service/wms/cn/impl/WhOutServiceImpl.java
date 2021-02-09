@@ -221,7 +221,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -253,7 +253,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -298,7 +298,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult prepareMaterial(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -335,6 +335,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outwh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
@@ -360,8 +361,8 @@ public class WhOutServiceImpl implements WhOutService {
         orderBList.forEach(item -> {
             opeStocks.forEach(stock -> {
                 if (item.getStockId().equals(stock.getId())) {
-                    stock.setLockTotal(stock.getLockTotal()-item.getTotalCount());
-                    stock.setOutTotal(stock.getOutTotal()+item.getTotalCount());
+                    stock.setLockTotal(stock.getLockTotal() - item.getTotalCount());
+                    stock.setOutTotal(stock.getOutTotal() + item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     stock.setUpdatedBy(enter.getUserId());
                 }
@@ -395,7 +396,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -450,7 +451,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(WhOutSaveEnter enter) {
         List<SavePartProductEnter> savePartProductEnterList = new ArrayList<>();
@@ -653,7 +654,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         OpeOutwhTrace opeOutwhTrace = OpeOutwhTrace.builder()
@@ -680,7 +681,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void lockStock(List<Long> ids) {
 
         //查询子订单信息
@@ -697,7 +698,7 @@ public class WhOutServiceImpl implements WhOutService {
 
         //库存总表锁定库存
         outwhOrderBList.forEach(item -> {
-            Boolean stockExist=Boolean.FALSE;
+            Boolean stockExist = Boolean.FALSE;
             for (OpeStock stock : opeStocks) {
                 //库存锁定
                 if (item.getStockId().equals(stock.getId())) {
@@ -705,14 +706,14 @@ public class WhOutServiceImpl implements WhOutService {
                     if (stock.getAvailableTotal() < item.getTotalCount()) {
                         throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
                     }
-                    stockExist=Boolean.TRUE;
+                    stockExist = Boolean.TRUE;
                     stock.setLockTotal(stock.getLockTotal() + item.getTotalCount());
                     stock.setAvailableTotal(stock.getAvailableTotal() - item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     break;
                 }
             }
-            if (!stockExist){
+            if (!stockExist) {
                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
             }
         });

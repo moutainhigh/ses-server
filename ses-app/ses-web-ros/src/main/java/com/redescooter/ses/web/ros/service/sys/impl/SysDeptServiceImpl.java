@@ -53,9 +53,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -114,7 +114,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private StaffService staffService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
         //保存集合
@@ -165,10 +165,11 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
-        if(enter.getPid() != null && enter.getPid() != -1){
-            checkDeptStatus(enter.getPid(),true);
+        if (enter.getPid() != null && enter.getPid() != -1) {
+            checkDeptStatus(enter.getPid(), true);
         }
 
         List<OpeSysDept> saveDeptList = new ArrayList<>();
@@ -182,29 +183,30 @@ public class SysDeptServiceImpl implements SysDeptService {
 
         }
         // 校验部门名称是否重复(同一父级部门下)
-        checkDeptName(enter.getName(),enter.getPid(),null);
+        checkDeptName(enter.getName(), enter.getPid(), null);
         OpeSysDept dept = this.addDept(enter);
         sysDeptService.save(dept);
         try {
             // todo 新增完之后刷新缓存（暂时先这么处理）  这个后面会统一改掉
             staffService.inintUserMsg(enter.getUserId());
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
 
     // 校验部门名称是否重复(新增和编辑都走这个校验)、
     // 追加  同一个父级部门下面的部门名称不能重复
-    public void checkDeptName(String deptName, Long parentId, Long deptId){
+    public void checkDeptName(String deptName, Long parentId, Long deptId) {
         QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
-        qw.eq(OpeSysDept.COL_NAME,deptName);
-        qw.eq(OpeSysDept.COL_P_ID,parentId);
-        if (deptId != null){
+        qw.eq(OpeSysDept.COL_NAME, deptName);
+        qw.eq(OpeSysDept.COL_P_ID, parentId);
+        if (deptId != null) {
             // 编辑走这里
-            qw.ne(OpeSysDept.COL_ID,deptId);
+            qw.ne(OpeSysDept.COL_ID, deptId);
         }
         int count = opeSysDeptService.count(qw);
-        if (count > 0){
+        if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_NAME_EXIST.getCode(), ExceptionCodeEnums.DEPT_NAME_EXIST.getMessage());
         }
     }
@@ -218,24 +220,24 @@ public class SysDeptServiceImpl implements SysDeptService {
      */
     @Override
     public List<DeptTreeListResult> deptTrees(DeptListEnter enter) {
-        Set<Long> deptIds =  new HashSet<>();
+        Set<Long> deptIds = new HashSet<>();
         String key = JedisConstant.LOGIN_ROLE_DATA + enter.getUserId();
         // 通过这个来判断是不是管理员账号，默认为是管理员
         boolean flag = true;
-        if (jedisCluster.exists(key)){
+        if (jedisCluster.exists(key)) {
             flag = false;
             Map<String, String> map = jedisCluster.hgetAll(key);
             String ids = map.get("deptIds");
-            if(!Strings.isNullOrEmpty(ids)){
+            if (!Strings.isNullOrEmpty(ids)) {
                 for (String s : ids.split(",")) {
                     deptIds.addAll(deptServiceMapper.getParentIds(Long.valueOf(s)));
                 }
-            }else{
+            } else {
                 // 部门的树形结构特殊处理 到这里说明是只看自己的
                 QueryWrapper<OpeSysDept> qw = new QueryWrapper<>();
-                qw.eq(OpeSysDept.COL_CREATED_BY,enter.getUserId());
+                qw.eq(OpeSysDept.COL_CREATED_BY, enter.getUserId());
                 List<OpeSysDept> depts = sysDeptService.list(qw);
-                if(CollectionUtils.isNotEmpty(depts)){
+                if (CollectionUtils.isNotEmpty(depts)) {
                     List<Long> idList = depts.stream().map(OpeSysDept::getId).collect(Collectors.toList());
                     for (Long id : idList) {
                         deptIds.addAll(deptServiceMapper.getParentIds(id));
@@ -243,10 +245,9 @@ public class SysDeptServiceImpl implements SysDeptService {
                 }
             }
         }
-        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter,flag?null:deptIds);
+        List<DeptTreeListResult> deptTreeReslts = deptServiceMapper.getDeptList(enter, flag ? null : deptIds);
         return TreeUtil.build(deptTreeReslts, Constant.DEPT_TREE_ROOT_ID);
     }
-
 
 
     @Override
@@ -282,7 +283,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteDept(IdEnter enter) {
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         if (CollectionUtils.isNotEmpty(list)) {
@@ -290,7 +291,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         // 查当前部门下面的人数
         Integer count = taffService.deptStaffCount(enter.getId(), 1);
-        if(count > 0){
+        if (count > 0) {
             // 部门下面有人  部门不能删除
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
@@ -345,7 +346,6 @@ public class SysDeptServiceImpl implements SysDeptService {
 
 
     public int recurCount(int count, DeptTreeReslt deptTreeReslt, List<DeptTreeReslt> list) {
-
         List<DeptTreeReslt> parent = new ArrayList<>();
         List<DeptTreeReslt> child = new ArrayList<>();
         for (DeptTreeReslt treeReslt : list) {
@@ -389,6 +389,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult edit(EditDeptEnter enter) {
         List<OpeSysDept> updateDeptList = new ArrayList<>();
         OpeSysDept checkDept = null;
@@ -476,34 +477,34 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
         if (enter.getPid() != null && enter.getPid() != -1) {
-            checkDeptStatus(enter.getPid(),true);
+            checkDeptStatus(enter.getPid(), true);
         }
         // 校验编辑的时候  是不是把自己选成了父级部门（神级操作）
-        if (enter.getId().equals(enter.getPid())){
+        if (enter.getId().equals(enter.getPid())) {
             // 把自己当成了自己的父级部门
             throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_ERROR.getCode(), ExceptionCodeEnums.PARENT_DEPT_ERROR.getMessage());
         }
         // 校验部门名称是否重复(同一父级部门下)
-        checkDeptName(enter.getName(),enter.getPid(),enter.getId());
+        checkDeptName(enter.getName(), enter.getPid(), enter.getId());
         SelectDeptResult deptResult = deptServiceMapper.selectEditDept(enter.getId());
         OpeSysDept opeSysDept = new OpeSysDept();
         List<Long> ids = new ArrayList<>();
         if (deptResult == null) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        if (deptResult.getPId().equals(Constant.DEPT_TREE_ROOT_ID) && enter.getDeptStatus() == 2){
+        if (deptResult.getPId().equals(Constant.DEPT_TREE_ROOT_ID) && enter.getDeptStatus() == 2) {
             // 如果是顶级部门 不能禁用
             throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_DISABLE.getMessage());
         }
         if (deptResult.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             // 禁用部门  部门下面的子部门全部禁用
             List<OpeSysDept> childDepts = deptServiceMapper.getChildDept(deptResult.getId());
-            if (CollectionUtils.isNotEmpty(childDepts)){
-                List<OpeSysDept>  depts = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(childDepts)) {
+                List<OpeSysDept> depts = new ArrayList<>();
                 for (OpeSysDept dept : childDepts) {
                     dept.setDeptStatus(DeptStatusEnums.DEPARTMENT.getValue());
                     depts.add(dept);
@@ -536,16 +537,16 @@ public class SysDeptServiceImpl implements SysDeptService {
                 roleService.disableRole(ids);
             }
         }
-        if (deptResult.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue())){
+        if (deptResult.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue()) && enter.getDeptStatus().equals(DeptStatusEnums.COMPANY.getValue())) {
             if (enter.getPid() != null) {
                 OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, enter.getPid()));
-                if (one!=null&&one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())){
+                if (one != null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
                     throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
                 }
             }
         }
         BeanUtils.copyProperties(enter, opeSysDept);
-        if (enter.getPid()!=null){
+        if (enter.getPid() != null) {
             opeSysDept.setLevel(addDeptLevel(enter.getPid()));
         }
         opeSysDept.setPId(enter.getPid());
@@ -556,6 +557,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         //不可删除根基部门（公司）
         List<OpeSysDept> sysDeptList = opeSysDeptService.list();
@@ -614,9 +616,9 @@ public class SysDeptServiceImpl implements SysDeptService {
         }
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, byId.getPId()));
-        if (one != null){
+        if (one != null) {
 //            throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getCode(), ExceptionCodeEnums.PARENT_DEPT_NOT_EXIST.getMessage());
-            if (one.getDeptStatus() != null && one.getDeptStatus() == 2){
+            if (one.getDeptStatus() != null && one.getDeptStatus() == 2) {
                 throw new SesWebRosException(ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getCode(), ExceptionCodeEnums.PARENT_DEPT_IS_DISABLE.getMessage());
             }
         }
@@ -711,14 +713,14 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    public void checkDeptStatus(Long deptId,boolean flag) {
+    public void checkDeptStatus(Long deptId, boolean flag) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, deptId));
-        if (one!=null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
+        if (one != null && one.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
         // 临时追加  部门最多加到4级
-        if(flag){
-            if(one.getLevel() != null && one.getLevel() >= 4){
+        if (flag) {
+            if (one.getLevel() != null && one.getLevel() >= 4) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEPT_LEVEL_ERROR.getCode(), ExceptionCodeEnums.DEPT_LEVEL_ERROR.getMessage());
             }
         }
@@ -734,9 +736,9 @@ public class SysDeptServiceImpl implements SysDeptService {
     public Integer addDeptLevel(Long pid) {
         OpeSysDept one = sysDeptService.getOne(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_ID, pid));
         Integer level = null;
-            if (one!=null){
-                level=one.getLevel()+1;
-            }
+        if (one != null) {
+            level = one.getLevel() + 1;
+        }
         return level;
     }
 

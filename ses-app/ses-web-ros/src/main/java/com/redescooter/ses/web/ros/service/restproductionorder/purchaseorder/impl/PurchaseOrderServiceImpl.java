@@ -129,9 +129,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @DubboReference
     private IdAppService idAppService;
 
-
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult purchaseSave(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
@@ -314,7 +313,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult purchaseEdit(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
@@ -456,7 +455,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult confirmOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -561,7 +560,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(CancelOrderEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -595,7 +594,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult closeOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -708,7 +707,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void purchaseStocking(Long purchaseId, Long userId) {
         // 备货中
@@ -729,7 +728,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseWaitDeliver(Long purchaseId,Long userId) {
        // 待发货
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -754,7 +753,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseSign(Long purchaseId,Long userId) {
         // 签收
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -789,6 +788,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);
