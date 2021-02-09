@@ -15,7 +15,7 @@ import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ import java.math.BigDecimal;
  * @Version：1.3
  * @create: 2020/02/20 11:14
  */
-@Service
+@DubboService
 public class IdScooterServiceImpl implements IdScooterService {
 
     @Autowired
@@ -50,7 +50,7 @@ public class IdScooterServiceImpl implements IdScooterService {
      * @date: 2020/2/20 11:11
      * @Version: SAAS 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult scooterNavigation(ScooterNavigationEnter enter) {
         // 查询TOC 车辆分配信息
