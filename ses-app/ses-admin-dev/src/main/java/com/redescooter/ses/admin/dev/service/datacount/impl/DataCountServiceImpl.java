@@ -1,16 +1,19 @@
 package com.redescooter.ses.admin.dev.service.datacount.impl;
 
 import com.redescooter.ses.admin.dev.service.datacount.DataCountService;
-import com.redescooter.ses.api.common.vo.count.*;
+import com.redescooter.ses.api.common.vo.count.CustomerCountEnter;
+import com.redescooter.ses.api.common.vo.count.CustomerCountResult;
+import com.redescooter.ses.api.common.vo.count.OrderCountResult;
+import com.redescooter.ses.api.common.vo.count.ScooterCountEnter;
+import com.redescooter.ses.api.common.vo.count.ScooterCountResult;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,9 +26,8 @@ import java.util.List;
 @Service
 public class DataCountServiceImpl implements DataCountService {
 
-    @Reference
+    @DubboReference
     private UserTokenService userTokenService;
-
 
     /**
      * 客户统计
@@ -180,7 +182,7 @@ public class DataCountServiceImpl implements DataCountService {
         ScooterCountResult result = new ScooterCountResult();
         // 如果没有传  就默认是当年的数据
         enter.setDateTime(enter.getDateTime() == null ? new Date() : enter.getDateTime());
-        List<String> dateList = new LinkedList();
+        List<String> dateList;
         dateList = OrderChartUtils.countDateList(enter.getType(), enter.getDateTime());
 
         // 构建三个集合 返回三种不同的车型
@@ -211,4 +213,5 @@ public class DataCountServiceImpl implements DataCountService {
         result.setScooterE125s(E125s);
         return result;
     }
+
 }

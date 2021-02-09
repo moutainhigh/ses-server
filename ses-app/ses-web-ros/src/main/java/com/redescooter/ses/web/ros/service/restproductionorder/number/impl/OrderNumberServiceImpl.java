@@ -44,13 +44,13 @@ public class OrderNumberServiceImpl implements OrderNumberService {
     private OpeInWhouseOrderService opeInWhouseOrderService;
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/28 12:51
      * @Param: enter
      * @Return: StringResult
      * @desc: 订单编号
-     * @param enter
      */
     @Override
     public StringResult orderNumber(OrderNumberEnter enter) {

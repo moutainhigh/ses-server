@@ -18,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,11 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
 
     @Autowired
     private OpeOpTraceService opeOpTraceService;
+
     @Autowired
     private OpeSysStaffService opeSysStaffService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -139,7 +141,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
      * @desc: 保存操作记录
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOpTraceEnter enter) {
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();

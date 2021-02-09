@@ -25,7 +25,7 @@ import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -43,7 +43,7 @@ import java.util.List;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class UserBaseServiceImpl implements UserBaseService {
 
     @Autowired
@@ -118,7 +118,7 @@ public class UserBaseServiceImpl implements UserBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAccountNode(SaveAccountNodeEnter enter) {
         PlaUserNode plaUserNode = new PlaUserNode();
@@ -144,6 +144,7 @@ public class UserBaseServiceImpl implements UserBaseService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveAccountNodeList(List<SaveAccountNodeEnter> enter) {
         List<PlaUserNode> saveList = new ArrayList<>();
         enter.forEach(item -> {
@@ -192,21 +193,21 @@ public class UserBaseServiceImpl implements UserBaseService {
 
 
     /**
-     * @Author Aleks
-     * @Description  跟Jerry确认判断这个邮箱对应的账号是否登录过，登录过则为已激活
-     * @Date  2020/8/25 15:38
-     * @Param [email]
      * @return
+     * @Author Aleks
+     * @Description 跟Jerry确认判断这个邮箱对应的账号是否登录过，登录过则为已激活
+     * @Date 2020/8/25 15:38
+     * @Param [email]
      **/
     @Override
     public boolean checkActivat(String email) {
         boolean flag = false;
         QueryWrapper<PlaUser> qw = new QueryWrapper<>();
-        qw.eq(PlaUser.COL_LOGIN_NAME,email);
+        qw.eq(PlaUser.COL_LOGIN_NAME, email);
         qw.isNotNull(PlaUser.COL_LAST_LOGIN_TIME);
         qw.last(" limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if(user != null){
+        if (user != null) {
             flag = true;
         }
         return flag;
@@ -215,12 +216,12 @@ public class UserBaseServiceImpl implements UserBaseService {
     @Override
     public Long getUserId(String email, List<Integer> types) {
         Long userId = 0L;
-        QueryWrapper<PlaUser>  qw = new QueryWrapper<>();
-        qw.eq(PlaUser.COL_LOGIN_NAME,email);
-        qw.in(PlaUser.COL_USER_TYPE,types);
+        QueryWrapper<PlaUser> qw = new QueryWrapper<>();
+        qw.eq(PlaUser.COL_LOGIN_NAME, email);
+        qw.in(PlaUser.COL_USER_TYPE, types);
         qw.last("limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if(user != null){
+        if (user != null) {
             userId = user.getId();
         }
         return userId;
@@ -231,11 +232,11 @@ public class UserBaseServiceImpl implements UserBaseService {
     @Override
     public void custDataSynchTenant(SynchTenantEnter synchTenantEnter) {
         // 客户信息修改的时候，名称、地址信息需要同步到租户表
-        QueryWrapper<PlaTenant>  qw = new QueryWrapper<>();
-        qw.eq(PlaTenant.COL_EMAIL,synchTenantEnter.getEmail());
+        QueryWrapper<PlaTenant> qw = new QueryWrapper<>();
+        qw.eq(PlaTenant.COL_EMAIL, synchTenantEnter.getEmail());
         qw.last("limit 1");
         PlaTenant tenant = tenantMapper.selectOne(qw);
-        if(tenant != null){
+        if (tenant != null) {
             tenant.setAddress(synchTenantEnter.getAddress());
             tenant.setTenantName(synchTenantEnter.getCompanyName());
             tenantMapper.updateById(tenant);

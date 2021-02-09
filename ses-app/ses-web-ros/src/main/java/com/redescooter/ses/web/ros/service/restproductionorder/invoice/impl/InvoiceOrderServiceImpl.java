@@ -9,7 +9,11 @@ import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums
 import com.redescooter.ses.api.common.enums.restproductionorder.invoice.InvoiceOrderStatusEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.outbound.OutBoundOrderTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeOutWhCombinBMapper;
@@ -18,11 +22,39 @@ import com.redescooter.ses.web.ros.dao.base.OpeOutWhScooterBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeOutWhouseOrderMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
+import com.redescooter.ses.web.ros.dm.OpeInvoiceCombinB;
+import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
+import com.redescooter.ses.web.ros.dm.OpeInvoicePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInvoiceScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInvoiceCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInvoicePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeInvoiceScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
@@ -32,7 +64,12 @@ import com.redescooter.ses.web.ros.service.restproductionorder.outbound.Outbound
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceSnResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.QueryStaffResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
@@ -45,13 +82,17 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutb
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -142,7 +183,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Autowired
     private OpeOutWhScooterBMapper opeOutWhScooterBMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -332,7 +373,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 备货
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult stockUp(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -586,7 +627,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc:
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveInvoiceEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
@@ -681,7 +722,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 装车
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult loading(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -725,7 +766,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @desc: 签收
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signFor(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
@@ -929,6 +970,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @return
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelInvoice(Long purchaseId,Long userId,String remark) {
         QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();
         qw.eq(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseId);
@@ -951,7 +993,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 发货单状态变待装车
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void invoiceWaitLoading(Long invoiceId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {
@@ -969,6 +1011,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
 
     // 发货单状态变待签收
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void invoiceWaitSign(Long invoiceId,Long userId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
         if (opeInvoiceOrder == null) {

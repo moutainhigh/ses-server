@@ -13,15 +13,13 @@ import com.redescooter.ses.api.foundation.vo.message.UnReadMessageCountResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 /**
  * @ClassName:MessageController
@@ -35,7 +33,8 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/common/message", method = RequestMethod.POST)
 public class MessageController {
-    @Reference
+
+    @DubboReference
     private MessageService messageService;
 
     @PostMapping(value = "/list")

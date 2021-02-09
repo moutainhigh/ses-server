@@ -11,18 +11,31 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeEntrustOrder;
+import com.redescooter.ses.web.ros.dm.OpeOpTrace;
+import com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpePurchaseCombinB;
+import com.redescooter.ses.web.ros.dm.OpePurchaseOrder;
+import com.redescooter.ses.web.ros.dm.OpePurchasePartsB;
+import com.redescooter.ses.web.ros.dm.OpePurchaseScooterB;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeEntrustOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeOpTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeOrderStatusFlowService;
+import com.redescooter.ses.web.ros.service.base.OpePurchaseCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpePurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpePurchaseScooterBService;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
@@ -32,17 +45,32 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoi
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PuraseListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseCalendarEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseCalendarResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseCombinEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchasePartsEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseScooterEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -98,12 +126,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
-
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult purchaseSave(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
@@ -286,7 +313,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult purchaseEdit(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
@@ -428,7 +455,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult confirmOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -533,7 +560,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(CancelOrderEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -567,7 +594,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult closeOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -680,7 +707,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void purchaseStocking(Long purchaseId, Long userId) {
         // 备货中
@@ -701,7 +728,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseWaitDeliver(Long purchaseId,Long userId) {
        // 待发货
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -726,7 +753,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseSign(Long purchaseId,Long userId) {
         // 签收
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -761,6 +788,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);

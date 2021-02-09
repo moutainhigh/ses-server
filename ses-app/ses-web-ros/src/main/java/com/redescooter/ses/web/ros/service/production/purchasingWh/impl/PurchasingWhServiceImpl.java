@@ -59,31 +59,31 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class PurchasingWhServiceImpl implements PurchasingWhService {
-    
+
     @Autowired
     private PurchasingWhServiceMapper purchasingWhServiceMapper;
-    
+
     @Autowired
     private OpePartsProductBService opePartsProductBService;
-    
+
     @Autowired
     private OpePartsProductService opePartsProductService;
-    
+
     @Autowired
     private OpeStockService opeStockService;
-    
+
     @Autowired
     private OpeWhseService opeWhseService;
-    
+
     @Autowired
     private OpeStockPurchasService opeStockPurchasService;
-    
+
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
 
     @Autowired
     private OpeProductionPartsRelationService opeProductionPartsRelationService;
-    
+
     /**
      * 类型统计
      *
@@ -93,29 +93,29 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Override
     public Map<String, Integer> countByType(GeneralEnter enter) {
         Map<String, Integer> map = Maps.newHashMap();
-        
+
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
         QueryWrapper<OpeStock> availableWrapper = new QueryWrapper<>();
         availableWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         availableWrapper.gt(OpeStock.COL_AVAILABLE_TOTAL, 0);
-        
+
         //采购仓库
         int availableCount = opeStockService.count(availableWrapper);
         map.put(PurchasingWhTypeEnums.AVAILABLE.getValue(), availableCount);
-        
+
         //质检中
         int qcCount = purchasingWhServiceMapper.countByTypeQcCount(enter);
         map.put(PurchasingWhTypeEnums.PURCHASING.getValue(), qcCount);
-        
+
         //待入库
         int tobeStoredCount = purchasingWhServiceMapper.countByTypetobeStoredCount(enter);
         map.put(PurchasingWhTypeEnums.TO_BE_STORED.getValue(), tobeStoredCount);
-        
+
         List<OpeWhse> opeWhseList = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue(), WhseTypeEnums.ASSEMBLY.getValue()));
-        
+
         OpeWhse allocateWh = null;
         OpeWhse assembleyWh = null;
-        
+
         for (OpeWhse whse : opeWhseList) {
             if (StringUtils.equals(whse.getType(), WhseTypeEnums.ALLOCATE.getValue())) {
                 allocateWh = whse;
@@ -124,13 +124,13 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 assembleyWh = whse;
             }
         }
-        
+
         //出库列表统计 （调拨入库、组装入库）
         int outWhCountAssembly = purchasingWhServiceMapper.countByTypeOutWhCountAssembly(enter, allocateWh.getId());
         int outWhCountAllocate = purchasingWhServiceMapper.countByTypeOutWhCountAllocate(enter, assembleyWh.getId());
-        
+
         map.put(PurchasingWhTypeEnums.OUT_WH.getValue(), outWhCountAssembly + outWhCountAllocate);
-        
+
         for (PurchasingWhTypeEnums item : PurchasingWhTypeEnums.values()) {
             if (!map.containsKey(item.getValue())) {
                 map.put(item.getValue(), 0);
@@ -138,7 +138,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         }
         return map;
     }
-    
+
     /**
      * 类型 列表
      *
@@ -154,7 +154,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         map.remove(BomCommonTypeEnums.COMBINATION.getValue());
         return map;
     }
-    
+
     /**
      * 可用列表
      *
@@ -167,7 +167,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             return PageResult.createZeroRowResult(enter);
         }
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
-        
+
         int count = purchasingWhServiceMapper.availableListCount(enter, opeWhse.getId());
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -222,8 +222,9 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                             .build());
                     batchNMap.put(item.getStockId(), availableListBatchNList);
                 }
-            };
-            log.info("返回的批次号："+batchNMap.toString());
+            }
+            ;
+            log.info("返回的批次号：" + batchNMap.toString());
             //封装数据返回
             availableList.forEach(item -> {
                 // type 转换一下
@@ -236,7 +237,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         }
         return PageResult.create(enter, count, availableList);
     }
-    
+
     /**
      * 质检中列表
      *
@@ -251,7 +252,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         }
         return PageResult.create(enter, count, purchasingWhServiceMapper.qcingList(enter));
     }
-    
+
     /**
      * 待入库列表
      *
@@ -266,7 +267,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         }
         return PageResult.create(enter, count, purchasingWhServiceMapper.tobeStoredList(enter));
     }
-    
+
     /**
      * 出库列表
      *
@@ -278,10 +279,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         List<OpeWhse> assemblyWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ASSEMBLY.getValue()));
         //调拨仓库数据
         List<OpeWhse> allocateWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.ALLOCATE.getValue()));
-        
-        
+
+
         Integer num = purchasingWhServiceMapper.outWhCount(enter, Lists.newArrayList(assemblyWhse.get(0).getId()), Lists.newArrayList(allocateWhse.get(0).getId()));
-        
+
         List<OutWhResult> results = purchasingWhServiceMapper.outWhList(enter, Lists.newArrayList(assemblyWhse.get(0).getId()), Lists.newArrayList(allocateWhse.get(0).getId()));
 
 //        //组装仓库 数据
@@ -299,10 +300,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 //        List<OutWhResult> whResultListAllocate = purchasingWhServiceMapper.outWhListAllocate(enter, Lists.newArrayList(allocateWhse.get(0).getId()));
 //        log.info("后面的本次查出来的数量："+whResultListAllocate.size());
 //        whResultListAllocate.addAll(whResultListAssembly);
-        
+
         return PageResult.create(enter, num, results);
     }
-    
+
     /**
      * 废料列表
      *
@@ -318,7 +319,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 //        return PageResult.create(enter, count, purchasingWhServiceMapper.wasteList(enter));
         return PageResult.createZeroRowResult(enter);
     }
-    
+
     /**
      * 可组装的产品列表
      *
@@ -332,38 +333,38 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         for (ProductModelEnums item : ProductModelEnums.values()) {
             result.put(item.getValue(), 0);
         }
-        
+
         //查询出所有商品及bom 规则
         Map<Long, List<OpeProductionPartsRelation>> productPartMap = new HashMap<>();
 
         QueryWrapper<OpeProductionScooterBom> opeProductionScooterBomQueryWrapper = new QueryWrapper<>();
         opeProductionScooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_BOM_STATUS,
-            ProductionBomStatusEnums.ACTIVE.getValue());
+                ProductionBomStatusEnums.ACTIVE.getValue());
         List<OpeProductionScooterBom> partsProductList =
-            opeProductionScooterBomService.list(opeProductionScooterBomQueryWrapper);
+                opeProductionScooterBomService.list(opeProductionScooterBomQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductList)) {
             return result;
         }
         List<Long> productIds =
-            partsProductList.stream().map(OpeProductionScooterBom::getId).collect(Collectors.toList());
-        
+                partsProductList.stream().map(OpeProductionScooterBom::getId).collect(Collectors.toList());
+
         //查询bom 规则
 
         QueryWrapper<OpeProductionPartsRelation> opeProductionPartsRelatioQueryWrapper = new QueryWrapper<>();
         opeProductionPartsRelatioQueryWrapper.in(OpeProductionPartsRelation.COL_PRODUCTION_ID, productIds);
         opeProductionPartsRelatioQueryWrapper.in(OpeProductionPartsRelation.COL_PRODUCTION_TYPE,
-            ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
+                ProductionPartsRelationTypeEnums.SCOOTER_BOM.getValue());
         List<OpeProductionPartsRelation> partsProductBList =
-            opeProductionPartsRelationService.list(opeProductionPartsRelatioQueryWrapper);
+                opeProductionPartsRelationService.list(opeProductionPartsRelatioQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductBList)) {
             return result;
         }
         //过滤出map 产品结构
         Set<Long> partIds =
-            partsProductBList.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toSet());
+                partsProductBList.stream().map(OpeProductionPartsRelation::getPartsId).collect(Collectors.toSet());
         productPartMap =
-            partsProductBList.stream().collect(Collectors.groupingBy(OpeProductionPartsRelation::getProductionId));
-        
+                partsProductBList.stream().collect(Collectors.groupingBy(OpeProductionPartsRelation::getProductionId));
+
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
@@ -381,10 +382,10 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         if (CollectionUtils.isEmpty(stockList)) {
             return result;
         }
-        
+
         // 确认可组装的产品的最大值
         Map<Long, Integer> canAssembledMap = Maps.newHashMap();
-        
+
         flag1:
         for (Map.Entry<Long, List<OpeProductionPartsRelation>> entry : productPartMap.entrySet()) {
             Long key = entry.getKey();
@@ -392,14 +393,14 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
             Integer maxTotal = 0;
             int total = 0;
             if (productIds.contains(key)) {
-                
+
                 flag2:
                 for (OpeProductionPartsRelation item : value) {
-                    
+
                     flag3:
                     for (OpeStock stock : stockList) {
                         if (item.getPartsId().equals(stock.getMaterielProductId())) {
-                            
+
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
                             if (maxTotal == 0) {
                                 total++;
@@ -423,14 +424,14 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                 canAssembledMap.put(key, maxTotal);
             }
         }
-        
+
         if (canAssembledMap.isEmpty()) {
             return result;
         }
         //根据产品型号分类
         return result;
     }
-    
+
     private List<OpeWhse> checkWhse(List<String> types) {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);

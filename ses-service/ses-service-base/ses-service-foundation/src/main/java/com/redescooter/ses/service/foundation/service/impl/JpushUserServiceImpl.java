@@ -17,7 +17,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +33,15 @@ import java.util.stream.Collectors;
  * author: jerry.li
  * create: 2019-05-22 11:40
  */
-
 @Slf4j
-@Service
+@DubboService
 public class JpushUserServiceImpl implements JpushUserService {
+
     @Autowired
     private PlaJpushUserMapper jpushUserMapper;
     @Autowired
     private JpushUserServiceMapper jpushUserServiceMapper;
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
     @Autowired
     private PlaUserMapper userMapper;
@@ -60,7 +61,7 @@ public class JpushUserServiceImpl implements JpushUserService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(JpushUserEnter enter) {
 
@@ -69,17 +70,17 @@ public class JpushUserServiceImpl implements JpushUserService {
         }
 
         PlaJpushUser jpushUser = null;
-        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId(),enter.getUserId());
+        JpushUserData jpushUserData = jpushUserServiceMapper.queryJpushUserByRegistrationId(enter.getRegistrationId(), enter.getUserId());
 
 
         // 如果发现当前用户绑定有其他设备 直接删除设备绑定的令牌
         List<PlaJpushUser> plaJpushUserList = jpushUserMapper
-            .selectList(new QueryWrapper<PlaJpushUser>().eq(PlaJpushUser.COL_USER_ID, enter.getUserId()));
+                .selectList(new QueryWrapper<PlaJpushUser>().eq(PlaJpushUser.COL_USER_ID, enter.getUserId()));
         if (CollectionUtils.isNotEmpty(plaJpushUserList)) {
             List<Long> ids = plaJpushUserList.stream().map(PlaJpushUser::getId).collect(Collectors.toList());
             jpushUserMapper
                     .delete(new LambdaQueryWrapper<PlaJpushUser>()
-                            .in(PlaJpushUser::getId,ids));
+                            .in(PlaJpushUser::getId, ids));
         }
 
         //用户首次登录极光
@@ -88,8 +89,8 @@ public class JpushUserServiceImpl implements JpushUserService {
             BeanUtils.copyProperties(enter, jpushUser);
             jpushUser.setId(idSerService.getId(SequenceName.PLA_JPUSHUSER));
             jpushUser.setStatus(enter.getStatus());
-            jpushUser.setUserId(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue()) ?enter.getUserId():null);
-            jpushUser.setStatusCode(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue())?LOGIN:LOGOUT);
+            jpushUser.setUserId(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue()) ? enter.getUserId() : null);
+            jpushUser.setStatusCode(enter.getStatus().equals(LoginPushStatusEnums.LOGIN_IN.getValue()) ? LOGIN : LOGOUT);
             jpushUser.setPlatformType(enter.getPlatformType());
             jpushUser.setAudienceType(enter.getAudienceType());
             jpushUser.setCreateBy(enter.getUserId());

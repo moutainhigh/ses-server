@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class EmailServiceImpl implements EmailService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMailTemplateEnter enter) {
 
         UpdateMailTemplateEnter saveVO = new UpdateMailTemplateEnter();
@@ -49,6 +51,7 @@ public class EmailServiceImpl implements EmailService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult update(UpdateMailTemplateEnter enter) {
         return mailTemplateManageService.save(enter);
     }
@@ -60,6 +63,7 @@ public class EmailServiceImpl implements EmailService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         return mailTemplateManageService.delete(enter);
     }

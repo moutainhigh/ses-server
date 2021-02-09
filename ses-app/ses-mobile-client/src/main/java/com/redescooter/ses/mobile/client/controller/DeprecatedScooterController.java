@@ -11,11 +11,16 @@ import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 该接口已废弃,改用 {@link com.redescooter.ses.mobile.client.controller.ScooterController}
+ *
  * @ClassName:ScooterController
  * @description: ScooterController
  * @author: Alex
@@ -29,9 +34,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/deprecated/scooter", method = RequestMethod.POST)
 public class DeprecatedScooterController {
 
-    @Reference
+    @DubboReference
     private ScooterMobileService scooterMobileService;
-    @Reference
+
+    @DubboReference
     private IdScooterService idScooterService;
 
     @ApiOperation(value = "车辆信息")
@@ -47,7 +53,6 @@ public class DeprecatedScooterController {
     }
 
     // 为C端 在开放两个 开始导航 、结束导航接口
-
     @ApiOperation(value = "车辆导航")
     @RequestMapping(value = "/scooterNavigation")
     public Response<GeneralResult> scooterNavigation(@ModelAttribute ScooterNavigationEnter enter) {

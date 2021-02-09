@@ -9,7 +9,7 @@ import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/userProfile", method = RequestMethod.POST)
 public class UserProfileMobileController {
 
-    @Reference
+    @DubboReference
     private UserProfileMobileService userProfileMobileService;
 
     @ApiOperation(value = "个人信息")
@@ -44,6 +44,5 @@ public class UserProfileMobileController {
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
         return new Response<>(userProfileMobileService.saveUserProfile(enter));
     }
-
 
 }

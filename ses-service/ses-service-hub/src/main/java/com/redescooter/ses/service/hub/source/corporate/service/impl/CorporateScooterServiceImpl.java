@@ -8,9 +8,10 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorTenantScooter;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorTenantScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,15 +24,14 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/04/26 11:55
  */
-@Service
+@DubboService
 public class CorporateScooterServiceImpl implements CorporateScooterService {
 
     @Autowired
     private CorTenantScooterService corTenantScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-
 
     /**
      * 保存整车
@@ -40,6 +40,7 @@ public class CorporateScooterServiceImpl implements CorporateScooterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveScooter(List<HubSaveScooterEnter> enter) {
 
         List<CorTenantScooter> saveConTenantScooterList = new ArrayList<>();

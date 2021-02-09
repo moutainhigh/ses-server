@@ -30,7 +30,6 @@ public class QcOrderController {
     @Resource
     private QcOrderService qcOrderService;
 
-
     /**
      * 质检单类型数量统计
      *

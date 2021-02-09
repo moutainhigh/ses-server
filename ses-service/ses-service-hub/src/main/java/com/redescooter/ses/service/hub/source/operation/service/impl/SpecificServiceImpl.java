@@ -10,7 +10,7 @@ import com.redescooter.ses.service.hub.source.operation.dao.SpecificDefGroupMapp
 import com.redescooter.ses.service.hub.source.operation.dao.SpecificDefMapper;
 import com.redescooter.ses.service.hub.source.operation.dao.SpecificGroupMapper;
 import com.redescooter.ses.service.hub.source.operation.dao.SpecificTypeMapper;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author assert
  * @date 2020/12/10 17:14
  */
-@Service
+@DubboService
 public class SpecificServiceImpl implements SpecificService {
 
     @Resource

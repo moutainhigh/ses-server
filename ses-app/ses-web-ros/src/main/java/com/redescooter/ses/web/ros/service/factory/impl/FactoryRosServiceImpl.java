@@ -6,13 +6,15 @@ import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.FactoryServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeFactoryMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeFactoryTrace;
 import com.redescooter.ses.web.ros.dm.OpeSysRpsUser;
@@ -27,17 +29,20 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class FactoryRosServiceImpl implements FactoryRosService {
@@ -57,14 +62,12 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     @Autowired
     private OpeSysRpsUserService opeSysRpsUserService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-
         List<CountByStatusResult> statusResults = factoryServiceMapper.countStatus(enter);
-
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : statusResults) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -77,28 +80,28 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return map;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(FactorySaveEnter factorySaveEnter) {
-      //employeeListEnter参数值去空格
-      FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+        //employeeListEnter参数值去空格
+        FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
         checkSaveFactoryParameter(enter);
         //邮箱校验
-        Boolean booleanResult = checkMail(enter.getContactEmail(),"");
-        if (!booleanResult){
+        Boolean booleanResult = checkMail(enter.getContactEmail(), "");
+        if (!booleanResult) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
-      //员工名称首位大写
-      String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
-      if (StringUtils.isNotEmpty(enter.getContactFirstName())){
-          String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
-          enter.setContactFirstName(firstName);
-      }
-        if (StringUtils.isNotEmpty(enter.getContactLastName())){
-          String lastName = SesStringUtils.upperCaseString(enter.getContactLastName());
+        //员工名称首位大写
+        String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
+        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
+            String firstName = SesStringUtils.upperCaseString(enter.getContactFirstName());
+            enter.setContactFirstName(firstName);
+        }
+        if (StringUtils.isNotEmpty(enter.getContactLastName())) {
+            String lastName = SesStringUtils.upperCaseString(enter.getContactLastName());
             enter.setContactLastName(lastName);
         }
-        if (StringUtils.isNotEmpty(enter.getContactFullName())){
+        if (StringUtils.isNotEmpty(enter.getContactFullName())) {
             String lastName = SesStringUtils.upperCaseString(enter.getContactFullName());
             enter.setContactFullName(lastName);
         }
@@ -110,7 +113,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         factorySave.setId(idAppService.getId(SequenceName.OPE_FACTORY));
         factorySave.setDr(0);
         factorySave.setStatus(FactoryStatusEnum.NORMAL.getValue());
-        if(SesStringUtils.isNoneBlank(enter.getFactoryLatitude(),enter.getFactoryLongitude())){
+        if (SesStringUtils.isNoneBlank(enter.getFactoryLatitude(), enter.getFactoryLongitude())) {
             factorySave.setFactoryLatitude(new BigDecimal(enter.getFactoryLatitude()));
             factorySave.setFactoryLongitude(new BigDecimal(enter.getFactoryLongitude()));
         }
@@ -129,13 +132,14 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         // 生成工厂的账号信息
         try {
             createFactoryUser(factorySave);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
 
     // 通过邮箱创建工厂的RPS登陆账号
-    public void createFactoryUser(OpeFactory factory){
+    public void createFactoryUser(OpeFactory factory) {
         OpeSysRpsUser user = new OpeSysRpsUser();
         int salt = RandomUtils.nextInt(10000, 99999);
         String decryptPassword = "RedEScooter2019";
@@ -151,38 +155,37 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     }
 
 
-    public Boolean checkMail(String mail,String idStr) {
-
+    public Boolean checkMail(String mail, String idStr) {
         QueryWrapper<OpeFactory> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeFactory.COL_CONTACT_EMAIL, mail);
         wrapper.eq(OpeFactory.COL_DR, 0);
-        if(!Strings.isNullOrEmpty(idStr)){
+        if (!Strings.isNullOrEmpty(idStr)) {
             // 修改的时候,排除当前的这条数据
             wrapper.ne(OpeFactory.COL_ID, Long.parseLong(idStr));
         }
-        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) > 0 ? Boolean.FALSE  : Boolean.TRUE;
+        Boolean mailBoolean = opeFactoryMapper.selectCount(wrapper) > 0 ? Boolean.FALSE : Boolean.TRUE;
         return mailBoolean;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(FactoryEditEnter factorySaveEnter) {
-      //employeeListEnter参数值去空格
-      FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
-      checkSaveFactoryParameter(enter);
-        Boolean mailBoolean = checkMail(enter.getContactEmail(),factorySaveEnter.getId().toString());
-        if (!mailBoolean){
+        //employeeListEnter参数值去空格
+        FactorySaveEnter enter = SesStringUtils.objStringTrim(factorySaveEnter);
+        checkSaveFactoryParameter(enter);
+        Boolean mailBoolean = checkMail(enter.getContactEmail(), factorySaveEnter.getId().toString());
+        if (!mailBoolean) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //员工名称首位大写
-      String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
-      if(StringUtils.isNotEmpty(enter.getContactFirstName())){
-          enter.setContactFirstName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
-      }
-      if (StringUtils.isNotEmpty(enter.getContactFirstName())){
-          enter.setContactLastName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
-      }
-      enter.setFactoryName(factoryName);
+        String factoryName = SesStringUtils.upperCaseString(enter.getFactoryName());
+        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
+            enter.setContactFirstName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
+        }
+        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
+            enter.setContactLastName(SesStringUtils.upperCaseString(enter.getContactFirstName()));
+        }
+        enter.setFactoryName(factoryName);
         OpeFactory factoryEdit = new OpeFactory();
         BeanUtils.copyProperties(enter, factoryEdit);
         factoryEdit.setUpdatedBy(enter.getUserId());
@@ -225,7 +228,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return PageResult.create(page, count, list);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveFactoryTrace(String event, OpeFactory factory) {
         OpeFactoryTrace trace = new OpeFactoryTrace();
@@ -248,28 +251,28 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return new GeneralResult();
     }
 
-    private void   checkSaveFactoryParameter(FactorySaveEnter enter){
-      if (enter.getFactoryName().length() < 2 || enter.getFactoryName().length() > 40){
-        throw new SesWebRosException(ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getFactoryAddress().length() < 2 || enter.getFactoryAddress().length() > 40){
-        throw new SesWebRosException(ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20){
-        throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")){
-        throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20){
-        throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getFactoryTag().length() < 2 || enter.getFactoryTag().length() > 20){
-        throw new SesWebRosException(ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getMessage());
-      }
-      if (enter.getBusinessNumber().length() < 2 || enter.getBusinessNumber().length() > 20){
-        throw new SesWebRosException(ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getCode(), ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getMessage());
-      }
+    private void checkSaveFactoryParameter(FactorySaveEnter enter) {
+        if (enter.getFactoryName().length() < 2 || enter.getFactoryName().length() > 40) {
+            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getFactoryAddress().length() < 2 || enter.getFactoryAddress().length() > 40) {
+            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")) {
+            throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getFactoryTag().length() < 2 || enter.getFactoryTag().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (enter.getBusinessNumber().length() < 2 || enter.getBusinessNumber().length() > 20) {
+            throw new SesWebRosException(ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getCode(), ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getMessage());
+        }
     }
 
 }

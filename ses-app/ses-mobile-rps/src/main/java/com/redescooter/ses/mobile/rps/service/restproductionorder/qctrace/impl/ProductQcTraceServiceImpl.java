@@ -15,7 +15,7 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.qctrace.SaveProduct
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,13 +36,14 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ProductQcTraceServiceImpl implements ProductQcTraceService {
+
     @Autowired
     private OpeOrderQcTraceService opeOrderQcTraceService;
 
     @Autowired
     private OpeOrderQcItemService opeOrderQcItemService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -53,13 +54,11 @@ public class ProductQcTraceServiceImpl implements ProductQcTraceService {
      * @Return:
      * @desc: 保存质检记录
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveProductQcTraceEnter enter) {
-
         OpeOrderQcItem opeOrderQcItem = new OpeOrderQcItem();
         BeanUtils.copyProperties(enter,opeOrderQcItem);
-
         Long opeOrderQcItemId = idAppService.getId(SequenceName.OPE_ORDER_QC_ITEM);
         opeOrderQcItem.setId(opeOrderQcItemId);
         opeOrderQcItem.setDr(0);
@@ -69,10 +68,8 @@ public class ProductQcTraceServiceImpl implements ProductQcTraceService {
         opeOrderQcItem.setUpdatedTime(new Date());
         opeOrderQcItemService.saveOrUpdate(opeOrderQcItem);
 
-
         List<OpeOrderQcTrace> saveOpeOrderQcTraceList = new ArrayList<>();
         enter.getSaveProductQcInfoEnterList().forEach(item->{
-
             OpeOrderQcTrace opeOrderQcTrace = new OpeOrderQcTrace();
             BeanUtils.copyProperties(item,opeOrderQcTrace);
             opeOrderQcTrace.setId(idAppService.getId(SequenceName.OPE_ORDER_QC_TRACE));

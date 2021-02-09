@@ -25,15 +25,18 @@ public class RpsHomeServiceImpl implements RpsHomeService {
 
     @Autowired
     private QcOrderMapper qcOrderMapper;
+
     @Autowired
     private CombinationOrderMapper combinationOrderMapper;
+
     @Autowired
     private InWhOrderMapper inWhOrderMapper;
+
     @Autowired
     private OutWarehouseOrderMapper outWarehouseOrderMapper;
+
     @Autowired
     private EntrustOrderMapper entrustOrderMapper;
-
 
     @Override
     public Map<Integer, Integer> getAllOrderCount(GeneralEnter enter) {
@@ -46,7 +49,6 @@ public class RpsHomeServiceImpl implements RpsHomeService {
         map.put(RpsOrderTypeEnum.IN_WH_ORDER.getType(), inWhOrderMapper.allCountByInWhOrder());
         map.put(RpsOrderTypeEnum.OUT_WH_ORDER.getType(), outWarehouseOrderMapper.allCountByOutWhOrder());
         map.put(RpsOrderTypeEnum.ENTRUST_ORDER.getType(), entrustOrderMapper.allCountByEntrustOrder());
-
         return map;
     }
 

@@ -49,15 +49,15 @@ import com.redescooter.ses.service.mobile.b.service.base.CorTenantScooterService
 import com.redescooter.ses.service.mobile.b.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,18 +68,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@DubboService
 public class EdOrderServiceImpl implements EdOrderService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
-    @Reference
+    @DubboReference
     private PushService pushService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
     @Resource
     private EdOrderServiceMapper edOrderServiceMapper;
@@ -97,7 +97,6 @@ public class EdOrderServiceImpl implements EdOrderService {
     private CorUserProfileService corUserProfileService;
     @Resource
     private JedisService jedisService;
-
 
     /**
      * @param enter
@@ -143,7 +142,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 开始订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartEnter enter) {
         // 是否有正在进行的订单
@@ -185,19 +184,19 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 骑行数据维护
         CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
-        if(corExpressDelivery.getDrivenMileage().equals(null)){
+        if (corExpressDelivery.getDrivenMileage().equals(null)) {
             corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()).add(corExpressDelivery.getDrivenMileage()));
-        }else {
+        } else {
             corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         }
-        if(corExpressDelivery.getCo2().equals(null)){
+        if (corExpressDelivery.getCo2().equals(null)) {
             corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
-        }else {
+        } else {
             corExpressDelivery.setCo2(new BigDecimal(enter.getMileage()));
         }
-        if(corExpressDelivery.getSavings().equals(null)){
+        if (corExpressDelivery.getSavings().equals(null)) {
             corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
-        }else {
+        } else {
             corExpressDelivery.setSavings(new BigDecimal(enter.getMileage()));
         } // 刚开始第一单
         if (corExpressDelivery.getOrderCompleteNum() == 0) {
@@ -241,8 +240,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId()
-                , corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule()
-                , corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude()
+                , corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule()
+                , corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude()
                 , ExpressOrderStatusEnums.SHIPPING.getValue(),
                 ExpressOrderEventEnums.SHIPPING.getValue(), null);
 
@@ -259,7 +258,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 拒绝订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult refuse(EdRfuseEnter enter) {
         try {
@@ -338,8 +337,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                     deliveryDetail.getExpressOrderId(),
                     corDriverScooter.getDriverId(),
                     corDriverScooter.getScooterId(),
-                    corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
-                    corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
+                    corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule(),
+                    corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude(),
                     ExpressOrderStatusEnums.REJECTED.getValue(),
                     ExpressOrderEventEnums.REJECTED.getValue(),
                     enter.getReason());
@@ -423,7 +422,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: CompleteResult
      * @desc: 完成订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         //验证订单是否存在
@@ -522,8 +521,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId(),
-                corTenantScooter==null?new BigDecimal(enter.getLng()):corTenantScooter.getLongitule(),
-                corTenantScooter==null?new BigDecimal(enter.getLat()):corTenantScooter.getLatitude(),
+                corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule(),
+                corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude(),
                 ExpressOrderStatusEnums.COMPLETED.getValue(),
                 ExpressOrderEventEnums.COMPLETED.getValue(), null
         );
@@ -602,9 +601,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(reason);
         baseExpressOrderTraceEnter.setEventTime(new Date());
-        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng)? lng : "0"));
-        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat)? lat : "0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng)? lng : "0",StringUtils.isNotBlank(lat)? lat : "0"));
+        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) ? lng : "0"));
+        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) ? lat : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) ? lng : "0", StringUtils.isNotBlank(lat) ? lat : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);
@@ -664,6 +663,7 @@ public class EdOrderServiceImpl implements EdOrderService {
 
     /**
      * 获取用户业务类型 1-2B 2-2C
+     *
      * @param enter
      * @return
      */

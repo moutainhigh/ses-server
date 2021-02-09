@@ -13,8 +13,9 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
@@ -29,10 +30,10 @@ import java.util.stream.Collectors;
  * @date 2020/11/23 16:34
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterBbiServiceImpl implements ScooterBbiService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
     @Resource
     private ScooterBbiMapper scooterBbiMapper;
@@ -47,6 +48,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertScooterBbiByEmqX(ScooterBbiReportedDTO scooterReportedBbi) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());

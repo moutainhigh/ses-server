@@ -63,53 +63,75 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @Autowired
     private OpeOrderQcItemMapper opeOrderQcItemMapper;
+
     @Autowired
     private OpeOrderQcTraceMapper opeOrderQcTraceMapper;
+
     @Autowired
     private ProductionQualityTemplateMapper templateMapper;
+
     @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
+
     @Autowired
     private ProductionCombinBomMapper combinBomMapper;
+
     @Autowired
     private ProductionPartsMapper partsMapper;
+
     @Autowired
     private QcOrderMapper qcOrderMapper;
+
     @Autowired
     private QcScooterMapper qcScooterMapper;
+
     @Autowired
     private QcCombinMapper qcCombinMapper;
+
     @Autowired
     private QcPartsMapper qcPartsMapper;
+
     @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
+
     @Autowired
     private OpeProductionPurchaseOrderService opeProductionPurchaseOrderService;
+
     @Autowired
     private OpeOutWhouseOrderService opeOutWhouseOrderService;
+
     @Autowired
     private CombinationOrderMapper combinationOrderMapper;
+
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+
     @Autowired
     private OpeWmsQualifiedScooterStockService opeWmsQualifiedScooterStockService;
+
     @Autowired
     private OpeWmsQualifiedCombinStockService opeWmsQualifiedCombinStockService;
+
     @Autowired
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
+
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
+
     @Autowired
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+
     @Autowired
     private WmsScooterStockMapper wmsScooterStockMapper;
+
     @Autowired
     private WmsCombinStockMapper wmsCombinStockMapper;
+
     @Autowired
     private WmsPartsStockMapper wmsPartsStockMapper;
-
 
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
@@ -154,7 +176,6 @@ public class QcOrderServiceImpl implements QcOrderService {
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
     }
 
@@ -827,7 +848,6 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
-
         return resultDTO;
     }
 

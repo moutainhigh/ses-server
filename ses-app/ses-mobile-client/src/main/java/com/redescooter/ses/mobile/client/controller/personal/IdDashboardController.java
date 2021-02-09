@@ -1,22 +1,20 @@
 package com.redescooter.ses.mobile.client.controller.personal;
 
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.c.service.IdDashboardService;
 import com.redescooter.ses.api.mobile.c.vo.AllScooterChartResult;
 import com.redescooter.ses.api.mobile.c.vo.ScooterChartResult;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName:IdDashboardController
@@ -25,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
  * @Version：1.3
  * @create: 2020/02/20 11:25
  */
-
 @Slf4j
 @Api(tags = {"数据统计模块"})
 @CrossOrigin
@@ -33,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/id", method = RequestMethod.POST)
 public class IdDashboardController {
 
-    @Reference
+    @DubboReference
     private IdDashboardService idDashboardService;
 
     @ApiOperation(value = "骑行数据总计",response = ScooterChartResult.class)
@@ -41,7 +38,6 @@ public class IdDashboardController {
     public Response<ScooterChartResult> allScooterChart(@ModelAttribute GeneralEnter enter) {
         return new Response<>(idDashboardService.allScooterChart(enter));
     }
-
 
     @ApiOperation(value = "骑行数据图标",response = AllScooterChartResult.class)
     @RequestMapping(value = "/scooterChart")

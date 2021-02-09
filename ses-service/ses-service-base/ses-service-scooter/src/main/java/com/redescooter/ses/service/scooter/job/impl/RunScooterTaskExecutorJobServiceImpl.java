@@ -13,8 +13,8 @@ import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -28,18 +28,17 @@ import java.util.stream.Collectors;
  * @author assert
  * @date 2020/12/27 15:30
  */
-@Service
+@DubboService
 public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecutorJobService {
 
-    @Reference
+    @DubboReference
     private AppVersionService appVersionService;
-    @Reference
+    @DubboReference
     private AppVersionUpdateLogService appVersionUpdateLogService;
     @Resource
     private ScooterEcuService scooterEcuService;
     @Resource
     private MqttClientUtil mqttClientUtil;
-
 
     @Override
     public JobResult scooterUpdateFailRetry() {

@@ -9,8 +9,13 @@ import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName:MeterController
@@ -26,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/meter", method = RequestMethod.POST)
 public class MeterController {
 
-    @Reference
+    @DubboReference
     private MeterService meterService;
 
     @IgnoreLoginCheck

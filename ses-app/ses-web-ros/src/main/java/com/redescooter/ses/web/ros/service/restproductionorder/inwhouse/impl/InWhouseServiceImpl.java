@@ -2,7 +2,12 @@ package com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.restproductionorder.*;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -10,11 +15,42 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.restproductionorder.*;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderCombinBServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderPartsBServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderScooterBServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
+import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionPurchasServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeAllocateOrder;
+import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeInWhousePartsB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
+import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.web.ros.dm.OpeProductionPurchaseOrder;
+import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeAllocateOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeCombinOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhousePartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPurchaseOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.InWhouseService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
@@ -22,7 +58,17 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
-import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.*;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailCombinResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailPartsResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailScooterResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateCombinBEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdatePartsBEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.SaveOrUpdateScooterBEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
@@ -31,13 +77,17 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordE
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -129,9 +179,8 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-
 
     @Override
     public PageResult<InWhouseListResult> inWhouseList(InWhouseListEnter enter) {
@@ -146,7 +195,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult inWhouseSave(InWhouseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeInWhouseOrder inWhouseOrder = new OpeInWhouseOrder();
@@ -312,7 +361,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult inWhouseEdit(InWhouseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
@@ -457,7 +506,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult inWhouseDelete(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null) {
@@ -1218,7 +1267,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult inWhConfirm(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null) {
@@ -1300,7 +1349,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult inWhReadyQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null) {
@@ -1564,6 +1613,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     // 模拟rps的操作 开始质检
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult startQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null) {
@@ -1586,6 +1636,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
     // 模拟rps的操作 完成质检
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult finishQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
         if (inWhouseOrder == null) {

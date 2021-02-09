@@ -6,6 +6,8 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName:TimeTest
@@ -22,11 +24,11 @@ public class TimeTest {
 
         System.out.println(DateUtil.timeComolete(endRenewAccountTime, startRenewAccountTime));
     }
-    @Test
-    public void test(){
 
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(RandomUtils.nextInt(10000,99999));
-        }
+    @Test
+    public void test() {
+        Map<String, String> hashmp = new HashMap();
+        hashmp.put("aa", "111");
+        System.out.println(hashmp.containsKey("aa"));
     }
 }

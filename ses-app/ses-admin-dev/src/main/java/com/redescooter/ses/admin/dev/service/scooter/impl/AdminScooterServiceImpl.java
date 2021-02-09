@@ -54,41 +54,49 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
     @Resource
     private AdminScooterMapper adminScooterMapper;
+
     @Resource
     private AdminScooterPartsMapper adminScooterPartsMapper;
+
     @DubboReference
     private ColorService colorService;
+
     @DubboReference
     private SpecificService specificService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private ScooterEcuService scooterEcuService;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private SysUserService sysUserService;
-    @Resource
-    private TransactionTemplate transactionTemplate;
+
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
+
     @Autowired
     private AdmScooterService admScooterService;
-
 
     @Override
     public PageResult<AdminScooterDTO> queryAdminScooter(QueryAdminScooterParamDTO paramDTO) {
         PageEnter enter = new PageEnter();
         enter.setPageNo(paramDTO.getPageNo());
         enter.setPageSize(paramDTO.getPageSize());
-
         int count = adminScooterMapper.countByAdminScooter(paramDTO);
         return PageResult.create(enter, count, adminScooterMapper.queryAdminScooter(paramDTO));
     }
 
     @Override
     public int insertAdminScooter(InsertAdminScooterDTO adminScooterDTO) {
-        List<AdminScooterPartsDTO> scooterPartsList = new ArrayList<>();
+        List<AdminScooterPartsDTO> scooterPartsList;
         Long userId = adminScooterDTO.getUserId();
         try {
             scooterPartsList = JSONArray.parseArray(adminScooterDTO.getScooterPartsList(), AdminScooterPartsDTO.class);
@@ -158,7 +166,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
 
                 // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter、sco_scooter_ecu
                 String scooterNo = generateScooterNo();
-                scooterService.syncScooterData(buildSyncScooterData(id, admScooter.getSn(),admScooter.getScooterController(),
+                scooterService.syncScooterData(buildSyncScooterData(id, admScooter.getSn(), admScooter.getScooterController(),
                         userId, scooterNo));
                 scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(),
                         userId, scooterNo));
@@ -191,9 +199,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
                 adminScooter.setCreator(userStaff.getFullName());
             }
         }
-
         adminScooter.setScooterModel(ScooterModelEnum.getScooterModelByType(adminScooter.getScooterController()));
-
         return adminScooter;
     }
 
@@ -269,16 +275,15 @@ public class AdminScooterServiceImpl implements AdminScooterService {
             publishDTO.setTabletSn(adminScooter.getSn());
             publishDTO.setScooterModel(scooterModel);
             publishDTO.setSpecificDefGroupList(specificDefGroupPublishList);
-
             scooterEmqXService.setScooterModel(publishDTO);
         }
-
         return new GeneralResult(paramDTO.getRequestId());
     }
 
 
     /**
      * 组装同步车辆数据
+     *
      * @param scooterId
      * @param tabletSn
      * @param scooterModel
@@ -286,45 +291,43 @@ public class AdminScooterServiceImpl implements AdminScooterService {
      * @param scooterNo
      * @return
      */
-    private List<SyncScooterDataDTO> buildSyncScooterData(Long scooterId,String tabletSn,Integer scooterModel, Long userId,
-                                                    String scooterNo) {
+    private List<SyncScooterDataDTO> buildSyncScooterData(Long scooterId, String tabletSn, Integer scooterModel, Long userId, String scooterNo) {
         SyncScooterDataDTO syncScooterData = new SyncScooterDataDTO();
         syncScooterData.setId(scooterId);
         syncScooterData.setScooterNo(scooterNo);
         syncScooterData.setTabletSn(tabletSn);
         syncScooterData.setModel(String.valueOf(scooterModel));
         syncScooterData.setUserId(userId);
-
         return Arrays.asList(syncScooterData);
     }
 
     /**
      * 组装同步车辆仪表ECU数据
+     *
      * @param bluetoothMacAddress
      * @param bluetoothName
      * @param userId
      * @param scooterNo
      * @return
      */
-    private SyncScooterEcuDataDTO buildSyncScooterEcuData(String bluetoothMacAddress, String bluetoothName,
-                                                          Long userId, String scooterNo) {
+    private SyncScooterEcuDataDTO buildSyncScooterEcuData(String bluetoothMacAddress, String bluetoothName, Long userId, String scooterNo) {
         SyncScooterEcuDataDTO syncScooterEcuData = new SyncScooterEcuDataDTO();
         syncScooterEcuData.setScooterNo(scooterNo);
         syncScooterEcuData.setBluetoothMacAddress(bluetoothMacAddress);
         syncScooterEcuData.setBluetoothName(bluetoothName);
         syncScooterEcuData.setUserId(userId);
-
         return syncScooterEcuData;
     }
 
     /**
      * 生成车辆编号
+     *
      * @return
      */
     private String generateScooterNo() {
         Calendar cal = Calendar.getInstance();
         String year = String.valueOf(cal.get(Calendar.YEAR));
-        int month = cal.get(Calendar.MONTH ) + 1;
+        int month = cal.get(Calendar.MONTH) + 1;
 
         // 查询当前数据库车辆数量
         int count = scooterService.countByScooter();
@@ -339,12 +342,12 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         sb.append(year.substring(2, 4)); // 年份,就这样截取吧,这样也能正常使用差不多八十年了
         sb.append(month);
         sb.append(count + 1);
-
         return sb.toString();
     }
 
     /**
      * 组装设置车辆型号数据
+     *
      * @param specificTypeId
      * @return
      */
@@ -406,20 +409,21 @@ public class AdminScooterServiceImpl implements AdminScooterService {
                 specificDefGroupPublishList.add(defGroupPublish);
             }
         }
-
         return specificDefGroupPublishList;
     }
 
 
     /**
      * 删除车辆
+     *
      * @param enter
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteScooter(IdEnter enter) {
         AdminScooterDTO admScooter = adminScooterMapper.getAdminScooterById(enter.getId());
-        if (admScooter != null){
+        if (admScooter != null) {
             adminScooterMapper.deleteScooterById(enter.getId());
             // 删除scooter的数据库的sco_scooter_ecu / sco_scooter数据
             scooterService.deleteScooterData(admScooter.getSn());

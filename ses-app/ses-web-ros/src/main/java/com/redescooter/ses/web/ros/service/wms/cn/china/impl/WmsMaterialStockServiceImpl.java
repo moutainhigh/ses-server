@@ -53,7 +53,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -126,7 +126,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Autowired
     private OpeEntrustPartsBService opeEntrustPartsBService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 
@@ -186,10 +186,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待入库数量增加（入库单变成待入库状态的时候调用）
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
      */
     @Override
     @Async
@@ -338,11 +339,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待入库数量减少 可用数量增加(入库单入库时候调用)
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async
@@ -744,11 +746,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待出库的库存增加 （用于产生出库单的时候）
+     *
      * @param productionType
      * @param id
      * @param stockType
      * @param userId
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Async
     @Override
@@ -898,11 +901,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待出库数量减少 可用库存减少  已用库存增加 （用于出库单出库）
+     *
      * @param productionType
      * @param id
      * @param stockType
      * @param userId
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async
@@ -928,8 +932,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - scooterB.getQty());
                             Integer ableNum = dbScooter.getAbleStockQty() - scooterB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbScooter.setAbleStockQty(ableNum);
                             dbScooter.setUsedStockQty(dbScooter.getUsedStockQty() + scooterB.getQty());
@@ -971,8 +975,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
                             Integer ableNum = dbCombine.getAbleStockQty() - combinB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbCombine.setWaitOutStockQty(ableNum);
                             dbCombine.setAbleStockQty(dbCombine.getAbleStockQty() - combinB.getQty());
@@ -1011,8 +1015,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitOutStockQty(wmsPartsStock.getWaitOutStockQty() - partsB.getQty());
                             Integer ableNum = wmsPartsStock.getAbleStockQty() - partsB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             wmsPartsStock.setAbleStockQty(ableNum);
                             wmsPartsStock.setUsedStockQty(wmsPartsStock.getUsedStockQty() + partsB.getQty());
@@ -1042,10 +1046,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 法国仓库待入库数量增加（委托单发货的时候调用）
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param entrustId
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
      */
     @Override
     @Async
@@ -1194,11 +1199,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 法国仓库已入库数量增加 待入库数量减少 (委托单签收的时候调用)
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param entrustId
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async

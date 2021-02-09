@@ -2,18 +2,32 @@ package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
-import com.redescooter.ses.web.ros.vo.sys.dept.*;
-import com.redescooter.ses.web.ros.vo.sys.position.*;
-import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
-import com.redescooter.ses.web.ros.vo.sys.role.RoleListEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.TypeListEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.EditPositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
+import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -29,6 +43,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/sys/position")
 public class SysPositionController {
+
     @Autowired
     private SysPositionService sysPositionService;
 

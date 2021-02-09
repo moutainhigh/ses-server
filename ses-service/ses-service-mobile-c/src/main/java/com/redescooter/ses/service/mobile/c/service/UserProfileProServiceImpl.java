@@ -1,19 +1,9 @@
 package com.redescooter.ses.service.mobile.c.service;
 
-import java.util.Date;
-import java.util.List;
-
-import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
-import com.redescooter.ses.api.hub.service.operation.CustomerService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
@@ -24,6 +14,15 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @ClassName:test
@@ -32,7 +31,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
  * @Version：1.3
  * @create: 2019/12/23 16:57
  */
-@Service
+@DubboService
 public class UserProfileProServiceImpl implements UserProfileProService {
 
     @Autowired
@@ -41,9 +40,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     @Autowired
     private ConUserProfileService userProfileService;
 
-    @Reference
+    @DubboReference
     private CustomerService customerService;
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -52,7 +51,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
         ConUserProfile userProfile = null;
@@ -71,7 +70,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             //更新客户信息
             BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
             // 修改 个人信息
-            userProfile = checkUserProfile(enter,baseCustomerEnter);
+            userProfile = checkUserProfile(enter, baseCustomerEnter);
             //更新客户个人信息
             customerService.updateCustomerInfoByEmail(baseCustomerEnter);
         }
@@ -91,8 +90,8 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     public GeneralResult deleteUserProfile2C(List<Long> longs) {
 
         QueryWrapper<ConUserProfile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(ConUserProfile.COL_DR,0);
-        queryWrapper.in(ConUserProfile.COL_USER_ID,longs);
+        queryWrapper.eq(ConUserProfile.COL_DR, 0);
+        queryWrapper.in(ConUserProfile.COL_USER_ID, longs);
         List<ConUserProfile> list = userProfileService.list(queryWrapper);
 
         if (list.size() > 0) {
@@ -111,6 +110,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editUserProfile(EditUserProfile2CEnter enter) {
         QueryWrapper<ConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
         conUserProfileQueryWrapper.eq(ConUserProfile.COL_TENANT_ID, enter.getInputTenantId());
@@ -134,7 +134,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      *
      * @param enter
      */
-    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter,BaseCustomerEnter baseCustomerEnter) {
+    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter, BaseCustomerEnter baseCustomerEnter) {
         // 查询个人信息
         ConUserProfile conUserProfile = userProfileService.getById(enter.getId());
         if (conUserProfile == null) {
@@ -154,20 +154,20 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             baseCustomerEnter.setCustomerLastName(enter.getLastName());
             conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
         }
-        if (!StringUtils.isAllBlank(enter.getCountryCode1(),enter.getTelNumber1())) {
+        if (!StringUtils.isAllBlank(enter.getCountryCode1(), enter.getTelNumber1())) {
             conUserProfile.setTelNumber1(enter.getTelNumber1());
             conUserProfile.setCountryCode1(enter.getCountryCode1());
             baseCustomerEnter.setTelephone(enter.getTelNumber1());
         }
-        if (StringUtils.isNotEmpty(enter.getPicture())){
+        if (StringUtils.isNotEmpty(enter.getPicture())) {
             conUserProfile.setPicture(enter.getPicture());
         }
-        if (!StringUtils.isAllBlank(enter.getCertificateType(),enter.getCertificateNegativeAnnex(),enter.getCertificatePositiveAnnex())) {
+        if (!StringUtils.isAllBlank(enter.getCertificateType(), enter.getCertificateNegativeAnnex(), enter.getCertificatePositiveAnnex())) {
             conUserProfile.setCertificateType(enter.getCertificateType());
             conUserProfile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
             conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
         }
-        if (StringUtils.isNotEmpty(enter.getAddress())){
+        if (StringUtils.isNotEmpty(enter.getAddress())) {
             conUserProfile.setAddress(enter.getAddress());
         }
         baseCustomerEnter.setEmail(conUserProfile.getEmail1());

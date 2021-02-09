@@ -39,7 +39,7 @@ public class ProductModelServiceImpl implements ProductModelService {
     @DubboReference
     private IdAppService idAppService;
 
-    @Autowired(required = true)
+    @Autowired
     private SiteProductModelService siteProductModelService;
 
     /**
@@ -48,7 +48,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductModel(AddProductModelEnter enter) {
 
@@ -80,7 +80,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult modityProductModel(ModityProductModelEnter enter) {
 
@@ -98,6 +98,7 @@ public class ProductModelServiceImpl implements ProductModelService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult removeProductModel(IdEnter enter) {
         siteProductModelService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());

@@ -2,7 +2,10 @@ package com.redescooter.ses.service.hub.source.operation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.service.common.service.CityAppService;
@@ -11,10 +14,11 @@ import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapp
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:CustomerServiceImpl
@@ -23,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Version：1.3
  * @create: 2020/01/10 13:28
  */
-@Service
+@DubboService
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -31,7 +35,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerService opeCustomerService;
-    @Reference
+
+    @DubboReference
     private CityAppService cityAppService;
 
     /**
@@ -75,6 +80,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult updateCustomerInfo(BaseCustomerEnter enter) {
 
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -122,25 +128,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/11/26 10:51 上午
      * @Param: enter
      * @Return: GeneralResult
      * @desc: 更新客户个人信息
-     * @param enter
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter) {
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));
-        if (opeCustomer==null){
-            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+        if (opeCustomer == null) {
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        if (!StringUtils.isAllBlank(enter.getCustomerFirstName(),enter.getCustomerLastName())){
+        if (!StringUtils.isAllBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
             opeCustomer.setCustomerFirstName(enter.getCustomerFirstName());
             opeCustomer.setCustomerLastName(enter.getCustomerLastName());
         }
-        if (StringUtils.isNotEmpty(enter.getTelephone())){
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
             opeCustomer.setTelephone(enter.getTelephone());
         }
         opeCustomerService.updateById(opeCustomer);

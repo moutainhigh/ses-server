@@ -55,7 +55,6 @@ public class TokenController {
         return new Response<>(tokenRpsService.modifyPassword(enter));
     }
 
-
     @IgnoreLoginCheck
     @ApiOperation(value = "RPS登录", response = TokenResult.class)
     @PostMapping(value = "/rpsLogin")

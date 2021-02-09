@@ -20,6 +20,7 @@ import com.redescooter.ses.web.ros.vo.sys.role.RoleOpEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +54,9 @@ public class RoleDataServiceImpl implements RoleDataService {
         // 找到部门
         List<OpeSysDept> deptList = opeSysDeptService.list();
         List<RoleDataTree> dataTrees = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(deptList)){
+        if (CollectionUtils.isNotEmpty(deptList)) {
             for (OpeSysDept dept : deptList) {
-                RoleDataTree  roleDataTree = new RoleDataTree();
+                RoleDataTree roleDataTree = new RoleDataTree();
                 roleDataTree.setDeptId(dept.getId());
                 roleDataTree.setDeptCode(dept.getCode());
                 roleDataTree.setDeptName(dept.getName());
@@ -65,18 +66,18 @@ public class RoleDataServiceImpl implements RoleDataService {
                 dataTrees.add(roleDataTree);
             }
             // 找到已有的部门权限
-            QueryWrapper<OpeSysRoleData>  qw = new QueryWrapper<>();
-            qw.eq(OpeSysRoleData.COL_ROLE_ID,enter.getId());
+            QueryWrapper<OpeSysRoleData> qw = new QueryWrapper<>();
+            qw.eq(OpeSysRoleData.COL_ROLE_ID, enter.getId());
             List<OpeSysRoleData> dataList = opeSysRoleDataService.list(qw);
-            if(CollectionUtils.isNotEmpty(dataList) && dataList.size() > 1){
+            if (CollectionUtils.isNotEmpty(dataList) && dataList.size() > 1) {
                 // 如果这个不为空 则为自定义的数据权限
                 List<Long> deptIds = dataList.stream().map(OpeSysRoleData::getDeptId).collect(Collectors.toList());
                 for (RoleDataTree tree : dataTrees) {
-                    if(deptIds.contains(tree.getDeptId())){
+                    if (deptIds.contains(tree.getDeptId())) {
                         tree.setChecked(true);
                     }
                 }
-            }else if(dataList.size() == 1){
+            } else if (dataList.size() == 1) {
                 // 说明是勾选的上面的权限
                 result.setDataType(dataList.get(0).getDataType());
             }
@@ -86,41 +87,43 @@ public class RoleDataServiceImpl implements RoleDataService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveRoleData(RoleDataSaveEnter enter) {
         // 先把原来的数据权限删除
-        QueryWrapper<OpeSysRoleData>  qw = new QueryWrapper<>();
-        qw.eq(OpeSysRoleData.COL_ROLE_ID,enter.getRoleId());
+        QueryWrapper<OpeSysRoleData> qw = new QueryWrapper<>();
+        qw.eq(OpeSysRoleData.COL_ROLE_ID, enter.getRoleId());
         opeSysRoleDataService.remove(qw);
         List<OpeSysRoleData> roleDataList = new ArrayList<>();
         // 先判断类型  （若类型不为空，则选择的是上面的几个，若类型为空，则需判断有没有勾选部门）
-        if(enter.getDataType() != null){
+        if (enter.getDataType() != null) {
             // 类型不为空，则选择的是上面的几个,下面的部门不用管
-            OpeSysRoleData  roleData = new OpeSysRoleData();
+            OpeSysRoleData roleData = new OpeSysRoleData();
             roleData.setRoleId(enter.getRoleId());
             roleData.setDataType(enter.getDataType());
             roleDataList.add(roleData);
-        }else if(!Strings.isNullOrEmpty(enter.getDeptId())){
+        } else if (!Strings.isNullOrEmpty(enter.getDeptId())) {
             // 类型为空，并勾选了下面的部门
             for (String deptId : enter.getDeptId().split(",")) {
-                OpeSysRoleData  roleData = new OpeSysRoleData();
+                OpeSysRoleData roleData = new OpeSysRoleData();
                 roleData.setRoleId(enter.getRoleId());
                 roleData.setDeptId(Long.parseLong(deptId));
                 roleDataList.add(roleData);
             }
         }
-        if(CollectionUtils.isNotEmpty(roleDataList)){
+        if (CollectionUtils.isNotEmpty(roleDataList)) {
             opeSysRoleDataService.saveBatch(roleDataList);
         }
         try {
             QueryWrapper<OpeSysUserRole> queryWrapper = new QueryWrapper();
             List<OpeSysUserRole> list = opeSysUserRoleService.list(queryWrapper);
-            if(CollectionUtils.isNotEmpty(list)){
+            if (CollectionUtils.isNotEmpty(list)) {
                 List<Long> userIds = list.stream().map(OpeSysUserRole::getUserId).collect(Collectors.toList());
                 for (Long userId : userIds) {
                     staffService.inintUserMsg(userId);
                 }
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return new GeneralResult(enter.getRequestId());
     }
 

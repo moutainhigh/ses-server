@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 组装单接口管理
+ *
  * @author assert
  * @date 2021/1/26 18:50
  */
@@ -27,14 +28,14 @@ public class CombinationOrderController {
     @Resource
     private CombinationOrderService combinationOrderService;
 
-
     /**
      * 组装单类型数量统计
+     *
      * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map<java.lang.Integer,java.lang.Integer>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map < java.lang.Integer, java.lang.Integer>>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "组装单类型数量统计", notes = "组装单类型说明：1车辆 2组装件")
     @PostMapping(value = "/countByOrderType")
     public Response<Map<Integer, Integer>> getCombinationOrderTypeCount(@ModelAttribute GeneralEnter enter) {
@@ -43,11 +44,12 @@ public class CombinationOrderController {
 
     /**
      * 组装单列表查询
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderResultDTO>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "组装单列表查询")
     @PostMapping(value = "/list")
     public Response<PageResult<QueryCombinationOrderResultDTO>> getCombinationOrderList(@ModelAttribute QueryCombinationOrderParamDTO paramDTO) {
@@ -56,11 +58,12 @@ public class CombinationOrderController {
 
     /**
      * 组装单开始组装
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "组装单开始组装")
     @PostMapping(value = "/startCombination")
     public Response<GeneralResult> startCombination(@ModelAttribute IdEnter enter) {
@@ -69,11 +72,12 @@ public class CombinationOrderController {
 
     /**
      * 根据id查询组装单详情
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.combinorder.CombinationOrderDetailDTO>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "组装单详情", notes = "根据id查询组装单详情")
     @PostMapping(value = "/detail")
     public Response<CombinationOrderDetailDTO> getCombinationOrderDetailById(@ModelAttribute IdEnter enter) {
@@ -82,11 +86,12 @@ public class CombinationOrderController {
 
     /**
      * 查询组装单产品部件列表
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDetailDTO>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "查询组装单产品部件列表")
     @PostMapping(value = "/partsList")
     public Response<CombinationListDetailDTO> getCombinationOrderPartsList(@ModelAttribute QueryCombinationPartsListParamDTO paramDTO) {
@@ -95,11 +100,12 @@ public class CombinationOrderController {
 
     /**
      * 保存组装单产品部件扫码信息
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "保存扫码结果", notes = "保存组装单产品部件扫码信息")
     @PostMapping(value = "/saveScanCodeResult")
     public Response<GeneralResult> saveScanCodeResult(@ModelAttribute SaveScanCodeResultParamDTO paramDTO) {
@@ -108,11 +114,12 @@ public class CombinationOrderController {
 
     /**
      * 完成组装
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "完成组装")
     @PostMapping(value = "/completeCombination")
     public Response<SaveScanCodeResultDTO> completeCombination(@ModelAttribute QueryCombinationPartsListParamDTO paramDTO) {
@@ -121,11 +128,12 @@ public class CombinationOrderController {
 
     /**
      * 组装单提交质检
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2021/1/27
-    */
+     */
     @ApiOperation(value = "组装单提交质检")
     @PostMapping(value = "/submitQc")
     public Response<GeneralResult> submitQc(@ModelAttribute IdEnter enter) {

@@ -16,7 +16,7 @@ import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +32,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
     @Autowired
     private OpeDeliveryOptionService deliveryOptionService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -41,10 +41,9 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(DeliveryOptionSaveEnter enter) {
-
         OpeDeliveryOption saveVO = new OpeDeliveryOption();
         saveVO.setId(idAppService.getId(SequenceName.OPE_DELIVERY_OPTION));
         saveVO.setDr(Constant.DR_FALSE);
@@ -60,9 +59,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
         saveVO.setUpdatedBy(enter.getUserId());
         saveVO.setUpdatedTime(new Date());
         saveVO.setDef1(enter.getDef1());
-
         deliveryOptionService.save(saveVO);
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -98,7 +95,6 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
                 results.add(optionSaveResult);
             }
         }
-
         return results;
     }
 
@@ -109,10 +105,9 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * @param id
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(DeliveryOptionEditEnter enter, Long id) {
-
         OpeDeliveryOption editVO = new OpeDeliveryOption();
         editVO.setId(id);
         editVO.setOptionNeme(enter.getOptionNeme());
@@ -122,7 +117,6 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
         editVO.setUpdatedBy(enter.getUserId());
         editVO.setUpdatedTime(new Date());
         deliveryOptionService.updateById(editVO);
-
         return new GeneralResult(enter.getRequestId());
     }
 

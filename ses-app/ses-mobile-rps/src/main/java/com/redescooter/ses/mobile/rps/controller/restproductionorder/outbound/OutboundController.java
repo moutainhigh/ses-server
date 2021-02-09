@@ -20,7 +20,7 @@ import java.util.Map;
  * @description: OutboundController
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/03 10:13 
+ * @create: 2020/11/03 10:13
  */
 @Log4j2
 @Api(tags = {"出库单信息"})
@@ -34,16 +34,15 @@ public class OutboundController {
 
     @PostMapping(value = "/countByProductType")
     @ApiOperation(value = "产品类型统计", response = Map.class)
-    public Response<Map<Integer,Integer>> countByProductType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<Integer, Integer>> countByProductType(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(outboundOrderService.countByProductType(enter));
     }
 
     @PostMapping(value = "/countByOrderType")
     @ApiOperation(value = "单据类型统计", response = Map.class)
-    public Response<Map<Integer,Integer>> countByOrderType(@ModelAttribute @ApiParam("请求参数") CountByOrderTypeParamDTO paramDTO) {
+    public Response<Map<Integer, Integer>> countByOrderType(@ModelAttribute @ApiParam("请求参数") CountByOrderTypeParamDTO paramDTO) {
         return new Response<>(outboundOrderService.countByOrderType(paramDTO));
     }
-
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "单据列表", response = OutboundOrderResult.class)

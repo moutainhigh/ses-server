@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.rps.controller.material;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -77,7 +76,6 @@ public class MaterialController {
     public Response<GeneralResult> continueQc(@ModelAttribute @ApiParam("请求参数") ContinueQcEnter enter) {
         return new Response<>(materialService.againQc(enter));
     }
-
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = MaterialDetailResult.class)

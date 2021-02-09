@@ -19,6 +19,7 @@ import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,6 +156,7 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult labels(IdEnter enter, Long id) {
 
         enter.setId(id);
@@ -179,6 +181,7 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult cancelWarn(IdEnter enter, Long id) {
         enter.setId(id);
         OpeCustomerInquiry inquiry = baseCustomerInquiryMapper.selectById(enter.getId());

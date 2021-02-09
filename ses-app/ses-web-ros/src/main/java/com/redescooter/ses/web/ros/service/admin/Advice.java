@@ -11,9 +11,8 @@ import com.redescooter.ses.web.ros.service.base.OpeSysLogService;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -51,7 +50,7 @@ public class Advice {
     @Autowired
     private StaffServiceMapper staffServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 

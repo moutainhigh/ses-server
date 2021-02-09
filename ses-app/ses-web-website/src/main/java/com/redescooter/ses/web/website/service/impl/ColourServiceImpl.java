@@ -43,9 +43,8 @@ public class ColourServiceImpl implements ColourService {
     @DubboReference
     private IdAppService idAppService;
 
-    @Autowired(required = true)
+    @Autowired
     private SiteColourService siteColourService;
-
 
     /**
      * 创建产品颜色
@@ -53,7 +52,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addColour(AddColourEnter enter) {
 
@@ -90,7 +89,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Boolean modityColour(ModityColourEnter enter) {
 
@@ -106,7 +105,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeColour(IdEnter enter) {
         siteColourService.removeById(enter.getId());

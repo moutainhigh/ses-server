@@ -2,7 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.redescooter.ses.service.common.i18n.I18nServiceMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -17,7 +17,7 @@ import java.util.Locale;
  * @Version: 1.0
  */
 @Slf4j
-@Service
+@DubboService
 public class I18nServiceMessageImpl implements I18nServiceMessage {
 
     @Autowired

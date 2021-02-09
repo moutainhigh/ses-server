@@ -1,16 +1,18 @@
 package com.redescooter.ses.mobile.client.controller.workorder;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.workorder.*;
+import com.redescooter.ses.api.common.vo.workorder.WorkOrderSaveOrUpdateEnter;
 import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassNameWordOrderController
@@ -25,9 +27,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/work/order")
 public class WorkOrderController {
 
-   @Reference
-   private WorkOrderService workOrderService;
-
+    @DubboReference
+    private WorkOrderService workOrderService;
 
     @PostMapping(value = "/workOrderSave")
     @ApiOperation(value = "工单新增", response = GeneralResult.class)

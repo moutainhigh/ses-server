@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.service.RosEntrustOrderService;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.service.restproductionorder.consign.ConsignOrderService;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -12,7 +12,7 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2021/1/7 17:07
  */
-@Service
+@DubboService
 public class RosEntrustOrderServiceImpl implements RosEntrustOrderService {
 
     @Resource

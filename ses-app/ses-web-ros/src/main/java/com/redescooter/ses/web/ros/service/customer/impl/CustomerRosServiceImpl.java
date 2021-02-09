@@ -68,29 +68,39 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
+
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private CityBaseService cityBaseService;
+
     @DubboReference
     private AccountBaseService accountBaseService;
+
     @DubboReference
     private TenantBaseService tenantBaseService;
+
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
+
     @DubboReference
     private UserBaseService userBaseService;
+
     @DubboReference
     private UserProfileService userProfileService;
+
     @Autowired
     private OpeSysUserService opeSysUserService;
-
 
     /**
      * 邮箱验证
@@ -100,13 +110,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public BooleanResult checkMail(String mail) {
-
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
         wrapper.eq(OpeCustomer.COL_DR, 0);
-
         Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
-
         return new BooleanResult(mailBoolean);
     }
 
@@ -120,7 +127,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public IntResult checkMailCount(StringEnter enter) {
         //邮箱去空格
         enter.setKeyword(SesStringUtils.stringTrim(enter.getKeyword()));
-
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getKeyword());
         wrapper.eq(OpeCustomer.COL_DR, 0);
@@ -135,7 +141,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param createCustomerEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -187,7 +193,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param editCustomerEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(EditCustomerEnter editCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -339,7 +345,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public DetailsCustomerResult details(IdEnter enter) {
-
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -470,7 +475,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         //验证客户是否开通SaaS账户等信息
@@ -478,9 +483,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
-
         opeCustomerMapper.deleteById(enter.getId());
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -490,7 +493,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult trash(TrashCustomerEnter enter) {
 
@@ -525,7 +528,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult change(IdEnter enter) {
 
@@ -557,7 +560,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -751,7 +754,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -775,7 +778,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -798,7 +801,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -823,7 +826,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public VerificationCodeResult verificationCode(GeneralEnter enter) {
         // 定义 图片大小
@@ -846,7 +849,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
 
@@ -884,7 +887,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BooleanResult sendEmailAgian(IdEnter enter) {
 

@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
  * @Date2020/4/27 18:44
  * @Version V1.0
  **/
-
 @Api(tags = {"ROS-Setting分组"})
 @CrossOrigin
 @RestController
@@ -52,7 +51,7 @@ public class GroupSettingController {
     @ApiOperation(value = "导出", response = GeneralResult.class)
     @GetMapping(value = "/export")
     public Response<GeneralResult> export(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
-        return new Response<>(rosGroupService.export(id,response));
+        return new Response<>(rosGroupService.export(id, response));
     }
 
     @ApiOperation(value = "保存", response = GeneralResult.class)

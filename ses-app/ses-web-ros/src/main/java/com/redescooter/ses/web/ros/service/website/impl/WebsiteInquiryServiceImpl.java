@@ -165,7 +165,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
@@ -281,6 +281,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
 
         //入参对象去空格

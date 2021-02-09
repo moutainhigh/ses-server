@@ -38,13 +38,11 @@ public class SpecificatGroupController {
         return new Response(specificatGroupService.specificatGroupSave(enter));
     }
 
-
     @PostMapping(value = "/specificatGroupEdit")
     @ApiOperation(value = "规格分组编辑", response = GeneralResult.class)
     public Response<GeneralResult> specificatGroupEdit(@ModelAttribute @ApiParam("请求参数") SpecificatGroupSaveOrEditEnter enter) {
         return new Response(specificatGroupService.specificatGroupEdit(enter));
     }
-
 
     @PostMapping(value = "/specificatGroupList")
     @ApiOperation(value = "规格分组列表", response = SpecificatGroupListResult.class)
@@ -52,20 +50,16 @@ public class SpecificatGroupController {
         return new Response(specificatGroupService.specificatGroupList(enter));
     }
 
-
     @PostMapping(value = "/specificatGroupDelete")
     @ApiOperation(value = "规格分组删除", response = GeneralResult.class)
     public Response<GeneralResult> specificatGroupDelete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(specificatGroupService.specificatGroupDelete(enter));
     }
 
-
     @PostMapping(value = "/specificatGroupData")
     @ApiOperation(value = "规格分组下拉数据源接口", response = SpecificatGroupDataResult.class)
     public Response<List<SpecificatGroupDataResult>> specificatGroupData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(specificatGroupService.specificatGroupData(enter));
     }
-
-
 
 }
