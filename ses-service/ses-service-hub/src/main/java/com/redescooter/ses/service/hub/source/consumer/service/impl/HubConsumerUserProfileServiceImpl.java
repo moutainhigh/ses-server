@@ -14,7 +14,7 @@ import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserProfile;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,9 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @create: 2019/12/23 16:31
  */
 @DS("consumer")
-@Service
+@DubboService
 public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileService {
-
 
     @Autowired
     private HubConUserProfileMapper hubConUserProfileMapper;
