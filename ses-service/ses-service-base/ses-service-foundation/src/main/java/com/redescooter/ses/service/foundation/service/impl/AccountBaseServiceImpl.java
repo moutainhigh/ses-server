@@ -65,8 +65,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +88,7 @@ import java.util.stream.Collectors;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class AccountBaseServiceImpl implements AccountBaseService {
 
     @Autowired
@@ -101,7 +100,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Autowired
     private TenantBaseService tenantBaseService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -149,7 +148,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         Boolean chectMail = chectMail(enter.getT().getEmail());
@@ -213,8 +212,8 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public Boolean chectMail(String mail) {
         QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
-        wrapper.in(PlaUser.COL_USER_TYPE,AccountTypeEnums.WEB_RESTAURANT,AccountTypeEnums.WEB_EXPRESS,AccountTypeEnums.APP_PERSONAL);
-        wrapper.eq(PlaUser.COL_LOGIN_NAME,mail);
+        wrapper.in(PlaUser.COL_USER_TYPE, AccountTypeEnums.WEB_RESTAURANT, AccountTypeEnums.WEB_EXPRESS, AccountTypeEnums.APP_PERSONAL);
+        wrapper.eq(PlaUser.COL_LOGIN_NAME, mail);
         return plaUserMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
 
@@ -240,7 +239,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
@@ -365,7 +364,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
@@ -486,7 +485,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
         if (DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime()) < 0) {
@@ -570,7 +569,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter) {
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
@@ -600,7 +599,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteUser(DeleteUserEnter enter) {
         /**
@@ -675,7 +674,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param dto
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BaseUserResult openDriver2BAccout(SaveDriverAccountDto dto) {
 
@@ -800,7 +799,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancelDriver2BAccout(IdEnter enter) {
         PlaUser plaUser = userMapper.selectById(enter.getId());
@@ -842,7 +841,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult sendEmailActiv(IdEnter enter) {
 
@@ -899,7 +898,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public Map<String, Integer> customerAccountCountByStatus(QueryAccountCountStatusEnter enter) {
         // 只统计 个人端、企业端账户
-        List<CountByStatusResult> countByStatusList = accountBaseServiceMapper.customerAccountCountByStatus(enter,customerTypeList());
+        List<CountByStatusResult> countByStatusList = accountBaseServiceMapper.customerAccountCountByStatus(enter, customerTypeList());
 
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusList) {

@@ -3,7 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl.count;
 import com.redescooter.ses.api.common.vo.count.AppDownLoadCountResult;
 import com.redescooter.ses.api.common.vo.count.OrderCountEnter;
 import com.redescooter.ses.api.foundation.service.count.AppDownLoadCountService;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,8 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/12/17 10:49
  */
-@Service
+@DubboService
 public class AppDownLoadCountServiceImpl implements AppDownLoadCountService {
-
 
     /**
      * app下载量的统计

@@ -18,10 +18,10 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaMailConfigService;
-import com.redescooter.ses.service.foundation.service.base.PlaMessageService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Autowired
     private PlaMailConfigService plaMailConfigService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
 
     @Transactional(rollbackFor = Exception.class)
@@ -120,11 +120,8 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
      */
     @Override
     public GeneralResult saveParameter(SaveMailConfigEnter enter) {
-
         List<PlaMailConfig> list = new ArrayList<>();
         plaMailConfigService.batchInsert(list);
-
-
         return null;
     }
 

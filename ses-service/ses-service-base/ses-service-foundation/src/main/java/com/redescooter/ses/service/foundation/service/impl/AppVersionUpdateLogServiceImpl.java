@@ -23,9 +23,9 @@ public class AppVersionUpdateLogServiceImpl implements AppVersionUpdateLogServic
 
     @Resource
     private AppVersionUpdateLogMapper appVersionUpdateLogMapper;
+
     @DubboReference
     private IdAppService idAppService;
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override

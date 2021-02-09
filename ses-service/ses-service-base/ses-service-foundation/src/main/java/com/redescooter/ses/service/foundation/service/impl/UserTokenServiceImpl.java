@@ -52,7 +52,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +76,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@Service
+@DubboService
 public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
@@ -710,7 +710,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         userToken.setDeptId(enter.getOpeDeptId() == null ? new Long("0") : enter.getOpeDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
-            log.info("这个map里面的东西是： "+JSON.toJSONString(map));
+            log.info("这个map里面的东西是： " + JSON.toJSONString(map));
             map.remove("requestId");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
@@ -858,7 +858,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
 

@@ -83,7 +83,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Long saveTenant(DateTimeParmEnter<BaseCustomerResult> enter) {
         // 保存租户
@@ -107,6 +107,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
         PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter, event);
         plaTenantNodeMapper.insert(plaTenantNode);
@@ -148,7 +149,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveTenantConfig(SaveTenantConfigEnter enter) {
 

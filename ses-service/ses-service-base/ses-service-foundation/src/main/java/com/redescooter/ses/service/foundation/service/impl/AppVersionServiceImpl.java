@@ -63,7 +63,6 @@ public class AppVersionServiceImpl implements AppVersionService {
     @Resource
     private TransactionTemplate transactionTemplate;
 
-
     @Override
     public QueryAppVersionResultDTO getAppVersionById(Long id) {
         QueryAppVersionResultDTO appVersionResult = appVersionMapper.getAppVersionById(id);
@@ -290,6 +289,7 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     /**
      * 获取不同类型的应用版本数据
+     *
      * @param appVersionList
      * @return
      */

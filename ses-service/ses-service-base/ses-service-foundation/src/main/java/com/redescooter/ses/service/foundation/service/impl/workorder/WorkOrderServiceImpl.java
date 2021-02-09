@@ -34,6 +34,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -65,11 +66,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     private IdAppService idAppService;
 
     /**
-     * @Author Aleks
-     * @Description  工单列表
-     * @Date  2020/12/4 14:07
-     * @Param [dto]
      * @return
+     * @Author Aleks
+     * @Description 工单列表
+     * @Date 2020/12/4 14:07
+     * @Param [dto]
      **/
     @Override
     public PageResult<WorkOrderListResult> workOrderList(WorkOrderListEnter enter) {
@@ -83,19 +84,20 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     /**
-     * @Author Aleks
-     * @Description  工单新增
-     * @Date  2020/12/4 14:56
-     * @Param [dto]
      * @return
+     * @Author Aleks
+     * @Description 工单新增
+     * @Date 2020/12/4 14:56
+     * @Param [dto]
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult workOrderSave(WorkOrderSaveOrUpdateEnter enter) {
         SesStringUtils.objStringTrim(enter);
         // 校验字段的长度
         checkLength(enter);
         PlaWorkOrder workOrder = new PlaWorkOrder();
-        BeanUtils.copyProperties(enter,workOrder);
+        BeanUtils.copyProperties(enter, workOrder);
         workOrder.setId(idAppService.getId(SequenceName.PLA_WORK_ORDER));
         workOrder.setOrderNo(createWorkOrderNo());
         workOrder.setWorkOrderStatus(1);
@@ -108,45 +110,45 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     }
 
 
-    public void checkLength(WorkOrderSaveOrUpdateEnter enter){
-        if (Strings.isNullOrEmpty(enter.getTitle()) || enter.getTitle().length() > 100){
+    public void checkLength(WorkOrderSaveOrUpdateEnter enter) {
+        if (Strings.isNullOrEmpty(enter.getTitle()) || enter.getTitle().length() > 100) {
             throw new FoundationException(ExceptionCodeEnums.TITLE_LENGTH_ERROR.getCode(), ExceptionCodeEnums.TITLE_LENGTH_ERROR.getMessage());
         }
-        if(!Strings.isNullOrEmpty(enter.getRemark()) && enter.getRemark().length() > 1000){
+        if (!Strings.isNullOrEmpty(enter.getRemark()) && enter.getRemark().length() > 1000) {
             throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
         }
     }
 
 
     /**
-     * @Author Aleks
-     * @Description  工单编号规则 6位的递增流水 从000001开始
-     * @Date  2020/12/4 18:04
-     * @Param []
      * @return
+     * @Author Aleks
+     * @Description 工单编号规则 6位的递增流水 从000001开始
+     * @Date 2020/12/4 18:04
+     * @Param []
      **/
-    public String createWorkOrderNo(){
+    public String createWorkOrderNo() {
         String workOrderNo = "";
         // 判断有没有工单  没有的话 直接返回“000001”  有的话 需要进行自动递增
         QueryWrapper<PlaWorkOrder> qw = new QueryWrapper<>();
-        qw.eq(PlaWorkOrder.COL_DR,0);
+        qw.eq(PlaWorkOrder.COL_DR, 0);
         qw.orderByDesc(PlaWorkOrder.COL_ORDER_NO);
         qw.last("limit 1");
         PlaWorkOrder workOrder = plaWorkOrderService.getOne(qw);
-        if (workOrder == null){
+        if (workOrder == null) {
             workOrderNo = "000001";
-        }else {
+        } else {
             workOrderNo = OrderNoGenerateUtil.createWorkOrderNo(workOrder.getOrderNo());
         }
-        return  workOrderNo;
+        return workOrderNo;
     }
 
     /**
-     * @Author Aleks
-     * @Description  工单编辑
-     * @Date  2020/12/4 15:46
-     * @Param [dto]
      * @return
+     * @Author Aleks
+     * @Description 工单编辑
+     * @Date 2020/12/4 15:46
+     * @Param [dto]
      **/
     @Override
     public GeneralResult workOrderUpdate(WorkOrderSaveOrUpdateEnter enter) {
@@ -155,13 +157,14 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     /**
-     * @Author Aleks
-     * @Description  工单删除
-     * @Date  2020/12/4 15:46
-     * @Param [dto]
      * @return
+     * @Author Aleks
+     * @Description 工单删除
+     * @Date 2020/12/4 15:46
+     * @Param [dto]
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult workOrderDelete(IdEnter enter) {
         plaWorkOrderService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -169,23 +172,23 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     /**
-     * @Author Aleks
-     * @Description  工单详情
-     * @Date  2020/12/4 18:16
-     * @Param [dto]
      * @return
+     * @Author Aleks
+     * @Description 工单详情
+     * @Date 2020/12/4 18:16
+     * @Param [dto]
      **/
     @Override
     public WorkOrderDetailResult workOrderDetail(IdEnter enter) {
         WorkOrderDetailResult result = new WorkOrderDetailResult();
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null){
+        if (workOrder == null) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
         result = workOrderMapper.workOrderDetail(enter);
         // 找到工单的聊天记录
         List<WorkOrderLogResult> logs = workOrderMapper.workOrderLogs(enter.getId());
-        if(CollectionUtils.isNotEmpty(logs)){
+        if (CollectionUtils.isNotEmpty(logs)) {
             for (WorkOrderLogResult log : logs) {
                 log.setCreatedByName(workOrder.getContactEmail());
             }
@@ -196,16 +199,17 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     /**
-     * @Author Aleks
-     * @Description  工单状态流转(只能往当前状态的后面的状态跳  随便跳)
-     * @Date  2020/12/4 18:16
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 工单状态流转(只能往当前状态的后面的状态跳 随便跳)
+     * @Date 2020/12/4 18:16
+     * @Param [enter]
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult workOrderStatusFlow(StatusFlowEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null){
+        if (workOrder == null) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
         workOrder.setWorkOrderStatus(enter.getWorkOrderStatus());
@@ -215,19 +219,19 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     /**
-     * @Author Aleks
-     * @Description  工单回复
-     * @Date  2020/12/4 18:16
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 工单回复
+     * @Date 2020/12/4 18:16
+     * @Param [enter]
      **/
     @Override
     public GeneralResult workOrderReply(workOrderReplyEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null){
+        if (workOrder == null) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
-        if (Strings.isNullOrEmpty(enter.getRemark()) || enter.getRemark().length() > 1000){
+        if (Strings.isNullOrEmpty(enter.getRemark()) || enter.getRemark().length() > 1000) {
             throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
         }
         PlaWorkOrderLog workOrderLog = new PlaWorkOrderLog();
@@ -251,12 +255,12 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         sendEnter.setToMail(workOrder.getContactEmail());
         sendEnter.setUserRequestId(enter.getRequestId());
         sendEnter.setToUserId(enter.getUserId());
-        if (!Strings.isNullOrEmpty(enter.getUrls())){
+        if (!Strings.isNullOrEmpty(enter.getUrls())) {
             sendEnter.setImgList(Arrays.asList(enter.getUrls().split(",")));
         }
         try {
             mailMultiTaskService.contactUsReplyMessageEmail(sendEnter);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 

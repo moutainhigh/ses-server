@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
  * author: jerry.li
  * create: 2019-05-22 15:09
  */
-
 @Slf4j
 @DubboService
 public class LoginJPushProProServiceImpl implements LoginJPushProService {
@@ -36,7 +35,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logInPush(LoginPushEnter enter) {
 
@@ -65,7 +64,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logOutPush(LoginPushEnter enter) {
 

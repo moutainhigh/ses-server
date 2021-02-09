@@ -31,76 +31,76 @@ import org.springframework.web.multipart.MultipartFile;
 @DubboService
 public class VersionBaseServiceImpl implements VersionBaseService {
 
-  @Autowired
-  private PlaAppVersionService plaAppVersionService;
+    @Autowired
+    private PlaAppVersionService plaAppVersionService;
 
-  @DubboReference
-  private IdAppService idAppService;
+    @DubboReference
+    private IdAppService idAppService;
 
-//  @Value("${fileUpload.path}")
-  private String uploadPath;
+    //  @Value("${fileUpload.path}")
+    private String uploadPath;
 
-  @Override
-  public VersionTypeResult getVersionData(VersionTypeEnter versionTypeEnter) {
-    VersionTypeResult ersionTypeResult = new VersionTypeResult();
-    QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
-    queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
-    queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
-    queryWrapper.last("limit 1");
-    PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
-    if (one != null) {
-      BeanUtils.copyProperties(one, ersionTypeResult);
+    @Override
+    public VersionTypeResult getVersionData(VersionTypeEnter versionTypeEnter) {
+        VersionTypeResult ersionTypeResult = new VersionTypeResult();
+        QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
+        queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
+        queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
+        queryWrapper.last("limit 1");
+        PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
+        if (one != null) {
+            BeanUtils.copyProperties(one, ersionTypeResult);
+        }
+        return ersionTypeResult;
     }
-    return ersionTypeResult;
-  }
 
     @SneakyThrows
     @Override
     public void fileUpload(MultipartFile file, String fileMsg) {
-      // 1、上传文件到服务器上,返回文件的路劲
-      String path = FileUtil.uploadFile(file, uploadPath);
-      // 2、检测文件的大小 (单位是兆：M)
-      long size = file.getSize() / 1024 / 1024;
-      // 3、上传完成之后，往APP的版本表里插入数据（以便安卓那边的APP版本升级）
-      PlaAppVersion appVersion = new PlaAppVersion();
-      appVersion.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
-      appVersion.setSystemId("");
-      appVersion.setAppId("");
-      appVersion.setSystemType(AppVersionTypeEnum.ANDROID.getType());
-      appVersion.setType(0); // todo 这个需要参数传进来
-      appVersion.setCode(""); // todo 这个需要参数传进来
-      appVersion.setIsForce(1);
-      appVersion.setUpdateContent(""); // todo 这个需要参数传进来
-      appVersion.setUpdateLink(path);
-      appVersion.setNewVersionNum(""); // todo 这个需要参数传进来
-      appVersion.setPackageSize(String.valueOf(size));
-      appVersion.setNewVersionName(""); // todo 这个需要参数传进来
-      appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
-      appVersion.setCreatedBy(0L);
-      plaAppVersionService.insertOrUpdate(appVersion);
+        // 1、上传文件到服务器上,返回文件的路劲
+        String path = FileUtil.uploadFile(file, uploadPath);
+        // 2、检测文件的大小 (单位是兆：M)
+        long size = file.getSize() / 1024 / 1024;
+        // 3、上传完成之后，往APP的版本表里插入数据（以便安卓那边的APP版本升级）
+        PlaAppVersion appVersion = new PlaAppVersion();
+        appVersion.setId(idAppService.getId(SequenceName.PLA_APP_VERSION));
+        appVersion.setSystemId("");
+        appVersion.setAppId("");
+        appVersion.setSystemType(AppVersionTypeEnum.ANDROID.getType());
+        appVersion.setType(0); // todo 这个需要参数传进来
+        appVersion.setCode(""); // todo 这个需要参数传进来
+        appVersion.setIsForce(1);
+        appVersion.setUpdateContent(""); // todo 这个需要参数传进来
+        appVersion.setUpdateLink(path);
+        appVersion.setNewVersionNum(""); // todo 这个需要参数传进来
+        appVersion.setPackageSize(String.valueOf(size));
+        appVersion.setNewVersionName(""); // todo 这个需要参数传进来
+        appVersion.setStatus(AppVersionStatusEnum.UNRELEASED.getStatus());
+        appVersion.setCreatedBy(0L);
+        plaAppVersionService.insertOrUpdate(appVersion);
     }
 
-  /**
-   * 获取南通版本信息
-   *
-   * @param versionTypeEnter
-   * @return
-   * @author joan
-   */
-  @Override
-  public VersionTypeResult getAppNewVersionChData(VersionTypeEnter versionTypeEnter) {
-    VersionTypeResult ersionTypeResult = new VersionTypeResult();
-    QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
-    queryWrapper.eq(PlaAppVersion.COL_DEF1, Constant.CHINA);
-    queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
-    queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
-    queryWrapper.last("limit 1");
-    PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
-    if (one != null) {
-      BeanUtils.copyProperties(one, ersionTypeResult);
+    /**
+     * 获取南通版本信息
+     *
+     * @param versionTypeEnter
+     * @return
+     * @author joan
+     */
+    @Override
+    public VersionTypeResult getAppNewVersionChData(VersionTypeEnter versionTypeEnter) {
+        VersionTypeResult ersionTypeResult = new VersionTypeResult();
+        QueryWrapper<PlaAppVersion> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(PlaAppVersion.COL_TYPE, versionTypeEnter.getType());
+        queryWrapper.eq(PlaAppVersion.COL_DEF1, Constant.CHINA);
+        queryWrapper.gt(PlaAppVersion.COL_CODE, Integer.valueOf(versionTypeEnter.getCode()));
+        queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
+        queryWrapper.last("limit 1");
+        PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
+        if (one != null) {
+            BeanUtils.copyProperties(one, ersionTypeResult);
+        }
+        return ersionTypeResult;
     }
-    return ersionTypeResult;
-  }
 }

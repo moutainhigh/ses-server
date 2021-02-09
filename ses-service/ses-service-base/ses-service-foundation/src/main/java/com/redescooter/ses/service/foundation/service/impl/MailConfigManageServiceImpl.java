@@ -13,9 +13,11 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,16 +31,17 @@ import java.util.List;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class MailConfigManageServiceImpl implements MailConfigManageService {
 
     @Autowired
     private PlaMailConfigMapper mailConfigMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMailConfigEnter enter) {
 
         PlaMailConfig mailConfig = new PlaMailConfig();

@@ -1,21 +1,19 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseCountryCodeEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCountryCodeResult;
 import com.redescooter.ses.api.foundation.service.base.CountryCodeBaseService;
 import com.redescooter.ses.service.foundation.dao.base.PlaCountryCodeMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCountryCode;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mr.lijiating
@@ -25,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class CountryCodeBaseServiceImpl implements CountryCodeBaseService {
 
     @Autowired

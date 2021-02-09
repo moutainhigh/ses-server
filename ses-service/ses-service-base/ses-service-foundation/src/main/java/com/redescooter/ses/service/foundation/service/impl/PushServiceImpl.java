@@ -76,7 +76,7 @@ public class PushServiceImpl implements PushService {
     private PushProxyService pushProxyService;
     @Autowired
     private I18nServiceMessage i18nServiceMessage;
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
     @Autowired
     private PlaPushResultMapper pushResultMapper;
@@ -161,7 +161,7 @@ public class PushServiceImpl implements PushService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<PushJgResult> pushPC(MessagePushEnter enter) {
         // pc 端的消息推送 实质就是消息保存 消息已经在前面统一保存过了
@@ -191,7 +191,7 @@ public class PushServiceImpl implements PushService {
      *
      * @param str
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void pushMessage(String str) {
         Map map = JSON.parseObject(str, Map.class);
@@ -243,8 +243,8 @@ public class PushServiceImpl implements PushService {
         if (plaJpushUser != null && StringUtils.isNotBlank(plaJpushUser.getRegistrationId())) {
             map.put("pushType", plaJpushUser.getPlatformType());
         }
-        if (Objects.isNull(map.get("pushType"))){
-            throw new FoundationException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(),ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
+        if (Objects.isNull(map.get("pushType"))) {
+            throw new FoundationException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }
 
         switch (map.get("pushType").toString()) {
