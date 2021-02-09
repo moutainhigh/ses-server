@@ -44,9 +44,9 @@ import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -61,7 +61,7 @@ import java.util.List;
  * @date 2020/11/18 18:36
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
     @DubboReference
@@ -86,7 +86,6 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     private IdAppService idAppService;
     @Resource
     private TransactionTemplate transactionTemplate;
-
 
     @Override
     public GeneralResult lock(ScooterLockDTO scooterLockDTO, Long scooterId) {
@@ -152,6 +151,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation, Long scooterId, Integer userServiceType) {
         BaseScooterResult scooterResult = scooterMapper.getScooterInfoById(scooterId);
         if (null == scooterResult) {
@@ -258,6 +258,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
         QueryAppVersionResultDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());

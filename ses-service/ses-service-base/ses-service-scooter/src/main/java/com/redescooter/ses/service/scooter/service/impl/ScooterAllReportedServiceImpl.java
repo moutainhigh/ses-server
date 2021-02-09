@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -53,6 +54,7 @@ public class ScooterAllReportedServiceImpl implements ScooterAllReportedService 
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertScooterAllInfo(ScooterAllReportedDTO scooterAll) {
         try {
             transactionTemplate.execute(scooterAllStatus -> {

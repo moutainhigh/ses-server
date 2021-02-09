@@ -40,6 +40,7 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
@@ -108,9 +109,10 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     /**
      * 根据ecu上报信息更新车辆锁状态、行驶总里程
-     * @param tabletSn 平板序列号
+     *
+     * @param tabletSn    平板序列号
      * @param scooterLock 车辆是否锁住 true是 false否
-     * @param totalMiles 行驶总里程(单位/km)
+     * @param totalMiles  行驶总里程(单位/km)
      */
     private void updateScooterStatusAndTotalMilesByEcu(String tabletSn, boolean scooterLock, Integer totalMiles) {
         String lockStatus = null;

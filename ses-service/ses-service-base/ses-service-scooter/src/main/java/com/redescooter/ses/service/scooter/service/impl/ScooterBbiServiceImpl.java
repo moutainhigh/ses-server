@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
@@ -47,6 +48,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertScooterBbiByEmqX(ScooterBbiReportedDTO scooterReportedBbi) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());

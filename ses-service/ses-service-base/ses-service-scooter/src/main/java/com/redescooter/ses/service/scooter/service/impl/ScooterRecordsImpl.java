@@ -4,7 +4,11 @@ import com.redescooter.ses.api.common.enums.scooter.ScooterActionResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.scooter.service.ScooterRecordService;
-import com.redescooter.ses.api.scooter.vo.*;
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordEnter;
+import com.redescooter.ses.api.scooter.vo.MobileRepairRecordResult;
+import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
+import com.redescooter.ses.api.scooter.vo.ScooterRecordListEnter;
+import com.redescooter.ses.api.scooter.vo.ScooterRecordListResult;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterRecordServiceMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
@@ -12,7 +16,8 @@ import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +32,13 @@ import java.util.List;
  * @Version：1.3
  * @create: 2019/12/27 15:43
  */
-@Service
+@DubboService
 public class ScooterRecordsImpl implements ScooterRecordService {
 
     @Autowired
     private ScoScooterActionTraceMapper scoScooterActionTraceMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -44,7 +49,7 @@ public class ScooterRecordsImpl implements ScooterRecordService {
      *
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRecords(List<SaveScooterRecordEnter<BaseScooterEnter>> enter) {
         if (CollectionUtils.isEmpty(enter)) {
