@@ -18,7 +18,7 @@ import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +28,7 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 17:49
  */
-@Service
+@DubboService
 public class ScooterMobileBServiceImpl implements ScooterMobileBService {
 
     @Resource

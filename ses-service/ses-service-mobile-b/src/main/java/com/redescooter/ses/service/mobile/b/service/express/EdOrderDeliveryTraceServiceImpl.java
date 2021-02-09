@@ -7,17 +7,19 @@ import com.redescooter.ses.api.mobile.b.service.express.EdOrderDeliveryTraceServ
 import com.redescooter.ses.service.mobile.b.dm.base.CorExpressOrderTrace;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderTraceService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@DubboService
 public class EdOrderDeliveryTraceServiceImpl implements EdOrderDeliveryTraceService {
+
     @Autowired
     private CorExpressOrderTraceService corExpressOrderTraceService;
+
     /**
      * 批量订单记录
      *
@@ -26,9 +28,8 @@ public class EdOrderDeliveryTraceServiceImpl implements EdOrderDeliveryTraceServ
      */
     @Override
     public void batchSaveExpressOrderTrace(List<BaseExpressOrderTraceEnter> enter) {
-        List<CorExpressOrderTrace> corExpressOrderTraceList=new ArrayList<>();
+        List<CorExpressOrderTrace> corExpressOrderTraceList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(enter)) {
-
             enter.forEach(item -> {
                 CorExpressOrderTrace corExpressOrderTrace = new CorExpressOrderTrace();
                 BeanUtils.copyProperties(item, corExpressOrderTrace);
@@ -61,8 +62,8 @@ public class EdOrderDeliveryTraceServiceImpl implements EdOrderDeliveryTraceServ
     @Override
     public BaseExpressOrderResult queryOrdertraceByOrderId(IdEnter enter) {
         CorExpressOrderTrace corExpressOrderTrace = corExpressOrderTraceService.getById(enter.getId());
-        BaseExpressOrderResult baseExpressOrderResult=new BaseExpressOrderResult();
-        BeanUtils.copyProperties(corExpressOrderTrace,baseExpressOrderResult);
+        BaseExpressOrderResult baseExpressOrderResult = new BaseExpressOrderResult();
+        BeanUtils.copyProperties(corExpressOrderTrace, baseExpressOrderResult);
         return baseExpressOrderResult;
     }
 }

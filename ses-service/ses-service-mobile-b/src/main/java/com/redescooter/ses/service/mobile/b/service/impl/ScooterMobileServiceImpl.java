@@ -22,7 +22,7 @@ import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2019/12/30 13:23
  */
-@Service
+@DubboService
 public class ScooterMobileServiceImpl implements ScooterMobileService {
 
     @Autowired
@@ -82,9 +82,9 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
             // 查询TOC 车辆分配信息
             QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);
 
-            if(queryDriverScooterResult==null){
+            if (queryDriverScooterResult == null) {
                 return null;
-            }else{
+            } else {
                 corDriverScooter = new CorDriverScooter();
                 BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
             }
@@ -104,7 +104,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult lock(LockEnter enter) {
         CorDriverScooter corDriverScooter = null;
@@ -117,7 +117,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
         } else {
             // 查询TOC 车辆分配信息
             QueryDriverScooterResult queryDriverScooterResult = cusotmerScooterService.queryDriverScooter(enter);
-            if(queryDriverScooterResult!=null){
+            if (queryDriverScooterResult != null) {
                 corDriverScooter = new CorDriverScooter();
                 BeanUtils.copyProperties(queryDriverScooterResult, corDriverScooter);
             }
