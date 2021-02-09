@@ -3,18 +3,21 @@ package com.redescooter.ses.web.website.controller.business;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.WebSiteCustomerService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
 import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author jerry
@@ -27,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/customer")
 public class CustomerController {
 
-    @Autowired(required = true)
+    @Autowired
     private WebSiteCustomerService webSiteCustomerService;
 
     /**

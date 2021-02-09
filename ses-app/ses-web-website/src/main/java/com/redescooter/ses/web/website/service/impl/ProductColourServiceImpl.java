@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductColourServiceImpl implements ProductColourService {
 
-    @Autowired(required = true)
+    @Autowired
     private SiteProductColourService siteProductColourService;
 
     @DubboReference
@@ -38,7 +38,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductColour(AddProductColourEnter enter) {
 
@@ -60,7 +60,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult modityProductColour(ModityProductColourEnter enter) {
 
@@ -77,7 +77,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeProductColour(IdEnter enter) {
 

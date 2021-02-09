@@ -38,7 +38,7 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired(required = true)
+    @Autowired
     private SiteProductService siteProductService;
 
     @DubboReference
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProduct(AddProductEnter enter) {
         SiteProduct addProductVO = new SiteProduct();
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult modityProduct(ModityProductEnter enter) {
         SiteProduct moditySiteProductVO = new SiteProduct();
@@ -111,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult removeProduct(IdEnter enter) {
         siteProductService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());

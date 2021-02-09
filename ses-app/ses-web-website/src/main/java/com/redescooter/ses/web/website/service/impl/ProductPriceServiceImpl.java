@@ -37,9 +37,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     @DubboReference
     private IdAppService idAppService;
 
-    @Autowired(required = true)
+    @Autowired
     private SiteProductPriceService siteProductPriceService;
-
 
     /**
      * 创建产品价格
@@ -47,7 +46,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductPrice(AddProductPriceEnter enter) {
         SiteProductPrice addProductPriceVO = new SiteProductPrice();
