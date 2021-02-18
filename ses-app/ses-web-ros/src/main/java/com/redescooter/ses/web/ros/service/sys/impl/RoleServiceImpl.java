@@ -74,30 +74,37 @@ import java.util.stream.Collectors;
  * @date 2020/03/12 14:12
  * @Description:
  */
-
 @Slf4j
 @Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleServiceMapper roleServiceMapper;
+
     @Autowired
     private RolePermissionService rolePermissionService;
+
     @Autowired
     private MenuService menuService;
+
     @Autowired
     private SalesAreaService salesAreaService;
+
     @Autowired
     private OpeSysRoleService sysRoleService;
+
     @Autowired
     private OpeSysDeptService sysDeptService;
+
     @Autowired
     private OpeSysMenuService sysMenuService;
+
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private CityBaseService ctiyBaseService;
 

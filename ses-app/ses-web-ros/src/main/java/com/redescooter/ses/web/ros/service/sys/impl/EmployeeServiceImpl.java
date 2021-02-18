@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  * @create: 2020/03/09 11:27
  */
 @Slf4j
-@Service
+@Service(value = "employeeService")
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
