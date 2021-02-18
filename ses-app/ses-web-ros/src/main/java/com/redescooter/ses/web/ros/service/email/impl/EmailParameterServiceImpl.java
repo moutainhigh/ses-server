@@ -2,9 +2,7 @@ package com.redescooter.ses.web.ros.service.email.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
-import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
 import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
@@ -12,10 +10,6 @@ import com.redescooter.ses.web.ros.service.email.EmailParameterService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author jerry
@@ -36,7 +30,6 @@ public class EmailParameterServiceImpl implements EmailParameterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMailConfigEnter enter) {
         return mailTemplateManageService.saveParameter(enter);
     }
