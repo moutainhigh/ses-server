@@ -39,10 +39,13 @@ public class JpushUserServiceImpl implements JpushUserService {
 
     @Autowired
     private PlaJpushUserMapper jpushUserMapper;
+
     @Autowired
     private JpushUserServiceMapper jpushUserServiceMapper;
+
     @DubboReference
     private IdAppService idSerService;
+
     @Autowired
     private PlaUserMapper userMapper;
 

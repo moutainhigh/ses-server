@@ -73,28 +73,40 @@ public class EdOrderServiceImpl implements EdOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private ScooterIotService scooterIotService;
+
     @DubboReference
     private PushService pushService;
+
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
     @DubboReference
     private UserBaseService userBaseService;
+
     @Resource
     private EdOrderServiceMapper edOrderServiceMapper;
+
     @Resource
     private CorExpressOrderService corExpressOrderService;
+
     @Resource
     private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
+
     @Resource
     private CorTenantScooterService corTenantScooterService;
+
     @Resource
     private EdOrderDeliveryTraceService edOrderDeliveryTraceService;
+
     @Resource
     private CorExpressDeliveryService corExpressDeliveryService;
+
     @Resource
     private CorUserProfileService corUserProfileService;
+
     @Resource
     private JedisService jedisService;
 

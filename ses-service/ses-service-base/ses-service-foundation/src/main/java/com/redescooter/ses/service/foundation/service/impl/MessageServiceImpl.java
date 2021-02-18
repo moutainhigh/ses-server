@@ -47,10 +47,13 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private MessageServiceMapper messageServiceMapper;
+
     @Autowired
     private PlaMessageMapper plaMessageMapper;
+
     @Autowired
     private I18nServiceMessage i18nServiceMessage;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -156,6 +159,7 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(MessageSaveEnter enter) {
         PlaMessage record = new PlaMessage();
 

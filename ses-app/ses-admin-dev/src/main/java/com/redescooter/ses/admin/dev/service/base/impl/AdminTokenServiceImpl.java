@@ -255,6 +255,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
      * @Param [enter]
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult emailLoginSendCode(LoginEnter enter) {
         // 先验证码输入的邮箱是否在系统中注册过
         AdmSysUser sysUser = getOpeSysUser(enter);
@@ -488,6 +489,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter) {
         if (Strings.isNullOrEmpty(enter.getMail())) {
             throw new SesAdminDevException(ExceptionCodeEnums.EMAIL_NOT_NULL.getCode(), ExceptionCodeEnums.EMAIL_NOT_NULL.getMessage());

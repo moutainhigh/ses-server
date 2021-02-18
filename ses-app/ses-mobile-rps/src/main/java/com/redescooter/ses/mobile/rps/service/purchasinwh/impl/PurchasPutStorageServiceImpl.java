@@ -60,6 +60,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
+
     @Autowired
     private PurchasPutStorageMapper purchasPutStorageMapper;
 
@@ -102,7 +103,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<PutStorageResult> purchasPutStroageList(PageEnter enter) {
         int count = purchasPutStorageMapper.purchasListCount(enter);
@@ -118,7 +118,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter) {
         int count = purchasPutStorageMapper.purchasDetailListCount(enter);
@@ -355,7 +354,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @return
      */
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public NotIdPartsResult notIdPartsResult(NotIdDetailsEnter enter) {
         NotIdPartsResult notIdPartsResult = purchasPutStorageMapper.notIdpartslistresult(enter);

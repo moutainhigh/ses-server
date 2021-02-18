@@ -226,6 +226,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * @Param [enter]
      **/
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult workOrderReply(workOrderReplyEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
         if (workOrder == null) {

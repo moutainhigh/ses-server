@@ -3,14 +3,14 @@ package com.redescooter.ses.web.ros.service.ordercount;
 import com.redescooter.ses.api.common.service.OrderCountService;
 import com.redescooter.ses.api.common.vo.count.OrderCountEnter;
 import com.redescooter.ses.api.common.vo.count.OrderCountResult;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dao.sales.SalesOrderServerMapper;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.vo.sales.CustomerOrderResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -23,7 +23,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/12/16 17:09
  */
-@Service
+@DubboService
 public class OrderCountServiceImpl implements OrderCountService {
 
     @Autowired

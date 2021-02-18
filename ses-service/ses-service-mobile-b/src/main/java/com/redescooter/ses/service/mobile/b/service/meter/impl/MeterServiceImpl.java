@@ -29,6 +29,7 @@ import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:MeterServiceImpl
@@ -42,19 +43,24 @@ public class MeterServiceImpl implements MeterService {
 
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private UserBaseService userBaseService;
+
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
     @Autowired
     private CorDriverScooterService corDriverScooterService;
+
     @Autowired
     private CorDriverService corDriverService;
+
     @Autowired
     private MeterServiceMapper meterServiceMapper;
+
     @Autowired
     private CorExpressOrderService corExpressOrderService;
-
 
     /**
      * @param enter
@@ -155,6 +161,7 @@ public class MeterServiceImpl implements MeterService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult syncOrderQuantity(MeterOrderEnter enter) {
         MeterDeliveryOrderReuslt result = meterOrder(enter);
 

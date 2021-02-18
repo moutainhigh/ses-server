@@ -24,13 +24,15 @@ public class SpecificServiceImpl implements SpecificService {
 
     @Resource
     private SpecificGroupMapper specificGroupMapper;
+
     @Resource
     private SpecificTypeMapper specificTypeMapper;
+
     @Resource
     private SpecificDefGroupMapper specificDefGroupMapper;
+
     @Resource
     private SpecificDefMapper specificDefMapper;
-
 
     @Override
     public List<SelectBaseResultDTO> getSpecificGroupList() {

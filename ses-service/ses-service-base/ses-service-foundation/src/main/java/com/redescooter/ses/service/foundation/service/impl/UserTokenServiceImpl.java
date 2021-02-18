@@ -74,7 +74,6 @@ import java.util.stream.Collectors;
  * @ClassName: UserTokenServiceImpl
  * @Function: TODO
  */
-
 @Slf4j
 @DubboService
 public class UserTokenServiceImpl implements UserTokenService {
@@ -119,6 +118,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginResult login(LoginEnter enter) {
 
         //用户名密码去除空格
@@ -355,6 +355,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult accountDisabled(GeneralEnter enter) {
         // 判断当前账户是否存在
         PlaUser user = userMapper.selectById(enter.getUserId());
@@ -382,6 +383,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginResult signIn(AccountsDto user, LoginEnter enter) {
 
         if (StringUtils.isNotBlank(user.getLastLoginToken())) {
@@ -411,7 +413,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public List<UserToken> getAppUser(GetUserEnter enter) {
-
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(enter.getEmail())) {
             queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getEmail());
@@ -1017,7 +1018,6 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //密码去空格
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
-
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
         if (plaUser == null) {

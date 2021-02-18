@@ -14,7 +14,7 @@ import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.ScooterService;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 15:29
  */
-@DubboService
+@Service
 public class ScooterServiceImpl implements ScooterService {
 
     @DubboReference
