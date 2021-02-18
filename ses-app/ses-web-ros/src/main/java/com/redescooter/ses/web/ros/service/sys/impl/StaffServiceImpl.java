@@ -113,7 +113,7 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     private OpeSysUserService opeSysUserService;
 
-    @DubboReference
+    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
@@ -148,7 +148,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Value("${Request.publicKey}")
     private String publicKey;
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)

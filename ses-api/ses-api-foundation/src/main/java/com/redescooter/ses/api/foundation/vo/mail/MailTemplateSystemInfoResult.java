@@ -15,7 +15,7 @@ import java.util.List;
  * @Date 2021/2/9 1:59 下午
  * @Description 邮件模板系统参数实体
  **/
-@ApiModel(value = "邮件模板系统结果集", description = "邮件模板系统结果集")
+@ApiModel(value = "系统邮件模板结果集", description = "邮件模板系统结果集")
 @AllArgsConstructor //生成全参数构造函数
 @NoArgsConstructor//生成无参构造函数
 @Data
