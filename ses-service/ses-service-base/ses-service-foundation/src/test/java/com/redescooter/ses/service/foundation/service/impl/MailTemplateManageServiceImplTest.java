@@ -40,8 +40,9 @@ class MailTemplateManageServiceImplTest extends SesServiceFoundationApplicationT
     @Test
     void listParameter() {
         QueryMailConfigEnter enter = new QueryMailConfigEnter();
-        enter.setMailTemplateNo(3);
+        enter.setMailTemplateNo(1);
         MailTemplateConfigResult result = mailTemplateManageService.listParameter(enter);
         System.out.println(JSONObject.toJSONString(result));
     }
+
 }

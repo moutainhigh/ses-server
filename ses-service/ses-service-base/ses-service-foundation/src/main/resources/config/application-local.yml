@@ -7,9 +7,9 @@ log:
 ## DUBBO 配置
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.211:2182
+    address: zookeeper://192.168.2.211:2183
   metadata-report:
-    address: zookeeper://192.168.2.211:2182
+    address: zookeeper://192.168.2.211:2183
 spring:
   #数据库连接
   datasource:

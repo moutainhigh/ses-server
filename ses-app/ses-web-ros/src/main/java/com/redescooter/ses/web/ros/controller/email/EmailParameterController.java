@@ -26,7 +26,7 @@ import java.util.Map;
 @Api(tags = {"邮件参数管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/email/parameter")
+@RequestMapping(value = "/email/param")
 public class EmailParameterController {
 
     @Autowired

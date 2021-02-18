@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -178,82 +179,57 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     public MailTemplateConfigResult listParameter(QueryMailConfigEnter enter) {
         //参数封装
         MailTemplateConfigResult result = new MailTemplateConfigResult();
-        MailTemplateSystemInfoResult systemInfo = new MailTemplateSystemInfoResult();
+
+        //系统集合
         List<MailTemplateSystemInfoResult> systemInfoList = new ArrayList<>();
 
+        //获取邮件模板
         PlaMailTemplate mailTemplate = mailTemplateMapper.selectOne(new QueryWrapper<PlaMailTemplate>()
                 .eq(PlaMailTemplate.COL_MAIL_TEMPLATE_NO, enter.getMailTemplateNo()));
 
         FoundationAssert.isNull(mailTemplate, ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.VERSION_IS_NOT_EXIST.getMessage());
 
-        //保存邮件模板
+        //保存邮件模板主体信息
         result.setId(mailTemplate.getId());
         result.setMailTemplateNo(mailTemplate.getMailTemplateNo());
         result.setEvent(mailTemplate.getEvent());
         result.setName(mailTemplate.getName());
         result.setSubject(mailTemplate.getSubject());
 
-        List<PlaMailConfig> configs = plaMailConfigService.list(new QueryWrapper<PlaMailConfig>()
+        //根据邮件编号，查询对应参数列表
+        List<PlaMailConfig> list = plaMailConfigService.list(new QueryWrapper<PlaMailConfig>()
                 .eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, enter.getMailTemplateNo()));
 
-        if (configs.size() > 0) {
+        FoundationAssert.isNull(list, ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
 
-            for (PlaMailConfig config : configs) {
-                if (systemInfoList.size() == 0) {
-                    List<MailTemplateParameterInfoResult> parameterInfoList = new ArrayList<>();
-                    //1.新建邮件模板所属系统
-                    systemInfo = new MailTemplateSystemInfoResult();
-                    //系统编码，格式：systemId::appId
-                    systemInfo.setCode(new StringBuffer().append(config.getSystemId()).append("::").append(config.getAppId()).toString());
-                    systemInfo.setSystemId(config.getSystemId());
-                    systemInfo.setAppId(config.getAppId());
+        //根据系统id和应用id分组
+        Map<String, List<PlaMailConfig>> mapGroup = list.stream().collect(Collectors.groupingBy(plaMailConfig -> plaMailConfig.getSystemId() + "::" + plaMailConfig.getAppId()));
 
-                    //2.创建系统邮件模板所属参数
-                    MailTemplateParameterInfoResult parameterInfo = new MailTemplateParameterInfoResult();
-                    parameterInfo.setId(config.getId());
-                    parameterInfo.setParamKey(config.getParamKey());
-                    parameterInfo.setParamValue(config.getParamValue());
-                    parameterInfoList.add(parameterInfo);
-
-                    systemInfo.setParameterInfoList(parameterInfoList);
-                    systemInfoList.add(systemInfo);
-                    result.setSystemInfoList(systemInfoList);
-                } else {
-                    for (int i = 0; i < systemInfoList.size(); i++) {
-                        MailTemplateSystemInfoResult systemInfoResult = systemInfoList.get(i);
-                        if (systemInfoResult.getCode().equals(new StringBuffer().append(config.getSystemId()).append("::").append(config.getAppId()).toString())) {
-                            //2.1.创建系统邮件模板所属参数
-                            MailTemplateParameterInfoResult newParameterInfo = new MailTemplateParameterInfoResult();
-                            newParameterInfo.setId(config.getId());
-                            newParameterInfo.setParamKey(config.getParamKey());
-                            newParameterInfo.setParamValue(config.getParamValue());
-                            systemInfoResult.getParameterInfoList().add(newParameterInfo);
-                        } else {
-                            List<MailTemplateParameterInfoResult> parameterInfoList = new ArrayList<>();
-                            //1.新建邮件模板所属系统
-                            systemInfo = new MailTemplateSystemInfoResult();
-                            //系统编码，格式：systemId::appId
-                            systemInfo.setCode(new StringBuffer().append(config.getSystemId()).append("::").append(config.getAppId()).toString());
-                            systemInfo.setSystemId(config.getSystemId());
-                            systemInfo.setAppId(config.getAppId());
-
-                            //2.创建系统邮件模板所属参数
-                            MailTemplateParameterInfoResult parameterInfo = new MailTemplateParameterInfoResult();
-                            parameterInfo.setId(config.getId());
-                            parameterInfo.setParamKey(config.getParamKey());
-                            parameterInfo.setParamValue(config.getParamValue());
-                            parameterInfoList.add(parameterInfo);
-
-                            systemInfo.setParameterInfoList(parameterInfoList);
-                        }
-                        systemInfoList.add(systemInfo);
-                        result.setSystemInfoList(systemInfoList);
-
-                    }
-                }
-            }
+        if (!mapGroup.isEmpty()) {
+            //结果封装
+            mapGroup.forEach((k, v) -> {
+                //邮件所属系统
+                MailTemplateSystemInfoResult systemInfo = new MailTemplateSystemInfoResult();
+                systemInfo.setCode(k);
+                systemInfo.setSystemId(v.get(0).getSystemId());
+                systemInfo.setAppId(v.get(0).getAppId());
+                systemInfo.setRequestId(enter.getRequestId());
+                //装在系统集合
+                List<MailTemplateParameterInfoResult> parameterInfoList = new ArrayList<>();
+                v.forEach(p -> {
+                    MailTemplateParameterInfoResult infoResult = new MailTemplateParameterInfoResult();
+                    infoResult.setId(p.getId());
+                    infoResult.setParamKey(p.getParamKey());
+                    infoResult.setParamValue(p.getParamValue());
+                    infoResult.setRequestId(enter.getRequestId());
+                    parameterInfoList.add(infoResult);
+                });
+                systemInfo.setParameterInfoList(parameterInfoList);
+                systemInfoList.add(systemInfo);
+            });
         }
-
+        result.setSystemInfoList(systemInfoList);
+        result.setRequestId(enter.getRequestId());
         return result;
     }
 
