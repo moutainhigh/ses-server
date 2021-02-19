@@ -139,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter) {
-        OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));
+        OpeCustomer opeCustomer = opeCustomerMapper.selectOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));
         if (opeCustomer == null) {
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
@@ -150,7 +150,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (StringUtils.isNotEmpty(enter.getTelephone())) {
             opeCustomer.setTelephone(enter.getTelephone());
         }
-        opeCustomerService.updateById(opeCustomer);
+        opeCustomerMapper.updateById(opeCustomer);
         return new GeneralResult(enter.getRequestId());
     }
 }

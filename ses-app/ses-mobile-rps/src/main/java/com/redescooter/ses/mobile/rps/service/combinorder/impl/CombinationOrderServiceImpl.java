@@ -229,7 +229,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         RpsAssert.isNull(opeCombinListRelationParts, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
         // ECU仪表必须要传递蓝牙mac地址
-        RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeCombinListRelationParts.getPartsType())
+        RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(String.valueOf(opeCombinListRelationParts.getPartsType()))
                         && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
