@@ -60,5 +60,4 @@ public class EmailController {
     public Response<List<MailTemplateResult>> list(@ModelAttribute @ApiParam("请求参数") EmailListEnter enter) {
         return new Response<>(emailService.list(enter));
     }
-
 }
