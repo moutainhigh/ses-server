@@ -49,4 +49,15 @@ public enum AppIDEnums {
         }
         return null;
     }
+
+    public static AppIDEnums checkAppId(String appId) {
+        for (AppIDEnums item : AppIDEnums.values()) {
+            if (item.getAppId().equals(appId)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+
 }

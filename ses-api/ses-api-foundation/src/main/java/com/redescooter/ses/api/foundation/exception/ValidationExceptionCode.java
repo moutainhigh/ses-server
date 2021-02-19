@@ -63,5 +63,9 @@ public interface ValidationExceptionCode {
     int VERSION_CODE_IS_NOT_EMPTY = 10022;
     // 版本发布环境不能为空
     int VERSION_RELEASE_ENVIRONMENT_IS_NOT_EMPTY = 10023;
+    //邮件模板编号不能为空
+    int MAILTEMPLATE_IS_NOT_EMPTY = 10024;
+    //appid不能为空
+    int APPID_IS_NOT_EMPTY = 10025;
 
 }

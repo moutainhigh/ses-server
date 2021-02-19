@@ -130,7 +130,11 @@ public enum ExceptionCodeEnums {
 
     CONTENT_LENGTH_ERROR(10059, "描述内容长度过长"),
 
-    NUMBER_NOT_REPEAT(10060, "编号不能重复")
+    NUMBER_NOT_REPEAT(10060, "编号不能重复"),
+
+    TEMPLATE_IS_NOT_EXIST(10061, "邮件模板不存在"),
+
+    TEMPLATE_PARAM_IS_NOT_EXIST(10062, "邮件模板参数不存在"),
 
     ;
 

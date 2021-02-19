@@ -34,7 +34,7 @@ public class EmailParameterController {
 
     @ApiOperation(value = "保存邮件参数", response = GeneralResult.class)
     @PostMapping(value = "/save")
-    public Response<GeneralResult> save(@RequestBody @ApiParam("请求参数") SaveMailConfigEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") SaveMailConfigEnter enter) {
         return new Response<>(emailParameterService.save(enter));
     }
 

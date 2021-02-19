@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "rede.stripe-config")
+@ConfigurationProperties(prefix = "rede.stripe-config",ignoreInvalidFields=false)
 public class StripeConfigProperties {
 
     private String currency;
