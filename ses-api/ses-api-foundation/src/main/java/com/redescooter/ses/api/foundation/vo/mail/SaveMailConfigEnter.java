@@ -24,36 +24,30 @@ public class SaveMailConfigEnter extends GeneralEnter {
     /**
      * 主键
      */
-    @ApiModelProperty(value="主键")
+    @ApiModelProperty(value = "主键")
     private Long id;
 
     /**
      * 模板编号
      */
-    @ApiModelProperty(value="模板编号")
+    @ApiModelProperty(value = "模板编号")
     private Integer mailTemplateNo;
-
-    /**
-     * 系统ID
-     */
-    @ApiModelProperty(value="系统ID")
-    private String mailSystemId;
 
     /**
      * 应用ID
      */
-    @ApiModelProperty(value="应用ID")
+    @ApiModelProperty(value = "应用ID")
     private String mailAppId;
 
     /**
      * 对应key，不可为空
      */
-    @ApiModelProperty(value="对应key，不可为空")
+    @ApiModelProperty(value = "对应key，不可为空")
     private String paramKey;
 
     /**
      * 对应值域，可为空
      */
-    @ApiModelProperty(value="对应值域，可为空")
+    @ApiModelProperty(value = "对应值域，可为空")
     private String paramValue;
 }

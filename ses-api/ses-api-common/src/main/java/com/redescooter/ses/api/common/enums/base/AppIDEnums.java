@@ -41,4 +41,12 @@ public enum AppIDEnums {
         return null;
     }
 
+    public static String getSystemId(String appId) {
+        for (AppIDEnums item : AppIDEnums.values()) {
+            if (item.getAppId().equals(appId)) {
+                return item.getSystemId();
+            }
+        }
+        return null;
+    }
 }

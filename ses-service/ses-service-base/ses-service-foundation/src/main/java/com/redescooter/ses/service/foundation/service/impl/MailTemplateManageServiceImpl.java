@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailConfigStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -136,14 +137,13 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         }
         if (StringUtils.isNoneBlank(
                 String.valueOf(enter.getMailTemplateNo()),
-                enter.getMailSystemId(),
                 enter.getMailAppId(),
                 enter.getParamKey(),
                 enter.getParamValue())) {
             throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
 
-        config.setSystemId(enter.getMailSystemId());
+        config.setSystemId(AppIDEnums.getSystemId(enter.getMailAppId()));
         config.setAppId(enter.getMailAppId());
         config.setParamKey(enter.getParamKey());
         config.setParamValue(enter.getParamValue());

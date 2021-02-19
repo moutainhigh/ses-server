@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailConfigStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.MailConfigManageService;
@@ -52,7 +53,7 @@ public class MailConfigManageServiceImpl implements MailConfigManageService {
         }
         mailConfig.setStatus(MailConfigStatusEnums.NORMAL.getCode());
         mailConfig.setAppId(enter.getMailAppId());
-        mailConfig.setSystemId(enter.getMailSystemId());
+        mailConfig.setSystemId(AppIDEnums.getSystemId(enter.getMailAppId()));
         mailConfig.setCreatedBy(enter.getUserId());
         mailConfig.setCreatedTime(new Date());
         mailConfig.setUpdatedBy(enter.getUserId());
