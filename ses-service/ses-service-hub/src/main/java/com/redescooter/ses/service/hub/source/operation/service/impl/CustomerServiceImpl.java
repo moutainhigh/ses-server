@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
@@ -77,6 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("operation")
     public GeneralResult updateCustomerInfo(BaseCustomerEnter enter) {
 
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -109,6 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
+    @DS("operation")
     public GeneralResult updateCustomerInfoByAnyProperty(BaseCustomerEnter enter) {
         QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper<>();
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_DR, 0);
@@ -134,6 +137,7 @@ public class CustomerServiceImpl implements CustomerService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @DS("operation")
     public GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));
         if (opeCustomer == null) {
