@@ -41,7 +41,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @DubboReference
     private UserProfileProService userProfileProService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
