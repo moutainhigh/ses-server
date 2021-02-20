@@ -228,7 +228,6 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return PageResult.create(page, count, list);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveFactoryTrace(String event, OpeFactory factory) {
         OpeFactoryTrace trace = new OpeFactoryTrace();
@@ -245,9 +244,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         trace.setCreatedTime(new Date());
         trace.setUpdatedBy(factory.getUpdatedBy());
         trace.setUpdatedTime(new Date());
-
         factoryTraceService.save(trace);
-
         return new GeneralResult();
     }
 
