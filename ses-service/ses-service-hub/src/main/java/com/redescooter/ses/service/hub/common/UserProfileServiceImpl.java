@@ -20,7 +20,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,7 +35,7 @@ import java.util.List;
  * @create: 2019/12/26 15:58
  */
 @Slf4j
-@Service
+@DubboService
 public class UserProfileServiceImpl implements UserProfileService {
 
     @DubboReference
