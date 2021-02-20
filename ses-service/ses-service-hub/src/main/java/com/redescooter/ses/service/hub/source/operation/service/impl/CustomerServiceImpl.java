@@ -12,7 +12,6 @@ import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
-import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -32,9 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
-
-    @Autowired
-    private OpeCustomerService opeCustomerService;
 
     @DubboReference
     private CityAppService cityAppService;
@@ -119,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_TENANT_ID, 0);
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, enter.getCustomerType());
         opeCustomerQueryWrapper.eq(OpeCustomer.COL_INDUSTRY_TYPE, enter.getIndustryType());
-        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
+        OpeCustomer opeCustomer = opeCustomerMapper.selectOne(opeCustomerQueryWrapper);
         if (opeCustomer == null) {
 
         }
