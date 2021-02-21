@@ -130,19 +130,16 @@ public class FactoryRosServiceImpl implements FactoryRosService {
             saveFactoryTrace(FactoryEventEnum.CREATE.getValue(), factorySave);
         }
         // 生成工厂的账号信息
-        try {
-            createFactoryUser(factorySave);
-        } catch (Exception e) {
-        }
+        createFactoryUser(factorySave);
         return new GeneralResult(enter.getRequestId());
     }
-
 
     // 通过邮箱创建工厂的RPS登陆账号
     public void createFactoryUser(OpeFactory factory) {
         OpeSysRpsUser user = new OpeSysRpsUser();
         int salt = RandomUtils.nextInt(10000, 99999);
         String decryptPassword = "RedEScooter2019";
+        user.setId(idAppService.getId(SequenceName.OPE_SYS_RPS_USER));
         user.setPassword(DigestUtils.md5Hex(decryptPassword + salt));
         user.setSalt(String.valueOf(salt));
         user.setLoginName(factory.getContactEmail());
