@@ -514,7 +514,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_STOCK_IS_NOT_ENOUGH(10248, "车辆库存不足"),
 
-    PART_STOCK_IS_EMPTY(10249, "该部件库存为空")
+    PART_STOCK_IS_EMPTY(10249, "该部件库存为空"),
+
+    NUMBER_NOT_EMPTY(10250, "数量不能为空")
 
 
 

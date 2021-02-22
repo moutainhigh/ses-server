@@ -1053,8 +1053,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
     }
 
-
     public void createOutOrderB(OpeOutWhouseOrder orderOrder, String st, Long userId) {
+        boolean flag = false;
         switch (orderOrder.getOutWhType()) {
             case 1:
                 // scooter
@@ -1066,8 +1066,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(scooterEnters)) {
                     List<OpeOutWhScooterB> scooterBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateOutScooterBEnter::getQty).sum());
                     for (SaveOrUpdateOutScooterBEnter scooterEnter : scooterEnters) {
+                        if (null == scooterEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhScooterB scooterB = new OpeOutWhScooterB();
                         BeanUtils.copyProperties(scooterEnter, scooterB);
                         scooterB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_SCOOTER_B));
@@ -1078,6 +1081,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         scooterB.setUpdatedTime(new Date());
                         scooterBList.add(scooterB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateOutScooterBEnter::getQty).sum());
                     opeOutWhScooterBService.saveOrUpdateBatch(scooterBList);
                 }
             default:
@@ -1092,8 +1099,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(combinBEnters)) {
                     List<OpeOutWhCombinB> combinBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateOutCombinBEnter::getQty).sum());
                     for (SaveOrUpdateOutCombinBEnter combinBEnter : combinBEnters) {
+                        if (null == combinBEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhCombinB combinB = new OpeOutWhCombinB();
                         BeanUtils.copyProperties(combinBEnter, combinB);
                         combinB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_COMBIN_B));
@@ -1104,6 +1114,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         combinB.setUpdatedTime(new Date());
                         combinBList.add(combinB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateOutCombinBEnter::getQty).sum());
                     opeOutWhCombinBService.saveOrUpdateBatch(combinBList);
                 }
                 break;
@@ -1117,8 +1131,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(partsBEnters)) {
                     List<OpeOutWhPartsB> partsBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(partsBEnters.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
                     for (SaveOrUpdateOutPartsBEnter partsBEnter : partsBEnters) {
+                        if (null == partsBEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhPartsB partsB = new OpeOutWhPartsB();
                         BeanUtils.copyProperties(partsBEnter, partsB);
                         partsB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_PARTS_B));
@@ -1129,6 +1146,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         partsB.setUpdatedTime(new Date());
                         partsBList.add(partsB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(partsBEnters.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
                     opeOutWhPartsBService.saveOrUpdateBatch(partsBList);
                 }
                 break;
