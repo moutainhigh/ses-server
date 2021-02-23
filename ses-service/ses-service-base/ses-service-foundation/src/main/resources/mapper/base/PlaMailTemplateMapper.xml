@@ -319,6 +319,7 @@
                     mail_template_no like concat('%', #{enter.keyword}, '%')
             )
         </if>
+        order by created_time desc
     </select>
 
 </mapper>
