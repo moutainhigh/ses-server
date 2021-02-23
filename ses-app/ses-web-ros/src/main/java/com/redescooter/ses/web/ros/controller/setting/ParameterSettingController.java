@@ -28,7 +28,7 @@ import java.util.List;
 @Api(tags = {"ROS-Setting参数"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/setting/parameter")
+@RequestMapping(value = "/setup/setting/parameter")
 public class ParameterSettingController {
 
     @Autowired

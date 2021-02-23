@@ -46,7 +46,7 @@ import java.util.List;
 @Api(tags = {"部门管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/dept")
+@RequestMapping(value = "/organization/sys/dept")
 public class SysDeptController {
 
     @Autowired

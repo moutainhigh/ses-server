@@ -30,7 +30,7 @@ import java.util.List;
 @Api(tags = {"菜单管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/menu")
+@RequestMapping(value = "/setup/sys/menu")
 public class SysMenuController {
 
     @Autowired

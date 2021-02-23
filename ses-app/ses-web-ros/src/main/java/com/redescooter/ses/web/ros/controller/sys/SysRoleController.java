@@ -47,7 +47,7 @@ import java.util.List;
 @Api(tags = {"角色管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/role")
+@RequestMapping(value = "/organization/sys/role")
 public class SysRoleController {
 
     @Autowired

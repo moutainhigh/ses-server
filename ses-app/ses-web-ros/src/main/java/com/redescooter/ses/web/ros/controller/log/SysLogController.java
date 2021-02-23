@@ -33,7 +33,7 @@ import java.util.Map;
 @Api(tags = {"系统日志管理模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/log")
+@RequestMapping(value = "/setup/sys/log")
 public class SysLogController {
 
     @Autowired
