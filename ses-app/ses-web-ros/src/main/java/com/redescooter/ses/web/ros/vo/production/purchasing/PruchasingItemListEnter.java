@@ -37,5 +37,5 @@ public class PruchasingItemListEnter extends PageEnter {
     private Integer stockType;
 
     @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
-    private Integer source = 0;
+    private Integer source;
 }

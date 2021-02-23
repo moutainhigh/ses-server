@@ -632,6 +632,9 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
+        if (null == enter.getSource()) {
+            enter.setSource(3);
+        }
         List<PruchasingItemResult> resultList = new ArrayList<>();
 
         List<String> productTypeList = new ArrayList<>();
