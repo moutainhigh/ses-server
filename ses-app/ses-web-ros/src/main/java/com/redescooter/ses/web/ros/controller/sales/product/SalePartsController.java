@@ -22,7 +22,7 @@ import java.util.List;
 @Api(tags = {"销售部件"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sales/sale/parts")
+@RequestMapping(value = "/sales/parts")
 public class SalePartsController {
 
     @Autowired

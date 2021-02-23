@@ -29,7 +29,7 @@ import java.util.Map;
 @Api(tags = {"账号管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/account/customer/")
+@RequestMapping(value = "/account/customer")
 public class CAccountController {
 
     @Autowired
