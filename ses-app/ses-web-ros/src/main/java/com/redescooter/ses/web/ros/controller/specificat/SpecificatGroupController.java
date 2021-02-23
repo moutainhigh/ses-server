@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = {"规格分组管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/specificat/group")
+@RequestMapping(value = "/product/specificat/group")
 public class SpecificatGroupController {
 
     @Autowired

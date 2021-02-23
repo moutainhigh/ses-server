@@ -23,7 +23,7 @@ import java.util.List;
 @Api(tags = {"中国仓库控制器"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/cn/wh")
+@RequestMapping(value = "/warehouse/cn/wh")
 public class ChinaWhController {
 
     @Autowired

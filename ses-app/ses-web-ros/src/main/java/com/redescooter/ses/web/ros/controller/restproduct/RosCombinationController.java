@@ -23,7 +23,7 @@ import java.util.Map;
 @Api(tags = {"生产组合产品"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/production/combination")
+@RequestMapping(value = "/product/production/combination")
 public class RosCombinationController {
 
     @Autowired

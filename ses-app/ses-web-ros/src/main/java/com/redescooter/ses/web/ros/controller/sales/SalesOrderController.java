@@ -27,7 +27,7 @@ import java.util.Map;
 @Api(tags = {"销售订单服务"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sales")
+@RequestMapping(value = "/sales/sales")
 public class SalesOrderController {
 
     @Autowired

@@ -37,7 +37,7 @@ import java.util.Map;
 @Api(tags = {"供应链模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/bom/supplierchaim")
+@RequestMapping(value = "/product/bom/supplierchaim")
 public class SupplierChaimController {
 
     @Autowired

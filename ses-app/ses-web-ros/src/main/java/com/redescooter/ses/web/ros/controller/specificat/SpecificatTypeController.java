@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"规格分组管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/specificat/type")
+@RequestMapping(value = "/product/specificat/type")
 public class SpecificatTypeController {
 
     @Autowired
