@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.controller.other.inquiry;
+package com.redescooter.ses.web.ros.controller.sales;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
@@ -33,7 +33,7 @@ import java.util.Map;
 @Api(tags = {"询价单管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/inquiry")
+@RequestMapping(value = "/sales/inquiry")
 public class InquiryController {
 
     @Autowired
