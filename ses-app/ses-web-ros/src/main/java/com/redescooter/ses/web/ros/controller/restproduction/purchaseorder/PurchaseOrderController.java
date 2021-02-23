@@ -26,7 +26,7 @@ import java.util.Map;
 @Api(tags = {"采购单模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/purchase/order")
+@RequestMapping(value = "/production/sys/purchase/order")
 public class PurchaseOrderController {
 
     @Autowired

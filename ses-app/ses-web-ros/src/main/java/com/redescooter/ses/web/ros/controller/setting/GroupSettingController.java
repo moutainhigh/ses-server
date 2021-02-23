@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 @Api(tags = {"ROS-Setting分组"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/setting/group")
+@RequestMapping(value = "/setup/setting/group")
 public class GroupSettingController {
 
     @Autowired

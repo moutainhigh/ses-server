@@ -19,7 +19,7 @@ import java.util.Map;
 @Api(tags = {"发货单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/restproduction/invoice")
+@RequestMapping(value = "/production/restproduction/invoice")
 public class InvocieController {
 
     @Autowired

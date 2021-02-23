@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "车辆已分配控制器", tags = "车辆已分配控制器")
 @CrossOrigin
 @RestController
-@RequestMapping("/assigned")
+@RequestMapping("/scooter/assigned")
 public class AssignedController {
 
     @Autowired

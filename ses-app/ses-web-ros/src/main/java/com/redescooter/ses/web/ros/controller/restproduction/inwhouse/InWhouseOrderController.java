@@ -28,7 +28,7 @@ import java.util.Map;
 @Api(tags = {"入库单控制层"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/inWhouse/order")
+@RequestMapping(value = "/production/sys/inWhouse/order")
 public class InWhouseOrderController {
 
     @Autowired
