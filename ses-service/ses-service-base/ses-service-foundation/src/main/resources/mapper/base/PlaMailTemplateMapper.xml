@@ -309,11 +309,8 @@
         select *
         from pla_mail_template
         where dr = 0
-        <if test="enter.status != null and enter.status != '' and enter.status != 'All'.toString()">
+        <if test="enter.status != null and enter.status != ''">
             and status = #{enter.status}
-        </if>
-        <if test="enter.status != null and enter.status != '' and enter.status == 'All'.toString()">
-            and status in ('NORMAL', 'DISABLED')
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
