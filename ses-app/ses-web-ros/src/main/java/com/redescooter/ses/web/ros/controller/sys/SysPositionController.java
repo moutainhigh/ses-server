@@ -41,7 +41,7 @@ import java.util.List;
 @Api(tags = {"岗位模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/position")
+@RequestMapping(value = "/organization/sys/position")
 public class SysPositionController {
 
     @Autowired

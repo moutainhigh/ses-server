@@ -2,9 +2,7 @@ package com.redescooter.ses.web.ros.controller.email;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IntEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.foundation.vo.mail.MailConfigOfTermResult;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
 import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
@@ -13,10 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author jerry
@@ -26,7 +25,7 @@ import java.util.Map;
 @Api(tags = {"邮件参数管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/email/param")
+@RequestMapping(value = "/basic/email/param")
 public class EmailParameterController {
 
     @Autowired

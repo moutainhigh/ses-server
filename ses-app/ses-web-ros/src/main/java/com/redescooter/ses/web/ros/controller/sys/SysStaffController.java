@@ -23,7 +23,7 @@ import java.util.List;
 @Api(tags = {"员工管理模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/staff")
+@RequestMapping(value = "/organization/sys/staff")
 public class SysStaffController {
 
     @Autowired

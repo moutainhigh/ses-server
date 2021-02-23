@@ -36,7 +36,7 @@ import java.util.Map;
 @Api(value = "车辆待分配控制器", tags = "车辆待分配控制器")
 @CrossOrigin
 @RestController
-@RequestMapping("/tobe/assign")
+@RequestMapping("/scooter/tobe/assign")
 public class ToBeAssignController {
 
     @Autowired

@@ -29,7 +29,7 @@ import java.util.List;
 @Api(tags = {"邮件管理模板"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/email")
+@RequestMapping(value = "/basic/email")
 public class EmailController {
 
     @Autowired

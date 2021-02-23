@@ -18,7 +18,7 @@ import java.util.Map;
 @Api(tags = {"出库单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/restproduction/outbound")
+@RequestMapping(value = "/production/restproduction/outbound")
 public class OutboundOrderController {
 
     @Autowired

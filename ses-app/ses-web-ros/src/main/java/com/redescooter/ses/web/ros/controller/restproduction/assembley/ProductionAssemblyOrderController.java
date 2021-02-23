@@ -45,7 +45,7 @@ import java.util.Map;
 @Api(tags = {"组装单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/restproduction/assembly")
+@RequestMapping(value = "/production/restproduction/assembly")
 public class ProductionAssemblyOrderController {
 
     @Autowired
