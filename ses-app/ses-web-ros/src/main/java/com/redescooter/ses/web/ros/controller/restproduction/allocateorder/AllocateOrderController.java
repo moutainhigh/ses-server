@@ -24,7 +24,7 @@ import java.util.Map;
 @Api(tags = {"调拨单模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/sys/allocate/order")
+@RequestMapping(value = "/sales/sys/allocate/order")
 public class AllocateOrderController {
 
     @Autowired

@@ -24,7 +24,7 @@ import java.util.Map;
 @Api(tags = {"代工厂管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/factory")
+@RequestMapping(value = "/chain/factory")
 public class FactoryController {
 
     @Autowired

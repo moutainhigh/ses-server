@@ -37,7 +37,7 @@ import java.util.Map;
 @Api(tags = {"客户管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/customer")
+@RequestMapping(value = "/sales/customer")
 public class CustomerController {
 
     @Autowired

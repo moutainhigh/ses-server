@@ -26,7 +26,7 @@ import java.util.Map;
 @Api(tags = {"法国仓库控制器"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/fr/wh")
+@RequestMapping(value = "/warehouse/fr/wh")
 public class FrWhController {
 
 

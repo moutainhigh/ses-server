@@ -23,7 +23,7 @@ import java.util.List;
 @Api(tags = {"联系我们"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/contactUs")
+@RequestMapping(value = "/sales/contactUs")
 public class ContactUsController {
 
     @Autowired

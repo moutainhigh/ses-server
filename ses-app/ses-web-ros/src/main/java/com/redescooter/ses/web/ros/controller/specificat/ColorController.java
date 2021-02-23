@@ -24,7 +24,7 @@ import java.util.List;
 @Api(tags = {"规格颜色管理模块"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/color")
+@RequestMapping(value = "/product/color")
 public class ColorController {
 
     @Autowired
