@@ -25,7 +25,7 @@ import java.util.Map;
 @Api(tags = {"采购商管理"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/supplier")
+@RequestMapping(value = "/chain/supplier")
 public class SupplierController {
 
     @Autowired

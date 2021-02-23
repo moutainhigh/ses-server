@@ -38,7 +38,7 @@ import java.util.Map;
 @Api(tags = {"不合格品库库存控制器"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/wms/unqualified/stock")
+@RequestMapping(value = "/warehouse/wms/unqualified/stock")
 public class WmsQualifiedController {
 
 

@@ -48,7 +48,7 @@ import java.util.Map;
 @Api(tags = {"库存控制器"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/wms/stock")
+@RequestMapping(value = "/warehouse/wms/stock")
 public class WmsFinishStockController {
 
     @Autowired

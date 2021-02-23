@@ -37,7 +37,7 @@ import java.util.List;
 @Api(tags = {"生产采购单"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/restproduction/purchas")
+@RequestMapping(value = "/sales/restproduction/purchas")
 public class PurchasController {
 
     @Autowired

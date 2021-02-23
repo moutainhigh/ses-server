@@ -32,7 +32,7 @@ import java.util.Map;
 @Api(tags = {"部件控制层"})
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/production/parts")
+@RequestMapping(value = "/product/production/parts")
 public class PartsRosController {
 
     @Autowired

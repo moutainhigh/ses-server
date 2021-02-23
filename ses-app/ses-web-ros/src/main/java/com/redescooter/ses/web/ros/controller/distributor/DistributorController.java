@@ -37,7 +37,7 @@ import java.util.List;
 @Api(value = "经销商控制器", tags = "经销商控制器")
 @CrossOrigin
 @RestController
-@RequestMapping("/distributor")
+@RequestMapping("/chain/distributor")
 public class DistributorController {
 
     @Autowired
