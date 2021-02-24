@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.service.entrustorder.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.entrustorder.EntrustOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.service.RosEntrustOrderService;
@@ -11,17 +12,40 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeLogisticsOrderMapper;
-import com.redescooter.ses.mobile.rps.dao.entrustorder.*;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsCombinStockMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockSerialNumberMapper;
+import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustCombinBMapper;
+import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustPartsBMapper;
+import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustProductSerialNumMapper;
+import com.redescooter.ses.mobile.rps.dao.entrustorder.EntrustScooterBMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustPartsB;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustProductSerialNum;
+import com.redescooter.ses.mobile.rps.dm.OpeEntrustScooterB;
+import com.redescooter.ses.mobile.rps.dm.OpeLogisticsOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.entrustorder.*;
+import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDeliverParamDTO;
+import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO;
+import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO;
+import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +89,18 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
 
     @Resource
     private ProductionPartsMapper partsMapper;
+
+    @Autowired
+    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
+
+    @Autowired
+    private OpeWmsCombinStockMapper opeWmsCombinStockMapper;
+
+    @Autowired
+    private OpeWmsPartsStockMapper opeWmsPartsStockMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
     @Override
     public Map<Integer, Integer> getEntrustOrderTypeCount(GeneralEnter enter) {
@@ -210,6 +246,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
          * 更新委托单产品实际发货数量
          */
         String serialNum = null;
+        Long relationId = null;
         switch (paramDTO.getProductType()) {
             case 1:
                 // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
@@ -232,6 +269,20 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustScooterB.setUpdatedTime(new Date());
                 opeEntrustScooterB.setDef1(serialNum);
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
+
+                // 得到库存表id
+                Long groupId = opeEntrustScooterB.getGroupId();
+                Long colorId = opeEntrustScooterB.getColorId();
+                LambdaQueryWrapper<OpeWmsScooterStock> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeWmsScooterStock::getDr, 0);
+                wrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
+                wrapper.eq(OpeWmsScooterStock::getColorId, colorId);
+                wrapper.last("limit 1");
+                List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    OpeWmsScooterStock scooterStock = list.get(0);
+                    relationId = scooterStock.getId();
+                }
                 break;
             case 2:
                 // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
@@ -253,6 +304,18 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustCombinB.setUpdatedTime(new Date());
                 opeEntrustCombinB.setDef1(serialNum);
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
+
+                // 得到库存表id
+                Long bomId = opeEntrustCombinB.getProductionCombinBomId();
+                LambdaQueryWrapper<OpeWmsCombinStock> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeWmsCombinStock::getDr, 0);
+                qw.eq(OpeWmsCombinStock::getProductionCombinBomId, bomId);
+                qw.last("limit 1");
+                List<OpeWmsCombinStock> combinStockList = opeWmsCombinStockMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(combinStockList)) {
+                    OpeWmsCombinStock combinStock = combinStockList.get(0);
+                    relationId = combinStock.getId();
+                }
                 break;
             default:
                 RpsAssert.isBlank(paramDTO.getPartsNo(), ExceptionCodeEnums.PARTS_NO_IS_EMPTY.getCode(),
@@ -292,9 +355,20 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 opeEntrustPartsB.setUpdatedTime(new Date());
                 opeEntrustPartsB.setDef1(serialNum);
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
+
+                // 得到库存表id
+                Long partsId = opeEntrustPartsB.getPartsId();
+                LambdaQueryWrapper<OpeWmsPartsStock> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeWmsPartsStock::getDr, 0);
+                lqw.eq(OpeWmsPartsStock::getPartsId, partsId);
+                lqw.last("limit 1");
+                List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockMapper.selectList(lqw);
+                if (CollectionUtils.isNotEmpty(partsStockList)) {
+                    OpeWmsPartsStock partsStock = partsStockList.get(0);
+                    relationId = partsStock.getId();
+                }
                 break;
         }
-
 
         /**
          * 保存委托单产品序列号信息(有码产品时保存)
@@ -315,6 +389,25 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
             entrustProductSerialNum.setUpdatedBy(userId);
             entrustProductSerialNum.setUpdatedTime(new Date());
             entrustProductSerialNumMapper.insertEntrustProductSerialNum(entrustProductSerialNum);
+        }
+
+        // 新增ope_wms_parts_stock表
+        if (null != relationId) {
+            OpeWmsStockSerialNumber number = new OpeWmsStockSerialNumber();
+            number.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
+            number.setDr(0);
+            number.setTenantId(paramDTO.getTenantId());
+            number.setDeptId(paramDTO.getOpeDeptId());
+            number.setRelationType(paramDTO.getProductType());
+            number.setRelationId(relationId);
+            number.setStockType(1);
+            number.setRsn(serialNum);
+            number.setStockStatus(1);
+            number.setLotNum(paramDTO.getLot());
+            number.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
+            number.setCreatedBy(paramDTO.getUserId());
+            number.setCreatedTime(new Date());
+            opeWmsStockSerialNumberMapper.insert(number);
         }
         return new GeneralResult(paramDTO.getRequestId());
     }
