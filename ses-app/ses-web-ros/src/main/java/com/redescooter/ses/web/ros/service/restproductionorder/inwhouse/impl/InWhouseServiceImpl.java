@@ -315,6 +315,7 @@ public class InWhouseServiceImpl implements InWhouseService {
 
 
     public void countQty(OpeInWhouseOrder inWhouseOrder, String st) {
+        boolean flag = false;
         switch (inWhouseOrder.getOrderType()) {
             case 1:
                 // scooter
@@ -323,6 +324,12 @@ public class InWhouseServiceImpl implements InWhouseService {
                     scooterEnters = JSONArray.parseArray(st, SaveOrUpdateScooterBEnter.class);
                 } catch (Exception e) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                if (scooterEnters.stream().anyMatch(o -> null == o.getInWhQty())) {
+                    flag = true;
+                }
+                if (flag) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
                 }
                 inWhouseOrder.setInWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateScooterBEnter::getInWhQty).sum());
 //                if (null != inWhouseOrder.getRelationOrderId()){
@@ -338,6 +345,12 @@ public class InWhouseServiceImpl implements InWhouseService {
                 } catch (Exception e) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
+                if (combinBEnters.stream().anyMatch(o -> null == o.getInWhQty())) {
+                    flag = true;
+                }
+                if (flag) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                }
                 inWhouseOrder.setInWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateCombinBEnter::getInWhQty).sum());
 //                if (null != inWhouseOrder.getRelationOrderId()){
 //                    inWhouseOrder.setRelationOrderType(OrderTypeEnums.COMBIN_ORDER.getValue());
@@ -350,6 +363,12 @@ public class InWhouseServiceImpl implements InWhouseService {
                     partsBEnters = JSONArray.parseArray(st, SaveOrUpdatePartsBEnter.class);
                 } catch (Exception e) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+                if (partsBEnters.stream().anyMatch(o -> null == o.getInWhQty())) {
+                    flag = true;
+                }
+                if (flag) {
+                    throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
                 }
                 inWhouseOrder.setInWhQty(partsBEnters.stream().mapToInt(SaveOrUpdatePartsBEnter::getInWhQty).sum());
 //                if (null != inWhouseOrder.getRelationOrderId()){
