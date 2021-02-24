@@ -65,10 +65,17 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(UpdateMailTemplateEnter enter) {
-        // 编号只能是数字
-        if (null != enter.getMailTemplateNo()) {
-            if (!ValidatorUtil.isNumber(String.valueOf(enter.getMailTemplateNo()))) {
-                throw new FoundationException(ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getCode(), ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getMessage());
+        if (null != enter) {
+            // 编号只能是数字
+            if (null != enter.getMailTemplateNo()) {
+                if (!ValidatorUtil.isNumber(String.valueOf(enter.getMailTemplateNo()))) {
+                    throw new FoundationException(ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getCode(), ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getMessage());
+                }
+            }
+            if (StringUtils.isNotBlank(enter.getName()) || StringUtils.isNotBlank(enter.getEvent()) || StringUtils.isNotBlank(enter.getSubject()) || StringUtils.isNotBlank(enter.getMemo())) {
+                if (enter.getName().length() > 64 || enter.getEvent().length() > 64 || enter.getSubject().length() > 255 || enter.getMemo().length() > 64) {
+                    throw new FoundationException(ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getCode(), ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getMessage());
+                }
             }
         }
 
@@ -137,6 +144,13 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveParameter(SaveMailConfigEnter enter) {
+        if (null != enter) {
+            if (StringUtils.isNotBlank(enter.getParamKey())) {
+                if (enter.getParamKey().length() > 64) {
+                    throw new FoundationException(ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getCode(), ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getMessage());
+                }
+            }
+        }
 
         PlaMailConfig config = new PlaMailConfig();
 

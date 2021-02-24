@@ -67,7 +67,5 @@ public interface ValidationExceptionCode {
     int MAILTEMPLATE_IS_NOT_EMPTY = 10024;
     //appid不能为空
     int APPID_IS_NOT_EMPTY = 10025;
-    // 长度过长
-    int LENGTH_IS_TOO_LONG = 10026;
 
 }

@@ -1,8 +1,6 @@
 package com.redescooter.ses.api.foundation.vo.mail;
 
-import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.foundation.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,21 +32,18 @@ public class SaveMailTemplateEnter extends GeneralEnter {
      * 邮件模板名称
      */
     @ApiModelProperty(value = "name")
-    @MaximumLength(value = "64", code = ValidationExceptionCode.LENGTH_IS_TOO_LONG, message = "邮件模板名称长度过长")
     private String name;
 
     /**
      * 邮件发送事件
      */
     @ApiModelProperty(value = "邮件发送事件")
-    @MaximumLength(value = "64", code = ValidationExceptionCode.LENGTH_IS_TOO_LONG, message = "邮件发送事件长度过长")
     private String event;
 
     /**
      * 主题
      */
     @ApiModelProperty(value = "主题")
-    @MaximumLength(value = "255", code = ValidationExceptionCode.LENGTH_IS_TOO_LONG, message = "主题长度过长")
     private String subject;
 
     /**
@@ -61,7 +56,6 @@ public class SaveMailTemplateEnter extends GeneralEnter {
      * 邮件模板备注
      */
     @ApiModelProperty(value = "备注")
-    @MaximumLength(value = "64", code = ValidationExceptionCode.LENGTH_IS_TOO_LONG, message = "备注长度过长")
     private String memo;
 
     /**
