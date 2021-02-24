@@ -1,6 +1,5 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -12,7 +11,13 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
-import com.redescooter.ses.api.foundation.vo.mail.*;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateParameterInfoResult;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateSystemInfoResult;
+import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
+import com.redescooter.ses.api.foundation.vo.mail.SaveMailConfigEnter;
+import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
 import com.redescooter.ses.service.foundation.config.FoundationAssert;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaMailTemplateMapper;
@@ -21,6 +26,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailTemplate;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaMailConfigService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.ValidatorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +35,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -55,6 +65,20 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(UpdateMailTemplateEnter enter) {
+        if (null != enter) {
+            // 编号只能是数字
+            if (null != enter.getMailTemplateNo()) {
+                if (!ValidatorUtil.isNumber(String.valueOf(enter.getMailTemplateNo()))) {
+                    throw new FoundationException(ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getCode(), ExceptionCodeEnums.TEMPLATE_PARAM_NO_IS_NOT_NUMBER.getMessage());
+                }
+            }
+            if (StringUtils.isNotBlank(enter.getName()) || StringUtils.isNotBlank(enter.getEvent()) || StringUtils.isNotBlank(enter.getSubject()) || StringUtils.isNotBlank(enter.getMemo())) {
+                if (enter.getName().length() > 64 || enter.getEvent().length() > 64 || enter.getSubject().length() > 255 || enter.getMemo().length() > 64) {
+                    throw new FoundationException(ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getCode(), ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getMessage());
+                }
+            }
+        }
+
         // 编号不可重复
         LambdaQueryWrapper<PlaMailTemplate> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaMailTemplate::getDr, 0);
@@ -120,6 +144,13 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveParameter(SaveMailConfigEnter enter) {
+        if (null != enter) {
+            if (StringUtils.isNotBlank(enter.getParamKey())) {
+                if (enter.getParamKey().length() > 64) {
+                    throw new FoundationException(ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getCode(), ExceptionCodeEnums.LENGTH_IS_TOO_LONG.getMessage());
+                }
+            }
+        }
 
         PlaMailConfig config = new PlaMailConfig();
 
