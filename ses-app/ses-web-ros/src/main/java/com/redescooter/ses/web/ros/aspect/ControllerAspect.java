@@ -157,9 +157,10 @@ public class ControllerAspect {
     }
 
     private static final String[] whiteList = {
+            // 登录,登出,菜单树,获取登录用户信息
             "/sign/token/login",
             "/sign/token/logout",
-            "/sys/menu/tree",
+            "/setup/sys/menu/tree",
             "/Info/getUserInfo",
 
             // 验证码登录
@@ -171,87 +172,87 @@ public class ControllerAspect {
             "/sign/token/chanage",
 
             // 组织架构--部门
-            "/sys/dept/saveDeptSelectParent",
-            "/sys/dept/principal",
+            "/organization/sys/dept/saveDeptSelectParent",
+            "/organization/sys/dept/principal",
 
             // 组织架构--角色
-            "/sys/position/selectPositionType",
+            "/organization/sys/position/selectPositionType",
 
             // 组织架构--员工
-            "/sys/role/roleData",
-            "/country/countryCodelist",
+            "/organization/sys/role/roleData",
+            "/country/countryCodelist", // 在common工程中
 
-            // 客户账户
+            // Account
             "/account/customer/accountCountStatus",
 
-            // 联系我们
+            // Sales--联系我们
             "/website/countryCityPostCode",
-            "/contactUs/reply",
+            "/sales/contactUs/reply",
 
-            // RFQ
-            "/inquiry/countStatus",
-            "/inquiry/depositPaymentEmail",
+            // Sales--RFQ
+            "/sales/inquiry/countStatus",
+            "/sales/inquiry/depositPaymentEmail",
 
-            // 客户
-            "/customer/countStatus",
+            // Sales--客户
+            "/sales/customer/countStatus",
 
-            // 调拨单
-            "/sys/allocate/order/whData",
-            "/sale/scooter/colorData",
-            "/specificat/group/specificatGroupData",
+            // Sales--调拨单
+            "/sales/sys/allocate/order/whData",
+            "/sales/scooter/colorData",
+            "/product/specificat/group/specificatGroupData",
 
-            // 生产采购单
-            "/restproduction/purchas/supplierList",
+            // Sales--生产采购单
+            "/sales/restproduction/purchas/supplierList",
             "/production/purchasing/queryPurchasProductList",
 
-            // 售卖产品
+            // Sales--售卖产品
             "/bom/sales/product/getType",
             "/bom/sales/after/getType",
-            "/sale/scooter/specificatTypeData",
+            "/sales/scooter/specificatTypeData",
 
-            // 中国仓库
-            "/production/scooter/colorList",
-            "/wms/stock/ableProductionScooter",
-            "/production/scooter/groupList",
-            "/wms/stock/wmsStockCount",
-            "/restproduction/assembly/scooterGroupData",
-            "/restproduction/assembly/colorData",
+            // Warehouse--中国仓库
+            "/product/production/scooter/colorList",
+            "/warehouse/wms/stock/ableProductionScooter",
+            "/product/production/scooter/groupList",
+            "/warehouse/wms/stock/wmsStockCount",
+            "/production/restproduction/assembly/scooterGroupData",
+            "/production/restproduction/assembly/colorData",
 
-            // 经销商
-            "/distributor/city/cp",
-            "/distributor/sale/product",
+            // Supply Chain--经销商
+            "/supply/distributor/city/cp",
+            "/supply/distributor/sale/product",
 
-            // 部件
+            // Product--部件
             "/bom/parts/secList",
             "/bom/parts/typeCount",
-            "/supplier/list",
+            "/supply/supplier/list",
 
-            // 组装件
-            "/production/combination/checkProductN",
-            "/production/combination/secList",
-            "/production/combination/productionProductPartList",
+            // Product--组装件
+            "/product/production/combination/checkProductN",
+            "/product/production/combination/secList",
+            "/product/production/combination/productionProductPartList",
 
-            // 车辆
-            "/production/scooter/productionProductPartList",
-            "/specificat/type/specificatNameCheck",
+            // Product--车辆
+            "/product/production/scooter/productionProductPartList",
+            "/product/specificat/type/specificatNameCheck",
 
             // 价格
-            "/bom/supplierchaim/currencyUnit",
-            "/bom/supplierchaim/productPriceHistroyList",
-            "/bom/supplierchaim/productPriceHistroyChart",
+            "/product/bom/supplierchaim/currencyUnit",
+            "/product/bom/supplierchaim/productPriceHistroyList",
+            "/product/bom/supplierchaim/productPriceHistroyChart",
 
             // 采购单
-            "/sys/purchase/order/allocateNoData",
-            "/sys/allocate/order/userData",
+            "/production/sys/purchase/order/allocateNoData",
+            "/sales/sys/allocate/order/userData",
 
             // 入库单
-            "/sys/inWhouse/order/relationCombinOrderData",
+            "/production/sys/inWhouse/order/relationCombinOrderData",
 
             // 菜单
-            "/sys/menu/menuDatas",
+            "/setup/sys/menu/menuDatas",
 
             // 数据字典
-            "/setting/parameter/groupList"
+            "/setup/setting/parameter/groupList"
     };
 
     /**
@@ -279,7 +280,7 @@ public class ControllerAspect {
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
 
         // 权限从redis中取,如果有就用redis中的,如果没有就走db然后存放到redis
-        String key = JedisConstant.PERMISSION + enter.getUserId();
+        String key = JedisConstant.PERMISSION.concat(String.valueOf(enter.getUserId()));
         HashSet<String> permsSet = Sets.newHashSet();
         Boolean keyExistFlag = redisTemplate.hasKey(key);
 
@@ -302,15 +303,11 @@ public class ControllerAspect {
                     }
                 }
             }
+            permsSet.addAll(Arrays.asList(whiteList));
 
             // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
             if (CollectionUtils.isEmpty(permsSet)) {
                 throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
-            } else {
-                for (String s : permsSet) {
-                    log.info("该用户拥有的权限有:[{}]", s);
-                }
-                permsSet.addAll(Arrays.asList(whiteList));
             }
 
             // 存放到redis中
