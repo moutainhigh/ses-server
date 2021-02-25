@@ -53,8 +53,10 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
          * 检查当前用户是否分配车辆
          */
         if (null == scooter) {
-            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
-                    ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+//            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
+//                    ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+            // todo 分布式异常没有处理  抛出的异常 上个系统接不到 改为返回null
+            return null;
         }
 
         /**
