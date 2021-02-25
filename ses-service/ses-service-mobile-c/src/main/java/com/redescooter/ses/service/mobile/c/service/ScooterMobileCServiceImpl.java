@@ -42,8 +42,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
          * 检查当前用户是否分配车辆
          */
         if (null == scooter) {
-            throw new MobileCException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
-                    ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+            return null;
         }
 
         /**
