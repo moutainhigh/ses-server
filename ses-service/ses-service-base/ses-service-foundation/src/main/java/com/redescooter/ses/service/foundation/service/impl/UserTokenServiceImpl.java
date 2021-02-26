@@ -13,12 +13,7 @@ import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -38,14 +33,11 @@ import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
-import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
-import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
-import com.redescooter.ses.service.foundation.dm.base.PlaUser;
-import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
-import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
+import com.redescooter.ses.service.foundation.dm.base.*;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -55,16 +47,12 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -111,6 +99,9 @@ public class UserTokenServiceImpl implements UserTokenService {
     @DubboReference
     private UserProfileService userProfileService;
 
+    @Value("${Request.privateKey}")
+    private  String privateKey;
+
     /**
      * 用户登录
      *
@@ -126,18 +117,18 @@ public class UserTokenServiceImpl implements UserTokenService {
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         //用户名解密
-        /*if (enter.getPassword() != null && enter.getLoginName() != null) {
+        if (enter.getPassword() != null && enter.getLoginName() != null) {
             String decryptPassword = "";
             String loginName = "";
             try {
-                loginName = RsaUtils.decrypt(enter.getLoginName(), privatekey);
-                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+                loginName = RsaUtils.decrypt(enter.getLoginName(), privateKey);
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);
             } catch (Exception e) {
                 throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
             enter.setPassword(decryptPassword);
             enter.setLoginName(loginName);
-        }*/
+        }
 
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
