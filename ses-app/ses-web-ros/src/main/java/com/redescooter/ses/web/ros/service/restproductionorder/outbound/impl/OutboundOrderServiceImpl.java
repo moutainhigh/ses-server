@@ -18,38 +18,10 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrderCombinB;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrderScooterB;
-import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
-import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
-import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
-import com.redescooter.ses.web.ros.dm.OpeProductionParts;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
@@ -67,14 +39,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEn
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutCombinBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutOrderEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutPartsBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutScooterBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -84,11 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -900,7 +861,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 // combin
                 // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
                 QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
-                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, enter.getId());
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, enter.getId());
                 List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
                 if (CollectionUtils.isNotEmpty(combinOrderCombinBS)) {
                     // 找到该组装单需要的组装件
@@ -1409,7 +1370,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             case 2:
                 // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
                 QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
-                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, combinId);
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, combinId);
                 List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
                 if (CollectionUtils.isNotEmpty(combinOrderCombinBS)) {
                     // 找到该组装单需要的组装件
@@ -1437,7 +1398,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                                             }
                                         }
                                         partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
-                                        partsBEnter.setQty(relation.getPartsQty());
                                         partsBEnter.setPartsId(productionParts.getId());
                                         partsBEnterList.add(partsBEnter);
                                     }
