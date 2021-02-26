@@ -16,14 +16,9 @@ import com.redescooter.ses.mobile.client.config.UserComponent;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -78,7 +73,6 @@ public class UserProfileMobileController {
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
         Integer userServiceType = userComponent.getUserServiceTypeById(enter);
-        UserProfileResult profileResult = new UserProfileResult();
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             log.info("用户类型为ToB");
             // 如果是ToB  还是走之前的逻辑
