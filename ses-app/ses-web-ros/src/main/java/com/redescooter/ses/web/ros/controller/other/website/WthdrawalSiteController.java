@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.controller.other.website;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wthdrawalsite.WthdrawalSiteServer;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
@@ -34,17 +35,17 @@ public class WthdrawalSiteController {
         return new Response<>(wthdrawalSiteServer.save(enter));
     }
 
-    @PostMapping(value = "/edit/{id}")
+    @PostMapping(value = "/edit")
     @ApiOperation(value = "Wthdrawal Site Edit", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") WthdrawalSiteEditEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(wthdrawalSiteServer.edit(enter, id));
+    public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") WthdrawalSiteEditEnter enter) {
+        return new Response<>(wthdrawalSiteServer.edit(enter));
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/details/{id}")
+    @PostMapping(value = "/details")
     @ApiOperation(value = "Wthdrawal Site Details", response = DeliveryOptionSaveResult.class)
-    public Response<WthdrawalSiteResult> details(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(wthdrawalSiteServer.details(enter, id));
+    public Response<WthdrawalSiteResult> details(@ModelAttribute @ApiParam("Parameter") IdEnter enter) {
+        return new Response<>(wthdrawalSiteServer.details(enter));
     }
 
     @IgnoreLoginCheck
@@ -55,9 +56,9 @@ public class WthdrawalSiteController {
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/isswitch/{id}")
+    @PostMapping(value = "/isswitch")
     @ApiOperation(value = "Opening and closing,[0 open, 1 close]", response = DeliveryOptionSaveResult.class)
-    public Response<GeneralResult> isSwitch(@ModelAttribute @ApiParam("Parameter") isSwitchEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(wthdrawalSiteServer.isSwitch(enter,id));
+    public Response<GeneralResult> isSwitch(@ModelAttribute @ApiParam("Parameter") isSwitchEnter enter) {
+        return new Response<>(wthdrawalSiteServer.isSwitch(enter));
     }
 }

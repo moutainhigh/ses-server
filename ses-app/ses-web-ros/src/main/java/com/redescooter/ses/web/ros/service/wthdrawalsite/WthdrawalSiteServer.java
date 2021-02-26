@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.wthdrawalsite;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteEditEnter;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteResult;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteSaveEnter;
@@ -26,7 +27,7 @@ public interface WthdrawalSiteServer {
      * @param id
      * @return
      */
-    GeneralResult edit(WthdrawalSiteEditEnter enter, Long id);
+    GeneralResult edit(WthdrawalSiteEditEnter enter);
 
     /**
      * 门店详情
@@ -35,7 +36,7 @@ public interface WthdrawalSiteServer {
      * @param id
      * @return
      */
-    WthdrawalSiteResult details(GeneralEnter enter, Long id);
+    WthdrawalSiteResult details(IdEnter enter);
 
     /**
      * 门店列表
@@ -52,5 +53,5 @@ public interface WthdrawalSiteServer {
      * @param id
      * @return
      */
-    GeneralResult isSwitch(isSwitchEnter enter, Long id);
+    GeneralResult isSwitch(isSwitchEnter enter);
 }

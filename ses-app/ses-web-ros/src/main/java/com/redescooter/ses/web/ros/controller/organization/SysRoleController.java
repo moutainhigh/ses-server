@@ -31,7 +31,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,11 +83,10 @@ public class SysRoleController {
         return new Response<>(roleService.delete(enter));
     }
 
-    @PostMapping(value = "/authDetailsById/{type}")
-    @ApiOperation(value = "角色菜单" +
-            "权限展示--reseat", response = DeptAuthorityDetailsResult.class)
-    public Response<DeptAuthorityDetailsResult> authDetailsById(@PathVariable(required = false) String type, @ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(roleService.roleAuthDetails(type, enter));
+    @PostMapping(value = "/authDetailsById/tree")
+    @ApiOperation(value = "角色菜单" + "权限展示--reseat", response = DeptAuthorityDetailsResult.class)
+    public Response<DeptAuthorityDetailsResult> authDetailsById(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(roleService.roleAuthDetails("tree", enter));
     }
 
     /**

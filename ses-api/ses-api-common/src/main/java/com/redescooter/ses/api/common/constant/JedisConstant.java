@@ -30,6 +30,6 @@ public interface JedisConstant {
     int DEFAULT_EXPIRE = 1;
 
     // 接口权限
-    String PERMISSION = "menu:permission:";
+    String PERMISSION = "permission:";
 
 }

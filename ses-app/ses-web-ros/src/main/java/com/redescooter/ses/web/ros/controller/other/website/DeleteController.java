@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Api(tags = {"删除业务"})
 @RestController
-@RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+@RequestMapping(value = "/delete", method = RequestMethod.POST)
 public class DeleteController {
 
     @Autowired

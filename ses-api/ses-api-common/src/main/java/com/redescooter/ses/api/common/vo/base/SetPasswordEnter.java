@@ -29,4 +29,7 @@ public class SetPasswordEnter<T> extends GeneralEnter {
 
     @ApiModelProperty(value = "业务对象",hidden = true)
     private T t;
+
+    @ApiModelProperty(value = "确认请求id", required = true)
+    private String confirmRequestId;
 }

@@ -83,10 +83,10 @@ public class CAccountController {
         return new Response<>(customerRosService.verificationCode(enter));
     }
 
-    @PostMapping(value = "/resetPassword/{confirmRequestId}")
+    @PostMapping(value = "/resetPassword")
     @ApiOperation(value = "重置密码", response = GeneralResult.class)
-    public Response<GeneralResult> resetPassword(@ApiParam("请求参数") @PathVariable("confirmRequestId") String confirmRequestId, SetPasswordEnter enter) {
-        enter.setRequestId(confirmRequestId);
+    public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("请求参数") SetPasswordEnter enter) {
+        enter.setRequestId(enter.getConfirmRequestId());
         return new Response<>(customerRosService.customerSetPassword(enter));
     }
 }

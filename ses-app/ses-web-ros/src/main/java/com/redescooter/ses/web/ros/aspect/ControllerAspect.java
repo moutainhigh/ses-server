@@ -34,7 +34,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
@@ -45,6 +44,7 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -84,7 +83,7 @@ public class ControllerAspect {
     private OpeSysUserService opeSysUserService;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private JedisCluster jedisCluster;
 
     @Autowired
     private WebApplicationContext applicationContext;
@@ -328,12 +327,12 @@ public class ControllerAspect {
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
 
         // 权限从redis中取,如果有就用redis中的,如果没有就走db然后存放到redis
-        String key = JedisConstant.PERMISSION.concat(String.valueOf(enter.getUserId()));
+        String key = JedisConstant.PERMISSION + enter.getUserId();
         HashSet<String> permsSet = Sets.newHashSet();
-        Boolean keyExistFlag = redisTemplate.hasKey(key);
+        Boolean keyExistFlag = jedisCluster.exists(key);
 
         if (keyExistFlag) {
-            String value = (String) redisTemplate.opsForValue().get(key);
+            String value = jedisCluster.get(key);
             String[] split = value.split(",");
             for (String s : split) {
                 permsSet.add(s);
@@ -366,7 +365,8 @@ public class ControllerAspect {
 
             // 存放到redis中
             String val = StringUtils.join(permsSet, ",");
-            redisTemplate.opsForValue().set(key, val, 24, TimeUnit.HOURS);
+            jedisCluster.set(key, val);
+            jedisCluster.expire(key, 86400);
         }
 
         boolean flag = true;

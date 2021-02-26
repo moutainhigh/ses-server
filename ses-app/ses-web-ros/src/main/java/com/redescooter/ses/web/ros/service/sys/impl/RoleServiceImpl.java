@@ -54,7 +54,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
@@ -120,9 +119,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private JedisCluster jedisCluster;
-
-    @Autowired
-    private RedisTemplate redisTemplate;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -556,9 +552,9 @@ public class RoleServiceImpl implements RoleService {
 
         // 删除redis中此用户的权限
         String key = JedisConstant.PERMISSION + enter.getUserId();
-        Boolean flag = redisTemplate.hasKey(key);
+        Boolean flag = jedisCluster.exists(key);
         if (flag) {
-            redisTemplate.delete(key);
+            jedisCluster.del(key);
         }
         return new GeneralResult(enter.getRequestId());
     }
