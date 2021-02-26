@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.aspect;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
@@ -13,6 +15,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.tool.aspect.ValidationUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.list.ListUtils;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -33,8 +36,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,8 +54,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 /**
@@ -71,6 +85,9 @@ public class ControllerAspect {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private WebApplicationContext applicationContext;
 
     @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
@@ -156,7 +173,7 @@ public class ControllerAspect {
 
     }
 
-    private static final String[] whiteList = {
+    /*private static final String[] whiteList = {
             // 登录,登出,菜单树,获取登录用户信息
             "/sign/token/login",
             "/sign/token/logout",
@@ -253,7 +270,38 @@ public class ControllerAspect {
 
             // 数据字典
             "/setup/setting/parameter/groupList"
-    };
+    };*/
+
+    /**
+     * 得到本项目中所有接口的url
+     */
+    private List<String> getAllUrl() {
+        RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
+        Map<RequestMappingInfo, HandlerMethod> map = mapping.getHandlerMethods();
+
+        List<Map<String, String>> list = Lists.newArrayList();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
+            Map<String, String> item = Maps.newHashMap();
+            RequestMappingInfo info = m.getKey();
+            HandlerMethod method = m.getValue();
+            PatternsRequestCondition p = info.getPatternsCondition();
+            for (String url : p.getPatterns()) {
+                item.put("url", url);
+            }
+            item.put("className", method.getMethod().getDeclaringClass().getName()); // 类名
+            item.put("method", method.getMethod().getName()); // 方法名
+            RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
+            for (RequestMethod requestMethod : methodsCondition.getMethods()) {
+                item.put("type", requestMethod.toString());
+            }
+            list.add(item);
+        }
+        List<String> url = list.stream().map(o -> o.get("url")).distinct().collect(Collectors.toList());
+        return url;
+        //url.removeIf(s -> appearNumber(s, "/") < 2);
+        //Map<String, List<String>> result = url.stream().collect(Collectors.groupingBy(s -> subString(s, "/")));
+        //return result;
+    }
 
     /**
      * 接口权限控制
@@ -291,7 +339,14 @@ public class ControllerAspect {
                 permsSet.add(s);
             }
         } else {
-            // 得到该用户拥有的权限path
+            // 获得所有接口url
+            List<String> urlList = getAllUrl();
+            // 获得db所有path
+            List<String> dbPathList = opeSysUserService.findAllPerms();
+            // 获得两个list的差集
+            List<String> differentList = ListUtils.getDifferent(urlList, dbPathList);
+            permsSet.addAll(differentList);
+            // 得到该用户在db拥有的权限path
             List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
             if (CollectionUtils.isNotEmpty(permsList)) {
                 for (String path : permsList) {
@@ -303,7 +358,6 @@ public class ControllerAspect {
                     }
                 }
             }
-            permsSet.addAll(Arrays.asList(whiteList));
 
             // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
             if (CollectionUtils.isEmpty(permsSet)) {
@@ -374,4 +428,25 @@ public class ControllerAspect {
         }
         return url;
     }
+
+    /**
+     * 获取指定字符串出现的次数
+     */
+    private static int appearNumber(String srcText, String findText) {
+        int count = 0;
+        Pattern p = Pattern.compile(findText);
+        Matcher m = p.matcher(srcText);
+        while (m.find()) {
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 从第2个位置开始截取指定字符中的内容
+     */
+    private static String subString(String str, String subChar) {
+        return str.substring(1, str.indexOf(subChar, str.indexOf(subChar) + 1));
+    }
+
 }
