@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -242,8 +243,8 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
         FoundationAssert.isNull(list, ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
 
-        //根据系统id和应用id分组
-        Map<String, List<PlaMailConfig>> mapGroup = list.stream().collect(Collectors.groupingBy(plaMailConfig -> plaMailConfig.getSystemId() + "::" + plaMailConfig.getAppId()));
+        //根据系统id和应用id分组,分组后对每组的元素排序
+        Map<String, List<PlaMailConfig>> mapGroup = list.stream().collect(Collectors.groupingBy(plaMailConfig -> plaMailConfig.getSystemId() + "::" + plaMailConfig.getAppId(), LinkedHashMap::new, Collectors.toList()));
 
         if (!mapGroup.isEmpty()) {
             //结果封装
