@@ -238,7 +238,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
         //根据邮件编号，查询对应参数列表
         List<PlaMailConfig> list = plaMailConfigService.list(new QueryWrapper<PlaMailConfig>()
-                .eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, enter.getMailTemplateNo()));
+                .eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, enter.getMailTemplateNo()).orderByAsc(PlaMailConfig.COL_CREATED_TIME));
 
         FoundationAssert.isNull(list, ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
 
