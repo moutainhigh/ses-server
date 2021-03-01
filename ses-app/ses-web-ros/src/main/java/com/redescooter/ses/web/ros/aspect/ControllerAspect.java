@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.aspect.ValidationUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.list.ListUtils;
@@ -366,7 +367,7 @@ public class ControllerAspect {
             // 存放到redis中
             String val = StringUtils.join(permsSet, ",");
             jedisCluster.set(key, val);
-            jedisCluster.expire(key, 86400);
+            jedisCluster.expire(key, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         }
 
         boolean flag = true;
