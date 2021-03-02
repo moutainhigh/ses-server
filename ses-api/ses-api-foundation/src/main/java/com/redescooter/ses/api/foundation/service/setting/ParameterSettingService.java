@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.setting.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ParameterSettingService {
 
@@ -77,4 +78,15 @@ public interface ParameterSettingService {
      * @param systemType
      */
     void saveParameterBatchByImport(List<SaveParameterBatchEnter> saveParameterBatchEnterList, String systemType);
+
+    /**
+     * 根据分组名称获得此分组下的所有参数
+     */
+    List<ParameterListResult> getAllParamByGroup(IdEnter enter);
+
+    /**
+     * 根据分组名称获得此分组下的所有参数并分组
+     */
+    List<Map<String, List<ParameterListResult>>> getAllParamByGrouping(IdEnter enter);
+
 }

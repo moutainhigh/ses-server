@@ -138,7 +138,9 @@ public enum ExceptionCodeEnums {
 
     TEMPLATE_PARAM_NO_IS_NOT_NUMBER(10063, "邮件模板编号只能输入数字"),
 
-    LENGTH_IS_TOO_LONG(10064, "长度过长")
+    LENGTH_IS_TOO_LONG(10064, "长度过长"),
+
+    GROUP_NOT_ENABLE(10065, "此分组未启用")
 
     ;
 

@@ -139,9 +139,9 @@ public class MessageServiceImpl implements MessageService {
                 if (!enter.getIds().contains(item.getId())) {
                     throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
                 }
-                if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
+                /*if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
                     throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
-                }
+                }*/
             }
             item.setStatus(MessageStatus.READ.getValue());
             item.setUpdatedBy(enter.getUserId());
