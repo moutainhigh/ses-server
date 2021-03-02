@@ -31,16 +31,17 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
+
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
+
     @Resource
     private TransactionTemplate transactionTemplate;
 
-
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
