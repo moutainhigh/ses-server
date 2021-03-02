@@ -46,7 +46,7 @@ spring: #spring config
         group-name: Core API of official website
         title: Signe OR Order
         description: Signature management / Order management
-        base-package: com.redescooter.ses.web.ros.controller.website
+        base-package: com.redescooter.ses.web.ros.controller.other.website
         path-regex: /website/.*
         path-mapping: /
         version: v1.2.1
@@ -61,7 +61,7 @@ spring: #spring config
         group-name: Payment API
         title: Payment Service Support
         description: Provide three party payment service support
-        base-package: com.redescooter.ses.web.ros.controller.website
+        base-package: com.redescooter.ses.web.ros.controller.other.website
         path-regex: /stripe/.*
         path-mapping: /
         version: v1.2.1
@@ -76,7 +76,7 @@ spring: #spring config
         group-name: DeliveryOpion API
         title: DeliveryOpion Service Support
         description: DeliveryOpion service support
-        base-package: com.redescooter.ses.web.ros.controller.website.DeliveryOpionController
+        base-package: com.redescooter.ses.web.ros.controller.other.website.DeliveryOpionController
         path-regex: /deliveryopion/.*
         path-mapping: /
         version: v1.2.1
@@ -91,7 +91,7 @@ spring: #spring config
         group-name: WthdrawalSite API
         title: WthdrawalSite Service Support
         description: WthdrawalSite service support
-        base-package: com.redescooter.ses.web.ros.controller.website.WthdrawalSiteController
+        base-package: com.redescooter.ses.web.ros.controller.other.website.WthdrawalSiteController
         path-regex: /wthdrawalsite/.*
         path-mapping: /
         version: v1.2.1

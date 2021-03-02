@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -102,14 +103,13 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * 编辑取货配置
      *
      * @param enter
-     * @param id
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult edit(DeliveryOptionEditEnter enter, Long id) {
+    public GeneralResult edit(DeliveryOptionEditEnter enter) {
         OpeDeliveryOption editVO = new OpeDeliveryOption();
-        editVO.setId(id);
+        editVO.setId(enter.getId());
         editVO.setOptionNeme(enter.getOptionNeme());
         editVO.setPrice(enter.getPrice());
         editVO.setMemo(enter.getMemo());
@@ -124,16 +124,14 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * 获取取货配置详情
      *
      * @param enter
-     * @param id
      * @return
      */
     @Override
-    public DeliveryOptionSaveResult details(GeneralEnter enter, Long id) {
+    public DeliveryOptionSaveResult details(IdEnter enter) {
         DeliveryOptionSaveResult result = new DeliveryOptionSaveResult();
-
         OpeDeliveryOption deliveryOption = deliveryOptionService.getOne(new LambdaQueryWrapper<OpeDeliveryOption>()
                 .eq(OpeDeliveryOption::getDr, Constant.DR_FALSE)
-                .eq(OpeDeliveryOption::getId, id)
+                .eq(OpeDeliveryOption::getId, enter.getId())
                 .last("limit 1"));
 
         if (deliveryOption != null) {
@@ -146,7 +144,6 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
             result.setCreatedTime(deliveryOption.getCreatedTime());
             result.setRequestId(enter.getRequestId());
         }
-
         return result;
     }
 }
