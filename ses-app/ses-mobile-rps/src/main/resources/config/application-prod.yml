@@ -4,20 +4,11 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
-
-# swagger配置
-
-jasypt:
-  encryptor:
-    property:
-      prefix: RedE(   # 加密前缀
-      suffix: )            # 加密后缀
-    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
-
+dubbo:
+  registry:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+  metadata-report:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
 spring:
   #上传配置
   http:
@@ -26,11 +17,10 @@ spring:
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  #数据库连接
   datasource:
-    url: RedE(fAAsjYNI9GEWNIQBH9DBhOaL5/SiTRFY9xDeZiR9eApKJaSCWomr+Gr3zWjR6gxweHaZoADZZV2SOU6viQGJo/nxAwextEXz/PM+3pt+BgVbVng5xsNX3gXG+0gqItzKHGOnBejS5zI5/Nbi1naBDp8W8w89JqcLPj8//2VU2PDQj+X9Ycxo2db40C0cTaU7ClMiD9VOV5Rv/tXsv1il3UJXreRYP8KRZga7v4vWMPLSXLTTbi0vB8lJzxdraEVy9VaIbRIyu/L1HZ3aMw8I6UjCujLTF27hLNvE5pga5ecJMOE+BY0LE22X5QLbVtIl)
-    username: RedE(2mrIxb+xr0JIkJZhpZM6rw==)
-    password: RedE(9xt4+dxZg7UJ2xBU2RxnIWPv/HPPdya2mAko1SSIglQLFWER6wFnCDrF700p4xLB)
+    url: jdbc:mysql://10.1.2.53:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: rede1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -46,12 +36,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.5.73:7000
-        - 172.31.5.73:7001
-        - 172.31.5.73:7002
-        - 172.31.5.73:7003
-        - 172.31.5.73:7004
-        - 172.31.5.73:7005
+        - 10.1.2.53:7000
+        - 10.1.2.53:7001
+        - 10.1.2.53:7002
+        - 10.1.2.53:7003
+        - 10.1.2.53:7004
+        - 10.1.2.53:7005
   # swagger在线文档配置
   swagger:
     enabled: false                                       # 是否启用swagger
@@ -60,11 +50,3 @@ spring:
 oss:                                                                                                                    #阿里oss上传
   #oss 使用http、https请求方式
   protocol: HTTPS
-
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
-
