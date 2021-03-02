@@ -88,7 +88,7 @@ monday:
   workspaceBackId: 199275
   #模板Id
   templeteId: 581923336
-  load-template: true
+  load-template: false
 
 constant-us-email:
   sale-principal:
